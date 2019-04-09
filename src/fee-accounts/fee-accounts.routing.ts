@@ -4,7 +4,6 @@ import {ModuleWithProviders} from '@angular/core';
 import {AuthGuard} from '../auth/guards/auth.guard';
 import {AccountOverviewComponent} from './containers/account-overview/account-overview.component';
 import {AccountSummaryComponent} from './containers/account-summary/account-summary.component';
-import {AccountTransactionsComponent} from './containers/account-transactions/account-transactions.component';
 import {OrganisationAccountsComponent} from './containers/overview/account-overview.component';
 import {AccountsGuard} from './guards/accounts.guard';
 import {AccountSummaryGuard} from './guards/acccounts-summary.guards';
@@ -31,10 +30,6 @@ export const ROUTES: Routes = [
         canActivate: [
           AccountSummaryGuard
         ]
-      },
-      {
-        path: ':id/transactions',
-        component: AccountTransactionsComponent
       }
     ]
   }
