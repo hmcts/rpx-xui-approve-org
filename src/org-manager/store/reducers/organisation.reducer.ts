@@ -1,37 +1,37 @@
-import * as fromFeeAccountActions from '../actions/organisation.actions';
+import * as fromOrganisationActions from '../actions/organisation.actions';
 import {Organisation, OrganisationSummary} from '../../models/organisation';
 
 export interface OrganisationState {
-  organisation: Array<OrganisationSummary> | null;
+  organisations: Array<OrganisationSummary> | null;
   loaded: boolean;
   loading: boolean;
 }
 
 export const initialState: OrganisationState = {
-  organisation: null,
+  organisations: null,
   loaded: false,
   loading: false,
 };
 
 export function reducer(
   state = initialState,
-  action: fromFeeAccountActions.OrganisationActions
+  action: fromOrganisationActions.OrganisationActions
 ): OrganisationState {
   switch (action.type) {
 
-    case fromFeeAccountActions.LOAD_ORGANISATIONS: {
+    case fromOrganisationActions.LOAD_ORGANISATIONS: {
       return {
         ...state,
         loaded: false,
         loading: true
       };
     }
-    case fromFeeAccountActions.LOAD_ORGANISATIONS_SUCCESS: {
+    case fromOrganisationActions.LOAD_ORGANISATIONS_SUCCESS: {
       console.log(' action.payload',  action.payload)
       const payload = action.payload;
-      let feeAccounts = payload;
-      if (feeAccounts.length !== 0) {
-        feeAccounts = payload.map((entity: Organisation) => {
+      let organisations = payload;
+      if (organisations.length !== 0) {
+        organisations = payload.map((entity: Organisation) => {
             const element: OrganisationSummary = {
               ...entity,
               routerLink: `/fee-accounts/account/${entity.pbaNumber}/`
@@ -42,7 +42,7 @@ export function reducer(
 
       return {
         ...state,
-          organisation: feeAccounts,
+          organisations: organisations,
           loaded: true,
           loading: false
       };
@@ -53,6 +53,6 @@ export function reducer(
   return state;
 }
 
-export const getFeeAccounts = (state: OrganisationState) => state.organisation;
+export const getFeeAccounts = (state: OrganisationState) => state.organisations;
 export const getFeeAccountsLoading = (state: OrganisationState) => state.loading;
 export const getFeeAccountsLoaded = (state: OrganisationState) => state.loaded;

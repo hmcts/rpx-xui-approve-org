@@ -29,10 +29,6 @@ import { reducers, effects } from './store';
   providers: [...fromServices.services]
 })
 
-/**
- * Entry point to FeeAccountsModule
- */
-
 export class OrgManagerModule {
 
 }

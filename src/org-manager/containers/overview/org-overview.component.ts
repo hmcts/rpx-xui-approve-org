@@ -5,7 +5,7 @@ import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk
 import {Observable} from 'rxjs';
 import { OrganisationSummary } from '../../models/organisation';
 @Component({
-  selector: 'app-prd-fee-accounts-component',
+  selector: 'app-prd-org-overview-component',
   templateUrl: './org-overview.component.html',
 })
 
@@ -19,8 +19,8 @@ export class OrganisationOverviewComponent implements OnInit{
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
-    this.accounts$ = this.store.pipe(select(fromOrganisationStore.feeAccounts));
-    this.loading$ = this.store.pipe(select(fromOrganisationStore.feeAccountsLoading));
+    this.accounts$ = this.store.pipe(select(fromOrganisationStore.organisations));
+    this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
     this.columnConfig = [
       { header: 'Reference', key: 'organisationId'},
       { header: 'Address', key: 'pbaNumber' },

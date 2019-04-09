@@ -1,8 +1,8 @@
 import {Action} from '@ngrx/store';
 
-export const LOAD_ORGANISATIONS = '[Fee Accounts] Load Fee Accounts';
-export const LOAD_ORGANISATIONS_SUCCESS = '[Fee Accounts] Load Fee Accounts Success';
-export const LOAD_ORGANISATIONS_FAIL = '[Fee Accounts] Load Fee Accounts Fail';
+export const LOAD_ORGANISATIONS = '[Organisations] Load Organisations';
+export const LOAD_ORGANISATIONS_SUCCESS = '[Organisations] Load Organisations Success';
+export const LOAD_ORGANISATIONS_FAIL = '[Organisations] Load Organisations Fail';
 
 export class LoadOrganisation {
   readonly type = LOAD_ORGANISATIONS;
