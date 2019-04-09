@@ -16,12 +16,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { reducers, effects } from './store';
 import { AccountOverviewComponent } from './containers/account-overview/account-overview.component';
 import { AccountSummaryComponent } from './containers/account-summary/account-summary.component';
-import { AccountTransactionsComponent } from './containers/account-transactions/account-transactions.component';
 import {AccountsGuard} from './guards/accounts.guard';
 import {AccountSummaryGuard} from './guards/acccounts-summary.guards';
 
 export const GUARDS = [AccountsGuard, AccountSummaryGuard];
-export const COMPONENTS = [ AccountOverviewComponent, AccountSummaryComponent, AccountTransactionsComponent];
+export const COMPONENTS = [ AccountOverviewComponent, AccountSummaryComponent];
 
 @NgModule({
   imports: [

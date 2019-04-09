@@ -12,18 +12,6 @@ import {map} from 'rxjs/internal/operators';
 })
 export class AccountSummaryComponent implements OnInit, OnDestroy {
   accountSummary$: Observable<any>;
-  navItems = [
-    {
-      text: 'Summary',
-      href: `/`,
-      active: true
-    },
-    {
-      text: 'Transactions',
-      href: `./transactions`,
-      active: false
-    }
-  ];
   loading$: Observable<boolean>;
   constructor(
     private activeRoute: ActivatedRoute,
