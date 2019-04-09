@@ -9,7 +9,7 @@ import { OrganisationSummary } from '../../models/organisation';
   templateUrl: './org-overview.component.html',
 })
 
-export class OrganisationOverviewComponent implements OnInit{
+export class OverviewComponent implements OnInit{
   columnConfig: GovukTableColumnConfig[];
   tableRows: {}[];
   accounts$: Observable<Array<OrganisationSummary>>;

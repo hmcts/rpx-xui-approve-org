@@ -24,6 +24,10 @@ export const ROUTES: Routes = [
     loadChildren: '../fee-accounts/fee-accounts.module#FeeAccountsModule'
   },
   {
+    path: 'test-organisations',
+    loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
+  },
+  {
     path: '**',
     redirectTo: '/organisation',
     pathMatch: 'full'
