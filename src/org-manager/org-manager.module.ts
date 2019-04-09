@@ -21,7 +21,7 @@ import { reducers, effects } from './store';
     HttpClientModule,
     orgManagerRouting,
     SharedModule,
-    StoreModule.forFeature('feeAccounts', reducers),
+    StoreModule.forFeature('organisations', reducers),
     EffectsModule.forFeature(effects),
   ],
   exports: [...fromContainers.containers],
