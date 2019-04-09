@@ -22,6 +22,7 @@ export class OrganisationOverviewComponent implements OnInit{
     this.accounts$ = this.store.pipe(select(fromOrganisationStore.organisations));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
     this.columnConfig = [
+      { header: 'Account Number', key: 'pbaNumber', type: 'link'},
       { header: 'Reference', key: 'organisationId'},
       { header: 'Address', key: 'pbaNumber' },
       { header: 'Administrator', key: 'admin' },

@@ -20,6 +20,10 @@ export const ROUTES: Routes = [
     loadChildren: '../auth/auth.module#AuthModule'
   },
   {
+    path: 'fee-accounts',
+    loadChildren: '../fee-accounts/fee-accounts.module#FeeAccountsModule'
+  },
+  {
     path: '**',
     redirectTo: '/organisation',
     pathMatch: 'full'
