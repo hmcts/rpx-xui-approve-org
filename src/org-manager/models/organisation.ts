@@ -1,4 +1,4 @@
-export interface  PbaAccounts {
+export interface  Organisation {
   organisationId: string;
   pbaNumber: string;
   admin: string;
@@ -6,7 +6,7 @@ export interface  PbaAccounts {
   view: string;
   userId?:	string
 }
-export interface PbaAccountsSummary extends PbaAccounts {
+export interface OrganisationSummary extends Organisation {
   routerLink: string;
 }
 

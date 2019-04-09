@@ -1,1 +1,1 @@
-export * from './fee-accounts.selectors';
+export * from './organisation.selectors';

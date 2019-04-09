@@ -1,6 +1,6 @@
-import {PbaAccounts} from '../models/pba-accounts';
+import { Organisation } from '../models/organisation';
 
-export const PbaAccountsMock: PbaAccounts[] = [
+export const OrganisationsMock: Organisation[] = [
   {
     organisationId: 'Speake Limited',
     pbaNumber: '72 Guild Street, London, SE23 6FH',
