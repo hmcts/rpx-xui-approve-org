@@ -53,6 +53,6 @@ export function reducer(
   return state;
 }
 
-export const getFeeAccounts = (state: OrganisationState) => state.organisations;
-export const getFeeAccountsLoading = (state: OrganisationState) => state.loading;
-export const getFeeAccountsLoaded = (state: OrganisationState) => state.loaded;
+export const getOrganisations = (state: OrganisationState) => state.organisations;
+export const getOrganisationsLoading = (state: OrganisationState) => state.loading;
+export const getOrganisationsLoaded = (state: OrganisationState) => state.loaded;
