@@ -1,5 +1,5 @@
-import { FeeAccountsService } from './fee-accounts.service';
+import { OrganisationService } from './organisation.service';
 
-export const services: any[] = [FeeAccountsService];
+export const services: any[] = [OrganisationService];
 
-export * from './fee-accounts.service';
+export * from './organisation.service';

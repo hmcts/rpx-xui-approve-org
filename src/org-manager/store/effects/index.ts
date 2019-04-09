@@ -1,7 +1,7 @@
-import {FeeAccountsEffects} from './fee-accounts.effects';
+import { OrganisationEffects } from './organisation.effects';
 
 export const effects: any[] = [
-  FeeAccountsEffects,
+  OrganisationEffects,
 ];
 
-export * from './fee-accounts.effects';
+export * from './organisation.effects';
