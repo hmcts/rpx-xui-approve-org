@@ -3,7 +3,6 @@ import {RouterModule, Routes} from '@angular/router';
 import {ModuleWithProviders} from '@angular/core';
 import {AuthGuard} from '../auth/guards/auth.guard';
 import {OrganisationOverviewComponent} from './containers/overview/org-overview.component';
-import {Organisation} from '../organisation/organisation.model';
 
 export const ROUTES: Routes = [
   {
