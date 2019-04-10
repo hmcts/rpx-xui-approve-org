@@ -12,10 +12,6 @@ export const ROUTES: Routes = [
     loadChildren: '../users/users.module#UsersModule'
   },
   {
-    path: 'profile',
-    loadChildren: '../auth/auth.module#AuthModule'
-  },
-  {
     path: 'organisations',
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
   },
