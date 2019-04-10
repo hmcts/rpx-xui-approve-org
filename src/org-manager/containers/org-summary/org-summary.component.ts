@@ -6,11 +6,11 @@ import {ActivatedRoute} from '@angular/router';
 import {map} from 'rxjs/internal/operators';
 
 @Component({
-  selector: 'app-account-summary',
-  templateUrl: './account-summary.component.html',
-  styleUrls: ['./account-summary.component.scss']
+  selector: 'app-org-summary',
+  templateUrl: './org-summary.component.html',
+  styleUrls: ['./org-summary.component.scss']
 })
-export class AccountSummaryComponent implements OnInit, OnDestroy {
+export class OrgSummaryComponent implements OnInit, OnDestroy {
   accountSummary$: Observable<any>;
   loading$: Observable<boolean>;
   constructor(
@@ -21,13 +21,13 @@ export class AccountSummaryComponent implements OnInit, OnDestroy {
     //TODO move to a guard
     this.activeRoute.parent.params.pipe(
       map(payload => {
-        this.store.dispatch(new fromfeatureStore.LoadSingleFeeAccount({id: payload.id }));
+        this.store.dispatch(new fromfeatureStore.LoadSingleOrg({id: payload.id }));
       })
     ).subscribe();
     this.accountSummary$ = this.store.pipe(select(fromfeatureStore.getSingleAccounOverview));
-    this.loading$ = this.store.pipe(select(fromfeatureStore.pbaAccountSummaryLoading));
+    this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
   }
   ngOnDestroy() {
-    this.store.dispatch(new fromfeatureStore.ResetSingleFeeAccount({}));
+    this.store.dispatch(new fromfeatureStore.ResetSingleOrg({}));
   }
 }

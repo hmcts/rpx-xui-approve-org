@@ -1,4 +1,4 @@
-export interface SingleAccontSummary {
+export interface SingleOrgSummary {
   account_number: string;
   account_name: string;
   name: string;
@@ -14,6 +14,6 @@ export interface SingleAccontSummary {
   admin: string;
   
 }
-export interface SingleAccontSummaryRemapped extends SingleAccontSummary {
+export interface SingleOrgSummaryRemapped extends SingleOrgSummary {
   routerLink: string;
 }

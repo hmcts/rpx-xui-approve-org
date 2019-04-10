@@ -1,2 +1,2 @@
 export * from './organisation.selectors';
-export * from './single-fee-account.selectors';
+export * from './single-org.selectors';
