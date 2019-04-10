@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
-
-import * as fromAuth from '../../../auth/store';
 import * as fromRoot from '../../store';
 
 @Component({
@@ -23,7 +21,6 @@ export class HeaderComponent implements OnInit {
 
 
     ngOnInit(): void {
-        this.isUserLoggedIn$ = this.store.pipe(select(fromAuth.getIsAuthenticated));
         this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
           if (rootState) {
             this.updateNavItems(rootState.state.url);
