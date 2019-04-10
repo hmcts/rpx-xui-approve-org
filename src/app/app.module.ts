@@ -23,8 +23,6 @@ import * as fromComponents from './components';
 
 import { ROUTES } from './app.routes';
 
-import { AuthModule } from '../auth/auth.module';
-
 import config from '../../api/lib/config';
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
@@ -46,7 +44,6 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     SharedModule,
-    AuthModule,
     StoreRouterConnectingModule,
     StoreDevtoolsModule.instrument({
       logOnly: config.production
