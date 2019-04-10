@@ -8,10 +8,6 @@ export const ROUTES: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'organisation',
-    loadChildren: '../organisation/organisation.module#OrganisationModule'
-  },
-  {
     path: 'users',
     loadChildren: '../users/users.module#UsersModule'
   },
@@ -29,7 +25,7 @@ export const ROUTES: Routes = [
   },
   {
     path: '**',
-    redirectTo: '/organisation',
+    redirectTo: '/',
     pathMatch: 'full'
   }
 ];

@@ -9,9 +9,8 @@ import {UserService} from './services/user.service';
 import {effects, reducer} from './store';
 import {EffectsModule} from '@ngrx/effects';
 import {StoreModule} from '@ngrx/store';
-import { OrganisationGuard } from './guards/organisation.guard';
 
-const PROVIDERS = [AuthGuard, OrganisationGuard, UserGuard];
+const PROVIDERS = [AuthGuard, UserGuard];
 const COMPONENTS = [ProfileComponent];
 const SERVICES = [ AuthService, UserService];
 
