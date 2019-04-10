@@ -22,9 +22,8 @@ export class OverviewComponent implements OnInit{
     this.accounts$ = this.store.pipe(select(fromOrganisationStore.organisations));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
     this.columnConfig = [
-      { header: 'Account Number', key: 'pbaNumber', type: 'link'},
       { header: 'Reference', key: 'organisationId'},
-      { header: 'Address', key: 'pbaNumber' },
+      { header: 'Address', key: 'address' },
       { header: 'Administrator', key: 'admin' },
       { header: 'Status', key: 'status' },
       { header: null, key: 'view', type: 'link' }
