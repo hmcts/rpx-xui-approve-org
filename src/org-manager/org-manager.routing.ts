@@ -15,7 +15,7 @@ export const ROUTES: Routes = [
     ],
   },
   {
-    path: 'test-organisation',
+    path: 'organisation',
     component: AccountOverviewComponent,
     canActivate: [
       AuthGuard

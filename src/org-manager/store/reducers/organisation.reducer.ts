@@ -34,7 +34,7 @@ export function reducer(
         organisations = payload.map((entity: Organisation) => {
             const element: OrganisationSummary = {
               ...entity,
-              routerLink: `/test-organisations/test-organisation/${entity.pbaNumber}/`
+              routerLink: `/organisations/organisation/${entity.pbaNumber}/`
             };
             return element;
           });
