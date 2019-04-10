@@ -7,4 +7,11 @@ export const SingleAccontSummaryMock: SingleAccontSummary =  {
     available_balance: 10,
     status: 'Active',
     effective_date: '22/10/2022',
+    dx_exchange: '',
+    name: 'Speak Limited',
+    address: '72 Guild Street, London, SE23 6FH',
+    pbaNumber: 'SU2DSCSA',
+    dxNumber: '12345567',
+    dxExchange: '7654321',
+    admin: 'Matt Speak'
 }
