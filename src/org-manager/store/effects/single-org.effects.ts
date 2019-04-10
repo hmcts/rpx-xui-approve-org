@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 
-import * as singleFeeAccountActions from '../actions';
+import * as singleOrganisationActions from '../actions';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {OrganisationService} from '../../services';
@@ -17,16 +17,16 @@ export class SingleFeeAccountEffects {
 
   @Effect()
   loadSingleFeeAccount$ = this.actions$.pipe(
-    ofType(singleFeeAccountActions.LOAD_SINGLE_FEE_ACCOUNT),
+    ofType(singleOrganisationActions.LOAD_SINGLE_ORG),
     switchMap((data: { payload: string, type: string}) => {
-      console.log('LOAD_SINGLE_FEE_ACCOUNT ::: data is', data)
-      return this.feeAccountsService.fetchSingleFeeAccount(data.payload).pipe(
+      console.log('LOAD_SINGLE_ORGANISATION ::: data is', data)
+      return this.feeAccountsService.fetchSingleOrg(data.payload).pipe(
         map(singleFeeAccountDetails => {
-          console.log('singleFeeAccountDetails ===>', singleFeeAccountDetails)
-          return new singleFeeAccountActions.LoadSingleFeeAccountSuccess(singleFeeAccountDetails)
+          console.log('singleOrganisationDetails ===>', singleFeeAccountDetails)
+          return new singleOrganisationActions.LoadSingleOrgSuccess(singleFeeAccountDetails)
 
         }),
-        catchError(error => of(new singleFeeAccountActions.LoadSingleFeeAccountFail(error)))
+        catchError(error => of(new singleOrganisationActions.LoadSingleOrgFail(error)))
       );
     })
   );

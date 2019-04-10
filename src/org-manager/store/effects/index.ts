@@ -1,5 +1,5 @@
 import { OrganisationEffects } from './organisation.effects';
-import { SingleFeeAccountEffects } from './single-fee-account.effects';
+import { SingleFeeAccountEffects } from './single-org.effects';
 
 export const effects: any[] = [
   OrganisationEffects,
@@ -7,4 +7,4 @@ export const effects: any[] = [
 ];
 
 export * from './organisation.effects';
-export * from './single-fee-account.effects';
+export * from './single-org.effects';

@@ -1,12 +1,12 @@
 import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
 
 import * as fromOrganisations from './organisation.reducer';
-import * as fromSingleFeeAccount from './single-fee-account.reducer';
+import * as fromSingleFeeAccount from './single-org.reducer';
 
 
 export interface OrganisationState {
   organisations: fromOrganisations.OrganisationState;
-  singleFeeAccount: fromSingleFeeAccount.SingleFeeAccountState;
+  singleFeeAccount: fromSingleFeeAccount.SingleOrgState;
 }
 
 export const reducers: ActionReducerMap<OrganisationState> = {

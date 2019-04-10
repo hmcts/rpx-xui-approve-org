@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { OrganisationsMock } from '../mock/organisation.mock';
 import { Organisation } from '../models/organisation';
-import {SingleAccontSummary} from '../models/single-account-summary';
-import {SingleAccontSummaryMock} from '../mock/sngleAccontSummary.mock';
+import {SingleOrgSummary} from '../models/single-org-summary';
+import {SingleOrgSummaryMock} from '../mock/single-org-summary.mock';
 
 @Injectable()
 export class OrganisationService {
@@ -17,8 +17,8 @@ export class OrganisationService {
   }
 
   // Overview load
-  fetchSingleFeeAccount(payload): Observable<SingleAccontSummary> {
-    const obj: SingleAccontSummary = SingleAccontSummaryMock;
+  fetchSingleOrg(payload): Observable<SingleOrgSummary> {
+    const obj: SingleOrgSummary = SingleOrgSummaryMock;
     return of(obj);
     // return this.http.get(`/api/accounts/${payload.id}`);
   }
