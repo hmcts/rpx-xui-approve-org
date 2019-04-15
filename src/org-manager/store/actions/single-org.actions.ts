@@ -1,10 +1,10 @@
 import {Action} from '@ngrx/store';
 import {SingleOrgSummary} from '../../models/single-org-summary';
 
-export const LOAD_SINGLE_ORG = '[Single Fee Account] Load Single Fee Account';
-export const LOAD_SINGLE_ORG_SUCCESS = '[Single Fee Account] Load Single Fee Account Success';
-export const LOAD_SINGLE_ORG_FAIL = '[Single Fee Account] Load Single Fee Account Fail';
-export const RESET_SINGLE_ORG = '[Single Fee Account] Reset Single Fee Account';
+export const LOAD_SINGLE_ORG = '[Single Org] Load Single Org';
+export const LOAD_SINGLE_ORG_SUCCESS = '[Single Org] Load Single Org Success';
+export const LOAD_SINGLE_ORG_FAIL = '[Single Org] Load Single Org Fail';
+export const RESET_SINGLE_ORG = '[Single Org] Reset Single Org';
 
 export class LoadSingleOrg {
   readonly type = LOAD_SINGLE_ORG;
@@ -26,7 +26,7 @@ export class ResetSingleOrg implements Action {
   constructor(public payload: any) {}
 }
 
-export type SingleFeeAccountActions =
+export type SingleOrgActions =
   | LoadSingleOrg
   | LoadSingleOrgSuccess
   | LoadSingleOrgFail
