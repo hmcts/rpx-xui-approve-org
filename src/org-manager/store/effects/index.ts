@@ -1,9 +1,9 @@
 import { OrganisationEffects } from './organisation.effects';
-import { SingleFeeAccountEffects } from './single-org.effects';
+import { SingleOrgEffects } from './single-org.effects';
 
 export const effects: any[] = [
   OrganisationEffects,
-  SingleFeeAccountEffects
+  SingleOrgEffects
 ];
 
 export * from './organisation.effects';
