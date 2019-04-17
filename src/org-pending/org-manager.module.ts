@@ -14,9 +14,8 @@ import {StoreModule} from '@ngrx/store';
 import {HttpClientModule} from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { reducers, effects } from './store';
-import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
 
-export const COMPONENTS = [ OrgOverviewComponent];
+export const COMPONENTS = [];
 
 
 @NgModule({
