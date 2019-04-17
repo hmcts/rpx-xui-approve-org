@@ -49,7 +49,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     StoreDevtoolsModule.instrument({
       logOnly: config.production
     }),
-    //OrgManagerModule,
+    OrgManagerModule,
     OrgPendingModule
   ],
   providers: [

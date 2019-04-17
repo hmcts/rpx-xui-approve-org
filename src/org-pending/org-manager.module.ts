@@ -8,12 +8,10 @@ import {SharedModule} from '../shared/shared.module';
 import * as fromContainers from './containers';
 
 // services
-import * as fromServices from './services';
 import {StoreModule} from '@ngrx/store';
 
 import {HttpClientModule} from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
-import { reducers, effects } from './store';
 
 export const COMPONENTS = [];
 
@@ -24,12 +22,10 @@ export const COMPONENTS = [];
     HttpClientModule,
     orgManagerRouting,
     SharedModule,
-    StoreModule.forFeature('organisations', reducers),
-    EffectsModule.forFeature(effects),
   ],
   exports: [...fromContainers.containers],
   declarations: [...fromContainers.containers, ...COMPONENTS],
-  providers: [...fromServices.services]
+  providers: []
 })
 
 export class OrgPendingModule {
