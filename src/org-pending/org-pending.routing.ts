@@ -1,7 +1,7 @@
 // routes
 import {RouterModule, Routes} from '@angular/router';
 import {ModuleWithProviders} from '@angular/core';
-import {OverviewComponent} from './containers/overview/org-overview.component';
+import {OverviewComponent} from './components/overview/org-overview.component';
 
 export const ROUTES: Routes = [
   {
@@ -12,5 +12,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-
-export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const orgPendingRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
