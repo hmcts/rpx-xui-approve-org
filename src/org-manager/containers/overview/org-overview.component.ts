@@ -12,14 +12,14 @@ import { OrganisationSummary } from '../../models/organisation';
 export class OverviewComponent implements OnInit{
   columnConfig: GovukTableColumnConfig[];
   tableRows: {}[];
-  accounts$: Observable<Array<OrganisationSummary>>;
+  orgs$: Observable<Array<OrganisationSummary>>;
   loading$: Observable<boolean>;
 
   constructor(private store: Store<fromOrganisationStore.OrganisationState>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
-    this.accounts$ = this.store.pipe(select(fromOrganisationStore.organisations));
+    this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
     this.columnConfig = [
       { header: 'Reference', key: 'organisationId'},
