@@ -17,7 +17,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'pending',
-    loadChildren: '../org-pending/org-pending.module#OrgPendingModule'
+    loadChildren: '../org-pending/org-manager.module#OrgPendingModule'
   },
   {
     path: '**',
