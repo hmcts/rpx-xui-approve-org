@@ -11,7 +11,7 @@ import {map} from 'rxjs/internal/operators';
   styleUrls: ['./org-summary.component.scss']
 })
 export class OrgSummaryComponent implements OnInit, OnDestroy {
-  accountSummary$: Observable<any>;
+  orgSummary$: Observable<any>;
   loading$: Observable<boolean>;
   constructor(
     private activeRoute: ActivatedRoute,
@@ -24,7 +24,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromfeatureStore.LoadSingleOrg({id: payload.id }));
       })
     ).subscribe();
-    this.accountSummary$ = this.store.pipe(select(fromfeatureStore.getSingleAccounOverview));
+    this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleAccounOverview));
     this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
   }
   ngOnDestroy() {
