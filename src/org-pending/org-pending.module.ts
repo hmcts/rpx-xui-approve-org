@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 
 import {CommonModule} from '@angular/common';
-import {orgPendingRouting} from './org-pending.routing';
+// import {orgPendingRouting} from './org-pending.routing';
 import {SharedModule} from '../shared/shared.module';
 
 
@@ -16,7 +16,7 @@ export const COMPONENTS = [OverviewComponent];
   imports: [
     CommonModule,
     HttpClientModule,
-    orgPendingRouting,
+    // orgPendingRouting,
     SharedModule,
   ],
   exports: [...COMPONENTS],
