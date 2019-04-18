@@ -16,10 +16,6 @@ export const ROUTES: Routes = [
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
   },
   {
-    path: 'pending',
-    loadChildren: '../org-pending/org-pending.module#OrgPendingModule'
-  },
-  {
     path: '**',
     redirectTo: '/',
     pathMatch: 'full'
