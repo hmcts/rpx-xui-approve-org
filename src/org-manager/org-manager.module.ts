@@ -17,6 +17,7 @@ import { reducers, effects } from './store';
 import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
 import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
 import { OrgPendingModule } from 'src/org-pending/org-pending.module';
+import { DashboardModule } from 'src/dashboard/dashboard.module';
 
 export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent];
 
@@ -29,7 +30,8 @@ export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent];
     SharedModule,
     StoreModule.forFeature('organisations', reducers),
     EffectsModule.forFeature(effects),
-    OrgPendingModule
+    OrgPendingModule,
+    DashboardModule
   ],
   exports: [...fromContainers.containers],
   declarations: [...fromContainers.containers, ...COMPONENTS],
