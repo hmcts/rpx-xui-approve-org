@@ -4,7 +4,6 @@ import {ModuleWithProviders} from '@angular/core';
 import {OverviewComponent} from './containers/overview/org-overview.component';
 import {OrgOverviewComponent} from './containers/org-overview/org-overview.component';
 import {OrgSummaryComponent} from './containers/org-summary/org-summary.component';
-import { DashboardComponent } from 'src/dashboard/dashboard.component';
 
 export const ROUTES: Routes = [
   {
