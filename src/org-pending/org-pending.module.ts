@@ -7,10 +7,10 @@ import {SharedModule} from '../shared/shared.module';
 
 import {HttpClientModule} from '@angular/common/http';
 import {orgPendingRouting} from './org-pending';
-import { OverviewComponent } from './containers';
+import { PendingOverviewComponent } from './containers';
 
 
-export const COMPONENTS = [OverviewComponent];
+export const COMPONENTS = [PendingOverviewComponent];
 
 
 @NgModule({
