@@ -1,7 +1,7 @@
 // routes
 import {RouterModule, Routes} from '@angular/router';
 import {ModuleWithProviders} from '@angular/core';
-import { OverviewComponent } from 'src/org-pending/containers/overview/pending-overview.component'
+import { PendingOverviewComponent } from 'src/org-pending/containers/overview/pending-overview.component'
 
 export const ROUTES: Routes = [
   /*{
@@ -12,7 +12,7 @@ export const ROUTES: Routes = [
   }*/
   {
     path: 'pending',
-    component: OverviewComponent,
+    component: PendingOverviewComponent,
     canActivate: [
     ],
   }

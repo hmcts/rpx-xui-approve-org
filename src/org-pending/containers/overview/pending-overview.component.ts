@@ -5,29 +5,17 @@ import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk
 import {Observable} from 'rxjs';
 import { OrganisationSummary } from '../../models/organisation';
 @Component({
-  selector: 'app-prd-org-overview-component',
+  selector: 'app-pending-overview-component',
   templateUrl: './pending-overview.component.html',
 })
 
-export class OverviewComponent implements OnInit{
-  columnConfig: GovukTableColumnConfig[];
-  tableRows: {}[];
-  orgs$: Observable<Array<OrganisationSummary>>;
-  loading$: Observable<boolean>;
+export class PendingOverviewComponent implements OnInit{
 
-  constructor(private store: Store<fromOrganisationStore.OrganisationState>) {}
+
+  constructor() {}
 
   ngOnInit(): void {
-    this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
-    this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
-    this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
-    this.columnConfig = [
-      { header: 'Reference', key: 'organisationId'},
-      { header: 'Address', key: 'address' },
-      { header: 'Administrator', key: 'admin' },
-      { header: 'Status', key: 'status' },
-      { header: null, key: 'view', type: 'link' }
-    ];
+
   }
 
 }
