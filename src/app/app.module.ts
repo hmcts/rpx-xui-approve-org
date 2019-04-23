@@ -31,7 +31,6 @@ export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
   : [];
 
-
 @NgModule({
   declarations: [
     AppComponent,
