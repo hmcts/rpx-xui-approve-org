@@ -25,7 +25,6 @@ import { ROUTES } from './app.routes';
 
 import config from '../../api/lib/config';
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
-import { OrgPendingModule } from 'src/notification-banner/notification-banner';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]

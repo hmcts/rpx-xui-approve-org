@@ -16,10 +16,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { reducers, effects } from './store';
 import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
 import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
-import { OrgPendingModule } from 'src/notification-banner/notification-banner';
 import { DashboardModule } from 'src/dashboard/dashboard.module';
+import { NotificationBannerComponent } from 'src/notification-banner/components/notification-banner/notification-banner.component';
 
-export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent];
+export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent, NotificationBannerComponent];
 
 @NgModule({
   imports: [
@@ -29,7 +29,6 @@ export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent];
     SharedModule,
     StoreModule.forFeature('organisations', reducers),
     EffectsModule.forFeature(effects),
-    OrgPendingModule,
     DashboardModule
   ],
   exports: [...fromContainers.containers],
