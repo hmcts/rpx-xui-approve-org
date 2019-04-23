@@ -28,17 +28,10 @@ export const ROUTES: Routes = [
     ]
   },
   {
-    path: 'pending',
-    component: DashboardComponent,
-    canActivate: [
-    ],
-  },
-  {
     path: '**',
     redirectTo: '/',
     pathMatch: 'full'
   }
 ];
-
 
 export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
