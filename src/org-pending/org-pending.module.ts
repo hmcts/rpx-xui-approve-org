@@ -8,9 +8,10 @@ import {SharedModule} from '../shared/shared.module';
 import {HttpClientModule} from '@angular/common/http';
 import { OrgPendingComponent } from './org-pending.component';
 import {orgPendingRouting} from './org-pending';
+import { OverviewComponent } from './containers';
 
 
-export const COMPONENTS = [ OrgPendingComponent];
+export const COMPONENTS = [ OrgPendingComponent, OverviewComponent];
 
 
 @NgModule({
