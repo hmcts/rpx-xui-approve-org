@@ -4,15 +4,13 @@ import {CommonModule} from '@angular/common';
 import {SharedModule} from '../shared/shared.module';
 
 
-import {StoreModule} from '@ngrx/store';
 
 import {HttpClientModule} from '@angular/common/http';
-import { EffectsModule } from '@ngrx/effects';
-import { DashboardComponent } from './dashboard.component';
-import {dashboardManagerRouting} from './dashboard.routing';
+import { OrgPendingComponent } from './org-pending.component';
+import {orgPendingRouting} from './org-pending';
 
 
-export const COMPONENTS = [ DashboardComponent];
+export const COMPONENTS = [ OrgPendingComponent];
 
 
 @NgModule({
@@ -20,7 +18,7 @@ export const COMPONENTS = [ DashboardComponent];
     CommonModule,
     HttpClientModule,
     SharedModule,
-    dashboardManagerRouting
+    orgPendingRouting
 
 
   ],
@@ -29,6 +27,6 @@ export const COMPONENTS = [ DashboardComponent];
   providers: []
 })
 
-export class DashboardModule {
+export class OrgPendingModule {
 
 }

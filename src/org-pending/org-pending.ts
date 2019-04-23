@@ -1,16 +1,16 @@
 // routes
 import {RouterModule, Routes} from '@angular/router';
 import {ModuleWithProviders} from '@angular/core';
-import { DashboardComponent } from 'src/dashboard/dashboard.component';
+import { OrgPendingComponent } from 'src/org-pending/org-pending.component';
 
 export const ROUTES: Routes = [
   {
     path: 'pending',
-    component: DashboardComponent,
+    component: OrgPendingComponent,
     canActivate: [
     ],
   }
 ];
 
 
-export const dashboardManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const orgPendingRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
