@@ -1,7 +1,7 @@
-import { OverviewComponent } from './overview/org-overview.component';
+import { NotificationBannerComponent } from './notification-banner/notification-banner.component';
 
 export const containers: any[] = [
-  OverviewComponent,
+  NotificationBannerComponent,
 ];
 
-export * from './overview/org-overview.component';
+export * from './notification-banner/notification-banner.component';
