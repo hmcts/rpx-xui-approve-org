@@ -16,7 +16,7 @@ import { EffectsModule } from '@ngrx/effects';
 import { reducers, effects } from './store';
 import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
 import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
-import { OrgPendingModule } from 'src/org-pending/org-pending.module';
+import { OrgPendingModule } from 'src/notification-banner/notification-banner';
 import { DashboardModule } from 'src/dashboard/dashboard.module';
 
 export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent];
