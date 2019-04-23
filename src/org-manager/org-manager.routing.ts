@@ -14,7 +14,7 @@ export const ROUTES: Routes = [
     ],
   },
   {
-    path: 'organisation',
+    path: 'organisations/organisation',
     component: OrgOverviewComponent,
     canActivate: [
     ],
@@ -32,6 +32,11 @@ export const ROUTES: Routes = [
     component: DashboardComponent,
     canActivate: [
     ],
+  },
+  {
+    path: '**',
+    redirectTo: '/',
+    pathMatch: 'full'
   }
 ];
 
