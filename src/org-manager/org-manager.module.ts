@@ -21,7 +21,6 @@ import { DashboardModule } from 'src/dashboard/dashboard.module';
 
 export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent];
 
-
 @NgModule({
   imports: [
     CommonModule,
