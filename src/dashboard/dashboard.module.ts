@@ -9,6 +9,7 @@ import {StoreModule} from '@ngrx/store';
 import {HttpClientModule} from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { DashboardComponent } from './dashboard.component';
+import {dashboardManagerRouting} from './dashboard.routing';
 
 
 export const COMPONENTS = [ DashboardComponent];
@@ -19,6 +20,7 @@ export const COMPONENTS = [ DashboardComponent];
     CommonModule,
     HttpClientModule,
     SharedModule,
+    dashboardManagerRouting
 
 
   ],
