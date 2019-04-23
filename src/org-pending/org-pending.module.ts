@@ -7,9 +7,9 @@ import {SharedModule} from '../shared/shared.module';
 
 import {HttpClientModule} from '@angular/common/http';
 
-import { OverviewComponent } from './components';
+import { NotificationBannerComponent } from './components';
 
-export const COMPONENTS = [OverviewComponent];
+export const COMPONENTS = [NotificationBannerComponent];
 
 
 @NgModule({
