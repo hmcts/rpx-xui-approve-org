@@ -8,6 +8,8 @@ import {SharedModule} from '../shared/shared.module';
 import {HttpClientModule} from '@angular/common/http';
 import {orgPendingRouting} from './org-pending';
 import { PendingOverviewComponent } from './containers';
+import { StoreModule } from '@ngrx/store';
+import { reducer } from './state/org-pending.reducer';
 
 
 export const COMPONENTS = [PendingOverviewComponent];
@@ -18,7 +20,8 @@ export const COMPONENTS = [PendingOverviewComponent];
     CommonModule,
     HttpClientModule,
     SharedModule,
-    orgPendingRouting
+    orgPendingRouting,
+    StoreModule.forFeature('org-pending',reducer)
   ],
   exports: [],
   declarations: [...COMPONENTS],
