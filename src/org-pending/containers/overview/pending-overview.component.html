@@ -1,4 +1,10 @@
 
 <div class="govuk-main-wrapper">
  <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
+ <div *ngFor="let pendingOrg of pendingOrgs"> <ng-container *ngIf="displayCode">({{pendingOrg.name}})</ng-container>
+</div>
 </div> 
+<input class="form-check-input"
+                 type="checkbox"
+                 (change)="checkChanged($event.target.checked)"
+                 [checked]="displayCode">
