@@ -11,19 +11,26 @@ import { PendingOrganisationService } from 'src/org-pending/services/pending-org
 export class PendingOverviewComponent implements OnInit{
 
   pendingOrgs: PendingOrganisation[];
+  displayCode: boolean;
 
 
   constructor(private store: Store<any>,private pendingOrganisationService: PendingOrganisationService) {}
 
   ngOnInit(): void {
-    
     this.pendingOrganisationService.fetchPendingOrganisations().subscribe(
       (pendingOrgs: PendingOrganisation[]) => this.pendingOrgs= pendingOrgs
     );
 
     console.log('printing orgs')
     console.log(this.pendingOrgs);
+    this.displayCode = false;
+  }
 
+  checkChanged(value: boolean): void {
+    this.store.dispatch({
+      type: 'SHOW_PENDING_ORG',
+      payload: value
+    })
   }
 
 }
