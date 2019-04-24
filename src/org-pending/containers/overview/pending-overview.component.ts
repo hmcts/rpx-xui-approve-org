@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
 import { PendingOrganisationService } from 'src/org-pending/services/pending-organisation.service';
+import { subscribeOn } from 'rxjs/operators';
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-overview.component.html',
@@ -23,7 +24,15 @@ export class PendingOverviewComponent implements OnInit{
 
     console.log('printing orgs')
     console.log(this.pendingOrgs);
-    this.displayCode = false;
+
+   this.store.pipe(select('org-pending')).subscribe(
+      pendingOrgs => {
+      if(pendingOrgs) {
+        this.displayCode = pendingOrgs.showPendingOrg;
+      }
+      });
+
+
   }
 
   checkChanged(value: boolean): void {
