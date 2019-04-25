@@ -23,6 +23,8 @@ export class OverviewComponent implements OnInit{
     console.log("logging org after");
     this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
+    console.log('org is in manager')
+    this.orgs$.subscribe(val => console.log(val));
     this.columnConfig = [
       { header: 'Reference', key: 'organisationId'},
       { header: 'Address', key: 'address' },
