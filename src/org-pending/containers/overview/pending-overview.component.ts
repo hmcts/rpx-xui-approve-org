@@ -32,6 +32,11 @@ export class PendingOverviewComponent implements OnInit{
       }
       });
 
+      this.store.dispatch({
+        type: 'SHOW_PENDING_ORG',
+        payload: true
+      })
+
 
   }
 
