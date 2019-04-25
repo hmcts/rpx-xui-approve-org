@@ -1,8 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
+import { PendingOrganisation, PendingOrganisationSummary } from 'src/org-pending/models/pending-organisation';
 import { PendingOrganisationService } from 'src/org-pending/services/pending-organisation.service';
 import { subscribeOn } from 'rxjs/operators';
+import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
+import { Observable } from 'rxjs';
+import 'rxjs/add/observable/of';
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-overview.component.html',
@@ -13,6 +16,9 @@ export class PendingOverviewComponent implements OnInit{
 
   pendingOrgs: PendingOrganisation[];
   displayCode: boolean;
+  columnConfig: GovukTableColumnConfig[];
+  tableRows: {}[];
+  pendingOrgs$: Observable<Array<PendingOrganisation>>;
 
 
   constructor(private store: Store<any>,private pendingOrganisationService: PendingOrganisationService) {}
@@ -32,10 +38,18 @@ export class PendingOverviewComponent implements OnInit{
       }
       });
 
+      this.pendingOrgs$ = this.getProducts();
+      console.log('org is in pending')
+      this.pendingOrgs$.subscribe(val => console.log(val));
+
       this.store.dispatch({
         type: 'SHOW_PENDING_ORG',
         payload: true
       })
+
+      this.columnConfig = [
+        { header: 'Administrator', key: 'name' }
+      ];
 
 
   }
@@ -47,5 +61,13 @@ export class PendingOverviewComponent implements OnInit{
     })
   }
 
+  getProducts() {
+
+    if(this.pendingOrgs != null) 
+    {
+        return Observable.of(this.pendingOrgs);
+    } 
+
+}
 }
 

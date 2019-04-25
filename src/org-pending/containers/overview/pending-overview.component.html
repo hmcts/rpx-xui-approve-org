@@ -1,9 +1,10 @@
 
 <div class="govuk-main-wrapper">
  <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
- <div *ngFor="let pendingOrg of pendingOrgs"> <ng-container *ngIf="displayCode">({{pendingOrg.name}})</ng-container>
-</div>
-</div> 
+    <app-govuk-table
+    *ngIf="!(loading$ | async) else loading"
+    [columnConfig]="columnConfig" [rows]="pendingOrgs$ | async" [firstCellIsHeader]="false" [caption]="''"
+  ></app-govuk-table>
 <input class="form-check-input"
                  type="checkbox"
                  (change)="checkChanged($event.target.checked)"
