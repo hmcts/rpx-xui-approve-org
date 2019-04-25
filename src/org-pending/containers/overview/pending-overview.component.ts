@@ -6,6 +6,7 @@ import { subscribeOn } from 'rxjs/operators';
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
+import * as fromPendingOrganisationStore from '../../../org-pending/state/actions'
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-overview.component.html',
@@ -42,10 +43,14 @@ export class PendingOverviewComponent implements OnInit{
       console.log('org is in pending')
       this.pendingOrgs$.subscribe(val => console.log(val));
 
-      this.store.dispatch({
+      /*this.store.dispatch({
         type: 'SHOW_PENDING_ORG',
         payload: true
-      })
+      })*/
+
+      this.store.dispatch(new fromPendingOrganisationStore.LoadPendingOrganisation());
+
+      
 
       this.columnConfig = [
         { header: 'Reference', key: 'organisationId'},
