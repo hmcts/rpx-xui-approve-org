@@ -48,7 +48,11 @@ export class PendingOverviewComponent implements OnInit{
       })
 
       this.columnConfig = [
-        { header: 'Administrator', key: 'name' }
+        { header: 'Reference', key: 'organisationId'},
+        { header: 'Address', key: 'address' },
+        { header: 'Administrator', key: 'admin' },
+        { header: 'Status', key: 'status' },
+        { header: null, key: 'view', type: 'link' }
       ];
 
 
