@@ -18,13 +18,9 @@ export class OverviewComponent implements OnInit{
   constructor(private store: Store<fromOrganisationStore.OrganisationState>) {}
 
   ngOnInit(): void {
-    console.log("logging org before");
     this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
-    console.log("logging org after");
     this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
-    console.log('org is in manager')
-    this.orgs$.subscribe(val => console.log(val));
     this.columnConfig = [
       { header: 'Reference', key: 'organisationId'},
       { header: 'Address', key: 'address' },
