@@ -5,7 +5,7 @@ import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromPendingOrg from '../../state/org-pending.reducer'
-import * as pendingOrgActions from '../../state/actions/pendingOrg.actions'
+import * as pendingOrgActions from '../../state/actions/pending-org.actions'
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -20,7 +20,7 @@ export class PendingOverviewComponent implements OnInit{
   tableRows: {}[];
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
 
-  constructor(private store: Store<fromPendingOrg.State>/*,private pendingOrganisationService: PendingOrganisationService*/) {}
+  constructor(private store: Store<fromPendingOrg.State>) {}
 
   ngOnInit(): void {
 
