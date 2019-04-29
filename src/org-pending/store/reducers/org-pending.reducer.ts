@@ -19,22 +19,6 @@ const initialState: PendingOrganisationState = {
     pendingOrganisations:[]
 };
 
-const getPendingOrgsFeatureState = createFeatureSelector<PendingOrganisationState>('org-pending');
-
-export const getShowPendingOrgCode = createSelector(
-    getPendingOrgsFeatureState,
-    state => state.showPendingOrg
-)
-
-export const getCurrentOrgs = createSelector(
-    getPendingOrgsFeatureState,
-    state => state.currentOrg
-)
-
-export const getPendingOrgs = createSelector(
-    getPendingOrgsFeatureState,
-    state => state.pendingOrganisations
-)
 export function reducer(state = initialState,action: PendingOrgActions): PendingOrganisationState {
     switch(action.type) {
 

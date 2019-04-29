@@ -4,7 +4,8 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as fromPendingOrg from '../../store/reducers/org-pending.reducer'
+import * as fromPendingOrgReducer from '../../store/reducers/org-pending.reducer'
+import * as fromPendingOrgSelector from '../../store/selectors/org-pending.selector'
 import * as pendingOrgActions from '../../store/actions/org-pending.actions'
 
 @Component({
@@ -20,17 +21,17 @@ export class PendingOverviewComponent implements OnInit{
   tableRows: {}[];
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
 
-  constructor(private store: Store<fromPendingOrg.State>) {}
+  constructor(private store: Store<fromPendingOrgReducer.State>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new pendingOrgActions.Load());
-    this.store.pipe(select(fromPendingOrg.getPendingOrgs))
+    this.store.pipe(select(fromPendingOrgSelector.getPendingOrgs))
     .subscribe((pendingOrgs: PendingOrganisation[]) => this.pendingOrgs = pendingOrgs);
 
     console.log('printing pending organisations')
     console.log(this.pendingOrgs);
 
-   this.store.pipe(select(fromPendingOrg.getShowPendingOrgCode)).subscribe(
+   this.store.pipe(select(fromPendingOrgSelector.getShowPendingOrgCode)).subscribe(
       showPendingOrgCode => this.displayCode = showPendingOrgCode
       );
 
