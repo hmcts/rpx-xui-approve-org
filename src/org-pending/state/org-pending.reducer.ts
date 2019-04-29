@@ -1,8 +1,7 @@
 import { PendingOrganisation } from "../models/pending-organisation";
 import * as fromRoot from '../../app/store/reducers/app.reducer'
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { PendingOrganisationActions } from "./actions";
-import { PendingOrgActions, PendingOrgActionTypes } from "./actions/pendingOrg.actions";
+import { PendingOrgActions, PendingOrgActionTypes } from "./actions/pending-org.actions";
 
 export interface State extends fromRoot.AppState {
     pendingdOrgs: PendingOrganisationState;

@@ -14,8 +14,7 @@ export enum PendingOrgActionTypes {
 export class TogglePendingOrgCode implements Action {
     readonly type = PendingOrgActionTypes.TogglePendingOrgCode;
 
-    constructor(public payload: boolean){}
-    
+    constructor(public payload: boolean){}   
 }
 
 export class SetCurrentPendingOrg implements Action {
