@@ -5,7 +5,7 @@ import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromPendingOrg from '../../state/org-pending.reducer'
-import * as pendingOrgActions from '../../state/actions/pending-org.actions'
+import * as pendingOrgActions from '../../state/actions/org-pending.actions'
 
 @Component({
   selector: 'app-pending-overview-component',
