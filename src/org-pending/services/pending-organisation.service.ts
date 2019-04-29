@@ -12,7 +12,6 @@ export class PendingOrganisationService {
 
   fetchPendingOrganisations(): Observable<Array<PendingOrganisation>> {
     const obj: PendingOrganisation[] = PendingOrganisationsMock;
-    console.log('returning pending org mock')
     return of(obj);
   }
 
