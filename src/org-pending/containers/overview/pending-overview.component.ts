@@ -1,17 +1,20 @@
 import {Component, OnInit} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { PendingOrganisation, PendingOrganisationSummary } from 'src/org-pending/models/pending-organisation';
-import { PendingOrganisationService } from 'src/org-pending/services/pending-organisation.service';
+//import { PendingOrganisationService } from 'src/org-pending/services/pending-organisation.service';
 import { subscribeOn } from 'rxjs/operators';
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromPendingOrganisationStore from '../../../org-pending/state/actions'
 import * as fromPendingOrg from '../../state/org-pending.reducer'
+import { PendingOrgActionTypes } from 'src/org-pending/state/actions/pendingOrg.actions';
+import * as pendingOrgActions from '../../state/actions/pendingOrg.actions'
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-overview.component.html',
-  providers: [PendingOrganisationService]
+  //providers: [PendingOrganisationService]
 })
 
 export class PendingOverviewComponent implements OnInit{
@@ -23,24 +26,29 @@ export class PendingOverviewComponent implements OnInit{
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
 
 
-  constructor(private store: Store<fromPendingOrg.State>,private pendingOrganisationService: PendingOrganisationService) {}
+  constructor(private store: Store<fromPendingOrg.State>/*,private pendingOrganisationService: PendingOrganisationService*/) {}
 
   ngOnInit(): void {
-    this.pendingOrganisationService.fetchPendingOrganisations().subscribe(
+
+    this.store.dispatch(new pendingOrgActions.Load());
+    this.store.pipe(select(fromPendingOrg.getPendingOrgs))
+    .subscribe((pendingOrgs: PendingOrganisation[]) => this.pendingOrgs = pendingOrgs);
+
+    //THE OLD WORKING WAY
+    /*this.pendingOrganisationService.fetchPendingOrganisations().subscribe(
       (pendingOrgs: PendingOrganisation[]) => this.pendingOrgs= pendingOrgs
-    );
+    );*/
 
     console.log('printing orgs')
     console.log(this.pendingOrgs);
 
-   this.store.pipe(select('org-pending')).subscribe(
-      pendingOrgs => {
-      if(pendingOrgs) {
-        this.displayCode = pendingOrgs.showPendingOrg;
-      }
-      });
+   this.store.pipe(select(fromPendingOrg.getShowPendingOrgCode)).subscribe(
+      showPendingOrgCode => this.displayCode = showPendingOrgCode
+      );
 
+      //USED TO WORK
       this.pendingOrgs$ = this.getProducts();
+      //this.pendingOrgs$ = Observable.of(this.pendingOrgs);
       console.log('org is in pending')
       this.pendingOrgs$.subscribe(val => console.log(val));
 
@@ -49,7 +57,7 @@ export class PendingOverviewComponent implements OnInit{
         payload: true
       })*/
 
-      this.store.dispatch(new fromPendingOrganisationStore.LoadPendingOrganisation());
+      //this.store.dispatch(new fromPendingOrganisationStore.LoadPendingOrganisation());
 
       
 
@@ -65,10 +73,7 @@ export class PendingOverviewComponent implements OnInit{
   }
 
   checkChanged(value: boolean): void {
-    this.store.dispatch({
-      type: 'SHOW_PENDING_ORG',
-      payload: value
-    })
+    this.store.dispatch(new pendingOrgActions.TogglePendingOrgCode(value))
   }
 
   getProducts() {
