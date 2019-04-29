@@ -1,12 +1,11 @@
 export interface  PendingOrganisation {
+  name:string;
   organisationId: string;
-  pbaNumber: string;
   address: string;
+  pbaNumber: string;
   admin: string;
   status: string;
   view: string;
-  userId?:	string;
-  test: string;
 }
 export interface PendingOrganisationSummary extends PendingOrganisation {
   routerLink: string;
