@@ -4,8 +4,8 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as fromPendingOrg from '../../state/reducers/org-pending.reducer'
-import * as pendingOrgActions from '../../state/actions/org-pending.actions'
+import * as fromPendingOrg from '../../store/reducers/org-pending.reducer'
+import * as pendingOrgActions from '../../store/actions/org-pending.actions'
 
 @Component({
   selector: 'app-pending-overview-component',
