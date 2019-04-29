@@ -9,7 +9,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {orgPendingRouting} from './org-pending';
 import { PendingOverviewComponent } from './containers';
 import { StoreModule } from '@ngrx/store';
-import { reducer } from './state/org-pending.reducer';
+import { reducer } from './state/reducers/org-pending.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { PendingOrgEffects } from './state/effects/org-pending.effects';
 
