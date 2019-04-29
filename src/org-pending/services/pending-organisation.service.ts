@@ -10,9 +10,8 @@ export class PendingOrganisationService {
   constructor(private http: HttpClient) {
   }
 
-  fetchOrganisations(): Observable<Array<PendingOrganisation>> {
+  fetchPendingOrganisations(): Observable<Array<PendingOrganisation>> {
     const obj: PendingOrganisation[] = PendingOrganisationsMock;
-    console.log('returning pending org mock')
     return of(obj);
   }
 

@@ -4,10 +4,14 @@ import {CommonModule} from '@angular/common';
 import {SharedModule} from '../shared/shared.module';
 
 
-
+import * as fromServices from './services';
 import {HttpClientModule} from '@angular/common/http';
 import {orgPendingRouting} from './org-pending';
 import { PendingOverviewComponent } from './containers';
+import { StoreModule } from '@ngrx/store';
+import { reducer } from './store/reducers/org-pending.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { PendingOrgEffects } from './store/effects/org-pending.effects';
 
 
 export const COMPONENTS = [PendingOverviewComponent];
@@ -18,11 +22,13 @@ export const COMPONENTS = [PendingOverviewComponent];
     CommonModule,
     HttpClientModule,
     SharedModule,
-    orgPendingRouting
+    orgPendingRouting,
+    StoreModule.forFeature('org-pending',reducer),
+    EffectsModule.forFeature([PendingOrgEffects])
   ],
   exports: [],
   declarations: [...COMPONENTS],
-  providers: []
+  providers: [...fromServices.services]
 })
 
 export class OrgPendingModule {

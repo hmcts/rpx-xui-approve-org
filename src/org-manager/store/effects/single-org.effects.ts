@@ -20,7 +20,6 @@ export class SingleOrgEffects {
     ofType(singleOrganisationActions.LOAD_SINGLE_ORG),
     switchMap((data: { payload: string, type: string}) => {
       console.log('LOAD_SINGLE_ORGANISATION ::: data is', data)
-      console.log('payload here is' + data.payload.toString)
       return this.orgService.fetchSingleOrg(data.payload).pipe(
         map(singleOrgDetails => {
           console.log('singleOrganisationDetails ===>', singleOrgDetails)
