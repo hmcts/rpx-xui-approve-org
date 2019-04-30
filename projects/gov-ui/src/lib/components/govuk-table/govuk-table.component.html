@@ -26,6 +26,9 @@
                 <ng-container *ngIf="col.type === 'status'">
                     <span class="hmcts-badge hmcts-badge--green">{{r[col.key]}}</span>
                 </ng-container>
+                <ng-container *ngIf="col.type === 'extended'">
+                    <span class={{col.class}}>{{r[col.key]}}</span>
+                </ng-container>
             </td>
         </ng-container>
     </tr>
