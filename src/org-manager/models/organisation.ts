@@ -5,8 +5,8 @@ export interface  Organisation {
   admin: string;
   status: string;
   view: string;
-  userId?:	string;
   id: string;
+  email: string;
 }
 export interface OrganisationSummary extends Organisation {
   routerLink: string;
