@@ -8,8 +8,7 @@ export const OrganisationsMock: Organisation[] = [
     admin: 'Matt Speak',
     status: 'ACTIVE',
     view: 'View',
-    id: '1234',
-    userId: '1'
+    id: '12345678'
   },
   {
     organisationId: 'Miamora Limited',
@@ -18,7 +17,6 @@ export const OrganisationsMock: Organisation[] = [
     admin: 'Mia Mamatora',
     status: 'ACTIVE',
     view: 'View',
-    id: '1234',
-    userId: '2'
+    id: '23456433'
   }
 ]
