@@ -17,7 +17,7 @@ export class GovukTableComponent {
     @Input() columnConfig: GovukTableColumnConfig[] = [
         { header: 'Date', key: 'date', type: 'text' },
         { header: 'Amount', key: 'amount' },
-        { header: 'Amount', key: 'amount', class:'text' }
+        { header: 'Amount', key: 'amount', class:'hmcts-class' }
     ];
 
     constructor() { }
