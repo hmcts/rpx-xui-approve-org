@@ -5,10 +5,11 @@ export const OrganisationsMock: Organisation[] = [
     organisationId: 'Speake Limited',
     address: '72 Guild Street, London, SE23 6FH',
     pbaNumber: 'SU2DSCSA',
-    admin: 'Matt Speak',
+    admin: 'Matt Speake',
     status: 'ACTIVE',
     view: 'View',
-    id: '12345678'
+    id: '12345678',
+    email: 'matt@speake.com'
   },
   {
     organisationId: 'Miamora Limited',
@@ -17,6 +18,7 @@ export const OrganisationsMock: Organisation[] = [
     admin: 'Mia Mamatora',
     status: 'ACTIVE',
     view: 'View',
-    id: '23456433'
+    id: '23456433',
+    email: 'mia@mamatora.com'
   }
 ]
