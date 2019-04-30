@@ -23,7 +23,7 @@
                 <ng-container *ngIf="col.type === 'link'">
                     <a class="govuk-link" [routerLink]="r.routerLink">{{r[col.key]}}</a>
                 </ng-container>
-                <ng-container *ngIf="col.type === 'extended'">
+                <ng-container *ngIf="col.type === 'styled'">
                     <span class={{col.class}}>{{r[col.key]}}</span>
                 </ng-container>
             </td>
