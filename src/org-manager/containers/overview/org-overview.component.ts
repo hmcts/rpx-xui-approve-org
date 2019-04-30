@@ -25,9 +25,12 @@ export class OverviewComponent implements OnInit{
       { header: 'Reference', key: 'organisationId'},
       { header: 'Address', key: 'address' },
       { header: 'Administrator', key: 'admin' },
-      { header: 'Status', key: 'status', type: 'status' },
-      { header: null, key: 'view', type: 'link' }
+      //{ header: 'Status', key: 'status', type: 'status'},
+      { header: 'Status', key: 'status', type: 'extended', class:'hmcts-badge hmcts-badge--green'},
+      { header: null, key: 'view', type: 'link' },
     ];
+    console.log(this.columnConfig[5])
+    
   }
 
 }

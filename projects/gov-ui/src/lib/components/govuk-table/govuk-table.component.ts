@@ -16,7 +16,8 @@ export class GovukTableComponent {
 
     @Input() columnConfig: GovukTableColumnConfig[] = [
         { header: 'Date', key: 'date', type: 'text' },
-        { header: 'Amount', key: 'amount' }
+        { header: 'Amount', key: 'amount' },
+        { header: 'Amount', key: 'amount', class:'text' }
     ];
 
     constructor() { }
@@ -27,9 +28,11 @@ export class GovukTableColumnConfig {
     header: string;
     key: string;
     type?: string;
+    class?: string;
     constructor() {
         this.header = '';
         this.key = '';
         this.type = 'text';
+        this.class= '';
     }
   }
