@@ -24,7 +24,7 @@ export class OverviewComponent implements OnInit{
     this.columnConfig = [
       { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping:'id', class:'govuk-caption-m govuk-!-font-size-16'},
       { header: 'Address', key: 'address' },
-      { header: 'Administrator', key: 'admin' },
+      { header: 'Administrator', key: 'admin', type: 'multi-column', multiColumnMapping:'email', class:'govuk-caption-m govuk-!-font-size-16' },
       { header: 'Status', key: 'status', type: 'styled', class:'hmcts-badge hmcts-badge--green'},
       { header: null, key: 'view', type: 'link' }
     ];
