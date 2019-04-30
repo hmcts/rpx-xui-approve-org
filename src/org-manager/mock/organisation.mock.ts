@@ -7,7 +7,9 @@ export const OrganisationsMock: Organisation[] = [
     pbaNumber: 'SU2DSCSA',
     admin: 'Matt Speak',
     status: 'ACTIVE',
-    view: 'View'
+    view: 'View',
+    id: '1234',
+    userId: '1'
   },
   {
     organisationId: 'Miamora Limited',
@@ -15,6 +17,8 @@ export const OrganisationsMock: Organisation[] = [
     pbaNumber: '2A2ABCDFFFA',
     admin: 'Mia Mamatora',
     status: 'ACTIVE',
-    view: 'View'
+    view: 'View',
+    id: '1234',
+    userId: '2'
   }
 ]
