@@ -18,7 +18,7 @@ export class GovukTableComponent {
         { header: 'Date', key: 'date', type: 'text' },
         { header: 'Amount', key: 'amount' },
         { header: 'Amount', key: 'amount', class:'hmcts-class' },
-        { header: 'Amount', key: 'amount', id:'12345' }
+        { header: 'Amount', key: 'amount', multiColumnMapping:'12345' }
     ];
 
     constructor() { }
@@ -30,12 +30,12 @@ export class GovukTableColumnConfig {
     key: string;
     type?: string;
     class?: string;
-    id?:string;
+    multiColumnMapping?:string;
     constructor() {
         this.header = '';
         this.key = '';
         this.type = 'text';
         this.class= '';
-        this.id  = '';
+        this.multiColumnMapping  = '';
     }
   }
