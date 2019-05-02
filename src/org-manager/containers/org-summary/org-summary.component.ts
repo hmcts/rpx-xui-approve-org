@@ -19,7 +19,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('the activated route path')
-    console.log(this.activeRoute.url.subscribe(url => console.log(url[0].path)))
+    this.activeRoute.url.subscribe(url => console.log(url[0].path)))
 
     this.activeRoute.url.subscribe(url => {
       this.store.dispatch(new fromfeatureStore.LoadSingleOrg({ id: url[0].path
