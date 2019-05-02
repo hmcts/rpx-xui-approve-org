@@ -18,12 +18,21 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
     private store: Store<fromfeatureStore.OrganisationState>) { }
 
   ngOnInit() {
-    //TODO move to a guard
-    this.activeRoute.parent.params.pipe(
+    console.log('the activated route path')
+    console.log(this.activeRoute.url.subscribe(url => console.log(url[0].path)))
+
+    this.activeRoute.url.subscribe(url => {
+      this.store.dispatch(new fromfeatureStore.LoadSingleOrg({ id: url[0].path
+      }))
+    })
+
+    //OLD WAY
+    /*this.activeRoute.parent.params.pipe(
       map(payload => {
         this.store.dispatch(new fromfeatureStore.LoadSingleOrg({id: payload.id }));
       })
-    ).subscribe();
+    ).subscribe();*/
+
     this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleAccounOverview));
     this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
   }
