@@ -19,7 +19,7 @@ export class OrganisationService {
   // Overview load
   fetchSingleOrg(payload): Observable<SingleOrgSummary> {
     const obj: SingleOrgSummary = SingleOrgSummaryMock;
-    console.log("payload is" + payload.id)
+    console.log("payload is " + payload.id)
     return of(obj);
     // return this.http.get(`/api/accounts/${payload.id}`);
   }
