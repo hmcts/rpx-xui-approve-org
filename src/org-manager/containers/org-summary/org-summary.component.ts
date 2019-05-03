@@ -6,6 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 import {map} from 'rxjs/internal/operators';
 import { IProduct } from '../../models/product'
 import { OrganisationService } from '../../services/organisation.service'
+import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
 
 @Component({
   selector: 'app-org-summary',
@@ -15,8 +16,8 @@ import { OrganisationService } from '../../services/organisation.service'
 export class OrgSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: Observable<any>;
   loading$: Observable<boolean>;
-  products: IProduct[] = [];
-  product: IProduct | undefined;
+  products: SingleOrgSummary[] = [];
+  product: SingleOrgSummary | undefined;
   errorMessage = '';
   
   constructor(
