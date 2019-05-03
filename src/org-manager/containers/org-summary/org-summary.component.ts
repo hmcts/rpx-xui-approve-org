@@ -17,7 +17,6 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: Observable<any>;
   loading$: Observable<boolean>;
   products: SingleOrgSummary[] = [];
-  product: SingleOrgSummary | undefined;
   errorMessage = '';
   
   constructor(
