@@ -9,21 +9,16 @@ import { IProduct } from '../../org-manager/models/product'
   providedIn: 'root'
 })
 export class ProductService {
-  private productUrl = 'http://localhost:3000/products';
+  private productUrl = 'http://localhost:3000/products?pbaNumber=';
 
   constructor(private http: HttpClient) { }
 
-  getProducts(): Observable<IProduct[]> {
-    return this.http.get<IProduct[]>(this.productUrl).pipe(
+  getProducts(payload): Observable<IProduct[]> {
+    console.log('payload is in product',payload)
+    //return this.http.get<IProduct[]>(this.productUrl+payload)
+    return this.http.get<IProduct[]>(this.productUrl+payload).pipe(
       tap(data => console.log('All: ' + JSON.stringify(data))),
       catchError(this.handleError)
-    );
-  }
-
-  getProduct(id: number): Observable<IProduct | undefined> {
-    console.log('in individual')
-    return this.getProducts().pipe(
-      map((products: IProduct[]) => products.find(p => p.productId === id))
     );
   }
 
