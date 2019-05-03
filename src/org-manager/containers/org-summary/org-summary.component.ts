@@ -5,7 +5,7 @@ import {Observable} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {map} from 'rxjs/internal/operators';
 import { IProduct } from '../../models/product'
-import { ProductService } from '../../services/product.service'
+import { OrganisationService } from '../../services/organisation.service'
 
 @Component({
   selector: 'app-org-summary',
@@ -22,7 +22,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
   constructor(
     private activeRoute: ActivatedRoute,
     private store: Store<fromfeatureStore.OrganisationState>,
-    private productService: ProductService) { }
+    private organisationService: OrganisationService) { }
 
   ngOnInit() {
     console.log('the activated route path')
@@ -44,17 +44,15 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
     this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
 
 
-
     this.activeRoute.url.subscribe(url => {
       console.log('url',url[0].path)
-      this.productService.getProducts(url[0].path).subscribe(
+      this.organisationService.getProducts(url[0].path).subscribe(
         products => {
           this.products = products;
         },
         error => this.errorMessage = <any>error
       );
     })
-
 
   }
   ngOnDestroy() {
