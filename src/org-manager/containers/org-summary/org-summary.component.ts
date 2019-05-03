@@ -16,7 +16,8 @@ import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
 export class OrgSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: Observable<any>;
   loading$: Observable<boolean>;
-  products: SingleOrgSummary[] = [];
+  products: SingleOrgSummary;
+  products$: Observable<any>;
   errorMessage = '';
   
   constructor(
