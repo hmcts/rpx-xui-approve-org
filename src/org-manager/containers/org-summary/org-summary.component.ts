@@ -16,6 +16,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: Observable<any>;
   loading$: Observable<boolean>;
   products: IProduct[] = [];
+  product: IProduct | undefined;
   errorMessage = '';
   
   constructor(
@@ -42,12 +43,19 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
     this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleAccounOverview));
     this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
 
-    this.productService.getProducts().subscribe(
-      products => {
-        this.products = products;
-      },
-      error => this.errorMessage = <any>error
-    );
+
+
+    this.activeRoute.url.subscribe(url => {
+      console.log('url',url[0].path)
+      this.productService.getProducts(url[0].path).subscribe(
+        products => {
+          this.products = products;
+        },
+        error => this.errorMessage = <any>error
+      );
+    })
+
+
   }
   ngOnDestroy() {
     this.store.dispatch(new fromfeatureStore.ResetSingleOrg({}));
