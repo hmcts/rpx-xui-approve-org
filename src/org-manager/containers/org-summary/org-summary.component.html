@@ -14,9 +14,73 @@
   <ng-template #loading>
     <div>Loading...</div>
   </ng-template>
-  <tbody>
-    <tr *ngFor='let product of products'>
-      {{product.productName}}
-    </tr>
-  </tbody>
+    <div *ngFor='let product of products'>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
+            <div class="govuk-check-your-answers__contents">
+                <dt class="govuk-check-your-answers__question">
+                    Name
+                </dt>
+                <dd class="govuk-check-your-answers__answer">
+                  {{product.productName}}
+                </dd>
+                <dd class="govuk-check-your-answers__change">
+                </dd>
+            </div>
+            <div class="govuk-check-your-answers__contents">
+                <dt class="govuk-check-your-answers__question">
+                    Address
+                </dt>
+                <dd class="govuk-check-your-answers__answer">
+                  {{product.address}}
+                </dd>
+                <dd class="govuk-check-your-answers__change">
+                </dd>
+            </div>
+            <div class="govuk-check-your-answers__contents">
+                <dt class="govuk-check-your-answers__question">
+                    PBA number
+                </dt>
+                <dd class="govuk-check-your-answers__answer">
+                  {{product.pbaNumber}}
+                </dd>
+                <dd class="govuk-check-your-answers__change">
+                </dd>
+            </div>
+            <div class="govuk-check-your-answers__contents">
+                <dt class="govuk-check-your-answers__question">
+                    DX number
+                </dt>
+                <dd class="govuk-check-your-answers__answer">
+                  {{product.dxNumber}}
+                </dd>
+                <dd class="govuk-check-your-answers__change">
+                </dd>
+            </div>
+            <div class="govuk-check-your-answers__contents">
+                <dt class="govuk-check-your-answers__question">
+                    DX exchange
+                </dt>
+                <dd class="govuk-check-your-answers__answer">
+                    {{product.dxExchange}}
+                </dd>
+                <dd class="govuk-check-your-answers__change">
+                </dd>
+            </div>
+            <div class="govuk-check-your-answers__contents">
+                <dt class="govuk-check-your-answers__question">
+                    Administrator
+                </dt>
+                <dd class="govuk-check-your-answers__answer">
+                  {{product.admin}}
+                </dd>
+                <dd class="govuk-check-your-answers__change">
+                </dd>
+            </div>
+        </dl>
+    </div>
+</div>
+</div>
+
 
