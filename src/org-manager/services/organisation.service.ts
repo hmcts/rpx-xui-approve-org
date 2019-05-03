@@ -28,7 +28,7 @@ export class OrganisationService {
     // return this.http.get(`/api/accounts/${payload.id}`);
   }
 
-  getProducts(payload): Observable<Array<IProduct>> {
+  getProducts(payload): Observable<Array<SingleOrgSummary>> {
     console.log('payload is in product',payload)
     //return this.http.get<IProduct[]>(this.productUrl+payload)
     return this.http.get<IProduct[]>(this.productUrl+payload).pipe(
