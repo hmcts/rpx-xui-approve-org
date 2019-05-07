@@ -6,8 +6,7 @@ import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-org-summary',
-  templateUrl: './org-summary.component.html',
-  styleUrls: ['./org-summary.component.scss']
+  templateUrl: './org-summary.component.html'
 })
 export class OrgSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: Observable<any>;
