@@ -43,7 +43,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
     this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleOrgOverview));
     this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
 
-    this.activeRoute.url.subscribe(url => {
+    /*this.activeRoute.url.subscribe(url => {
       console.log('url',url[0].path)
       this.organisationService.getSingleOrganisation(url[0].path).subscribe(
         orgSummary => {
@@ -52,7 +52,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
         },
         error => this.errorMessage = <any>error
       );
-    })
+    })*/
 
   }
   ngOnDestroy() {
