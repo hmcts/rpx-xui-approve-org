@@ -20,10 +20,12 @@ export class SingleOrgEffects {
     ofType(singleOrganisationActions.LOAD_SINGLE_ORG),
     switchMap((data: { payload: string, type: string}) => {
       console.log('LOAD_SINGLE_ORGANISATION ::: data is', data)
-      return this.orgService.fetchSingleOrg(data.payload).pipe(
+      //return this.orgService.getSingleOrganisation("2A2ABCDFFFA").pipe(
+      return this.orgService.getSingleOrganisation(data.payload).pipe(
         map(singleOrgDetails => {
+          console.log('payload in single org is',data.payload)
           console.log('singleOrganisationDetails ===>', singleOrgDetails)
-          return new singleOrganisationActions.LoadSingleOrgSuccess(singleOrgDetails)
+          return new singleOrganisationActions.LoadSingleOrgSuccess(singleOrgDetails[0])
 
         }),
         catchError(error => of(new singleOrganisationActions.LoadSingleOrgFail(error)))

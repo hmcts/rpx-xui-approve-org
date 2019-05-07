@@ -14,7 +14,7 @@ import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
   styleUrls: ['./org-summary.component.scss']
 })
 export class OrgSummaryComponent implements OnInit, OnDestroy {
-  orgSummary$: Observable<any>;
+  orgSummary$ = {}
   loading$: Observable<boolean>;
   orgSummary = {}
   errorMessage = '';
