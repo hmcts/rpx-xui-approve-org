@@ -47,7 +47,8 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
       console.log('url',url[0].path)
       this.organisationService.getSingleOrganisation(url[0].path).subscribe(
         orgSummary => {
-          this.orgSummary = orgSummary;
+          this.orgSummary = orgSummary[0];
+          console.log('org summary',orgSummary[0])
         },
         error => this.errorMessage = <any>error
       );
