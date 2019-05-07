@@ -9,7 +9,7 @@ import { tap, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class OrganisationService {
-  private organisationUrl = 'http://localhost:3000/organisations?pbaNumber=';
+  private singleOrgUrl = 'http://localhost:3000/organisations?pbaNumber=';
   constructor(private http: HttpClient) {
   }
 
@@ -19,22 +19,8 @@ export class OrganisationService {
   }
 
   getSingleOrganisation(payload): Observable<SingleOrgSummary> {
-    return this.http.get<SingleOrgSummary>(this.organisationUrl+payload.id).pipe(
-      tap(data => console.log('All: ' + JSON.stringify(data[0]))),
-      catchError(this.handleError)
-    );
+    return this.http.get<SingleOrgSummary>(this.singleOrgUrl+payload.id)
   }
 
-  private handleError(err: HttpErrorResponse) {
-    let errorMessage = '';
-    if (err.error instanceof ErrorEvent) {
-      errorMessage = `An error occurred: ${err.error.message}`;
-    } else {
-      errorMessage = `Server returned code: ${err.status}, error message is: ${err.message}`;
-    }
-    console.error(errorMessage);
-    return throwError(errorMessage);
-  }
-  
 }
 
