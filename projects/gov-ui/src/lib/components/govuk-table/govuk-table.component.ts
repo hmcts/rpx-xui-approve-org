@@ -8,7 +8,6 @@ import {Component, Input} from '@angular/core';
 export class GovukTableComponent {
 
     @Input() classes = '';
-
     @Input() caption = 'Dates and amounts';
     @Input() firstCellIsHeader = true;
 
@@ -17,8 +16,8 @@ export class GovukTableComponent {
     @Input() columnConfig: GovukTableColumnConfig[] = [
         { header: 'Date', key: 'date', type: 'text' },
         { header: 'Amount', key: 'amount' },
-        { header: 'Amount', key: 'amount', class:'hmcts-class' },
-        { header: 'Amount', key: 'amount', multiColumnMapping:'12345' }
+        { header: 'Status', key: 'status', class:'hmcts-badge' },
+        { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping:'id' }
     ];
 
     constructor() { }
