@@ -13,8 +13,8 @@
   ></app-prd-summary-component>
   <ng-template #loading>
     <div>Loading...</div>
-  </ng-template>
-    <div *ngFor='let product of products'>
+  </ng-template>TEST
+    <div *ngFor='let org of orgSummary'>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
@@ -23,7 +23,7 @@
                     Name
                 </dt>
                 <dd class="govuk-check-your-answers__answer">
-                  {{product.name}}
+                  {{org.name}}
                 </dd>
                 <dd class="govuk-check-your-answers__change">
                 </dd>
@@ -33,7 +33,7 @@
                     Address
                 </dt>
                 <dd class="govuk-check-your-answers__answer">
-                  {{product.address}}
+                  {{org.address}}
                 </dd>
                 <dd class="govuk-check-your-answers__change">
                 </dd>
@@ -43,7 +43,7 @@
                     PBA number
                 </dt>
                 <dd class="govuk-check-your-answers__answer">
-                  {{product.pbaNumber}}
+                  {{org.pbaNumber}}
                 </dd>
                 <dd class="govuk-check-your-answers__change">
                 </dd>
@@ -53,7 +53,7 @@
                     DX number
                 </dt>
                 <dd class="govuk-check-your-answers__answer">
-                  {{product.dxNumber}}
+                  {{org.dxNumber}}
                 </dd>
                 <dd class="govuk-check-your-answers__change">
                 </dd>
@@ -63,7 +63,7 @@
                     DX exchange
                 </dt>
                 <dd class="govuk-check-your-answers__answer">
-                    {{product.dxExchange}}
+                    {{org.dxExchange}}
                 </dd>
                 <dd class="govuk-check-your-answers__change">
                 </dd>
@@ -73,7 +73,7 @@
                     Administrator
                 </dt>
                 <dd class="govuk-check-your-answers__answer">
-                  {{product.admin}}
+                  {{org.admin}}
                 </dd>
                 <dd class="govuk-check-your-answers__change">
                 </dd>
