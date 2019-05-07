@@ -3,10 +3,6 @@ import * as fromfeatureStore from '../../store';
 import {select, Store} from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
-import {map} from 'rxjs/internal/operators';
-import { IProduct } from '../../models/product'
-import { OrganisationService } from '../../services/organisation.service'
-import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
 
 @Component({
   selector: 'app-org-summary',
@@ -21,8 +17,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
   
   constructor(
     private activeRoute: ActivatedRoute,
-    private store: Store<fromfeatureStore.OrganisationState>,
-    private organisationService: OrganisationService) { }
+    private store: Store<fromfeatureStore.OrganisationState>) { }
 
   ngOnInit() {
 
