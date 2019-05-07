@@ -8,79 +8,9 @@
   </div>
 
   <app-prd-summary-component
-    *ngIf="!(loading$ | async) else loading"
-    [data]="orgSummary$ | async"
+    [data]="orgSummary"
   ></app-prd-summary-component>
   <ng-template #loading>
     <div>Loading...</div>
   </ng-template>TEST
-    <div *ngFor='let org of orgSummary'>
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
-            <div class="govuk-check-your-answers__contents">
-                <dt class="govuk-check-your-answers__question">
-                    Name
-                </dt>
-                <dd class="govuk-check-your-answers__answer">
-                  {{org.name}}
-                </dd>
-                <dd class="govuk-check-your-answers__change">
-                </dd>
-            </div>
-            <div class="govuk-check-your-answers__contents">
-                <dt class="govuk-check-your-answers__question">
-                    Address
-                </dt>
-                <dd class="govuk-check-your-answers__answer">
-                  {{org.address}}
-                </dd>
-                <dd class="govuk-check-your-answers__change">
-                </dd>
-            </div>
-            <div class="govuk-check-your-answers__contents">
-                <dt class="govuk-check-your-answers__question">
-                    PBA number
-                </dt>
-                <dd class="govuk-check-your-answers__answer">
-                  {{org.pbaNumber}}
-                </dd>
-                <dd class="govuk-check-your-answers__change">
-                </dd>
-            </div>
-            <div class="govuk-check-your-answers__contents">
-                <dt class="govuk-check-your-answers__question">
-                    DX number
-                </dt>
-                <dd class="govuk-check-your-answers__answer">
-                  {{org.dxNumber}}
-                </dd>
-                <dd class="govuk-check-your-answers__change">
-                </dd>
-            </div>
-            <div class="govuk-check-your-answers__contents">
-                <dt class="govuk-check-your-answers__question">
-                    DX exchange
-                </dt>
-                <dd class="govuk-check-your-answers__answer">
-                    {{org.dxExchange}}
-                </dd>
-                <dd class="govuk-check-your-answers__change">
-                </dd>
-            </div>
-            <div class="govuk-check-your-answers__contents">
-                <dt class="govuk-check-your-answers__question">
-                    Administrator
-                </dt>
-                <dd class="govuk-check-your-answers__answer">
-                  {{org.admin}}
-                </dd>
-                <dd class="govuk-check-your-answers__change">
-                </dd>
-            </div>
-        </dl>
-    </div>
-</div>
-</div>
-
-
+  
