@@ -27,8 +27,8 @@ export class OrganisationService {
   }
 
   getSingleOrganisation(payload): Observable<SingleOrgSummary> {
-    console.log('payload is in single organisation http call method',payload)
-    return this.http.get<SingleOrgSummary>(this.organisationUrl+payload).pipe(
+    console.log('payload is in single organisation http call method',payload.id)
+    return this.http.get<SingleOrgSummary>(this.organisationUrl+payload.id).pipe(
       tap(data => console.log('All: ' + JSON.stringify(data[0]))),
       catchError(this.handleError)
       //ata = data[0];
