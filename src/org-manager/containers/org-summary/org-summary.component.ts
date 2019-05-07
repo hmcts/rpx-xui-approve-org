@@ -40,7 +40,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
       })
     ).subscribe();*/
 
-    this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleAccounOverview));
+    this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleOrgOverview));
     this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
 
     this.activeRoute.url.subscribe(url => {

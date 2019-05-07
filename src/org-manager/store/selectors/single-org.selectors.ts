@@ -8,7 +8,7 @@ export const getSingleOrgState = createSelector(
   (state: fromFeature.OrganisationState) => state.singleOrg
 );
 
-export const getSingleAccounOverview = createSelector(
+export const getSingleOrgOverview = createSelector(
   getSingleOrgState,
   fromSingleOrg.getSingleOrgOverview
 );
