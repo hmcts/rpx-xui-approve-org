@@ -1,6 +1,7 @@
 import { initialState, reducer } from './single-org.reducer';
 import { LoadSingleOrgSuccess } from '../actions';
 import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
+import * as fromSingleOrg from './single-org.reducer';
   
   describe('SingleOrgReducer', () => {
     describe('undefined action', () => {
@@ -12,7 +13,7 @@ import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
     });
   
     describe('LOAD_SINGLE_ORG_SUCCESS action', () => {
-      it('should update the state.feeAccounts', () => {
+      it('should update the state.organisations', () => {
         const payload: SingleOrgSummary = 
         {
           "pbaNumber":"SU2DSCSA",
@@ -30,31 +31,22 @@ import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
         expect(state.overview.data).toEqual(payload);
       });
     });
-  /*
-    describe('RESET_SINGLE_FEE_ACCOUNT action', () => {
-      it('should return the initial state', () => {
-        const action = new ResetSingleFeeAccount({});
-        const state = reducer(initialState, action);
-        expect(state.singleFeeAccount).toEqual([]);
+  
+    describe('getSingleOrganisation export', () => {
+      it('should return state.organisation', () => {
+        expect(fromSingleOrg.getSingleOrgOverview(initialState)).toEqual({});
       });
     });
   
-    describe('getSingleFeeAccount export', () => {
-      it('should return state.feeAccounts', () => {
-        expect(getSingleFeeAccount(initialState)).toEqual([]);
-      });
-    });
-  
-    describe('getSingleFeeAccountLoading export', () => {
+    describe('getSingleOrgLoading export', () => {
       it('should return state.loading', () => {
-        expect(getSingleFeeAccountLoading(initialState)).toEqual(false);
+        expect(fromSingleOrg.getSingleOrgOverviewLoading(initialState)).toEqual(false);
       });
     });
   
-    describe('getSingleFeeAccountLoaded export', () => {
+    describe('getSingleOrgLoaded export', () => {
       it('should return state.loaded', () => {
-        expect(getSingleFeeAccountLoaded(initialState)).toEqual(false);
+        expect(fromSingleOrg.getSingleOrgOverviewLoaded(initialState)).toEqual(false);
       });
     });
-  });*/
-});
+  });
