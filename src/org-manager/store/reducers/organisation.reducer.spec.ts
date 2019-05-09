@@ -1,6 +1,7 @@
 import { initialState, reducer } from './organisation.reducer';
 import { LoadOrganisationSuccess } from '../actions';
 import { Organisation, OrganisationSummary } from 'src/org-manager/models/organisation';
+import * as fromOrganisation from './organisation.reducer';
 
 describe('OrganisationsReducer', () => {
   describe('undefined action', () => {
@@ -43,31 +44,24 @@ describe('OrganisationsReducer', () => {
       expect(state.organisations).toEqual(OrganisationsMockSummary);
     });
   });
-/*
-  describe('getFeeAccounts export', () => {
-    it('should return state.feeAccounts', () => {
-      expect(getOrganisations(initialState)).toEqual([]);
+
+  describe('getOrganisations export', () => {
+    it('should return state.organisations', () => {
+      expect(fromOrganisation.getOrganisations(initialState)).toEqual(null);
+      expect()
     });
   });
 
-  export const initialState: OrganisationState = {
-  organisations: null,
-  loaded: false,
-  loading: false,
-};
-
-
- /* describe('getFeeAccountsLoading export', () => {
+  describe('getOrganisationsLoading export', () => {
     it('should return state.loading', () => {
-      expect(getOrganisationsLoading(initialState)).toEqual(false);
+      expect(fromOrganisation.getOrganisationsLoading(initialState)).toEqual(false);
     });
   });
 
-  describe('getFeeAccountsLoaded export', () => {
+  describe('getOrganisationsLoaded export', () => {
     it('should return state.loaded', () => {
-      expect(getOrganisationsLoaded(initialState)).toEqual(false);
+      expect(fromOrganisation.getOrganisationsLoaded(initialState)).toEqual(false);
     });
   });
-});*/
-
 });
+
