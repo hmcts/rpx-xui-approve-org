@@ -39,7 +39,7 @@ describe('Single organisation actions', () => {
       });
 
           // Fail
-    describe('LoadSingleFeeAccountFail', () => {
+    describe('LoadSingleOrganisationFail', () => {
       it('should create an action', () => {
         // Action is not been used. Should be passing error handler or error friendly string.
         const action = new fromSingleOrg.LoadSingleOrgFail('Something');
