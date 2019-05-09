@@ -11,7 +11,7 @@ import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
       });
     });
   
-    /*describe('LOAD_SINGLE_ORG_SUCCESS action', () => {
+    describe('LOAD_SINGLE_ORG_SUCCESS action', () => {
       it('should update the state.feeAccounts', () => {
         const payload: SingleOrgSummary = 
         {
@@ -27,7 +27,7 @@ import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
          }
         const action = new LoadSingleOrgSuccess(payload);
         const state = reducer(initialState, action);
-        expect(state.overview.data).toEqual({});
+        expect(state.overview.data).toEqual(payload);
       });
     });
   /*
