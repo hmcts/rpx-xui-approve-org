@@ -23,12 +23,10 @@ import * as fromComponents from './components';
 
 import { ROUTES } from './app.routes';
 
-import config from '../../api/lib/config';
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
-export const metaReducers: MetaReducer<any>[] = !config.production
-  ? [storeFreeze]
-  : [];
+export const metaReducers: MetaReducer<any>[] = [storeFreeze]
+
 
 @NgModule({
   declarations: [
@@ -44,9 +42,6 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     EffectsModule.forRoot(effects),
     SharedModule,
     StoreRouterConnectingModule,
-    StoreDevtoolsModule.instrument({
-      logOnly: config.production
-    }),
     OrgManagerModule
   ],
   providers: [
