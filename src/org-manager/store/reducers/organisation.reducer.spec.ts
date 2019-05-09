@@ -1,8 +1,6 @@
-import { initialState, reducer, getOrganisations, getOrganisationsLoading, getOrganisationsLoaded } from './organisation.reducer';
+import { initialState, reducer } from './organisation.reducer';
 import { LoadOrganisationSuccess } from '../actions';
 import { Organisation, OrganisationSummary } from 'src/org-manager/models/organisation';
-import { OrganisationsMock } from 'src/org-manager/mock/organisation.mock';
-import { RouterLink } from '@angular/router';
 
 describe('OrganisationsReducer', () => {
   describe('undefined action', () => {
@@ -13,8 +11,8 @@ describe('OrganisationsReducer', () => {
     });
   });
 
-  describe('LOAD_FEE_ACCOUNTS_SUCCESS action', () => {
-    it('should update the state.feeAccounts', () => {
+  describe('LOAD_ORGANISATION_SUCCESS action', () => {
+    it('should update the state.organisations', () => {
       const OrganisationsMock: Organisation[] = [
         {
           organisationId: 'Speake Limited',
@@ -43,7 +41,6 @@ describe('OrganisationsReducer', () => {
       const action = new LoadOrganisationSuccess(OrganisationsMock);
       const state = reducer(initialState, action);
       expect(state.organisations).toEqual(OrganisationsMockSummary);
-      //expect(state.organisations).toEqual([]);
     });
   });
 /*
@@ -52,6 +49,13 @@ describe('OrganisationsReducer', () => {
       expect(getOrganisations(initialState)).toEqual([]);
     });
   });
+
+  export const initialState: OrganisationState = {
+  organisations: null,
+  loaded: false,
+  loading: false,
+};
+
 
  /* describe('getFeeAccountsLoading export', () => {
     it('should return state.loading', () => {
