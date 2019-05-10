@@ -6,10 +6,11 @@ import { Organisation } from '../models/organisation';
 import {SingleOrgSummary} from '../models/single-org-summary';
 import {SingleOrgSummaryMock} from '../mock/single-org-summary.mock';
 import { tap, catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment'
 
 @Injectable()
 export class OrganisationService {
-  private singleOrgUrl = 'http://localhost:3000/organisations?pbaNumber=';
+  private singleOrgUrl = environment.singleOrgUrl;
   constructor(private http: HttpClient) {
   }
 
