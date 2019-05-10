@@ -17,20 +17,22 @@
                 </ng-container>
             </th>
             <td data-selector="table-cell" class="govuk-table__cell"  *ngIf="!(isFirst && firstCellIsHeader)">
-                <ng-container *ngIf="!col.type || col.type === 'text'">
-                    {{r[col.key]}}
-                </ng-container>
-                <ng-container *ngIf="col.type === 'link'">
+               <ng-container [ngSwitch]="col.type">
+                <ng-container *ngSwitchCase="'link'">
                     <a class="govuk-link" [routerLink]="r.routerLink">{{r[col.key]}}</a>
                 </ng-container>
-                <ng-container *ngIf="col.type === 'styled'">
+                <ng-container *ngSwitchCase="'styled'">
                     <span class={{col.class}}>{{r[col.key]}}</span>
                 </ng-container>
-                <ng-container *ngIf="col.type === 'multi-column'">
+                <ng-container *ngSwitchCase="'multi-column'">
                     <span>{{r[col.key]}}</span>
                     <br>
                     <span class={{col.class}}>{{r[col.multiColumnMapping]}}</span>
                 </ng-container>
+                <ng-container *ngSwitchDefault>
+                    {{r[col.key]}}
+                    </ng-container>
+            </ng-container>
             </td>
         </ng-container>
     </tr>
