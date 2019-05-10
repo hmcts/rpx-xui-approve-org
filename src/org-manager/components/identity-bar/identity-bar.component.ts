@@ -6,14 +6,10 @@ import {Component, OnInit, Input} from '@angular/core';
   styleUrls: ['./identity-bar.component.scss']
 })
 
-export class IdentityBarComponent implements OnInit {
+export class IdentityBarComponent {
 
   @Input() data: any;
   
   constructor() {}
-
-  ngOnInit(): void {
-
-  }
 
 }

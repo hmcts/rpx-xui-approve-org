@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-
 import { AppComponent } from './containers/app/app.component';
 import { SharedModule } from '../shared/shared.module';
 import { CookieModule } from 'ngx-cookie';
@@ -25,7 +24,11 @@ import { ROUTES } from './app.routes';
 
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
-export const metaReducers: MetaReducer<any>[] = [storeFreeze]
+import config from 'config'
+
+export const metaReducers: MetaReducer<any>[] = !config.production
+  ? [storeFreeze]
+  : [];
 
 
 @NgModule({
