@@ -21,7 +21,7 @@ export class UserFormComponent implements OnInit {
   inviteUserForm: FormGroup;
 
   formValidationErrors$: Observable<any>;
-  formValidationErrorsArray$: Observable<{isFromValid: boolean; items: { id: string; message: any; } []}>;
+  formValidationErrorsArray$: Observable<{ isFromValid: boolean; items:  { id: string; message: any;  } [] }>;
 
   errorMessages = {
     firstName: ['Enter first name'],

@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-hmcts-primary-navigation',
+    selector: 'lib-hmcts-primary-navigation',
     templateUrl: './hmcts-primary-navigation.component.html',
     styleUrls: ['./hmcts-primary-navigation.component.scss']
 })

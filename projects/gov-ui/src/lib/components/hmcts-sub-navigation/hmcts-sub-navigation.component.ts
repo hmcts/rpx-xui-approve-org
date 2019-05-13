@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
-    selector: 'app-hmcts-sub-navigation',
+    selector: 'lib-hmcts-sub-navigation',
     templateUrl: './hmcts-sub-navigation.component.html',
     styleUrls: ['./hmcts-sub-navigation.component.scss']
 })
