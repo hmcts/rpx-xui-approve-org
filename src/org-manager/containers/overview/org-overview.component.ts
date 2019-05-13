@@ -22,10 +22,11 @@ export class OverviewComponent implements OnInit {
     this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
     this.columnConfig = [
-      { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id', 
+      { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
       class: 'govuk-caption-m govuk-!-font-size-16'},
       { header: 'Address', key: 'address' },
-      { header: 'Administrator', key: 'admin', type: 'multi-column', multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16' },
+      { header: 'Administrator', key: 'admin', type: 'multi-column',
+      multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16' },
       { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge hmcts-badge--green'},
       { header: null, key: 'view', type: 'link' }
     ];
