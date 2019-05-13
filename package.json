@@ -1,5 +1,5 @@
 {
-  "name": "rpa-pui-manager",
+  "name": "organisation-manager",
   "version": "0.0.0",
   "scripts": {
     "start": "ng serve --port 2500 --host 0.0.0.0 --proxy-config proxy.config.json",
