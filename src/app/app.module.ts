@@ -24,7 +24,7 @@ import { ROUTES } from './app.routes';
 
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
-import config from 'config'
+import config from 'config';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]

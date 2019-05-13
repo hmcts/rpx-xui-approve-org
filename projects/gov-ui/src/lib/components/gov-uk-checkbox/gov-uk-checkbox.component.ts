@@ -18,7 +18,7 @@ import {FormGroup} from '@angular/forms';
       </div>
   `
 })
-export class GovUkCheckboxComponent implements OnInit{
+export class GovUkCheckboxComponent implements OnInit {
   constructor () { }
   @Input() group: FormGroup;
   @Input() config: {value: string, label: string, hint: string; name: string; focusOn: string; id: string; classes: string};

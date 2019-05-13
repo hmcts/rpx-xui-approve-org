@@ -25,7 +25,7 @@ describe('OrganisationsReducer', () => {
           id: '12345678',
           email: 'matt@speake.com'
         }
-      ]
+      ];
       const OrganisationsMockSummary: OrganisationSummary[] = [
         {
           organisationId: 'Speake Limited',
@@ -38,7 +38,7 @@ describe('OrganisationsReducer', () => {
           email: 'matt@speake.com',
           routerLink: '/organisations/organisation/SU2DSCSA/'
         }
-      ]
+      ];
       const action = new LoadOrganisationSuccess(OrganisationsMock);
       const state = reducer(initialState, action);
       expect(state.organisations).toEqual(OrganisationsMockSummary);
@@ -48,7 +48,7 @@ describe('OrganisationsReducer', () => {
   describe('getOrganisations export', () => {
     it('should return state.organisations', () => {
       expect(fromOrganisation.getOrganisations(initialState)).toEqual(null);
-      expect()
+      expect();
     });
   });
 

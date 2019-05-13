@@ -30,5 +30,4 @@ export type SingleOrgActions =
   | LoadSingleOrg
   | LoadSingleOrgSuccess
   | LoadSingleOrgFail
-  | ResetSingleOrg
-
+  | ResetSingleOrg;

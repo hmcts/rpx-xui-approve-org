@@ -22,7 +22,7 @@ const dummy = [
     manageFeeAcc: 'no',
     status: 'active'
   }
-]
+];
 
 
 @Injectable()
