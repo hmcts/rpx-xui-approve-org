@@ -2,7 +2,7 @@ import {Component, Input} from '@angular/core';
 import { MOCKDATAMAPPINGS } from '../govuk-table/mock-data-mappings';
 
 @Component({
-    selector: 'app-govuk-table',
+    selector: 'lib-govuk-table',
     templateUrl: './govuk-table.component.html',
     styleUrls: ['./govuk-table.component.scss']
 })

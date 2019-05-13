@@ -11,11 +11,11 @@
         </div>
      </div>
 
-     <app-govuk-table *ngIf="!(isLoading$ | async) else isLoading"
+     <lib-govuk-table *ngIf="!(isLoading$ | async) else isLoading"
        [columnConfig]="columnConfig"
        [rows]="tableUsersData$ | async" [firstCellIsHeader]="false"
        [caption]="''">
-     </app-govuk-table>
+     </lib-govuk-table>
 
      <ng-template #isLoading>
       <div>Loading...</div>
