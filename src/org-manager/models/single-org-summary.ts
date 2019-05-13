@@ -8,7 +8,6 @@ export interface SingleOrgSummary {
   dxNumber: string;
   dxExchange: string;
   admin: string;
-  
 }
 export interface SingleOrgSummaryRemapped extends SingleOrgSummary {
   routerLink: string;

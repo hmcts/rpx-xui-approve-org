@@ -1,5 +1,5 @@
 export interface  PendingOrganisation {
-  name:string;
+  name: string;
   organisationId: string;
   address: string;
   pbaNumber: string;

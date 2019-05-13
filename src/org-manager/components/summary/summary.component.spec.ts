@@ -1,4 +1,4 @@
-import { SummaryComponent } from './summary.component'
+import { SummaryComponent } from './summary.component';
 
 describe('Summary Component', () => {
     it('should have a component', () => {

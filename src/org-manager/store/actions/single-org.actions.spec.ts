@@ -18,18 +18,17 @@ describe('Single organisation actions', () => {
     // Success
     describe('LoadSingleOrganisationSuccess', () => {
         it('should create an action', () => {
-          const payload: SingleOrgSummary = 
-          {
-            "pbaNumber":"SU2DSCSA",
-             "status": "ACTIVE",
-             "effective_date": "22/10/2022",
-             "dx_exchange": "7654321",
-             "name": "Speake Limited",
-             "address": "72 Guild Street, London, SE23 6FH",
-             "dxNumber": "12345567",
-             "dxExchange": "7654321",
-             "admin": "Matt Speake",
-           }
+          const payload: SingleOrgSummary = {
+            'pbaNumber': 'SU2DSCSA',
+             'status': 'ACTIVE',
+             'effective_date': '22/10/2022',
+             'dx_exchange': '7654321',
+             'name': 'Speake Limited',
+             'address': '72 Guild Street, London, SE23 6FH',
+             'dxNumber': '12345567',
+             'dxExchange': '7654321',
+             'admin': 'Matt Speake',
+           };
           const action = new fromSingleOrg.LoadSingleOrgSuccess(payload);
           expect({ ...action }).toEqual({
             type: fromSingleOrg.LOAD_SINGLE_ORG_SUCCESS,

@@ -11,9 +11,8 @@ import {ActivatedRoute} from '@angular/router';
 export class OrgSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: Observable<any>;
   loading$: Observable<boolean>;
-  orgSummary = {}
+  orgSummary = {};
   errorMessage = '';
-  
   constructor(
     private activeRoute: ActivatedRoute,
     private store: Store<fromfeatureStore.OrganisationState>) { }
@@ -22,9 +21,8 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
 
     this.activeRoute.url.subscribe(url => {
       this.store.dispatch(new fromfeatureStore.LoadSingleOrg({ id: url[0].path
-      }))
-    })
-
+      }));
+    });
     this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleOrgOverview));
     this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
 

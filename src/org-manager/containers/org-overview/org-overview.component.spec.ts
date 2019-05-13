@@ -1,4 +1,4 @@
-import {OrgOverviewComponent} from './org-overview.component'
+import {OrgOverviewComponent} from './org-overview.component';
 
 describe('Org Overview Component', () => {
     it('should have a component', () => {
@@ -6,3 +6,4 @@ describe('Org Overview Component', () => {
         expect(component).toBeTruthy();
 });
 });
+

@@ -6,7 +6,7 @@ import { Organisation } from '../models/organisation';
 import {SingleOrgSummary} from '../models/single-org-summary';
 import {SingleOrgSummaryMock} from '../mock/single-org-summary.mock';
 import { tap, catchError } from 'rxjs/operators';
-import { environment } from '../../environments/environment'
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class OrganisationService {
@@ -20,7 +20,7 @@ export class OrganisationService {
   }
 
   getSingleOrganisation(payload): Observable<SingleOrgSummary> {
-    return this.http.get<SingleOrgSummary>(this.singleOrgUrl+payload.id)
+    return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
   }
 
 }

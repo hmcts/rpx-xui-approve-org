@@ -21,4 +21,4 @@ export const OrganisationsMock: Organisation[] = [
     id: '23456433',
     email: 'mia@mamatora.com'
   }
-]
+];

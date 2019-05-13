@@ -24,8 +24,8 @@ describe('Organisation selectors', () => {
         result = value;
 
       });
-      expect(result).toEqual({ organisations:null, loaded: false, loading: false });
+      expect(result).toEqual({ organisations: null, loaded: false, loading: false });
     });
-  }); 
+  });
 
 });

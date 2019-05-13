@@ -1,7 +1,7 @@
 import {Component, OnInit, Input} from '@angular/core';
 
 @Component({
-  selector: 'identity-bar-component',
+  selector: 'app-identity-bar-component',
   templateUrl: './identity-bar.component.html',
   styleUrls: ['./identity-bar.component.scss']
 })
@@ -9,7 +9,6 @@ import {Component, OnInit, Input} from '@angular/core';
 export class IdentityBarComponent {
 
   @Input() data: any;
-  
   constructor() {}
 
 }
