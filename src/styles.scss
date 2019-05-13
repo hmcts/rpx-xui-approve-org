@@ -12,29 +12,3 @@ $govuk-global-styles: true;
 @import "./assets/sass/application";
 
 
-div.govuk-prose-scope, p {
-  white-space: pre-wrap;
-}
-
-.hmcts-badge--green {
-  border-color: #006435;
-  color:#006435
-}
-
-@media (min-width: 40.0625em)
-{
-  .hmcts-badge {
-      font-size: 14px;
-      font-size: 0.875rem;
-      line-height: 1.42857;
-  }
-}
-
-.hmcts-badge {
-  font-family: "nta", Arial, sans-serif;
-  border: 2px solid;
-  font-size: 0.875rem;
-  font-weight: bold;
-  padding: 0 5px;
-}
-
