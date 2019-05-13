@@ -4,16 +4,16 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as fromPendingOrgReducer from '../../store/reducers/org-pending.reducer'
-import * as fromPendingOrgSelector from '../../store/selectors/org-pending.selector'
-import * as pendingOrgActions from '../../store/actions/org-pending.actions'
+import * as fromPendingOrgReducer from '../../store/reducers/org-pending.reducer';
+import * as fromPendingOrgSelector from '../../store/selectors/org-pending.selector';
+import * as pendingOrgActions from '../../store/actions/org-pending.actions';
 
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-overview.component.html',
 })
 
-export class PendingOverviewComponent implements OnInit{
+export class PendingOverviewComponent implements OnInit {
 
   pendingOrgs: PendingOrganisation[];
   displayCode: boolean;
@@ -28,7 +28,7 @@ export class PendingOverviewComponent implements OnInit{
     this.store.pipe(select(fromPendingOrgSelector.getPendingOrgs))
     .subscribe((pendingOrgs: PendingOrganisation[]) => this.pendingOrgs = pendingOrgs);
 
-    console.log('printing pending organisations')
+    console.log('printing pending organisations');
     console.log(this.pendingOrgs);
 
    this.store.pipe(select(fromPendingOrgSelector.getShowPendingOrgCode)).subscribe(
@@ -48,7 +48,7 @@ export class PendingOverviewComponent implements OnInit{
   }
 
   checkChanged(value: boolean): void {
-    this.store.dispatch(new pendingOrgActions.TogglePendingOrgCode(value))
+    this.store.dispatch(new pendingOrgActions.TogglePendingOrgCode(value));
   }
 
 }

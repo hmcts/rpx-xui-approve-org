@@ -19,4 +19,4 @@ export const PendingOrganisationsMock: PendingOrganisation[] = [
     status: 'PENDING',
     view: 'View'
   }
-]
+];

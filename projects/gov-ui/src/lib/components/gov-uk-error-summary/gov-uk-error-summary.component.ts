@@ -30,7 +30,7 @@ export class GovUkErrorSummaryComponent implements AfterViewInit, OnChanges {
 
   @Input() set errorMessages(value) {
     this.messages = value;
-  };
+  }
 
   messages: object[];
 

@@ -44,14 +44,13 @@ describe('Single organisation Effects', () => {
         dxNumber: '12345567',
         dxExchange: '7654321',
         admin: 'Matt Speak'
-    }
+    };
 
       OrganisationServiceMock.getSingleOrganisation.and.returnValue(of(payload));
       const action = new LoadSingleOrg({});
       const completion = new LoadSingleOrgSuccess(payload[0]);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
-      console.log('expected **********',expected)
       expect(effects.loadSingleOrg$).toBeObservable(expected);
     });
   });

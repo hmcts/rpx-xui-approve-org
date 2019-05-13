@@ -10,4 +10,4 @@ export const SingleOrgSummaryMock: SingleOrgSummary =  {
     dxNumber: '12345567',
     dxExchange: '7654321',
     admin: 'Matt Speak'
-}
+};

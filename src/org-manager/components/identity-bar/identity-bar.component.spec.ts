@@ -1,4 +1,4 @@
-import { IdentityBarComponent } from './identity-bar.component'
+import { IdentityBarComponent } from './identity-bar.component';
 
 describe('Identity Bar Component', () => {
     it('should have a component', () => {
