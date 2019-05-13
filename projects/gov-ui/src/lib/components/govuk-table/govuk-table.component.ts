@@ -31,11 +31,7 @@ export class GovukTableColumnConfig {
     type?: string;
     class?: string;
     multiColumnMapping?:string;
-    constructor() {
-        this.header = '';
-        this.key = '';
-        this.type = 'text';
-        this.class= '';
-        this.multiColumnMapping  = '';
-    }
+    
+    constructor() {}
+
   }
