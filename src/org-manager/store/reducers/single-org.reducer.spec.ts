@@ -28,7 +28,7 @@ import * as fromSingleOrg from './single-org.reducer';
          }
         const action = new LoadSingleOrgSuccess(payload);
         const state = reducer(initialState, action);
-        expect(state.overview.data).toEqual(payload);
+        expect(state.data).toEqual(payload);
       });
     });
   
