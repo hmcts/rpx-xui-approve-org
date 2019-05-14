@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-hmcts-primary-navigation',
+    selector: 'lib-hmcts-primary-navigation',
     templateUrl: './hmcts-primary-navigation.component.html',
     styleUrls: ['./hmcts-primary-navigation.component.scss']
 })
@@ -13,7 +13,7 @@ export class HmctsPrimaryNavigationComponent {
     }
 
     @Input()
-    label = 'Primary navigation'
+    label = 'Primary navigation';
     @Input()
     items = [
         {
@@ -29,7 +29,7 @@ export class HmctsPrimaryNavigationComponent {
             text: 'Nav item 3',
             href: '#3'
         }
-    ]
+    ];
 
     isUserLoggedIn: boolean;
     constructor(private route: ActivatedRoute) {

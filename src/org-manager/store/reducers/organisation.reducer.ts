@@ -27,7 +27,7 @@ export function reducer(
       };
     }
     case fromOrganisationActions.LOAD_ORGANISATIONS_SUCCESS: {
-      console.log(' action.payload',  action.payload)
+      console.log(' action.payload',  action.payload);
       const payload = action.payload;
       let organisations = payload;
       if (organisations.length !== 0) {

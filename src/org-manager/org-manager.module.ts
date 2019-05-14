@@ -17,9 +17,10 @@ import { reducers, effects } from './store';
 import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
 import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
 import { OrgPendingModule } from 'src/org-pending/org-pending.module';
-import { NotificationBannerComponent } from 'src/notification-banner/notification-banner.component';
+import { NotificationBannerComponent } from 'src/org-manager/components/notification-banner/notification-banner.component';
+import { IdentityBarComponent } from 'src/org-manager/components/identity-bar/identity-bar.component';
 
-export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent, NotificationBannerComponent];
+export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent, NotificationBannerComponent, IdentityBarComponent];
 
 @NgModule({
   imports: [

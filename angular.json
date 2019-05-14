@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "rpa-pui-manager": {
+    "organisation-manager": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/rpa-pui-manager",
+            "outputPath": "dist/organisation-manager",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -50,18 +50,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "rpa-pui-manager:build"
+            "browserTarget": "organisation-manager:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "rpa-pui-manager:build:production"
+              "browserTarget": "organisation-manager:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "rpa-pui-manager:build"
+            "browserTarget": "organisation-manager:build"
           }
         },
         "test": {
@@ -95,7 +95,7 @@
         }
       }
     },
-    "rpa-pui-manager-e2e": {
+    "organisation-manager-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -103,11 +103,11 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "rpa-pui-manager:serve"
+            "devServerTarget": "organisation-manager:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "rpa-pui-manager:serve:production"
+              "devServerTarget": "organisation-manager:serve:production"
             }
           }
         },
@@ -163,7 +163,7 @@
       }
     }
   },
-  "defaultProject": "rpa-pui-manager",
+  "defaultProject": "organisation-manager",
   "schematics": {
     "@schematics/angular:component": {
       "styleext": "scss"
