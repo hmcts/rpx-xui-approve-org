@@ -4,9 +4,8 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as fromPendingOrgReducer from '../../store/reducers/org-pending.reducer';
-import * as fromPendingOrgSelector from '../../store/selectors/org-pending.selector';
 import * as pendingOrgActions from '../../store/actions/org-pending.actions';
+import * as fromOrganisationPendingStore from '../../../org-pending/store';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -20,22 +19,19 @@ export class PendingOverviewComponent implements OnInit {
   columnConfig: GovukTableColumnConfig[];
   tableRows: {}[];
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
+  loading$: Observable<boolean>;
 
-  constructor(private store: Store<fromPendingOrgReducer.State>) {}
+  constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new pendingOrgActions.Load());
-    this.store.pipe(select(fromPendingOrgSelector.getPendingOrgs))
-    .subscribe((pendingOrgs: PendingOrganisation[]) => this.pendingOrgs = pendingOrgs);
-
-    console.log('printing pending organisations');
-    console.log(this.pendingOrgs);
-
-   this.store.pipe(select(fromPendingOrgSelector.getShowPendingOrgCode)).subscribe(
+    this.store.dispatch(new fromOrganisationPendingStore.Load());
+    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
+    //this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.organisationsLoading));
+   this.store.pipe(select(fromOrganisationPendingStore.getShowPendingOrgCode)).subscribe(
       showPendingOrgCode => this.displayCode = showPendingOrgCode
       );
 
-      this.pendingOrgs$ = Observable.of(this.pendingOrgs);
+      //this.pendingOrgs$ = Observable.of(this.pendingOrgs);
 
       this.columnConfig = [
         { header: 'Reference', key: 'organisationId'},
