@@ -1,6 +1,6 @@
 
-import { PendingOrganisation } from "src/org-pending/models/pending-organisation";
-import { Action } from "@ngrx/store";
+import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
+import { Action } from '@ngrx/store';
 
 export enum PendingOrgActionTypes {
     TogglePendingOrgCode = '[Pending Org] Toggle Pending Org',
@@ -14,13 +14,13 @@ export enum PendingOrgActionTypes {
 export class TogglePendingOrgCode implements Action {
     readonly type = PendingOrgActionTypes.TogglePendingOrgCode;
 
-    constructor(public payload: boolean){}   
+    constructor(public payload: boolean) {}
 }
 
 export class SetCurrentPendingOrg implements Action {
     readonly type = PendingOrgActionTypes.SetCurrentPendingOrg;
 
-    constructor(public payload: PendingOrganisation){}
+    constructor(public payload: PendingOrganisation) {}
 }
 
 export class Load implements Action {
@@ -30,13 +30,13 @@ export class Load implements Action {
 export class LoadSuccess implements Action {
     readonly type = PendingOrgActionTypes.LoadSuccess;
 
-    constructor(public payload: PendingOrganisation[]){}
+    constructor(public payload: PendingOrganisation[]) {}
 }
 
 export class LoadFail implements Action {
     readonly type = PendingOrgActionTypes.LoadFail;
 
-    constructor(public payload: string){}
+    constructor(public payload: string) {}
 }
 
 export type PendingOrgActions = TogglePendingOrgCode
