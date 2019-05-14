@@ -17,3 +17,5 @@ export const getPendingOrgs = createSelector(
     getPendingOrgsFeatureState,
     state => state.pendingOrganisations
 );
+
+export const organisationsLoading = createSelector( getPendingOrgsFeatureState,     state => state.loading);
