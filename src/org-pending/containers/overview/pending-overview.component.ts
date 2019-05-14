@@ -27,9 +27,9 @@ export class PendingOverviewComponent implements OnInit {
     this.store.dispatch(new fromOrganisationPendingStore.Load());
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
     //this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.organisationsLoading));
-   this.store.pipe(select(fromOrganisationPendingStore.getShowPendingOrgCode)).subscribe(
+   /*this.store.pipe(select(fromOrganisationPendingStore.getShowPendingOrgCode)).subscribe(
       showPendingOrgCode => this.displayCode = showPendingOrgCode
-      );
+      );*/
 
       //this.pendingOrgs$ = Observable.of(this.pendingOrgs);
 
