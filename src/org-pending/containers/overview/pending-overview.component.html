@@ -4,7 +4,6 @@
  <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <lib-govuk-table
-    *ngIf="displayCode"
     [columnConfig]="columnConfig" [rows]="pendingOrgs$ | async" [firstCellIsHeader]="false" [caption]="''"
   ></lib-govuk-table>
   </div></div>
