@@ -23,7 +23,7 @@ export const COMPONENTS = [PendingOverviewComponent];
     HttpClientModule,
     SharedModule,
     orgPendingRouting,
-    StoreModule.forFeature('org-pending',reducer),
+    StoreModule.forFeature('org-pending', reducer),
     EffectsModule.forFeature([PendingOrgEffects])
   ],
   exports: [],

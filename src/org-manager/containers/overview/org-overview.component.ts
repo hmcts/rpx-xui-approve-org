@@ -9,7 +9,7 @@ import { OrganisationSummary } from '../../models/organisation';
   templateUrl: './org-overview.component.html',
 })
 
-export class OverviewComponent implements OnInit{
+export class OverviewComponent implements OnInit {
   columnConfig: GovukTableColumnConfig[];
   tableRows: {}[];
   orgs$: Observable<Array<OrganisationSummary>>;
@@ -22,12 +22,15 @@ export class OverviewComponent implements OnInit{
     this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
     this.columnConfig = [
-      { header: 'Reference', key: 'organisationId'},
+      { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
+      class: 'govuk-caption-m govuk-!-font-size-16'},
       { header: 'Address', key: 'address' },
-      { header: 'Administrator', key: 'admin' },
-      { header: 'Status', key: 'status' },
+      { header: 'Administrator', key: 'admin', type: 'multi-column',
+      multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16' },
+      { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge hmcts-badge--green'},
       { header: null, key: 'view', type: 'link' }
     ];
+    console.log(fromOrganisationStore.organisations.toString);
   }
 
 }

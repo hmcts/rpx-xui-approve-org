@@ -8,6 +8,7 @@ import {SingleOrgSummary} from '../../models/single-org-summary';
 @Component({
   selector: 'app-prd-summary-component',
   templateUrl: './summary.component.html',
+  styleUrls: ['./summary.component.scss']
 })
 export class SummaryComponent implements OnInit {
 
