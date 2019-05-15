@@ -8,7 +8,9 @@ export const PendingOrganisationsMock: PendingOrganisation[] = [
     pbaNumber: '101010',
     admin: 'Glen Byrne',
     status: 'PENDING',
-    view: 'View'
+    view: 'View',
+    id: '2424242',
+    email: 'glen@byrne.com'
   },
   {
     name: 'Siofra Moley',
@@ -17,6 +19,8 @@ export const PendingOrganisationsMock: PendingOrganisation[] = [
     pbaNumber: '271093',
     admin: 'Siofra Moley',
     status: 'PENDING',
-    view: 'View'
+    view: 'View',
+    id: '343434',
+    email: 'siofra@moley.com'
   }
 ];

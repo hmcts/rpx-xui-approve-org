@@ -34,10 +34,12 @@ export class PendingOverviewComponent implements OnInit {
       //this.pendingOrgs$ = Observable.of(this.pendingOrgs);
 
       this.columnConfig = [
-        { header: 'Reference', key: 'organisationId'},
+        { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
+        class: 'govuk-caption-m govuk-!-font-size-16'},
         { header: 'Address', key: 'address' },
-        { header: 'Administrator', key: 'admin' },
-        { header: 'Status', key: 'status' },
+        { header: 'Administrator', key: 'admin', type: 'multi-column',
+        multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16' },
+        { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge'},
         { header: null, key: 'view', type: 'link' }
       ];
 
