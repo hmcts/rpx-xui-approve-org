@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, Output, EventEmitter} from '@angular/core';
 import { MOCKDATAMAPPINGS } from '../govuk-table/mock-data-mappings';
 
 @Component({
@@ -11,6 +11,8 @@ export class GovukTableComponent {
     @Input() classes = '';
     @Input() caption = 'Dates and amounts';
     @Input() firstCellIsHeader = true;
+    @Output() valueChange = new EventEmitter();
+    counter = 0;
     
 
     @Input() rows;
@@ -24,6 +26,11 @@ export class GovukTableComponent {
     ];
 
     constructor() { }
+
+    valueChanged() { // You can give any function name
+        this.counter = this.counter + 1;
+        this.valueChange.emit(this.counter);
+    }
 
 }
 
