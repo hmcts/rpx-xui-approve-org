@@ -1,4 +1,4 @@
-import { PendingOrganisation } from '../../models/pending-organisation';
+import { PendingOrganisation, PendingOrganisationSummary } from '../../models/pending-organisation';
 import * as fromRoot from '../../../app/store/reducers/app.reducer';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
@@ -33,9 +33,18 @@ export function reducer(
             };
           }
         case PendingOrgActionTypes.LoadSuccess: 
-        console.log(' action.payload',  action.payload);
+        console.log(' action.payload pending',  action.payload);
         const payload = action.payload;
         let pendingOrganisations = payload;
+        if (pendingOrganisations.length !== 0) {
+            pendingOrganisations = payload.map((entity: PendingOrganisation) => {
+                const element: PendingOrganisationSummary = {
+                  ...entity,
+                  routerLink: `/pending-organisations/pending-organisation/${entity.pbaNumber}/`
+                };
+                return element;
+              });
+          }
         return {
             ...state,
             pendingOrganisations:  pendingOrganisations,
