@@ -33,9 +33,12 @@ export function reducer(
             };
           }
         case PendingOrgActionTypes.LoadSuccess: 
+        console.log(' action.payload',  action.payload);
+        const payload = action.payload;
+        let pendingOrganisations = payload;
         return {
             ...state,
-            pendingOrganisations:  action.payload,
+            pendingOrganisations:  pendingOrganisations,
             loaded: true,
             loading: false
         };
