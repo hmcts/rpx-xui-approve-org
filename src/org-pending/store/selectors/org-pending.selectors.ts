@@ -3,15 +3,15 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 const getPendingOrgsFeatureState = createFeatureSelector<fromOrganisation.PendingOrganisationState>('org-pending');
 
-export const getShowPendingOrgCode = createSelector(
+/*export const getShowPendingOrgCode = createSelector(
     getPendingOrgsFeatureState,
     state => state.showPendingOrg
-);
+);*/
 
-export const getCurrentOrgs = createSelector(
+/*export const getCurrentOrgs = createSelector(
     getPendingOrgsFeatureState,
     state => state.currentOrg
-);
+);*/
 
 export const getPendingOrgs = createSelector(
     getPendingOrgsFeatureState,
