@@ -2,20 +2,20 @@ import { PendingOrganisation } from '../models/pending-organisation';
 
 export const PendingOrganisationsMock: PendingOrganisation[] = [
   {
-    name: 'Miamora Limited',
-    organisationId: 'Miamora Limited',
-    address: '72 Guild Street, London, SE23 6FH',
-    pbaNumber: '123456',
-    admin: 'Mia Mamatora',
+    name: 'Glen Byrne',
+    organisationId: 'Byrne Limited',
+    address: '13 Berryfield drive, Finglas',
+    pbaNumber: '101010',
+    admin: 'Glen Byrne',
     status: 'PENDING',
     view: 'View'
   },
   {
-    name: 'Turpin Limited',
-    organisationId: 'Turpin Limited',
-    address: '72 Guild Street, London, SE23 6FH',
-    pbaNumber: '123456',
-    admin: 'Mia Mamatora',
+    name: 'Siofra Moley',
+    organisationId: 'Moley Limited',
+    address: '45 Malachy',
+    pbaNumber: '271093',
+    admin: 'Siofra Moley',
     status: 'PENDING',
     view: 'View'
   }
