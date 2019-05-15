@@ -11,6 +11,7 @@ export class GovukTableComponent {
     @Input() classes = '';
     @Input() caption = 'Dates and amounts';
     @Input() firstCellIsHeader = true;
+    
 
     @Input() rows;
 
