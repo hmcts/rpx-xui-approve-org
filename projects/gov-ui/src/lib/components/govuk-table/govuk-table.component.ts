@@ -13,6 +13,8 @@ export class GovukTableComponent {
     @Input() firstCellIsHeader = true;
     @Output() valueChange = new EventEmitter();
     counter = 0;
+    displayCode: boolean;
+    isFoo:boolean = false;
     
 
     @Input() rows;
@@ -27,9 +29,8 @@ export class GovukTableComponent {
 
     constructor() { }
 
-    valueChanged() { // You can give any function name
-        this.counter = this.counter + 1;
-        this.valueChange.emit(this.counter);
+    valueChanged(value: boolean) { // You can give any function name
+        this.valueChange.emit(value);
     }
 
 }
