@@ -3,45 +3,36 @@ import * as fromRoot from '../../../app/store/reducers/app.reducer';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
 
-export interface State extends fromRoot.AppState {
-    pendingdOrgs: PendingOrganisationState;
-
-}
-
 export interface PendingOrganisationState {
-    showPendingOrg: boolean;
-    currentOrg: PendingOrganisation;
+    //showPendingOrg: boolean;
+    //currentOrg: PendingOrganisation;
     pendingOrganisations: PendingOrganisation[];
     loaded: boolean;
     loading: boolean;
 }
 
 const initialState: PendingOrganisationState = {
-    showPendingOrg: true,
-    currentOrg: null,
-    pendingOrganisations: [],
+    //showPendingOrg: true,
+    //currentOrg: null,
+    pendingOrganisations: null,
     loaded: false,
     loading: false
 };
 
-export function reducer(state = initialState, action: PendingOrgActions): PendingOrganisationState {
+export function reducer(
+    state = initialState, 
+    action: PendingOrgActions
+    ): PendingOrganisationState {
     switch (action.type) {
-
-        case PendingOrgActionTypes.TogglePendingOrgCode:
-            console.log('existing state: ' + JSON.stringify(state));
-            console.log('payload' + action.payload);
+        case PendingOrgActionTypes.Load: {
+            console.log('in load')
             return {
-                ...state,
-                showPendingOrg: action.payload,
+              ...state,
+              loaded: false,
+              loading: true
             };
-
-        case PendingOrgActionTypes.SetCurrentPendingOrg:
-        return {
-            ...state,
-            currentOrg: {...action.payload}
-        };
-
-        case PendingOrgActionTypes.LoadSuccess:
+          }
+        case PendingOrgActionTypes.LoadSuccess: 
         return {
             ...state,
             pendingOrganisations:  action.payload,
