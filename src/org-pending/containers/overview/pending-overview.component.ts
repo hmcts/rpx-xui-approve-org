@@ -50,5 +50,9 @@ export class PendingOverviewComponent implements OnInit {
     this.store.dispatch(new pendingOrgActions.TogglePendingOrgCode(value));
   }
 
+  displayCounter(count) {
+    console.log('test',count);
+}
+
 }
 
