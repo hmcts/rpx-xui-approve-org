@@ -31,6 +31,12 @@
                                 <br>
                                 <span class={{col.class}}>{{r[col.multiColumnMapping]}}</span>
                             </ng-container>
+                            <ng-container *ngSwitchCase="'checkbox'">
+                                    <div class="govuk-checkboxes__item">
+                                    <input class ="govuk-checkboxes__input" id="pending1" name="pending" type="checkbox" value>
+                                    <label class="govuk-label govuk-checkboxes__label" for="pending1"></label>
+                                    </div>
+                                </ng-container>
                             <ng-container *ngSwitchDefault>
                                 {{r[col.key]}}
                             </ng-container>
