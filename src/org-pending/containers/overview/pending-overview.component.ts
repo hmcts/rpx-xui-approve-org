@@ -34,6 +34,7 @@ export class PendingOverviewComponent implements OnInit {
       //this.pendingOrgs$ = Observable.of(this.pendingOrgs);
 
       this.columnConfig = [
+        { header: null, key: null, type: 'checkbox'},
         { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
         class: 'govuk-caption-m govuk-!-font-size-16'},
         { header: 'Address', key: 'address' },
