@@ -6,6 +6,8 @@ export interface  PendingOrganisation {
   admin: string;
   status: string;
   view: string;
+  id: string;
+  email: string;
 }
 export interface PendingOrganisationSummary extends PendingOrganisation {
   routerLink: string;
