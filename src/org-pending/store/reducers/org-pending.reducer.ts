@@ -4,16 +4,16 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
 
 export interface PendingOrganisationState {
-    //showPendingOrg: boolean;
-    //currentOrg: PendingOrganisation;
+    showPendingOrg: boolean;
+    currentOrg: PendingOrganisation;
     pendingOrganisations: PendingOrganisation[];
     loaded: boolean;
     loading: boolean;
 }
 
 const initialState: PendingOrganisationState = {
-    //showPendingOrg: true,
-    //currentOrg: null,
+    showPendingOrg: true,
+    currentOrg: null,
     pendingOrganisations: null,
     loaded: false,
     loading: false
