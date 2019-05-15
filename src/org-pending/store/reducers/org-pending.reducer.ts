@@ -24,6 +24,13 @@ export function reducer(
     action: PendingOrgActions
     ): PendingOrganisationState {
     switch (action.type) {
+      case PendingOrgActionTypes.TogglePendingOrgCode:
+      console.log('existing state: ' + JSON.stringify(state));
+      console.log('payload' + action.payload);
+      return {
+          ...state,
+          showPendingOrg: action.payload
+      };
         case PendingOrgActionTypes.Load: {
             console.log('in load')
             return {
