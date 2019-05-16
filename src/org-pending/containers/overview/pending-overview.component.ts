@@ -21,7 +21,6 @@ export class PendingOverviewComponent implements OnInit {
   tableRows: {}[];
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
   loading$: Observable<boolean>;
-  emails = [{ email: "email1" }, { email: "email2" }, { email: "email3" }, { email: 'email4' }]
   myForm: FormGroup;
 
 
@@ -49,7 +48,7 @@ export class PendingOverviewComponent implements OnInit {
       ];
 
       this.myForm = this.fb.group({
-        useremail: this.fb.array([])
+        pendingorgs: this.fb.array([])
       });
 
   
@@ -64,13 +63,13 @@ export class PendingOverviewComponent implements OnInit {
     console.log('test',count);
 }
 
-onChange(email: string, isChecked: boolean) {
-  const pendingOrgFormArray = <FormArray>this.myForm.controls.useremail;
+onChange(pendingorg: string, isChecked: boolean) {
+  const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
 
   if (isChecked) {
-    pendingOrgFormArray.push(new FormControl(email));
+    pendingOrgFormArray.push(new FormControl(pendingorg));
   } else {
-    let index = pendingOrgFormArray.controls.findIndex(x => x.value == email)
+    let index = pendingOrgFormArray.controls.findIndex(x => x.value == pendingorg)
     pendingOrgFormArray.removeAt(index);
   }
   console.log('forms',pendingOrgFormArray)
