@@ -10,7 +10,7 @@
                         </ng-template>
                       </main>
                       </div>
-
+                      <form [formGroup]="myForm">
                 <table class="{{'govuk-table ' + classes}}" role="presentation">
                   <caption class="govuk-table__caption">{{caption}}</caption>
                   <thead class="govuk-table__head">
@@ -51,11 +51,11 @@
                                               <label class="govuk-label govuk-checkboxes__label" for="pending1"></label>
                                      
                                               </div>
-                                              <form [formGroup]="myForm">
-                                                <div *ngFor="let pending of pendingOrgs$ | async">
-                                                    <input type="checkbox" (change)="onChange(pending.id, $event.target.checked)"> {{pending.id}}<br>
-                                                </div>
-                                            </form>
+
+
+                                                    <input type="checkbox" (change)="onChange(r.id, $event.target.checked)"> {{r.id}}<br>
+        
+                               
                                           </ng-container>
                                       <ng-container *ngSwitchDefault>
                                           {{r[col.key]}}
@@ -66,6 +66,7 @@
                       </tr>
                   </tbody>
               </table>  
+            </form>
        
 
 
