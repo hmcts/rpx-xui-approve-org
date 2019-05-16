@@ -55,12 +55,12 @@ onChange(pendingorg: string, isChecked: boolean) {
 displayCounter(count) {
   console.log('test',count.value);
 }
-displayCounterButton(count, isChecked: boolean) {
+displayCounterButton(count) {
   this.isChecked = true;
-  console.log('test button id is ',count.value);
+  console.log('test button id is ',count.isChecked);
   const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
 
-  if (this.isChecked) {
+  if (count.isChecked) {
     pendingOrgFormArray.push(new FormControl(count));
   } else {
     let index = pendingOrgFormArray.controls.findIndex(x => x.value == count)

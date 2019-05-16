@@ -33,6 +33,7 @@ export class GovUkCheckboxComponent implements OnInit {
   @Output() valueChange = new EventEmitter();
   counter = 0;    
   myForm: FormGroup;
+  emails: Array<any>;
 
   @Input() id: string
 /**
@@ -58,6 +59,7 @@ export class GovUkCheckboxComponent implements OnInit {
 
 onChange(pendingorg: string, isChecked: boolean) {
   const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
+  this.emails = [{ pendingArray: pendingOrgFormArray, isChecked: isChecked }]
 
   if (isChecked) {
     pendingOrgFormArray.push(new FormControl(pendingorg));
@@ -65,8 +67,14 @@ onChange(pendingorg: string, isChecked: boolean) {
     let index = pendingOrgFormArray.controls.findIndex(x => x.value == pendingorg)
     pendingOrgFormArray.removeAt(index);
   }
-  //console.log('forms',pendingOrgFormArray)
-  this.valueChange.emit(pendingOrgFormArray);
+  if(isChecked)
+  {
+    //newArray
+  }
+  console.log('forms in checkbox',pendingOrgFormArray)
+  console.log('new array',this.emails[0].isChecked)
+  console.log('forms',this.emails[0].pendingArray)
+  this.valueChange.emit(this.emails[0]);
 }
 
 }
