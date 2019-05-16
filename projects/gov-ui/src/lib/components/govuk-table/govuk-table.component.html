@@ -35,6 +35,7 @@
                                     <div class="govuk-checkboxes__item">
                                     <input class ="govuk-checkboxes__input" id="pending1" (click)="onChange(r.id,$event.target.checked)" name="pending" type="checkbox">
                                     <label class="govuk-label govuk-checkboxes__label" for="pending1"></label>
+                                    <lib-gov-checkbox [id]="r.id" (valueChange)='displayCounterButton($event)'></lib-gov-checkbox>
                                     </div>
                                 </ng-container>
                             <ng-container *ngSwitchDefault>
