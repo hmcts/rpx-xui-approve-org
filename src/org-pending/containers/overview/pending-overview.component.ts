@@ -50,7 +50,8 @@ export class PendingOverviewComponent implements OnInit {
 
 
   displayCounter(count) {
-    console.log('test',count.value);
+    console.log('test in pending',count.value);
+    console.log('test in pending',count.value[0].value);
 }
 
 }
