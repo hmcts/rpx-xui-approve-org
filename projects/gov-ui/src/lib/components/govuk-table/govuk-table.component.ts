@@ -15,6 +15,7 @@ export class GovukTableComponent implements OnInit{
     @Output() valueChange = new EventEmitter();
     counter = 0;
     myForm: FormGroup;
+    isChecked: boolean;
 
     @Input() rows;
 
@@ -51,6 +52,25 @@ onChange(pendingorg: string, isChecked: boolean) {
   //console.log('forms',pendingOrgFormArray)
   this.valueChange.emit(pendingOrgFormArray);
 }
+displayCounter(count) {
+  console.log('test',count.value);
+}
+displayCounterButton(count, isChecked: boolean) {
+  this.isChecked = true;
+  console.log('test button id is ',count.value);
+  const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
+
+  if (this.isChecked) {
+    pendingOrgFormArray.push(new FormControl(count));
+  } else {
+    let index = pendingOrgFormArray.controls.findIndex(x => x.value == count)
+    pendingOrgFormArray.removeAt(index);
+  }
+  //console.log('forms',pendingOrgFormArray)
+  this.valueChange.emit(pendingOrgFormArray);
+}
+
+
 
 
 }
