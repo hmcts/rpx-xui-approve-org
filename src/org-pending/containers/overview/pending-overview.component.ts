@@ -4,7 +4,6 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as pendingOrgActions from '../../store/actions/org-pending.actions';
 import * as fromOrganisationPendingStore from '../../../org-pending/store';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 
@@ -55,14 +54,6 @@ export class PendingOverviewComponent implements OnInit {
 
   }
 
-  checkChanged(value: boolean): void {
-    this.store.dispatch(new pendingOrgActions.TogglePendingOrgCode(value));
-  }
-
-  displayCounter(count) {
-    console.log('test',count);
-}
-
 onChange(pendingorg: string, isChecked: boolean) {
   const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
 
@@ -74,9 +65,6 @@ onChange(pendingorg: string, isChecked: boolean) {
   }
   console.log('forms',pendingOrgFormArray)
 }
-
-
-
 
 }
 

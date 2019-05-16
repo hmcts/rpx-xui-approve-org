@@ -46,16 +46,11 @@
                                       </ng-container>
                                       <ng-container *ngSwitchCase="'checkbox'">
                                               <div class="govuk-checkboxes__item">
-                                              <input class ="govuk-checkboxes__input" id="pending1" name="pending" type="checkbox" value (change)="checkChanged($event.target.checked)"
+                                              <input class ="govuk-checkboxes__input" id="pending1" name="pending" type="checkbox" (change)="onChange(r.id,$event.target.checked)"
                                               [checked]="displayCode">
                                               <label class="govuk-label govuk-checkboxes__label" for="pending1"></label>
                                      
-                                              </div>
-
-
-                                                    <input type="checkbox" (change)="onChange(r.id, $event.target.checked)"> {{r.id}}<br>
-        
-                               
+                                              </div>                               
                                           </ng-container>
                                       <ng-container *ngSwitchDefault>
                                           {{r[col.key]}}
