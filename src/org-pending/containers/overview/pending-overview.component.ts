@@ -65,15 +65,15 @@ export class PendingOverviewComponent implements OnInit {
 }
 
 onChange(email: string, isChecked: boolean) {
-  const emailFormArray = <FormArray>this.myForm.controls.useremail;
+  const pendingOrgFormArray = <FormArray>this.myForm.controls.useremail;
 
   if (isChecked) {
-    emailFormArray.push(new FormControl(email));
+    pendingOrgFormArray.push(new FormControl(email));
   } else {
-    let index = emailFormArray.controls.findIndex(x => x.value == email)
-    emailFormArray.removeAt(index);
+    let index = pendingOrgFormArray.controls.findIndex(x => x.value == email)
+    pendingOrgFormArray.removeAt(index);
   }
-  console.log('forms',emailFormArray)
+  console.log('forms',pendingOrgFormArray)
 }
 
 
