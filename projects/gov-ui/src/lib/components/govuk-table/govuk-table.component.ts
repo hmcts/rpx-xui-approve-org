@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter} from '@angular/core';
+import {Component, Input, Output, EventEmitter, OnInit} from '@angular/core';
 import { MOCKDATAMAPPINGS } from '../govuk-table/mock-data-mappings';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 
@@ -7,17 +7,14 @@ import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
     templateUrl: './govuk-table.component.html',
     styleUrls: ['./govuk-table.component.scss']
 })
-export class GovukTableComponent {
+export class GovukTableComponent implements OnInit{
 
     @Input() classes = '';
     @Input() caption = 'Dates and amounts';
     @Input() firstCellIsHeader = true;
     @Output() valueChange = new EventEmitter();
     counter = 0;
-    displayCode: boolean;
-    isFoo:boolean = false;
     myForm: FormGroup;
-    
 
     @Input() rows;
 
@@ -30,22 +27,31 @@ export class GovukTableComponent {
     ];
 
     constructor(private fb: FormBuilder) { }
+    ngOnInit(): void {
+    this.myForm = this.fb.group({
+      pendingorgs: this.fb.array([])
+    });
+  }
 
-    valueChanged(value: boolean,key:string) { // You can give any function name
-        console.log('key',key)
-        this.valueChange.emit(value);
-    }
+    valueChanged() { // You can give any function name
+      this.counter = this.counter + 1;
+      this.valueChange.emit(this.counter);
+  }
 
-    onChange(email: string, isChecked: boolean,) {
-        const emailFormArray = <FormArray>this.myForm.controls.useremail;
-    
-        if (isChecked) {
-          emailFormArray.push(new FormControl(email));
-        } else {
-          let index = emailFormArray.controls.findIndex(x => x.value == email)
-          emailFormArray.removeAt(index);
-        }
-      }
+
+onChange(pendingorg: string, isChecked: boolean) {
+  const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
+
+  if (isChecked) {
+    pendingOrgFormArray.push(new FormControl(pendingorg));
+  } else {
+    let index = pendingOrgFormArray.controls.findIndex(x => x.value == pendingorg)
+    pendingOrgFormArray.removeAt(index);
+  }
+  //console.log('forms',pendingOrgFormArray)
+  this.valueChange.emit(pendingOrgFormArray);
+}
+
 
 }
 

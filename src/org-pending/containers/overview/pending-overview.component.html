@@ -10,62 +10,7 @@
                         </ng-template>
                       </main>
                       </div>
-                      <form [formGroup]="myForm">
-                <table class="{{'govuk-table ' + classes}}" role="presentation">
-                  <caption class="govuk-table__caption">{{caption}}</caption>
-                  <thead class="govuk-table__head">
-                      <tr class="govuk-table__row">
-                          <th class="govuk-table__header" scope="col" *ngFor="let h of columnConfig">{{h.header}}</th>
-                      </tr>
-                  </thead>
-                  <tbody class="govuk-table__body">
-                      <tr data-selector="table-row" class="govuk-table__row" *ngFor="let r of pendingOrgs$ | async">
-                          <ng-container *ngFor="let col of columnConfig; first as isFirst">
-                              <th data-selector="table-header" class="govuk-table__header" scope="row" *ngIf="isFirst && firstCellIsHeader">
-                                  <ng-container [ngSwitch]="'col.type'">
-                                      <ng-container *ngSwitchCase="'link'">
-                                          <a class="govuk-link" [routerLink]="r.routerLink">{{r[col.key]}}</a>
-                                      </ng-container>
-                                      <ng-container *ngSwitchDefault>
-                                          {{r.view}}
-                                      </ng-container>
-                                  </ng-container>
-                              </th>
-                              <td data-selector="table-cell" class="govuk-table__cell" *ngIf="!(isFirst && firstCellIsHeader)">
-                                  <ng-container [ngSwitch]="col.type">
-                                      <ng-container *ngSwitchCase="'link'">
-                                          <a class="govuk-link" [routerLink]="r.routerLink">{{r[col.key]}}</a>
-                                      </ng-container>
-                                      <ng-container *ngSwitchCase="'styled'">
-                                          <span class={{col.class}}>{{r[col.key]}}</span>
-                                      </ng-container>
-                                      <ng-container *ngSwitchCase="'multi-column'">
-                                          <span>{{r[col.key]}}</span>
-                                          <br>
-                                          <span class={{col.class}}>{{r[col.multiColumnMapping]}}</span>
-                                      </ng-container>
-                                      <ng-container *ngSwitchCase="'checkbox'">
-                                              <div class="govuk-checkboxes__item">
-                                              <input class ="govuk-checkboxes__input" id="pending1" name="pending" type="checkbox" (change)="onChange(r.id,$event.target.checked)"
-                                              [checked]="displayCode">
-                                              <label class="govuk-label govuk-checkboxes__label" for="pending1"></label>
-                                     
-                                              </div>                               
-                                          </ng-container>
-                                      <ng-container *ngSwitchDefault>
-                                          {{r[col.key]}}
-                                      </ng-container>
-                                  </ng-container>
-                              </td>
-                          </ng-container>
-                      </tr>
-                  </tbody>
-              </table>  
-            </form>
-       
 
-
-<pre>Form values: {{myForm.value | json}}</pre>
 
 
 
