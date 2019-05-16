@@ -44,26 +44,13 @@ export class PendingOverviewComponent implements OnInit {
         multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16' },
         { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge'},
         { header: null, key: 'view', type: 'link' }
-      ];
-
-      this.myForm = this.fb.group({
-        pendingorgs: this.fb.array([])
-      });
-
-  
+      ];  
 
   }
 
-onChange(pendingorg: string, isChecked: boolean) {
-  const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
 
-  if (isChecked) {
-    pendingOrgFormArray.push(new FormControl(pendingorg));
-  } else {
-    let index = pendingOrgFormArray.controls.findIndex(x => x.value == pendingorg)
-    pendingOrgFormArray.removeAt(index);
-  }
-  console.log('forms',pendingOrgFormArray)
+  displayCounter(count) {
+    console.log('test',count.value);
 }
 
 }
