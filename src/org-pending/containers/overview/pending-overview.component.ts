@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as pendingOrgActions from '../../store/actions/org-pending.actions';
 import * as fromOrganisationPendingStore from '../../../org-pending/store';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -20,8 +21,11 @@ export class PendingOverviewComponent implements OnInit {
   tableRows: {}[];
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
   loading$: Observable<boolean>;
+  emails = [{ email: "email1" }, { email: "email2" }, { email: "email3" }, { email: 'email4' }]
+  myForm: FormGroup;
 
-  constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
+
+  constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>,private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationPendingStore.Load());
@@ -44,6 +48,12 @@ export class PendingOverviewComponent implements OnInit {
         { header: null, key: 'view', type: 'link' }
       ];
 
+      this.myForm = this.fb.group({
+        useremail: this.fb.array([])
+      });
+
+  
+
   }
 
   checkChanged(value: boolean): void {
@@ -53,6 +63,19 @@ export class PendingOverviewComponent implements OnInit {
   displayCounter(count) {
     console.log('test',count);
 }
+
+onChange(email: string, isChecked: boolean) {
+  const emailFormArray = <FormArray>this.myForm.controls.useremail;
+
+  if (isChecked) {
+    emailFormArray.push(new FormControl(email));
+  } else {
+    let index = emailFormArray.controls.findIndex(x => x.value == email)
+    emailFormArray.removeAt(index);
+  }
+  console.log('forms',emailFormArray)
+}
+
 
 
 
