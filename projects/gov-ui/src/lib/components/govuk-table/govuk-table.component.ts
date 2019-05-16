@@ -1,5 +1,6 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import { MOCKDATAMAPPINGS } from '../govuk-table/mock-data-mappings';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 
 @Component({
     selector: 'lib-govuk-table',
@@ -15,6 +16,7 @@ export class GovukTableComponent {
     counter = 0;
     displayCode: boolean;
     isFoo:boolean = false;
+    myForm: FormGroup;
     
 
     @Input() rows;
@@ -27,11 +29,23 @@ export class GovukTableComponent {
          multiColumnMapping: MOCKDATAMAPPINGS[3].multiColumnMapping }
     ];
 
-    constructor() { }
+    constructor(private fb: FormBuilder) { }
 
-    valueChanged(value: boolean) { // You can give any function name
+    valueChanged(value: boolean,key:string) { // You can give any function name
+        console.log('key',key)
         this.valueChange.emit(value);
     }
+
+    onChange(email: string, isChecked: boolean,) {
+        const emailFormArray = <FormArray>this.myForm.controls.useremail;
+    
+        if (isChecked) {
+          emailFormArray.push(new FormControl(email));
+        } else {
+          let index = emailFormArray.controls.findIndex(x => x.value == email)
+          emailFormArray.removeAt(index);
+        }
+      }
 
 }
 
