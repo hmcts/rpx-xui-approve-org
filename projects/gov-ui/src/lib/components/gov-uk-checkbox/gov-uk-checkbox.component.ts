@@ -66,7 +66,7 @@ onChange(pendingorg: string, isChecked: boolean) {
     this.emails = [{ id: pendingorg, isChecked: isChecked }]
 
   } else {
-    this.emails = [{ id: '1', isChecked: isChecked }]
+    this.emails = [{ id: pendingorg, isChecked: isChecked }]
   }
  
   console.log('forms in checkbox',pendingOrgFormArray)
