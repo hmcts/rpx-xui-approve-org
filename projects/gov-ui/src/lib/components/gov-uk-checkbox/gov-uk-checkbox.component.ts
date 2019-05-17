@@ -4,29 +4,23 @@ import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
   selector: 'lib-gov-checkbox',
   templateUrl: './gov-uk-checkbox.component.html',
 })
-export class GovUkCheckboxComponent implements OnInit {
+export class GovUkCheckboxComponent {
   constructor () { }
 
   @Output() valueChange = new EventEmitter();
-  emails: Array<any>;
+  checkboxInputArray: Array<any>;
 
-  @Input() id: string
-  @Input() test: Array<any>
+  @Input() inputArray: Array<any>
 
-  ngOnInit(): void {
-
-  }
-
-onInputChange(checkedId: string, isChecked: boolean, test: Array<any>) {
-console.log('test is',test)
+onInputChange(isChecked: boolean, inputArray: Array<any>) {
   if (isChecked) {
-    this.emails = [{ test: test, isChecked: isChecked }]
+    this.checkboxInputArray = [{ test: inputArray, isChecked: isChecked }]
 
   } else {
-    this.emails = [{ test: test, isChecked: isChecked }]
+    this.checkboxInputArray = [{ test: inputArray, isChecked: isChecked }]
   }
  
-  this.valueChange.emit(this.emails[0]);
+  this.valueChange.emit(this.checkboxInputArray[0]);
 }
 
 }
