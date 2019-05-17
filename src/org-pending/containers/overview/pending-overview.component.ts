@@ -20,8 +20,6 @@ export class PendingOverviewComponent implements OnInit {
   tableRows: {}[];
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
   loading$: Observable<boolean>;
-  myForm: FormGroup;
-
 
   constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>,private fb: FormBuilder) {}
 
@@ -51,6 +49,11 @@ export class PendingOverviewComponent implements OnInit {
   processCheckedOrgs(pendingOrgs) {
     console.log('in pending checked orgs are',pendingOrgs.value);
     //TO DO DISPATCH AN ACTION ETC HERE
+}
+
+activateOrganisations(){
+  //NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
+  console.log('activate orgs')
 }
 
 }
