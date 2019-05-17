@@ -58,22 +58,20 @@ export class GovUkCheckboxComponent implements OnInit {
 
 
 onChange(pendingorg: string, isChecked: boolean) {
+  console.log('id is',pendingorg)
   const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
-  this.emails = [{ pendingArray: pendingOrgFormArray, isChecked: isChecked }]
+
 
   if (isChecked) {
-    pendingOrgFormArray.push(new FormControl(pendingorg));
+    this.emails = [{ id: pendingorg, isChecked: isChecked }]
+
   } else {
-    let index = pendingOrgFormArray.controls.findIndex(x => x.value == pendingorg)
-    pendingOrgFormArray.removeAt(index);
+    this.emails = [{ id: '1', isChecked: isChecked }]
   }
-  if(isChecked)
-  {
-    //newArray
-  }
+ 
   console.log('forms in checkbox',pendingOrgFormArray)
   console.log('new array',this.emails[0].isChecked)
-  console.log('forms',this.emails[0].pendingArray)
+  console.log('forms',this.emails[0])
   this.valueChange.emit(this.emails[0]);
 }
 
