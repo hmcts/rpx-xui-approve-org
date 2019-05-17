@@ -60,7 +60,7 @@ activateOrganisations(){
   console.log('I will update store with',this.pendingOrgstoSend)
 }
 
-onGoBack(event) {
+onGoBack() {
   this.store.dispatch(new fromRoot.Back());
 }
 
