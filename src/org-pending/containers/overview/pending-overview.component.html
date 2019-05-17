@@ -1,7 +1,8 @@
                  <div class="govuk-width-container">
                    <main class ="govuk-main-wrapper" id="main-content" role="main">
-                   <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
-                        <lib-govuk-table (valueChange)='processCheckedOrgs($event)'
+                   <h1 class="govuk-heading-xl">Organisations pending activation</h1>
+                  <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisations</button>
+                   <lib-govuk-table (valueChange)='processCheckedOrgs($event)'
                           *ngIf="!(loading$ | async) else loading"
                           [columnConfig]="columnConfig" [rows]="pendingOrgs$ | async" [firstCellIsHeader]="false" [caption]="''"
                         ></lib-govuk-table>
