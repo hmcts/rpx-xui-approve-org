@@ -16,13 +16,13 @@ export class GovUkCheckboxComponent implements OnInit {
 
   }
 
-onChange(pendingorg: string, isChecked: boolean) {
+onInputChange(checkedId: string, isChecked: boolean) {
 
   if (isChecked) {
-    this.emails = [{ id: pendingorg, isChecked: isChecked }]
+    this.emails = [{ id: checkedId, isChecked: isChecked }]
 
   } else {
-    this.emails = [{ id: pendingorg, isChecked: isChecked }]
+    this.emails = [{ id: checkedId, isChecked: isChecked }]
   }
  
   this.valueChange.emit(this.emails[0]);
