@@ -48,10 +48,9 @@ export class PendingOverviewComponent implements OnInit {
 
   }
 
-
-  displayCounter(count) {
-    console.log('test in pending',count.value);
-   // console.log('test in pending',count.value[0].value);
+  processCheckedOrgs(pendingOrgs) {
+    console.log('in pending checked orgs are',pendingOrgs.value);
+    //TO DO DISPATCH AN ACTION ETC HERE
 }
 
 }

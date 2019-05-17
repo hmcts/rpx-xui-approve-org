@@ -34,7 +34,7 @@ processCheckboxInput(checkboxInputArray) {
     let index = formArray.controls.findIndex(x => x.value == checkboxInputArray.id)
     formArray.removeAt(index);
   }
-
+  console.log('form array',formArray)
   this.valueChange.emit(formArray);
 }
 
