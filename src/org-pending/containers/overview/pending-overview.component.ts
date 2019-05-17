@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromOrganisationPendingStore from '../../../org-pending/store';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import * as fromRoot from '../../../app/store';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -57,6 +58,10 @@ activateOrganisations(){
   //TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
   console.log('activate organisations')
   console.log('I will update store with',this.pendingOrgstoSend)
+}
+
+onGoBack(event) {
+  this.store.dispatch(new fromRoot.Back());
 }
 
 }
