@@ -26,12 +26,13 @@ export class GovukTableComponent implements OnInit{
   }
 
 processCheckboxInput(checkboxInputArray) {
+  console.log('here it is',checkboxInputArray)
   const formArray = <FormArray>this.inputForm.controls.checkedInput;
 
   if (checkboxInputArray.isChecked) {
-    formArray.push(new FormControl(checkboxInputArray.id));
+    formArray.push(new FormControl(checkboxInputArray.test));
   } else {
-    let index = formArray.controls.findIndex(x => x.value == checkboxInputArray.id)
+    let index = formArray.controls.findIndex(x => x.value == checkboxInputArray.test)
     formArray.removeAt(index);
   }
   console.log('form array',formArray)

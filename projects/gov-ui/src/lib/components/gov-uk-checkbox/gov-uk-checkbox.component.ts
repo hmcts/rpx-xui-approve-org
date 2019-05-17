@@ -11,18 +11,19 @@ export class GovUkCheckboxComponent implements OnInit {
   emails: Array<any>;
 
   @Input() id: string
+  @Input() test: Array<any>
 
   ngOnInit(): void {
 
   }
 
-onInputChange(checkedId: string, isChecked: boolean) {
-
+onInputChange(checkedId: string, isChecked: boolean, test: Array<any>) {
+console.log('test is',test)
   if (isChecked) {
-    this.emails = [{ id: checkedId, isChecked: isChecked }]
+    this.emails = [{ test: test, isChecked: isChecked }]
 
   } else {
-    this.emails = [{ id: checkedId, isChecked: isChecked }]
+    this.emails = [{ test: test, isChecked: isChecked }]
   }
  
   this.valueChange.emit(this.emails[0]);
