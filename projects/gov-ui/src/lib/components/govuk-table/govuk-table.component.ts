@@ -13,9 +13,7 @@ export class GovukTableComponent implements OnInit{
     @Input() caption = 'Dates and amounts';
     @Input() firstCellIsHeader = true;
     @Output() valueChange = new EventEmitter();
-    counter = 0;
-    myForm: FormGroup;
-    isChecked: boolean;
+    inputForm: FormGroup;
 
     @Input() rows;
 
@@ -29,50 +27,23 @@ export class GovukTableComponent implements OnInit{
 
     constructor(private fb: FormBuilder) { }
     ngOnInit(): void {
-    this.myForm = this.fb.group({
-      pendingorgs: this.fb.array([])
+    this.inputForm = this.fb.group({
+      checkedInput: this.fb.array([])
     });
   }
 
-    valueChanged() { // You can give any function name
-      this.counter = this.counter + 1;
-      this.valueChange.emit(this.counter);
-  }
+processCheckboxInput(checkboxInputArray) {
+  const formArray = <FormArray>this.inputForm.controls.checkedInput;
 
-
-onChange(pendingorg: string, isChecked: boolean) {
-  const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
-
-  if (isChecked) {
-    pendingOrgFormArray.push(new FormControl(pendingorg));
+  if (checkboxInputArray.isChecked) {
+    formArray.push(new FormControl(checkboxInputArray.id));
   } else {
-    let index = pendingOrgFormArray.controls.findIndex(x => x.value == pendingorg)
-    pendingOrgFormArray.removeAt(index);
+    let index = formArray.controls.findIndex(x => x.value == checkboxInputArray.id)
+    formArray.removeAt(index);
   }
-  //console.log('forms',pendingOrgFormArray)
-  this.valueChange.emit(pendingOrgFormArray);
+
+  this.valueChange.emit(formArray);
 }
-displayCounter(count) {
-  console.log('test',count.value);
-}
-displayCounterButton(count) {
-  this.isChecked = true;
-  console.log('forms heree ', count);
-  const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
-
-  if (count.isChecked) {
-    pendingOrgFormArray.push(new FormControl(count.id));
-  } else {
-    let index = pendingOrgFormArray.controls.findIndex(x => x.value == count.id)
-    console.log('index',index)
-    pendingOrgFormArray.removeAt(index);
-  }
-  console.log('forms sent here',pendingOrgFormArray)
-  this.valueChange.emit(pendingOrgFormArray);
-}
-
-
-
 
 }
 
