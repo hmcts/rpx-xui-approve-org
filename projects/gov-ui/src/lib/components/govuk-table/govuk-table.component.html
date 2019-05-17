@@ -32,8 +32,7 @@
                                 <span class={{col.class}}>{{r[col.multiColumnMapping]}}</span>
                             </ng-container>
                             <ng-container *ngSwitchCase="'checkbox'">
-                                    <lib-gov-checkbox [id]="r.id" (valueChange)='processCheckboxInput($event)'></lib-gov-checkbox>
-        
+                                    <lib-gov-checkbox [id]="r.id" [test]="r" (valueChange)='processCheckboxInput($event)'></lib-gov-checkbox>
                                 </ng-container>
                             <ng-container *ngSwitchDefault>
                                 {{r[col.key]}}
