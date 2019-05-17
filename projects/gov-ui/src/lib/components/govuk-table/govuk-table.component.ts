@@ -57,13 +57,14 @@ displayCounter(count) {
 }
 displayCounterButton(count) {
   this.isChecked = true;
-  console.log('test button id is ',count.isChecked);
+  console.log('forms heree ', count);
   const pendingOrgFormArray = <FormArray>this.myForm.controls.pendingorgs;
 
   if (count.isChecked) {
     pendingOrgFormArray.push(new FormControl(count.id));
   } else {
-    let index = pendingOrgFormArray.controls.findIndex(x => x.value == count)
+    let index = pendingOrgFormArray.controls.findIndex(x => x.value == count.id)
+    console.log('index',index)
     pendingOrgFormArray.removeAt(index);
   }
   console.log('forms sent here',pendingOrgFormArray)

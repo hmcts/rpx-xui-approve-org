@@ -33,7 +33,7 @@
                             </ng-container>
                             <ng-container *ngSwitchCase="'checkbox'">
                                     <lib-gov-checkbox [id]="r.id" (valueChange)='displayCounterButton($event)'></lib-gov-checkbox>
-                      
+        
                                 </ng-container>
                             <ng-container *ngSwitchDefault>
                                 {{r[col.key]}}
