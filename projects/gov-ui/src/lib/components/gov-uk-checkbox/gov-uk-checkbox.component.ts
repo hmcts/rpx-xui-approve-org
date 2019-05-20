@@ -14,10 +14,10 @@ export class GovUkCheckboxComponent {
 
 onInputChange(isChecked: boolean, inputArray: Array<any>) {
   if (isChecked) {
-    this.checkboxInputArray = [{ test: inputArray, isChecked: isChecked }]
+    this.checkboxInputArray = [{ input: inputArray, isChecked: isChecked }]
 
   } else {
-    this.checkboxInputArray = [{ test: inputArray, isChecked: isChecked }]
+    this.checkboxInputArray = [{ input: inputArray, isChecked: isChecked }]
   }
  
   this.valueChange.emit(this.checkboxInputArray[0]);
