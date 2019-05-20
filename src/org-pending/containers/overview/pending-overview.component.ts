@@ -39,20 +39,20 @@ export class PendingOverviewComponent implements OnInit {
         multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16' },
         { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge'},
         { header: null, key: 'view', type: 'link' }
-      ];  
+      ];
 
   }
 
 processCheckedOrgs(pendingOrgs) {
-    console.log('in pending checked orgs are',pendingOrgs.value);
-    //TO DO DISPATCH AN ACTION ETC HERE
+    console.log('in pending checked orgs are', pendingOrgs.value);
+    // TO DO DISPATCH AN ACTION ETC HERE
     this.approveOrganisations = pendingOrgs.value;
 }
 
-activateOrganisations(){
-  //TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
-  console.log('activate organisations')
-  console.log('I will update store with',this.approveOrganisations)
+activateOrganisations() {
+  // TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
+  console.log('activate organisations');
+  console.log('I will update store with', this.approveOrganisations);
 }
 
 onGoBack() {

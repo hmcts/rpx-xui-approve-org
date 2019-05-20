@@ -16,19 +16,19 @@ const initialState: PendingOrganisationState = {
 };
 
 export function reducer(
-    state = initialState, 
+    state = initialState,
     action: PendingOrgActions
     ): PendingOrganisationState {
     switch (action.type) {
         case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
-            console.log('in load')
+            console.log('in load');
             return {
               ...state,
               loaded: false,
               loading: true
             };
           }
-        case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: 
+        case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS:
         console.log(' action.payload pending',  action.payload);
         const payload = action.payload;
         let pendingOrganisations = payload;
