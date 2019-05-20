@@ -15,7 +15,7 @@ describe('PendingOrganisationActions actions', () => {
       // Success
       describe('LoadPendingOrganisationSuccess', () => {
         it('should create an action', () => {
-          const payload: PendingOrganisation [] = 
+          const payload: PendingOrganisation [] =
           [{
             name: 'Glen Byrne',
             organisationId: 'Byrne Limited',
@@ -26,7 +26,7 @@ describe('PendingOrganisationActions actions', () => {
             view: 'View',
             id: '2424242',
             email: 'glen@byrne.com'
-          }]
+          }];
           const action = new fromPendingOrganisation.LoadPendingOrganisationsSuccess(payload);
           expect({ ...action }).toEqual({
             type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS,
