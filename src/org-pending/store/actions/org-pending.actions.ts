@@ -5,7 +5,7 @@ import { Action } from '@ngrx/store';
 export enum PendingOrgActionTypes {
     LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
     LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
-    LoadFail = '[Pending Org] Load Fail'
+    LOAD_PENDING_ORGANISATIONS_FAIL = '[Pending Org] Load Fail'
 
 }
 
@@ -20,7 +20,7 @@ export class LoadPendingOrganisationsSuccess implements Action {
 }
 
 export class LoadPendingOrganisationsFail implements Action {
-    readonly type = PendingOrgActionTypes.LoadFail;
+    readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
     constructor(public payload: string) {}
 }
