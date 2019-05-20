@@ -4,11 +4,11 @@ import { hot, cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromPendingOrganisationEffects from './org-pending.effects';
-import { PendingOrgffects, PendingOrgEffects } from './org-pending.effects';
+import { PendingOrgEffects } from './org-pending.effects';
 import { LoadPendingOrganisations } from '../actions/org-pending.actions';
 import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
 import { PendingOrganisationService } from 'src/org-pending/services';
-import { PendingOrganisation } from '../../models/pending-organisation'
+import { PendingOrganisation } from '../../models/pending-organisation';
 
 describe('Pending Organisation Effects', () => {
   let actions$;
@@ -46,7 +46,7 @@ describe('loadPendingOrganisationss$', () => {
         view: 'View',
         id: '2424242',
         email: 'glen@byrne.com'
-      }]
+      }];
 
       PendingOrganisationServiceMock.fetchPendingOrganisations.and.returnValue(of(payload));
       const action = new LoadPendingOrganisations();

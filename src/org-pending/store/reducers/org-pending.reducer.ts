@@ -9,7 +9,7 @@ export interface PendingOrganisationState {
     loading: boolean;
 }
 
-const initialState: PendingOrganisationState = {
+export const initialState: PendingOrganisationState = {
     pendingOrganisations: null,
     loaded: false,
     loading: false
@@ -21,7 +21,6 @@ export function reducer(
     ): PendingOrganisationState {
     switch (action.type) {
         case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
-            console.log('in load');
             return {
               ...state,
               loaded: false,
