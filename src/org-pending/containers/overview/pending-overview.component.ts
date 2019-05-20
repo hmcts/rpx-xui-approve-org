@@ -21,7 +21,7 @@ export class PendingOverviewComponent implements OnInit {
   tableRows: {}[];
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
   loading$: Observable<boolean>;
-  pendingOrgstoSend: Array<any>;
+  approveOrganisations: Array<any>;
 
   constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
@@ -46,13 +46,13 @@ export class PendingOverviewComponent implements OnInit {
 processCheckedOrgs(pendingOrgs) {
     console.log('in pending checked orgs are',pendingOrgs.value);
     //TO DO DISPATCH AN ACTION ETC HERE
-    this.pendingOrgstoSend = pendingOrgs.value;
+    this.approveOrganisations = pendingOrgs.value;
 }
 
 activateOrganisations(){
   //TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
   console.log('activate organisations')
-  console.log('I will update store with',this.pendingOrgstoSend)
+  console.log('I will update store with',this.approveOrganisations)
 }
 
 onGoBack() {
