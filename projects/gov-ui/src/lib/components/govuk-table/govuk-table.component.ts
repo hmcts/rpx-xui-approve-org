@@ -29,9 +29,9 @@ processCheckboxInput(checkboxInputArray) {
   const formArray = <FormArray>this.inputForm.controls.checkedInput;
 
   if (checkboxInputArray.isChecked) {
-    formArray.push(new FormControl(checkboxInputArray.test));
+    formArray.push(new FormControl(checkboxInputArray.input));
   } else {
-    let index = formArray.controls.findIndex(x => x.value == checkboxInputArray.test)
+    let index = formArray.controls.findIndex(x => x.value == checkboxInputArray.input)
     formArray.removeAt(index);
   }
   this.valueChange.emit(formArray);

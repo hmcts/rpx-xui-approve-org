@@ -23,7 +23,7 @@ export class PendingOverviewComponent implements OnInit {
   loading$: Observable<boolean>;
   pendingOrgstoSend: Array<any>;
 
-  constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>,private fb: FormBuilder) {}
+  constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationPendingStore.Load());
@@ -32,8 +32,6 @@ export class PendingOverviewComponent implements OnInit {
    /*this.store.pipe(select(fromOrganisationPendingStore.getShowPendingOrgCode)).subscribe(
       showPendingOrgCode => this.displayCode = showPendingOrgCode
       );*/
-
-      //this.pendingOrgs$ = Observable.of(this.pendingOrgs);
 
       this.columnConfig = [
         { header: null, key: null, type: 'checkbox'},
@@ -48,7 +46,7 @@ export class PendingOverviewComponent implements OnInit {
 
   }
 
-  processCheckedOrgs(pendingOrgs) {
+processCheckedOrgs(pendingOrgs) {
     console.log('in pending checked orgs are',pendingOrgs.value);
     //TO DO DISPATCH AN ACTION ETC HERE
     this.pendingOrgstoSend = pendingOrgs.value;
