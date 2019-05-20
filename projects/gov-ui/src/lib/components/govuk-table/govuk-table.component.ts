@@ -6,7 +6,7 @@ import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
     templateUrl: './govuk-table.component.html',
     styleUrls: ['./govuk-table.component.scss']
 })
-export class GovukTableComponent implements OnInit{
+export class GovukTableComponent implements OnInit {
 
     @Input() classes = '';
     @Input() caption = 'Dates and amounts';
@@ -31,7 +31,7 @@ processCheckboxInput(checkboxInputArray) {
   if (checkboxInputArray.isChecked) {
     formArray.push(new FormControl(checkboxInputArray.input));
   } else {
-    let index = formArray.controls.findIndex(x => x.value == checkboxInputArray.input)
+    const index = formArray.controls.findIndex(x => x.value === checkboxInputArray.input);
     formArray.removeAt(index);
   }
   this.valueChange.emit(formArray);
