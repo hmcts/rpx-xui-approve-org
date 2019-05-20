@@ -11,18 +11,6 @@ export enum PendingOrgActionTypes {
 
 }
 
-export class TogglePendingOrgCode implements Action {
-    readonly type = PendingOrgActionTypes.TogglePendingOrgCode;
-
-    constructor(public payload: boolean) {}
-}
-
-export class SetCurrentPendingOrg implements Action {
-    readonly type = PendingOrgActionTypes.SetCurrentPendingOrg;
-
-    constructor(public payload: PendingOrganisation) {}
-}
-
 export class LoadPendingOrganisations implements Action {
     readonly type = PendingOrgActionTypes.Load;
 }
@@ -39,8 +27,7 @@ export class LoadPendingOrganisationsFail implements Action {
     constructor(public payload: string) {}
 }
 
-export type PendingOrgActions = TogglePendingOrgCode
-| SetCurrentPendingOrg
+export type PendingOrgActions = 
 | LoadPendingOrganisations
 | LoadPendingOrganisationsSuccess
 | LoadPendingOrganisationsFail;
