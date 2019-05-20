@@ -25,7 +25,7 @@ export class LoadPendingOrganisationsFail implements Action {
     constructor(public payload: string) {}
 }
 
-export type PendingOrgActions = 
+export type PendingOrgActions =
 | LoadPendingOrganisations
 | LoadPendingOrganisationsSuccess
 | LoadPendingOrganisationsFail;
