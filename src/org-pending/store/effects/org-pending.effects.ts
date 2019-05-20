@@ -12,7 +12,7 @@ import { of } from 'rxjs';
 
         @Effect()
         loadPendingOrgs$ = this.actions$.pipe(
-            ofType(pendingOrgActions.PendingOrgActionTypes.Load),
+            ofType(pendingOrgActions.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS),
             switchMap(() => {
                 return this.pendingOrgService.fetchPendingOrganisations().pipe(
                   map(pendingOrganisations => new pendingOrgActions.LoadPendingOrganisationsSuccess(pendingOrganisations)),

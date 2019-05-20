@@ -4,16 +4,12 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
 
 export interface PendingOrganisationState {
-    showPendingOrg: boolean;
-    currentOrg: PendingOrganisation;
     pendingOrganisations: PendingOrganisation[];
     loaded: boolean;
     loading: boolean;
 }
 
 const initialState: PendingOrganisationState = {
-    showPendingOrg: true,
-    currentOrg: null,
     pendingOrganisations: null,
     loaded: false,
     loading: false
@@ -24,7 +20,7 @@ export function reducer(
     action: PendingOrgActions
     ): PendingOrganisationState {
     switch (action.type) {
-        case PendingOrgActionTypes.Load: {
+        case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
             console.log('in load')
             return {
               ...state,
@@ -32,7 +28,7 @@ export function reducer(
               loading: true
             };
           }
-        case PendingOrgActionTypes.LoadSuccess: 
+        case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: 
         console.log(' action.payload pending',  action.payload);
         const payload = action.payload;
         let pendingOrganisations = payload;
