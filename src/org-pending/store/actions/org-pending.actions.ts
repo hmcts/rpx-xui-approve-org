@@ -22,7 +22,7 @@ export class LoadPendingOrganisationsSuccess implements Action {
 export class LoadPendingOrganisationsFail implements Action {
     readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
-    constructor(public payload: string) {}
+    constructor(public payload: any) {}
 }
 
 export type PendingOrgActions =

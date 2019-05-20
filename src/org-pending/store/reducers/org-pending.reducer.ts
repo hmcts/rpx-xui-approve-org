@@ -29,16 +29,14 @@ export function reducer(
             };
           }
         case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS:
-        console.log(' action.payload pending',  action.payload);
-        const payload = action.payload;
-        let pendingOrganisations = payload;
+        let pendingOrganisations = action.payload;
         if (pendingOrganisations.length !== 0) {
-            pendingOrganisations = payload.map((entity: PendingOrganisation) => {
-                const element: PendingOrganisationSummary = {
-                  ...entity,
-                  routerLink: `/pending-organisations/pending-organisation/${entity.pbaNumber}/`
+            pendingOrganisations = pendingOrganisations.map((pendingOrganisation: PendingOrganisation) => {
+                const pendingOrgDetail: PendingOrganisationSummary = {
+                  ...pendingOrganisation,
+                  routerLink: `/pending-organisations/pending-organisation/${pendingOrganisation.pbaNumber}/`
                 };
-                return element;
+                return pendingOrgDetail;
               });
           }
         return {
