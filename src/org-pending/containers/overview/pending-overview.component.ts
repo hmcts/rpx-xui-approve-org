@@ -28,7 +28,7 @@ export class PendingOverviewComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
-    //this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.organisationsLoading));
+    this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
       this.columnConfig = [
         { header: null, key: null, type: 'checkbox'},

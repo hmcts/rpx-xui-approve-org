@@ -8,4 +8,4 @@ export const getPendingOrgs = createSelector(
     state => state.pendingOrganisations
 );
 
-export const organisationsLoading = createSelector( getPendingOrgsFeatureState,     state => state.loading);
+export const pendingOrganisationsLoading = createSelector( getPendingOrgsFeatureState,     state => state.loading);
