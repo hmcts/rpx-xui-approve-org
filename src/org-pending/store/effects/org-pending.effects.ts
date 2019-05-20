@@ -16,8 +16,8 @@ import { of } from 'rxjs';
             ofType(pendingOrgActions.PendingOrgActionTypes.Load),
             switchMap(() => {
                 return this.pendingOrgService.fetchPendingOrganisations().pipe(
-                  map(pendingOrganisations => new pendingOrgActions.LoadSuccess(pendingOrganisations)),
-                  catchError(error => of(new pendingOrgActions.LoadFail(error)))
+                  map(pendingOrganisations => new pendingOrgActions.LoadPendingOrganisationsSuccess(pendingOrganisations)),
+                  catchError(error => of(new pendingOrgActions.LoadPendingOrganisationsFail(error)))
                 );
               })
             );

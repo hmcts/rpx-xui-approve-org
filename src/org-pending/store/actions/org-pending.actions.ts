@@ -23,17 +23,17 @@ export class SetCurrentPendingOrg implements Action {
     constructor(public payload: PendingOrganisation) {}
 }
 
-export class Load implements Action {
+export class LoadPendingOrganisations implements Action {
     readonly type = PendingOrgActionTypes.Load;
 }
 
-export class LoadSuccess implements Action {
+export class LoadPendingOrganisationsSuccess implements Action {
     readonly type = PendingOrgActionTypes.LoadSuccess;
 
     constructor(public payload: PendingOrganisation[]) {}
 }
 
-export class LoadFail implements Action {
+export class LoadPendingOrganisationsFail implements Action {
     readonly type = PendingOrgActionTypes.LoadFail;
 
     constructor(public payload: string) {}
@@ -41,6 +41,6 @@ export class LoadFail implements Action {
 
 export type PendingOrgActions = TogglePendingOrgCode
 | SetCurrentPendingOrg
-| Load
-| LoadSuccess
-| LoadFail;
+| LoadPendingOrganisations
+| LoadPendingOrganisationsSuccess
+| LoadPendingOrganisationsFail;
