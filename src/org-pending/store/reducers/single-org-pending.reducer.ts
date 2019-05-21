@@ -2,13 +2,13 @@ import * as fromSingleOrgActions from '../actions/single-org-pending.actions';
 import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary'
 
 export interface PendingSingleOrgState {
-    data: {}  | SingleOrgSummary;
+    data: SingleOrgSummary;
     loaded: boolean;
     loading: boolean;
 }
 
 export const initialState: PendingSingleOrgState = {
-    data: {},
+    data: null,
     loaded: false,
     loading: false,
 };

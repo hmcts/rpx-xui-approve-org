@@ -5,6 +5,7 @@ import {Observable, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import * as fromOrganisationPendingStore from '../../../org-pending/store';
 import { SummaryComponent } from 'src/org-manager/containers';
+import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
 
 @Component({
   selector: 'app-org-pending-summary',
@@ -19,7 +20,7 @@ export class OrgPendingSummaryComponent implements OnInit {
   $routeSubscription: Subscription;
   pageId: string;
   x: any;
-  y: any;
+  y: Observable<any>;
   constructor(
     private activeRoute: ActivatedRoute,
     private store: Store<fromfeatureStore.OrganisationState>) { }
