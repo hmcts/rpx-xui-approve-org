@@ -19,6 +19,7 @@ export class OrgPendingSummaryComponent implements OnInit {
   $routeSubscription: Subscription;
   pageId: string;
   x: any;
+  y: any;
   constructor(
     private activeRoute: ActivatedRoute,
     private store: Store<fromfeatureStore.OrganisationState>) { }
@@ -37,6 +38,7 @@ export class OrgPendingSummaryComponent implements OnInit {
     });
 
     this.orgSummary$.subscribe( x => this.x = x.name)
+    this.orgSummary$.subscribe( x => this.y = x)
 
   }
 
