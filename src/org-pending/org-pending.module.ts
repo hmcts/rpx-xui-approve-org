@@ -7,15 +7,15 @@ import {SharedModule} from '../shared/shared.module';
 import * as fromServices from './services';
 import {HttpClientModule} from '@angular/common/http';
 import {orgPendingRouting} from './org-pending';
-import { PendingOverviewComponent } from './containers';
 import { StoreModule } from '@ngrx/store';
 import { reducer } from './store/reducers/org-pending.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { PendingOrgEffects } from './store/effects/org-pending.effects';
-
-
-export const COMPONENTS = [PendingOverviewComponent];
-
+import { OrgPendingOverviewComponent } from './containers/org-pending-overview/org-pending-overview.component';
+import { OrgPendingSummaryComponent } from './containers/org-pending-summary/org-pending-summary.component';
+// containers
+import * as fromContainers from './containers';
+export const COMPONENTS = [OrgPendingOverviewComponent,OrgPendingSummaryComponent];
 
 @NgModule({
   imports: [
@@ -26,8 +26,8 @@ export const COMPONENTS = [PendingOverviewComponent];
     StoreModule.forFeature('org-pending', reducer),
     EffectsModule.forFeature([PendingOrgEffects])
   ],
-  exports: [],
-  declarations: [...COMPONENTS],
+  exports: [...fromContainers.containers],
+  declarations: [...fromContainers.containers,...COMPONENTS],
   providers: [...fromServices.services]
 })
 

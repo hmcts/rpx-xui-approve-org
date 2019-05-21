@@ -1,7 +1,10 @@
-import { PendingOverviewComponent } from './overview/pending-overview.component';
+import { OverviewComponent } from './overview/pending-overview.component';
+import { SummaryComponent } from '../components/summary/summary.component';
 
 export const containers: any[] = [
-  PendingOverviewComponent
+  OverviewComponent,
+  SummaryComponent
 ];
 
 export * from './overview/pending-overview.component';
+export * from './org-pending-summary/org-pending-summary.component'
