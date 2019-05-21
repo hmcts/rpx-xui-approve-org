@@ -27,18 +27,16 @@ export function reducer(
       };
     }
     case fromOrganisationActions.LOAD_ORGANISATIONS_SUCCESS: {
-      const payload = action.payload;
-      let organisations = payload;
+      let organisations = action.payload;
       if (organisations.length !== 0) {
-        organisations = payload.map((entity: Organisation) => {
-            const element: OrganisationSummary = {
-              ...entity,
-              routerLink: `/organisations/organisation/${entity.pbaNumber}/`
+        organisations = action.payload.map((organisation: Organisation) => {
+            const routerLink: OrganisationSummary = {
+              ...organisation,
+              routerLink: `/organisations/organisation/${organisation.pbaNumber}/`
             };
-            return element;
+            return routerLink;
           });
       }
-
       return {
         ...state,
           organisations: organisations,
