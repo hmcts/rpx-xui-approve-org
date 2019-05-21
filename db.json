@@ -33,33 +33,33 @@
       },
       {
         "pbaNumber":"101010",
-        "status": "ACTIVE",
+        "status": "PENDING",
         "effective_date": "22/10/2022",
         "dx_exchange": "272727",
-        "name": "Moley Limited",
-        "address": "45 Malachy Conlon Park",
+        "name": "Byrne Limited",
+        "address": "13 Berryfield drive, Finglas",
         "dxNumber": "101010",
-        "dxExchange": "939393",
-        "admin": "Toireasa Moley",
-        "organisationId": "Speake Limited",
+        "dxExchange": "101010",
+        "admin": "Glen Byrne",
+        "organisationId": "Byrne Limited",
         "view": "View",
         "id": "12345678",
-        "email": "matt@speake.com"
+        "email": "glen@byrne.com"
       },
       {
         "pbaNumber":"271093",
-        "status": "ACTIVE",
+        "status": "PENDING",
         "effective_date": "22/10/2022",
-        "dx_exchange": "272727",
+        "dx_exchange": "271093",
         "name": "Moley Limited",
         "address": "45 Malachy Conlon Park",
-        "dxNumber": "101010",
-        "dxExchange": "939393",
-        "admin": "Toireasa Moley",
-        "organisationId": "Speake Limited",
+        "dxNumber": "271093",
+        "dxExchange": "271093",
+        "admin": "Siofra Moley",
+        "organisationId": "Moleu Limited",
         "view": "View",
         "id": "12345678",
-        "email": "matt@speake.com"
+        "email": "siofra@moley.com"
       }
     ]
 }
