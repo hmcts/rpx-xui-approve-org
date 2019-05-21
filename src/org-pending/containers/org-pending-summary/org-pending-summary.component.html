@@ -1,7 +1,5 @@
-  <app-org-summary-component
-    *ngIf="!(loading$ | async) else loading"
-    [data]="orgSummary$ | async"
-  ></app-org-summary-component>
-  <ng-template #loading>
-    <div>Loading...</div>
-  </ng-template>
+
+test
+  <div *ngFor='let org of orgSummary$ | async'>
+    {{org.name}}
+</div>
