@@ -13,7 +13,7 @@ import * as fromRoot from '../../../app/store';
   templateUrl: './pending-overview.component.html',
 })
 
-export class PendingOverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit {
 
   pendingOrgs: PendingOrganisation[];
   displayCode: boolean;
