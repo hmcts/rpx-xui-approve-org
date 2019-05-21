@@ -1,5 +1,7 @@
 
 test
-  <div *ngFor='let org of orgSummary$ | async'>
-    {{org.name}}
-</div>
+<app-org-summary-component [data]="x"></app-org-summary-component>
+
+<li>
+  <b> test this {{x}} </b>           
+</li>
