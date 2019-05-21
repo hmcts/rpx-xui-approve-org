@@ -18,7 +18,7 @@ export function reducer(
   action: fromSingleOrgActions.SingleOrgActions
 ): PendingSingleOrgState {
   switch (action.type) {
-    case fromSingleOrgActions.LOAD_SINGLE_ORG_SUCCESS: {
+    case fromSingleOrgActions.SinglePendingOrgActionTypes.LOAD_SINGLE_ORG_SUCCESS: {
       const payload = action.payload;
       console.log('in success')
       return {
@@ -29,7 +29,7 @@ export function reducer(
       };
 
     }
-    case fromSingleOrgActions.RESET_SINGLE_ORG: {
+    case fromSingleOrgActions.SinglePendingOrgActionTypes.RESET_SINGLE_ORG: {
       return initialState;
     }
 
