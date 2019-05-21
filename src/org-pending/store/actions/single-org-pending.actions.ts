@@ -3,25 +3,25 @@ import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary'
 
 
 export enum SinglePendingOrgActionTypes {
-   LOAD_SINGLE_ORG = '[Single Org] Load Single Org',
-   LOAD_SINGLE_ORG_SUCCESS = '[Single Org] Load Single Org Success',
-   LOAD_SINGLE_ORG_FAIL = '[Single Org] Load Single Org Fail',
-  RESET_SINGLE_ORG = '[Single Org] Reset Single Org'
+   LOAD = 'Loading',
+   LOAD_SUCCESS = 'f',
+   LOAD_FAIL = 'f',
+  RESET_SINGLE_ORG = 'f'
 
 }
 
 export class LoadSingleOrg {
-  readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_ORG;
+  readonly type = SinglePendingOrgActionTypes.LOAD;
   constructor(public payload: any) {}
 }
 
 export class LoadSingleOrgSuccess  implements Action {
-  readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_ORG_SUCCESS;
+  readonly type = SinglePendingOrgActionTypes.LOAD_SUCCESS;
   constructor(public payload: SingleOrgSummary) {}
 }
 
 export class LoadSingleOrgFail implements Action {
-  readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_ORG_FAIL;
+  readonly type = SinglePendingOrgActionTypes.LOAD_FAIL;
   constructor(public payload: any) {}
 }
 
