@@ -2,7 +2,7 @@ import * as fromSingleOrgActions from '../actions/single-org-pending.actions';
 import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary'
 
 export interface PendingSingleOrgState {
-    data: SingleOrgSummary;
+    data: any;
     loaded: boolean;
     loading: boolean;
 }
@@ -18,7 +18,7 @@ export function reducer(
   action: fromSingleOrgActions.SingleOrgActions
 ): PendingSingleOrgState {
   switch (action.type) {
-    case fromSingleOrgActions.SinglePendingOrgActionTypes.LOAD_SINGLE_ORG_SUCCESS: {
+    case fromSingleOrgActions.SinglePendingOrgActionTypes.LOAD_SUCCESS: {
       const payload = action.payload;
       console.log('in success')
       return {
@@ -41,3 +41,5 @@ export function reducer(
 export const getSingleOrgOverview = (state: PendingSingleOrgState) => state.data;
 export const getSingleOrgOverviewLoading = (state: PendingSingleOrgState) => state.loading;
 export const getSingleOrgOverviewLoaded = (state: PendingSingleOrgState) => state.loaded;
+
+

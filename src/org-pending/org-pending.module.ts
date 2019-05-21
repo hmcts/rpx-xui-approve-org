@@ -10,8 +10,9 @@ import {orgPendingRouting} from './org-pending';
 import { StoreModule } from '@ngrx/store';
 //import { reducer } from './store/reducers/org-pending/index';
 import { reducers } from './store/reducers/index'
+import { effects } from './store/effects/index'
 import { EffectsModule } from '@ngrx/effects';
-import { PendingOrgEffects } from './store/effects/org-pending.effects';
+//import { PendingOrgEffects } from './store/effects/org-pending.effects';
 import { OrgPendingOverviewComponent } from './containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingSummaryComponent } from './containers/org-pending-summary/org-pending-summary.component';
 // containers
@@ -25,7 +26,7 @@ export const COMPONENTS = [OrgPendingOverviewComponent,OrgPendingSummaryComponen
     SharedModule,
     orgPendingRouting,
     StoreModule.forFeature('org-pending', reducers),
-    EffectsModule.forFeature([PendingOrgEffects])
+    EffectsModule.forFeature(effects)
   ],
   exports: [...fromContainers.containers],
   declarations: [...fromContainers.containers,...COMPONENTS],
