@@ -2,9 +2,10 @@ import { PendingOrganisation, PendingOrganisationSummary } from '../../models/pe
 import * as fromRoot from '../../../app/store/reducers/app.reducer';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
+import { RouterLink } from '@angular/router';
 
 export interface PendingOrganisationState {
-    pendingOrganisations: PendingOrganisation[];
+    pendingOrganisations: Array<PendingOrganisation> | null;
     loaded: boolean;
     loading: boolean;
 }
