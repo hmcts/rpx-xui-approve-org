@@ -20,12 +20,12 @@ describe('Pending Organisation Effects', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-          {
-            provide: PendingOrganisationService,
-            useValue: PendingOrganisationServiceMock,
-          },
-          fromPendingOrganisationEffects.PendingOrgEffects,
-          provideMockActions(() => actions$)
+        {
+          provide: PendingOrganisationService,
+          useValue: PendingOrganisationServiceMock,
+        },
+        fromPendingOrganisationEffects.PendingOrgEffects,
+        provideMockActions(() => actions$)
       ]
     });
 
@@ -33,10 +33,9 @@ describe('Pending Organisation Effects', () => {
 
   });
 
-
-describe('loadPendingOrganisationss$', () => {
+  describe('loadPendingOrganisationss$', () => {
     it('should return a collection from loadPendingOrgs$ - LoadPendingOrganisationsSuccess', () => {
-      const payload: PendingOrganisation[] =   [{
+      const payload: PendingOrganisation[] = [{
         name: 'Glen Byrne',
         organisationId: 'Byrne Limited',
         address: '13 Berryfield drive, Finglas',
@@ -67,5 +66,4 @@ describe('loadPendingOrganisationss$', () => {
       expect(effects.loadPendingOrgs$).toBeObservable(expected);
     });
   });
-
 });

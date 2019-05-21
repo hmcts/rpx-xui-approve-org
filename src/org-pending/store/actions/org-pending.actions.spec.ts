@@ -12,10 +12,10 @@ describe('PendingOrganisationActions actions', () => {
         });
       });
     });
-      // Success
-      describe('LoadPendingOrganisationSuccess', () => {
-        it('should create an action', () => {
-          const payload: PendingOrganisation [] =
+    // Success
+    describe('LoadPendingOrganisationSuccess', () => {
+      it('should create an action', () => {
+        const payload: PendingOrganisation[] =
           [{
             name: 'Glen Byrne',
             organisationId: 'Byrne Limited',
@@ -27,29 +27,23 @@ describe('PendingOrganisationActions actions', () => {
             id: '2424242',
             email: 'glen@byrne.com'
           }];
-          const action = new fromPendingOrganisation.LoadPendingOrganisationsSuccess(payload);
-          expect({ ...action }).toEqual({
-            type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS,
-            payload
-          });
+        const action = new fromPendingOrganisation.LoadPendingOrganisationsSuccess(payload);
+        expect({ ...action }).toEqual({
+          type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS,
+          payload
         });
       });
-          // Fail
-          describe('LoadPendingOrganisationFail', () => {
-            it('should create an action', () => {
-              const action = new fromPendingOrganisation.LoadPendingOrganisationsFail('error');
-              const payload = 'error';
-              expect({ ...action }).toEqual({
-                type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL,
-                payload
-              });
-            });
-          });
-
-
-
-
-
-
-});
+    });
+    // Fail
+    describe('LoadPendingOrganisationFail', () => {
+      it('should create an action', () => {
+        const action = new fromPendingOrganisation.LoadPendingOrganisationsFail('error');
+        const payload = 'error';
+        expect({ ...action }).toEqual({
+          type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL,
+          payload
+        });
+      });
+    });
+  });
 });
