@@ -18,7 +18,7 @@ export class OrgPendingSummaryComponent implements OnInit {
   pageId: string;
   constructor(
     private activeRoute: ActivatedRoute,
-    private store: Store<fromfeatureStore.PendingOrganisationState>) { }
+    private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) { }
 
   ngOnInit() {
 
