@@ -14,7 +14,7 @@ export class PendingOrganisationService {
   }
 
   fetchPendingOrganisations(): Observable<Array<PendingOrganisation>> {
-    const obj: PendingOrganisation[] = PendingOrganisationsMock;
+    const obj: any = PendingOrganisationsMock;
     return of(obj);
   }
 

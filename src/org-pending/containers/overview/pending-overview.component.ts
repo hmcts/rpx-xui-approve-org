@@ -15,19 +15,19 @@ import * as fromRoot from '../../../app/store';
 
 export class OverviewComponent implements OnInit {
 
-  pendingOrgs: PendingOrganisation[];
+  pendingOrgs: any;
   displayCode: boolean;
   columnConfig: GovukTableColumnConfig[];
   tableRows: {}[];
-  pendingOrgs$: Observable<Array<PendingOrganisation>>;
+  pendingOrgs$: any;
   loading$: Observable<boolean>;
   approveOrganisations: Array<any>;
-
+  orgs: Observable<any>;
   constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
-    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
+    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
       this.columnConfig = [
@@ -41,18 +41,24 @@ export class OverviewComponent implements OnInit {
         { header: null, key: 'view', type: 'link' }
       ];
 
+      this.pendingOrgs$.subscribe( x => console.log('x is',x.pendingOrganisations))
+      this.pendingOrgs$.subscribe( x => console.log('x is',x.pendingOrganisations))
+      this.pendingOrgs$.subscribe( x => this.orgs = x.pendingOrganisations)
+
   }
 
 processCheckedOrgs(pendingOrgs) {
     console.log('in pending checked orgs are', pendingOrgs.value);
     // TO DO DISPATCH AN ACTION ETC HERE
     this.approveOrganisations = pendingOrgs.value;
+    
 }
 
 activateOrganisations() {
   // TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
   console.log('activate organisations');
   console.log('I will update store with', this.approveOrganisations);
+
 }
 
 onGoBack() {
