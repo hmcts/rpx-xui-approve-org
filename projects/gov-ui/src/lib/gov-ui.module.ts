@@ -12,6 +12,7 @@ import {GovUkFormGroupWrapperComponent} from './components/gov-uk-form-group-wra
 import {GovUkLabelComponent} from './components/gov-uk-label/gov-uk-label.component';
 import {GovUkErrorMessageComponent} from './components/gov-uk-error-message/gov-uk-error-message.component';
 import {RemoveHostDirective} from '../../../../src/app/directives/remove-host.directive';
+import { GovUkCheckboxComponent } from './components/gov-uk-checkbox/gov-uk-checkbox.component';
 
 const COMPONENTS = [
   GovukTableComponent,
@@ -21,6 +22,7 @@ const COMPONENTS = [
   GovUkErrorSummaryComponent,
   GovUkInputComponent,
   GovUkFormGroupWrapperComponent,
+  GovUkCheckboxComponent,
   GovUkLabelComponent,
   GovUkErrorMessageComponent,
   RemoveHostDirective

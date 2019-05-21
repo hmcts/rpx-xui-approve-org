@@ -3,44 +3,29 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 import { Action } from '@ngrx/store';
 
 export enum PendingOrgActionTypes {
-    TogglePendingOrgCode = '[Pending Org] Toggle Pending Org',
-    SetCurrentPendingOrg = '[Pending Org] Set Current Pending Org',
-    Load = '[Pending Org] Load',
-    LoadSuccess = '[Pending Org] Load Success',
-    LoadFail = '[Pending Org] Load Fail'
+    LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
+    LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
+    LOAD_PENDING_ORGANISATIONS_FAIL = '[Pending Org] Load Fail'
 
 }
 
-export class TogglePendingOrgCode implements Action {
-    readonly type = PendingOrgActionTypes.TogglePendingOrgCode;
-
-    constructor(public payload: boolean) {}
+export class LoadPendingOrganisations implements Action {
+    readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS;
 }
 
-export class SetCurrentPendingOrg implements Action {
-    readonly type = PendingOrgActionTypes.SetCurrentPendingOrg;
-
-    constructor(public payload: PendingOrganisation) {}
-}
-
-export class Load implements Action {
-    readonly type = PendingOrgActionTypes.Load;
-}
-
-export class LoadSuccess implements Action {
-    readonly type = PendingOrgActionTypes.LoadSuccess;
+export class LoadPendingOrganisationsSuccess implements Action {
+    readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS;
 
     constructor(public payload: PendingOrganisation[]) {}
 }
 
-export class LoadFail implements Action {
-    readonly type = PendingOrgActionTypes.LoadFail;
+export class LoadPendingOrganisationsFail implements Action {
+    readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
-    constructor(public payload: string) {}
+    constructor(public payload: any) {}
 }
 
-export type PendingOrgActions = TogglePendingOrgCode
-| SetCurrentPendingOrg
-| Load
-| LoadSuccess
-| LoadFail;
+export type PendingOrgActions =
+| LoadPendingOrganisations
+| LoadPendingOrganisationsSuccess
+| LoadPendingOrganisationsFail;
