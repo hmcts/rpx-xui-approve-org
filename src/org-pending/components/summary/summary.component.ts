@@ -12,7 +12,7 @@ import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary'
 })
 export class SummaryComponent implements OnInit {
 
-  @Input() data: SingleOrgSummary;
+  @Input() data;
 
   constructor() {}
 
