@@ -58,7 +58,10 @@ activateOrganisations() {
   // TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
   console.log('activate organisations');
   console.log('I will update store with', this.approveOrganisations);
-
+  this.store.dispatch({
+    type: 'TOGGLE_PRODUCT_CODE',
+    payload: true
+  });
 }
 
 onGoBack() {
