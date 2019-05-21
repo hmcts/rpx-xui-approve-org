@@ -5,7 +5,7 @@ import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending
 import { RouterLink } from '@angular/router';
 
 export interface PendingOrganisationState {
-    pendingOrganisations: Array<PendingOrganisation> | null;
+    pendingOrganisations: Array<any> | null;
     loaded: boolean;
     loading: boolean;
 }
@@ -29,9 +29,9 @@ export function reducer(
             };
           }
         case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS:
-          let pendingOrganisations = action.payload;
-          if (pendingOrganisations.length !== 0) {
-            pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
+          let pendingOrg = action.payload;
+          if (pendingOrg.length !== 0) {
+            pendingOrg = action.payload.map((pendingOrganisation: PendingOrganisation) => {
                 const routerLink: PendingOrganisationSummary = {
                   ...pendingOrganisation,
                   routerLink: `/pending-organisations/pending-organisation/${pendingOrganisation.pbaNumber}/`
@@ -42,7 +42,7 @@ export function reducer(
 
         return {
             ...state,
-            pendingOrganisations:  pendingOrganisations,
+            pendingOrganisations:  pendingOrg,
             loaded: true,
             loading: false
         };
