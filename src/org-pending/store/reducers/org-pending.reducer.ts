@@ -38,7 +38,7 @@ export function reducer(
                 return routerLink;
               });
           }
-        
+
         return {
             ...state,
             pendingOrganisations:  pendingOrganisations,
