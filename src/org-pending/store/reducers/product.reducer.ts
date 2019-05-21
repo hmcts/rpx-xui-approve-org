@@ -1,3 +1,12 @@
+export interface ProductState {
+  showProductCode: boolean;
+}
+
+export const initialState: ProductState = {
+  showProductCode: null
+};
+
+
 export function reducer(state, action) {
   switch (action.type) {
 
