@@ -4,9 +4,9 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as fromPendingOrgReducer from '../../store/reducers/org-pending.reducer';
-import * as fromPendingOrgSelector from '../../store/selectors/org-pending.selector';
-import * as pendingOrgActions from '../../store/actions/org-pending.actions';
+import * as fromOrganisationPendingStore from '../../../org-pending/store';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
+import * as fromRoot from '../../../app/store';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -20,36 +20,44 @@ export class PendingOverviewComponent implements OnInit {
   columnConfig: GovukTableColumnConfig[];
   tableRows: {}[];
   pendingOrgs$: Observable<Array<PendingOrganisation>>;
+  loading$: Observable<boolean>;
+  approveOrganisations: Array<any>;
 
-  constructor(private store: Store<fromPendingOrgReducer.State>) {}
+  constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new pendingOrgActions.Load());
-    this.store.pipe(select(fromPendingOrgSelector.getPendingOrgs))
-    .subscribe((pendingOrgs: PendingOrganisation[]) => this.pendingOrgs = pendingOrgs);
-
-    console.log('printing pending organisations');
-    console.log(this.pendingOrgs);
-
-   this.store.pipe(select(fromPendingOrgSelector.getShowPendingOrgCode)).subscribe(
-      showPendingOrgCode => this.displayCode = showPendingOrgCode
-      );
-
-      this.pendingOrgs$ = Observable.of(this.pendingOrgs);
+    this.store.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
+    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
+    this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
       this.columnConfig = [
-        { header: 'Reference', key: 'organisationId'},
+        { header: null, key: null, type: 'checkbox'},
+        { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
+        class: 'govuk-caption-m govuk-!-font-size-16'},
         { header: 'Address', key: 'address' },
-        { header: 'Administrator', key: 'admin' },
-        { header: 'Status', key: 'status' },
+        { header: 'Administrator', key: 'admin', type: 'multi-column',
+        multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16' },
+        { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge'},
         { header: null, key: 'view', type: 'link' }
       ];
 
   }
 
-  checkChanged(value: boolean): void {
-    this.store.dispatch(new pendingOrgActions.TogglePendingOrgCode(value));
-  }
+processCheckedOrgs(pendingOrgs) {
+    console.log('in pending checked orgs are', pendingOrgs.value);
+    // TO DO DISPATCH AN ACTION ETC HERE
+    this.approveOrganisations = pendingOrgs.value;
+}
+
+activateOrganisations() {
+  // TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
+  console.log('activate organisations');
+  console.log('I will update store with', this.approveOrganisations);
+}
+
+onGoBack() {
+  this.store.dispatch(new fromRoot.Back());
+}
 
 }
 
