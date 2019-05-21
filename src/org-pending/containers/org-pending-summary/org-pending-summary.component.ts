@@ -19,7 +19,7 @@ export class OrgPendingSummaryComponent implements OnInit {
   errorMessage = '';
   $routeSubscription: Subscription;
   pageId: string;
-  x: any;
+  xs: Array<any>;
   y: Observable<any>;
   constructor(
     private activeRoute: ActivatedRoute,
@@ -29,7 +29,7 @@ export class OrgPendingSummaryComponent implements OnInit {
 
     //this.orgSummary$ = this.store.pipe(select(fromOrganisationPendingStore.getSingleOrgState));
     this.orgSummary$ = this.store.pipe(select(fromOrganisationPendingStore.getSingleOrgOverview));
-    //this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
+    this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.orgSummaryLoading));
 
     this.$routeSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
       if (routeParams.id && routeParams.id !== this.pageId) { // TODO see why double call.
@@ -41,8 +41,9 @@ export class OrgPendingSummaryComponent implements OnInit {
 
     //this.orgSummary$.subscribe( x => this.x = x.name)
     //this.orgSummary$.subscribe( x => this.y = x)
-   //this.orgSummary$.subscribe(x=>console.log('here',x))
-     this.orgSummary$.subscribe( x => this.y = x)
+   this.orgSummary$.subscribe(x=>console.log('here',x))
+     this.orgSummary$.subscribe( x => this.xs = x)
+     //this.loading$.subscribe(x=>console.log('here',x))
 
   }
 
