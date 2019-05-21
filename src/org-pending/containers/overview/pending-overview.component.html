@@ -4,7 +4,7 @@
       <h1 class="govuk-heading-xl">Organisations pending activation</h1>
       <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisations</button>
       <lib-govuk-table (valueChange)='processCheckedOrgs($event)' *ngIf="!(loading$ | async) else loading" 
-      [columnConfig]="columnConfig" [rows]="pendingOrgs$ | async" [firstCellIsHeader]="false" [caption]="''"></lib-govuk-table>
+      [columnConfig]="columnConfig" [rows]="orgs" [firstCellIsHeader]="false" [caption]="''"></lib-govuk-table>
       <ng-template #loading>
           <div>Loading...</div>
       </ng-template>
