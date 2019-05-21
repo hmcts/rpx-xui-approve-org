@@ -12,7 +12,7 @@ import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
   templateUrl: './org-pending-summary.component.html'
 })
 export class OrgPendingSummaryComponent implements OnInit {
-  orgSummary$: Observable<any>;
+  orgSummary$: any;
   vehicles: SummaryComponent;
   loading$: Observable<boolean>;
   orgSummary = {};
@@ -23,23 +23,26 @@ export class OrgPendingSummaryComponent implements OnInit {
   y: Observable<any>;
   constructor(
     private activeRoute: ActivatedRoute,
-    private store: Store<fromfeatureStore.OrganisationState>) { }
+    private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) { }
 
   ngOnInit() {
 
-    this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleOrgOverview));
+    //this.orgSummary$ = this.store.pipe(select(fromOrganisationPendingStore.getSingleOrgState));
+    this.orgSummary$ = this.store.pipe(select(fromOrganisationPendingStore.getSingleOrgOverview));
     //this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
 
-    this.$routeSubscription = this.store.pipe(select(fromfeatureStore.getCurrentPage)).subscribe((routeParams) => {
+    this.$routeSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
       if (routeParams.id && routeParams.id !== this.pageId) { // TODO see why double call.
         this.pageId = routeParams.id;
-        this.store.dispatch(new fromfeatureStore.LoadSingleOrg({ id: this.pageId
+        this.store.dispatch(new fromOrganisationPendingStore.LoadSingleOrg({ id: this.pageId
         }));
       }
     });
 
-    this.orgSummary$.subscribe( x => this.x = x.name)
-    this.orgSummary$.subscribe( x => this.y = x)
+    //this.orgSummary$.subscribe( x => this.x = x.name)
+    //this.orgSummary$.subscribe( x => this.y = x)
+   //this.orgSummary$.subscribe(x=>console.log('here',x))
+     this.orgSummary$.subscribe( x => this.y = x)
 
   }
 
