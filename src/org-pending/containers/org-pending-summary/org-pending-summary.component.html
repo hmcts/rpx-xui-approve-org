@@ -1,1 +1,7 @@
-<app-org-summary-component [data]="y"></app-org-summary-component>
+<app-org-summary-component *ngIf="!(loading$ | async) else loading" [data]="xs"></app-org-summary-component>
+
+
+<div>
+ TEST {{xs.name}}
+</div>
+TEST
