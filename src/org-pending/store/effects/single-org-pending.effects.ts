@@ -6,8 +6,6 @@ import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {PendingOrganisationService} from '../../services';
 
-
-
 @Injectable()
 export class SingleOrgEffects {
   constructor(
@@ -22,9 +20,8 @@ export class SingleOrgEffects {
       console.log('LOAD_SINGLE_ORGANISATION pending ::: data is', data);
       return this.orgService.getSingleOrganisation(data.payload).pipe(
         map(singleOrgDetails => {
-          console.log('singleOrganisationDetails this effect pending ===>', singleOrgDetails);
+          console.log('singleOrganisationDetails ===>', singleOrgDetails);
           return new singleOrganisationActions.LoadSingleOrgSuccess(singleOrgDetails[0]);
-
         }),
         catchError(error => of(new singleOrganisationActions.LoadSingleOrgFail(error)))
       );
