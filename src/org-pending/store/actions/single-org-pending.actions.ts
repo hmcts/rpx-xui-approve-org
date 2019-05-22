@@ -2,11 +2,10 @@ import {Action} from '@ngrx/store';
 import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary';
 
 export enum SinglePendingOrgActionTypes {
-   LOAD = 'Loading',
-   LOAD_SUCCESS = 'f',
-   LOAD_FAIL = 'f',
-  RESET_SINGLE_ORG = 'f'
-
+   LOAD = '[Single Pending Organisation] Load Single Pending Organisation',
+   LOAD_SUCCESS = '[Single Pending Organisation] Load Single Pending Organisations Success',
+   LOAD_FAIL = '[Single Pending Organisation] Load Single Pending Organisation Fail',
+   RESET_SINGLE_ORG = '[Single Pending Organisation] Reset Single Pending Organisation'
 }
 
 export class LoadSingleOrg {
