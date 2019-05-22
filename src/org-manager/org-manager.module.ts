@@ -16,7 +16,7 @@ import { OrgOverviewComponent } from './containers/org-overview/org-overview.com
 import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
 import { OrgPendingModule } from 'src/org-pending/org-pending.module';
 import { NotificationBannerComponent } from 'src/org-manager/components/notification-banner/notification-banner.component';
-export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent, NotificationBannerComponent];
+export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent, NotificationBannerComponent ];
 
 @NgModule({
   imports: [
