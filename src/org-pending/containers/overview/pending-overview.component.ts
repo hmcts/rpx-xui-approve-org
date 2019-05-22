@@ -5,7 +5,6 @@ import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromOrganisationPendingStore from '../../../org-pending/store';
-import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import * as fromRoot from '../../../app/store';
 
 @Component({
@@ -15,19 +14,17 @@ import * as fromRoot from '../../../app/store';
 
 export class OverviewComponent implements OnInit {
 
-  pendingOrgs: any;
-  displayCode: boolean;
   columnConfig: GovukTableColumnConfig[];
-  tableRows: {}[];
   pendingOrgs$: any;
   loading$: Observable<boolean>;
-  approveOrganisations: Array<any>;
-  orgs: Observable<any>;
+  approveOrganisations: Array<PendingOrganisation>;
+  pendingOrganisations$: Observable<PendingOrganisation>;
   constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
+    this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations)
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
       this.columnConfig = [
@@ -40,10 +37,6 @@ export class OverviewComponent implements OnInit {
         { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge'},
         { header: null, key: 'view', type: 'link' }
       ];
-
-      this.pendingOrgs$.subscribe( x => console.log('x is',x.pendingOrganisations))
-      this.pendingOrgs$.subscribe( x => console.log('x is',x.pendingOrganisations))
-      this.pendingOrgs$.subscribe( x => this.orgs = x.pendingOrganisations)
 
   }
 
@@ -58,10 +51,6 @@ activateOrganisations() {
   // TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
   console.log('activate organisations');
   console.log('I will update store with', this.approveOrganisations);
-  this.store.dispatch({
-    type: 'TOGGLE_PRODUCT_CODE',
-    payload: true
-  });
 }
 
 onGoBack() {
