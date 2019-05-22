@@ -10,13 +10,10 @@ import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary'
   templateUrl: './summary.component.html',
   styleUrls: ['./summary.component.scss']
 })
-export class SummaryComponent implements OnInit {
+export class SummaryComponent {
 
   @Input() data;
 
   constructor() {}
-
-  ngOnInit(): void {
-  }
 
 }
