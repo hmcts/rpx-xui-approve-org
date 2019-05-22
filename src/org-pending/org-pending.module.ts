@@ -8,14 +8,11 @@ import * as fromServices from './services';
 import {HttpClientModule} from '@angular/common/http';
 import {orgPendingRouting} from './org-pending';
 import { StoreModule } from '@ngrx/store';
-//import { reducer } from './store/reducers/org-pending/index';
 import { reducers } from './store/reducers/index'
 import { effects } from './store/effects/index'
 import { EffectsModule } from '@ngrx/effects';
-//import { PendingOrgEffects } from './store/effects/org-pending.effects';
 import { OrgPendingOverviewComponent } from './containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingSummaryComponent } from './containers/org-pending-summary/org-pending-summary.component';
-// containers
 import * as fromContainers from './containers';
 export const COMPONENTS = [OrgPendingOverviewComponent,OrgPendingSummaryComponent];
 
