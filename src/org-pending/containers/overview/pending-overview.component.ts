@@ -24,7 +24,7 @@ export class OverviewComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
-    this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations)
+    this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations);
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
       this.columnConfig = [
@@ -44,7 +44,7 @@ processCheckedOrgs(pendingOrgs) {
     console.log('in pending checked orgs are', pendingOrgs.value);
     // TO DO DISPATCH AN ACTION ETC HERE
     this.approveOrganisations = pendingOrgs.value;
-    
+
 }
 
 activateOrganisations() {

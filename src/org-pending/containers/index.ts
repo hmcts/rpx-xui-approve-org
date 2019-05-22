@@ -7,4 +7,4 @@ export const containers: any[] = [
 ];
 
 export * from './overview/pending-overview.component';
-export * from './org-pending-summary/org-pending-summary.component'
+export * from './org-pending-summary/org-pending-summary.component';
