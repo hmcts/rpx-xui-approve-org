@@ -1,7 +1,6 @@
 import {Action} from '@ngrx/store';
 import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary';
 
-
 export enum SinglePendingOrgActionTypes {
    LOAD = 'Loading',
    LOAD_SUCCESS = 'f',
