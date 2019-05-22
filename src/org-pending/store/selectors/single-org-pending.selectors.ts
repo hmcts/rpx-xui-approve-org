@@ -1,5 +1,4 @@
 import { createSelector } from '@ngrx/store';
-
 import * as fromFeature from '../reducers';
 import * as fromSingleOrg from '../reducers/single-org-pending.reducer';
 import * as fromRoot from '../../../app/store';
