@@ -1,9 +1,4 @@
-import { Input, Component, OnInit } from "@angular/core";
-import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary'
-
-/**
- * Bootstraps the Summary Components
- */
+import { Input, Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-org-summary-component',

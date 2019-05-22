@@ -8,13 +8,13 @@ import * as fromServices from './services';
 import {HttpClientModule} from '@angular/common/http';
 import {orgPendingRouting} from './org-pending';
 import { StoreModule } from '@ngrx/store';
-import { reducers } from './store/reducers/index'
-import { effects } from './store/effects/index'
+import { reducers } from './store/reducers/index';
+import { effects } from './store/effects/index';
 import { EffectsModule } from '@ngrx/effects';
 import { OrgPendingOverviewComponent } from './containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingSummaryComponent } from './containers/org-pending-summary/org-pending-summary.component';
 import * as fromContainers from './containers';
-export const COMPONENTS = [OrgPendingOverviewComponent,OrgPendingSummaryComponent];
+export const COMPONENTS = [OrgPendingOverviewComponent, OrgPendingSummaryComponent];
 
 @NgModule({
   imports: [
@@ -26,7 +26,7 @@ export const COMPONENTS = [OrgPendingOverviewComponent,OrgPendingSummaryComponen
     EffectsModule.forFeature(effects)
   ],
   exports: [...fromContainers.containers],
-  declarations: [...fromContainers.containers,...COMPONENTS],
+  declarations: [...fromContainers.containers, ...COMPONENTS],
   providers: [...fromServices.services]
 })
 
