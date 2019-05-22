@@ -22,7 +22,7 @@ export class SingleOrgEffects {
       console.log('LOAD_SINGLE_ORGANISATION ::: data is', data);
       return this.orgService.getSingleOrganisation(data.payload).pipe(
         map(singleOrgDetails => {
-          console.log('singleOrganisationDetails  manager===>', singleOrgDetails);
+          console.log('singleOrganisationDetails', singleOrgDetails);
           return new singleOrganisationActions.LoadSingleOrgSuccess(singleOrgDetails[0]);
 
         }),

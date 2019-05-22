@@ -11,12 +11,9 @@ import {ActivatedRoute} from '@angular/router';
 export class OrgSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: Observable<any>;
   loading$: Observable<boolean>;
-  orgSummary = {};
-  errorMessage = '';
   $routeSubscription: Subscription;
   pageId: string;
   constructor(
-    private activeRoute: ActivatedRoute,
     private store: Store<fromfeatureStore.OrganisationState>) { }
 
   ngOnInit() {
