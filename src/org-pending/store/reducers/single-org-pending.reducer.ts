@@ -2,13 +2,13 @@ import * as fromSingleOrgActions from '../actions/single-org-pending.actions';
 import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary';
 
 export interface PendingSingleOrgState {
-  data: {}  | SingleOrgSummary;
+    data: {}  | SingleOrgSummary;
     loaded: boolean;
     loading: boolean;
 }
 
 export const initialState: PendingSingleOrgState = {
-  data: {},
+    data: {},
     loaded: false,
     loading: false,
 };
@@ -25,12 +25,10 @@ export function reducer(
           loaded: true,
           loading: false
       };
-
     }
     case fromSingleOrgActions.SinglePendingOrgActionTypes.RESET_SINGLE_ORG: {
       return initialState;
     }
-
   }
 
   return state;
@@ -39,5 +37,3 @@ export function reducer(
 export const getSingleOrgOverview = (state: PendingSingleOrgState) => state.data;
 export const getSingleOrgOverviewLoading = (state: PendingSingleOrgState) => state.loading;
 export const getSingleOrgOverviewLoaded = (state: PendingSingleOrgState) => state.loaded;
-
-
