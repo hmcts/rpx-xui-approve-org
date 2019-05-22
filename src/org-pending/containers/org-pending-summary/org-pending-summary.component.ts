@@ -15,14 +15,14 @@ export class OrgPendingSummaryComponent implements OnInit {
   loading$: Observable<boolean>;
   $routeSubscription: Subscription;
   pageId: string;
-  organisationSummary$: Observable<Array<PendingOrganisation>>;
+  //organisationSummary$: Observable<Array<PendingOrganisation>>;
   constructor(
     private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) { }
 
   ngOnInit() {
 
     this.orgSummary$ = this.store.pipe(select(fromOrganisationPendingStore.getSingleOrgOverview));
-    this.orgSummary$.subscribe(organnisationSummary => this.organisationSummary$ = organnisationSummary)
+    //this.orgSummary$.subscribe(organnisationSummary => this.organisationSummary$ = organnisationSummary)
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.orgSummaryLoading));
 
     this.$routeSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
