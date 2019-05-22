@@ -29,9 +29,9 @@ export function reducer(
             };
           }
         case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS:
-          let pendingOrg = action.payload;
-          if (pendingOrg.length !== 0) {
-            pendingOrg = action.payload.map((pendingOrganisation: PendingOrganisation) => {
+          let pendingOrganisations = action.payload;
+          if (pendingOrganisations.length !== 0) {
+            pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
                 const routerLink: PendingOrganisationSummary = {
                   ...pendingOrganisation,
                   routerLink: `/pending-organisations/pending-organisation/${pendingOrganisation.pbaNumber}/`
@@ -42,7 +42,7 @@ export function reducer(
 
         return {
             ...state,
-            pendingOrganisations:  pendingOrg,
+            pendingOrganisations:  pendingOrganisations,
             loaded: true,
             loading: false
         };
