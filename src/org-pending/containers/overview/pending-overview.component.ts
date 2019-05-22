@@ -15,7 +15,7 @@ import * as fromRoot from '../../../app/store';
 export class OverviewComponent implements OnInit {
 
   columnConfig: GovukTableColumnConfig[];
-  pendingOrgs$: Observable<any>;
+  pendingOrgs$: any;
   loading$: Observable<boolean>;
   approveOrganisations: Array<PendingOrganisation>;
   pendingOrganisations$: Observable<PendingOrganisation>;
