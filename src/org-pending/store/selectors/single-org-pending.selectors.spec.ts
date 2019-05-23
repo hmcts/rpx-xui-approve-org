@@ -23,10 +23,8 @@ describe('Single organisation pending selectors', () => {
 
       store.pipe(select(getSingleOrgState)).subscribe(value => {
         result = value;
-
       });
-      expect(result).toEqual({  data: {}, loaded: false, loading: false });
+      expect(result).toEqual({ data: {}, loaded: false, loading: false });
     });
   });
-
 });
