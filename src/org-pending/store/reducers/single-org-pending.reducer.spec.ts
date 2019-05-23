@@ -32,8 +32,20 @@ describe('LOAD_SINGLE_PENDING_SUCCESS action', () => {
     });
   });
 
-  describe('getSingleOrganisation export', () => {
+  describe('getSinglePendingOrganisation export', () => {
     it('should return state.organisation', () => {
       expect(fromSingleOrgPending.getSingleOrgOverview(initialState)).toEqual({});
+    });
+  });
+
+  describe('getSinglePendingOrgLoading export', () => {
+    it('should return state.loading', () => {
+      expect(fromSingleOrgPending.getSingleOrgOverviewLoading(initialState)).toEqual(false);
+    });
+  });
+
+  describe('getSinglePendingOrgLoaded export', () => {
+    it('should return state.loaded', () => {
+      expect(fromSingleOrgPending.getSingleOrgOverviewLoaded(initialState)).toEqual(false);
     });
   });
