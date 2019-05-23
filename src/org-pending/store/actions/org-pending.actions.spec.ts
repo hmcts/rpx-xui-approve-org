@@ -12,6 +12,7 @@ describe('PendingOrganisationActions actions', () => {
         });
       });
     });
+
     // Success
     describe('LoadPendingOrganisationSuccess', () => {
       it('should create an action', () => {
@@ -34,6 +35,7 @@ describe('PendingOrganisationActions actions', () => {
         });
       });
     });
+
     // Fail
     describe('LoadPendingOrganisationFail', () => {
       it('should create an action', () => {
