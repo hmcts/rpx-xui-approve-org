@@ -16,10 +16,8 @@ export class SingleOrgEffects {
   loadSingleOrg$ = this.actions$.pipe(
     ofType(singleOrganisationActions.SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS),
     switchMap((data: { payload: string, type: string}) => {
-      console.log('LOAD_SINGLE_ORGANISATION ::: data is', data);
       return this.orgService.getSingleOrganisation(data.payload).pipe(
         map(singleOrgDetails => {
-          console.log('singleOrganisationDetails ===>', singleOrgDetails);
           return new singleOrganisationActions.LoadSingleOrgSuccess(singleOrgDetails[0]);
         }),
         catchError(error => of(new singleOrganisationActions.LoadSingleOrgFail(error)))

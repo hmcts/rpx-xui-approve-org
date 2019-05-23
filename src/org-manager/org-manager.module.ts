@@ -6,17 +6,16 @@ import {SharedModule} from '../shared/shared.module';
 // containers
 import * as fromContainers from './containers';
 
+// components
+import * as fromComponents from './components';
+
 // services
 import * as fromServices from './services';
 import {StoreModule} from '@ngrx/store';
 import {HttpClientModule} from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { reducers, effects } from './store';
-import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
-import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
 import { OrgPendingModule } from 'src/org-pending/org-pending.module';
-import { NotificationBannerComponent } from 'src/org-manager/components/notification-banner/notification-banner.component';
-export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent, NotificationBannerComponent ];
 
 @NgModule({
   imports: [
@@ -29,7 +28,7 @@ export const COMPONENTS = [ OrgOverviewComponent, OrgSummaryComponent, Notificat
     OrgPendingModule
   ],
   exports: [...fromContainers.containers],
-  declarations: [...fromContainers.containers, ...COMPONENTS],
+  declarations: [...fromContainers.containers, ...fromComponents.components],
   providers: [...fromServices.services]
 })
 

@@ -1,15 +1,14 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
 import * as fromOrganisationPendingStore from '../../../org-pending/store';
-import { SummaryComponent } from 'src/org-manager/containers';
-import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
+import { SummaryComponent } from 'src/org-manager/components';
 
 @Component({
   selector: 'app-org-pending-summary',
   templateUrl: './org-pending-summary.component.html'
 })
-export class OrgPendingSummaryComponent implements OnInit {
+export class OrgPendingSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: any;
   vehicles: SummaryComponent;
   loading$: Observable<boolean>;
@@ -32,4 +31,7 @@ export class OrgPendingSummaryComponent implements OnInit {
     });
   }
 
+ngOnDestroy() {
+  this.store.dispatch(new fromOrganisationPendingStore.ResetSingleOrg({}));
+}
 }
