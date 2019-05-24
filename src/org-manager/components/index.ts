@@ -1,5 +1,5 @@
-import { NotificationBannerComponent } from './notification-banner/notification-banner.component'
-import { SummaryComponent } from './summary/summary.component'
+import { NotificationBannerComponent } from './notification-banner/notification-banner.component';
+import { SummaryComponent } from './summary/summary.component';
 
 export const components: any[] = [
   NotificationBannerComponent,

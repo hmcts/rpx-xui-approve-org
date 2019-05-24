@@ -33,5 +33,6 @@ export class OrgPendingSummaryComponent implements OnInit, OnDestroy {
 
 ngOnDestroy() {
   this.store.dispatch(new fromOrganisationPendingStore.ResetSingleOrg({}));
+  this.$routeSubscription.unsubscribe();
 }
 }
