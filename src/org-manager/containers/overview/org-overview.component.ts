@@ -30,7 +30,5 @@ export class OverviewComponent implements OnInit {
       { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge hmcts-badge--green'},
       { header: null, key: 'view', type: 'link' }
     ];
-    console.log(fromOrganisationStore.organisations.toString);
   }
-
 }

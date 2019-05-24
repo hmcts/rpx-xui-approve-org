@@ -5,7 +5,6 @@ import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk
 import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromOrganisationPendingStore from '../../../org-pending/store';
-import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import * as fromRoot from '../../../app/store';
 
 @Component({
@@ -13,21 +12,19 @@ import * as fromRoot from '../../../app/store';
   templateUrl: './pending-overview.component.html',
 })
 
-export class PendingOverviewComponent implements OnInit {
+export class OverviewComponent implements OnInit {
 
-  pendingOrgs: PendingOrganisation[];
-  displayCode: boolean;
   columnConfig: GovukTableColumnConfig[];
-  tableRows: {}[];
-  pendingOrgs$: Observable<Array<PendingOrganisation>>;
+  pendingOrgs$: any;
   loading$: Observable<boolean>;
-  approveOrganisations: Array<any>;
-
+  approveOrganisations: Array<PendingOrganisation>;
+  pendingOrganisations$: Observable<PendingOrganisation>;
   constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
-    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
+    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
+    this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations);
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
       this.columnConfig = [
@@ -47,6 +44,7 @@ processCheckedOrgs(pendingOrgs) {
     console.log('in pending checked orgs are', pendingOrgs.value);
     // TO DO DISPATCH AN ACTION ETC HERE
     this.approveOrganisations = pendingOrgs.value;
+
 }
 
 activateOrganisations() {
