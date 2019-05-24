@@ -8,7 +8,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "json-server": "json-server db.json --port 1400",
-    "pre-push": "npm run lint && ng test --code-coverage && npm run build:prod",
+    "pre-push": "npm run lint && ng test organisation-manager --code-coverage && npm run build:prod",
     "build:prod": "ng build --prod"
   },
   "private": true,
