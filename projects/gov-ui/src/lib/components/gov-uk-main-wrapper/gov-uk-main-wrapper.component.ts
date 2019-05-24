@@ -15,13 +15,9 @@ import {Component, Input} from '@angular/core';
   template: `
     <a *ngIf="backLink" [routerLink]="backLink" class="govuk-back-link">Back</a>
     <main id="content" role="main" class="govuk-main-wrapper">
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <lib-gov-uk-error-summary
-            *ngIf="!summaryErrors['isFromValid']"
-            [errorMessages]="summaryErrors['items']">
-          </lib-gov-uk-error-summary>
           <h1 *ngIf="title" class="govuk-heading-xl">{{title}}</h1>
+          <div class="govuk-grid-row">
+          <div class="govuk-grid-column-two-thirds">
           <ng-content></ng-content>
         </div>
       </div>

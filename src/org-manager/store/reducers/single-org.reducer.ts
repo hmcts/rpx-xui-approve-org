@@ -21,7 +21,6 @@ export function reducer(
 ): SingleOrgState {
   switch (action.type) {
     case fromSingleOrgActions.LOAD_SINGLE_ORG_SUCCESS: {
-      const payload = action.payload;
       return {
         ...state,
           data: action.payload,

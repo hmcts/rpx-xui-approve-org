@@ -2,7 +2,6 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import * as fromfeatureStore from '../../store';
 import {select, Store} from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
-import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-org-summary',
@@ -11,12 +10,9 @@ import {ActivatedRoute} from '@angular/router';
 export class OrgSummaryComponent implements OnInit, OnDestroy {
   orgSummary$: Observable<any>;
   loading$: Observable<boolean>;
-  orgSummary = {};
-  errorMessage = '';
   $routeSubscription: Subscription;
   pageId: string;
   constructor(
-    private activeRoute: ActivatedRoute,
     private store: Store<fromfeatureStore.OrganisationState>) { }
 
   ngOnInit() {
@@ -35,5 +31,6 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.store.dispatch(new fromfeatureStore.ResetSingleOrg({}));
+    this.$routeSubscription.unsubscribe();
   }
 }
