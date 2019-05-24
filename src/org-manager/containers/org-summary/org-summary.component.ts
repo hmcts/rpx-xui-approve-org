@@ -31,5 +31,6 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.store.dispatch(new fromfeatureStore.ResetSingleOrg({}));
+    this.$routeSubscription.unsubscribe();
   }
 }
