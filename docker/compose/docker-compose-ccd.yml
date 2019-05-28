@@ -119,7 +119,7 @@ services:
       - DATA_STORE_DB_PASSWORD=ccd
       - DATA_STORE_IDAM_KEY=AAAAAAAAAAAAAAAA
       - DATA_STORE_TOKEN_SECRET=AAAAAAAAAAAAAAAA
-      - DATA_STORE_S2S_AUTHORISED_SERVICES=ccd_gw,ccd_data,ccd_ps,pui_webapp
+      - DATA_STORE_S2S_AUTHORISED_SERVICES=ccd_gw,ccd_data,ccd_ps,xui_approve-org
       - DEFINITION_STORE_HOST=http://ccd-definition-store-api:4451
       - USER_PROFILE_HOST=http://ccd-user-profile-api:4453
       - IDAM_USER_URL=http://idam-api:8080
