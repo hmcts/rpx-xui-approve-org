@@ -1,0 +1,29 @@
+#!groovy
+
+properties([
+    [
+        $class       : 'GithubProjectProperty',
+        displayName  : 'Approve Organisations app',
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org'
+    ],
+    pipelineTriggers([
+        [$class: 'GitHubPushTrigger']
+    ])
+])
+
+@Library("Infrastructure")
+
+def type = "nodejs"
+def product = "xui"
+def component = "approve-org"
+def vault = "rpx" 
+def channel = '#xui-pipeline'
+
+withPipeline(type, product, component) {
+    enableSlackNotifications(channel)
+    enableDockerBuild()
+    installCharts()
+
+  after('checkout') { sh 'yarn cache clean' }
+  after('build') { sh 'npm run build' }
+}
