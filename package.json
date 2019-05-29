@@ -7,6 +7,7 @@
     "test": "echo 'not implemented'",
     "test:node": "cd api && npm run test",
     "test:coverage:ng": "echo 'not implemented'",
+    "test:coverage": "echo 'not implemented'",
     "test:a11y": "echo 'not implemented'",
     "lint": "echo 'not implemented'",
     "e2e": "echo 'not implemented'",
