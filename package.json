@@ -4,12 +4,17 @@
   "scripts": {
     "start": "ng serve --port 2500 --host 0.0.0.0 --proxy-config proxy.config.json",
     "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
+    "test": "echo 'not implemented'",
+    "test:node": "cd api && npm run test",
+    "test:coverage:ng": "echo 'not implemented'",
+    "test:coverage": "echo 'not implemented'",
+    "test:a11y": "echo 'not implemented'",
+    "lint": "echo 'not implemented'",
+    "e2e": "echo 'not implemented'",
     "json-server": "json-server db.json --port 1400",
     "pre-push": "npm run lint && ng test organisation-manager --code-coverage && npm run build:prod",
-    "build:prod": "ng build --prod"
+    "build:prod": "ng build --prod",
+    "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner"
   },
   "private": true,
   "dependencies": {
@@ -48,7 +53,8 @@
     "rxjs-compat": "^6.4.0",
     "session-file-store": "^1.2.0",
     "smoothscroll-polyfill": "^0.4.3",
-    "zone.js": "^0.8.26"
+    "zone.js": "^0.8.26",
+    "sonar-scanner": "3.1.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.6.8",
