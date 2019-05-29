@@ -54,7 +54,7 @@
     "session-file-store": "^1.2.0",
     "smoothscroll-polyfill": "^0.4.3",
     "zone.js": "^0.8.26",
-    "sonar-scanner": "3.1.0",
+    "sonar-scanner": "3.1.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.6.8",
