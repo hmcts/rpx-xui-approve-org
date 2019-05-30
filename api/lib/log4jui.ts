@@ -1,81 +1,78 @@
 import * as log4js from 'log4js'
-import config from './config'
+import { config } from '../config'
 import * as errorStack from '../lib/errorStack'
-import { client } from './appInsights'
+import { JUILogger } from '../lib/models'
 
+import { isReqResSet, request } from './middleware/responseRequest'
 
-let logger = null
+// the longest category length we have currently
+const maxCatLength = 14
+const sessionid = config.cookies.sessionId
 
 // This is done to mimic log4js calls
+log4js.configure(config.log4jui)
 
-export function getLogger(category: string) {
-    logger = log4js.getLogger(category)
+// TODO: this should be moved into util but the import seems to fail
+export function leftPad(str: string, length = 20): string {
+    return `${' '.repeat(Math.max(length - str.length, 0))}${str}`
+}
+
+export function getLogger(category: string): JUILogger {
+    const logger: log4js.Logger = log4js.getLogger(category)
     logger.level = config.logging || 'off'
+
+    const catFormatted = leftPad(category, maxCatLength)
+    logger.addContext('catFormatted', `${catFormatted} `)
 
     return {
         _logger: logger,
         debug,
         error,
         info,
-        trackRequest,
         warn,
     }
 }
 
+export function prepareMessage(fullMessage: string): string {
+    let uid
+    let sessionId
+
+    if (isReqResSet()) {
+        const req = request()
+
+        uid = req.session && req.session.user ? req.session.user.id : null
+        sessionId = req.cookies ? req.cookies[sessionid] : null
+    }
+
+    const userString: string = uid && sessionId ? `[${uid} - ${sessionId}] - ` : ''
+    return `${userString}${fullMessage}`
+}
+
 function info(...messages: any[]) {
-    let fullMessage = ''
+    const fullMessage = messages.join(' ')
 
-    for (const message of messages) {
-        fullMessage += message
-    }
-
-    const category = this._logger.category
-    if (client) {
-        client.trackTrace({ message: `[INFO] ${category} - ${fullMessage}` })
-    }
-    this._logger.info(fullMessage)
+    this._logger.info(prepareMessage(fullMessage))
 }
 
 function warn(...messages: any[]) {
-    let fullMessage = ''
+    const fullMessage = messages.join(' ')
 
-    for (const message of messages) {
-        fullMessage += message
-    }
-
-    this._logger.warn(fullMessage)
+    this._logger.warn(prepareMessage(fullMessage))
 }
 
 function debug(...messages: any[]) {
-    let fullMessage = ''
+    const fullMessage = messages.join(' ')
 
-    for (const message of messages) {
-        fullMessage += message
-    }
-    this._logger.debug(fullMessage)
-}
-
-function trackRequest(obj: any) {
-    if (client) {
-        client.trackRequest(obj)
-    }
+    this._logger.debug(prepareMessage(fullMessage))
 }
 
 function error(...messages: any[]) {
-    let fullMessage = ''
-
-    for (const message of messages) {
-        fullMessage += message
-    }
+    const fullMessage = messages.join(' ')
 
     const category = this._logger.category
-    if (client) {
-        client.trackException({ exception: new Error(`[ERROR] ${category} - ${fullMessage}`) })
-    }
-    this._logger.error(fullMessage)
+    this._logger.error(prepareMessage(fullMessage))
 
     if (config.logging === 'debug' || config.logging === 'error') {
         errorStack.push([category, fullMessage])
     }
 }
-
