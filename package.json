@@ -2,7 +2,7 @@
   "name": "organisation-manager",
   "version": "0.0.0",
   "scripts": {
-    "start": "node ./dist/organisation-manager/api/api/server.js",
+    "start": "node ./dist/organisation-manager/api/server.js",
     "build": "npm run build:ng && npm run build:node",
     "build:node": "cd api && npm run build",
     "start:node": "cd api && npm run watch",
