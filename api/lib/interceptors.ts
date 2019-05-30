@@ -1,8 +1,9 @@
 import * as exceptionFormatter from 'exception-formatter'
 import * as stringify from 'json-stringify-safe'
-import { config } from '../config'
+import config from './config'
 import * as errorStack from '../lib/errorStack'
 import { shorten, valueOrNull } from '../lib/util'
+import { client } from './appInsights'
 import * as log4jui from './log4jui'
 
 const exceptionOptions = {
@@ -28,6 +29,14 @@ export function successInterceptor(response) {
 
     const url = shorten(response.config.url, config.maxLogLine)
 
+    logger.trackRequest({
+        duration: response.duration,
+        name: `Service ${response.config.method.toUpperCase()} call`,
+        resultCode: response.status,
+        success: true,
+        url: response.config.url,
+    })
+
     logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} (${response.duration})`)
     return response
 }
@@ -40,6 +49,16 @@ export function errorInterceptor(error) {
 
     const url = shorten(error.config.url, config.maxLogLine)
 
+    // application insights logging
+    logger.trackRequest({
+        duration: error.duration,
+        name: `Service ${error.config.method.toUpperCase()} call`,
+        resultCode: error.status,
+        success: true,
+        url: error.config.url,
+    })
+
+    const status = valueOrNull(error, 'response.status') ? error.response.status : Error(error).message
     let data = valueOrNull(error, 'response.data.details')
     if (!data) {
         data = valueOrNull(error, 'response.status') ? JSON.stringify(error.response.data, null, 2) : null
