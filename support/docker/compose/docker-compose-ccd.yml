@@ -1,0 +1,148 @@
+version: '2.1'
+
+services:
+  ccd-case-management-web:
+    image: hmcts/ccd-case-management-web
+    environment:
+      - NODE_ENV=prod
+      - IDAM_LOGIN_URL = "https://localhost:3501/login"
+      - CCD_GW_LOGOUT_URL = "http://ccd-api-gateway:3453/logout"
+      - CCD_API_URL = "http://ccd-api-gateway:3453/aggregated"
+      - CCD_DATA_URL = "http://ccd-api-gateway:3453/data"
+      - CCD_GW_OAUTH2_URL = "http://ccd-api-gateway:3453/oauth2"
+      - CCD_GW_OAUTH2_CLIENT_ID = "ccd_gateway"
+      - DM_URL = "http://ccd-api-gateway:3453/documents"
+      - DM_URL_REMOTE = "http://dm-store:8080/documents"
+    ports:
+      - 3451:3451
+
+  ccd-api-gateway:
+    image: hmcts/ccd-api-gateway
+    environment:
+      - IDAM_LOGOUT_URL=https://localhost:3501/login/logout
+      - IDAM_BASE_URL=http://idam-api:8080
+      - IDAM_USER_URL=http://idam-api:8080
+      - IDAM_S2S_URL=http://service-auth-provider-app:8489
+      - IDAM_SERVICE_KEY=AAAAAAAAAAAAAAAA
+      - IDAM_OAUTH2_CLIENT_ID=ccd_gateway
+      - IDAM_OAUTH2_CLIENT_SECRET=AAAAAAAAAAAAAAAA
+      - IDAM_OAUTH2_TOKEN_ENDPOINT=http://idam-api:8080/oauth2/token
+      - PROXY_AGGREGATED=http://ccd-data-store-api:4452
+      - PROXY_DATA=http://ccd-data-store-api:4452
+      - PROXY_DEFINITION_IMPORT=http://ccd-definition-store-api:4451
+      - PROXY_DEFINITION_DATA=http://ccd-definition-store-api:4451/api/data
+      - PROXY_DEFINITION_DISPLAY=http://ccd-definition-store-api:4451/api/display
+      - APPINSIGHTS_INSTRUMENTATIONKEY=key
+    ports:
+      - 3453:3453
+    depends_on:
+      - ccd-user-profile-api
+      - ccd-definition-store-api
+      - ccd-data-store-api
+
+  ccd-user-profile-api:
+    image: hmcts/ccd-user-profile-api
+    environment:
+      - APPINSIGHTS_INSTRUMENTATIONKEY=SomeRandomStringForLocalDocker
+      - USER_PROFILE_DB_USE_SSL=false
+      - USER_PROFILE_DB_HOST=ccd-user-profile-database
+      - USER_PROFILE_DB_PORT=5432
+      - USER_PROFILE_DB_USERNAME=ccd
+      - USER_PROFILE_DB_PASSWORD=ccd
+      - IDAM_S2S_URL=http://service-auth-provider-app:8489
+      - REFORM_SERVICE_NAME=ccd-user-profile-api
+      - REFORM_TEAM=ccd
+      - REFORM_ENVIRONMENT=local
+    ports:
+      - 4453:4453
+    depends_on:
+      - ccd-user-profile-database
+    links:
+      - ccd-user-profile-database
+
+  ccd-user-profile-database:
+    image: hmcts/ccd-user-profile-database
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      - USER_PROFILE_DB_USERNAME=ccd
+      - USER_PROFILE_DB_PASSWORD=ccd
+    ports:
+      - 5453:5432
+
+  ccd-definition-store-api:
+    image: hmcts/ccd-definition-store-api
+    environment:
+      - APPINSIGHTS_INSTRUMENTATIONKEY=SomeRandomStringForLocalDocker
+      - DEFINITION_STORE_DB_USE_SSL=false
+      - DEFINITION_STORE_DB_HOST=ccd-definition-store-database
+      - DEFINITION_STORE_DB_PORT=5432
+      - DEFINITION_STORE_DB_USERNAME=ccd
+      - DEFINITION_STORE_DB_PASSWORD=ccd
+      - DEFINITION_STORE_IDAM_KEY=AAAAAAAAAAAAAAAA
+      - DEFINITION_STORE_S2S_AUTHORISED_SERVICES=ccd_data,ccd_gw
+      - USER_PROFILE_HOST=http://ccd-user-profile-api:4453
+      - IDAM_USER_URL=http://idam-api:8080
+      - IDAM_S2S_URL=http://service-auth-provider-app:8489
+      - REFORM_SERVICE_NAME=ccd-definition-store-api
+      - REFORM_TEAM=ccd
+      - REFORM_ENVIRONMENT=local
+    ports:
+      - 4451:4451
+    depends_on:
+      - ccd-definition-store-database
+    links:
+      - ccd-definition-store-database
+
+  ccd-definition-store-database:
+    image: hmcts/ccd-definition-store-api-database
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      - DEFINITION_STORE_DB_USERNAME=ccd
+      - DEFINITION_STORE_DB_PASSWORD=ccd
+    ports:
+      - 5451:5432
+
+  ccd-data-store-api:
+    image: hmcts/ccd-data-store-api
+    environment:
+      - APPINSIGHTS_INSTRUMENTATIONKEY=SomeRandomStringForLocalDocker
+      - DATA_STORE_DB_USE_SSL=false
+      - DATA_STORE_DB_HOST=ccd-data-store-database
+      - DATA_STORE_DB_PORT=5432
+      - DATA_STORE_DB_USERNAME=ccd
+      - DATA_STORE_DB_PASSWORD=ccd
+      - DATA_STORE_IDAM_KEY=AAAAAAAAAAAAAAAA
+      - DATA_STORE_TOKEN_SECRET=AAAAAAAAAAAAAAAA
+      - DATA_STORE_S2S_AUTHORISED_SERVICES=ccd_gw,ccd_data,ccd_ps,xui_webapp
+      - DEFINITION_STORE_HOST=http://ccd-definition-store-api:4451
+      - USER_PROFILE_HOST=http://ccd-user-profile-api:4453
+      - IDAM_USER_URL=http://idam-api:8080
+      - IDAM_S2S_URL=http://service-auth-provider-app:8489
+      - REFORM_SERVICE_NAME=ccd-data-store-api
+      - REFORM_TEAM=ccd
+      - REFORM_ENVIRONMENT=local
+    ports:
+      - 4452:4452
+    depends_on:
+      - ccd-data-store-database
+    links:
+      - ccd-data-store-database
+
+  ccd-data-store-database:
+    image: hmcts/ccd-data-store-api-database
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      - DATA_STORE_DB_USERNAME=ccd
+      - DATA_STORE_DB_PASSWORD=ccd
+    ports:
+      - 5452:5432
+

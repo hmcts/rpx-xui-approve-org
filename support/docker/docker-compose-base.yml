@@ -1,0 +1,16 @@
+#version: '2.1'
+
+#services:
+#  xui-webapp:
+#    build:
+#      context: ..
+#    image: hmcts/dm-show:latest
+#    environment:
+#    - NODE_ENV=development
+#    links:
+#     - idam-api
+#     - service-auth-provider-app
+#    depends_on:
+#     - idam-api
+#     - service-auth-provider-app
+
