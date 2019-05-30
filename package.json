@@ -22,7 +22,8 @@
     "pre-push": "npm run lint && ng test organisation-manager --code-coverage && npm run build:prod",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "lint": "echo 'not implemented'",
-    "test": "echo 'not implemented'"
+    "test": "echo 'not implemented'",
+    "test:smoke": "echo 'not implemented'"
   },
   "private": true,
   "dependencies": {
