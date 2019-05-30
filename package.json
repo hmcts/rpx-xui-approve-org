@@ -20,7 +20,6 @@
     "e2e": "echo 'not implemented'",
     "json-server": "json-server db.json --port 1400",
     "pre-push": "npm run lint && ng test organisation-manager --code-coverage && npm run build:prod",
-    "build:prod": "ng build --prod",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "lint": "echo 'not implemented'",
     "test": "echo 'not implemented'"
