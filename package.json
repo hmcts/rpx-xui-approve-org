@@ -27,7 +27,6 @@
   },
   "private": true,
   "dependencies": {
-    "shortid": "^2.2.14",
     "@angular/animations": "^6.0.3",
     "@angular/common": "^6.0.3",
     "@angular/compiler": "^6.0.3",
@@ -53,6 +52,7 @@
     "express-session": "^1.15.6",
     "global-tunnel-ng": "^2.7.1",
     "govuk-frontend": "2.11.0",
+    "json-stringify-safe": "^5.0.1",
     "jwt-decode": "^2.2.0",
     "log4js": "^3.0.6",
     "ngx-cookie": "4.0.2",
@@ -63,6 +63,7 @@
     "rxjs-compat": "^6.4.0",
     "session-file-store": "^1.2.0",
     "short-id": "0.1.0-1",
+    "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
     "sonar-scanner": "3.1.0",
     "striptags": "^3.1.1",
