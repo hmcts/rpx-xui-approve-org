@@ -2,7 +2,7 @@
   "name": "organisation-manager",
   "version": "0.0.0",
   "scripts": {
-    "start": "node ./dist/organisation-manager/api/api/server.js",
+    "start": "node ./dist/organisation-manager/api/server.js",
     "build": "npm run build:ng && npm run build:node",
     "build:node": "cd api && npm run build",
     "start:node": "cd api && npm run watch",
@@ -22,7 +22,9 @@
     "pre-push": "npm run lint && ng test organisation-manager --code-coverage && npm run build:prod",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "lint": "echo 'not implemented'",
-    "test": "echo 'not implemented'"
+    "test": "echo 'not implemented'",
+    "test:smoke": "echo 'not implemented'",
+    "test:functional": "echo 'not implemented'"
   },
   "private": true,
   "dependencies": {
