@@ -3,8 +3,8 @@ export const application = {
         token: '__auth__',
         userId: '__userid__'
     },
-    microservice: 'jui_webapp',
-    idam_client: 'juiwebapp',
+    microservice: 'xui_approve_org',
+    idam_client: 'xui_approve_org',
     oauth_callback_url: 'oauth2/callback',
     protocol: 'https'
 };
