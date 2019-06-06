@@ -23,7 +23,7 @@ app.use(
             maxAge: 1800000,
             secure: config.secureCookie !== false,
         },
-        name: "xui_approve_org",
+        name: "xuiaowebapp",
         resave: true,
         saveUninitialized: true,
         secret: config.sessionSecret,

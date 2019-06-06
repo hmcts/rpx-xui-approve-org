@@ -13,8 +13,8 @@ const configs = {
     preview,
     aat,
     prod,
-    microservice: "xui_approve_org",
-    idam_client: "xui_approve_org",
+    microservice: "xuiaowebapp",
+    idam_client: "xuiaowebapp",
     oauth_callback_url: "oauth2/callback",
     protocol: "https"
 };
