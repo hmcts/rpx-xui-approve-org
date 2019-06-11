@@ -22,5 +22,12 @@ export class PendingOrganisationService {
     return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
   }
 
+  fetchPendingOrganisationsCount(): Observable<Array<String>> {
+
+      let list: string[] = ['1', '2', '3'];
+
+    return of(list);
+  }
+
 }
 

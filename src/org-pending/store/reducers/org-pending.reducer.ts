@@ -8,12 +8,14 @@ export interface PendingOrganisationState {
     pendingOrganisations: Array<any> | null;
     loaded: boolean;
     loading: boolean;
+    count: Array<String>;
 }
 
 export const initialState: PendingOrganisationState = {
     pendingOrganisations: null,
     loaded: false,
-    loading: false
+    loading: false,
+    count: null
 };
 
 export function reducer(
@@ -28,7 +30,7 @@ export function reducer(
               loading: true
             };
           }
-        case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS:
+        case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
           let pendingOrganisations = action.payload;
           if (pendingOrganisations.length !== 0) {
             pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
@@ -46,6 +48,30 @@ export function reducer(
             loaded: true,
             loading: false
         };
+      }
+
+      case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_COUNT: {
+        console.log('in load')
+        return {
+          ...state,
+          loaded: false,
+          loading: true,
+          count: null
+        };
+      }
+
+      case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_COUNT_SUCCESS: {
+        console.log('in success')
+        console.log('payload is',action.payload)
+        let pendingOrganisationsCount = action.payload;
+
+      return {
+          ...state,
+          count:  pendingOrganisationsCount,
+          loaded: true,
+          loading: false
+      };
+    }
         default:
         return state;
 }
@@ -54,3 +80,5 @@ export function reducer(
 export const getPendingOrganisations = (state: PendingOrganisationState) => state.pendingOrganisations;
 export const getPendingOrganisationsLoading = (state: PendingOrganisationState) => state.loading;
 export const getPendingOrganisationsLoaded = (state: PendingOrganisationState) => state.loaded;
+
+export const getPendingOrganisationsCount = (state: PendingOrganisationState) => state.count;

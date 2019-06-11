@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromOrganisationStore from '../../../org-manager/store';
+import * as fromOrganisationPendingStore from '../../../org-pending/store';
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import {Observable} from 'rxjs';
 import { OrganisationSummary } from '../../models/organisation';
@@ -14,12 +15,17 @@ export class OverviewComponent implements OnInit {
   tableRows: {}[];
   orgs$: Observable<Array<OrganisationSummary>>;
   loading$: Observable<boolean>;
+  pendingOrgs$: any;
+  pendingOrganisations$: Observable<any>;
+  valueTest: String;
 
-  constructor(private store: Store<fromOrganisationStore.OrganisationState>) {}
+  constructor(private store: Store<fromOrganisationStore.OrganisationState>,private pendingStore: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
     this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
+    console.log('orgs is',this.orgs$)
+    this.orgs$.subscribe(val => console.log('val is orgs',val));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
     this.columnConfig = [
       { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
@@ -30,5 +36,18 @@ export class OverviewComponent implements OnInit {
       { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge hmcts-badge--green'},
       { header: null, key: 'view', type: 'link' }
     ];
+
+    this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisationsCount());
+
+    //this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
+    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
+    console.log('here',this.pendingOrgs$)
+
+    this.pendingOrgs$.subscribe(val => console.log('val is',val.loaded));
+    this.pendingOrgs$.subscribe(val => console.log('val is',val.loading));
+    this.pendingOrgs$.subscribe(val => console.log('val is',val.count[0]));
+    this.pendingOrgs$.subscribe(val => this.valueTest = val.count[0]);
+    this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$[0]);
+    
   }
 }
