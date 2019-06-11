@@ -47,6 +47,7 @@ export class OverviewComponent implements OnInit {
     this.pendingOrgs$.subscribe(val => console.log('val is',val.loading));
     this.pendingOrgs$.subscribe(val => console.log('val is',val.count[0]));
     this.pendingOrgs$.subscribe(val => this.valueTest = val.count[0]);
+    console.log('value test is',this.valueTest)
     this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$[0]);
     
   }
