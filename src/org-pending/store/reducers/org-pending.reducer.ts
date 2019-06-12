@@ -64,9 +64,9 @@ export function reducer(
 
       return {
           ...state,
-          count:  pendingOrganisationsCount,
           loaded: true,
-          loading: false
+          loading: false,
+          count:  pendingOrganisationsCount
       };
     }
         default:
