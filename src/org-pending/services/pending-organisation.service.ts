@@ -25,7 +25,6 @@ export class PendingOrganisationService {
   fetchPendingOrganisationsCount(): Observable<String> {
     let pendingOrganisationsCount: any = this.fetchPendingOrganisations()
     return of(pendingOrganisationsCount.value.length);
-    //return of('10');
   }
 
 }

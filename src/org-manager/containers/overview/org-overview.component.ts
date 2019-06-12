@@ -24,8 +24,6 @@ export class OverviewComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
     this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
-    console.log('orgs is',this.orgs$)
-    this.orgs$.subscribe(val => console.log('val is orgs',val));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
     this.columnConfig = [
       { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
@@ -40,7 +38,6 @@ export class OverviewComponent implements OnInit {
     this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisationsCount());
     this.pendingOrgs$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
     this.pendingOrgs$.subscribe(pendingOrgs$ => this.pendingOrgCount$ = pendingOrgs$.count);
-    console.log('count is',this.pendingOrgCount$)
 
   }
 }
