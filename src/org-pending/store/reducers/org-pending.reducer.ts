@@ -32,7 +32,6 @@ export function reducer(
           }
         case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
           let pendingOrganisations = action.payload;
-          console.log('pending organisations are',action.payload)
           if (pendingOrganisations.length !== 0) {
             pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
                 const routerLink: PendingOrganisationSummary = {
@@ -61,8 +60,6 @@ export function reducer(
       }
 
       case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_COUNT_SUCCESS: {
-        console.log('payload in count is',action.payload)
-        console.log('payload in count is length',action.payload.length)
         let pendingOrganisationsCount = action.payload.length;
 
       return {
