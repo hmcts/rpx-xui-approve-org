@@ -15,9 +15,7 @@ export class OverviewComponent implements OnInit {
   tableRows: {}[];
   orgs$: Observable<Array<OrganisationSummary>>;
   loading$: Observable<boolean>;
-  pendingOrgs$: any;
-  pendingOrganisations$: Observable<any>;
-  pendingOrgCount$: String;
+  pendingOrgsCount$: any;
 
   constructor(private store: Store<fromOrganisationStore.OrganisationState>,private pendingStore: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
@@ -36,8 +34,8 @@ export class OverviewComponent implements OnInit {
     ];
 
     this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisationsCount());
-    this.pendingOrgs$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
-    this.pendingOrgs$.subscribe(pendingOrgs$ => this.pendingOrgCount$ = pendingOrgs$.count);
+    this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
+    this.pendingOrgsCount$.subscribe(pendingOrgs$ => this.pendingOrgsCount$ = pendingOrgs$.count);
 
   }
 }
