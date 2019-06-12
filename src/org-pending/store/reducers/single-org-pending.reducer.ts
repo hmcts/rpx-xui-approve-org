@@ -19,8 +19,6 @@ export function reducer(
 ): PendingSingleOrgState {
   switch (action.type) {
     case fromSingleOrgActions.SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_SUCCESS: {
-      
-      console.log('action payload in single is',action.payload)
       return {
         ...state,
           data: action.payload,
