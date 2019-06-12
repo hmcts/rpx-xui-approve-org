@@ -17,7 +17,7 @@ export class OverviewComponent implements OnInit {
   loading$: Observable<boolean>;
   pendingOrgs$: any;
   pendingOrganisations$: Observable<any>;
-  valueTest: String;
+  pendingOrgCount$: String;
 
   constructor(private store: Store<fromOrganisationStore.OrganisationState>,private pendingStore: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
@@ -38,11 +38,9 @@ export class OverviewComponent implements OnInit {
     ];
 
     this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisationsCount());
-
-    //this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
-    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
-    this.pendingOrgs$.subscribe(pendingOrgs$ => this.valueTest = pendingOrgs$.count);
-    console.log('count is',this.valueTest)
+    this.pendingOrgs$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
+    this.pendingOrgs$.subscribe(pendingOrgs$ => this.pendingOrgCount$ = pendingOrgs$.count);
+    console.log('count is',this.pendingOrgCount$)
 
   }
 }

@@ -1,6 +1,6 @@
 <div class="govuk-width-container">
 <app-notification-banner-component>
-  <span text>41 organisations are pending activation. <a [routerLink]="['/pending']"> Check now.</a></span>  
+  <span text>{{pendingOrgCount$}} organisations are pending activation. <a [routerLink]="['/pending']"> Check now.</a></span>  
 </app-notification-banner-component>
 
  <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations</h1>
@@ -12,9 +12,3 @@
         <div>Loading...</div>
       </ng-template>
     </div>
-   
-   {{valueTest}}
-
-  <div *ngFor='let org of orgs$ | async'>
-    {{org.status}}sjsjs
-</div>
