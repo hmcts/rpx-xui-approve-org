@@ -34,7 +34,7 @@ export class OverviewComponent implements OnInit {
       { header: null, key: 'view', type: 'link' }
     ];
 
-    this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisationsCount());
+    this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
     this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
     this.pendingOrgsCount$.subscribe(pendingOrgs$ => this.pendingOrgsCount$ = pendingOrgs$.count);
 

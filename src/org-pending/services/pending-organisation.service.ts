@@ -20,9 +20,5 @@ export class PendingOrganisationService {
     return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
   }
 
-  fetchPendingOrganisationsCount(): Observable<Array<PendingOrganisation>> {
-    return this.fetchPendingOrganisations();
-  }
-
 }
 

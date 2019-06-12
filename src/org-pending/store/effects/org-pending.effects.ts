@@ -20,15 +20,4 @@ import { of } from 'rxjs';
                 );
               })
             );
-
-          @Effect()
-          loadPendingOrgsCount$ = this.actions$.pipe(
-              ofType(pendingOrgActions.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_COUNT),
-              switchMap(() => {
-                  return this.pendingOrgService.fetchPendingOrganisationsCount().pipe(
-                    map(pendingOrganisationsCount => new pendingOrgActions.LoadPendingOrganisationsCountSuccess(pendingOrganisationsCount)),
-                    catchError(error => of(new pendingOrgActions.LoadPendingOrganisationsCountFail(error)))
-                  );
-                })
-              );
             }

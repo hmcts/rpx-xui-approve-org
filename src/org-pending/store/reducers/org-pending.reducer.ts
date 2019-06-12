@@ -32,6 +32,7 @@ export function reducer(
           }
         case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
           let pendingOrganisations = action.payload;
+          let pendingOrganisationsCount = action.payload.length;
           if (pendingOrganisations.length !== 0) {
             pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
                 const routerLink: PendingOrganisationSummary = {
@@ -46,29 +47,10 @@ export function reducer(
             ...state,
             pendingOrganisations:  pendingOrganisations,
             loaded: true,
-            loading: false
+            loading: false,
+            count: pendingOrganisationsCount
         };
       }
-
-      case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_COUNT: {
-        return {
-          ...state,
-          loaded: false,
-          loading: true,
-          count: null
-        };
-      }
-
-      case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_COUNT_SUCCESS: {
-        let pendingOrganisationsCount = action.payload.length;
-
-      return {
-          ...state,
-          loaded: true,
-          loading: false,
-          count:  pendingOrganisationsCount
-      };
-    }
         default:
         return state;
 }
