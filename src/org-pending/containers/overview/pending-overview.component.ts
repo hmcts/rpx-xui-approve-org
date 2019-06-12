@@ -22,7 +22,6 @@ export class OverviewComponent implements OnInit {
   constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
-    this.store.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
     this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations);
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
