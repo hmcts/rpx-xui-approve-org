@@ -8,7 +8,7 @@ export interface PendingOrganisationState {
     pendingOrganisations: Array<any> | null;
     loaded: boolean;
     loading: boolean;
-    count: Array<String>;
+    count: String;
 }
 
 export const initialState: PendingOrganisationState = {

@@ -41,14 +41,8 @@ export class OverviewComponent implements OnInit {
 
     //this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
-    console.log('here',this.pendingOrgs$)
+    this.pendingOrgs$.subscribe(pendingOrgs$ => this.valueTest = pendingOrgs$.count);
+    console.log('count is',this.valueTest)
 
-    this.pendingOrgs$.subscribe(val => console.log('val is',val.loaded));
-    this.pendingOrgs$.subscribe(val => console.log('val is',val.loading));
-    this.pendingOrgs$.subscribe(val => console.log('val is',val.count[0]));
-    this.pendingOrgs$.subscribe(val => this.valueTest = val.count[0]);
-    console.log('value test is',this.valueTest)
-    this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$[0]);
-    
   }
 }

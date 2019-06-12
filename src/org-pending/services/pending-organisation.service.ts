@@ -22,11 +22,10 @@ export class PendingOrganisationService {
     return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
   }
 
-  fetchPendingOrganisationsCount(): Observable<Array<String>> {
-
-      let list: string[] = ['1', '2', '3'];
-
-    return of(list);
+  fetchPendingOrganisationsCount(): Observable<String> {
+    let pendingOrganisationsCount: any = this.fetchPendingOrganisations()
+    return of(pendingOrganisationsCount.value.length);
+    //return of('10');
   }
 
 }

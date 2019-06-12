@@ -35,7 +35,7 @@ export class LoadPendingOrganisationsCount implements Action {
 export class LoadPendingOrganisationsCountSuccess implements Action {
     readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_COUNT_SUCCESS;
 
-    constructor(public payload: String[]) {}
+    constructor(public payload: String) {}
 }
 
 export class LoadPendingOrganisationsCountFail implements Action {
