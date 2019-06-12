@@ -12,17 +12,16 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 export class OrgPendingApproveComponent implements OnInit {
 
     reviewedOrgs$: any;
-    reviewedOrganisations$: Observable<PendingOrganisation>;
+    reviewedOrganisations: Observable<PendingOrganisation[]>;
 
     constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) { }
 
     ngOnInit() {
-        this.reviewedOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.reviewedOrganisations));
-        this.reviewedOrgs$.subscribe(data => this.reviewedOrganisations$ = data.reviewedOrganisations);
-        this.store.subscribe((state) => {
-            console.log(this.reviewedOrganisations$);
+        this.reviewedOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
+        this.reviewedOrgs$.subscribe(response => {
+            console.log(response);
+            this.reviewedOrganisations = response.reviewedOrganisations;
         });
-
     }
 
 
