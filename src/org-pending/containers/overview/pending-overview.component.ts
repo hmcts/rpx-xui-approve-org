@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
@@ -19,42 +19,46 @@ export class OverviewComponent implements OnInit {
   loading$: Observable<boolean>;
   approveOrganisations: Array<PendingOrganisation>;
   pendingOrganisations$: Observable<PendingOrganisation>;
-  constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
+  constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) { }
 
   ngOnInit(): void {
+    this.approveOrganisations = [];
+    this.store.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
-    this.pendingOrgs$.subscribe( pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations);
+    this.pendingOrgs$.subscribe(pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations);
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
-      this.columnConfig = [
-        { header: null, key: null, type: 'checkbox'},
-        { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
-        class: 'govuk-caption-m govuk-!-font-size-16'},
-        { header: 'Address', key: 'address' },
-        { header: 'Administrator', key: 'admin', type: 'multi-column',
-        multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16' },
-        { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge'},
-        { header: null, key: 'view', type: 'link' }
-      ];
+    this.columnConfig = [
+      { header: null, key: null, type: 'checkbox' },
+      {
+        header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
+        class: 'govuk-caption-m govuk-!-font-size-16'
+      },
+      { header: 'Address', key: 'address' },
+      {
+        header: 'Administrator', key: 'admin', type: 'multi-column',
+        multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16'
+      },
+      { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge' },
+      { header: null, key: 'view', type: 'link' }
+    ];
 
   }
 
-processCheckedOrgs(pendingOrgs) {
-    console.log('in pending checked orgs are', pendingOrgs.value);
-    // TO DO DISPATCH AN ACTION ETC HERE
+  processCheckedOrgs(pendingOrgs) {
     this.approveOrganisations = pendingOrgs.value;
+    this.store.dispatch(new fromOrganisationPendingStore.AddReviewOrganisations(pendingOrgs.value));
+  }
 
-}
+  activateOrganisations() {
+    if (this.approveOrganisations.length > 0) {
+      this.store.dispatch(new fromRoot.Go({ path: ['pending-organisations/approve'] }));
+    }
+  }
 
-activateOrganisations() {
-  // TO DO NGRX NAVIGATE TO ACTIVATE ORG PAGE WITH PAYLOAD AS PENDING ORGS
-  console.log('activate organisations');
-  console.log('I will update store with', this.approveOrganisations);
-}
-
-onGoBack() {
-  this.store.dispatch(new fromRoot.Back());
-}
+  onGoBack() {
+    this.store.dispatch(new fromRoot.Back());
+  }
 
 }
 
