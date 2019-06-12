@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class PendingOrganisationService {
   private singleOrgUrl = environment.singleOrgUrl;
-  private orgPendingUrl = environment.OrgPendingUrl;
+  private orgPendingUrl = environment.orgPendingUrl;
   constructor(private http: HttpClient) {
   }
 
