@@ -8,5 +8,11 @@ export const getPendingOrgs = createSelector(
     state => state.pendingOrganisations
 );
 
+export const getReviewedOrgs = createSelector(
+    getPendingOrgsFeatureState,
+    state => state.reviewedOrganisations
+);
+
 export const pendingOrganisations = createSelector( getPendingOrgsFeatureState, fromOrganisation.getPendingOrganisations);
 export const pendingOrganisationsLoading = createSelector( getPendingOrgsFeatureState,     state => state.loading);
+export const reviewedOrganisations = createSelector( getPendingOrgsFeatureState, fromOrganisation.getReviewedOrganisations);
