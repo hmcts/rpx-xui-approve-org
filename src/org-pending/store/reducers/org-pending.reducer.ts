@@ -13,7 +13,7 @@ export interface PendingOrganisationState {
 export const initialState: PendingOrganisationState = {
     pendingOrganisations: null,
     loaded: false,
-    loading: false
+    loading: false,
 };
 
 export function reducer(
@@ -28,7 +28,8 @@ export function reducer(
               loading: true
             };
           }
-        case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS:
+        case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
+          // TODO please fix this - something is not right
           let pendingOrganisations = action.payload;
           if (pendingOrganisations.length !== 0) {
             pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
@@ -39,13 +40,13 @@ export function reducer(
                 return routerLink;
               });
           }
-
         return {
             ...state,
             pendingOrganisations:  pendingOrganisations,
             loaded: true,
-            loading: false
+            loading: false,
         };
+      }
         default:
         return state;
 }
