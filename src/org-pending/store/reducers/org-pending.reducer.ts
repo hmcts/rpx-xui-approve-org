@@ -39,24 +39,25 @@ export function reducer(
         loading: true
       };
     }
-    case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS:
+    case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
+      // TODO please fix this - something is not right
       let pendingOrganisations = action.payload;
       if (pendingOrganisations.length !== 0) {
         pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
-          const routerLink: PendingOrganisationSummary = {
-            ...pendingOrganisation,
-            routerLink: `/pending-organisations/pending-organisation/${pendingOrganisation.pbaNumber}/`
-          };
-          return routerLink;
-        });
+            const routerLink: PendingOrganisationSummary = {
+              ...pendingOrganisation,
+              routerLink: `/pending-organisations/organisation/${pendingOrganisation.pbaNumber}/`
+            };
+            return routerLink;
+          });
       }
-
-      return {
+    return {
         ...state,
-        pendingOrganisations: pendingOrganisations,
+        pendingOrganisations:  pendingOrganisations,
         loaded: true,
-        loading: false
-      };
+        loading: false,
+    };
+  }
 
     default:
       return state;
