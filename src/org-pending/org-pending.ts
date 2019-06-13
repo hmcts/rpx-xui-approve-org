@@ -24,6 +24,9 @@ export const ROUTES: Routes = [
       {
         path: 'approve',
         component: OrgPendingApproveComponent
+      },
+      {
+        path: 'approve-success'
       }
     ]
   },
