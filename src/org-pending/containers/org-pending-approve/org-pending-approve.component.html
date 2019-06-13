@@ -6,30 +6,33 @@
                 <div class="govuk-grid-column-two-thirds">
                     <h1 class="govuk-heading-xl">Check selected organisations before you activate them</h1>
 
-                    <h2 class="govuk-heading-m">Speak limited</h2>
-                    <dl class="govuk-summary-list">
+                    <ng-container *ngFor="let organisation of reviewedOrganisations">
+                        <h2 class="govuk-heading-m">{{organisation.organisationId}}</h2>
+                        <dl class="govuk-summary-list">
 
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Address
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                72 Guild Street<br>London<br>SE23 6FH
-                            </dd>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Address
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{organisation.address}}
+                                </dd>
 
-                        </div>
+                            </div>
 
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Administrator
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                Matt Speak<br><span class="govuk-caption-m govuk-!-font-size-16">matt@speak.com</span>
-                            </dd>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Administrator
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    <div>{{organisation.admin}}</div>
+                                    <div class="govuk-caption-m govuk-!-font-size-16">{{organisation.email}}</div>
+                                </dd>
 
-                        </div>
+                            </div>
 
-                    </dl>
+                        </dl>
+                    </ng-container>
 
                     <button type="submit" class="govuk-button">
                         Approve organisations
