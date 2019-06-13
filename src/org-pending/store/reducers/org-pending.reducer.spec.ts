@@ -38,7 +38,7 @@ describe('PendingOrganisationsReducer', () => {
           view: 'View',
           id: '2424242',
           email: 'glen@byrne.com',
-          routerLink: '/pending-organisations/pending-organisation/101010/'
+          routerLink: '/pending-organisations/organisation/101010/'
         }
       ];
 
