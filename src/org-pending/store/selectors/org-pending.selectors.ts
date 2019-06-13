@@ -5,9 +5,19 @@ const getPendingOrgsFeatureState = createFeatureSelector<fromOrganisation.Pendin
 
 export const getPendingOrgs = createSelector(
     getPendingOrgsFeatureState,
-    state => state.pendingOrganisations
+    state => state
 );
 
 export const pendingOrganisations = createSelector( getPendingOrgsFeatureState, fromOrganisation.getPendingOrganisations);
-export const pendingOrganisationsLoading = createSelector( getPendingOrgsFeatureState,     state => state.loading);
 export const reviewedOrganisations = createSelector( getPendingOrgsFeatureState, fromOrganisation.getReviewedOrganisations);
+
+// TODO remove string and fix typings
+export const pendingOrganisationsCount = createSelector(
+  pendingOrganisations,
+  (orgArr) =>  orgArr['pendingOrganisations'] ? orgArr['pendingOrganisations'].length : 0
+);
+export const pendingOrganisationsLoading = createSelector(
+  getPendingOrgsFeatureState,
+  state => state.loading
+);
+
