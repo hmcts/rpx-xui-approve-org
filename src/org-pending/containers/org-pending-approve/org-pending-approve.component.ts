@@ -15,12 +15,13 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
     reviewedOrganisations: PendingOrganisation[];
     reviewedOrganisationsSubscription: Subscription;
 
-    constructor(private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) { }
+    constructor(
+        private store: Store<fromOrganisationPendingStore.PendingOrganisationState>
+    ) { }
 
     ngOnInit() {
         this.reviewedOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
         this.reviewedOrganisationsSubscription = this.reviewedOrgs$.subscribe(response => {
-            console.log(response.reviewedOrganisations);
             if (response.reviewedOrganisations) {
                 this.reviewedOrganisations = response.reviewedOrganisations;
             } else {
@@ -29,9 +30,12 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
         });
     }
 
-
     onGoBack() {
         this.store.dispatch(new fromRoot.Back());
+    }
+
+    onApproveOrganisations() {
+        this.store.dispatch(new fromOrganisationPendingStore.ApprovePendingOrganisations(this.reviewedOrganisations));
     }
 
     ngOnDestroy() {
