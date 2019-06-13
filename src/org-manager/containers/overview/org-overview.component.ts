@@ -5,7 +5,7 @@ import * as fromOrganisationPendingStore from '../../../org-pending/store';
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import {Observable} from 'rxjs';
 import { OrganisationSummary } from '../../models/organisation';
-import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
+
 @Component({
   selector: 'app-prd-org-overview-component',
   templateUrl: './org-overview.component.html',
@@ -13,7 +13,6 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
 
 export class OverviewComponent implements OnInit {
   columnConfig: GovukTableColumnConfig[];
-  tableRows: {}[];
   orgs$: Observable<Array<OrganisationSummary>>;
   loading$: Observable<boolean>;
   pendingOrgsCount$: Observable<number>;
