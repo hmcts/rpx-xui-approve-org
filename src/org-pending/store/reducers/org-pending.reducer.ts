@@ -8,14 +8,12 @@ export interface PendingOrganisationState {
     pendingOrganisations: Array<any> | null;
     loaded: boolean;
     loading: boolean;
-    count: Number;
 }
 
 export const initialState: PendingOrganisationState = {
     pendingOrganisations: null,
     loaded: false,
     loading: false,
-    count: null
 };
 
 export function reducer(
@@ -31,8 +29,8 @@ export function reducer(
             };
           }
         case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
+          // TODO please fix this - something is not right
           let pendingOrganisations = action.payload;
-          let pendingOrganisationsCount = action.payload.length;
           if (pendingOrganisations.length !== 0) {
             pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
                 const routerLink: PendingOrganisationSummary = {
@@ -42,13 +40,11 @@ export function reducer(
                 return routerLink;
               });
           }
-
         return {
             ...state,
             pendingOrganisations:  pendingOrganisations,
             loaded: true,
             loading: false,
-            count: pendingOrganisationsCount
         };
       }
         default:

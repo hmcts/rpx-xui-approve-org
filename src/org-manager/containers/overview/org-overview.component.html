@@ -1,6 +1,6 @@
 <div class="govuk-width-container">
 <app-notification-banner-component>
-  <span text>{{pendingOrgsCount$}} organisations are pending activation. <a [routerLink]="['/pending']"> Check now.</a></span>  
+  <span>{{pendingOrgsCount$ | async}} organisations are pending activation. <a [routerLink]="['/pending']"> Check now.</a></span>
 </app-notification-banner-component>
 
  <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations</h1>

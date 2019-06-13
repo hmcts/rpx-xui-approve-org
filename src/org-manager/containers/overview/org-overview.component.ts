@@ -16,7 +16,7 @@ export class OverviewComponent implements OnInit {
   tableRows: {}[];
   orgs$: Observable<Array<OrganisationSummary>>;
   loading$: Observable<boolean>;
-  pendingOrgsCount$: any;
+  pendingOrgsCount$: Observable<number>;
 
   constructor(private store: Store<fromOrganisationStore.OrganisationState>,private pendingStore: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
@@ -24,6 +24,7 @@ export class OverviewComponent implements OnInit {
     this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
     this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
     this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
+    // TODO tidy up (maybe add to the store or config file)
     this.columnConfig = [
       { header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
       class: 'govuk-caption-m govuk-!-font-size-16'},
@@ -35,8 +36,7 @@ export class OverviewComponent implements OnInit {
     ];
 
     this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
-    this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
-    this.pendingOrgsCount$.subscribe(pendingOrgs$ => this.pendingOrgsCount$ = pendingOrgs$.count);
+    this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
 
   }
 }
