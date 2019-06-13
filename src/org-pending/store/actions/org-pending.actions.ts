@@ -6,7 +6,6 @@ export enum PendingOrgActionTypes {
     LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
     LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
     LOAD_PENDING_ORGANISATIONS_FAIL = '[Pending Org] Load Fail'
-
 }
 
 export class LoadPendingOrganisations implements Action {
