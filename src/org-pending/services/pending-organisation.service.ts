@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { PendingOrganisationsMock } from '../mock/pending-organisation.mock';
+import { Observable } from 'rxjs';
 import { PendingOrganisation } from '../models/pending-organisation';
 import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
 import { environment } from 'src/environments/environment';
 
-
 @Injectable()
 export class PendingOrganisationService {
   private singleOrgUrl = environment.singleOrgUrl;
+  private orgPendingUrl = environment.orgPendingUrl;
   constructor(private http: HttpClient) {
   }
 
   fetchPendingOrganisations(): Observable<Array<PendingOrganisation>> {
-    const obj: PendingOrganisation[] = PendingOrganisationsMock;
-    return of(obj);
+    return this.http.get<PendingOrganisation[]>(this.orgPendingUrl);
   }
 
   getSingleOrganisation(payload): Observable<SingleOrgSummary> {

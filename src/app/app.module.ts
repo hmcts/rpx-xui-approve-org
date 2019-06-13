@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AppComponent } from './containers/app/app.component';
 import { SharedModule } from '../shared/shared.module';
 import { CookieModule } from 'ngx-cookie';
-
+import { environment } from '../environments/environment';
 // ngrx
 import { MetaReducer, StoreModule } from '@ngrx/store';
 import { storeFreeze } from 'ngrx-store-freeze';
@@ -45,7 +45,10 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     EffectsModule.forRoot(effects),
     SharedModule,
     StoreRouterConnectingModule,
-    OrgManagerModule
+    OrgManagerModule,
+    StoreDevtoolsModule.instrument({
+      logOnly: environment.production
+    }),
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer }],
