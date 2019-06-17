@@ -5,6 +5,7 @@ import { OverviewComponent } from 'src/org-pending/containers/overview/pending-o
 import { OrgPendingOverviewComponent } from './containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingSummaryComponent } from './containers/org-pending-summary/org-pending-summary.component';
 import { OrgPendingApproveComponent } from './containers/org-pending-approve/org-pending-approve.component';
+import { OrgApprovalSuccessComponent } from './containers/org-success/org-approval-success.component';
 
 export const ROUTES: Routes = [
   {
@@ -27,7 +28,7 @@ export const ROUTES: Routes = [
       },
       {
         path: 'approve-success',
-        component: OrgPendingApproveComponent
+        component: OrgApprovalSuccessComponent
       }
     ]
   },
