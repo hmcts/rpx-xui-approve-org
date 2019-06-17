@@ -35,7 +35,15 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
     }
 
     onApproveOrganisations() {
-        this.store.dispatch(new fromOrganisationPendingStore.ApprovePendingOrganisations(this.reviewedOrganisations));
+
+        const payload: PendingOrganisation[] = [];
+
+        for (let i = 0; i < this.reviewedOrganisations.length; i++) {
+            payload.push(Object.assign({}, this.reviewedOrganisations[i], {
+                status: 'ACTIVE'
+            }));
+        }
+        this.store.dispatch(new fromOrganisationPendingStore.ApprovePendingOrganisations(payload));
     }
 
     ngOnDestroy() {
