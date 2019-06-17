@@ -2,37 +2,15 @@ import { initialState, reducer } from './org-pending.reducer';
 import { LoadPendingOrganisationsSuccess, AddReviewOrganisations, LoadPendingOrganisations } from '../actions';
 import { PendingOrganisation, PendingOrganisationSummary } from 'src/org-pending/models/pending-organisation';
 import * as fromPendingOrganisation from './org-pending.reducer';
+import { PendingOrganisationsMockCollection1, PendingOrganisationsMockSummaryCollection1 } from '../../mock/pending-organisation.mock';
 
-const PendingOrganisationsMock: PendingOrganisation[] = [
-  {
-    name: 'Glen Byrne',
-    organisationId: 'Byrne Limited',
-    address: '13 Berryfield drive, Finglas',
-    pbaNumber: '101010',
-    admin: 'Glen Byrne',
-    status: 'PENDING',
-    view: 'View',
-    id: '2424242',
-    email: 'glen@byrne.com'
-  }
-];
-
-const PendingOrganisationsMockSummary: PendingOrganisationSummary[] = [
-  {
-    name: 'Glen Byrne',
-    organisationId: 'Byrne Limited',
-    address: '13 Berryfield drive, Finglas',
-    pbaNumber: '101010',
-    admin: 'Glen Byrne',
-    status: 'PENDING',
-    view: 'View',
-    id: '2424242',
-    email: 'glen@byrne.com',
-    routerLink: '/pending-organisations/organisation/101010/'
-  }
-];
 
 describe('PendingOrganisationsReducer', () => {
+
+  const PendingOrganisationsMock: PendingOrganisation[] = PendingOrganisationsMockCollection1;
+
+  const PendingOrganisationsMockSummary: PendingOrganisationSummary[] = PendingOrganisationsMockSummaryCollection1;
+
   describe('undefined action', () => {
     it('should return the default state', () => {
       const action = {} as any;

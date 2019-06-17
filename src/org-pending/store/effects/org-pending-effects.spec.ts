@@ -10,18 +10,8 @@ import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '.
 import { PendingOrganisationService } from 'src/org-pending/services';
 import { PendingOrganisation } from '../../models/pending-organisation';
 import { Go } from 'src/app/store';
+import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
 
-const payload: PendingOrganisation[] = [{
-  name: 'Glen Byrne',
-  organisationId: 'Byrne Limited',
-  address: '13 Berryfield drive, Finglas',
-  pbaNumber: '101010',
-  admin: 'Glen Byrne',
-  status: 'PENDING',
-  view: 'View',
-  id: '2424242',
-  email: 'glen@byrne.com'
-}];
 
 describe('Pending Organisation Effects', () => {
   let actions$;
@@ -30,6 +20,9 @@ describe('Pending Organisation Effects', () => {
     'fetchPendingOrganisations',
     'approvePendingOrganisations'
   ]);
+
+  const payload: PendingOrganisation[] = PendingOrganisationsMockCollection1;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
