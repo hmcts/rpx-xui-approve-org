@@ -11,5 +11,5 @@ export const environment = {
     serviceDeskTel: '0300 3030686',
     singleOrgUrl: 'http://localhost:1400/organisations?pbaNumber=',
     orgPendingUrl: 'http://localhost:1400/organisations?status=PENDING',
-    orgApprovePendingUrl: 'http://localhost:1400/postApprovedOrganisations'
+    orgApprovePendingUrl: 'http://localhost:1400/putApprovedOrganisations'
 };

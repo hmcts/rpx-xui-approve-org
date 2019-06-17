@@ -10,7 +10,7 @@ describe('PendingOrganisationService', () => {
 
   beforeEach(() => {
 
-    httpClient = createSpyObj<HttpClient>('httpClient', ['get', 'post']);
+    httpClient = createSpyObj<HttpClient>('httpClient', ['get', 'post', 'put']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -34,7 +34,7 @@ describe('PendingOrganisationService', () => {
 
   it('should approve organisation', () => {
     pendingOrganisationService.approvePendingOrganisations('dummy');
-    expect(httpClient.post).toHaveBeenCalledWith(environment.orgApprovePendingUrl, 'dummy');
+    expect(httpClient.put).toHaveBeenCalledWith(environment.orgApprovePendingUrl, 'dummy');
   });
 
 
