@@ -1,5 +1,6 @@
 import * as fromSingleOrg from './single-org-pending.actions';
-import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
+import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
+import { SingleOrgSummaryMock } from '../../../org-pending/mock/pending-organisation.mock';
 
 describe('Single pending organisation actions', () => {
   describe('LoadSinglePendingOrganisation actions GROUP', () => {
@@ -20,17 +21,7 @@ describe('Single pending organisation actions', () => {
 // Success
 describe('LoadSinglePendingOrganisationSuccess', () => {
   it('should create an action', () => {
-    const payload: SingleOrgSummary = {
-      'pbaNumber': 'SU2DSCSA',
-      'status': 'ACTIVE',
-      'effective_date': '22/10/2022',
-      'dx_exchange': '7654321',
-      'name': 'Speake Limited',
-      'address': '72 Guild Street, London, SE23 6FH',
-      'dxNumber': '12345567',
-      'dxExchange': '7654321',
-      'admin': 'Matt Speake',
-    };
+    const payload: SingleOrgSummary = SingleOrgSummaryMock;
     const action = new fromSingleOrg.LoadSingleOrgSuccess(payload);
     expect({ ...action }).toEqual({
       type: fromSingleOrg.SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_SUCCESS,
