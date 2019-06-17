@@ -7,18 +7,7 @@ import * as fromRootActions from '../../../app/store/actions';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
-const organisationsDummy = [{
-    name: 'dummy 1',
-    organisationId: 'dummy 1',
-    address: 'dummy 1',
-    pbaNumber: 'dummy 1',
-    admin: 'dummy 1',
-    status: 'dummy 1',
-    view: 'dummy 1',
-    id: 'dummy 1',
-    email: 'dummy 1'
-}];
+import { ReviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 
 describe('OverviewComponent', () => {
     let component: OverviewComponent;
@@ -26,6 +15,7 @@ describe('OverviewComponent', () => {
     let store: Store<fromOrganisationPendingStore.PendingOrganisationState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
+    const organisationsDummy = ReviewedOrganisationMockCollection;
 
     beforeEach((() => {
         TestBed.configureTestingModule({

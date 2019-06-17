@@ -1,21 +1,10 @@
 import * as fromPendingOrganisation from './org-pending.actions';
 import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
-
-const payload: PendingOrganisation[] = [
-  {
-    name: 'Glen Byrne',
-    organisationId: 'Byrne Limited',
-    address: '13 Berryfield drive, Finglas',
-    pbaNumber: '101010',
-    admin: 'Glen Byrne',
-    status: 'PENDING',
-    view: 'View',
-    id: '2424242',
-    email: 'glen@byrne.com'
-  }
-];
+import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
 
 describe('PendingOrganisationActions actions', () => {
+  const payload: PendingOrganisation[] = PendingOrganisationsMockCollection1;
+
   describe('LoadPendingOrganisations actions GROUP', () => {
     // Init state
     describe('LoadPendingOrganisation', () => {

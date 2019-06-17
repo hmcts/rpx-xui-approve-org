@@ -7,8 +7,9 @@ import * as fromSingleOrgPendingEffects from './single-org-pending.effects';
 import { SingleOrgEffects } from './single-org-pending.effects';
 import { LoadSingleOrg, LoadSingleOrgFail } from '../actions/single-org-pending.actions';
 import { LoadSingleOrgSuccess } from '../actions';
-import { PendingOrganisationService } from 'src/org-pending/services';
-import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
+import { PendingOrganisationService } from '../../../org-pending/services';
+import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
+import { SingleOrgSummaryMock } from '../../../org-pending/mock/pending-organisation.mock';
 
 describe('Single pending organisation Effects', () => {
   let actions$;
@@ -33,17 +34,7 @@ describe('Single pending organisation Effects', () => {
   });
   describe('loadSingleOrg$', () => {
     it('should return a collection from loadSingleOrg$ - LoadSingleOrgSuccess', () => {
-      const payload: SingleOrgSummary = {
-        status: 'Active',
-        effective_date: '22/10/2022',
-        dx_exchange: '',
-        name: 'Speak Limited',
-        address: '72 Guild Street, London, SE23 6FH',
-        pbaNumber: 'SU2DSCSA',
-        dxNumber: '12345567',
-        dxExchange: '7654321',
-        admin: 'Matt Speak'
-      };
+      const payload: SingleOrgSummary = SingleOrgSummaryMock;
 
       PendingOrganisationServiceMock.getSingleOrganisation.and.returnValue(of(payload));
       const action = new LoadSingleOrg({});
