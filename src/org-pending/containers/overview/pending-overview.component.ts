@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromOrganisationPendingStore from '../../../org-pending/store';
 import * as fromRoot from '../../../app/store';
+import { PendingOverviewColumnConfig } from '../../../org-pending/config/pending-overview.config';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -27,20 +28,7 @@ export class OverviewComponent implements OnInit {
     this.pendingOrgs$.subscribe(pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations);
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
-    this.columnConfig = [
-      { header: null, key: null, type: 'checkbox' },
-      {
-        header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
-        class: 'govuk-caption-m govuk-!-font-size-16'
-      },
-      { header: 'Address', key: 'address' },
-      {
-        header: 'Administrator', key: 'admin', type: 'multi-column',
-        multiColumnMapping: 'email', class: 'govuk-caption-m govuk-!-font-size-16'
-      },
-      { header: 'Status', key: 'status', type: 'styled', class: 'hmcts-badge' },
-      { header: null, key: 'view', type: 'link' }
-    ];
+    this.columnConfig = PendingOverviewColumnConfig;
 
   }
 
