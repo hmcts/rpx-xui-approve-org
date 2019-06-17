@@ -17,7 +17,7 @@ export class OverviewComponent implements OnInit {
   loading$: Observable<boolean>;
   pendingOrgsCount$: Observable<number>;
 
-  constructor(private store: Store<fromOrganisationStore.OrganisationState>,private pendingStore: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
+  constructor(private store: Store<fromOrganisationStore.OrganisationState>, private pendingStore: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
