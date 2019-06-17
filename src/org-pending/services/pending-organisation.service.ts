@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 export class PendingOrganisationService {
   private singleOrgUrl = environment.singleOrgUrl;
   private orgPendingUrl = environment.orgPendingUrl;
+  private orgApprovePendingUrl = environment.orgApprovePendingUrl;
   constructor(private http: HttpClient) {
   }
 
@@ -18,6 +19,10 @@ export class PendingOrganisationService {
 
   getSingleOrganisation(payload): Observable<SingleOrgSummary> {
     return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
+  }
+
+  approvePendingOrganisations(payload): Observable<boolean> {
+    return this.http.post<boolean>(this.orgApprovePendingUrl, payload);
   }
 
 }

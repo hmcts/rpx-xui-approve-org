@@ -10,5 +10,6 @@ export const environment = {
     serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
     serviceDeskTel: '0300 3030686',
     singleOrgUrl: 'http://localhost:1400/organisations?pbaNumber=',
-    orgPendingUrl: 'http://localhost:1400/organisations?status=PENDING'
+    orgPendingUrl: 'http://localhost:1400/organisations?status=PENDING',
+    orgApprovePendingUrl: 'http://localhost:1400/postApprovedOrganisations'
 };

@@ -8,10 +8,8 @@ export const getPendingOrgs = createSelector(
     state => state
 );
 
-export const pendingOrganisations = createSelector(
-  getPendingOrgs,
-  fromOrganisation.getPendingOrganisations
-);
+export const pendingOrganisations = createSelector( getPendingOrgsFeatureState, fromOrganisation.getPendingOrganisations);
+export const reviewedOrganisations = createSelector( getPendingOrgsFeatureState, fromOrganisation.getReviewedOrganisations);
 
 // TODO remove string and fix typings
 export const pendingOrganisationsCount = createSelector(
