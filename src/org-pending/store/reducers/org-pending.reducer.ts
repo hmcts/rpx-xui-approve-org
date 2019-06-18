@@ -1,19 +1,17 @@
 import { PendingOrganisation, PendingOrganisationSummary } from '../../models/pending-organisation';
-import * as fromRoot from '../../../app/store/reducers/app.reducer';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
-import { RouterLink } from '@angular/router';
 
+// TODO: cleanup cascading pendingOrganisations
 export interface PendingOrganisationState {
-  pendingOrganisations: Array<any> | null;
-  reviewedOrganisations: Array<any> | null;
+  pendingOrganisations: PendingOrganisation[];
+  reviewedOrganisations: PendingOrganisation[];
   loaded: boolean;
   loading: boolean;
 }
 
 export const initialState: PendingOrganisationState = {
-  pendingOrganisations: null,
-  reviewedOrganisations: null,
+  pendingOrganisations: [],
+  reviewedOrganisations: [],
   loaded: false,
   loading: false
 };
@@ -31,12 +29,13 @@ export function reducer(
       };
     }
     case PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
-      const reviewedOrganisations = action.payload;
+      const payload: PendingOrganisation[] = action.payload.slice(0);
+      const reviewedOrganisations = payload.map(item => {
+        return {...item, status: 'ACTIVE'};
+      });
       return {
         ...state,
-        reviewedOrganisations: reviewedOrganisations,
-        loaded: false,
-        loading: true
+        reviewedOrganisations: reviewedOrganisations
       };
     }
     case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
