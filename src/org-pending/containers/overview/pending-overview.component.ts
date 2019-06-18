@@ -25,7 +25,13 @@ export class OverviewComponent implements OnInit {
   ngOnInit(): void {
     this.approveOrganisations = [];
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
-    this.pendingOrgs$.subscribe(pendingOrgs$ => this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations);
+    this.pendingOrgs$.subscribe(pendingOrgs$ => {
+      if (pendingOrgs$.pendingOrganisations.length > 0) {
+        this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
+      } else {
+        this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
+      }
+    });
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
     this.columnConfig = PendingOverviewColumnConfig;
