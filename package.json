@@ -19,7 +19,7 @@
     "test:a11y": "echo 'not implemented'",
     "lint:ng": "echo 'not implemented'",
     "e2e": "echo 'not implemented'",
-    "json-server": "json-server db.json --port 1400",
+    "json-server": "rm db.json -f && cp db.json_bkp db.json && json-server db.json --port 1400",
     "pre-push": "npm run lint && npm run build:prod && ng test organisation-manager --code-coverage",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "lint": "echo 'not implemented'",

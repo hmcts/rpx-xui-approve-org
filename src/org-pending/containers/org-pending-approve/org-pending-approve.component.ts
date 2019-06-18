@@ -10,19 +10,17 @@ import { PendingOrganisation } from 'src/org-pending/models/pending-organisation
     templateUrl: './org-pending-approve.component.html'
 })
 export class OrgPendingApproveComponent implements OnInit, OnDestroy {
-
-    reviewedOrgs$: any;
     reviewedOrganisations: PendingOrganisation[];
-    reviewedOrganisationsSubscription: Subscription;
+    $reviewedOrganisationsSubscription: Subscription;
 
     constructor(
         private store: Store<fromOrganisationPendingStore.PendingOrganisationState>
     ) { }
 
     ngOnInit() {
-        this.reviewedOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
-        this.reviewedOrganisationsSubscription = this.reviewedOrgs$.subscribe(response => {
-            if (response.reviewedOrganisations) {
+        this.$reviewedOrganisationsSubscription = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations)) // TODO: should get reviewedOrganisations
+        .subscribe((response: any) => { // TODO: should have correct type
+            if (response.reviewedOrganisations.length > 0) {
                 this.reviewedOrganisations = response.reviewedOrganisations;
             } else {
                 this.onGoBack();
@@ -39,6 +37,6 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.reviewedOrganisationsSubscription.unsubscribe();
+        this.$reviewedOrganisationsSubscription.unsubscribe();
     }
 }

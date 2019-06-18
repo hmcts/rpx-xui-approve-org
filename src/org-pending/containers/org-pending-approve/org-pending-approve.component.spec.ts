@@ -6,7 +6,7 @@ import * as fromRoot from '../../../app/store/reducers';
 import * as fromRootActions from '../../../app/store/actions';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { of } from 'rxjs';
-import { ReviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { ReviewedOrganisationMockCollection, ActiveOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 
 describe('OrgPendingApproveComponent', () => {
     let component: OrgPendingApproveComponent;
@@ -15,6 +15,7 @@ describe('OrgPendingApproveComponent', () => {
     let storePipeMock: any;
     let storeDispatchMock: any;
     const reviewedOrganisationsDummy = ReviewedOrganisationMockCollection;
+    const activeOrganisationsDummy = ActiveOrganisationMockCollection;
 
     beforeEach((() => {
         TestBed.configureTestingModule({
@@ -56,7 +57,7 @@ describe('OrgPendingApproveComponent', () => {
         component.onApproveOrganisations();
         fixture.detectChanges();
         expect(storeDispatchMock).toHaveBeenCalledWith(
-            new fromOrganisationPendingStore.ApprovePendingOrganisations(reviewedOrganisationsDummy)
+            new fromOrganisationPendingStore.ApprovePendingOrganisations(activeOrganisationsDummy)
         );
     });
 
