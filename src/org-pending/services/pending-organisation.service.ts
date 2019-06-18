@@ -21,8 +21,8 @@ export class PendingOrganisationService {
     return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
   }
 
-  approvePendingOrganisations(payload): Observable<boolean> {
-    return this.http.post<boolean>(this.orgApprovePendingUrl, payload);
+  approvePendingOrganisations(payload): Observable<Response> {
+    return this.http.put<Response>(this.orgApprovePendingUrl, payload);
   }
 
 }
