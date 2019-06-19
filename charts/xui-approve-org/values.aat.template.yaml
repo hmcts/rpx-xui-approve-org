@@ -1,4 +1,0 @@
-nodejs:
-  environment:
-    IDAM_URL: https://preprod-idamapi.reform.hmcts.net:3511
-    S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
