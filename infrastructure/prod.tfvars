@@ -1,1 +1,1 @@
-additional_host_name="xuiao-webapp.judiciary.uk"
+additional_host_name="xui-ao-webapp.judiciary.uk"
