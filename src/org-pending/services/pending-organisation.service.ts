@@ -7,9 +7,9 @@ import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class PendingOrganisationService {
-  private singleOrgUrl = environment.singleOrgUrl;
-  private orgPendingUrl = environment.orgPendingUrl;
-  private orgApprovePendingUrl = environment.orgApprovePendingUrl;
+  singleOrgUrl = environment.singleOrgUrl;
+  orgPendingUrl = environment.orgPendingUrl;
+  orgApprovePendingUrl = environment.orgApprovePendingUrl;
   constructor(private http: HttpClient) {
   }
 
