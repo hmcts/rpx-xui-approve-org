@@ -1,8 +1,10 @@
 <div class="govuk-width-container">
+<main class="govuk-main-wrapper">
+<div *ngIf="(pendingOrgsCount$ | async) !== 0">
 <app-notification-banner-component>
   <span>{{pendingOrgsCount$ | async}} organisations are pending activation. <a [routerLink]="['/pending-organisations']"> Check now.</a></span>
 </app-notification-banner-component>
-
+</div>
  <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations</h1>
       <lib-govuk-table
         *ngIf="!(loading$ | async) else loading"
@@ -11,4 +13,5 @@
       <ng-template #loading>
         <div>Loading...</div>
       </ng-template>
+    </main>
     </div>
