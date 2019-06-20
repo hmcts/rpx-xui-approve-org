@@ -33,7 +33,7 @@ export const PendingOrganisationsMockCollection1: PendingOrganisation[] = [
     address: '13 Berryfield drive, Finglas',
     pbaNumber: '101010',
     admin: 'Glen Byrne',
-    status: 'PENDING',
+    status: 'ACTIVE',
     view: 'View',
     id: '2424242',
     email: 'glen@byrne.com'
