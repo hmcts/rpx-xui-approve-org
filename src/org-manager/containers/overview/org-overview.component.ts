@@ -36,6 +36,6 @@ export class OverviewComponent implements OnInit {
 
     this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
     this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
-
+    
   }
 }
