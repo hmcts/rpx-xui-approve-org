@@ -23,7 +23,7 @@ describe('Pending Organisation selectors', () => {
       store.pipe(select(getPendingOrgs)).subscribe(value => {
         result = value.pendingOrganisations;
       });
-      expect(result).toEqual({ pendingOrganisations: null, reviewedOrganisations: null, loaded: false, loading: false });
+      expect(result).toEqual({ pendingOrganisations: [], reviewedOrganisations: [], loaded: false, loading: false });
     });
   });
 });
