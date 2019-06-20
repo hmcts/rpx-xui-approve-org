@@ -7,7 +7,6 @@ import { createFeatureSelector, ActionReducerMap } from '@ngrx/store';
 
 import * as fromRouter from '@ngrx/router-store';
 import * as fromApp from '../reducers/app.reducer';
-import {UserState} from '../../../users/store/reducers';
 
 export interface RouterStateUrl {
   url: string;
