@@ -3,8 +3,8 @@
 properties([
     [
         $class       : 'GithubProjectProperty',
-        displayName  : 'Expert UI Manage Organisations',
-        projectUrlStr: 'https://github.com/hmcts/rpx-xui-manage-organisations'
+        displayName  : 'Approve Organisations app',
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org'
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']
