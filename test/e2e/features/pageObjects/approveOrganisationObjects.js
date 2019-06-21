@@ -13,6 +13,15 @@ function approveOrganisationBannerObjects() {
   this.checkNow= element(by.xpath("//a[contains(text(),'Check now.')]"));
   this.pendingOrganisationText= element(by.xpath("//*[@id='main-content']/h1"));
 
+  this.selectCheckBox= element(by.xpath("//*[@id='main-content']/lib-govuk-table/table/tbody/tr[1]/td[1]/lib-gov-checkbox/div/input"));
+  this.activate_button= element(by.xpath("//*[@id='main-content']/button"));
+  this.approve_button= element(by.xpath("//button[@class='govuk-button']"));
+  this.confirmationScreen= element(by.xpath("//div[@class='govuk-panel govuk-panel--confirmation']"));
+  this.backtoOrganisations= element(by.xpath("//a[contains(text(),'Back to Organisations')]"));
+  this.mainHeader=element(by.xpath("//h1[@class='hmcts-page-heading__title govuk-heading-xl']"));
+
+
+
 
   this.givenIAmUnauthenticatedUser = async function () {
     await this.enterUrEmail("test@gmail.com");
