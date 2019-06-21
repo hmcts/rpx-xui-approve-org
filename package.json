@@ -12,7 +12,7 @@
     "test:coverage:ng": "echo 'not implemented'",
     "test:coverage:node": "echo 'not implemented'",
     "ng": "ng",
-    "start:ng": "ng serve --port 2500 --host 0.0.0.0 --proxy-config proxy.config.json",
+    "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "build:ng": "ng build",
     "test:ng": "echo 'not implemented'",
     "test:coverage": "echo 'not implemented'",
