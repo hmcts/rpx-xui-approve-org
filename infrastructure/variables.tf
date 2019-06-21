@@ -2,16 +2,12 @@ variable "product" {
   type = "string"
 }
 
-variable "shared_product_name" {
-    default = "rpx"
-}
-
 variable "component" {
   type = "string"
 }
 
 variable "team_name" {
-  default = "xui-org-manag"
+  default = "expert_ui"
 }
 
 variable "app_language" {
@@ -25,6 +21,10 @@ variable "location" {
 
 variable "env" {
   type = "string"
+}
+
+variable "shared_product_name" {
+    default = "rpx"
 }
 
 variable "subscription" {
@@ -44,6 +44,9 @@ variable "common_tags" {
   type = "map"
 }
 
+////////////////////////////////////////////////
+//Addtional Vars ///////////////////////////////
+////////////////////////////////////////////////
 variable "capacity" {
   default = "1"
 }
