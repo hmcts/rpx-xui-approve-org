@@ -1,0 +1,67 @@
+<app-identity-bar-component><span>{{data.name}} </span><span class="hmcts-badge hmcts-badge--green">{{data.status}}</span></app-identity-bar-component>
+<div class="govuk-width-container">
+<lib-gov-uk-main-wrapper [title]="'Organisation Details'">
+      <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
+         <div class="govuk-check-your-answers__contents">
+            <dt class="govuk-check-your-answers__question">
+               Name
+            </dt>
+            <dd class="govuk-check-your-answers__answer">
+               {{data.name}}
+            </dd>
+            <dd class="govuk-check-your-answers__change">
+            </dd>
+         </div>
+         <div class="govuk-check-your-answers__contents">
+            <dt class="govuk-check-your-answers__question">
+               Address
+            </dt>
+            <dd class="govuk-check-your-answers__answer">
+               {{data.address}}
+            </dd>
+            <dd class="govuk-check-your-answers__change">
+            </dd>
+         </div>
+         <div class="govuk-check-your-answers__contents">
+            <dt class="govuk-check-your-answers__question">
+               PBA number
+            </dt>
+            <dd class="govuk-check-your-answers__answer">
+               {{data.pbaNumber}}
+            </dd>
+            <dd class="govuk-check-your-answers__change">
+            </dd>
+         </div>
+         <div class="govuk-check-your-answers__contents">
+            <dt class="govuk-check-your-answers__question">
+               DX number
+            </dt>
+            <dd class="govuk-check-your-answers__answer">
+               {{data.dxNumber}}
+            </dd>
+            <dd class="govuk-check-your-answers__change">
+            </dd>
+         </div>
+         <div class="govuk-check-your-answers__contents">
+            <dt class="govuk-check-your-answers__question">
+               DX exchange
+            </dt>
+            <dd class="govuk-check-your-answers__answer">
+               {{data.dxExchange}}
+            </dd>
+            <dd class="govuk-check-your-answers__change">
+            </dd>
+         </div>
+         <div class="govuk-check-your-answers__contents">
+            <dt class="govuk-check-your-answers__question">
+               Administrator
+            </dt>
+            <dd class="govuk-check-your-answers__answer">
+               {{data.admin}}
+            </dd>
+            <dd class="govuk-check-your-answers__change">
+            </dd>
+         </div>
+      </dl>
+</lib-gov-uk-main-wrapper>
+   </div>
