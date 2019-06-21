@@ -14,49 +14,50 @@ export enum PendingOrgActionTypes {
 
 export class LoadPendingOrganisations implements Action {
     readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS;
+    constructor() { }
 }
 
 export class LoadPendingOrganisationsSuccess implements Action {
     readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS;
 
-    constructor(public payload: PendingOrganisation[]) {}
+    constructor(public payload: PendingOrganisation[]) { }
 }
 
 export class LoadPendingOrganisationsFail implements Action {
     readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
-    constructor(public payload: any) {}
+    constructor(public payload: any) { }
 }
 
 export class AddReviewOrganisations implements Action {
     readonly type = PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS;
 
-    constructor(public payload: PendingOrganisation[]) {}
+    constructor(public payload: PendingOrganisation[]) { }
 }
 
 export class ApprovePendingOrganisations implements Action {
     readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS;
 
-    constructor(public payload: any[]) {}
+    constructor(public payload: any[]) { }
 }
 
 export class ApprovePendingOrganisationsSuccess implements Action {
     readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
 
-    constructor(public payload: any) {}
+    constructor(public payload: any) { }
 }
 
 export class ApprovePendingOrganisationsFail implements Action {
     readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
 
-    constructor(public payload: any) {}
+    constructor(public payload: any) { }
 }
 
 export type PendingOrgActions =
-| LoadPendingOrganisations
-| LoadPendingOrganisationsSuccess
-| LoadPendingOrganisationsFail
-| AddReviewOrganisations
-| ApprovePendingOrganisations
-| ApprovePendingOrganisationsSuccess
-| ApprovePendingOrganisationsFail;
+    | LoadPendingOrganisations
+    | LoadPendingOrganisationsSuccess
+    | LoadPendingOrganisationsFail
+    | AddReviewOrganisations
+    | ApprovePendingOrganisations
+    | ApprovePendingOrganisationsSuccess
+    | ApprovePendingOrganisationsFail;
