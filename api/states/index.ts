@@ -1,10 +1,10 @@
 import * as express from 'express'
 import * as log4jui from '../lib/log4jui'
-import {process} from '../lib/stateEngine'
-import {Store} from '../lib/store'
-import {asyncReturnOrError} from '../lib/util'
-import * as rdProfessional from '../services/rd-professional'
-import {makeOrganisationPayload} from '../lib/payloadBuilder'
+import { process } from '../lib/stateEngine'
+import { Store } from '../lib/store'
+import { asyncReturnOrError } from '../lib/util'
+import * as rdProfessional from '../services/rdProfessional'
+import { makeOrganisationPayload } from '../lib/payloadBuilder'
 import mapping from './mapping'
 import templates from './templates'
 
@@ -56,7 +56,7 @@ async function handleStateRoute(req, res) {
     process(req, res, mapping, payload, templates, new Store(req))
 }
 
-export const router = express.Router({mergeParams: true})
+export const router = express.Router({ mergeParams: true })
 
 router.get('/states/:jurId/:caseTypeId/:caseId/:stateId', handleStateRoute)
 router.post('/states/:jurId/:caseTypeId/:caseId/:stateId', handleStateRoute)
