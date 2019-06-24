@@ -1,6 +1,6 @@
 locals {
-    app_full_name = "${var.product}-${var.component}"
-    ase_name = "${data.terraform_remote_state.core_apps_compute.ase_name[0]}"
+    app_full_name = "xui-${var.component}"
+    ase_name = "core-compute-${var.env}"
     local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
     shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
@@ -14,17 +14,13 @@ module "app" {
     subscription = "${var.subscription}"
     capacity     = "${var.capacity}"
     is_frontend = "${!(var.env == "preview" || var.env == "spreview") ? 1 : 0}"
-    additional_host_name = "${!(var.env == "preview" || var.env == "spreview") ? "${local.app_full_name}-${var.env}.service.${var.env}.platform.hmcts.net" : "null"}"
+    additional_host_name = "${var.additional_host_name}"
     https_only="false"
     common_tags  = "${var.common_tags}"
-    asp_rg = "${var.shared_product_name}-${var.env}"
-    asp_name = "rpx-${local.local_env}"
+    asp_rg = "${local.app_full_name}-${var.env}"
+    asp_name = "${var.shared_product_name}-${var.env}"
 
     app_settings = {
-        WEBSITE_NODE_DEFAULT_VERSION = "8.8.0"
-
-        XUI_ORG_ENV = "${var.env}"
-
         # logging vars & healthcheck
         REFORM_SERVICE_NAME = "${local.app_full_name}"
         REFORM_TEAM = "${var.team_name}"
@@ -34,14 +30,30 @@ module "app" {
         PACKAGES_NAME = "${local.app_full_name}"
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
+        XUI_ENV = "${var.env}"
 
+        S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
+        IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
+    
     }
 }
+
+
 data "azurerm_key_vault" "key_vault" {
     name = "${local.shared_vault_name}"
     resource_group_name = "${local.shared_vault_name}"
 }
 
+data "azurerm_key_vault_secret" "s2s_secret" {
+    name = "xui-s2s-token"
+    vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "oauth2_secret" {
+    name = "xui-oauth2-token"
+    vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
+}
+
 provider "azurerm" {
-  version = "1.19.0"
+    version = "1.22.1"
 }
