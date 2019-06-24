@@ -7,7 +7,6 @@ import { environment as config } from '../../environments/environment';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
-import {AppConfigService} from '../config/configuration.services';
 
 @Injectable()
 export class AuthService {
@@ -58,7 +57,6 @@ export class AuthService {
 
 
   isAuthenticated(): boolean {
-    debugger
     const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
     if (!jwt) {
       return false;
