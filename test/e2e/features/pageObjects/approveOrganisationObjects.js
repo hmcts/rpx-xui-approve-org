@@ -20,6 +20,14 @@ function approveOrganisationBannerObjects() {
   this.backtoOrganisations= element(by.xpath("//a[contains(text(),'Back to Organisations')]"));
   this.mainHeader=element(by.xpath("//h1[@class='hmcts-page-heading__title govuk-heading-xl']"));
 
+  this.orgName=element(by.xpath("//*[@id='main-content']/lib-govuk-table/table/tbody/tr[1]/td[2]/span[1]"));
+  this.administratorText=element(by.xpath("//*[@id='main-content']/lib-govuk-table/table/tbody/tr[1]/td[4]/span[2]"));
+  this.addressText=element(by.xpath("//*[@id='main-content']/lib-govuk-table/table/tbody/tr[1]/td[3]"));
+
+  this.approveOrgName= element(by.xpath("//*[@id='main-content']/div/div/div/h2"));
+  this.approveAdministratorText= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[2]/dd/div[2]"));
+  this.approveAddress= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[1]/dd"));
+
 
 
 
