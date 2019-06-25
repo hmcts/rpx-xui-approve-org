@@ -64,11 +64,6 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
 
     logger.info('Getting Token from auth code.')
 
-    console.log(
-        `${config.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
-        config.protocol
-        }://${req.headers.host}${config.oauthCallbackUrl}`
-    )
     return http.post(
         `${config.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
         config.protocol
