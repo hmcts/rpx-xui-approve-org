@@ -27,7 +27,7 @@ const configs = {
     sprod,
 }
 
-export const configEnv = process ? process.env.XUI_ENV || 'local' : 'local'
+export const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
 export const config = { ...application, ...configs[configEnv].default }
 
 
