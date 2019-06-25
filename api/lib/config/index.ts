@@ -27,15 +27,18 @@ const configs = {
     sprod,
 }
 
-export const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
+export const configEnv = process ? process.env.XUI_ENV || 'local' : 'local'
 export const config = { ...application, ...configs[configEnv].default }
 
-export default { ...config }
-console.log(config)
+
 if (process) {
+    console.log('PROCESS')
     config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY || 'AAAAAAAAAAAAAAAA'
 }
 
 if (configEnv === 'local') {
     config.protocol = 'http'
 }
+
+console.log(config)
+export default { ...config }

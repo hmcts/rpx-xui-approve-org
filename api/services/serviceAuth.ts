@@ -14,7 +14,7 @@ const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
 const logger = log4jui.getLogger('service auth')
 
 export async function postS2SLease() {
-    const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
+    const configEnv = process ? process.env.XUI_ENV || 'local' : 'local'
     let request: AxiosResponse<any>
     console.log('test2:', configEnv)
     if (configEnv !== 'local') {
