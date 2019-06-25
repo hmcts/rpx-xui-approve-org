@@ -25,6 +25,7 @@ import { ROUTES } from './app.routes';
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
 import config from 'config';
+import {AuthService} from '../services/auth/auth.service';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -51,7 +52,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     }),
   ],
   providers: [
-    { provide: RouterStateSerializer, useClass: CustomSerializer }],
+    { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
