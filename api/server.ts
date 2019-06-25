@@ -47,6 +47,8 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
+app.get('/oauth2/callback', auth.oauth)
+
 
 app.use('/*', (req, res) => {
     console.time(`GET: ${req.originalUrl}`)
@@ -61,9 +63,8 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
-app.get('/oauth2/callback', auth.oauth)
+
 app.use(auth.attach)
 app.use('/api', routes)
-
 
 app.listen(process.env.PORT || 3000)
