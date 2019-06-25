@@ -4,13 +4,13 @@ import {ModuleWithProviders} from '@angular/core';
 import {OverviewComponent} from './containers/overview/org-overview.component';
 import {OrgOverviewComponent} from './containers/org-overview/org-overview.component';
 import {OrgSummaryComponent} from './containers/org-summary/org-summary.component';
+import {AuthGuard} from '../services/auth/auth.guard';
 
 export const ROUTES: Routes = [
   {
     path: '',
     component: OverviewComponent,
-    canActivate: [
-    ],
+    canActivate: [AuthGuard],
   },
   {
     path: 'organisations/organisation',
@@ -25,11 +25,6 @@ export const ROUTES: Routes = [
         ]
       }
     ]
-  },
-  {
-    path: '**',
-    redirectTo: '/',
-    pathMatch: 'full'
   }
 ];
 
