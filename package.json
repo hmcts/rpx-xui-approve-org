@@ -24,7 +24,7 @@
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "lint": "echo 'not implemented'",
     "test": "echo 'not implemented'",
-    "test:smoke": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
+    "test:smoke": "sh whitelist.sh && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test:functional:local": "protractor ./test/e2e/config/functional.conf.js --local"
