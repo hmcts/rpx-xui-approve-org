@@ -10,8 +10,6 @@ import { StoreModule } from '@ngrx/store';
 import { reducers } from '././../org-manager/store/reducers/index'
 import { effects } from '././../org-manager/store/effects/index'
 import { EffectsModule } from '@ngrx/effects';
-import * as fromContainers from './containers';
-import * as fromComponents from './components';
 
 
 @NgModule({
@@ -23,8 +21,8 @@ import * as fromComponents from './components';
     StoreModule.forFeature('organisations', reducers),
     EffectsModule.forFeature(effects)
   ],
-  exports: [...fromContainers.containers],
-  declarations: [...fromContainers.containers, ...fromComponents.components],
+  exports: [],
+  declarations: [],
   providers: [...fromServices.services]
 })
 
