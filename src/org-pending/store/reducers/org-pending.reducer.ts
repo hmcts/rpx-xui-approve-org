@@ -1,4 +1,4 @@
-import { PendingOrganisation, PendingOrganisationSummary } from '../../models/pending-organisation';
+import { PendingOrganisation, PendingOrganisationSummary } from '../../../org-manager/models/pending-organisation';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
 
 // TODO: cleanup cascading pendingOrganisations

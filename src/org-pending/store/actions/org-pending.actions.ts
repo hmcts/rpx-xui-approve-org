@@ -1,5 +1,5 @@
 
-import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
+import { PendingOrganisation } from 'src/org-manager/models/pending-organisation';
 import { Action } from '@ngrx/store';
 
 export enum PendingOrgActionTypes {
