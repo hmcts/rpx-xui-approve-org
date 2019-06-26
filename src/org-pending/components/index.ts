@@ -1,7 +1,7 @@
-import { SummaryComponent } from '../components/summary/summary.component';
+import { SummaryPendingComponent } from './summary-pending/summary-pending.component';
 
 export const components: any[] = [
-    SummaryComponent
+    SummaryPendingComponent
   ];
 
-  export * from './summary/summary.component';
+  export * from './summary-pending/summary-pending.component';
