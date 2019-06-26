@@ -10,7 +10,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'organisations',
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
   },
   {

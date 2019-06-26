@@ -10,7 +10,7 @@ export const ROUTES: Routes = [
   {
     path: '',
     component: OverviewComponent,
-    canActivate: [AuthGuard],
+    //canActivate: [AuthGuard],
   },
   {
     path: 'organisations/organisation',
