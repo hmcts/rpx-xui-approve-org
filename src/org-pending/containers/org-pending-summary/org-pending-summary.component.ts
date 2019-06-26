@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
 import {select, Store} from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
-import * as fromOrganisationPendingStore from '../../../org-pending/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import { SummaryComponent } from 'src/org-manager/components';
 
 @Component({
@@ -15,7 +15,7 @@ export class OrgPendingSummaryComponent implements OnInit, OnDestroy {
   $routeSubscription: Subscription;
   pageId: string;
   constructor(
-    private store: Store<fromOrganisationPendingStore.PendingOrganisationState>) { }
+    private store: Store<fromOrganisationPendingStore.OrganisationState>) { }
 
   ngOnInit() {
 

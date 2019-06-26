@@ -7,8 +7,8 @@ import * as fromServices from './../org-manager/services'
 import { HttpClientModule } from '@angular/common/http';
 import { orgPendingRouting } from './org-pending';
 import { StoreModule } from '@ngrx/store';
-import { reducers } from './store/reducers/index';
-import { effects } from './store/effects/index';
+import { reducers } from '././../org-manager/store/reducers/index'
+import { effects } from '././../org-manager/store/effects/index'
 import { EffectsModule } from '@ngrx/effects';
 import * as fromContainers from './containers';
 import * as fromComponents from './components';
@@ -20,7 +20,7 @@ import * as fromComponents from './components';
     HttpClientModule,
     SharedModule,
     orgPendingRouting,
-    StoreModule.forFeature('org-pending', reducers),
+    StoreModule.forFeature('organisations', reducers),
     EffectsModule.forFeature(effects)
   ],
   exports: [...fromContainers.containers],
