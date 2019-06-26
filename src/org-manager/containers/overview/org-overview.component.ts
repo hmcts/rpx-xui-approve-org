@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromOrganisationStore from '../../../org-manager/store';
-import * as fromOrganisationPendingStore from '../../../org-pending/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store'
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import {Observable} from 'rxjs';
 import { OrganisationSummary } from '../../models/organisation';
@@ -17,7 +17,7 @@ export class OverviewComponent implements OnInit {
   loading$: Observable<boolean>;
   pendingOrgsCount$: Observable<number>;
 
-  constructor(private store: Store<fromOrganisationStore.OrganisationState>, private pendingStore: Store<fromOrganisationPendingStore.PendingOrganisationState>) {}
+  constructor(private store: Store<fromOrganisationStore.OrganisationState>, private pendingStore: Store<fromOrganisationPendingStore.OrganisationState>) {}
 
   ngOnInit(): void {
     this.store.dispatch(new fromOrganisationStore.LoadOrganisation());

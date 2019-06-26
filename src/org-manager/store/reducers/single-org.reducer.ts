@@ -17,7 +17,7 @@ export const initialState: SingleOrgState = {
 
 export function reducer(
   state = initialState,
-  action: fromSingleOrgActions.SingleOrgActions
+  action: fromSingleOrgActions.SinglePendingOrgActions
 ): SingleOrgState {
   switch (action.type) {
     case fromSingleOrgActions.LOAD_SINGLE_ORG_SUCCESS: {

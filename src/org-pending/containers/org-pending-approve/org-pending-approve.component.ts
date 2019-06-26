@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import * as fromOrganisationPendingStore from '../../../org-pending/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -14,7 +14,7 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
     $reviewedOrganisationsSubscription: Subscription;
 
     constructor(
-        private store: Store<fromOrganisationPendingStore.PendingOrganisationState>
+        private store: Store<fromOrganisationPendingStore.OrganisationState>
     ) { }
 
     ngOnInit() {
