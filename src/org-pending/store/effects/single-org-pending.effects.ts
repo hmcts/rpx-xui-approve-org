@@ -3,7 +3,7 @@ import {Actions, Effect, ofType} from '@ngrx/effects';
 import * as singleOrganisationActions from '../actions';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
-import {PendingOrganisationService} from '../../services';
+import {PendingOrganisationService} from '../../../org-manager/services'
 
 @Injectable()
 export class SingleOrgEffects {

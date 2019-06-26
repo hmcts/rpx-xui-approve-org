@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 
-import * as fromServices from './services';
+import * as fromServices from './../org-manager/services'
 import { HttpClientModule } from '@angular/common/http';
 import { orgPendingRouting } from './org-pending';
 import { StoreModule } from '@ngrx/store';
