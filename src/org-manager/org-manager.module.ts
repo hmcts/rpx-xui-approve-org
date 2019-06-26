@@ -15,7 +15,6 @@ import {StoreModule} from '@ngrx/store';
 import {HttpClientModule} from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { reducers, effects } from './store';
-import { OrgPendingModule } from 'src/org-pending/org-pending.module';
 
 @NgModule({
   imports: [
@@ -24,8 +23,7 @@ import { OrgPendingModule } from 'src/org-pending/org-pending.module';
     orgManagerRouting,
     SharedModule,
     StoreModule.forFeature('organisations', reducers),
-    EffectsModule.forFeature(effects),
-    OrgPendingModule
+    EffectsModule.forFeature(effects)
   ],
   exports: [...fromContainers.containers],
   declarations: [...fromContainers.containers, ...fromComponents.components],
