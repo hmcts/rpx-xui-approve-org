@@ -3,7 +3,7 @@ import * as fromOrganisationPendingStore from '../../../org-pending/store';
 import * as fromRoot from '../../../app/store';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
+import { PendingOrganisation } from 'src/org-manager/models/pending-organisation';
 
 @Component({
     selector: 'app-org-pending-approve',
