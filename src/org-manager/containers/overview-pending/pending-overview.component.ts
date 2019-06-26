@@ -6,14 +6,14 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
-import { PendingOverviewColumnConfig } from '../../../org-pending/config/pending-overview.config';
+import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-overview.component.html',
 })
 
-export class OverviewComponent implements OnInit {
+export class OverviewPendingComponent implements OnInit {
 
   columnConfig: GovukTableColumnConfig[];
   pendingOrgs$: any;
