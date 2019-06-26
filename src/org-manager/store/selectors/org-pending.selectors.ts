@@ -1,7 +1,7 @@
 import * as fromOrganisation from '../reducers/org-pending.reducer';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-const getPendingOrgsFeatureState = createFeatureSelector<fromOrganisation.PendingOrganisationState>('org-pending');
+const getPendingOrgsFeatureState = createFeatureSelector<fromOrganisation.OrganisationState>('organisations');
 
 export const getPendingOrgs = createSelector(
     getPendingOrgsFeatureState,

@@ -8,28 +8,28 @@ export enum SinglePendingOrgActionTypes {
    RESET_SINGLE_ORG = '[Single Pending Organisation] Reset Single Pending Organisation'
 }
 
-export class LoadSingleOrg {
+export class LoadSinglePendingOrg {
   readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS;
   constructor(public payload: any) {}
 }
 
-export class LoadSingleOrgSuccess  implements Action {
+export class LoadSinglePendingOrgSuccess  implements Action {
   readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_SUCCESS;
   constructor(public payload: SingleOrgSummary) {}
 }
 
-export class LoadSingleOrgFail implements Action {
+export class LoadSinglePendingOrgFail implements Action {
   readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_FAIL;
   constructor(public payload: any) {}
 }
 
-export class ResetSingleOrg implements Action {
+export class ResetSinglePendingOrg implements Action {
   readonly type = SinglePendingOrgActionTypes.RESET_SINGLE_ORG;
   constructor(public payload: any) {}
 }
 
 export type SingleOrgActions =
-  | LoadSingleOrg
-  | LoadSingleOrgSuccess
-  | LoadSingleOrgFail
-  | ResetSingleOrg;
+  | LoadSinglePendingOrg
+  | LoadSinglePendingOrgSuccess
+  | LoadSinglePendingOrgFail
+  | ResetSinglePendingOrg;

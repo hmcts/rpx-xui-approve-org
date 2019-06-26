@@ -2,14 +2,14 @@ import { PendingOrganisation, PendingOrganisationSummary } from '../../../org-ma
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
 
 // TODO: cleanup cascading pendingOrganisations
-export interface PendingOrganisationState {
+export interface OrganisationState {
   pendingOrganisations: PendingOrganisation[];
   reviewedOrganisations: PendingOrganisation[];
   loaded: boolean;
   loading: boolean;
 }
 
-export const initialState: PendingOrganisationState = {
+export const initialState: OrganisationState = {
   pendingOrganisations: [],
   reviewedOrganisations: [],
   loaded: false,
@@ -19,7 +19,7 @@ export const initialState: PendingOrganisationState = {
 export function reducer(
   state = initialState,
   action: PendingOrgActions
-): PendingOrganisationState {
+): OrganisationState {
   switch (action.type) {
     case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
       return {
@@ -63,7 +63,7 @@ export function reducer(
   }
 }
 
-export const getPendingOrganisations = (state: PendingOrganisationState) => state.pendingOrganisations;
-export const getPendingOrganisationsLoading = (state: PendingOrganisationState) => state.loading;
-export const getPendingOrganisationsLoaded = (state: PendingOrganisationState) => state.loaded;
-export const getReviewedOrganisations = (state: PendingOrganisationState) => state.reviewedOrganisations;
+export const getPendingOrganisations = (state: OrganisationState) => state.pendingOrganisations;
+export const getPendingOrganisationsLoading = (state: OrganisationState) => state.loading;
+export const getPendingOrganisationsLoaded = (state: OrganisationState) => state.loaded;
+export const getReviewedOrganisations = (state: OrganisationState) => state.reviewedOrganisations;
