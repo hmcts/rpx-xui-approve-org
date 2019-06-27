@@ -1,7 +1,7 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { OverviewComponent } from './pending-overview.component';
+import { OverviewPendingComponent } from './pending-overview.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import * as fromOrganisationPendingStore from '../../../org-pending/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromRootActions from '../../../app/store/actions';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
@@ -10,9 +10,9 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 
 describe('OverviewComponent', () => {
-    let component: OverviewComponent;
-    let fixture: ComponentFixture<OverviewComponent>;
-    let store: Store<fromOrganisationPendingStore.PendingOrganisationState>;
+    let component: OverviewPendingComponent;
+    let fixture: ComponentFixture<OverviewPendingComponent>;
+    let store: Store<fromOrganisationPendingStore.OrganisationState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
     const organisationsDummy = ReviewedOrganisationMockCollection;
@@ -27,7 +27,7 @@ describe('OverviewComponent', () => {
                 }),
             ],
             declarations: [
-                OverviewComponent
+                OverviewPendingComponent
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
@@ -38,7 +38,7 @@ describe('OverviewComponent', () => {
         storePipeMock = spyOn(store, 'pipe');
         storeDispatchMock = spyOn(store, 'dispatch');
 
-        fixture = TestBed.createComponent(OverviewComponent);
+        fixture = TestBed.createComponent(OverviewPendingComponent);
         component = fixture.componentInstance;
         storePipeMock.and.returnValue(of({ pendingOrganisations: organisationsDummy }));
         fixture.detectChanges();

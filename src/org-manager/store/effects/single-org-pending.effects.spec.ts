@@ -4,16 +4,16 @@ import { hot, cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromSingleOrgPendingEffects from './single-org-pending.effects';
-import { SingleOrgEffects } from './single-org-pending.effects';
-import { LoadSingleOrg, LoadSingleOrgFail } from '../actions/single-org-pending.actions';
-import { LoadSingleOrgSuccess } from '../actions';
-import { PendingOrganisationService } from '../../../org-pending/services';
+import { SingleOrgPendingEffects } from './single-org-pending.effects';
+import { LoadSinglePendingOrg, LoadSinglePendingOrgFail } from '../actions/single-org-pending.actions';
+import { LoadSinglePendingOrgSuccess } from '../actions';
+import { PendingOrganisationService } from '../../../org-manager/services';
 import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
-import { SingleOrgSummaryMock } from '../../../org-pending/mock/pending-organisation.mock';
+import { SingleOrgSummaryMock } from '../../../org-manager/mock/pending-organisation.mock';
 
 describe('Single pending organisation Effects', () => {
   let actions$;
-  let effects: SingleOrgEffects;
+  let effects: SingleOrgPendingEffects;
   const PendingOrganisationServiceMock = jasmine.createSpyObj('PendingOrganisationService', [
     'getSingleOrganisation',
   ]);
@@ -25,11 +25,11 @@ describe('Single pending organisation Effects', () => {
           provide: PendingOrganisationService,
           useValue: PendingOrganisationServiceMock,
         },
-        fromSingleOrgPendingEffects.SingleOrgEffects,
+        fromSingleOrgPendingEffects.SingleOrgPendingEffects,
         provideMockActions(() => actions$)
       ]
     });
-    effects = TestBed.get(SingleOrgEffects);
+    effects = TestBed.get(SingleOrgPendingEffects);
 
   });
   describe('loadSingleOrg$', () => {
@@ -37,8 +37,8 @@ describe('Single pending organisation Effects', () => {
       const payload: SingleOrgSummary = SingleOrgSummaryMock;
 
       PendingOrganisationServiceMock.getSingleOrganisation.and.returnValue(of(payload));
-      const action = new LoadSingleOrg({});
-      const completion = new LoadSingleOrgSuccess(payload[0]);
+      const action = new LoadSinglePendingOrg({});
+      const completion = new LoadSinglePendingOrgSuccess(payload[0]);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadSingleOrg$).toBeObservable(expected);
@@ -47,8 +47,8 @@ describe('Single pending organisation Effects', () => {
     describe('loadSingleOrg$ error', () => {
       it('should return LoadSingleOrgFail', () => {
         PendingOrganisationServiceMock.getSingleOrganisation.and.returnValue(throwError(new Error()));
-        const action = new LoadSingleOrg({});
-        const completion = new LoadSingleOrgFail(new Error);
+        const action = new LoadSinglePendingOrg({});
+        const completion = new LoadSinglePendingOrgFail(new Error);
         actions$ = hot('-a', { a: action });
         const expected = cold('-b', { b: completion });
         expect(effects.loadSingleOrg$).toBeObservable(expected);

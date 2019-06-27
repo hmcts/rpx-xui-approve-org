@@ -7,7 +7,7 @@ import * as fromPendingOrganisationEffects from './org-pending.effects';
 import { PendingOrgEffects } from './org-pending.effects';
 import { LoadPendingOrganisations, ApprovePendingOrganisations, ApprovePendingOrganisationsSuccess, ApprovePendingOrganisationsFail } from '../actions/org-pending.actions';
 import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
-import { PendingOrganisationService } from 'src/org-pending/services';
+import { PendingOrganisationService } from 'src/org-manager/services';
 import { PendingOrganisation } from '../../models/pending-organisation';
 import { Go } from 'src/app/store';
 import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
