@@ -1,5 +1,5 @@
 import * as fromPendingOrganisation from './org-pending.actions';
-import { PendingOrganisation } from 'src/org-pending/models/pending-organisation';
+import { PendingOrganisation } from 'src/org-manager/models/pending-organisation';
 import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
 
 describe('PendingOrganisationActions actions', () => {

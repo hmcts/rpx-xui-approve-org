@@ -1,7 +1,7 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { OrgPendingApproveComponent } from './org-pending-approve.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import * as fromOrganisationPendingStore from '../../../org-pending/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromRootActions from '../../../app/store/actions';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
@@ -11,7 +11,7 @@ import { ReviewedOrganisationMockCollection, ActiveOrganisationMockCollection } 
 describe('OrgPendingApproveComponent', () => {
     let component: OrgPendingApproveComponent;
     let fixture: ComponentFixture<OrgPendingApproveComponent>;
-    let store: Store<fromOrganisationPendingStore.PendingOrganisationState>;
+    let store: Store<fromOrganisationPendingStore.OrganisationState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
     const reviewedOrganisationsDummy = ReviewedOrganisationMockCollection;
