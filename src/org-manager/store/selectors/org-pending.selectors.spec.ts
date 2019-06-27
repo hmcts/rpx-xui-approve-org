@@ -1,16 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
-import { PendingOrganisationState } from '../reducers/org-pending.reducer';
+import { OrganisationState } from '../reducers/org-pending.reducer';
 import { getPendingOrgs } from './org-pending.selectors';
 import { reducers } from '../index';
 
 describe('Pending Organisation selectors', () => {
-  let store: Store<PendingOrganisationState>;
+  let store: Store<OrganisationState>;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('org-pending', reducers),
+        StoreModule.forFeature('organisations', reducers),
       ],
     });
     store = TestBed.get(Store);

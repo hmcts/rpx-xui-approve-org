@@ -1,6 +1,6 @@
 import { initialState, reducer } from './org-pending.reducer';
 import { LoadPendingOrganisationsSuccess, AddReviewOrganisations, LoadPendingOrganisations } from '../actions';
-import { PendingOrganisation, PendingOrganisationSummary } from 'src/org-pending/models/pending-organisation';
+import { PendingOrganisation, PendingOrganisationSummary } from 'src/org-manager/models/pending-organisation';
 import * as fromPendingOrganisation from './org-pending.reducer';
 import { PendingOrganisationsMockCollection1, PendingOrganisationsMockSummaryCollection1 } from '../../mock/pending-organisation.mock';
 

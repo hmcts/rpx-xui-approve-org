@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { PendingSingleOrgState } from '../reducers/single-org-pending.reducer';
-import { getSingleOrgState } from './single-org-pending.selectors';
+import { getSinglePendingOrgState } from './single-org-pending.selectors';
 import { reducers } from '../index';
 
 describe('Single organisation pending selectors', () => {
@@ -10,7 +10,7 @@ describe('Single organisation pending selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('org-pending', reducers),
+        StoreModule.forFeature('organisations', reducers),
       ],
     });
     store = TestBed.get(Store);
@@ -21,7 +21,7 @@ describe('Single organisation pending selectors', () => {
     it('should return single organisation pending state', () => {
       let result;
 
-      store.pipe(select(getSingleOrgState)).subscribe(value => {
+      store.pipe(select(getSinglePendingOrgState)).subscribe(value => {
         result = value;
       });
       expect(result).toEqual({ data: {}, loaded: false, loading: false });

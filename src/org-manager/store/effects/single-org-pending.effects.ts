@@ -18,9 +18,9 @@ export class SingleOrgPendingEffects {
     switchMap((data: { payload: string, type: string}) => {
       return this.orgService.getSingleOrganisation(data.payload).pipe(
         map(singleOrgDetails => {
-          return new singleOrganisationActions.LoadSingleOrgSuccess(singleOrgDetails[0]);
+          return new singleOrganisationActions.LoadSinglePendingOrgSuccess(singleOrgDetails[0]);
         }),
-        catchError(error => of(new singleOrganisationActions.LoadSingleOrgFail(error)))
+        catchError(error => of(new singleOrganisationActions.LoadSinglePendingOrgFail(error)))
       );
     })
   );
