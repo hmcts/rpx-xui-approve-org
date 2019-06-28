@@ -28,7 +28,7 @@ import {FormGroup} from '@angular/forms';
   `
 })
 export class GovUkInputComponent implements OnChanges, OnInit {
-  constructor () { }
+  constructor() { }
   @Input() errorMessage;
   @Input() group: FormGroup;
   @Input() config: { label: string, hint: string; name: string; id: string, type: string; isPageHeading, classes: string };
