@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PendingOrganisation } from '../../org-manager/models/pending-organisation'
+import { PendingOrganisation } from '../../org-manager/models/pending-organisation';
 import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
 import { environment } from 'src/environments/environment';
 

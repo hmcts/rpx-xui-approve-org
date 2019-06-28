@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
-import * as singleOrganisationActions from '../../../org-manager/store/actions'
+import * as singleOrganisationActions from '../../../org-manager/store/actions';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
-import {PendingOrganisationService} from '../../../org-manager/services'
+import {PendingOrganisationService} from '../../../org-manager/services';
 
 @Injectable()
 export class SingleOrgPendingEffects {

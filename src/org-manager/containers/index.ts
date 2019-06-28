@@ -21,7 +21,7 @@ export const containers: any[] = [
 export * from './overview/org-overview.component';
 export * from './org-overview/org-overview.component';
 export * from './org-summary/org-summary.component';
-export * from './../../org-manager/containers/overview-pending/pending-overview.component'
+export * from './../../org-manager/containers/overview-pending/pending-overview.component';
 export * from './../../org-manager/containers/org-pending-summary/org-pending-summary.component';
 
 
