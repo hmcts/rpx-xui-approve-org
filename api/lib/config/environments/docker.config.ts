@@ -1,17 +1,15 @@
 export default {
     services: {
-        ccdDataApi: 'http://localhost:4452',
-        ccdDefApi: 'http://localhost:4452',
-        idamWeb: 'https://localhost:3501',
-        idamApi: 'http://localhost:4501',
-        s2s: 'http://localhost:4502',
-        draftStoreApi: 'http://localhost:8080',
-        dmStoreApi: 'http://localhost:4603',
-        emAnnoApi: 'http://localhost:3621',
-        emNpaApi: 'http://localhost:3622',
+        idam_web: 'https://idam.preprod.ccidam.reform.hmcts.net',
+        idam_api: 'https://preprod-idamapi.reform.hmcts.net:3511',
+        s2s: 'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
     },
-    useProxy: false,
+    proxy: {
+        host: '172.16.0.7',
+        port: 8080,
+    },
     protocol: 'http',
     secureCookie: false,
     sessionSecret: 'secretSauce',
-}
+    logging: 'debug'
+};
