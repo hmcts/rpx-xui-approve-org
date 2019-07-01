@@ -20,10 +20,10 @@ export const environment = {
     urls: {
       idam: {
         idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
-        idamClientID: 'xuiwebapp',
+        idamClientID: 'xuiaowebapp',
         idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
         indexUrl: '/',
-        oauthCallbackUrl: 'oauth2/callback'
-      }
-  }
-};
+        oauthCallbackUrl: 'oauth2/callback',
+      },
+  },
+}
