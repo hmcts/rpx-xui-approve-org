@@ -1,7 +1,7 @@
 import { OverviewComponent } from './overview/org-overview.component';
 import { OrgOverviewComponent } from './org-overview/org-overview.component';
 import { OrgSummaryComponent } from './org-summary/org-summary.component';
-import { OverviewPendingComponent } from './../../org-manager/containers/overview-pending/pending-overview.component'
+import { OverviewPendingComponent } from './../../org-manager/containers/overview-pending/pending-overview.component';
 import { OrgPendingOverviewComponent } from './../../org-manager/containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingSummaryComponent } from './../../org-manager/containers/org-pending-summary/org-pending-summary.component';
 import { OrgPendingApproveComponent } from './../../org-manager/containers/org-pending-approve/org-pending-approve.component';
