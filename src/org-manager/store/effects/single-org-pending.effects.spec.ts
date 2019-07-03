@@ -48,7 +48,7 @@ describe('Single pending organisation Effects', () => {
       it('should return LoadSingleOrgFail', () => {
         PendingOrganisationServiceMock.getSingleOrganisation.and.returnValue(throwError(new Error()));
         const action = new LoadSinglePendingOrg({});
-        const completion = new LoadSinglePendingOrgFail(new Error);
+        const completion = new LoadSinglePendingOrgFail(new Error());
         actions$ = hot('-a', { a: action });
         const expected = cold('-b', { b: completion });
         expect(effects.loadSingleOrg$).toBeObservable(expected);
