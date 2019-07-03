@@ -32,7 +32,7 @@ export function reducer(
         organisations = action.payload.map((organisation: Organisation) => {
             const routerLink: OrganisationSummary = {
               ...organisation,
-              routerLink: `/organisations/organisation/${organisation.pbaNumber}/`
+              routerLink: `/organisations/organisation/${organisation.organisationIdentifier}/`
             };
             return routerLink;
           });
