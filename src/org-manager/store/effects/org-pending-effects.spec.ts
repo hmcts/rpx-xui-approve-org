@@ -5,7 +5,8 @@ import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromPendingOrganisationEffects from './org-pending.effects';
 import { PendingOrgEffects } from './org-pending.effects';
-import { LoadPendingOrganisations, ApprovePendingOrganisations, ApprovePendingOrganisationsSuccess, ApprovePendingOrganisationsFail } from '../actions/org-pending.actions';
+import { LoadPendingOrganisations, ApprovePendingOrganisations,
+        ApprovePendingOrganisationsSuccess, ApprovePendingOrganisationsFail } from '../actions/org-pending.actions';
 import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
 import { PendingOrganisationService } from 'src/org-manager/services';
 import { PendingOrganisation } from '../../models/pending-organisation';
@@ -56,7 +57,7 @@ describe('Pending Organisation Effects', () => {
     it('should return LoadPendingOrganisationsFail', () => {
       PendingOrganisationServiceMock.fetchPendingOrganisations.and.returnValue(throwError(new Error()));
       const action = new LoadPendingOrganisations();
-      const completion = new LoadPendingOrganisationsFail(new Error);
+      const completion = new LoadPendingOrganisationsFail(new Error());
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadPendingOrgs$).toBeObservable(expected);
@@ -85,7 +86,7 @@ describe('Pending Organisation Effects', () => {
     it('should return ApprovePendingOrganisationsOrganisationsFail', () => {
       PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(new Error()));
       const action = new ApprovePendingOrganisations(payload);
-      const completion = new ApprovePendingOrganisationsFail(new Error);
+      const completion = new ApprovePendingOrganisationsFail(new Error());
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.approvePendingOrgs$).toBeObservable(expected);

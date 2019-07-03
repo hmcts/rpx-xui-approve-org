@@ -18,14 +18,15 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        this.$reviewedOrganisationsSubscription = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations)) // TODO: should get reviewedOrganisations
-        .subscribe((response: any) => { // TODO: should have correct type
-            if (response.reviewedOrganisations.length > 0) {
-                this.reviewedOrganisations = response.reviewedOrganisations;
-            } else {
-                this.onGoBack();
-            }
-        });
+        // TODO: should get reviewedOrganisations
+        this.$reviewedOrganisationsSubscription = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations))
+            .subscribe((response: any) => { // TODO: should have correct type
+                if (response.reviewedOrganisations.length > 0) {
+                    this.reviewedOrganisations = response.reviewedOrganisations;
+                } else {
+                    this.onGoBack();
+                }
+            });
     }
 
     onGoBack() {

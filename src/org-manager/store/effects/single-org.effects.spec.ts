@@ -59,7 +59,7 @@ describe('Single organisation Effects', () => {
     it('should return LoadSingleOrgFail', () => {
       OrganisationServiceMock.getSingleOrganisation.and.returnValue(throwError(new Error()));
       const action = new LoadSingleOrg({});
-      const completion = new LoadSingleOrgFail(new Error);
+      const completion = new LoadSingleOrgFail(new Error());
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadSingleOrg$).toBeObservable(expected);

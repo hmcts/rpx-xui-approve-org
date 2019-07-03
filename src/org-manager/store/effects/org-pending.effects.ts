@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { PendingOrganisationService } from 'src/org-manager/services/pending-organisation.service';
-import * as pendingOrgActions from '../../../org-manager/store/actions/org-pending.actions'
+import * as pendingOrgActions from '../../../org-manager/store/actions/org-pending.actions';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as fromRoot from '../../../app/store';
