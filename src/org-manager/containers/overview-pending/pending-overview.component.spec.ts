@@ -7,7 +7,7 @@ import * as fromRootActions from '../../../app/store/actions';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ReviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { ReviewedOrganisationMockCollection, ReviewedOrganisationFromGovTableMockCollection } from '../../mock/pending-organisation.mock';
 
 describe('OverviewComponent', () => {
     let component: OverviewPendingComponent;
@@ -16,6 +16,7 @@ describe('OverviewComponent', () => {
     let storePipeMock: any;
     let storeDispatchMock: any;
     const organisationsDummy = ReviewedOrganisationMockCollection;
+    const organisationsFromGovTableDummy = ReviewedOrganisationFromGovTableMockCollection;
 
     beforeEach((() => {
         TestBed.configureTestingModule({
@@ -45,7 +46,7 @@ describe('OverviewComponent', () => {
     }));
 
     it('should dispatch add review action when pending org checked', () => {
-        component.processCheckedOrgs({ value: organisationsDummy });
+        component.processCheckedOrgs({ value: organisationsFromGovTableDummy });
         expect(storeDispatchMock).toHaveBeenCalledWith(
             new fromOrganisationPendingStore.AddReviewOrganisations(organisationsDummy)
         );
