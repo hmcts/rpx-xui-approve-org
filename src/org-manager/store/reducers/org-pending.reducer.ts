@@ -30,12 +30,12 @@ export function reducer(
     }
     case PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
       const payload: PendingOrganisation[] = action.payload.slice(0);
-      const reviewedOrganisations = payload.map(item => {
-        return {...item, status: 'ACTIVE'};
+      const reviewedOrganisationsMapped = payload.map(item => {
+        return { ...item, status: 'ACTIVE' };
       });
       return {
         ...state,
-        reviewedOrganisations: reviewedOrganisations
+        reviewedOrganisations: reviewedOrganisationsMapped
       };
     }
     case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
@@ -43,20 +43,21 @@ export function reducer(
       let pendingOrganisations = action.payload;
       if (pendingOrganisations.length !== 0) {
         pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
-            const routerLink: PendingOrganisationSummary = {
-              ...pendingOrganisation,
-              routerLink: `/pending-organisations/organisation/${pendingOrganisation.pbaNumber}/`
-            };
-            return routerLink;
-          });
+          const routerLink: PendingOrganisationSummary = {
+            ...pendingOrganisation,
+            routerLink: `/pending-organisations/organisation/${pendingOrganisation.pbaNumber}/`
+          };
+          return routerLink;
+        });
       }
-    return {
+      const pendingOrganisationsMapped = pendingOrganisations;
+      return {
         ...state,
-        pendingOrganisations:  pendingOrganisations,
+        pendingOrganisations: pendingOrganisationsMapped,
         loaded: true,
         loading: false,
-    };
-  }
+      };
+    }
 
     default:
       return state;
