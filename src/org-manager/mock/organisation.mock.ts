@@ -18,26 +18,24 @@ export const OrganisationsMock: Organisation[] = [{
   },
   status: "ACTIVE",
   name: "Speake Limited"
+},
+{
+  organisationIdentifier: "23456433",
+  contactInformation: [{ addressLine1: "72 Guild Street",
+      townCity: "London",
+      county: "WestMinster",
+      dxAddress: [{
+        dxNumber: "",
+        dxExchange: ""
+    }]
+    }
+  ],
+  superUser: { userIdentifier: "",
+    firstName: "Mia",
+    lastName: "Mamatora",
+    email: "mia@mamatora.com",
+  },
+  status: "ACTIVE",
+  name: "Miamora Limited"
 }
 ];
-  /*{
-    name: 'Speake Limited',
-    //address: '72 Guild Street, London, SE23 6FH',
-    //organisationIdentifier: 'SU2DSCSA',
-    //admin: 'Matt Speake',
-    status: 'ACTIVE'
-    //view: 'View',
-    organisationIdentifier: '12345678',
-    //email: 'matt@speake.com'
-  },
-  // {
-  //   name: 'Miamora Limited',
-  //   //address: '72 Guild Street, London, SE23 6FH',
-  //   pbaNumber: '2A2ABCDFFFA',
-  //   admin: 'Mia Mamatora',
-  //   status: 'ACTIVE',
-  //   view: 'View',
-  //   organisationIdentifier: '23456433',
-  //   email: 'mia@mamatora.com'
-  // }
-];*/
