@@ -15,20 +15,9 @@ export class OrganisationService {
   constructor(private http: HttpClient) {
   }
 
-  fetchOrganisations(): Observable<Array<organisationVM>> {
-    const obj: Organisation[] = OrganisationsMock;
-
-    let organisationModel: organisationVM[] = []
-    obj.forEach((curr) => {
-      let organisation = new organisationVM()
-      organisation.organisationId = curr.organisationIdentifier
-      organisation.status = curr.status
-      organisation.admin = `${curr.superUser.firstName} ${curr.superUser.lastName}`
-      organisation.address = `${curr.contactInformation[0].addressLine1}, ${curr.contactInformation[0].county}, ${curr.contactInformation[0].townCity}`
-      organisationModel.push(organisation);
-    });
-
-    return of(organisationModel);
+  fetchOrganisations(): Observable<Array<Organisation>> {
+    const organisations$ = this.http.get<Organisation[]>('api/Organisations')
+    return organisations$
   }
 
   getSingleOrganisation(payload): Observable<SingleOrgSummary> {
@@ -36,4 +25,3 @@ export class OrganisationService {
   }
 
 }
-
