@@ -39,8 +39,8 @@ export class OverviewPendingComponent implements OnInit {
   }
 
   processCheckedOrgs(pendingOrgs) {
-    this.approveOrganisations = pendingOrgs.value;
-    this.store.dispatch(new fromOrganisationPendingStore.AddReviewOrganisations(pendingOrgs.value));
+    this.approveOrganisations = pendingOrgs.value.map(element => element.input);
+    this.store.dispatch(new fromOrganisationPendingStore.AddReviewOrganisations(this.approveOrganisations));
   }
 
   activateOrganisations() {
