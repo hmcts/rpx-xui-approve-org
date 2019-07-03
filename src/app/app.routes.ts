@@ -1,6 +1,4 @@
 import { Routes } from '@angular/router';
-import {AuthGuard} from '../services/auth/auth.guard';
-
 
 export const ROUTES: Routes = [
   {
@@ -10,7 +8,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'organisations',
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
   },
   {

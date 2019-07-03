@@ -26,7 +26,7 @@ export class ResetSingleOrg implements Action {
   constructor(public payload: any) {}
 }
 
-export type SingleOrgActions =
+export type SinglePendingOrgActions =
   | LoadSingleOrg
   | LoadSingleOrgSuccess
   | LoadSingleOrgFail
