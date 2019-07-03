@@ -37,9 +37,10 @@ export function reducer(
             return routerLink;
           });
       }
+      const organisationsMapped = organisations;
       return {
         ...state,
-          organisations: organisations,
+          organisations: organisationsMapped,
           loaded: true,
           loading: false
       };
