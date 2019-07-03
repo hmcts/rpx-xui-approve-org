@@ -7,7 +7,7 @@
                     <h1 class="govuk-heading-xl">Check selected organisations before you activate them</h1>
 
                     <ng-container *ngFor="let organisation of reviewedOrganisations">
-                        <h2 class="govuk-heading-m">{{organisation.input.organisationId}}</h2>
+                        <h2 class="govuk-heading-m">{{organisation.organisationId}}</h2>
                         <dl class="govuk-summary-list">
 
                             <div class="govuk-summary-list__row">
@@ -15,7 +15,7 @@
                                     Address
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    {{organisation.input.address}}
+                                    {{organisation.address}}
                                 </dd>
 
                             </div>
@@ -25,8 +25,8 @@
                                     Administrator
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    <div>{{organisation.input.admin}}</div>
-                                    <div class="govuk-caption-m govuk-!-font-size-16">{{organisation.input.email}}</div>
+                                    <div>{{organisation.admin}}</div>
+                                    <div class="govuk-caption-m govuk-!-font-size-16">{{organisation.email}}</div>
                                 </dd>
 
                             </div>
