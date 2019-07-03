@@ -11,4 +11,13 @@ export const environment = {
     token: '__auth__',
     userId: '__userid__',
   },
+  urls: {
+    idam: {
+      idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
+      idamClientID: 'xuiwebapp',
+      idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+      indexUrl: '/',
+      oauthCallbackUrl: 'oauth2/callback'
+    }
+}
 };

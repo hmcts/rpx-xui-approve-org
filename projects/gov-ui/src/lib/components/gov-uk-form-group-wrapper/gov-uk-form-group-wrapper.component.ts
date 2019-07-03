@@ -24,7 +24,7 @@ import {Component, Input} from '@angular/core';
   `
 })
 export class GovUkFormGroupWrapperComponent {
-  constructor () { }
+  constructor() { }
   @Input() error: {isInvalid: boolean; message: string};
   @Input() formGroupName: string;
   @Input() config: {hint: string; legend: string};
