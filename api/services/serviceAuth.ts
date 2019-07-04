@@ -5,6 +5,7 @@ import { config } from '../lib/config'
 import { http } from '../lib/http'
 import { getHealth, getInfo } from '../lib/util'
 
+import { tunnel } from '../lib/tunnel'
 import * as log4jui from '../lib/log4jui'
 
 const url = config.services.s2s
@@ -16,8 +17,7 @@ const logger = log4jui.getLogger('service auth')
 export async function postS2SLease() {
     const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
     let request: AxiosResponse<any>
-    console.log('test2:', configEnv)
-    if (configEnv !== 'local') {
+    if (configEnv !== 'ldocker' && config !== 'local') {
         const oneTimePassword = otp({ secret: s2sSecret }).totp()
 
         logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)
@@ -28,9 +28,10 @@ export async function postS2SLease() {
         })
     } else {
         // this is only for local development against the RD docker image
-        request = await http.get(url)
+        // end tunnel before posting to docker
+        tunnel.end()
+        request = await http.get(`${url}`)
     }
-
     return request.data
 }
 

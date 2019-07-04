@@ -1,7 +1,7 @@
 import { application } from './application.config'
 
 import * as local from './environments/local.config'
-import * as laat from './environments/laat.config'
+import * as ldocker from './environments/ldocker.config'
 import * as docker from './environments/docker.config'
 import * as spreview from './environments/spreview.config'
 import * as saat from './environments/saat.config'
@@ -17,7 +17,7 @@ const configs = {
     aat,
     demo,
     docker,
-    laat,
+    ldocker,
     local,
     mock,
     preview,
@@ -30,15 +30,11 @@ const configs = {
 export const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
 export const config = { ...application, ...configs[configEnv].default }
 
-
+export default { ...config }
 if (process) {
-    console.log('PROCESS')
     config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY || 'AAAAAAAAAAAAAAAA'
 }
 
 if (configEnv === 'local') {
     config.protocol = 'http'
 }
-
-console.log(config)
-export default { ...config }
