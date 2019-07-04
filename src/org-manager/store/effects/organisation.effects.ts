@@ -36,7 +36,7 @@ export class OrganisationEffects {
       organisation.adminEmail = apiOrg.superUser.email
       organisation.pbaNumber = apiOrg.paymentAccount
       organisation.organisationId = apiOrg.organisationIdentifier
-      organisation.view = apiOrg.organisationIdentifier
+      organisation.view = "View"
       organisation.status = apiOrg.status
       organisation.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`
       organisation.dxNumber = apiOrg.contactInformation[0].dxAddress
