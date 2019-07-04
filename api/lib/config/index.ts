@@ -11,12 +11,14 @@ import * as demo from './environments/demo.config'
 import * as aat from './environments/aat.config'
 import * as prod from './environments/prod.config'
 import * as mock from './environments/mock.config'
+import * as ldocker from './environments/ldocker.config'
 import * as process from 'process'
 
 const configs = {
     aat,
     demo,
     docker,
+    ldocker,
     laat,
     local,
     mock,
@@ -36,7 +38,7 @@ if (process) {
     config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY || 'AAAAAAAAAAAAAAAA'
 }
 
-if (configEnv === 'local') {
+if (configEnv === 'local' || configEnv === 'ldocker') {
     config.protocol = 'http'
 }
 
