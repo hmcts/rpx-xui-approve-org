@@ -5,7 +5,7 @@ import * as organisationActions from '../actions';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import { OrganisationService } from '../../services';
-import { organisationVM, Organisation } from 'src/org-manager/models/organisation';
+import { OrganisationVM, Organisation } from 'src/org-manager/models/organisation';
 
 
 
@@ -28,14 +28,18 @@ export class OrganisationEffects {
     })
   )
 
-  mapOrganisations(obj: Organisation[]) : organisationVM[] {
-    let organisationModel: organisationVM[] = []
-    obj.forEach((curr) => {
-      const organisation = new organisationVM()
-      organisation.organisationId = curr.organisationIdentifier
-      organisation.status = curr.status
-      organisation.admin = `${curr.superUser.firstName} ${curr.superUser.lastName}`
-      organisation.address = `${curr.contactInformation[0].addressLine1}, ${curr.contactInformation[0].county}, ${curr.contactInformation[0].townCity}`
+  mapOrganisations(obj: Organisation[]) : OrganisationVM[] {
+    let organisationModel: OrganisationVM[] = []
+    obj.forEach((apiOrg) => {
+      const organisation = new OrganisationVM()
+      organisation.name = apiOrg.name
+      organisation.adminEmail = apiOrg.superUser.email
+      organisation.pbaNumber = apiOrg.paymentAccount
+      organisation.organisationId = apiOrg.organisationIdentifier
+      organisation.status = apiOrg.status
+      organisation.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`
+      organisation.dxNumber = apiOrg.contactInformation[0].dxAddress
+      organisation.address = `${apiOrg.contactInformation[0].addressLine1}, ${apiOrg.contactInformation[0].county}, ${apiOrg.contactInformation[0].townCity}`
       organisationModel.push(organisation)
     })
 
