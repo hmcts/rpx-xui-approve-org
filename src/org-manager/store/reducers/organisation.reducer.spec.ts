@@ -1,6 +1,6 @@
 import { initialState, reducer } from './organisation.reducer';
 import { LoadOrganisationSuccess } from '../actions';
-import { Organisation, OrganisationSummary } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationSummary, OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromOrganisation from './organisation.reducer';
 
 describe('OrganisationsReducer', () => {
@@ -14,29 +14,31 @@ describe('OrganisationsReducer', () => {
 
   describe('LOAD_ORGANISATION_SUCCESS action', () => {
     it('should update the state.organisations', () => {
-      const OrganisationsMock: Organisation[] = [
+      const OrganisationsMock: OrganisationVM[] = [
         {
-          organisationId: 'Speake Limited',
+          name: 'Speake Limited',
           address: '72 Guild Street, London, SE23 6FH',
-          pbaNumber: 'SU2DSCSA',
+          pbaNumber: ['SU2DSCSA'],
           admin: 'Matt Speake',
           status: 'ACTIVE',
           view: 'View',
-          id: '12345678',
-          email: 'matt@speake.com'
+          organisationId: '12345678',
+          adminEmail: 'matt@speake.com',
+          dxNumber: ['somthing']
         }
       ];
       const OrganisationsMockSummary: OrganisationSummary[] = [
         {
-          organisationId: 'Speake Limited',
+          name: 'Speake Limited',
           address: '72 Guild Street, London, SE23 6FH',
-          pbaNumber: 'SU2DSCSA',
+          pbaNumber: ['SU2DSCSA'],
           admin: 'Matt Speake',
           status: 'ACTIVE',
           view: 'View',
-          id: '12345678',
-          email: 'matt@speake.com',
-          routerLink: '/organisations/organisation/SU2DSCSA/'
+          organisationId: '12345678',
+          adminEmail: 'matt@speake.com',
+          routerLink: '/organisations/organisation/SU2DSCSA/',
+          dxNumber: ['something']
         }
       ];
       const action = new LoadOrganisationSuccess(OrganisationsMock);

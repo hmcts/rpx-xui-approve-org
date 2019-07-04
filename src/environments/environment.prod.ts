@@ -4,6 +4,7 @@ export const environment = {
   serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
   serviceDeskTel: '0300 3030686',
   singleOrgUrl: 'http://localhost:1400/organisations?pbaNumber=',
+  orgActiveUrl: 'api/organisations',
   orgPendingUrl: 'http://localhost:1400/organisations?status=PENDING',
   orgApprovePendingUrl: 'http://localhost:1400/putApprovedOrganisations',
   loggingLevel: 'DEBUG',
@@ -18,6 +19,6 @@ export const environment = {
       idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
       indexUrl: '/',
       oauthCallbackUrl: 'oauth2/callback'
-    }
-}
+      }
+  }
 };
