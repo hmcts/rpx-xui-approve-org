@@ -1,5 +1,5 @@
 import * as fromOrganisationActions from '../actions/organisation.actions';
-import {Organisation, OrganisationSummary} from '../../models/organisation';
+import {Organisation, OrganisationSummary, OrganisationVM} from '../../models/organisation';
 
 export interface OrganisationState {
   organisations: Array<OrganisationSummary> | null;
@@ -29,10 +29,10 @@ export function reducer(
     case fromOrganisationActions.LOAD_ORGANISATIONS_SUCCESS: {
       let organisations = action.payload;
       if (organisations.length !== 0) {
-        organisations = action.payload.map((organisation: Organisation) => {
+        organisations = action.payload.map((organisation: OrganisationVM) => {
             const routerLink: OrganisationSummary = {
               ...organisation,
-              routerLink: `/organisations/organisation/${organisation.organisationIdentifier}/`
+              routerLink: `/organisations/organisation/${organisation.organisationId}/`
             };
             return routerLink;
           });
