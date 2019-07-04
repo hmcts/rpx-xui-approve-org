@@ -1,33 +1,29 @@
 export interface OrganisationAddress {
-  addressLine1: string
-  townCity: string
-  county: string
-  dxAddress: [OrganisationDxAddress]
+  addressLine1: string;
+  townCity: string;
+  county: string;
+  dxAddress: [OrganisationDxAddress];
   }
 
 export interface OrganisationDxAddress {
-      dxNumber: string,
-      dxExchange: string
+      dxNumber: string;
+      dxExchange: string;
   }
 
 export interface OrganisationSuperUser {
-  userIdentifier: string
-  firstName: string,
-  lastName: string,
-  email: string
+  userIdentifier: string;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 export interface  Organisation {
-  organisationIdentifier: string
-  contactInformation: [OrganisationAddress]
-  superUser: OrganisationSuperUser
-  status: string
-  name: string
-  paymentAccount: [any],
-}
-
-export interface OrganisationSummary extends OrganisationVM {
-  routerLink: string;
+  organisationIdentifier: string;
+  contactInformation: [OrganisationAddress];
+  superUser: OrganisationSuperUser;
+  status: string;
+  name: string;
+  paymentAccount: [any];
 }
 
 export class OrganisationVM {
@@ -40,4 +36,8 @@ export class OrganisationVM {
   view: string;
   pbaNumber: [any];
   dxNumber: [any];
+}
+
+export interface OrganisationSummary extends OrganisationVM {
+  routerLink: string;
 }
