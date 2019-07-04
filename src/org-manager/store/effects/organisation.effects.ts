@@ -24,8 +24,8 @@ export class OrganisationEffects {
         map(organisationDetails => new organisationActions.LoadOrganisationSuccess(this.mapOrganisations(organisationDetails))),
         catchError(error => of(new organisationActions.LoadOrganisationFail(error)))
       );
-    });
-  )
+    })
+  );
 
   mapOrganisations(obj: Organisation[]): OrganisationVM[] {
     const organisationModel: OrganisationVM[] = [];
