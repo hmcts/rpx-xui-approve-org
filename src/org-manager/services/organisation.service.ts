@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError, noop, pipe } from 'rxjs';
 import { OrganisationsMock } from '../mock/organisation.mock';
-import { Organisation, organisationVM } from '../models/organisation';
+import { Organisation, OrganisationVM } from '../models/organisation';
 import {SingleOrgSummary} from '../models/single-org-summary';
 import {SingleOrgSummaryMock} from '../mock/single-org-summary.mock';
 import { tap, catchError, map } from 'rxjs/operators';
