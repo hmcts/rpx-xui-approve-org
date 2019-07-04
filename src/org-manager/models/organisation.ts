@@ -23,15 +23,21 @@ export interface  Organisation {
   superUser: OrganisationSuperUser
   status: string
   name: string
+  paymentAccount: [any],
 }
 
-export interface OrganisationSummary extends Organisation {
+export interface OrganisationSummary extends OrganisationVM {
   routerLink: string;
 }
 
-export class organisationVM {
+export class OrganisationVM {
   organisationId: string;
   status: string;
   admin: string;
+  adminEmail: string;
   address: string;
+  name: string;
+  view: string;
+  pbaNumber: [any];
+  dxNumber: [any];
 }
