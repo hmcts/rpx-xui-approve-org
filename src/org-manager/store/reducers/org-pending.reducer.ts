@@ -1,10 +1,11 @@
 import { PendingOrganisation, PendingOrganisationSummary } from '../../../org-manager/models/pending-organisation';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
+import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
 
 // TODO: cleanup cascading pendingOrganisations
 export interface OrganisationState {
-  pendingOrganisations: PendingOrganisation[];
-  reviewedOrganisations: PendingOrganisation[];
+  pendingOrganisations: OrganisationVM[];
+  reviewedOrganisations: OrganisationVM[];
   loaded: boolean;
   loading: boolean;
 }
@@ -29,7 +30,7 @@ export function reducer(
       };
     }
     case PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
-      const payload: PendingOrganisation[] = action.payload.slice(0);
+      const payload: OrganisationVM[] = action.payload.slice(0);
       const reviewedOrganisationsMapped = payload.map(item => {
         return { ...item, status: 'ACTIVE' };
       });
@@ -42,8 +43,8 @@ export function reducer(
       // TODO please fix this - something is not right
       let pendingOrganisations = action.payload;
       if (pendingOrganisations.length !== 0) {
-        pendingOrganisations = action.payload.map((pendingOrganisation: PendingOrganisation) => {
-          const routerLink: PendingOrganisationSummary = {
+        pendingOrganisations = action.payload.map((pendingOrganisation: OrganisationVM) => {
+          const routerLink: OrganisationSummary = {
             ...pendingOrganisation,
             routerLink: `/pending-organisations/organisation/${pendingOrganisation.pbaNumber}/`
           };

@@ -15,7 +15,7 @@ export class OrganisationService {
   }
 
   fetchOrganisations(): Observable<Array<Organisation>> {
-    const organisations$ = this.http.get<Organisation[]>('api/Organisations');
+    const organisations$ = this.http.get<Organisation[]>(this.orgActiveUrl);
     return organisations$;
   }
 

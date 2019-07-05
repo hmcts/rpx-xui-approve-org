@@ -6,7 +6,10 @@ import { http } from '../lib/http'
 
 async function handleOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-        const response = await http.get(`${config.services.rdProfessionalApi}/organisations?status=ACTIVE`)
+        const organisationsUri = req.query.status ?
+        `${config.services.rdProfessionalApi}/organisations?status=${req.query.status}`
+         : `${config.services.rdProfessionalApi}/organisations`
+        const response = await http.get(organisationsUri)
         res.send(response.data.organisations)
     } catch (error) {
         console.error(error)
