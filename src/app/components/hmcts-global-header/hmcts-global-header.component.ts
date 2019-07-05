@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import * as fromRoot from '../../store';
 import { Store } from '@ngrx/store';
 
@@ -14,10 +14,14 @@ export class HmctsGlobalHeaderComponent {
 
     @Input() serviceName;
     @Input() navigation;
+    @Output() navigate = new EventEmitter<string>();
 
     userValue: any;
     constructor(public store: Store<fromRoot.State>) { }
 
+    onEmitEvent(index) {
+        this.navigate.emit(this.navigation.items[index].emit);
+    }
 
 
 }

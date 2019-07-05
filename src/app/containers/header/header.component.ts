@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../store';
@@ -14,6 +14,7 @@ export class HeaderComponent implements OnInit {
     navItems: Array<{}>;
     navigations;
     serviceName;
+    @Output() navigate = new EventEmitter<string>();
 
     isUserLoggedIn$: Observable<boolean>;
 
@@ -57,7 +58,8 @@ export class HeaderComponent implements OnInit {
                 href: '/profile'
             }, {
                 text: 'Sign out',
-                href: this.logoutLink
+                href: 'api/logout',
+                emit: 'sign-out'
             }]
         };
 
@@ -70,5 +72,9 @@ export class HeaderComponent implements OnInit {
         active: item['href'] === url
       };
     });
+  }
+
+  onNavigate(event) {
+    this.navigate.emit(event);
   }
 }
