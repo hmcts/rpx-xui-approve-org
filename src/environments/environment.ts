@@ -12,7 +12,7 @@ export const environment = {
     singleOrgUrl: 'http://localhost:1400/organisations?pbaNumber=',
     orgActiveUrl: 'api/organisations?status=ACTIVE',
     orgPendingUrl: 'api/organisations?status=PENDING',
-    orgApprovePendingUrl: 'http://localhost:1400/putApprovedOrganisations',
+    orgApprovePendingUrl: 'api/organisations/',
     loggingLevel: 'DEBUG',
     cookies: {
       token: '__auth__',

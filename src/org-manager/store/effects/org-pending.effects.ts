@@ -28,7 +28,8 @@ export class PendingOrgEffects {
     ofType(pendingOrgActions.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS),
     map((action: pendingOrgActions.ApprovePendingOrganisations) => action.payload),
     switchMap(payload => {
-      return this.pendingOrgService.approvePendingOrganisations(payload).pipe(
+      const pendingOrganisation = this.mapOrganisationsVm(payload)[0];
+      return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
         map(pendingOrganisations => new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations)),
         catchError(error => of(new pendingOrgActions.ApprovePendingOrganisationsFail(error)))
       );
@@ -61,5 +62,32 @@ export class PendingOrgEffects {
     });
 
     return organisationModel;
+  }
+
+  mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
+    const organisations: Organisation[] = [];
+    obj.forEach((org) => {
+      const organisation: Organisation = {
+        organisationIdentifier: org.organisationId,
+        contactInformation: [{
+          addressLine1: org.address,
+          townCity: org.address,
+          county: org.address,
+          dxAddress: org.dxNumber
+          }],
+        superUser: {
+          userIdentifier: org.admin,
+          firstName: org.admin,
+          lastName: org.admin,
+          email: org.adminEmail
+        },
+        status: 'ACTIVE',
+        name: org.name,
+        paymentAccount: org.pbaNumber
+      };
+      organisations.push(organisation);
+    });
+
+    return organisations;
   }
 }
