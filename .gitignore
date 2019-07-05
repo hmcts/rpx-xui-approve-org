@@ -48,3 +48,5 @@ reports_json/
 .nyc_output/
 cb_reports/
 report.json
+
+api/\.sessions/
