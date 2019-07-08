@@ -4,13 +4,10 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import * as appActions from '../actions';
 import { map } from 'rxjs/operators';
 
-// import { CookieService } from 'ngx-cookie';
-
 @Injectable()
 export class AppEffects {
     constructor(
-        private actions$: Actions,
-        // private cookieService: CookieService
+        private actions$: Actions
     ) { }
 
     @Effect({ dispatch: false })
@@ -18,8 +15,6 @@ export class AppEffects {
         ofType(appActions.LOGOUT),
         map(() => {
             window.location.href = '/api/logout';
-            // TODO: shouldn't need to clear cookies here
-            // this.cookieService.removeAll();
         })
     );
 
