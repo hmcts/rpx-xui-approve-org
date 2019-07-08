@@ -8,6 +8,7 @@ import { OrganisationEffects } from './organisation.effects';
 import { LoadOrganisation, LoadOrganisationFail } from '../actions/organisation.actions';
 import { LoadOrganisationSuccess } from '../actions';
 import { OrganisationService } from 'src/org-manager/services';
+import { Organisation } from 'src/org-manager/models/organisation';
 
 describe('Organisation Effects', () => {
   let actions$;
@@ -19,12 +20,12 @@ describe('Organisation Effects', () => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
-          {
-            provide: OrganisationService,
-            useValue: OrganisationServiceMock,
-          },
-          fromOrganisationEffects.OrganisationEffects,
-          provideMockActions(() => actions$)
+        {
+          provide: OrganisationService,
+          useValue: OrganisationServiceMock,
+        },
+        fromOrganisationEffects.OrganisationEffects,
+        provideMockActions(() => actions$)
       ]
     });
 
@@ -33,10 +34,32 @@ describe('Organisation Effects', () => {
   });
   describe('loadOrganisationss$', () => {
     it('should return a collection from loadOrganisations$ - LoadOrganisationsSuccess', () => {
-      const payload = [{payload: 'something'}];
+      const organisation: Organisation = {
+        organisationIdentifier: '',
+        contactInformation: [{
+          addressLine1: '',
+          townCity: 'string',
+          county: 'string',
+          dxAddress: [{
+            dxNumber: 'string',
+            dxExchange: 'string',
+          }],
+        }],
+        superUser: {
+          userIdentifier: '',
+          firstName: 'string',
+          lastName: 'string;',
+          email: 'string',
+        },
+        status: 'string;',
+        name: 'string;',
+        paymentAccount: [{}]
+      };
+      const payload = [organisation];
+      const result = effects.mapOrganisations([organisation]);
       OrganisationServiceMock.fetchOrganisations.and.returnValue(of(payload));
       const action = new LoadOrganisation();
-      const completion = new LoadOrganisationSuccess([{payload: 'something'}]);
+      const completion = new LoadOrganisationSuccess(result);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadOrganisations$).toBeObservable(expected);

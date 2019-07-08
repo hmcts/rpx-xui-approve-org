@@ -24,7 +24,7 @@ describe('OrganisationsReducer', () => {
           view: 'View',
           organisationId: '12345678',
           adminEmail: 'matt@speake.com',
-          dxNumber: ['somthing']
+          dxNumber: ['something']
         }
       ];
       const OrganisationsMockSummary: OrganisationSummary[] = [
@@ -37,7 +37,7 @@ describe('OrganisationsReducer', () => {
           view: 'View',
           organisationId: '12345678',
           adminEmail: 'matt@speake.com',
-          routerLink: '/organisations/organisation/SU2DSCSA/',
+          routerLink: '/organisations/organisation/12345678/',
           dxNumber: ['something']
         }
       ];
