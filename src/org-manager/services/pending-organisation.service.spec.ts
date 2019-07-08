@@ -56,7 +56,7 @@ describe('PendingOrganisationService', () => {
       paymentAccount: [{}]
     };
     pendingOrganisationService.approvePendingOrganisations(organisation);
-    expect(httpClient.put).toHaveBeenCalledWith(environment.orgApprovePendingUrl, 'dummy');
+    expect(httpClient.put).toHaveBeenCalledWith(environment.orgApprovePendingUrl, organisation);
   });
 
 
