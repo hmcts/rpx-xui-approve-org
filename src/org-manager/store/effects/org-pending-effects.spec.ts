@@ -41,29 +41,6 @@ describe('Pending Organisation Effects', () => {
 
   });
 
-  describe('loadPendingOrganisations$', () => {
-    it('should return a collection from loadPendingOrgs$ - LoadPendingOrganisationsSuccess', () => {
-
-      PendingOrganisationServiceMock.fetchPendingOrganisations.and.returnValue(of(payload));
-      const action = new LoadPendingOrganisations();
-      const completion = new LoadPendingOrganisationsSuccess(payload);
-      actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
-      expect(effects.loadPendingOrgs$).toBeObservable(expected);
-    });
-  });
-
-  describe('loadPendingOrgs$ error', () => {
-    it('should return LoadPendingOrganisationsFail', () => {
-      PendingOrganisationServiceMock.fetchPendingOrganisations.and.returnValue(throwError(new Error()));
-      const action = new LoadPendingOrganisations();
-      const completion = new LoadPendingOrganisationsFail(new Error());
-      actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
-      expect(effects.loadPendingOrgs$).toBeObservable(expected);
-    });
-  });
-
   describe('approvPendingOrganisations$', () => {
     it('should return a collection from approvePendingOrgs$ - ApprovePendingOrganisationsSuccess', () => {
 
