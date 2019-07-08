@@ -1,5 +1,4 @@
 
-import { PendingOrganisation } from 'src/org-manager/models/pending-organisation';
 import { Action } from '@ngrx/store';
 import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 

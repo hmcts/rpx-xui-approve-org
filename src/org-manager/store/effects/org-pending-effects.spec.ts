@@ -9,9 +9,9 @@ import { LoadPendingOrganisations, ApprovePendingOrganisations,
         ApprovePendingOrganisationsSuccess, ApprovePendingOrganisationsFail } from '../actions/org-pending.actions';
 import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
 import { PendingOrganisationService } from 'src/org-manager/services';
-import { PendingOrganisation } from '../../models/pending-organisation';
 import { Go } from 'src/app/store';
 import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
+import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 
 
 describe('Pending Organisation Effects', () => {
@@ -22,7 +22,7 @@ describe('Pending Organisation Effects', () => {
     'approvePendingOrganisations'
   ]);
 
-  const payload: PendingOrganisation[] = PendingOrganisationsMockCollection1;
+  const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
