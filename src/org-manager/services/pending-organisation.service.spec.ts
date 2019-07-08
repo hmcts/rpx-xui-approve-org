@@ -34,7 +34,7 @@ describe('PendingOrganisationService', () => {
   });
 
   it('should approve organisation', () => {
-    let organisation: Organisation = {
+    const organisation: Organisation = {
       organisationIdentifier: '',
       contactInformation: [{
         addressLine1: '',
