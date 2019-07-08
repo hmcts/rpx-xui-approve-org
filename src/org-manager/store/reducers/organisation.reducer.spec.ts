@@ -18,26 +18,26 @@ describe('OrganisationsReducer', () => {
         {
           name: 'Speake Limited',
           address: '72 Guild Street, London, SE23 6FH',
-          pbaNumber: ['SU2DSCSA'],
+          pbaNumber: ['12345678'],
           admin: 'Matt Speake',
           status: 'ACTIVE',
           view: 'View',
           organisationId: '12345678',
           adminEmail: 'matt@speake.com',
-          dxNumber: ['somthing']
+          dxNumber: ['something']
         }
       ];
       const OrganisationsMockSummary: OrganisationSummary[] = [
         {
           name: 'Speake Limited',
           address: '72 Guild Street, London, SE23 6FH',
-          pbaNumber: ['SU2DSCSA'],
+          pbaNumber: ['12345678'],
           admin: 'Matt Speake',
           status: 'ACTIVE',
           view: 'View',
           organisationId: '12345678',
           adminEmail: 'matt@speake.com',
-          routerLink: '/organisations/organisation/SU2DSCSA/',
+          routerLink: '/organisations/organisation/12345678/',
           dxNumber: ['something']
         }
       ];
