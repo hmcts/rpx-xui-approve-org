@@ -1,4 +1,3 @@
-import { PendingOrganisation, PendingOrganisationSummary } from '../../../org-manager/models/pending-organisation';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
 import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
 

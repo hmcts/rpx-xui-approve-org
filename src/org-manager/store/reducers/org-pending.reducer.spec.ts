@@ -1,15 +1,15 @@
 import { initialState, reducer } from './org-pending.reducer';
 import { LoadPendingOrganisationsSuccess, AddReviewOrganisations, LoadPendingOrganisations } from '../actions';
-import { PendingOrganisation, PendingOrganisationSummary } from 'src/org-manager/models/pending-organisation';
 import * as fromPendingOrganisation from './org-pending.reducer';
 import { PendingOrganisationsMockCollection1, PendingOrganisationsMockSummaryCollection1 } from '../../mock/pending-organisation.mock';
+import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
 
 
 describe('PendingOrganisationsReducer', () => {
 
-  const PendingOrganisationsMock: PendingOrganisation[] = PendingOrganisationsMockCollection1;
+  const PendingOrganisationsMock: OrganisationVM[] = PendingOrganisationsMockCollection1;
 
-  const PendingOrganisationsMockSummary: PendingOrganisationSummary[] = PendingOrganisationsMockSummaryCollection1;
+  const PendingOrganisationsMockSummary: OrganisationSummary[] = PendingOrganisationsMockSummaryCollection1;
 
   describe('undefined action', () => {
     it('should return the default state', () => {
