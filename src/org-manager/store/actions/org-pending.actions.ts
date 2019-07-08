@@ -1,6 +1,6 @@
 
-import { PendingOrganisation } from 'src/org-manager/models/pending-organisation';
 import { Action } from '@ngrx/store';
+import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 
 export enum PendingOrgActionTypes {
     LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
@@ -20,7 +20,7 @@ export class LoadPendingOrganisations implements Action {
 export class LoadPendingOrganisationsSuccess implements Action {
     readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS;
 
-    constructor(public payload: PendingOrganisation[]) { }
+    constructor(public payload: OrganisationVM[]) { }
 }
 
 export class LoadPendingOrganisationsFail implements Action {
@@ -32,7 +32,7 @@ export class LoadPendingOrganisationsFail implements Action {
 export class AddReviewOrganisations implements Action {
     readonly type = PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS;
 
-    constructor(public payload: PendingOrganisation[]) { }
+    constructor(public payload: OrganisationVM[]) { }
 }
 
 export class ApprovePendingOrganisations implements Action {

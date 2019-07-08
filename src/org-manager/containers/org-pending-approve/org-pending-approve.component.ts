@@ -3,14 +3,14 @@ import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
 import { Store, select } from '@ngrx/store';
 import { Subscription } from 'rxjs';
-import { PendingOrganisation } from 'src/org-manager/models/pending-organisation';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 @Component({
     selector: 'app-org-pending-approve',
     templateUrl: './org-pending-approve.component.html'
 })
 export class OrgPendingApproveComponent implements OnInit, OnDestroy {
-    reviewedOrganisations: PendingOrganisation[];
+    reviewedOrganisations: OrganisationVM[];
     $reviewedOrganisationsSubscription: Subscription;
 
     constructor(

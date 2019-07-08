@@ -3,6 +3,7 @@ import { PendingOrganisationService } from './pending-organisation.service';
 import { HttpClient } from '@angular/common/http';
 import createSpyObj = jasmine.createSpyObj;
 import { environment } from 'src/environments/environment';
+import { Organisation } from '../models/organisation';
 
 describe('PendingOrganisationService', () => {
   let httpClient: HttpClient;
@@ -33,8 +34,29 @@ describe('PendingOrganisationService', () => {
   });
 
   it('should approve organisation', () => {
-    pendingOrganisationService.approvePendingOrganisations('dummy');
-    expect(httpClient.put).toHaveBeenCalledWith(environment.orgApprovePendingUrl, 'dummy');
+    const organisation: Organisation = {
+      organisationIdentifier: '',
+      contactInformation: [{
+        addressLine1: '',
+        townCity: 'string',
+        county: 'string',
+        dxAddress: [{
+          dxNumber: 'string',
+          dxExchange: 'string',
+        }],
+      }],
+      superUser: {
+        userIdentifier: '',
+        firstName: 'string',
+        lastName: 'string;',
+        email: 'string',
+      },
+      status: 'string;',
+      name: 'string;',
+      paymentAccount: [{}]
+    };
+    pendingOrganisationService.approvePendingOrganisations(organisation);
+    expect(httpClient.put).toHaveBeenCalledWith(environment.orgApprovePendingUrl, organisation);
   });
 
 

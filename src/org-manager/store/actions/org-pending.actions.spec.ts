@@ -1,9 +1,9 @@
 import * as fromPendingOrganisation from './org-pending.actions';
-import { PendingOrganisation } from 'src/org-manager/models/pending-organisation';
-import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
+import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { PendingOrganisationsMockCollection1 } from 'src/org-manager/mock/pending-organisation.mock';
 
 describe('PendingOrganisationActions actions', () => {
-  const payload: PendingOrganisation[] = PendingOrganisationsMockCollection1;
+  const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
 
   describe('LoadPendingOrganisations actions GROUP', () => {
     // Init state
