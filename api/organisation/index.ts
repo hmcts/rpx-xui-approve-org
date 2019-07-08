@@ -18,7 +18,6 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
 }
 
 async function handlePutOrganisationRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
-    console.log('params id' + req.params.id)
     if (!req.params.id) {
         res.status(400).send('Organisation id is missing')
     } else {
