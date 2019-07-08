@@ -31,17 +31,6 @@ describe('Organisation Effects', () => {
     effects = TestBed.get(OrganisationEffects);
 
   });
-  describe('loadOrganisationss$', () => {
-    it('should return a collection from loadOrganisations$ - LoadOrganisationsSuccess', () => {
-      const payload = [{payload: 'something'}];
-      OrganisationServiceMock.fetchOrganisations.and.returnValue(of(payload));
-      const action = new LoadOrganisation();
-      const completion = new LoadOrganisationSuccess([{payload: 'something'}]);
-      actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
-      expect(effects.loadOrganisations$).toBeObservable(expected);
-    });
-  });
 
   describe('loadOrganisations$ error', () => {
     it('should return LoadOrganisationsFail', () => {
