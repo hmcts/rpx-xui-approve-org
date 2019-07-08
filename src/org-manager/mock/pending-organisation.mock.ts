@@ -84,12 +84,12 @@ export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
     name: 'dummy 1',
     organisationId: 'dummy 1',
     address: 'dummy 1',
-    pbaNumber: 'dummy 1',
+    pbaNumber: ['dummy 1'],
     admin: 'dummy 1',
     status: 'dummy 1',
     view: 'dummy 1',
-    id: 'dummy 1',
-    email: 'dummy 1'
+    adminEmail: 'dummy 1',
+    dxNumber: [{}]
   }
 }];
 
