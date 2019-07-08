@@ -1,70 +1,82 @@
-import { PendingOrganisation, PendingOrganisationSummary } from '../models/pending-organisation';
 import { SingleOrgSummary } from '../../org-manager/models/single-org-summary';
+import { OrganisationVM, OrganisationSummary } from '../models/organisation';
 
-export const PendingOrganisationsMockCollection2: PendingOrganisation[] = [
+export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'Byrne Limited',
     address: '13 Berryfield Drive, Finglas, Dublin',
-    pbaNumber: '101010',
+    pbaNumber: ['101010'],
     admin: 'Glen Byrne',
     status: 'PENDING',
     view: 'View',
-    id: '2424242',
-    email: 'glen@byrne.com'
+    adminEmail: 'glen@byrne.com',
+    dxNumber: [{}]
   },
   {
     name: 'Siofra Moley',
     organisationId: 'Moley Limited',
     address: '45 Malachy Conlon Pk, Newry, Co. Down',
-    pbaNumber: '271093',
+    pbaNumber: ['271093'],
     admin: 'Siofra Moley',
     status: 'PENDING',
     view: 'View',
-    id: '343434',
-    email: 'siofra@moley.com'
+    adminEmail: 'siofra@moley.com',
+    dxNumber: [{}]
   }
 ];
 
-export const PendingOrganisationsMockCollection1: PendingOrganisation[] = [
+export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'Byrne Limited',
     address: '13 Berryfield drive, Finglas',
-    pbaNumber: '101010',
+    pbaNumber: ['101010'],
     admin: 'Glen Byrne',
     status: 'ACTIVE',
     view: 'View',
-    id: '2424242',
-    email: 'glen@byrne.com'
+    adminEmail: 'glen@byrne.com',
+    dxNumber: [{}]
   }
 ];
 
-export const PendingOrganisationsMockSummaryCollection1: PendingOrganisationSummary[] = [
+export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'Byrne Limited',
     address: '13 Berryfield drive, Finglas',
-    pbaNumber: '101010',
+    pbaNumber: ['101010'],
     admin: 'Glen Byrne',
     status: 'PENDING',
     view: 'View',
-    id: '2424242',
-    email: 'glen@byrne.com',
-    routerLink: '/pending-organisations/organisation/101010/'
+    adminEmail: 'glen@byrne.com',
+    routerLink: '/pending-organisations/organisation/101010/',
+    dxNumber: [{}]
   }
 ];
 
-export const ReviewedOrganisationMockCollection: PendingOrganisation[] = [{
+export const ReviewedOrganisationMockCollection: OrganisationVM[] = [{
   name: 'dummy 1',
   organisationId: 'dummy 1',
   address: 'dummy 1',
-  pbaNumber: 'dummy 1',
+  pbaNumber: ['dummy 1'],
   admin: 'dummy 1',
   status: 'dummy 1',
   view: 'dummy 1',
-  id: 'dummy 1',
-  email: 'dummy 1'
+  adminEmail: 'dummy 1',
+  dxNumber: [{}]
+}];
+
+export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
+  name: 'dummy 1',
+  organisationId: 'dummy 1',
+  address: 'dummy 1',
+  pbaNumber: ['dummy 1'],
+  admin: 'dummy 1',
+  status: 'dummy 1',
+  view: 'dummy 1',
+  adminEmail: 'dummy 1',
+  dxNumber: [{}]
 }];
 
 export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
@@ -81,17 +93,6 @@ export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
   }
 }];
 
-export const ActiveOrganisationMockCollection: PendingOrganisation[] = [{
-  name: 'dummy 1',
-  organisationId: 'dummy 1',
-  address: 'dummy 1',
-  pbaNumber: 'dummy 1',
-  admin: 'dummy 1',
-  status: 'ACTIVE',
-  view: 'dummy 1',
-  id: 'dummy 1',
-  email: 'dummy 1'
-}];
 
 export const SingleOrgSummaryMock: SingleOrgSummary = {
   status: 'Active',
