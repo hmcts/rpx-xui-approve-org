@@ -10,7 +10,6 @@ import * as fromRoot from '../../store';
 })
 export class HeaderComponent implements OnInit {
 
-    logoutLink: string;
     navItems: Array<{}>;
     navigations;
     serviceName;
@@ -27,8 +26,6 @@ export class HeaderComponent implements OnInit {
             this.updateNavItems(rootState.state.url);
           }
         });
-
-        this.logoutLink = `/api/logout`;
 
         this.navItems = [{
             text: 'Organisation',
@@ -58,7 +55,6 @@ export class HeaderComponent implements OnInit {
                 href: '/profile'
             }, {
                 text: 'Sign out',
-                href: 'api/logout',
                 emit: 'sign-out'
             }]
         };
