@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
     this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
     this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
       if (rootState) {
+        console.log(JSON.stringify(rootState));
         this.store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
       }
     });
