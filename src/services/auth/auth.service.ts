@@ -66,4 +66,9 @@ export class AuthService {
     // do stuff!!
     return notExpired;
   }
+
+
+  signOut() {
+    window.location.href = '/api/logout';
+  }
 }

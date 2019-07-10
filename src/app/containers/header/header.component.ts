@@ -10,6 +10,7 @@ import * as fromRoot from '../../store';
 })
 export class HeaderComponent implements OnInit {
 
+    logoutLink: string;
     navItems: Array<{}>;
     navigations;
     serviceName;
@@ -23,10 +24,11 @@ export class HeaderComponent implements OnInit {
     ngOnInit(): void {
         this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
           if (rootState) {
-            rootState.state ? this.updateNavItems(rootState.state.url) :
-                              this.updateNavItems('/');
+            this.updateNavItems(rootState.state.url);
           }
         });
+
+        this.logoutLink = `/api/logout`;
 
         this.navItems = [{
             text: 'Organisation',
