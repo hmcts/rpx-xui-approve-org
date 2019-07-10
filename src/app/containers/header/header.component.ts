@@ -23,7 +23,8 @@ export class HeaderComponent implements OnInit {
     ngOnInit(): void {
         this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
           if (rootState) {
-            this.updateNavItems(rootState.state.url);
+            rootState.state ? this.updateNavItems(rootState.state.url) :
+                              this.updateNavItems('/');
           }
         });
 
