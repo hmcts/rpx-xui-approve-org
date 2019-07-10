@@ -4,9 +4,7 @@ import * as fromFeature from '../../store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM, OrganisationSummary, Organisation } from 'src/org-manager/models/organisation';
-import { Observable, Subscription } from 'rxjs';
-import { OrganisationState } from 'src/org-manager/store/reducers/organisation.reducer';
-import { Params } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 /**
  * Bootstraps the Summary Components
@@ -29,9 +27,10 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.$pageSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
-    this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.organisations)).subscribe((data: OrganisationSummary[]) => {
-      this.data = data.filter(x => x.organisationId === routeParams.id)[0];
-    });
+      this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation(routeParams.id))).
+      subscribe((data: OrganisationSummary[]) => {
+        this.data = data.filter(x => x.organisationId === routeParams.id)[0];
+      });
     });
   }
 
