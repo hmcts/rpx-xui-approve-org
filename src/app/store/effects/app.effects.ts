@@ -17,9 +17,9 @@ export class AppEffects {
     logout$ = this.actions$.pipe(
         ofType(appActions.LOGOUT),
         map(() => {
-            window.location.href = '/api/logout';
             // TODO: shouldn't need to clear cookies here
-            this.cookieService.removeAll();
+            // this.cookieService.removeAll();
+            window.location.href = '/api/logout';
         })
     );
 

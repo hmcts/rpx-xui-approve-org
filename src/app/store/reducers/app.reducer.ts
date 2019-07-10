@@ -35,7 +35,10 @@ export function reducer(
     }
 
     case fromAction.LOGOUT: {
-      return initialState;
+      return {
+        ...state,
+        ...initialState
+      };
     }
   }
 
