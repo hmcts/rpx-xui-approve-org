@@ -58,6 +58,7 @@ export class PendingOrgEffects {
       organisation.dxNumber = apiOrg.contactInformation[0].dxAddress;
       organisation.address = `${apiOrg.contactInformation[0].addressLine1}, ${apiOrg.contactInformation[0].county},
       ${apiOrg.contactInformation[0].townCity}`;
+      organisation.sraId = apiOrg.sraId;
       organisationModel.push(organisation);
     });
 
@@ -69,6 +70,7 @@ export class PendingOrgEffects {
     obj.forEach((org) => {
       const organisation: Organisation = {
         organisationIdentifier: org.organisationId,
+        sraId: org.sraId,
         contactInformation: [{
           addressLine1: org.address,
           townCity: org.address,

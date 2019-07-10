@@ -18,6 +18,7 @@ export interface OrganisationSuperUser {
 }
 
 export interface  Organisation {
+  sraId?: string;
   organisationIdentifier: string;
   contactInformation: [OrganisationAddress];
   superUser: OrganisationSuperUser;
@@ -36,6 +37,7 @@ export class OrganisationVM {
   view: string;
   pbaNumber: [any];
   dxNumber: [any];
+  sraId?: string;
 }
 
 export interface OrganisationSummary extends OrganisationVM {
