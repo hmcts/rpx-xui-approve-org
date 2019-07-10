@@ -24,8 +24,7 @@ export class AppComponent implements OnInit {
     // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
     this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
     this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
-      if (rootState) {
-        console.log(JSON.stringify(rootState));
+      if (rootState.state) {
         this.store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
       }
     });
