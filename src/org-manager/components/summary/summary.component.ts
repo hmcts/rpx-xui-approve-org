@@ -20,6 +20,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
   @Input() data: OrganisationVM;
   $pageSubscription: Subscription;
   $orgSubscription: Subscription;
+  dxNumber: string;
+  dxExchange: string;
 
   constructor(
     private store: Store<fromOrganisationPendingStore.OrganisationState>
@@ -30,6 +32,8 @@ export class SummaryComponent implements OnInit, OnDestroy {
       this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation(routeParams.id))).
       subscribe((data: OrganisationSummary[]) => {
         this.data = data.filter(x => x.organisationId === routeParams.id)[0];
+        this.dxNumber = this.data.dxNumber[0].dxNumber;
+        this.dxExchange = this.data.dxNumber[0].dxNumber;
       });
     });
   }
