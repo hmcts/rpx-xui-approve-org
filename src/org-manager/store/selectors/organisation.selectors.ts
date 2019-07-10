@@ -12,7 +12,7 @@ export const selectFeatureOrg = createFeatureSelector<fromFeature.OrganisationSt
 export const getOrganisationsState = createSelector( selectFeatureOrg, (state: any) => state.organisations);
 export const organisations = createSelector( getOrganisationsState, fromOrganisation.getOrganisations);
 export const selectedOrganisation = (orgId: string) => createSelector( getOrganisationsState, (organisationState: any) => {
-  if (organisationState) {
+  if (organisationState && organisationState.organisations) {
     return organisationState.organisations.filter(x => x.organisationId === orgId) as OrganisationVM;
   } else {
     return {};
