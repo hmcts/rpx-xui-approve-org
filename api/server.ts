@@ -63,8 +63,6 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
-
-app.use(auth.attach)
 app.use('/api', routes)
 
 app.listen(process.env.PORT || 3000)
