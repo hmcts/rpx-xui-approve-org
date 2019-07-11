@@ -45,7 +45,7 @@ export function reducer(
         pendingOrganisations = action.payload.map((pendingOrganisation: OrganisationVM) => {
           const routerLink: OrganisationSummary = {
             ...pendingOrganisation,
-            routerLink: `/pending-organisations/organisation/${pendingOrganisation.pbaNumber}/`
+            routerLink: `/pending-organisations/organisation/${pendingOrganisation.organisationId}/`
           };
           return routerLink;
         });

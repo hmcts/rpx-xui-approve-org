@@ -10,10 +10,18 @@ import { OrganisationState } from '../reducers/org-pending.reducer';
 
 export const selectFeatureOrg = createFeatureSelector<fromFeature.OrganisationState>('organisations');
 export const getOrganisationsState = createSelector( selectFeatureOrg, (state: any) => state.organisations);
+export const getPendingOrganisationsState = createSelector( selectFeatureOrg, (state: any) => state.pendingOrganisations);
 export const organisations = createSelector( getOrganisationsState, fromOrganisation.getOrganisations);
 export const selectedOrganisation = (orgId: string) => createSelector( getOrganisationsState, (organisationState: any) => {
   if (organisationState && organisationState.organisations) {
     return organisationState.organisations.filter(x => x.organisationId === orgId) as OrganisationVM;
+  } else {
+    return {};
+  }
+});
+export const selectedPendingOrganisation = (orgId: string) => createSelector( getPendingOrganisationsState, (organisationState: any) => {
+  if (organisationState && organisationState.pendingOrganisations) {
+    return organisationState.pendingOrganisations.filter(x => x.organisationId === orgId) as OrganisationVM;
   } else {
     return {};
   }
