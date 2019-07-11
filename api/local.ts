@@ -52,10 +52,6 @@ app.use(auth.attach)
 
 app.use('/api', routes)
 
-app.get('/api/logout', (req, res, next) => {
-    auth.doLogout(req, res)
-})
-
 const port = process.env.PORT || 3001
 app.listen(port)
 
