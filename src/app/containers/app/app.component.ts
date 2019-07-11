@@ -3,6 +3,7 @@ import { Store, select } from '@ngrx/store';
 
 import * as fromRoot from '../../store';
 import { Observable } from 'rxjs';
+import * as fromActions from '../../store';
 
 @Component({
   selector: 'app-root',
@@ -27,6 +28,12 @@ export class AppComponent implements OnInit {
         this.store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
       }
     });
+  }
+
+  onNavigate(event): void {
+    if (event === 'sign-out') {
+      return this.store.dispatch(new fromActions.Logout());
+    }
   }
 
 }
