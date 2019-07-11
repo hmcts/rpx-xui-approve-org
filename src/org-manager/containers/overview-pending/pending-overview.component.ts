@@ -6,7 +6,7 @@ import 'rxjs/add/observable/of';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -19,7 +19,7 @@ export class OverviewPendingComponent implements OnInit {
   pendingOrgs$: any;
   loading$: Observable<boolean>;
   approveOrganisations: Array<OrganisationVM>;
-  pendingOrganisations$: Observable<OrganisationVM>;
+  pendingOrganisations$: Observable<OrganisationSummary>;
   constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>) { }
 
   ngOnInit(): void {
@@ -28,6 +28,7 @@ export class OverviewPendingComponent implements OnInit {
     this.pendingOrgs$.subscribe(pendingOrgs$ => {
       if (pendingOrgs$.pendingOrganisations.length > 0) {
         this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
+        console.log(this.pendingOrganisations$);
       } else {
         this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
       }
