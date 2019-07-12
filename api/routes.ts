@@ -7,9 +7,8 @@ const router = express.Router({ mergeParams: true })
 
 router.use(auth.attach)
 
-router.use('/logout', (req, res, next) => {
-    auth.doLogout(req, res)
-})
+router.use('/logout', auth.logout)
+
 router.use('/decisions', stateRouter)
 router.use('/organisations', organisationRouter)
 
