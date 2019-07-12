@@ -48,6 +48,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)
+app.get('/api/logout', (req, res, next) => {
+    auth.doLogout(req, res)
+})
+
 app.use('/api', routes)
 
 app.use('/*', (req, res) => {
