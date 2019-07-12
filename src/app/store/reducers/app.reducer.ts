@@ -33,6 +33,13 @@ export function reducer(
         pageTitle
       };
     }
+
+    case fromAction.LOGOUT: {
+      return {
+        ...state,
+        ...initialState
+      };
+    }
   }
 
   return state;
