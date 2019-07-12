@@ -79,7 +79,11 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "codeCoverage": true
+            "codeCoverage": true,
+            "codeCoverageExclude": [
+              "projects/**/*",
+              "src/style-guide/**/*"
+            ]
           }
         },
         "lint": {
@@ -92,7 +96,7 @@
             "exclude": [
               "**/node_modules/**",
               "**/api/**",
-              "**/projects/**",
+              "**/projects/**"
             ]
           }
         }
