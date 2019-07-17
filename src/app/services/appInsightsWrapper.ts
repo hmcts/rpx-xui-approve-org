@@ -4,7 +4,7 @@ export abstract class AbstractAppInsights implements Microsoft.ApplicationInsigh
   config: Microsoft.ApplicationInsights.IConfig;  context: Microsoft.ApplicationInsights.ITelemetryContext;
   queue: (() => void)[];
   abstract startTrackPage(name?: string);
-  abstract stopTrackPage(name?: string, url?: string, properties?: { [name: string]: string; }, 
+  abstract stopTrackPage(name?: string, url?: string, properties?: { [name: string]: string; },
                          measurements?: { [name: string]: number; });
   abstract trackPageView(name?: string, url?: string, properties?: { [name: string]: string; },
                          measurements?: { [name: string]: number; }, duration?: number);
@@ -15,7 +15,7 @@ export abstract class AbstractAppInsights implements Microsoft.ApplicationInsigh
                            success: boolean, resultCode: number,
                            properties?: { [name: string]: string; }, measurements?: { [name: string]: number; });
 
-  abstract trackException(exception: Error, handledAt?: string, 
+  abstract trackException(exception: Error, handledAt?: string,
                           properties?: { [name: string]: string; }, measurements?: { [name: string]: number; },
                           severityLevel?: AI.SeverityLevel);
 
