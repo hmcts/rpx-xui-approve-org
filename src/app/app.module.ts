@@ -26,6 +26,8 @@ import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
 import config from 'config';
 import {AuthService} from '../services/auth/auth.service';
+import { MonitoringService } from './services/monitoring.service';
+import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -52,7 +54,9 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     }),
   ],
   providers: [
-    { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService],
+    { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService,
+    { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
+     MonitoringService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
