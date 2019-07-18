@@ -9,7 +9,10 @@ export class SetPageTitle implements Action {
   readonly type = SET_PAGE_TITLE;
   constructor(public payload: string) {}
 }
-
+/**
+ * This is not used anywhere yet
+ * it should be used when error displayed on the page.
+ */
 export class SetPageTitleErrors implements Action {
   readonly type = SET_PAGE_TITLE_ERRORS;
 }
