@@ -5,6 +5,7 @@ import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manag
 export interface OrganisationState {
   pendingOrganisations: OrganisationVM[];
   reviewedOrganisations: OrganisationVM[];
+  responseMessages: object;
   loaded: boolean;
   loading: boolean;
 }
@@ -12,6 +13,7 @@ export interface OrganisationState {
 export const initialState: OrganisationState = {
   pendingOrganisations: [],
   reviewedOrganisations: [],
+  responseMessages: {},
   loaded: false,
   loading: false
 };
@@ -21,6 +23,7 @@ export function reducer(
   action: PendingOrgActions
 ): OrganisationState {
   switch (action.type) {
+
     case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
       return {
         ...state,
@@ -59,12 +62,21 @@ export function reducer(
       };
     }
 
+    case PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL: {
+      const responseMessages = action.payload;
+      return {
+        ...state,
+        responseMessages
+      };
+    }
+
     default:
       return state;
   }
 }
 
 export const getPendingOrganisations = (state: OrganisationState) => state.pendingOrganisations;
+export const getReviewedOrganisations = (state: OrganisationState) => state.reviewedOrganisations;
+export const dgetPendingOrgResponseMsg = (state: OrganisationState) => state.responseMessages;
 export const getPendingOrganisationsLoading = (state: OrganisationState) => state.loading;
 export const getPendingOrganisationsLoaded = (state: OrganisationState) => state.loaded;
-export const getReviewedOrganisations = (state: OrganisationState) => state.reviewedOrganisations;

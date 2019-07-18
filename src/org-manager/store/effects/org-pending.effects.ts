@@ -28,10 +28,12 @@ export class PendingOrgEffects {
     ofType(pendingOrgActions.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS),
     map((action: pendingOrgActions.ApprovePendingOrganisations) => action.payload),
     switchMap(payload => {
-      const pendingOrganisation = this.mapOrganisationsVm(payload)[0];
+      const pendingOrganisation = this.mapOrganisationsVm(payload)[0]; // TODO remove this and place it within the selectors or utils
       return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
         map(pendingOrganisations => new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations)),
-        catchError(error => of(new pendingOrgActions.ApprovePendingOrganisationsFail(error)))
+        catchError(error => {
+          return of(new pendingOrgActions.ApprovePendingOrganisationsFail(error))
+        })
       );
     })
   );

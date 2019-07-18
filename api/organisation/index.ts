@@ -22,7 +22,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
         res.status(400).send('Organisation id is missing')
     } else {
         try {
-            const putOrganisationsUrl = `${config.services.rdProfessionalApi}/organisations/${req.params.id}`
+            const putOrganisationsUrl = `${config.services.rdProfessionalApi}/organisations/${req.params.id+11}`
             await http.put(putOrganisationsUrl, req.body)
             res.status(200).send()
         } catch (error) {
