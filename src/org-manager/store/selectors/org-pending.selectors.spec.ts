@@ -10,7 +10,7 @@ describe('Pending Organisation selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('organisations', reducers),
+        StoreModule.forFeature('activeOrg', reducers),
       ],
     });
     store = TestBed.get(Store);

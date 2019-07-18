@@ -56,7 +56,7 @@ describe('OverviewComponent', () => {
         component.processCheckedOrgs({ value: organisationsDummy });
         component.activateOrganisations();
         expect(storeDispatchMock).toHaveBeenCalledWith(
-            new fromRootActions.Go({ path: ['pending-organisations/approve'] })
+            new fromRootActions.Go({ path: ['pending-activeOrg/approve'] })
         );
     });
 

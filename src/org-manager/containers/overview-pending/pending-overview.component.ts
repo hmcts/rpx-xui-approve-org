@@ -28,7 +28,6 @@ export class OverviewPendingComponent implements OnInit {
     this.pendingOrgs$.subscribe(pendingOrgs$ => {
       if (pendingOrgs$.pendingOrganisations.length > 0) {
         this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
-        console.log(this.pendingOrganisations$);
       } else {
         this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
       }
@@ -46,7 +45,7 @@ export class OverviewPendingComponent implements OnInit {
 
   activateOrganisations() {
     if (this.approveOrganisations.length > 0) {
-      this.store.dispatch(new fromRoot.Go({ path: ['pending-organisations/approve'] }));
+      this.store.dispatch(new fromRoot.Go({ path: ['pending-activeOrg/approve'] }));
     }
   }
 

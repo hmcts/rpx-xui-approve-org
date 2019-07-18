@@ -23,7 +23,7 @@ describe('PendingOrganisationService', () => {
     pendingOrganisationService = TestBed.get(PendingOrganisationService);
   });
 
-  it('should fetch pending organisations', () => {
+  it('should fetch pending activeOrg', () => {
     pendingOrganisationService.fetchPendingOrganisations();
     expect(httpClient.get).toHaveBeenCalledWith(environment.orgPendingUrl);
   });

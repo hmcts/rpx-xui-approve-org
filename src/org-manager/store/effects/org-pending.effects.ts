@@ -40,7 +40,7 @@ export class PendingOrgEffects {
   approvePendingOrgsSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS),
     map(() => {
-      return new fromRoot.Go({ path: ['pending-organisations/approve-success'] });
+      return new fromRoot.Go({ path: ['pending-activeOrg/approve-success'] });
     })
   );
 

@@ -8,7 +8,7 @@ export const ROUTES: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'organisations',
+    path: 'activeOrg',
     canActivate: [AuthGuard],
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
   },
