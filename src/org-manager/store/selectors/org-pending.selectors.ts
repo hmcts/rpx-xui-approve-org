@@ -10,6 +10,7 @@ export const getPendingOrgs = createSelector(
 
 export const pendingOrganisations = createSelector( getPendingOrgsFeatureState, fromOrganisation.getPendingOrganisations);
 export const reviewedOrganisations = createSelector( getPendingOrgsFeatureState, fromOrganisation.getReviewedOrganisations);
+export const errorOganisations = createSelector( getPendingOrgs, fromOrganisation.getErrorMessage);
 
 // TODO remove string and fix typings
 export const pendingOrganisationsCount = createSelector(
