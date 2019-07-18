@@ -52,7 +52,7 @@ describe('Pending Organisation Effects', () => {
       expect(effects.approvePendingOrgs$).toBeObservable(expected);
 
       const successAction = new ApprovePendingOrganisationsSuccess(true);
-      const successCompletion = new Go({ path: ['pending-activeOrg/approve-success'] });
+      const successCompletion = new Go({ path: ['pending-organisations/approve-success'] });
       actions$ = hot('-a', { a: successAction });
       const successExpected = cold('--b', { b: successCompletion });
       expect(effects.approvePendingOrgsSuccess$).toBeObservable(successExpected);

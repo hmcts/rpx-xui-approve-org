@@ -37,7 +37,7 @@ describe('OrganisationsReducer', () => {
           view: 'View',
           organisationId: '12345678',
           adminEmail: 'matt@speake.com',
-          routerLink: '/activeOrg/organisation/12345678/',
+          routerLink: '/organisations/organisation/12345678/',
           dxNumber: ['something']
         }
       ];

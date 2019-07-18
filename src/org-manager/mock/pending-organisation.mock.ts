@@ -50,7 +50,7 @@ export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] =
     status: 'PENDING',
     view: 'View',
     adminEmail: 'glen@byrne.com',
-    routerLink: '/pending-activeOrg/organisation/101010/',
+    routerLink: '/pending-organisations/organisation/101010/',
     dxNumber: [{}]
   }
 ];

@@ -3,7 +3,7 @@ import {OrganisationPayload} from '../interfaces/organisationPayload'
 /**
  * makeOrganisationPayload
  *
- * Constructs payload to POST data to the /activeOrg endpoint.
+ * Constructs payload to POST data to the /organisations endpoint.
  *
  * TODO: Note that if we add the dxAddress in, we get a 500 status error.
  * Fix required on the api. Awaiting fix. JIRA ticket raised: PUID-103

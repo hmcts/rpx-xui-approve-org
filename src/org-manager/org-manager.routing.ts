@@ -18,7 +18,7 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'activeOrg/organisation',
+    path: 'organisations/organisation',
     component: OrgOverviewComponent,
     canActivate: [AuthGuard],
     children: [
@@ -31,7 +31,7 @@ export const ROUTES: Routes = [
     ]
   },
   {
-    path: 'pending-activeOrg',
+    path: 'pending-organisations',
     component: OrgPendingOverviewComponent,
     canActivate: [AuthGuard],
     children: [

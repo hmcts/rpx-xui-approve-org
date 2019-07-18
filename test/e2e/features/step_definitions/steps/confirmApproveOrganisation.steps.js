@@ -35,7 +35,7 @@ defineSupportCode(function ({ Given, When, Then }) {
       await expect(bannerPage.approve_button.getText())
         .to
         .eventually
-        .equal('Approve activeOrg');
+        .equal('Approve organisations');
       await bannerPage.approve_button.click();
     });
 

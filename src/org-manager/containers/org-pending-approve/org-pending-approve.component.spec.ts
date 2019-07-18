@@ -39,7 +39,7 @@ describe('OrgPendingApproveComponent', () => {
         component = fixture.componentInstance;
     }));
 
-    it('should return reviewed activeOrg', () => {
+    it('should return reviewed organisations', () => {
         storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
         fixture.detectChanges();
         expect(component.reviewedOrganisations).toEqual(reviewedOrganisationsDummy);

@@ -31,6 +31,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
     this.$pageSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
       this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation(routeParams.id))).
       subscribe((data: OrganisationSummary[]) => {
+        debugger
         this.data = data.filter(x => x.organisationId === routeParams.id)[0];
         this.dxNumber = this.data.dxNumber[0].dxNumber;
         this.dxExchange = this.data.dxNumber[0].dxNumber;

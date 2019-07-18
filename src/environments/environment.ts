@@ -10,9 +10,9 @@ export const environment = {
     serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
     serviceDeskTel: '0300 3030686',
     singleOrgUrl: 'http://localhost:1400/organisations?pbaNumber=',
-    orgActiveUrl: 'api/activeOrg?status=ACTIVE',
-    orgPendingUrl: 'api/activeOrg?status=PENDING',
-    orgApprovePendingUrl: 'api/activeOrg/',
+    orgActiveUrl: 'api/organisations?status=ACTIVE',
+    orgPendingUrl: 'api/organisations?status=PENDING',
+    orgApprovePendingUrl: 'api/organisations/',
     loggingLevel: 'DEBUG',
     cookies: {
       token: '__auth__',

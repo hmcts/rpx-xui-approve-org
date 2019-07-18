@@ -32,7 +32,7 @@ defineSupportCode(function ({ Given, When, Then }) {
       await expect(bannerPage.bannerText.getText())
         .to
         .eventually
-        .contains('activeOrg are pending activation.');
+        .contains('organisations are pending activation.');
     });
 
   Then(/^I Verify the Check Now Link$/, { timeout: 600 * 1000 }, async function () {

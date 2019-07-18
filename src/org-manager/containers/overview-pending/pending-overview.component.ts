@@ -24,7 +24,7 @@ export class OverviewPendingComponent implements OnInit {
 
   ngOnInit(): void {
     this.approveOrganisations = [];
-    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations));
+    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
     this.pendingOrgs$.subscribe(pendingOrgs$ => {
       if (pendingOrgs$.pendingOrganisations.length > 0) {
         this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
@@ -45,7 +45,7 @@ export class OverviewPendingComponent implements OnInit {
 
   activateOrganisations() {
     if (this.approveOrganisations.length > 0) {
-      this.store.dispatch(new fromRoot.Go({ path: ['pending-activeOrg/approve'] }));
+      this.store.dispatch(new fromRoot.Go({ path: ['pending-organisations/approve'] }));
     }
   }
 
