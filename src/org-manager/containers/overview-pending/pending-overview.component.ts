@@ -7,6 +7,7 @@ import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
+import { OrganisationState } from 'src/org-manager/store/reducers/org-pending.reducer';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -20,7 +21,10 @@ export class OverviewPendingComponent implements OnInit {
   loading$: Observable<boolean>;
   approveOrganisations: Array<OrganisationVM>;
   pendingOrganisations$: Observable<OrganisationSummary>;
-  constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>) { }
+  errorMessages: object[];
+  constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>) {
+    this.errorMessages = [];
+  }
 
   ngOnInit(): void {
     this.approveOrganisations = [];
@@ -28,11 +32,15 @@ export class OverviewPendingComponent implements OnInit {
     this.pendingOrgs$.subscribe(pendingOrgs$ => {
       if (pendingOrgs$.pendingOrganisations.length > 0) {
         this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
-        console.log(this.pendingOrganisations$);
       } else {
         this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
       }
+      this.errorMessages = [];
+      if (pendingOrgs$.errorMessage) {
+        this.errorMessages.push({message: pendingOrgs$.errorMessage});
+      }
     });
+
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
     this.columnConfig = PendingOverviewColumnConfig;
@@ -47,12 +55,12 @@ export class OverviewPendingComponent implements OnInit {
   activateOrganisations() {
     if (this.approveOrganisations.length > 0) {
       this.store.dispatch(new fromRoot.Go({ path: ['pending-organisations/approve'] }));
+    } else {
+      this.store.dispatch(new fromOrganisationPendingStore.DisplayErrorMessageOrganisations('Select an organisation'));
     }
   }
 
   onGoBack() {
     this.store.dispatch(new fromRoot.Back());
   }
-
 }
-
