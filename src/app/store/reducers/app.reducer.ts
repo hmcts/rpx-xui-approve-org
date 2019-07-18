@@ -1,11 +1,6 @@
 import * as fromAction from '../actions';
 import {AppUtils} from '../../utils/app-utils';
 
-/* function that returns page title base on page url indexOf */
-export function setPageTitle(url): string {
-  return 'Organisation User Interface';
-}
-
 export interface AppState {
   pageTitle: string;
 }
