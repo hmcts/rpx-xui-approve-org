@@ -4,6 +4,7 @@ import * as fromRoot from '../../../app/store';
 import { Store, select } from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
+import {tap} from 'rxjs/operators';
 
 @Component({
     selector: 'app-org-pending-approve',
@@ -27,6 +28,9 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
                     this.onGoBack();
                 }
             });
+        this.store.pipe( select(fromOrganisationPendingStore.pendingOrganisations)).subscribe(something => {
+           console.log(something['responseMessages']);
+         });
     }
 
 
