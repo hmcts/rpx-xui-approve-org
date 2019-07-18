@@ -8,22 +8,29 @@ export class AppUtils {
     /**
      * it sets correct page titles
      */
-    if (url === 'pending-organisations/organisation/') {
-      return 'Pending organisation details - Approve organisation';
-    } else if (url === 'pending-organisations/approve-success') {
-      return 'Confirmation - Approve organisations';
-    } else if (url === 'pending-organisations/approve') {
-      return 'Check details - Approve organisations';
-    } else if (url === 'pending-organisations/approve-success') {
-      return 'Confirmation - Approve organisations';
-    } else if (url === 'pending-organisations') {
-      return 'Pending organisations - Approve organisations';
-    } else if (url === 'pending-organisations/approve') {
-      return 'Check details - Approve organisations';
-    } else if (url.indexOf('organisations/organisation') !== -1) {
-      return 'Check details - Approve organisations';
+    switch (url) {
+      case '/pending-organisations/organisation/': {
+        return 'Pending organisation details - Approve organisation';
+      }
+      case '/pending-organisations/approve' : {
+        return 'Check details - Approve organisations';
+      }
+      case '/pending-organisations/approve-success' : {
+        return 'Confirmation - Approve organisations';
+      }
+      case '/pending-organisations': {
+        return 'Pending organisations - Approve organisations';
+      }
+      case '/organisations/organisation': {
+        return 'Check details - Approve organisations';
+      }
     }
-
+    // need to use undex of becaue id the id that is passed on the end.
+    if (url.indexOf('/organisations/organisation/') !== -1) {
+      return 'Active organisation details - Approve organisations';
+    }
+    // default return
     return 'Active organisations - Approve organisations';
+
   }
 }
