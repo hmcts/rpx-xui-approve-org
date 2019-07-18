@@ -7,13 +7,15 @@ export interface OrganisationState {
   reviewedOrganisations: OrganisationVM[];
   loaded: boolean;
   loading: boolean;
+  errorMessage: string;
 }
 
 export const initialState: OrganisationState = {
   pendingOrganisations: [],
   reviewedOrganisations: [],
   loaded: false,
-  loading: false
+  loading: false,
+  errorMessage: ''
 };
 
 export function reducer(
@@ -35,7 +37,8 @@ export function reducer(
       });
       return {
         ...state,
-        reviewedOrganisations: reviewedOrganisationsMapped
+        reviewedOrganisations: reviewedOrganisationsMapped,
+        errorMessage: ''
       };
     }
     case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
@@ -55,10 +58,15 @@ export function reducer(
         ...state,
         pendingOrganisations: pendingOrganisationsMapped,
         loaded: true,
-        loading: false,
+        loading: false
       };
     }
-
+    case PendingOrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
+      const errorMessage = action.payload;
+      return {
+        ...state,
+        errorMessage
+      };
     default:
       return state;
   }
@@ -68,3 +76,4 @@ export const getPendingOrganisations = (state: OrganisationState) => state.pendi
 export const getPendingOrganisationsLoading = (state: OrganisationState) => state.loading;
 export const getPendingOrganisationsLoaded = (state: OrganisationState) => state.loaded;
 export const getReviewedOrganisations = (state: OrganisationState) => state.reviewedOrganisations;
+export const getErrorMessage = (state: OrganisationState) => state.errorMessage;
