@@ -25,3 +25,8 @@ export const pendingOrganisationsLoading = createSelector(
   state => state.loading
 );
 
+export const getPendingOrgResponseMsgs = createSelector(
+  getPendingOrgsFeatureState,
+  fromOrganisation.dgetPendingOrgResponseMsg
+);
+
