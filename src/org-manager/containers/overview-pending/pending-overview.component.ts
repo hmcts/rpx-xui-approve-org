@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/observable/of';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
@@ -14,19 +14,20 @@ import { OrganisationState } from 'src/org-manager/store/reducers/org-pending.re
   templateUrl: './pending-overview.component.html',
 })
 
-export class OverviewPendingComponent implements OnInit {
+export class OverviewPendingComponent implements OnInit, OnDestroy {
 
   columnConfig: GovukTableColumnConfig[];
   pendingOrgs$: any;
   loading$: Observable<boolean>;
   approveOrganisations: Array<OrganisationVM>;
   pendingOrganisations$: Observable<OrganisationSummary>;
+  subscription: Subscription;
   constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>) {}
 
   ngOnInit(): void {
     this.approveOrganisations = [];
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
-    this.pendingOrgs$.subscribe(pendingOrgs$ => {
+    this.subscription = this.pendingOrgs$.subscribe(pendingOrgs$ => {
       if (pendingOrgs$.pendingOrganisations.length > 0) {
         this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
       } else {
@@ -55,5 +56,10 @@ export class OverviewPendingComponent implements OnInit {
 
   onGoBack() {
     this.store.dispatch(new fromRoot.Back());
+  }
+  ngOnDestroy(): void {
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+    }
   }
 }
