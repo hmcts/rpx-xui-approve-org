@@ -21,10 +21,7 @@ export class OverviewPendingComponent implements OnInit {
   loading$: Observable<boolean>;
   approveOrganisations: Array<OrganisationVM>;
   pendingOrganisations$: Observable<OrganisationSummary>;
-  errorMessages: object[];
-  constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>) {
-    this.errorMessages = [];
-  }
+  constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>) {}
 
   ngOnInit(): void {
     this.approveOrganisations = [];
@@ -34,10 +31,6 @@ export class OverviewPendingComponent implements OnInit {
         this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
       } else {
         this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
-      }
-      this.errorMessages = [];
-      if (pendingOrgs$.errorMessage) {
-        this.errorMessages.push({message: pendingOrgs$.errorMessage});
       }
     });
 
