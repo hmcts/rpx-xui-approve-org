@@ -45,7 +45,7 @@ export class HeaderComponent implements OnInit {
 
         ];
         this.serviceName = {
-            name: 'Approve organisations',
+            name: 'Approve organisation',
             url: '/'
         };
         this.navigations = {
