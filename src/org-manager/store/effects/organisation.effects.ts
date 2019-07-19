@@ -39,7 +39,8 @@ export class OrganisationEffects {
       organisation.status = apiOrg.status;
       organisation.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
       organisation.dxNumber = apiOrg.contactInformation[0].dxAddress;
-      organisation.address = `${apiOrg.contactInformation[0].addressLine1}, ${apiOrg.contactInformation[0].county},
+      organisation.address = `${apiOrg.contactInformation[0].addressLine1},
+      ${apiOrg.contactInformation[0].county ? apiOrg.contactInformation[0].county + ',' : ''}
       ${apiOrg.contactInformation[0].townCity}`;
       organisation.sraId = apiOrg.sraId;
       organisationModel.push(organisation);
