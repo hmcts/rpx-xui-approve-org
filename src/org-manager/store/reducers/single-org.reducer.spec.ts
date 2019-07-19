@@ -13,7 +13,7 @@ describe('SingleOrgReducer', () => {
   });
 
   describe('LOAD_SINGLE_ORG_SUCCESS action', () => {
-    it('should update the state.organisations', () => {
+    it('should update the state.activeOrg', () => {
       const payload: SingleOrgSummary = {
         pbaNumber: 'SU2DSCSA',
         status: 'ACTIVE',

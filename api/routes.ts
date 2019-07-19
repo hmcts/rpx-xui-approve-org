@@ -12,6 +12,6 @@ router.use('/logout', auth.logout)
 
 router.use('/decisions', stateRouter)
 router.use('/organisations', organisationRouter)
-router.use('/monitoring-tools', getappInsightsInstrumentationKey)
 
+router.use('/monitoring-tools', getappInsightsInstrumentationKey)
 export default router

@@ -1,20 +1,31 @@
 import {createFeatureSelector, createSelector} from '@ngrx/store';
 
-import * as fromFeature from '../reducers';
+
 import * as fromOrganisation from '../reducers/organisation.reducer';
 import * as fromRoot from '../../../app/store';
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
-import { OrganisationState } from '../reducers/org-pending.reducer';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 
+import {getRootApproveOrgState} from '../reducers';
 
+export const getOrganisationsState = createSelector(
+  getRootApproveOrgState,
+  (state: any) => state.activeOrg
+);
 
-export const selectFeatureOrg = createFeatureSelector<fromFeature.OrganisationState>('organisations');
-export const getOrganisationsState = createSelector( selectFeatureOrg, (state: any) => state.organisations);
-export const getPendingOrganisationsState = createSelector( selectFeatureOrg, (state: any) => state.pendingOrganisations);
-export const organisations = createSelector( getOrganisationsState, fromOrganisation.getOrganisations);
-export const selectedOrganisation = (orgId: string) => createSelector( getOrganisationsState, (organisationState: any) => {
+export const getPendingOrganisationsState = createSelector(
+  getRootApproveOrgState,
+  (state: any) => state.pendingOrganisations
+);
+export const organisations = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getOrganisations
+);
+export const selectedOrganisation = createSelector(
+  getOrganisationsState,
+  fromRoot.getRouterState,
+  (organisationState: any, router) => {
   if (organisationState && organisationState.organisations) {
-    return organisationState.organisations.filter(x => x.organisationId === orgId) as OrganisationVM;
+    return organisationState.organisations.filter(x => x.organisationId === router.state.params.id)[0];
   } else {
     return {};
   }
@@ -26,8 +37,14 @@ export const selectedPendingOrganisation = (orgId: string) => createSelector( ge
     return {};
   }
 });
-export const organisationsLoading = createSelector( getOrganisationsState, fromOrganisation.getOrganisationsLoading);
-export const organisationsLoaded = createSelector( getOrganisationsState, fromOrganisation.getOrganisationsLoaded);
+export const organisationsLoading = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getOrganisationsLoading
+);
+export const organisationsLoaded = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getOrganisationsLoaded
+);
 
 export const getCurrentPage = createSelector(
     fromRoot.getRouterState,
