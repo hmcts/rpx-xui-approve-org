@@ -6,7 +6,7 @@ Feature: Verify Organisation Details Screen
     Then I Check the pending Organisation banner appear
 
 
-
+  @crossbrowser
   Scenario: Verify the Approve Organisation Details
     Then I Verify the Check Now Link
     Then I click on Check Now Link to redirect to Organisations Pending Activation page

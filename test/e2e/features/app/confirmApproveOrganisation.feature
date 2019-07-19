@@ -6,7 +6,7 @@ Feature: Confirmation Screen
     Then I Check the pending Organisation banner appear
 
 
-
+ @crossbrowser
   Scenario: Verify the confirmation screen of Approve Organisation
     Then I Verify the Check Now Link
     Then I click on Check Now Link to redirect to Organisations Pending Activation page

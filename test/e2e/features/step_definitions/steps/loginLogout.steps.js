@@ -87,7 +87,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
-      .equal('Approve organisations');
+      .equal('Approve organisation');
 
   });
 
