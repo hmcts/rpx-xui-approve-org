@@ -40,9 +40,9 @@ export function reducer(
       const organisationsMapped = organisations;
       return {
         ...state,
-          organisations: organisationsMapped,
-          loaded: true,
-          loading: false
+        organisations: organisationsMapped,
+        loaded: true,
+        loading: false
       };
     }
 
