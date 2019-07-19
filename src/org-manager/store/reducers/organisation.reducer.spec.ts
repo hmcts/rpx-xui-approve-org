@@ -13,7 +13,7 @@ describe('OrganisationsReducer', () => {
   });
 
   describe('LOAD_ORGANISATION_SUCCESS action', () => {
-    it('should update the state.organisations', () => {
+    it('should update the state.activeOrg', () => {
       const OrganisationsMock: OrganisationVM[] = [
         {
           name: 'Speake Limited',
@@ -48,7 +48,7 @@ describe('OrganisationsReducer', () => {
   });
 
   describe('getOrganisations export', () => {
-    it('should return state.organisations', () => {
+    it('should return state.activeOrg', () => {
       expect(fromOrganisation.getOrganisations(initialState)).toEqual(null);
       expect();
     });

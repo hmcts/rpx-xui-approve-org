@@ -22,6 +22,7 @@ export class SummaryPendingComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+
     this.$pageSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
       this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedPendingOrganisation(routeParams.id))).
       subscribe((data: OrganisationSummary[]) => {

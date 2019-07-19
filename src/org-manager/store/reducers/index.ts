@@ -7,19 +7,19 @@ import * as fromSingleOrgPending from './single-org-pending.reducer';
 
 
 export interface OrganisationState {
-  organisations: fromOrganisations.OrganisationState;
-  singleOrg: fromSingleOrg.SingleOrgState;
+  activeOrg: fromOrganisations.OrganisationState;
+  orgDetails: fromSingleOrg.SingleOrgState;
   pendingOrganisations: fromPendingOrganisations.OrganisationState;
   singleOrgPending: fromSingleOrgPending.PendingSingleOrgState;
 }
 
 export const reducers: ActionReducerMap<OrganisationState> = {
-  organisations: fromOrganisations.reducer,
-  singleOrg: fromSingleOrg.reducer,
+  activeOrg: fromOrganisations.reducer,
+  orgDetails: fromSingleOrg.reducer,
   pendingOrganisations: fromPendingOrganisations.reducer,
   singleOrgPending: fromSingleOrgPending.reducer
 };
 
-export const getRootOrganisationsState = createFeatureSelector<OrganisationState>(
-  'organisations'
+export const getRootApproveOrgState = createFeatureSelector<OrganisationState>(
+  'approveOrg'
 );
