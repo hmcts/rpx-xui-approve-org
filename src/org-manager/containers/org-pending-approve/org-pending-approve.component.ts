@@ -28,9 +28,10 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
                     this.onGoBack();
                 }
             });
-        this.store.pipe( select(fromOrganisationPendingStore.pendingOrganisations)).subscribe(something => {
-           console.log(something['responseMessages']);
-         });
+        this.serverResponseMessages$ = this.store.pipe( select(fromOrganisationPendingStore.getErrorMessages),
+          tap(totest => {
+            console.log(totest) // u can remove this tap only to see what data u getting
+          }))
     }
 
 
