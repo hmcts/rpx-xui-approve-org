@@ -12,6 +12,13 @@ export const reviewedOrganisations = createSelector(
   fromOrganisation.getReviewedOrganisations
 );
 
+
+export const getErrorMessages = createSelector(
+  getPendingOrgs,
+  fromOrganisation.dgetPendingOrgResponseMsg
+);
+
+
 export const pendingOrganisationsCount = createSelector(
   getPendingOrgs,
   (orgArr) =>  orgArr ? orgArr.pendingOrganisations.length : 0
