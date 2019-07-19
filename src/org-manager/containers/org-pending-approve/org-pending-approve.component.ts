@@ -27,11 +27,6 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
                     this.onGoBack();
                 }
             });
-
-        this.store.pipe( select(fromOrganisationPendingStore.getPendingOrgResponseMsgs)).subscribe(something => {
-          debugger;
-           console.log(something);
-         });
     }
 
 

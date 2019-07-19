@@ -20,11 +20,12 @@ export const organisations = createSelector(
   getOrganisationsState,
   fromOrganisation.getOrganisations
 );
-export const selectedOrganisation = (orgId: string) => createSelector(
+export const selectedOrganisation = createSelector(
   getOrganisationsState,
-  (organisationState: any) => {
-  if (organisationState && organisationState.activeOrg) {
-    return organisationState.activeOrg.filter(x => x.organisationId === orgId) as OrganisationVM;
+  fromRoot.getRouterState,
+  (organisationState: any, router) => {
+  if (organisationState && organisationState.organisations) {
+    return organisationState.organisations.filter(x => x.organisationId === router.state.params.id)[0];
   } else {
     return {};
   }
