@@ -28,7 +28,7 @@ export class GovukTableComponent implements OnInit {
 processCheckboxInput(checkboxInputArray) {
   const formArray = <FormArray> this.inputForm.controls.checkedInput;
 
-  if (checkboxInputArray.isChecked) {
+  if (checkboxInputArray.isChecked.isChecked) {
     formArray.push(new FormControl(checkboxInputArray.input));
   } else {
     const index = formArray.controls.findIndex(x => x.value === checkboxInputArray.input);
