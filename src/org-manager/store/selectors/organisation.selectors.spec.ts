@@ -10,7 +10,7 @@ describe('Organisation selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('activeOrg', reducers),
+        StoreModule.forFeature('approveOrg', reducers),
       ],
     });
     store = TestBed.get(Store);
@@ -31,7 +31,7 @@ describe('Organisation selectors', () => {
   describe('selectedOrganisation', () => {
     it('should return blank organisation', () => {
       let result;
-      store.pipe(select(selectedOrganisation('some'))).subscribe(value => {
+      store.pipe(select(selectedOrganisation)).subscribe(value => {
         result = value;
 
       });

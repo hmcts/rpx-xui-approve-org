@@ -10,7 +10,7 @@ describe('Pending Organisation selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('activeOrg', reducers),
+        StoreModule.forFeature('approveOrg', reducers),
       ],
     });
     store = TestBed.get(Store);
@@ -23,7 +23,7 @@ describe('Pending Organisation selectors', () => {
       store.pipe(select(getPendingOrgs)).subscribe(value => {
         result = value.pendingOrganisations;
       });
-      expect(result).toEqual({ pendingOrganisations: [], reviewedOrganisations: [], loaded: false, loading: false });
+      expect(result).toEqual([]);
     });
   });
 });
