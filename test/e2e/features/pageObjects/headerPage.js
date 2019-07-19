@@ -5,6 +5,7 @@ const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants'
 function HeaderPage() {
 
   this.aoPage = element(by.xpath("//a[contains(text(),'Approve organisations')]"));
+  this.aoPage = element(by.css("[id='validation-error-summary-heading']"));
   this.signOut = element(by.xpath("//a[contains(text(),'Sign out')]"));
 
   this.clickSignOut = function () {
