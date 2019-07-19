@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
 import { Store, select } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 @Component({
@@ -12,14 +12,14 @@ import { OrganisationVM } from 'src/org-manager/models/organisation';
 export class OrgPendingApproveComponent implements OnInit, OnDestroy {
     reviewedOrganisations: OrganisationVM[];
     $reviewedOrganisationsSubscription: Subscription;
-
+    serverResponseMessages$: Observable<any>;
     constructor(
         private store: Store<fromOrganisationPendingStore.OrganisationState>
     ) { }
 
     ngOnInit() {
         // TODO: should get reviewedOrganisations
-        this.$reviewedOrganisationsSubscription = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisations))
+        this.$reviewedOrganisationsSubscription = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs))
             .subscribe((response: any) => { // TODO: should have correct type
                 if (response.reviewedOrganisations.length > 0) {
                     this.reviewedOrganisations = response.reviewedOrganisations;
@@ -28,6 +28,7 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
                 }
             });
     }
+
 
     onGoBack() {
         this.store.dispatch(new fromRoot.Back());
