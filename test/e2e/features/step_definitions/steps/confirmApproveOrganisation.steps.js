@@ -45,7 +45,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(bannerPage.confirmationScreen.getText())
       .to
       .eventually
-      .contains('Successfully Approved');
+      .contains('Successfully approved');
   });
 
   Then(/^I click to Back to Organisations link$/, { timeout: 600 * 1000 }, async function () {
