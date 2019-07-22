@@ -64,12 +64,14 @@ export function reducer(
         loading: false
       };
     }
+
     case PendingOrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
       const errorMessage = action.payload;
       return {
         ...state,
         errorMessage
       };
+
     default:
       return state;
   }
