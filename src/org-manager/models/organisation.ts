@@ -1,5 +1,6 @@
 export interface OrganisationAddress {
   addressLine1: string;
+  addressLine2: string;
   townCity: string;
   county: string;
   dxAddress: [OrganisationDxAddress];
