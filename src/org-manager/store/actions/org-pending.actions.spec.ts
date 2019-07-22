@@ -64,6 +64,7 @@ describe('PendingOrganisationActions actions', () => {
       });
     });
 
+    /*
     // Fail
     describe('ApprovePendingOrganisationsFail', () => {
       it('should create an action', () => {
@@ -75,5 +76,6 @@ describe('PendingOrganisationActions actions', () => {
         });
       });
     });
+    */
   });
 });
