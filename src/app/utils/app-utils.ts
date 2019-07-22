@@ -68,7 +68,8 @@ export class AppUtils {
           addressLine1: org.address,
           townCity: org.address,
           county: org.address,
-          dxAddress: org.dxNumber
+          dxAddress: org.dxNumber,
+          addressLine2: ''
           }],
         superUser: {
           userIdentifier: org.admin,
