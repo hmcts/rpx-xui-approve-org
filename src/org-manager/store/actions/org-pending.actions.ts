@@ -10,12 +10,18 @@ export enum PendingOrgActionTypes {
     DISPLAY_ERROR_MESSAGE_ORGANISATIONS = '[Pending Organisations] Display Error message Organisations',
     APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
     APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
-    APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail'
+    APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
+    CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
 }
 
 export class LoadPendingOrganisations implements Action {
     readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS;
     constructor() { }
+}
+
+export class ClearErrors implements Action {
+  readonly type = PendingOrgActionTypes.CLEAR_ERRORS;
+  constructor() { }
 }
 
 export class LoadPendingOrganisationsSuccess implements Action {
@@ -68,4 +74,5 @@ export type PendingOrgActions =
     | DisplayErrorMessageOrganisations
     | ApprovePendingOrganisations
     | ApprovePendingOrganisationsSuccess
-    | ApprovePendingOrganisationsFail;
+    | ApprovePendingOrganisationsFail
+    | ClearErrors;

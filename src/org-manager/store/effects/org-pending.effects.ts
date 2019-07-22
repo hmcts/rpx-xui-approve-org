@@ -31,7 +31,7 @@ export class PendingOrgEffects {
       const pendingOrganisation = this.mapOrganisationsVm(payload)[0];
       return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
         map(pendingOrganisations => new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations)),
-        catchError(error => of(new pendingOrgActions.ApprovePendingOrganisationsFail(error)))
+        catchError(error => of(new pendingOrgActions.DisplayErrorMessageOrganisations(error)))
       );
     })
   );
