@@ -39,6 +39,7 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
 
     this.columnConfig = PendingOverviewColumnConfig;
 
+    this.store.dispatch(new fromOrganisationPendingStore.ClearErrors());
   }
 
   processCheckedOrgs(pendingOrgs) {
