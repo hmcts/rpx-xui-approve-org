@@ -6,7 +6,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromPendingOrganisationEffects from './org-pending.effects';
 import { PendingOrgEffects } from './org-pending.effects';
 import { LoadPendingOrganisations, ApprovePendingOrganisations,
-        ApprovePendingOrganisationsSuccess, ApprovePendingOrganisationsFail } from '../actions/org-pending.actions';
+        ApprovePendingOrganisationsSuccess, DisplayErrorMessageOrganisations } from '../actions/org-pending.actions';
 import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
 import { PendingOrganisationService } from 'src/org-manager/services';
 import { Go } from 'src/app/store';
@@ -61,9 +61,9 @@ describe('Pending Organisation Effects', () => {
 
   describe('approvPendingOrganisations$ error', () => {
     it('should return ApprovePendingOrganisationsOrganisationsFail', () => {
-      PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(new Error()));
+      PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(''));
       const action = new ApprovePendingOrganisations(payload);
-      const completion = new ApprovePendingOrganisationsFail(new Error());
+      const completion = new DisplayErrorMessageOrganisations('');
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.approvePendingOrgs$).toBeObservable(expected);
