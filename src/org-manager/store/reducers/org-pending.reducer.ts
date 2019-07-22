@@ -23,6 +23,14 @@ export function reducer(
   action: PendingOrgActions
 ): OrganisationState {
   switch (action.type) {
+
+    case PendingOrgActionTypes.CLEAR_ERRORS: {
+      return {
+        ...state,
+        errorMessage: ''
+      };
+    }
+
     case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
       return {
         ...state,
