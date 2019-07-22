@@ -66,7 +66,8 @@ export function reducer(
         ...state,
         pendingOrganisations: pendingOrganisationsMapped,
         loaded: true,
-        loading: false
+        loading: false,
+        errorMessage: ''
       };
     }
     case PendingOrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
