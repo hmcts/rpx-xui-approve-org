@@ -49,7 +49,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     SharedModule,
     StoreRouterConnectingModule,
     OrgManagerModule,
-    !config.production ? StoreDevtoolsModule.instrument() : []
+    !config.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : []
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService,
