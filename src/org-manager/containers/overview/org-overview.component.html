@@ -23,7 +23,9 @@
                   {{org.addressLine2}}<br>
               </div>
               {{org.townCity}}<br>
-              {{org.county}}<br>
+              <div *ngIf='org.county'>
+                {{org.county}}<br>
+              </div>
             </td>
             <td class="govuk-table__cell">{{org.admin}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span></td>
             <td class="govuk-table__cell"><span class="hmcts-badge hmcts-badge--green">{{org.status}}</span>
