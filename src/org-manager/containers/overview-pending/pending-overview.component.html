@@ -16,7 +16,7 @@
           </tr>
           <tr class="govuk-table__row" *ngFor="let org of pendingOrganisations$">
             <td class="govuk-table__cell">
-                <lib-gov-checkbox [input]="r" (valueChange)='processCheckboxInput($event)'></lib-gov-checkbox>
+                <lib-gov-checkbox [input]="org" (valueChange)='processCheckboxInput($event)'></lib-gov-checkbox>
             </td>
             <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td> 
             <td class="govuk-table__cell">
