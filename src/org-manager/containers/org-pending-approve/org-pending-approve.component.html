@@ -28,7 +28,14 @@
                                     Address
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    {{organisation.address}}
+                                    {{organisation.addressLine1}}<br>
+                                    <div *ngIf='organisation.addressLine2'>
+                                        {{organisation.addressLine2}}<br>
+                                    </div>
+                                    {{organisation.townCity}}<br>
+                                    <div *ngIf='organisation.county'>
+                                        {{organisation.county}}<br>
+                                    </div>
                                 </dd>
 
                             </div>
