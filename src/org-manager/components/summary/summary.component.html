@@ -17,7 +17,14 @@
                Address
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.address}}
+               {{data.addressLine1}}<br>
+               <div *ngIf='data.addressLine2'>
+                   {{data.addressLine2}}<br>
+               </div>
+               {{data.townCity}}<br>
+               <div *ngIf='data.county'>
+                  {{data.county}}<br>
+               </div>
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -57,7 +64,8 @@
                Administrator
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.admin}}
+               <div>{{data.admin}}</div>
+               <div class="govuk-caption-m govuk-!-font-size-16">{{data.adminEmail}}</div>
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
