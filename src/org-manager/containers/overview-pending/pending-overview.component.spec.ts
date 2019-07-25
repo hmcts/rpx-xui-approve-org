@@ -8,6 +8,7 @@ import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReviewedOrganisationMockCollection, ReviewedOrganisationFromGovTableMockCollection } from '../../mock/pending-organisation.mock';
+import { FormBuilder } from '@angular/forms';
 
 describe('OverviewComponent', () => {
     let component: OverviewPendingComponent;
@@ -27,6 +28,7 @@ describe('OverviewComponent', () => {
                     feature: combineReducers(fromOrganisationPendingStore.reducers),
                 }),
             ],
+            providers: [FormBuilder],
             declarations: [
                 OverviewPendingComponent
             ],
@@ -44,21 +46,6 @@ describe('OverviewComponent', () => {
         storePipeMock.and.returnValue(of({ pendingOrganisations: organisationsDummy }));
         fixture.detectChanges();
     }));
-
-    it('should dispatch add review action when pending org checked', () => {
-        component.processCheckedOrgs({ value: organisationsFromGovTableDummy });
-        expect(storeDispatchMock).toHaveBeenCalledWith(
-            new fromOrganisationPendingStore.AddReviewOrganisations(organisationsDummy)
-        );
-    });
-
-    it('should dispatch a router go action when approve orgs clicked', () => {
-        component.processCheckedOrgs({ value: organisationsDummy });
-        component.activateOrganisations();
-        expect(storeDispatchMock).toHaveBeenCalledWith(
-            new fromRootActions.Go({ path: ['pending-organisations/approve'] })
-        );
-    });
 
     it('should dispatch a router back action when back clicked', () => {
         component.onGoBack();
