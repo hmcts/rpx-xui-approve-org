@@ -33,7 +33,10 @@ export class OrganisationVM {
   status: string;
   admin: string;
   adminEmail: string;
-  address: string;
+  addressLine1: string;
+  addressLine2: string;
+  townCity: string;
+  county: string;
   name: string;
   view: string;
   pbaNumber: [any];
