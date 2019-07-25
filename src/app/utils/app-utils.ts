@@ -48,9 +48,10 @@ export class AppUtils {
       organisation.status = apiOrg.status;
       organisation.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
       organisation.dxNumber = apiOrg.contactInformation[0].dxAddress;
-      organisation.address = `${apiOrg.contactInformation[0].addressLine1},
-      ${apiOrg.contactInformation[0].county ? apiOrg.contactInformation[0].county + ',' : ''}
-      ${apiOrg.contactInformation[0].townCity}`;
+      organisation.addressLine1 = apiOrg.contactInformation[0].addressLine1;
+      organisation.addressLine2 = apiOrg.contactInformation[0].addressLine2;
+      organisation.townCity = apiOrg.contactInformation[0].townCity;
+      organisation.county = apiOrg.contactInformation[0].county;
       organisation.sraId = apiOrg.sraId;
       organisationModel.push(organisation);
     });
@@ -65,11 +66,11 @@ export class AppUtils {
         organisationIdentifier: org.organisationId,
         sraId: org.sraId,
         contactInformation: [{
-          addressLine1: org.address,
-          townCity: org.address,
-          county: org.address,
-          dxAddress: org.dxNumber,
-          addressLine2: ''
+          addressLine1: org.addressLine1,
+          addressLine2: org.addressLine2,
+          townCity: org.townCity,
+          county: org.county,
+          dxAddress: org.dxNumber
           }],
         superUser: {
           userIdentifier: org.admin,

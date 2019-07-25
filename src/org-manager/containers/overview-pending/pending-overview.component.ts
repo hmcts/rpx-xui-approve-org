@@ -8,6 +8,8 @@ import * as fromRoot from '../../../app/store';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
 import { OrganisationState } from 'src/org-manager/store/reducers/org-pending.reducer';
+import { FormArray, FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { EventEmitter } from 'events';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -20,11 +22,18 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
   pendingOrgs$: any;
   loading$: Observable<boolean>;
   approveOrganisations: Array<OrganisationVM>;
-  pendingOrganisations$: Observable<OrganisationSummary>;
+  pendingOrganisations$: Array<OrganisationSummary>;
   subscription: Subscription;
-  constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>) {}
+  inputForm: FormGroup;
+  valueChange = new EventEmitter();
+
+  constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>,
+              private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    this.inputForm = this.fb.group({
+      checkedInput: this.fb.array([])
+    });
     this.approveOrganisations = [];
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
     this.subscription = this.pendingOrgs$.subscribe(pendingOrgs$ => {
@@ -42,8 +51,15 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromOrganisationPendingStore.ClearErrors());
   }
 
-  processCheckedOrgs(pendingOrgs) {
-    this.approveOrganisations = pendingOrgs.value.map(element => element.input);
+  processCheckboxInput(checkboxInputArray) {
+    const formArray = this.inputForm.controls.checkedInput as FormArray;
+    if (checkboxInputArray.isChecked.isChecked) {
+      formArray.push(new FormControl(checkboxInputArray.input));
+    } else {
+      const index = formArray.controls.findIndex(x => x.value === checkboxInputArray.input);
+      formArray.removeAt(index);
+    }
+    this.approveOrganisations = formArray.value.map(element => element.input);
     this.store.dispatch(new fromOrganisationPendingStore.AddReviewOrganisations(this.approveOrganisations));
   }
 

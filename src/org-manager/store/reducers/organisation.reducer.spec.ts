@@ -17,7 +17,10 @@ describe('OrganisationsReducer', () => {
       const OrganisationsMock: OrganisationVM[] = [
         {
           name: 'Speake Limited',
-          address: '72 Guild Street, London, SE23 6FH',
+          addressLine1: '72 Guild Street',
+          addressLine2: '',
+          townCity: 'London',
+          county: '',
           pbaNumber: ['12345678'],
           admin: 'Matt Speake',
           status: 'ACTIVE',
@@ -30,7 +33,10 @@ describe('OrganisationsReducer', () => {
       const OrganisationsMockSummary: OrganisationSummary[] = [
         {
           name: 'Speake Limited',
-          address: '72 Guild Street, London, SE23 6FH',
+          addressLine1: '72 Guild Street',
+          addressLine2: '',
+          townCity: 'London',
+          county: '',
           pbaNumber: ['12345678'],
           admin: 'Matt Speake',
           status: 'ACTIVE',
