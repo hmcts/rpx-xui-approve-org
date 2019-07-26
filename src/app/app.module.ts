@@ -28,6 +28,8 @@ import config from 'config';
 import {AuthService} from '../services/auth/auth.service';
 import { MonitoringService } from './services/monitoring.service';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
+import { LoggerService } from './services/logger.service';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -49,12 +51,16 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     SharedModule,
     StoreRouterConnectingModule,
     OrgManagerModule,
-    !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : []
+    !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : [],
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE,
+      disableConsoleLogging: false
+    })
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService,
     { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
-     MonitoringService],
+     MonitoringService, LoggerService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
