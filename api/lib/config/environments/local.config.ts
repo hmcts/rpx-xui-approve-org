@@ -1,7 +1,7 @@
 export default {
   services: {
-    idamWeb: 'https://idam-web-public.aat.platform.hmcts.net',
-    idamApi: 'https://idam-api.aat.platform.hmcts.net',
+    idamWeb: 'https://idam-web-public.ithc.platform.hmcts.net',
+    idamApi: 'https://idam-api.ithc.platform.hmcts.net',
     s2s: 'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
   },
   proxy: {
