@@ -16,6 +16,7 @@ router.get('/', healthCheckRoute)
     of api url's assigned to it.
 */
 
+// TODO: set actual check values and set healthcheckguard on front end
 const healthCheckEndpointDictionary = {
     '/organisation': ['rdProfessionalApi'],
     '/register-org/register/check': ['rdProfessionalApi'],
