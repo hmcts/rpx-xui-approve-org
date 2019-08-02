@@ -5,14 +5,15 @@ import * as pendingOrgActions from '../../../org-manager/store/actions/org-pendi
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as fromRoot from '../../../app/store';
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
-import { AppUtils } from 'src/app/utils/app-utils';
+import { AppUtils } from '../../../app/utils/app-utils';
+import { LoggerService } from '../../../app/services/logger.service';
 
 @Injectable()
 export class PendingOrgEffects {
   constructor(
     private actions$: Actions,
-    private pendingOrgService: PendingOrganisationService) { }
+    private pendingOrgService: PendingOrganisationService,
+    private loggerService: LoggerService) { }
 
   @Effect()
   loadPendingOrgs$ = this.actions$.pipe(
@@ -21,7 +22,10 @@ export class PendingOrgEffects {
       return this.pendingOrgService.fetchPendingOrganisations().pipe(
         map(pendingOrganisations => new pendingOrgActions.LoadPendingOrganisationsSuccess(
         AppUtils.mapOrganisations(pendingOrganisations)),
-        catchError(error => of(new pendingOrgActions.LoadPendingOrganisationsFail(error)))
+        catchError(error => {
+          this.loggerService.error(error);
+          return of(new pendingOrgActions.LoadPendingOrganisationsFail(error));
+        })
       ));
     }));
 
@@ -33,7 +37,10 @@ export class PendingOrgEffects {
       const pendingOrganisation = AppUtils.mapOrganisationsVm(payload)[0];
       return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
         map(pendingOrganisations => new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations)),
-        catchError(error => of(new pendingOrgActions.DisplayErrorMessageOrganisations(error)))
+        catchError(error => {
+          this.loggerService.error(error);
+          return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
+        })
       );
     })
   );
