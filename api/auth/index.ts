@@ -1,5 +1,4 @@
-import axios, { AxiosPromise, AxiosResponse } from 'axios'
-import * as exceptionFormatter from 'exception-formatter'
+import axios, { AxiosResponse } from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
 import * as log4js from 'log4js'
