@@ -8,6 +8,13 @@ import { OrganisationEffects } from './organisation.effects';
 import { LoadOrganisation, LoadOrganisationFail } from '../actions/organisation.actions';
 import { LoadOrganisationSuccess } from '../actions';
 import { OrganisationService } from 'src/org-manager/services';
+import { LoggerService } from 'src/app/services/logger.service';
+
+export class LoggerServiceMock {
+  error(err) {
+    return err;
+  }
+}
 
 describe('Organisation Effects', () => {
   let actions$;
@@ -24,7 +31,11 @@ describe('Organisation Effects', () => {
             useValue: OrganisationServiceMock,
           },
           fromOrganisationEffects.OrganisationEffects,
-          provideMockActions(() => actions$)
+          provideMockActions(() => actions$),
+          {
+            provide: LoggerService,
+            useClass: LoggerServiceMock
+          }
       ]
     });
 
