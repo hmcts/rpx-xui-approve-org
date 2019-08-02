@@ -5,8 +5,9 @@ import { http } from '../lib/http'
 async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
         const organisationsUri = req.query.status ?
-        `${config.services.rdProfessionalApi}/organisations?status=${req.query.status}`
+        `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations?status=${req.query.status}`
          : `${config.services.rdProfessionalApi}/organisations`
+        console.log(organisationsUri)
         const response = await http.get(organisationsUri)
         res.send(response.data.organisations)
     } catch (error) {
@@ -22,7 +23,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
         res.status(400).send('Organisation id is missing')
     } else {
         try {
-            const putOrganisationsUrl = `${config.services.rdProfessionalApi}/organisations/${req.params.id}`
+            const putOrganisationsUrl = `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations/${req.params.id}`
             await http.put(putOrganisationsUrl, req.body)
             res.status(200).send()
         } catch (error) {
