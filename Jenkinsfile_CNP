@@ -136,6 +136,8 @@ withPipeline(type, product, component) {
     }
 
     after('functionalTest:aat') {
+      echo "Disabling prod build"
+      sh "rm -rf infrastructure/"
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -145,4 +147,5 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Functional Test'
         ])
     }
+  
 }
