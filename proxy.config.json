@@ -1,6 +1,7 @@
 {
     "/api/*": {
-        "target": "http://localhost:3001",
+        "_comment": "This is where we setup Webpacks proxy, to hit our non-secure content on port 3001.",
+        "target": "http://localhost:3003",
         "secure": false,
         "logLevel": "debug"
     },

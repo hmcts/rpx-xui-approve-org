@@ -68,8 +68,20 @@ const port = process.env.PORT || 3001
 
 // Working on SSL
 const httpServer = http.createServer(app)
-httpServer.listen(3001, () => {
- console.log('Http Server started on port')
+const httpsServer = http.createServer(app)
+
+/**
+ * We can serve http content over any port. Hence I've left this as 3000.
+ */
+const httpPort = 3001
+const httpsPort = 3003
+
+httpServer.listen(httpPort, () => {
+ console.log(`Http Server started on port ${httpPort}`)
+})
+
+httpsServer.listen(httpsPort, () => {
+  console.log(`Https Server started on port ${httpsPort}`)
 })
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
@@ -79,4 +91,4 @@ if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
 const logger = log4js.getLogger('server')
 logger.level = config.logging ? config.logging : 'OFF'
 
-logger.info(`Local server up at ${port}`)
+// logger.info(`Local server up at ${port}`)
