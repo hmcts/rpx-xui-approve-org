@@ -74,7 +74,7 @@ const httpsServer = http.createServer(app)
  * We can serve http content over any port. Hence I've left this as 3000.
  */
 const httpPort = 3001
-const httpsPort = 3003
+const httpsPort = 443
 
 httpServer.listen(httpPort, () => {
  console.log(`Http Server started on port ${httpPort}`)
