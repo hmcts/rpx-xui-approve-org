@@ -76,10 +76,16 @@ const httpsServer = http.createServer(app)
 const httpPort = 3001
 const httpsPort = 443
 
+/**
+ * Non-secure http content
+ */
 httpServer.listen(httpPort, () => {
  console.log(`Http Server started on port ${httpPort}`)
 })
 
+/**
+ * Secure https content should be served over SSL, hence port 443.
+ */
 httpsServer.listen(httpsPort, () => {
   console.log(`Https Server started on port ${httpsPort}`)
 })
