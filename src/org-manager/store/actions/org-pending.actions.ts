@@ -45,7 +45,7 @@ export class AddReviewOrganisations implements Action {
 export class DisplayErrorMessageOrganisations implements Action {
     readonly type = PendingOrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
 
-    constructor(public payload: string) { }
+    constructor(public payload: any) { }
 }
 
 export class ApprovePendingOrganisations implements Action {
