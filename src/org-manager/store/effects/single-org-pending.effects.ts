@@ -22,8 +22,8 @@ export class SingleOrgPendingEffects {
         map(singleOrgDetails => {
           return new singleOrganisationActions.LoadSinglePendingOrgSuccess(singleOrgDetails[0]);
         }),
-        catchError(error => {
-          this.loggerService.error(error);
+        catchError((error: Error) => {
+          this.loggerService.error(error.message);
           return of(new singleOrganisationActions.LoadSinglePendingOrgFail(error));
         })
       );
