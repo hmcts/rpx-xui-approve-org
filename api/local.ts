@@ -1,13 +1,14 @@
+import * as auth from './auth'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
+import * as fs from 'fs'
+import * as http from 'http'
+import * as https from 'https'
 import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as log4js from 'log4js'
 import * as sessionFileStore from 'session-file-store'
-import * as http from 'http'
-import * as https from 'https'
-import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
 import { config } from './lib/config'
 import { errorStack } from './lib/errorStack'
@@ -66,15 +67,45 @@ app.use('/api', routes)
 const port = process.env.PORT || 3001
 // app.listen(port)
 
-// Working on SSL
-const httpServer = http.createServer(app)
-const httpsServer = http.createServer(app)
-
 /**
- * We can serve http content over any port. Hence I've left this as 3000.
+ * We can serve http content over any port. Hence I've left this as 3001.
  */
 const httpPort = 3001
 const httpsPort = 443
+
+/**
+ * Get Ssl Credentials
+ *
+ * <code>key:</code>
+ * The key is the private key that will be used to decode the incoming data, that would of been encrypted with
+ * the public key.
+ *
+ * <code>cert:</code>
+ * The cert is the cert given by the SSL certificate authority or it could be a self signed cert.
+ *
+ * <code>ca:</code>
+ * This is necessary only if the client uses a self-signed certificate.
+ *
+ * <code>requestCert:true</code>
+ * This is necessary only if using client certificate authentication.
+ *
+ * @ref https://itnext.io/node-express-letsencrypt-generate-a-free-ssl-certificate-and-run-an-https-server-in-5-minutes-a730fbe528ca
+ * @ref https://nodejs.org/api/https.html#https_https_createserver_options_requestlistener
+ * @ref https://nodejs.org/api/tls.html#tls_tls_createserver_options_secureconnectionlistener
+ *
+ * TODO: Abstract
+ */
+const getSslCredentials = () => {
+  return {
+    key: fs.readFileSync('server-key.pem'),
+    cert: fs.readFileSync('server-cert.pem'),
+    ca: [ fs.readFileSync('client-cert.pem') ],
+  }
+}
+
+// Working on SSL
+const httpServer = http.createServer(app)
+const httpsServer = https.createServer(getSslCredentials(), app)
 
 /**
  * Non-secure http content
