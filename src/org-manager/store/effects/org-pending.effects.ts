@@ -39,7 +39,7 @@ export class PendingOrgEffects {
         map(pendingOrganisations => new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations)),
         catchError((error: Error) => {
           this.loggerService.error(error.message);
-          return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error.message));
+          return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
         })
       );
     })
