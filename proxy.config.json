@@ -1,9 +1,15 @@
 {
     "/api/*": {
         "_comment": "This is where we setup Webpacks proxy, to hit our non-secure content on port 3001.",
-        "target": "http://localhost:3003",
+        "target": "http://localhost:3000",
         "secure": false,
         "logLevel": "debug"
+    },
+    "/apiSecure/*": {
+      "_comment": "This should hit our secure content on port 443.",
+      "target": "http://localhost:443",
+      "secure": false,
+      "logLevel": "debug"
     },
     "/oauth2/callback": {
         "target": "http://localhost:3001",
