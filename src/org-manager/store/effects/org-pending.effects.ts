@@ -22,8 +22,8 @@ export class PendingOrgEffects {
       return this.pendingOrgService.fetchPendingOrganisations().pipe(
         map(pendingOrganisations => new pendingOrgActions.LoadPendingOrganisationsSuccess(
         AppUtils.mapOrganisations(pendingOrganisations)),
-        catchError(error => {
-          this.loggerService.error(error);
+        catchError((error: Error) => {
+          this.loggerService.error(error.message);
           return of(new pendingOrgActions.LoadPendingOrganisationsFail(error));
         })
       ));
@@ -37,9 +37,9 @@ export class PendingOrgEffects {
       const pendingOrganisation = AppUtils.mapOrganisationsVm(payload)[0];
       return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
         map(pendingOrganisations => new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations)),
-        catchError(error => {
-          this.loggerService.error(error);
-          return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
+        catchError((error: Error) => {
+          this.loggerService.error(error.message);
+          return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error.message));
         })
       );
     })
