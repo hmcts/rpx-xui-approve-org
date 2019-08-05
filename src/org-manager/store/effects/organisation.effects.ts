@@ -24,8 +24,8 @@ export class OrganisationEffects {
     switchMap(() => {
       return this.organisationService.fetchOrganisations().pipe(
         map(organisationDetails => new organisationActions.LoadOrganisationSuccess(AppUtils.mapOrganisations(organisationDetails))),
-        catchError(error => {
-          this.loggerService.error(error);
+        catchError((error: Error) => {
+          this.loggerService.error(error.message);
           return of(new organisationActions.LoadOrganisationFail(error));
         })
       );
