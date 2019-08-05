@@ -5,6 +5,8 @@ import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as log4js from 'log4js'
 import * as sessionFileStore from 'session-file-store'
+import * as http from 'http'
+import * as https from 'https'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
 import { config } from './lib/config'
@@ -52,8 +54,23 @@ app.use(auth.attach)
 
 app.use('/api', routes)
 
+/**
+ * It looks like Angular is proxy'ing all requests to port 3001,
+ * hence the default port number here is 3001.
+ *
+ * TODO: Firstly let's try and replicate what we have here using
+ * createServer method.
+ *
+ * @type {(string | undefined) & number}
+ */
 const port = process.env.PORT || 3001
-app.listen(port)
+// app.listen(port)
+
+// Working on SSL
+const httpServer = http.createServer(app)
+httpServer.listen(3001, () => {
+ console.log('Http Server started on port')
+})
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
     config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY
