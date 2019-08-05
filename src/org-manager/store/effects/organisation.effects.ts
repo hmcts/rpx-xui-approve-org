@@ -5,7 +5,8 @@ import * as organisationActions from '../actions';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import { OrganisationService } from '../../services';
-import { AppUtils } from 'src/app/utils/app-utils';
+import { AppUtils } from '../../../app/utils/app-utils';
+import { LoggerService } from '../../../app/services/logger.service';
 
 
 
@@ -13,7 +14,8 @@ import { AppUtils } from 'src/app/utils/app-utils';
 export class OrganisationEffects {
   constructor(
     private actions$: Actions,
-    private organisationService: OrganisationService
+    private organisationService: OrganisationService,
+    private loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -22,7 +24,10 @@ export class OrganisationEffects {
     switchMap(() => {
       return this.organisationService.fetchOrganisations().pipe(
         map(organisationDetails => new organisationActions.LoadOrganisationSuccess(AppUtils.mapOrganisations(organisationDetails))),
-        catchError(error => of(new organisationActions.LoadOrganisationFail(error)))
+        catchError((error: Error) => {
+          this.loggerService.error(error.message);
+          return of(new organisationActions.LoadOrganisationFail(error));
+        })
       );
     })
   );
