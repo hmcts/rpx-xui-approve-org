@@ -10,6 +10,13 @@ import { LoadSinglePendingOrgSuccess } from '../actions';
 import { PendingOrganisationService } from '../../../org-manager/services';
 import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
 import { SingleOrgSummaryMock } from '../../../org-manager/mock/pending-organisation.mock';
+import { LoggerService } from 'src/app/services/logger.service';
+
+export class LoggerServiceMock {
+  error(err) {
+    return err;
+  }
+}
 
 describe('Single pending organisation Effects', () => {
   let actions$;
@@ -17,6 +24,7 @@ describe('Single pending organisation Effects', () => {
   const PendingOrganisationServiceMock = jasmine.createSpyObj('PendingOrganisationService', [
     'getSingleOrganisation',
   ]);
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -26,7 +34,11 @@ describe('Single pending organisation Effects', () => {
           useValue: PendingOrganisationServiceMock,
         },
         fromSingleOrgPendingEffects.SingleOrgPendingEffects,
-        provideMockActions(() => actions$)
+        provideMockActions(() => actions$),
+        {
+          provide: LoggerService,
+          useClass: LoggerServiceMock
+        }
       ]
     });
     effects = TestBed.get(SingleOrgPendingEffects);
