@@ -12,7 +12,7 @@
     "test:coverage:ng": "ng test organisation-manager --code-coverage --watch",
     "test:coverage:node": "cd api && npm run coverage",
     "ng": "ng",
-    "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
+    "start:ng": "ng serve --ssl true --ssl-cert 'server.crt' --ssl-key 'server.key' --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "build:ng": "ng build",
     "test:ng": "ng test",
     "test:coverage": "echo 'not implemented'",

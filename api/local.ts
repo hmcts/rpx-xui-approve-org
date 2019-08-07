@@ -139,8 +139,8 @@ const httpsPort = 443
  */
 const getSslCredentials = () => {
   return {
-    key: fs.readFileSync('./phils-key.pem'),
-    cert: fs.readFileSync('./phils-cert.pem'),
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./server.crt'),
   }
 }
 
