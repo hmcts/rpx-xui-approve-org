@@ -12,7 +12,13 @@ import { PendingOrganisationService } from 'src/org-manager/services';
 import { Go } from 'src/app/store';
 import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
 import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { LoggerService } from 'src/app/services/logger.service';
 
+export class LoggerServiceMock {
+  error(err) {
+    return err;
+  }
+}
 
 describe('Pending Organisation Effects', () => {
   let actions$;
@@ -23,6 +29,7 @@ describe('Pending Organisation Effects', () => {
   ]);
 
   const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
+  const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['trace', 'info', 'debug', 'log', 'warn', 'error', 'fatal']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -33,7 +40,15 @@ describe('Pending Organisation Effects', () => {
           useValue: PendingOrganisationServiceMock,
         },
         fromPendingOrganisationEffects.PendingOrgEffects,
-        provideMockActions(() => actions$)
+        provideMockActions(() => actions$),
+        {
+          provide: LoggerService,
+          useClass: LoggerServiceMock
+        },
+        {
+          provide: LoggerService,
+          useValue: mockedLoggerService
+        },
       ]
     });
 
