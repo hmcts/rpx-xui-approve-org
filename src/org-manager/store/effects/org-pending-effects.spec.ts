@@ -29,6 +29,7 @@ describe('Pending Organisation Effects', () => {
   ]);
 
   const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
+  const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['trace', 'info', 'debug', 'log', 'warn', 'error', 'fatal']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -43,7 +44,11 @@ describe('Pending Organisation Effects', () => {
         {
           provide: LoggerService,
           useClass: LoggerServiceMock
-        }
+        },
+        {
+          provide: LoggerService,
+          useValue: mockedLoggerService
+        },
       ]
     });
 
