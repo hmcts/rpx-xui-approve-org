@@ -31,6 +31,8 @@ import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsW
 import { LoggerService } from './services/logger.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
+import { CryptoWrapper } from './services/cryptoWrapper';
+import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -61,7 +63,8 @@ export const metaReducers: MetaReducer<any>[] = !config.production
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService,
     { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
-     MonitoringService, LoggerService, {provide: ErrorHandler, useClass: DefaultErrorHandler}],
+    CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
+    {provide: ErrorHandler, useClass: DefaultErrorHandler}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
