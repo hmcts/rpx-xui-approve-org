@@ -108,11 +108,7 @@ async function sessionChainCheck(req: EnhancedRequest, res: express.Response, ac
 }
 
 export function havePrdAdminRole(userData){
-    if (userData.data.roles.indexOf('prd-admin') === -1) {
-      return false
-    } else {
-      return true
-    }
+     return userData.data.roles.indexOf('prd-admin') === -1
 }
 
 export async function oauth(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
@@ -132,9 +128,9 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
             logger.warn('Auth token  expired need to log in again')
             doLogout(req, res, 401)
         } else {
+
           const userDetails = await asyncReturnOrError(getUserDetails(accessToken), 'Cannot get user details', res, logger, false)
           const isPrdAdminRole = havePrdAdminRole(userDetails)
-console.log ('isPRD ADMIN ROLE : ', isPrdAdminRole)
 
           if (!isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN');
