@@ -6,7 +6,6 @@ export const application = {
     microservice: 'xui_webapp',
     idamClient: 'xuiwebapp',
     oauthCallbackUrl: '/oauth2/callback',
-    idamLoginUrl:'https://idam-web-public.preview.platform.hmcts.net',
     protocol: 'https',
     logging: 'debug',
     maxLogLine: 80,

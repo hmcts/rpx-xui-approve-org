@@ -131,11 +131,12 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
 
           const userDetails = await asyncReturnOrError(getUserDetails(accessToken), 'Cannot get user details', res, logger, false)
           const isPrdAdminRole = havePrdAdminRole(userDetails)
-
-          if (!isPrdAdminRole) {
+console.log('BORIS: ', isPrdAdminRole);
+          if (isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN');
             req.session.save(() => {
-              res.redirect(`${config.idamLoginUrl}/login?response_type=code&client_id=${config.idamClient}&redirect_uri=${config.protocol}://${req.headers.host}/oauth2/callback&scope=openid profile roles manage-user create-user`)})
+            // tslint:disable-next-line
+              res.redirect(`${config.services.idamLoginUrl}/login?response_type=code&client_id=${config.idamClient}&redirect_uri=${config.protocol}://${req.headers.host}/oauth2/callback&scope=openid profile roles manage-user create-user`)})
           } else {
             const check = await sessionChainCheck(req, res, accessToken)
             if (check) {
