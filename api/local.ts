@@ -126,7 +126,6 @@ const httpsPort = 443
  * Once the CSR file is generated, it can either be sent to a Certificate Authority for signing or used to generate a self-signed certificate.
  *
  * Creating a self-signed certificate using the OpenSSL command-line interface is illustrated in the example below:
- *
  * `openssl x509 -req -in ryans-csr.pem -signkey phils-key.pem -out phils-cert.pem`
  *
  * Ref: https://nodejs.org/api/tls.html
@@ -142,7 +141,6 @@ const getSslCredentials = () => {
   return {
     key: fs.readFileSync('./phils-key.pem'),
     cert: fs.readFileSync('./phils-cert.pem'),
-    // ca: [ fs.readFileSync('client-server-cert.pem') ],
   }
 }
 
