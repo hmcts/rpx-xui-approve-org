@@ -131,7 +131,6 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
 
           const userDetails = await asyncReturnOrError(getUserDetails(accessToken), 'Cannot get user details', res, logger, false)
           const isPrdAdminRole = havePrdAdminRole(userDetails)
-console.log('BORIS: ', isPrdAdminRole);
           if (isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN');
             req.session.save(() => {
