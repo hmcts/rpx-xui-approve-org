@@ -18,7 +18,7 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 app.use(
     session({
@@ -139,8 +139,8 @@ const httpsPort = 443
  */
 const getSslCredentials = () => {
   return {
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./server.crt'),
+    key: fs.readFileSync('../ssl/server.key'),
+    cert: fs.readFileSync('../ssl/server.crt'),
   }
 }
 
