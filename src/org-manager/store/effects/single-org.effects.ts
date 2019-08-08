@@ -14,7 +14,7 @@ export class SingleOrgEffects {
   constructor(
     private actions$: Actions,
     private orgService: OrganisationService,
-    //private loggerService: LoggerService
+    // private loggerService: LoggerService
   ) {}
 
   @Effect()

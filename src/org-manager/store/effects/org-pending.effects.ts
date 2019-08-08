@@ -39,7 +39,7 @@ export class PendingOrgEffects {
       return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
         map(pendingOrganisations => {
           // this.loggerService.log('Approved Organisation successfully')
-          return new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations)
+          return new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations);
         }),
         catchError((error: Error) => {
          // this.loggerService.error(error.message);
