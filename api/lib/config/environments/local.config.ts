@@ -6,7 +6,6 @@ export default {
     idamApi: 'https://idam-api.demo.platform.hmcts.net',
     s2s: 'https://rpe-service-auth-provider-demo.service.core-compute-demo.internal',
     rdProfessionalApi: 'https://rd-professional-api-demo.service.core-compute-demo.internal',
-
   },
   health: {
     ccdDataApi: 'https://ccd-data-store-api-demo.service.core-compute-demo.internal/health',
