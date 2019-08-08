@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './containers/app/app.component';
 import { SharedModule } from '../shared/shared.module';
@@ -30,6 +30,9 @@ import { MonitoringService } from './services/monitoring.service';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
 import { LoggerService } from './services/logger.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
+import { CryptoWrapper } from './services/cryptoWrapper';
+import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -60,7 +63,8 @@ export const metaReducers: MetaReducer<any>[] = !config.production
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService,
     { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
-     MonitoringService, LoggerService],
+    CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
+    {provide: ErrorHandler, useClass: DefaultErrorHandler}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -107,6 +107,10 @@ async function sessionChainCheck(req: EnhancedRequest, res: express.Response, ac
     return true
 }
 
+export function havePrdAdminRole(userData){
+     return userData.data.roles.indexOf('prd-admin') === -1
+}
+
 export async function oauth(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     const response = await getTokenFromCode(req, res)
     const accessToken = response.data.access_token
@@ -124,23 +128,30 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
             logger.warn('Auth token  expired need to log in again')
             doLogout(req, res, 401)
         } else {
-            let orgId
-            let details
 
+          const userDetails = await asyncReturnOrError(getUserDetails(accessToken), 'Cannot get user details', res, logger, false)
+          const isPrdAdminRole = havePrdAdminRole(userDetails)
+          if (isPrdAdminRole) {
+            console.log('THIS USER CAN NOT LOGIN');
+            req.session.save(() => {
+            // tslint:disable-next-line
+              res.redirect(`${config.services.idamLoginUrl}/login?response_type=code&client_id=${config.idamClient}&redirect_uri=${config.protocol}://${req.headers.host}/oauth2/callback&scope=openid profile roles manage-user create-user`)})
+          } else {
             const check = await sessionChainCheck(req, res, accessToken)
             if (check) {
-                axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
-                axios.defaults.headers.common['user-roles'] = req.session.auth.roles
+              axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
+              axios.defaults.headers.common['user-roles'] = req.session.auth.roles
 
-                if (req.headers.ServiceAuthorization) {
-                    axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
-                }
+              if (req.headers.ServiceAuthorization) {
+                axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
+              }
 
-                logger.info('save session', req.session)
-                req.session.save(() => {
-                    res.redirect(config.indexUrl || '/')
-                })
+              logger.info('save session', req.session)
+              req.session.save(() => {
+                res.redirect(config.indexUrl || '/')
+              })
             }
+          }
         }
     } else {
         logger.error('No auth token')

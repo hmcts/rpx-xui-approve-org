@@ -5,6 +5,7 @@ import * as singleOrganisationActions from '../actions';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {OrganisationService} from '../../services';
+import { LoggerService } from '../../../app/services/logger.service';
 
 
 
@@ -12,7 +13,8 @@ import {OrganisationService} from '../../services';
 export class SingleOrgEffects {
   constructor(
     private actions$: Actions,
-    private orgService: OrganisationService
+    private orgService: OrganisationService,
+    private loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -23,7 +25,10 @@ export class SingleOrgEffects {
         map(singleOrgDetails => {
           return new singleOrganisationActions.LoadSingleOrgSuccess(singleOrgDetails[0]);
         }),
-        catchError(error => of(new singleOrganisationActions.LoadSingleOrgFail(error)))
+        catchError((error: Error) => {
+          this.loggerService.error(error.message);
+          return of(new singleOrganisationActions.LoadSingleOrgFail(error));
+        })
       );
     })
   );

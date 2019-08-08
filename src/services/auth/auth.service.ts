@@ -43,8 +43,7 @@ export class AuthService {
     const base = config.urls.idam.idamLoginUrl;
     const clientId = config.urls.idam.idamClientID;
     const callback = `${this.apiBaseUrl}/${config.urls.idam.oauthCallbackUrl}`;
-    return `${base}/login?response_type=code&client_id=
-    ${clientId}&redirect_uri=${callback}&scope=openid profile roles manage-user create-user`;
+    return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=openid profile roles manage-user create-user`;
   }
 
   loginRedirect() {

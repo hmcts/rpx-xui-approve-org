@@ -4,12 +4,14 @@ import * as singleOrganisationActions from '../../../org-manager/store/actions';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import {PendingOrganisationService} from '../../../org-manager/services';
+import { LoggerService } from 'src/app/services/logger.service';
 
 @Injectable()
 export class SingleOrgPendingEffects {
   constructor(
     private actions$: Actions,
-    private orgService: PendingOrganisationService
+    private orgService: PendingOrganisationService,
+    private loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -20,7 +22,10 @@ export class SingleOrgPendingEffects {
         map(singleOrgDetails => {
           return new singleOrganisationActions.LoadSinglePendingOrgSuccess(singleOrgDetails[0]);
         }),
-        catchError(error => of(new singleOrganisationActions.LoadSinglePendingOrgFail(error)))
+        catchError((error: Error) => {
+          this.loggerService.error(error.message);
+          return of(new singleOrganisationActions.LoadSinglePendingOrgFail(error));
+        })
       );
     })
   );

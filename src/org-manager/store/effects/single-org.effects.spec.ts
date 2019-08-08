@@ -9,6 +9,13 @@ import { LoadSingleOrg, LoadSingleOrgFail} from '../actions/single-org.actions';
 import { LoadSingleOrgSuccess } from '../actions';
 import { OrganisationService } from 'src/org-manager/services';
 import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
+import { LoggerService } from 'src/app/services/logger.service';
+
+export class LoggerServiceMock {
+  error(err) {
+    return err;
+  }
+}
 
 describe('Single organisation Effects', () => {
   let actions$;
@@ -25,7 +32,11 @@ describe('Single organisation Effects', () => {
             useValue: OrganisationServiceMock,
           },
           fromSingleOrgEffects.SingleOrgEffects,
-          provideMockActions(() => actions$)
+          provideMockActions(() => actions$),
+          {
+            provide: LoggerService,
+            useClass: LoggerServiceMock
+          }
       ]
     });
 
