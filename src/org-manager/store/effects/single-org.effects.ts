@@ -14,7 +14,7 @@ export class SingleOrgEffects {
   constructor(
     private actions$: Actions,
     private orgService: OrganisationService,
-    private loggerService: LoggerService
+    // private loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -26,7 +26,7 @@ export class SingleOrgEffects {
           return new singleOrganisationActions.LoadSingleOrgSuccess(singleOrgDetails[0]);
         }),
         catchError((error: Error) => {
-          this.loggerService.error(error.message);
+         // this.loggerService.error(error.message);
           return of(new singleOrganisationActions.LoadSingleOrgFail(error));
         })
       );
