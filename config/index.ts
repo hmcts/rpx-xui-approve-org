@@ -15,8 +15,8 @@ const configs = {
     preview,
     aat,
     prod,
-    microservice: 'xuiwebapp',
-    idam_client: 'xuiwebapp',
+    microservice: 'xui_webapp',
+    idam_client: 'xuiaowebapp',
     oauth_callback_url: 'oauth2/callback',
     protocol: 'https'
 };
