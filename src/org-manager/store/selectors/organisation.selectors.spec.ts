@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { OrganisationState } from '../reducers/organisation.reducer';
-import { getOrganisationsState } from './organisation.selectors';
+import { getOrganisationsState, selectedOrganisation } from './organisation.selectors';
 import { reducers } from '../index';
 
 describe('Organisation selectors', () => {
@@ -10,7 +10,7 @@ describe('Organisation selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('organisations', reducers),
+        StoreModule.forFeature('approveOrg', reducers),
       ],
     });
     store = TestBed.get(Store);
@@ -25,6 +25,17 @@ describe('Organisation selectors', () => {
 
       });
       expect(result).toEqual({ organisations: null, loaded: false, loading: false });
+    });
+  });
+
+  describe('selectedOrganisation', () => {
+    it('should return blank organisation', () => {
+      let result;
+      store.pipe(select(selectedOrganisation)).subscribe(value => {
+        result = value;
+
+      });
+      expect(result).toEqual({});
     });
   });
 

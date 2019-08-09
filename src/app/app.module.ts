@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { AppComponent } from './containers/app/app.component';
 import { SharedModule } from '../shared/shared.module';
@@ -26,6 +26,13 @@ import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
 import config from 'config';
 import {AuthService} from '../services/auth/auth.service';
+import { MonitoringService } from './services/monitoring.service';
+import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
+import { LoggerService } from './services/logger.service';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
+import { CryptoWrapper } from './services/cryptoWrapper';
+import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -47,12 +54,17 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     SharedModule,
     StoreRouterConnectingModule,
     OrgManagerModule,
-    StoreDevtoolsModule.instrument({
-      logOnly: environment.production
-    }),
+    !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : [],
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE,
+      disableConsoleLogging: false
+    })
   ],
   providers: [
-    { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService],
+    { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService,
+    { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
+    CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
+    {provide: ErrorHandler, useClass: DefaultErrorHandler}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

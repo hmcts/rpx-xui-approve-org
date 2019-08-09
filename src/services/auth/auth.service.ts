@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import * as jwtDecode from 'jwt-decode';
@@ -44,7 +43,8 @@ export class AuthService {
     const base = config.urls.idam.idamLoginUrl;
     const clientId = config.urls.idam.idamClientID;
     const callback = `${this.apiBaseUrl}/${config.urls.idam.oauthCallbackUrl}`;
-    return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=manage-user create-user`;
+    return `${base}/login?response_type=code&client_id=
+    ${clientId}&redirect_uri=${callback}&scope=openid profile roles manage-user create-user`;
   }
 
   loginRedirect() {
@@ -55,7 +55,6 @@ export class AuthService {
     return jwtDecode(jwt);
   }
 
-
   isAuthenticated(): boolean {
     const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
     if (!jwt) {
@@ -65,10 +64,5 @@ export class AuthService {
     const notExpired = jwtData.exp > Math.round(new Date().getTime() / 1000);
     // do stuff!!
     return notExpired;
-  }
-
-
-  signOut() {
-    window.location.href = '/api/logout';
   }
 }

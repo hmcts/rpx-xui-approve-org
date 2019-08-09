@@ -1,5 +1,6 @@
 export interface OrganisationAddress {
   addressLine1: string;
+  addressLine2: string;
   townCity: string;
   county: string;
   dxAddress: [OrganisationDxAddress];
@@ -18,6 +19,7 @@ export interface OrganisationSuperUser {
 }
 
 export interface  Organisation {
+  sraId?: string;
   organisationIdentifier: string;
   contactInformation: [OrganisationAddress];
   superUser: OrganisationSuperUser;
@@ -31,11 +33,15 @@ export class OrganisationVM {
   status: string;
   admin: string;
   adminEmail: string;
-  address: string;
+  addressLine1: string;
+  addressLine2: string;
+  townCity: string;
+  county: string;
   name: string;
   view: string;
   pbaNumber: [any];
   dxNumber: [any];
+  sraId?: string;
 }
 
 export interface OrganisationSummary extends OrganisationVM {
