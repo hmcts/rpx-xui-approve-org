@@ -1,9 +1,5 @@
 import * as fromAction from '../actions';
-
-/* function that returns page title base on page url indexOf */
-export function setPageTitle(url): string {
-  return 'Organisation User Interface';
-}
+import {AppUtils} from '../../utils/app-utils';
 
 export interface AppState {
   pageTitle: string;
@@ -19,7 +15,7 @@ export function reducer(
 ): AppState {
   switch (action.type) {
     case fromAction.SET_PAGE_TITLE: {
-      const pageTitle = setPageTitle(action.payload);
+      const pageTitle = AppUtils.setPageTitle(action.payload);
       return {
         ...state,
         pageTitle
@@ -31,6 +27,13 @@ export function reducer(
       return {
         ...state,
         pageTitle
+      };
+    }
+
+    case fromAction.LOGOUT: {
+      return {
+        ...state,
+        ...initialState
       };
     }
   }

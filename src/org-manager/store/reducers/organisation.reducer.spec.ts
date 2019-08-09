@@ -13,11 +13,14 @@ describe('OrganisationsReducer', () => {
   });
 
   describe('LOAD_ORGANISATION_SUCCESS action', () => {
-    it('should update the state.organisations', () => {
+    it('should update the state.activeOrg', () => {
       const OrganisationsMock: OrganisationVM[] = [
         {
           name: 'Speake Limited',
-          address: '72 Guild Street, London, SE23 6FH',
+          addressLine1: '72 Guild Street',
+          addressLine2: '',
+          townCity: 'London',
+          county: '',
           pbaNumber: ['12345678'],
           admin: 'Matt Speake',
           status: 'ACTIVE',
@@ -30,7 +33,10 @@ describe('OrganisationsReducer', () => {
       const OrganisationsMockSummary: OrganisationSummary[] = [
         {
           name: 'Speake Limited',
-          address: '72 Guild Street, London, SE23 6FH',
+          addressLine1: '72 Guild Street',
+          addressLine2: '',
+          townCity: 'London',
+          county: '',
           pbaNumber: ['12345678'],
           admin: 'Matt Speake',
           status: 'ACTIVE',
@@ -48,7 +54,7 @@ describe('OrganisationsReducer', () => {
   });
 
   describe('getOrganisations export', () => {
-    it('should return state.organisations', () => {
+    it('should return state.activeOrg', () => {
       expect(fromOrganisation.getOrganisations(initialState)).toEqual(null);
       expect();
     });

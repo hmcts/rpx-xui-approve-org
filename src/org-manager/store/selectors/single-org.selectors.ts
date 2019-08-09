@@ -4,8 +4,8 @@ import * as fromFeature from '../reducers';
 import * as fromSingleOrg from '../reducers/single-org.reducer';
 
 export const getSingleOrgState = createSelector(
-  fromFeature.getRootOrganisationsState,
-  (state: fromFeature.OrganisationState) => state.singleOrg
+  fromFeature.getRootApproveOrgState,
+  (state: fromFeature.OrganisationState) => state.orgDetails
 );
 
 export const getSingleOrgOverview = createSelector(

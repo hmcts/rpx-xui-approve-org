@@ -12,7 +12,7 @@ describe('Single organisation selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('organisations', reducers),
+        StoreModule.forFeature('approveOrg', reducers),
       ],
     });
     store = TestBed.get(Store);
