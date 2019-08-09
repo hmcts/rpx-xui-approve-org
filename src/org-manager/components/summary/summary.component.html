@@ -1,6 +1,6 @@
 <app-identity-bar-component><span>{{data.name}} </span><span class="hmcts-badge hmcts-badge--green">{{data.status}}</span></app-identity-bar-component>
 <div class="govuk-width-container">
-<lib-gov-uk-main-wrapper [title]="'Organisation Details'">
+<lib-gov-uk-main-wrapper [title]="'Organisation details'">
       <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
          <div class="govuk-check-your-answers__contents">
             <dt class="govuk-check-your-answers__question">
@@ -17,7 +17,14 @@
                Address
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.address}}
+               {{data.addressLine1}}<br>
+               <div *ngIf='data.addressLine2'>
+                   {{data.addressLine2}}<br>
+               </div>
+               {{data.townCity}}<br>
+               <div *ngIf='data.county'>
+                  {{data.county}}<br>
+               </div>
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -37,7 +44,7 @@
                DX number
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.dxNumber}}
+               {{dxNumber}}
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -47,7 +54,7 @@
                DX exchange
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.dxExchange}}
+               {{dxExchange}}
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -57,7 +64,18 @@
                Administrator
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.admin}}
+               <div>{{data.admin}}</div>
+               <div class="govuk-caption-m govuk-!-font-size-16">{{data.adminEmail}}</div>
+            </dd>
+            <dd class="govuk-check-your-answers__change">
+            </dd>
+         </div>
+         <div class="govuk-check-your-answers__contents">
+            <dt class="govuk-check-your-answers__question">
+               SRA Id
+            </dt>
+            <dd class="govuk-check-your-answers__answer">
+               {{data.sraId}}
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>

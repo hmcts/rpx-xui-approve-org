@@ -6,13 +6,19 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromPendingOrganisationEffects from './org-pending.effects';
 import { PendingOrgEffects } from './org-pending.effects';
 import { LoadPendingOrganisations, ApprovePendingOrganisations,
-        ApprovePendingOrganisationsSuccess, ApprovePendingOrganisationsFail } from '../actions/org-pending.actions';
+        ApprovePendingOrganisationsSuccess, DisplayErrorMessageOrganisations } from '../actions/org-pending.actions';
 import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
 import { PendingOrganisationService } from 'src/org-manager/services';
 import { Go } from 'src/app/store';
 import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
 import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { LoggerService } from 'src/app/services/logger.service';
 
+export class LoggerServiceMock {
+  error(err) {
+    return err;
+  }
+}
 
 describe('Pending Organisation Effects', () => {
   let actions$;
@@ -23,6 +29,7 @@ describe('Pending Organisation Effects', () => {
   ]);
 
   const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
+  const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['trace', 'info', 'debug', 'log', 'warn', 'error', 'fatal']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -33,7 +40,15 @@ describe('Pending Organisation Effects', () => {
           useValue: PendingOrganisationServiceMock,
         },
         fromPendingOrganisationEffects.PendingOrgEffects,
-        provideMockActions(() => actions$)
+        provideMockActions(() => actions$),
+        {
+          provide: LoggerService,
+          useClass: LoggerServiceMock
+        },
+        {
+          provide: LoggerService,
+          useValue: mockedLoggerService
+        },
       ]
     });
 
@@ -61,9 +76,9 @@ describe('Pending Organisation Effects', () => {
 
   describe('approvPendingOrganisations$ error', () => {
     it('should return ApprovePendingOrganisationsOrganisationsFail', () => {
-      PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(new Error()));
+      PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(''));
       const action = new ApprovePendingOrganisations(payload);
-      const completion = new ApprovePendingOrganisationsFail(new Error());
+      const completion = new DisplayErrorMessageOrganisations('');
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.approvePendingOrgs$).toBeObservable(expected);

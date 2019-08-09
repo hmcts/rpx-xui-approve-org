@@ -38,6 +38,7 @@ describe('PendingOrganisationService', () => {
       organisationIdentifier: '',
       contactInformation: [{
         addressLine1: '',
+        addressLine2: '',
         townCity: 'string',
         county: 'string',
         dxAddress: [{

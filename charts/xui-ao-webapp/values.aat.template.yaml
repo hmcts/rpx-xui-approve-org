@@ -1,4 +1,5 @@
 nodejs:
   environment:
     IDAM_URL: https://idam-api.ithc.platform.hmcts.net
-    S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+    S2S_URL: http://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal
+
