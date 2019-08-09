@@ -29,7 +29,7 @@ export async function postS2SLease() {
             oneTimePassword,
         })}
         catch(error) { 
-            logger.error(error)
+            logger.info(JSON.stringify(error))
             throw error
         }
     } else {
