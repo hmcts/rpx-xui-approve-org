@@ -23,16 +23,17 @@ export async function postS2SLease() {
     console.log('postS2SLease url')
     console.log(url)
     if (configEnv !== 'ldocker') {
-        const oneTimePassword = otp({ secret: s2sSecret }).totp()
-        logger.info('generating from secret  : ', s2sSecret, microservice, oneTimePassword)
-        request = await http.post(`${url}/lease`, {
-            microservice,
-            oneTimePassword,
-        })
-        // catch(error) {
-        //     logger.info(JSON.stringify(error))
-        //     throw error
-        // }
+        try {
+            const oneTimePassword = otp({ secret: s2sSecret }).totp()
+            logger.info('generating from secret  : ', s2sSecret, microservice, oneTimePassword)
+            request = await http.post(`${url}/lease`, {
+                microservice,
+                oneTimePassword,
+            })
+        } catch (error) {
+            logger.info(error)
+            // throw error
+        }
     } else {
         // this is only for local development against the RD docker image
         // end tunnel before posting to docker
