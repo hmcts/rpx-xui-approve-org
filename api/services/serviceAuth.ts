@@ -26,7 +26,7 @@ export async function postS2SLease() {
     console.log(url)
     if (configEnv !== 'ldocker') {
         const oneTimePassword = otp({ secret: s2sSecret }).totp()
-        logger.info('generating from secret  : ', s2sSecret.trim, microservice, oneTimePassword)
+        logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)
         request = await http.post(`${url}/lease`, {
             microservice,
             oneTimePassword,
