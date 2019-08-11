@@ -22,16 +22,16 @@ export async function postS2SLease() {
 
         logger.info('generating from secret  : ', s2sSecret, microservice, oneTimePassword)
 
-        try
-        {
+       // try
+     //   {
         request = await http.post(`${url}/lease`, {
             microservice,
             oneTimePassword,
-        })}
-        catch(error) { 
-            logger.info(JSON.stringify(error))
-            throw error
-        }
+        })
+        // catch(error) {
+        //     logger.info(JSON.stringify(error))
+        //     throw error
+        // }
     } else {
         // this is only for local development against the RD docker image
         // end tunnel before posting to docker
