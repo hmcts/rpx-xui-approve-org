@@ -19,31 +19,25 @@ const s2sSecret = s2sSecretunTrimmed.trim()
 const logger = log4jui.getLogger('service auth')
 
 export async function postS2SLease() {
-    const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
-    let request: AxiosResponse<any>
-    console.log('PUI_ENV is now:', configEnv)
-    console.log('postS2SLease url')
-    console.log(url)
-    if (configEnv !== 'ldocker') {
-        const oneTimePassword = otp({ secret: s2sSecret }).totp()
-        logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)
-        request = await http.post(`${url}/lease`, {
-            microservice,
-            oneTimePassword,
-        })
-        // catch(error) {
-        //     logger.info(JSON.stringify(error))
-        //     throw error
-        // }
-    } else {
-        // this is only for local development against the RD docker image
-        // end tunnel before posting to docker
-        tunnel.end()
-        request = await http.get(`${url}`)
+  const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
+  let request: AxiosResponse<any>
+  console.log('PUI_ENV is now:', configEnv)
+  console.log('postS2SLease url:', url)
+  if (configEnv !== 'ldocker') {
+    try {
+      const oneTimePassword = otp({secret: s2sSecret}).totp()
+      logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)
+      request = await http.post(`${url}/lease`, {
+        microservice,
+        oneTimePassword,
+      })
+    } catch (error) {
+      logger.info(JSON.stringify(error))
+      throw error
     }
     return request.data
+  }
 }
-
 export const router = express.Router({ mergeParams: true })
 
 router.get('/health', (req, res, next) => {
