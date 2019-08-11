@@ -12,7 +12,9 @@ import {application} from '../lib/config/application.config'
 const url = config.services.s2s
 // const microservice = config.microservice
 const microservice =  application.microservice
-const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
+// const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
+const s2sSecretunTrimmed = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
+const s2sSecret = s2sSecretunTrimmed.trim()
 
 const logger = log4jui.getLogger('service auth')
 
