@@ -6,7 +6,7 @@ export default {
     idamApi: 'https://idam-api.demo.platform.hmcts.net',
    // idamLoginUrl: 'https://idam-web-public.demo.platform.hmcts.net',
     s2s: 'http://rpe-service-auth-provider-demo.service.core-compute-demo.internal',
-    rdProfessionalApi: 'https://rd-professional-api-demo.service.core-compute-demo.internal',
+    rdProfessionalApi: 'http://rd-professional-api-demo.service.core-compute-demo.internal',
   },
   health: {
     ccdDataApi: 'https://ccd-data-store-api-demo.service.core-compute-demo.internal/health',
@@ -15,7 +15,7 @@ export default {
     idamApi: 'https://idam-api.demo.platform.hmcts.net/health',
     // idamLoginUrl: 'https://idam-web-public.demo.platform.hmcts.net/health',
     s2s: 'http://rpe-service-auth-provider-demo.service.core-compute-demo.internal/health',
-    rdProfessionalApi: 'https://rd-professional-api-demo.service.core-compute-demo.internal/health',
+    rdProfessionalApi: 'http://rd-professional-api-demo.service.core-compute-demo.internal/health',
   },
   useProxy: false,
   secureCookie: false,
