@@ -9,7 +9,7 @@ export const environment = {
     googleAnalyticsKey: 'UA-124734893-1',
     serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
     serviceDeskTel: '0300 3030686',
-    singleOrgUrl: 'http://localhost:1400/organisations?pbaNumber=',
+    singleOrgUrl: 'api/organisations?pbaNumber=',
     orgActiveUrl: 'api/organisations?status=ACTIVE',
     orgPendingUrl: 'api/organisations?status=PENDING',
     orgApprovePendingUrl: 'api/organisations/',
@@ -20,9 +20,9 @@ export const environment = {
     },
     urls: {
       idam: {
-        idamApiUrl: 'https://idam-api.preview.platform.hmcts.net',
-        idamClientID: 'xuiwebapp',
-        idamLoginUrl: 'https://idam-web-public.preview.platform.hmcts.net',
+        idamApiUrl: 'https://idam-api.demo.platform.hmcts.net',
+        idamClientID: 'xuiaowebapp',
+        idamLoginUrl: 'https://idam-web-public.demo.platform.hmcts.net',
         indexUrl: '/',
         oauthCallbackUrl: 'oauth2/callback'
       }

@@ -11,7 +11,7 @@ const _cache = {}
 const microservice = config.microservice
 
 export function validateCache() {
-    logger.info('validaing s2s cache')
+    logger.info('validating s2s cache')
     const currentTime = Math.floor(Date.now() / 1000)
     if (!_cache[microservice]) {
         return false
