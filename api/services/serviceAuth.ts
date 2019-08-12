@@ -31,7 +31,10 @@ export async function postS2SLease() {
                 oneTimePassword,
             })
         } catch (error) {
-            logger.info(error)
+            console.log(error)
+            if (error.message) {
+                logger.error(error.message)
+            }
             // throw error
         }
     } else {
