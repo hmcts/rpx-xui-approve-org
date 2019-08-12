@@ -91,7 +91,7 @@ const port = process.env.PORT || 3001
  * We can serve http content over any port. Hence I've left this as 3001.
  */
 const httpPort = 3001
-const httpsPort = 443
+const httpsPort = 3001
 
 /**
  * Get Ssl Credentials
@@ -153,9 +153,9 @@ const httpsServer = https.createServer(getSslCredentials(), app)
 /**
  * Non-secure http content
  */
-httpServer.listen(httpPort, () => {
- console.log(`Http Server started on port ${httpPort}`)
-})
+// httpServer.listen(httpPort, () => {
+//  console.log(`Http Server started on port ${httpPort}`)
+// })
 
 /**
  * Secure https content should be served over SSL, hence port 443.
