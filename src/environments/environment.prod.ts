@@ -6,7 +6,7 @@ export const environment = {
   singleOrgUrl: 'api/organisations?pbaNumber=',
   orgActiveUrl: 'api/organisations',
   orgPendingUrl: 'api/organisations?status=PENDING',
-  orgApprovePendingUrl: 'api/putApprovedOrganisations',
+  orgApprovePendingUrl: 'api/organisation/',
   loggingLevel: 'DEBUG',
   cookies: {
     token: '__auth__',
