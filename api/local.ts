@@ -159,6 +159,9 @@ httpServer.listen(httpPort, () => {
 
 /**
  * Secure https content should be served over SSL, hence port 443.
+ *
+ * So this is working if you put https://localhost:443 or https://localhost in your browser
+ * it will hit the Node service running on 443.
  */
 httpsServer.listen(httpsPort, () => {
   console.log(`Https Server started on port ${httpsPort}`)
