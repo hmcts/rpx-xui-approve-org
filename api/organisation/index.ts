@@ -9,7 +9,7 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
     try {
         const organisationsUri = req.query.status ?
         `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations?status=${req.query.status}`
-         : `${config.services.rdProfessionalApi}/organisations`
+         : `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations`
         console.log(organisationsUri)
         const response = await http.get(organisationsUri)
         res.send(response.data.organisations)
