@@ -15,7 +15,7 @@ export class OrganisationEffects {
   constructor(
     private actions$: Actions,
     private organisationService: OrganisationService,
-    private loggerService: LoggerService
+    // private loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -25,7 +25,7 @@ export class OrganisationEffects {
       return this.organisationService.fetchOrganisations().pipe(
         map(organisationDetails => new organisationActions.LoadOrganisationSuccess(AppUtils.mapOrganisations(organisationDetails))),
         catchError((error: Error) => {
-          this.loggerService.error(error.message);
+          // this.loggerService.error(error.message);
           return of(new organisationActions.LoadOrganisationFail(error));
         })
       );
