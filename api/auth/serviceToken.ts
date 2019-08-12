@@ -11,7 +11,7 @@ const _cache = {}
 const microservice = config.microservice
 
 export function validateCache() {
-    logger.info('validaing s2s cache')
+    logger.info('validating s2s cache')
     const currentTime = Math.floor(Date.now() / 1000)
     if (!_cache[microservice]) {
         return false
@@ -47,16 +47,16 @@ export async function serviceTokenGenerator() {
     }
 }
 
-export default async (req, res, next) => {
-    const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
-
-    const token = await asyncReturnOrError(generateToken(), 'Error getting s2s token', res, logger)
-    if (token) {
-        logger.info('Adding s2s token to defaults')
-        req.headers.ServiceAuthorization = `Bearer ${token}`
-
-        axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
-
-        next()
-    }
-}
+// export default async (req, res, next) => {
+//     const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
+//
+//     const token = await asyncReturnOrError(generateToken(), 'Error getting s2s token', res, logger)
+//     if (token) {
+//         logger.info('Adding s2s token to defaults')
+//         req.headers.ServiceAuthorization = `Bearer ${token}`
+//
+//         axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
+//
+//         next()
+//     }
+// }

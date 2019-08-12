@@ -12,40 +12,32 @@ import {application} from '../lib/config/application.config'
 const url = config.services.s2s
 // const microservice = config.microservice
 const microservice =  application.microservice
-const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
+// const s2sSecret = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
+const s2sSecretunTrimmed = process.env.S2S_SECRET || 'AAAAAAAAAAAAAAAA'
+const s2sSecret = s2sSecretunTrimmed.trim()
 
 const logger = log4jui.getLogger('service auth')
 
 export async function postS2SLease() {
-    const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
-    let request: AxiosResponse<any>
-    console.log('PUI_ENV is now:', configEnv)
-    console.log('postS2SLease url')
-    console.log(url)
-    if (configEnv !== 'ldocker') {
-        try {
-            const oneTimePassword = otp({ secret: s2sSecret }).totp()
-            logger.info('generating from secret  : ', s2sSecret, microservice, oneTimePassword)
-            request = await http.post(`${url}/lease`, {
-                microservice,
-                oneTimePassword,
-            })
-        } catch (error) {
-            console.log(error)
-            if (error.message) {
-                logger.error(error.message)
-            }
-            // throw error
-        }
-    } else {
-        // this is only for local development against the RD docker image
-        // end tunnel before posting to docker
-        tunnel.end()
-        request = await http.get(`${url}`)
+  const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
+  let request: AxiosResponse<any>
+  console.log('PUI_ENV is now:', configEnv)
+  console.log('postS2SLease url:', url)
+  if (configEnv !== 'ldocker') {
+    try {
+      const oneTimePassword = otp({secret: s2sSecret}).totp()
+      logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)
+      request = await http.post(`${url}/lease`, {
+        microservice,
+        oneTimePassword,
+      })
+    } catch (error) {
+      logger.info(JSON.stringify(error))
+      throw error
     }
     return request.data
+  }
 }
-
 export const router = express.Router({ mergeParams: true })
 
 router.get('/health', (req, res, next) => {
