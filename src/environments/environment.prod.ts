@@ -3,10 +3,10 @@ export const environment = {
   googleAnalyticsKey: 'UA-124734893-1',
   serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
   serviceDeskTel: '0300 3030686',
-  singleOrgUrl: 'http://localhost:1400/organisations?pbaNumber=',
+  singleOrgUrl: 'api/organisations?pbaNumber=',
   orgActiveUrl: 'api/organisations',
-  orgPendingUrl: 'http://localhost:1400/organisations?status=PENDING',
-  orgApprovePendingUrl: 'http://localhost:1400/putApprovedOrganisations',
+  orgPendingUrl: 'api/organisations?status=PENDING',
+  orgApprovePendingUrl: 'api/putApprovedOrganisations',
   loggingLevel: 'DEBUG',
   cookies: {
     token: '__auth__',
