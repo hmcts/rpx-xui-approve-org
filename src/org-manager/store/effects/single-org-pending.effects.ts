@@ -11,7 +11,7 @@ export class SingleOrgPendingEffects {
   constructor(
     private actions$: Actions,
     private orgService: PendingOrganisationService,
-    private loggerService: LoggerService
+    // private loggerService: LoggerService
   ) {}
 
   @Effect()
@@ -23,7 +23,7 @@ export class SingleOrgPendingEffects {
           return new singleOrganisationActions.LoadSinglePendingOrgSuccess(singleOrgDetails[0]);
         }),
         catchError((error: Error) => {
-          this.loggerService.error(error.message);
+        //  this.loggerService.error(error.message);
           return of(new singleOrganisationActions.LoadSinglePendingOrgFail(error));
         })
       );
