@@ -1,6 +1,9 @@
 import * as express from 'express'
+import * as log4jui from '../../api/lib/log4jui'
 import { config } from '../lib/config'
 import { http } from '../lib/http'
+
+const logger = log4jui.getLogger('return')
 
 async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
@@ -10,8 +13,18 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
         console.log(organisationsUri)
         const response = await http.get(organisationsUri)
         res.send(response.data.organisations)
+        logger.info('Organisations response' + response)
     } catch (error) {
-        console.error(error)
+        logger.error('Organisations error ' + error)
+        if (error.message) {
+            logger.error('Error message: ' + error.message)
+          }
+        if (error.stack) {
+            logger.error('Error stack: ' + error.stack)
+          }
+        if (error.code) {
+            logger.error('Error code: ' + error.code)
+          }
         const errReport = { apiError: error.data.message, apiStatusCode: error.status,
             message: 'handleGetOrganisationsRoute error' }
         res.status(500).send(errReport)
