@@ -107,8 +107,8 @@ async function sessionChainCheck(req: EnhancedRequest, res: express.Response, ac
     return true
 }
 
-export function havePrdAdminRole(userData){
-     return userData.data.roles.indexOf('prd-admin') === -1
+export function havePrdAdminRole(userData) {
+  return userData.data.roles.indexOf('prd-admin') === -1
 }
 
 export async function oauth(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
@@ -117,6 +117,14 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
     const accessToken = response.data.access_token
 
     if (accessToken) {
+        const userDetails = await asyncReturnOrError(getUserDetails(accessToken), 'Cannot get user details', res, logger, false)
+        const isPrdAdminRole = havePrdAdminRole(userDetails)
+        if (isPrdAdminRole) {
+            console.log('THIS USER CAN NOT LOGIN');
+            // tslint:disable-next-line
+            res.redirect(`${config.services.idamLoginUrl}/login?response_type=code&client_id=${config.idamClient}&redirect_uri=${config.protocol}://${req.headers.host}/oauth2/callback&scope=openid profile roles manage-user create-user`)
+            return false
+        }
         // set browser cookie
         res.cookie(config.cookies.token, accessToken)
 
@@ -129,15 +137,6 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
             logger.warn('Auth token  expired need to log in again')
             doLogout(req, res, 401)
         } else {
-
-          const userDetails = await asyncReturnOrError(getUserDetails(accessToken), 'Cannot get user details', res, logger, false)
-          const isPrdAdminRole = havePrdAdminRole(userDetails)
-          if (isPrdAdminRole) {
-            console.log('THIS USER CAN NOT LOGIN');
-            req.session.save(() => {
-            // tslint:disable-next-line
-              res.redirect(`${config.services.idamLoginUrl}/login?response_type=code&client_id=${config.idamClient}&redirect_uri=${config.protocol}://${req.headers.host}/oauth2/callback&scope=openid profile roles manage-user create-user`)})
-          } else {
             const check = await sessionChainCheck(req, res, accessToken)
             if (check) {
               axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
@@ -152,7 +151,6 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
                 res.redirect(config.indexUrl || '/')
               })
             }
-          }
         }
     } else {
         logger.error('No auth token')
