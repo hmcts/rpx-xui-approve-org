@@ -20,22 +20,34 @@ const logger = log4jui.getLogger('service auth')
 
 export async function postS2SLease() {
   const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
-  let request: AxiosResponse<any>
+  let response: AxiosResponse<any>
   console.log('PUI_ENV is now:', configEnv)
   console.log('postS2SLease url:', url)
   if (configEnv !== 'ldocker') {
     try {
       const oneTimePassword = otp({secret: s2sSecret}).totp()
       logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)
-      request = await http.post(`${url}/lease`, {
+      response = await http.post(`${url}/lease`, {
         microservice,
         oneTimePassword,
       })
+      logger.info('Generated from secret: ' + response)
     } catch (error) {
-      logger.info(JSON.stringify(error))
+      logger.error(error)
+      logger.error('Some error adn')
+      if (error.message) {
+        logger.error('Error message: ' + error.message)
+      }
+      if (error.stack) {
+        logger.error('Error stack: ' + error.stack)
+      }
+      if (error.code) {
+        logger.error('Error code: ' + error.code)
+      }
+
       throw error
     }
-    return request.data
+    return response.data
   }
 }
 export const router = express.Router({ mergeParams: true })
