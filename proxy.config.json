@@ -12,7 +12,7 @@
       "logLevel": "debug"
     },
     "/oauth2/callback": {
-        "target": "http://localhost:3001",
+        "target": "https://localhost:3001",
         "secure": false,
         "logLevel": "debug"
     }
