@@ -112,6 +112,7 @@ export function havePrdAdminRole(userData){
 }
 
 export async function oauth(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
+    console.log('oauth hit')
     const response = await getTokenFromCode(req, res)
     const accessToken = response.data.access_token
 
