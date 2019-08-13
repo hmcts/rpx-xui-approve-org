@@ -39,24 +39,28 @@ export class AppUtils {
   static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
     const organisationModel: OrganisationVM[] = [];
     obj.forEach((apiOrg) => {
-      const organisation = new OrganisationVM();
-      organisation.name = apiOrg.name;
-      organisation.adminEmail = apiOrg.superUser.email;
-      organisation.pbaNumber = apiOrg.paymentAccount;
-      organisation.organisationId = apiOrg.organisationIdentifier;
-      organisation.view = 'View';
-      organisation.status = apiOrg.status;
-      organisation.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
-      organisation.dxNumber = apiOrg.contactInformation[0].dxAddress;
-      organisation.addressLine1 = apiOrg.contactInformation[0].addressLine1;
-      organisation.addressLine2 = apiOrg.contactInformation[0].addressLine2;
-      organisation.townCity = apiOrg.contactInformation[0].townCity;
-      organisation.county = apiOrg.contactInformation[0].county;
-      organisation.sraId = apiOrg.sraId;
-      organisationModel.push(organisation);
+      organisationModel.push(this.mapOrganisation(apiOrg));
     });
 
     return organisationModel;
+  }
+
+  static mapOrganisation(apiOrg: Organisation): OrganisationVM {
+    const organisationVm = new OrganisationVM();
+    organisationVm.name = apiOrg.name;
+    organisationVm.adminEmail = apiOrg.superUser.email;
+    organisationVm.pbaNumber = apiOrg.paymentAccount;
+    organisationVm.organisationId = apiOrg.organisationIdentifier;
+    organisationVm.view = 'View';
+    organisationVm.status = apiOrg.status;
+    organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
+    organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
+    organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
+    organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
+    organisationVm.townCity = apiOrg.contactInformation[0].townCity;
+    organisationVm.county = apiOrg.contactInformation[0].county;
+    organisationVm.sraId = apiOrg.sraId;
+    return organisationVm;
   }
 
   static mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
