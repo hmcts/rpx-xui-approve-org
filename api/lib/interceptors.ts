@@ -1,9 +1,9 @@
 import * as exceptionFormatter from 'exception-formatter'
 import * as stringify from 'json-stringify-safe'
-import config from './config'
 import * as errorStack from '../lib/errorStack'
-import { shorten, valueOrNull } from '../lib/util'
+import { getTrackRequestObj, shorten, valueOrNull } from '../lib/util'
 import { client } from './appInsights'
+import config from './config'
 import * as log4jui from './log4jui'
 
 const exceptionOptions = {
@@ -50,15 +50,8 @@ export function errorInterceptor(error) {
     const url = shorten(error.config.url, config.maxLogLine)
 
     // application insights logging
-    logger.trackRequest({
-        duration: error.duration,
-        name: `Service ${error.config.method.toUpperCase()} call`,
-        resultCode: error.status,
-        success: true,
-        url: error.config.url,
-    })
+    logger.trackRequest(getTrackRequestObj(error))
 
-    const status = valueOrNull(error, 'response.status') ? error.response.status : Error(error).message
     let data = valueOrNull(error, 'response.data.details')
     if (!data) {
         data = valueOrNull(error, 'response.status') ? JSON.stringify(error.response.data, null, 2) : null
