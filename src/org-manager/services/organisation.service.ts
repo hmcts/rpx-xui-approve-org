@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, of, throwError, noop, pipe } from 'rxjs';
-import { Organisation, OrganisationVM } from '../models/organisation';
-import {SingleOrgSummary} from '../models/single-org-summary';
-import {SingleOrgSummaryMock} from '../mock/single-org-summary.mock';
-import { tap, catchError, map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Organisation } from '../models/organisation';
 import { environment } from '../../environments/environment';
 
 @Injectable()
@@ -19,8 +16,8 @@ export class OrganisationService {
     return organisations$;
   }
 
-  getSingleOrganisation(payload): Observable<SingleOrgSummary> {
-    return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
+  getSingleOrganisation(payload): Observable<Organisation> {
+    return this.http.get<Organisation>(this.singleOrgUrl + payload.id);
   }
 
 }
