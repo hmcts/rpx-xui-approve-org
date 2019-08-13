@@ -1,5 +1,5 @@
 import {Action} from '@ngrx/store';
-import {SingleOrgSummary} from '../../models/single-org-summary';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export const LOAD_SINGLE_ORG = '[Single Org] Load Single Org';
 export const LOAD_SINGLE_ORG_SUCCESS = '[Single Org] Load Single Org Success';
@@ -13,7 +13,7 @@ export class LoadSingleOrg {
 
 export class LoadSingleOrgSuccess  implements Action {
   readonly type = LOAD_SINGLE_ORG_SUCCESS;
-  constructor(public payload: SingleOrgSummary) {}
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class LoadSingleOrgFail implements Action {
