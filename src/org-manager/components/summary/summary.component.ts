@@ -14,7 +14,6 @@ import { Subscription } from 'rxjs';
 export class SummaryComponent implements OnInit, OnDestroy {
 
   @Input() data: OrganisationVM;
-  $pageSubscription: Subscription;
   $orgSubscription: Subscription;
   dxNumber: string;
   dxExchange: string;
@@ -28,9 +27,6 @@ export class SummaryComponent implements OnInit, OnDestroy {
       .subscribe();
   }
   ngOnDestroy(): void {
-    if (this.$pageSubscription) {
-      this.$pageSubscription.unsubscribe();
-    }
     if (this.$orgSubscription) {
       this.$orgSubscription.unsubscribe();
     }
