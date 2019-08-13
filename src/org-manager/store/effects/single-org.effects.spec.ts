@@ -43,28 +43,6 @@ describe('Single organisation Effects', () => {
     effects = TestBed.get(SingleOrgEffects);
 
   });
-  describe('loadSingleOrg$', () => {
-    it('should return a collection from loadSingleOrg$ - LoadSingleOrgSuccess', () => {
-      const payload: SingleOrgSummary = {
-        status: 'Active',
-        effective_date: '22/10/2022',
-        dx_exchange: '',
-        name: 'Speak Limited',
-        address: '72 Guild Street, London, SE23 6FH',
-        pbaNumber: 'SU2DSCSA',
-        dxNumber: '12345567',
-        dxExchange: '7654321',
-        admin: 'Matt Speak'
-    };
-
-      OrganisationServiceMock.getSingleOrganisation.and.returnValue(of(payload));
-      const action = new LoadSingleOrg({});
-      const completion = new LoadSingleOrgSuccess(payload[0]);
-      actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
-      expect(effects.loadSingleOrg$).toBeObservable(expected);
-    });
-  });
 
   describe('loadSingleOrg$ error', () => {
     it('should return LoadSingleOrgFail', () => {
