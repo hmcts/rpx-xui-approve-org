@@ -1,5 +1,6 @@
 import * as fromSingleOrg from './single-org.actions';
 import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
+import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 
 describe('Single organisation actions', () => {
   describe('LoadSingleOrganisation actions GROUP', () => {
@@ -18,16 +19,20 @@ describe('Single organisation actions', () => {
     // Success
     describe('LoadSingleOrganisationSuccess', () => {
         it('should create an action', () => {
-          const payload: SingleOrgSummary = {
-             pbaNumber: 'SU2DSCSA',
+          const payload: OrganisationVM = {
+             pbaNumber: ['SU2DSCSA'],
              status: 'ACTIVE',
-             effective_date: '22/10/2022',
-             dx_exchange: '7654321',
              name: 'Speake Limited',
-             address: '72 Guild Street, London, SE23 6FH',
-             dxNumber: '12345567',
-             dxExchange: '7654321',
+             addressLine1: '72 Guild Street, London, SE23 6FH',
+             addressLine2: '',
+             townCity: '',
+             county: '',
+             dxNumber: ['12345567'],
              admin: 'Matt Speake',
+             adminEmail: 'Matt@ape.com',
+             view: '',
+             sraId: '',
+             organisationId: '1234567'
            };
           const action = new fromSingleOrg.LoadSingleOrgSuccess(payload);
           expect({ ...action }).toEqual({
