@@ -6,16 +6,19 @@ import { http } from '../lib/http'
 const logger = log4jui.getLogger('return')
 
 /**
- *
- * @param req
- * @param res - The response object from PRD is different based on the request object.
+ * Handle Get Organisation Route
+ * 
+ * The response object from PRD is different based on the request object.
  * In case of more than 1 organisation then we get {organisations: [{org1}, {org2}]}
  * In case of just 1 org then we get {org1}
+ * 
+ * @param req
+ * @param res - {organisations: [{org1}, {org2}]} OR {org1}
  * @param next
  */
 async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-        const organisationsUri = getOrganisationUri(req)
+        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId)
         const response = await http.get(organisationsUri)
         logger.info('Organisations response' + response.data)
         if (response.data.organisations) {
@@ -40,14 +43,14 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
     }
 }
 
-function getOrganisationUri(request: express.Request): string {
+function getOrganisationUri(status, organisationId): string {
     let url = `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations`
 
-    if (request.query.status) {
-        url = `${url}?status=${request.query.status}`
+    if (status) {
+        url = `${url}?status=${status}`
     }
-    if (request.query.organisationId) {
-        url = `${url}?id=${request.query.organisationId}`
+    if (organisationId) {
+        url = `${url}?id=${organisationId}`
     }
     console.log('url is ' + url)
     return url
