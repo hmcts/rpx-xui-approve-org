@@ -6,14 +6,14 @@ import * as ejs from 'ejs'
 import * as session from 'express-session'
 import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
-
+import * as fs from "fs"
 import * as https from 'https'
 
 import { appInsights } from './lib/appInsights'
 import config from './lib/config'
 import { errorStack } from './lib/errorStack'
 import routes from './routes'
-import * as fs from "fs";
+
 
 const FileStore = sessionFileStore(session)
 
