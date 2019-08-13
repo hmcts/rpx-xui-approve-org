@@ -25,13 +25,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation))
-      .subscribe((data: OrganisationSummary) => {
-      if (data) {
-        this.data = data;
-        this.dxNumber = this.data.dxNumber ? this.data.dxNumber[0].dxNumber : [];
-        this.dxExchange = this.data.dxNumber ? this.data.dxNumber[0].dxNumber : [];
-      }
-    });
+      .subscribe();
   }
   ngOnDestroy(): void {
     if (this.$pageSubscription) {
