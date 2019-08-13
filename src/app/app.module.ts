@@ -61,9 +61,10 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     })
   ],
   providers: [
-    { provide: RouterStateSerializer, useClass: CustomSerializer }, AuthService,
+    { provide: RouterStateSerializer, useClass: CustomSerializer },
+    AuthService,
     { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
-    CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
+    CryptoWrapper, JwtDecodeWrapper, MonitoringService,
     {provide: ErrorHandler, useClass: DefaultErrorHandler}],
   bootstrap: [AppComponent]
 })
