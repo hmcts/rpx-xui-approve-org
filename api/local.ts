@@ -12,7 +12,6 @@ import * as sessionFileStore from 'session-file-store'
 import { appInsights } from './lib/appInsights'
 import { config } from './lib/config'
 import { errorStack } from './lib/errorStack'
-import openRoutes from './openRoutes'
 import routes from './routes'
 
 const FileStore = sessionFileStore(session)
@@ -60,7 +59,6 @@ app.get('/external/ping', (req, res) => {
   console.log('Pong')
   res.send('Pong')
 })
-app.use('/external', openRoutes)
 
 // Should not be required remove when ready.
 app.use(auth.attach)
