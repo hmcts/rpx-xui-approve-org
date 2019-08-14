@@ -61,15 +61,18 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
         },
     }
 
-    logger.info('Getting Token from auth code.')
+  /**
+   * TODO: config.protocol keeps getting set as http, when it needs to be https, investigate.
+   * Hard code https for now as config.protocol
+   */
+    let protocol = config.protocol
+    protocol = 'https'
 
-    return http.post(
-        `${config.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
-        config.protocol
-        }://${req.headers.host}${config.oauthCallbackUrl}`,
-        {},
-        options
-    )
+    logger.info('Getting Token from auth code.')
+    logger.info(protocol)
+    logger.info(`${config.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
+      protocol
+      }://${req.headers.host}${config.oauthCallbackUrl}`)
 }
 
 async function sessionChainCheck(req: EnhancedRequest, res: express.Response, accessToken: string) {
@@ -112,6 +115,7 @@ export function havePrdAdminRole(userData) {
 }
 
 export async function oauth(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
+    console.log('oauth hit')
     const response = await getTokenFromCode(req, res)
     const accessToken = response.data.access_token
 
