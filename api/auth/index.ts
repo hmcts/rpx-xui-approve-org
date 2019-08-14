@@ -73,6 +73,14 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
     logger.info(`${config.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
       protocol
       }://${req.headers.host}${config.oauthCallbackUrl}`)
+
+    return http.post(
+      `${config.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
+        protocol
+        }://${req.headers.host}${config.oauthCallbackUrl}`,
+      {},
+      options
+    )
 }
 
 async function sessionChainCheck(req: EnhancedRequest, res: express.Response, accessToken: string) {
