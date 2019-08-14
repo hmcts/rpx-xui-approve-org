@@ -10,6 +10,7 @@ export default {
         emAnnoApi: 'https://em-anno-aat.service.core-compute-aat.internal',
         emNpaApi: 'https://em-npa-aat.service.core-compute-aat.internal',
         cohCorApi: 'https://coh-cor-aat.service.core-compute-aat.internal',
+        rdProfessionalApi: 'https://rd-professional-api-ithc.service.core-compute-ithc.internal',
     },
     health: {
         ccdDataApi: 'http://localhost:3004/health',
@@ -22,6 +23,7 @@ export default {
         emAnnoApi: 'https://em-anno-aat.service.core-compute-aat.internal/health',
         emNpaApi: 'https://em-npa-aat.service.core-compute-aat.internal/health',
         cohCorApi: 'https://coh-cor-aat.service.core-compute-aat.internal/health',
+        rdProfessionalApi: 'https://rd-professional-api-ithc.service.core-compute-ithc.internal/health',
     },
     useProxy: true,
     protocol: 'http',
