@@ -8,6 +8,8 @@ import * as log4js from 'log4js'
 import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
+import * as fs from "fs"
+import * as https from 'https'
 import { appInsights } from './lib/appInsights'
 import config from './lib/config'
 import { errorStack } from './lib/errorStack'
@@ -65,6 +67,21 @@ app.use('/*', (req, res) => {
         res,
     })
     console.timeEnd(`GET: ${req.originalUrl}`)
+})
+
+const httpsPort = 3001
+
+const getSslCredentials = () => {
+  return {
+    key: fs.readFileSync('../ssl/server.key'),
+    cert: fs.readFileSync('../ssl/server.crt'),
+  }
+}
+
+const httpsServer = https.createServer(getSslCredentials(), app)
+
+httpsServer.listen(process.env.PORT || 3000, () => {
+  console.log(`Https Server started on port ${httpsPort}`)
 })
 
 app.listen(process.env.PORT || 3000)
