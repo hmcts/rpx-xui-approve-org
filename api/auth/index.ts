@@ -63,7 +63,9 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
 
     /**
      * TODO: config.protocol keeps getting set as http, when it needs to be https, investigate.
-     * Hard code https for now as config.protocol
+     * Hard code https for now as config.protocol.
+     *
+     * Repush to test helm.
      */
     let protocol = config.protocol
     protocol = 'https'
