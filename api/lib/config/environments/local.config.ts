@@ -5,7 +5,7 @@ export default {
     idamWeb: 'https://idam-web-public.ithc.platform.hmcts.net',
     idamApi: 'https://idam-api.ithc.platform.hmcts.net',
     idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
-    s2s: 'http://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal',
+    s2s: 'https://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal',
     rdProfessionalApi: 'https://rd-professional-api-ithc.service.core-compute-ithc.internal',
   },
   health: {
