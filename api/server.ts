@@ -84,7 +84,7 @@ const httpsServer = https.createServer(getSslCredentials(), app)
  */
 const httpsPort = 3001
 
-httpsServer.listen(process.env.PORT || 3000, () => {
+httpsServer.listen(httpsPort, () => {
   console.log(`Https Server started on port ${httpsPort}`)
 })
 
