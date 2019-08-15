@@ -5,15 +5,27 @@ import { http } from '../lib/http'
 
 const logger = log4jui.getLogger('return')
 
+/**
+ * Handle Get Organisation Route
+ * 
+ * The response object from PRD is different based on the request object.
+ * In case of more than 1 organisation then we get {organisations: [{org1}, {org2}]}
+ * In case of just 1 org then we get {org1}
+ * 
+ * @param req
+ * @param res - {organisations: [{org1}, {org2}]} OR {org1}
+ * @param next
+ */
 async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-        const organisationsUri = req.query.status ?
-        `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations?status=${req.query.status}`
-         : `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations`
-        console.log(organisationsUri)
+        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId)
         const response = await http.get(organisationsUri)
-        res.send(response.data.organisations)
-        logger.info('Organisations response' + response)
+        logger.info('Organisations response' + response.data)
+        if (response.data.organisations) {
+            res.send(response.data.organisations)
+        } else {
+            res.send(response.data)
+        }
     } catch (error) {
         logger.error('Organisations error ' + error)
         if (error.message) {
@@ -29,6 +41,19 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
             message: 'handleGetOrganisationsRoute error' }
         res.status(500).send(errReport)
     }
+}
+
+function getOrganisationUri(status, organisationId): string {
+    let url = `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations`
+
+    if (status) {
+        url = `${url}?status=${status}`
+    }
+    if (organisationId) {
+        url = `${url}?id=${organisationId}`
+    }
+    console.log('url is ' + url)
+    return url
 }
 
 async function handlePutOrganisationRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
