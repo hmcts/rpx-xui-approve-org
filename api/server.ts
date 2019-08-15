@@ -94,7 +94,7 @@ const httpsServer = https.createServer(getSslCredentials(), app)
 /**
  * Non-secure http content
  */
-httpServer.listen(httpPort, () => {
+httpServer.listen(process.env.PORT || httpPort, () => {
   console.log(`Http Server started on port ${httpPort}`)
 })
 
