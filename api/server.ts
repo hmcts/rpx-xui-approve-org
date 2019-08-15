@@ -8,7 +8,6 @@ import * as log4js from 'log4js'
 import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import * as fs from "fs"
 import * as https from 'https'
 import { appInsights } from './lib/appInsights'
 import config from './lib/config'
@@ -71,10 +70,13 @@ app.use('/*', (req, res) => {
 
 const httpsPort = 3001
 
+/**
+ * Removing file system to check if this deploys using Helm.
+ */
 const getSslCredentials = () => {
   return {
-    key: fs.readFileSync('../ssl/server.key'),
-    cert: fs.readFileSync('../ssl/server.crt'),
+    key: '', //fs.readFileSync('../ssl/server.key'),
+    cert: '', //fs.readFileSync('../ssl/server.crt'),
   }
 }
 
