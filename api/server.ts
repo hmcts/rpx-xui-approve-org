@@ -68,4 +68,13 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
+const getSslCredentials = () => {
+  return {
+    key: '',
+    cert: '',
+  }
+}
+
+const httpsServer = https.createServer(getSslCredentials(), app)
+
 app.listen(process.env.PORT || 3000)
