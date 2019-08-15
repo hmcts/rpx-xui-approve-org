@@ -4,7 +4,6 @@ import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as fs from 'fs'
 import * as http from 'http'
-import * as https from 'https'
 import * as session from 'express-session'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as log4js from 'log4js'
@@ -146,7 +145,7 @@ const getSslCredentials = () => {
 const httpServer = http.createServer(app)
 // This is using https and not http
 
-const httpsServer = https.createServer(getSslCredentials(), app)
+const httpsServer = http.createServer(app)
 
 /**
  * Non-secure http content
