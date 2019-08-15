@@ -77,4 +77,15 @@ const getSslCredentials = () => {
 
 const httpsServer = https.createServer(getSslCredentials(), app)
 
-app.listen(process.env.PORT || 3000)
+/**
+ * Adding this in to check if this code is the issue with the build.
+ *
+ * @type {number}
+ */
+const httpsPort = 3001
+
+httpsServer.listen(process.env.PORT || 3000, () => {
+  console.log(`Https Server started on port ${httpsPort}`)
+})
+
+// app.listen(process.env.PORT || 3000)
