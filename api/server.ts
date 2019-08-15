@@ -7,7 +7,7 @@ import * as session from 'express-session'
 import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
 import * as fs from "fs"
-import * as https from 'https'
+import * as http from 'http'
 
 import { appInsights } from './lib/appInsights'
 import config from './lib/config'
@@ -78,7 +78,7 @@ const getSslCredentials = () => {
   }
 }
 
-const httpsServer = https.createServer(getSslCredentials(), app)
+const httpsServer = http.createServer(app)
 
 /**
  * Secure https content should be served over SSL, hence port 443.
