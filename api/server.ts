@@ -13,12 +13,17 @@ import { appInsights } from './lib/appInsights'
 import config from './lib/config'
 import { errorStack } from './lib/errorStack'
 import routes from './routes'
+import * as http from "http";
 
 
 const FileStore = sessionFileStore(session)
 
 const app = express()
+const httpApplication = express()
 
+const httpPort = 3000
+
+//TODO: Change to port 443, but make sure it all still works locally after change.
 const httpsPort = 3001
 
 app.use(
@@ -78,7 +83,20 @@ const getSslCredentials = () => {
   }
 }
 
+httpApplication.get('/health', (req, res) => {
+  res.status(200)
+  res.send('Alive. Check is carried out by build process to make sure health is available on http port 3000.')
+})
+
+const httpServer = http.createServer(httpApplication)
 const httpsServer = https.createServer(getSslCredentials(), app)
+
+/**
+ * Non-secure http content
+ */
+httpServer.listen(httpPort, () => {
+  console.log(`Http Server started on port ${httpPort}`)
+})
 
 /**
  * Secure https content should be served over SSL, hence port 443.
@@ -88,7 +106,7 @@ const httpsServer = https.createServer(getSslCredentials(), app)
  *
  * TODO: What port is the node service running on the box?
  */
-httpsServer.listen(process.env.PORT || 3000, () => {
+httpsServer.listen(httpsPort, () => {
   console.log(`Https Server started on port ${httpsPort}`)
 })
 

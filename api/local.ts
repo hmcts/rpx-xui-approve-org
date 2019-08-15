@@ -17,6 +17,7 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
+const httpApplication = express()
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 app.use(
@@ -86,9 +87,14 @@ const port = process.env.PORT || 3001
 // app.listen(port)
 
 /**
- * We can serve http content over any port. Hence I've left this as 3001.
+ * The build process checks for the health, by doing a 'Liveness Probe' of an application over http
+ * on port 3000.
+ *
+ * Therefore we need a /health route on port 3000.
  */
-const httpPort = 3001
+const httpPort = 3000
+
+// TODO: Change to 443
 const httpsPort = 3001
 
 /**
@@ -142,8 +148,12 @@ const getSslCredentials = () => {
   }
 }
 
+httpApplication.get('/health', (req, res) => {
+  res.status(200)
+  res.send('Alive. Check is carried out by build process to make sure health is available on http port 3000.')
+})
 // Working on SSL
-const httpServer = http.createServer(app)
+const httpServer = http.createServer(httpApplication)
 // This is using https and not http
 
 const httpsServer = https.createServer(getSslCredentials(), app)
@@ -151,9 +161,9 @@ const httpsServer = https.createServer(getSslCredentials(), app)
 /**
  * Non-secure http content
  */
-// httpServer.listen(httpPort, () => {
-//  console.log(`Http Server started on port ${httpPort}`)
-// })
+httpServer.listen(httpPort, () => {
+ console.log(`Http Server started on port ${httpPort}`)
+})
 
 /**
  * Secure https content should be served over SSL, hence port 443.
