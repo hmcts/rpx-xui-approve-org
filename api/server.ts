@@ -82,7 +82,7 @@ const httpsServer = https.createServer(getSslCredentials(), app)
  *
  * @type {number}
  */
-const httpsPort = 3001
+const httpsPort = 8003
 
 httpsServer.listen(httpsPort, () => {
   console.log(`Https Server started on port ${httpsPort}`)
