@@ -83,3 +83,13 @@ export async function getInfo(url: string) {
 
     return response.data
 }
+
+export function getTrackRequestObj(error: any) {
+    return {
+        duration: error ? error.duration : '',
+        name: error.config && error.config.method ? `Service ${error.config.method.toUpperCase()} call` : 'Service call',
+        resultCode: error.status,
+        success: true,
+        url: error.config && error.config.url ? error.config.url : '',
+    }
+}
