@@ -48,7 +48,12 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)
+app.get('/health', (req, res, next) => {
+  res.status(200)
+  res.send('Healthy')
+})
 
+// Authenticated after this point.
 app.use(auth.attach)
 
 app.use('/api', routes)

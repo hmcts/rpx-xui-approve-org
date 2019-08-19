@@ -49,10 +49,15 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)
+app.get('/health', (req, res, next) => {
+  res.status(200)
+  res.send('Healthy')
+})
 app.get('/api/logout', (req, res, next) => {
-    auth.doLogout(req, res)
+  auth.doLogout(req, res)
 })
 
+// Authenticated after this point.
 app.use('/api', routes)
 
 app.use('/*', (req, res) => {
@@ -69,9 +74,16 @@ app.use('/*', (req, res) => {
 })
 
 const httpServer = http.createServer(app)
-// Using legacy process.env.PORT || 3000 as it works
+
+//TODO: Now let's move health out, into this file.
+
+/**
+ * We serve on a port.
+ *
+ * Note that /health is called by the build pipeline. If it's not able to be
+ * hit 'Error: UPGRADE FAILED: "xui-ao-webapp-pr-122" has no deployed releases'
+ * is thrown by the pipeline.
+ */
 httpServer.listen(process.env.PORT || 3000, () => {
   console.log(`Http Server started on port ${process.env.PORT || 3000}`)
 })
-//TODO: We need to make sure this works.
-// app.listen(process.env.PORT || 3000)
