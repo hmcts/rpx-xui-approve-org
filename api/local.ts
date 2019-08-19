@@ -3,6 +3,7 @@ import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as http from 'http'
+import * as https from 'https'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as log4js from 'log4js'
 import * as sessionFileStore from 'session-file-store'
@@ -59,13 +60,25 @@ app.use(auth.attach)
 app.use('/api', routes)
 
 const port = process.env.PORT || 3001
+const httpsPort = 3001
+
+const getSslCredentials = () => {
+  return {
+    key: '',
+    cert: '',
+  }
+}
 
 const httpServer = http.createServer(app)
+const httpsServer = https.createServer(getSslCredentials(), app)
 
 httpServer.listen(port, () => {
  console.log(`Http Server started on port ${port}`)
 })
-// app.listen(port)
+
+httpsServer.listen(httpsPort, () => {
+  console.log(`Https Server started on port ${httpsPort}`)
+})
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
     config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY

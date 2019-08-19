@@ -5,6 +5,7 @@ import * as ejs from 'ejs'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as http from 'http'
+import * as https from 'https'
 import * as log4js from 'log4js'
 import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
@@ -73,9 +74,21 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
-const httpServer = http.createServer(app)
+const getSslCredentials = () => {
+  return {
+    key: '',
+    cert: '',
+  }
+}
 
-//TODO: Now let's move health out, into this file.
+const httpServer = http.createServer(app)
+const httpsServer = https.createServer(getSslCredentials(), app)
+
+const httpsPort = 443
+httpsServer.listen(httpsPort, () => {
+  console.log(`Https Server started on port ${httpsPort}`)
+})
+// TODO: Let's get https in this file.
 
 /**
  * We serve on a port.
