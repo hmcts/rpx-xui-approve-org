@@ -16,7 +16,9 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+const unsecureApp = express()
+
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 app.use(
     session({
@@ -49,7 +51,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)
-app.get('/health', (req, res, next) => {
+unsecureApp.get('/health', (req, res, next) => {
   res.status(200)
   res.send('Healthy')
 })
@@ -60,7 +62,7 @@ app.use(auth.attach)
 app.use('/api', routes)
 
 const port = process.env.PORT || 3001
-const httpsPort = 3001
+const httpsPort = 443
 
 const getSslCredentials = () => {
   return {
@@ -69,7 +71,7 @@ const getSslCredentials = () => {
   }
 }
 
-const httpServer = http.createServer(app)
+const httpServer = http.createServer(unsecureApp)
 const httpsServer = https.createServer(getSslCredentials(), app)
 
 httpServer.listen(port, () => {
