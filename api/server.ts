@@ -18,6 +18,7 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
+const unsecureApp = express()
 
 app.use(
     session({
@@ -50,7 +51,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)
-app.get('/health', (req, res, next) => {
+unsecureApp.get('/health', (req, res, next) => {
   res.status(200)
   res.send('Healthy')
 })
@@ -81,14 +82,14 @@ const getSslCredentials = () => {
   }
 }
 
-const httpServer = http.createServer(app)
+const httpServer = http.createServer(unsecureApp)
 const httpsServer = https.createServer(getSslCredentials(), app)
 
 const httpsPort = 443
 httpsServer.listen(httpsPort, () => {
   console.log(`Https Server started on port ${httpsPort}`)
 })
-// TODO: Let's get https in this file.
+// TODO: httpServer should not serve the secure routes.
 
 /**
  * We serve on a port.
