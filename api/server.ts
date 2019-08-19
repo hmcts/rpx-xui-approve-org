@@ -67,4 +67,5 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
+//TODO: We need to make sure this works.
 app.listen(process.env.PORT || 3000)
