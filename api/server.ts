@@ -4,6 +4,7 @@ import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as http from 'http'
 import * as log4js from 'log4js'
 import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
@@ -67,5 +68,10 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
+const httpServer = http.createServer(app)
+// Using legacy process.env.PORT || 3000 as it works
+httpServer.listen(process.env.PORT || 3000, () => {
+  console.log(`Http Server started on port ${process.env.PORT || 3000}`)
+})
 //TODO: We need to make sure this works.
-app.listen(process.env.PORT || 3000)
+// app.listen(process.env.PORT || 3000)

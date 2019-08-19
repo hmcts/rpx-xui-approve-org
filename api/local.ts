@@ -2,6 +2,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as http from 'http'
 import * as globalTunnel from 'global-tunnel-ng'
 import * as log4js from 'log4js'
 import * as sessionFileStore from 'session-file-store'
@@ -53,7 +54,13 @@ app.use(auth.attach)
 app.use('/api', routes)
 
 const port = process.env.PORT || 3001
-app.listen(port)
+
+const httpServer = http.createServer(app)
+
+httpServer.listen(port, () => {
+ console.log(`Http Server started on port ${port}`)
+})
+// app.listen(port)
 
 if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
     config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY
