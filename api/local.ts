@@ -12,6 +12,7 @@ import { appInsights } from './lib/appInsights'
 import { config } from './lib/config'
 import { errorStack } from './lib/errorStack'
 import routes from './routes'
+import * as fs from 'fs'
 
 const FileStore = sessionFileStore(session)
 
@@ -66,8 +67,8 @@ const httpsPort = 443
 
 const getSslCredentials = () => {
   return {
-    key: '',
-    cert: '',
+    key: fs.readFileSync('../ssl/server.key'),
+    cert: fs.readFileSync('../ssl/server.crt'),
   }
 }
 

@@ -52,10 +52,15 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)
+
+/**
+ * /health over http is required for the pipeline build the 'Liveness Probe' check.
+ */
 unsecureApp.get('/health', (req, res, next) => {
   res.status(200)
   res.send('Healthy')
 })
+
 app.get('/api/logout', (req, res, next) => {
   auth.doLogout(req, res)
 })
