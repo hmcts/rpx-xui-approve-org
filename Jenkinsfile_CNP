@@ -96,28 +96,6 @@ withPipeline(type, product, component) {
 
     }
 
-    after('smoketest:demo') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
-            reportFiles          : 'index.html',
-            reportName           : 'DEMO Smoke Test'
-        ])
-    }
-
-    after('smoketest:preview') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/smoke_tests/functional/",
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Smoke Test'
-        ])
-    }
-
     after('functionalTest:preview') {
         publishHTML([
             allowMissing         : true,
@@ -126,18 +104,6 @@ withPipeline(type, product, component) {
             reportDir            : "reports/tests/functional/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
-        ])
-    }
-
-
-    after('smoketest:aat') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/smoke_tests/functional/",
-            reportFiles          : 'index.html',
-            reportName           : 'AAT Smoke Test'
         ])
     }
 
