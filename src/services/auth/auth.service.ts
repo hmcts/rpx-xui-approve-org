@@ -40,6 +40,7 @@ export class AuthService {
   }
 
   generateLoginUrl() {
+    // So this should be coming in on 443
     const base = config.urls.idam.idamLoginUrl;
     const clientId = config.urls.idam.idamClientID;
     const callback = `${this.apiBaseUrl}/${config.urls.idam.oauthCallbackUrl}`;

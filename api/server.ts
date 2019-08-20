@@ -23,7 +23,7 @@ const unsecureApp = express()
 app.use(
     session({
         cookie: {
-            httpOnly: true,
+            httpOnly: false,
             maxAge: 1800000,
             secure: config.secureCookie !== false,
         },

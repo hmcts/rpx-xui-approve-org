@@ -5,7 +5,7 @@
         "logLevel": "debug"
     },
     "/oauth2/callback": {
-        "target": "http://localhost:3001",
+        "target": "https://localhost:443",
         "secure": false,
         "logLevel": "debug"
     }
