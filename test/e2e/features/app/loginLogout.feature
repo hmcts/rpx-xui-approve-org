@@ -1,4 +1,4 @@
-@smoke
+@ignore
 Feature: Login
 
   Background:
