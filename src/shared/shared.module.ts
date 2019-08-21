@@ -5,6 +5,8 @@ import {IdentityBarComponent} from './components/identity-bar/identity-bar.compo
 import { PhaseBannerComponent } from './components/phase-banner/phase-banner.component';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
+import { LoggerService } from 'src/app/services/logger.service';
+import { DefaultErrorHandler } from './errorHandler/defaultErrorHandler';
 
 @NgModule( {
   imports: [
@@ -23,7 +25,9 @@ import { HealthCheckService } from './services/health-check.service';
   ],
   providers: [
     HealthCheckGuard,
-    HealthCheckService
+    HealthCheckService,
+    LoggerService,
+    DefaultErrorHandler
   ]
 })
 export class SharedModule {
