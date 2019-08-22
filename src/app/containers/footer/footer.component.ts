@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { Helper, Navigation } from './footer.model';
 import { AppConstants } from '../../app.constants';
-
+/**
+ * Footer Component
+ * Dumb Component
+ */
 @Component({
     selector: 'app-footer',
     templateUrl: './footer.component.html',
