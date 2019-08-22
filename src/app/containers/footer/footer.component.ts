@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Helper, Navigation } from './footer.model';
 import { AppConstants } from '../../app.constants';
-
+// to remove
 @Component({
     selector: 'app-footer',
     templateUrl: './footer.component.html',
