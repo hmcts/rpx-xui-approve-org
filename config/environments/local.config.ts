@@ -1,4 +1,3 @@
-// TODO remove this file and use the one in the environment dir
 export default {
     services: {
         idam_web: 'https://idam.preprod.ccidam.reform.hmcts.net',
