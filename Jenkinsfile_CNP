@@ -27,9 +27,6 @@ def secrets = [
     secret('test-password', 'TEST_PASSWORD'),
     secret('APPINSIGHTS-INSTRUMENTATIONKEY-AO', 'APPINSIGHTS_INSTRUMENTATIONKEY')
 
-  ],
-  's2s-${env}'      : [
-    secret('microservicekey-xui-webapp', 'S2S_SECRET')
   ]
 ]
 
