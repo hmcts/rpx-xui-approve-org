@@ -19,12 +19,18 @@ def component = "ao-webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 
-List<LinkedHashMap<String, Object>> secrets = [
+def secrets = [
+  'xui-ao-webapp-${env}': [
     secret('xui-s2s-token', 'S2S_SECRET'),
     secret('xui-oauth2-token', 'IDAM_SECRET'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
     secret('APPINSIGHTS-INSTRUMENTATIONKEY-AO', 'APPINSIGHTS_INSTRUMENTATIONKEY')
+
+  ],
+  's2s-${env}'      : [
+    secret('microservicekey-your-app', 'S2S_SECRET')
+  ]
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
@@ -39,7 +45,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    setVaultName(vault)
     enableDockerBuild()
     installCharts()
 
