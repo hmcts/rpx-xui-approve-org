@@ -23,6 +23,7 @@ export const environment = {
         idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
         idamClientID: 'xuiaowebapp',
         idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+        idamWeb: 'https://hmcts-access.service.gov.uk',
         indexUrl: '/',
         oauthCallbackUrl: 'oauth2/callback'
       }
