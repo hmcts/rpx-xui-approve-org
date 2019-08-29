@@ -20,6 +20,7 @@ module "app" {
     asp_rg = "${local.app_full_name}-${var.env}"
     asp_name = "${var.shared_product_name}-${var.env}"
 
+
     app_settings = {
         # logging vars & healthcheck
         REFORM_SERVICE_NAME = "${local.app_full_name}"
@@ -31,7 +32,7 @@ module "app" {
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
         PUI_ENV = "${var.env}"
-        DUMMY_VAR = "FALSE"
+        DUMMY_VAR = "bla"
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
