@@ -121,7 +121,7 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
         if (isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN');
             // tslint:disable-next-line
-            res.redirect(`${config.services.idamLoginUrl}/login?response_type=code&client_id=${config.idamClient}&redirect_uri=${config.protocol}://${req.headers.host}/oauth2/callback&scope=openid profile roles manage-user create-user`)
+            res.redirect(`${config.services.idamLoginUrl}/login?response_type=code&client_id=${config.idamClient}&redirect_uri=${config.protocol}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
             return false
         }
         // set browser cookie
