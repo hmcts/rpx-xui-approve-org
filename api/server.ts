@@ -68,3 +68,7 @@ app.use('/*', (req, res) => {
 })
 
 app.listen(process.env.PORT || 3000)
+
+if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
+    config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY
+}
