@@ -1,4 +1,6 @@
 nodejs:
+  image: ${IMAGE_NAME}
+  ingressHost: ${SERVICE_FQDN}
   environment:
     IDAM_URL: https://idam-api.ithc.platform.hmcts.net
     S2S_URL: http://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal

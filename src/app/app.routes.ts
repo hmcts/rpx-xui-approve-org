@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/services/auth/auth.guard';
+import { PrivacyPolicyComponent, CookiePolicyComponent, TermsAndConditionsComponent } from './containers';
 
 export const ROUTES: Routes = [
   {
@@ -11,6 +12,18 @@ export const ROUTES: Routes = [
     path: 'organisation',
     canActivate: [AuthGuard],
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
+  },
+  {
+    path: 'cookies',
+    component: CookiePolicyComponent
+  },
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicyComponent
+  },
+  {
+    path: 'terms-and-conditions',
+    component: TermsAndConditionsComponent
   },
   {
     path: '**',
