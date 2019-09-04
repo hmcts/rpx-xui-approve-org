@@ -15,10 +15,11 @@ module "app" {
     capacity     = "${var.capacity}"
     is_frontend = "${!(var.env == "preview" || var.env == "spreview") ? 1 : 0}"
     additional_host_name = "${var.additional_host_name}"
-    https_only="false"
+    https_only="true"
     common_tags  = "${var.common_tags}"
     asp_rg = "${local.app_full_name}-${var.env}"
     asp_name = "${var.shared_product_name}-${var.env}"
+
 
     app_settings = {
         # logging vars & healthcheck
@@ -31,7 +32,8 @@ module "app" {
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
         PUI_ENV = "${var.env}"
-        DUMMY_VAR = "TRUE"
+        DUMMY_VAR = "bla"
+        NEW_DUMMY_VAR = "ASREQUESTED"
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
