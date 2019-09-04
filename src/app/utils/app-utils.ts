@@ -1,4 +1,5 @@
 import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { AppConstants } from '../app.constants';
 
 /**
  * Contains static stateless utility methods for the App
@@ -90,5 +91,25 @@ export class AppUtils {
     });
 
     return organisations;
+  }
+  static getEnvironment(url: string): string {
+    const regex = 'pr-|localhost|aat|demo|ithc|perf-test';
+    const matched = url.match(regex);
+
+    if (matched && matched[0]) {
+        switch (matched[0]) {
+          case AppConstants.ENVIRONMENT_NAMES.aat:
+          case AppConstants.ENVIRONMENT_NAMES.localhost:
+          case AppConstants.ENVIRONMENT_NAMES.pr:
+             return AppConstants.ENVIRONMENT_NAMES.aat;
+          case AppConstants.ENVIRONMENT_NAMES.demo:
+              return AppConstants.ENVIRONMENT_NAMES.demo;
+          case AppConstants.ENVIRONMENT_NAMES.ithc:
+              return AppConstants.ENVIRONMENT_NAMES.ithc;
+          case AppConstants.ENVIRONMENT_NAMES.perfTest:
+              return AppConstants.ENVIRONMENT_NAMES.perfTest;
+        }
+      }
+    return AppConstants.ENVIRONMENT_NAMES.prod;
   }
 }
