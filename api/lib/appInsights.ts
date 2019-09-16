@@ -8,6 +8,7 @@ export let client
 const environment = process.env.JUI_ENV || 'local'
 
 if (environment !== 'local') {
+    console.log('config.appInsightsInstrumentationKey is ' + config.appInsightsInstrumentationKey)
     applicationinsights
         .setup(config.appInsightsInstrumentationKey)
         .setAutoDependencyCorrelation(true)
