@@ -5,7 +5,7 @@ import config from './config'
 export let client
 
 // shouldnt do this check here but this is a high level dep
-const environment = process.env.JUI_ENV || 'local'
+const environment = process.env.PUI_ENV || 'local'
 
 if (environment !== 'local') {
     console.log('config.appInsightsInstrumentationKey is ' + config.appInsightsInstrumentationKey)
