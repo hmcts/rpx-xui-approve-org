@@ -1,8 +1,7 @@
 import * as log4js from 'log4js'
-import config from './config'
 import * as errorStack from '../lib/errorStack'
 import { client } from './appInsights'
-
+import config from './config'
 
 let logger = null
 
@@ -56,8 +55,14 @@ function debug(...messages: any[]) {
 }
 
 function trackRequest(obj: any) {
+    console.log('client is ' + client)
     if (client) {
-        client.trackRequest(obj)
+        try {
+            client.trackRequest(obj)
+        } catch (error) {
+            console.error('trackRequest failed with error ' + error)
+            error(error)
+        }
     }
 }
 
@@ -78,4 +83,3 @@ function error(...messages: any[]) {
         errorStack.push([category, fullMessage])
     }
 }
-
