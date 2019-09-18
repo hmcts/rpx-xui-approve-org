@@ -5,7 +5,7 @@ export default {
     idamWeb: 'https://hmcts-access.service.gov.uk',
     idamApi: 'https://idam-api.platform.hmcts.net',
     idamLoginUrl: 'https://hmcts-access.service.gov.uk',
-    s2s: 'https://rpe-service-auth-provider-prod.service.core-compute-prod.internal',
+    s2s: 'http://rpe-service-auth-provider-prod.service.core-compute-prod.internal',
     rdProfessionalApi: 'https://rd-professional-api-prod.service.core-compute-prod.internal',
   },
   health: {
@@ -14,7 +14,7 @@ export default {
     idamWeb: 'https://hmcts-access.service.gov.uk/health',
     idamApi: 'https://idam-api.platform.hmcts.net/health',
     idamLoginUrl: 'https://hmcts-access.service.gov.uk/health',
-    s2s: 'https://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health',
+    s2s: 'http://rpe-service-auth-provider-prod.service.core-compute-prod.internal/health',
     rdProfessionalApi: 'https://rd-professional-api-prod.service.core-compute-prod.internal/health',
   },
     useProxy: false,
