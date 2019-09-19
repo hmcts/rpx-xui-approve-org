@@ -3,7 +3,11 @@ export default {
     services: {
         idam_web: 'https://idam.preprod.ccidam.reform.hmcts.net',
         idam_api: 'https://preprod-idamapi.reform.hmcts.net:3511',
+<<<<<<< HEAD
         s2s: 'http://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal'
+=======
+        s2s: 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
+>>>>>>> 76b169b1241c325a8dff1c91ce70f01849fef2ee
     },
     proxy: {
         host: '172.16.0.7',
