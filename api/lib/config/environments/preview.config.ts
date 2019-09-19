@@ -5,16 +5,34 @@ export default {
         idamWeb: 'https://idam-web-public.preview.platform.hmcts.net',
         idamApi: 'https://idam-api.preview.platform.hmcts.net',
         idamLoginUrl: 'https://idam-web-public.preview.platform.hmcts.net',
+<<<<<<< HEAD
         s2s: 'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal',
         rdProfessionalApi: 'https://rd-professional-api-aat.service.core-compute-aat.internal',
+=======
+        s2s: 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal',
+        draftStoreApi: 'https://draft-store-service-aat.service.core-compute-aat.internal',
+        dmStoreApi: 'https://dm-store-aat.service.core-compute-aat.internal',
+        emAnnoApi: 'https://em-anno-aat.service.core-compute-aat.internal',
+        emNpaApi: 'https://em-npa-aat.service.core-compute-aat.internal',
+        cohCorApi: 'https://coh-cor-aat.service.core-compute-aat.internal',
+>>>>>>> 76b169b1241c325a8dff1c91ce70f01849fef2ee
     },
     health: {
         ccdDataApi: 'https://ccd-data-store-api-aat.service.core-compute-aat.internal/health',
         ccdDefApi: 'https://ccd-definition-store-api-aat.service.core-compute-aat.internal/health',
         idamWeb: 'https://idam-web-public.preview.platform.hmcts.net/health',
         idamApi: 'https://idam-api.preview.platform.hmcts.net/health',
+<<<<<<< HEAD
         s2s: 'https://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health',
         rdProfessionalApi: 'https://rd-professional-api-aat.service.core-compute-aat.internal/health',
+=======
+        s2s: 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health',
+        draftStoreApi: 'https://draft-store-service-aat.service.core-compute-aat.internal/health',
+        dmStoreApi: 'https://dm-store-aat.service.core-compute-aat.internal/health',
+        emAnnoApi: 'https://em-anno-aat.service.core-compute-aat.internal/health',
+        emNpaApi: 'https://em-npa-aat.service.core-compute-aat.internal/health',
+        cohCorApi: 'https://coh-cor-aat.service.core-compute-aat.internal/health',
+>>>>>>> 76b169b1241c325a8dff1c91ce70f01849fef2ee
     },
     useProxy: false,
     secureCookie: false,
