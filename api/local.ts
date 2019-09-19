@@ -41,6 +41,7 @@ if (config.proxy) {
 }
 
 app.use(errorStack)
+console.log('use AppInsights ' + appInsights)
 app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
