@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/services/auth/auth.guard';
-import { PrivacyPolicyComponent, CookiePolicyComponent, TermsAndConditionsComponent } from './containers';
+import { PrivacyPolicyComponent, CookiePolicyComponent, TermsAndConditionsComponent, AccessibilityComponent } from './components';
 
 export const ROUTES: Routes = [
   {
@@ -24,6 +24,10 @@ export const ROUTES: Routes = [
   {
     path: 'terms-and-conditions',
     component: TermsAndConditionsComponent
+  },
+  {
+    path: 'accessibility',
+    component: AccessibilityComponent
   },
   {
     path: '**',
