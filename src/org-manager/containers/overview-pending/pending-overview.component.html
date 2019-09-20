@@ -1,5 +1,5 @@
 <div class="govuk-width-container">
-  <a [routerLink]="" class="govuk-back-link" (click)="onGoBack()">Back</a>
+  <app-back-link [store]="store"></app-back-link>
   <lib-gov-uk-error-summary *ngIf="(pendingOrgs$ | async)?.errorMessage" [errorMessages]="[{message: (pendingOrgs$ | async)?.errorMessage}]"></lib-gov-uk-error-summary>
   <main class="govuk-main-wrapper" id="main-content" role="main">
       <h1 class="govuk-heading-xl">Organisations pending activation</h1>
