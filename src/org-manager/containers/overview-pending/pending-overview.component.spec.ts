@@ -8,7 +8,7 @@ import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReviewedOrganisationMockCollection, ReviewedOrganisationFromGovTableMockCollection } from '../../mock/pending-organisation.mock';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 describe('OverviewComponent', () => {
     let component: OverviewPendingComponent;
@@ -23,6 +23,7 @@ describe('OverviewComponent', () => {
         TestBed.configureTestingModule({
             imports: [
                 RouterTestingModule,
+                ReactiveFormsModule,
                 StoreModule.forRoot({
                     ...fromRoot.reducers,
                     feature: combineReducers(fromOrganisationPendingStore.reducers),
