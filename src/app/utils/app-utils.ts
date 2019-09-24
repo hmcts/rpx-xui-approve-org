@@ -110,6 +110,6 @@ export class AppUtils {
               return AppConstants.ENVIRONMENT_NAMES.perfTest;
         }
       }
-    return AppConstants.ENVIRONMENT_NAMES.localhost;
+    return AppConstants.ENVIRONMENT_NAMES.prod;
   }
 }
