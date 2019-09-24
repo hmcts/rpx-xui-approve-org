@@ -19,7 +19,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
   dxExchange: string;
 
   constructor(
-    private store: Store<fromOrganisationPendingStore.OrganisationState>
+    public store: Store<fromOrganisationPendingStore.OrganisationState>
   ) {}
 
   ngOnInit(): void {
