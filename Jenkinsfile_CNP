@@ -51,7 +51,7 @@ withPipeline(type, product, component) {
  before('buildinfra:prod') {
  currentBuild.result = 'SUCCESS'
  currentBuild.description = "SUCCESS"
- error 'XUI  projects are not authorised to be in production environments yet.'
+ error 'ExUI Approve Org production deployment is currently disabled.'
  }
 
     after('build') {
