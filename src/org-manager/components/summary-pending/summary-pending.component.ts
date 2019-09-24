@@ -28,7 +28,7 @@ export class SummaryPendingComponent implements OnInit, OnDestroy {
       subscribe((data: OrganisationSummary[]) => {
         this.data = data.filter(x => x.organisationId === routeParams.id)[0];
         this.dxNumber = this.data.dxNumber[0].dxNumber;
-        this.dxExchange = this.data.dxNumber[0].dxNumber;
+        this.dxExchange = this.data.dxNumber[0].dxExchange;
       });
     });
   }
