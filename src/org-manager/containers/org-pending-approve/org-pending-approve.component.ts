@@ -14,7 +14,7 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
     $reviewedOrganisationsSubscription: Subscription;
     serverResponseMessages$: Observable<any>;
     constructor(
-        private store: Store<fromOrganisationPendingStore.OrganisationState>
+        public store: Store<fromOrganisationPendingStore.OrganisationState>
     ) { }
 
     ngOnInit() {

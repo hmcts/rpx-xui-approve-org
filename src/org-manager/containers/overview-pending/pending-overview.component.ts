@@ -27,7 +27,7 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
   inputForm: FormGroup;
   valueChange = new EventEmitter();
 
-  constructor(private store: Store<fromOrganisationPendingStore.OrganisationState>,
+  constructor(public store: Store<fromOrganisationPendingStore.OrganisationState>,
               private fb: FormBuilder) {}
 
   ngOnInit(): void {
