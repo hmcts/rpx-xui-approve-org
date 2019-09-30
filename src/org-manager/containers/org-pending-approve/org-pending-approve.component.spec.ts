@@ -7,6 +7,7 @@ import * as fromRootActions from '../../../app/store/actions';
 import { StoreModule, Store, combineReducers } from '@ngrx/store';
 import { of } from 'rxjs';
 import { ReviewedOrganisationMockCollection, ActiveOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { BackLinkComponent } from 'src/org-manager/components';
 
 describe('OrgPendingApproveComponent', () => {
     let component: OrgPendingApproveComponent;
@@ -27,6 +28,7 @@ describe('OrgPendingApproveComponent', () => {
                 }),
             ],
             declarations: [
+                BackLinkComponent,
                 OrgPendingApproveComponent
             ]
         }).compileComponents();
