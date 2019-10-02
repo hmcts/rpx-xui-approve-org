@@ -54,3 +54,8 @@ variable "capacity" {
 variable "additional_host_name" {
     default = "null"
 }
+
+variable "aat_idam_web" {
+  type = "string"
+  default = "null"
+}
