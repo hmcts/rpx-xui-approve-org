@@ -2,44 +2,51 @@
   <app-back-link [store]="store"></app-back-link>
   <lib-gov-uk-error-summary *ngIf="(pendingOrgs$ | async)?.errorMessage" [errorMessages]="[{message: (pendingOrgs$ | async)?.errorMessage}]"></lib-gov-uk-error-summary>
   <main class="govuk-main-wrapper" id="main-content" role="main">
-      <h1 class="govuk-heading-xl">Organisations pending activation</h1>
-      <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisations</button>
-      <table class="govuk-table" *ngIf="(pendingOrganisations$)?.length > 0">
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col"></th> 
-            <th class="govuk-table__header" scope="col">Reference</th> 
-            <th class="govuk-table__header" scope="col">Address</th> 
-            <th class="govuk-table__header" scope="col">Administrator</th> 
-            <th class="govuk-table__header" scope="col">Status</th>
-            <th class="govuk-table__header" scope="col"></th>
-          </tr>
-          <tr class="govuk-table__row" *ngFor="let org of pendingOrganisations$">
-            <td class="govuk-table__cell">
-                <lib-gov-checkbox [input]="org" (valueChange)='processCheckboxInput($event)'></lib-gov-checkbox>
-            </td>
-            <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td> 
-            <td class="govuk-table__cell">
-              {{org.addressLine1}}<br>
-              <div *ngIf='org.addressLine2'>
-                  {{org.addressLine2}}<br>
-              </div>
-              {{org.townCity}}<br>
-              <div *ngIf='org.county'>
-                {{org.county}}<br>
-              </div>
-            </td>
-            <td class="govuk-table__cell">{{org.admin}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span></td>
-            <td class="govuk-table__cell"><span class="hmcts-badge">{{org.status}}</span>
-            </td>
-            <td class="govuk-table__cell">
-                <a class="govuk-link" [routerLink]="org.routerLink">View</a>
-            </td>
-          </tr>
-        </thead>
-      </table>
-      <ng-template #loading>
-          <div>Loading...</div>
-      </ng-template>
+    <h1 class="govuk-heading-xl">Organisations pending activation</h1>
+    <form [formGroup]="inputForm">
+        <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisation</button>
+        <table class="govuk-table" *ngIf="(pendingOrganisations$)?.length > 0">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th class="govuk-table__header" scope="col"></th> 
+              <th class="govuk-table__header" scope="col"></th> 
+              <th class="govuk-table__header" scope="col">Reference</th> 
+              <th class="govuk-table__header" scope="col">Address</th> 
+              <th class="govuk-table__header" scope="col">Administrator</th> 
+              <th class="govuk-table__header" scope="col">Status</th>
+              <th class="govuk-table__header" scope="col"></th>
+            </tr>
+            <tr class="govuk-table__row govuk-radios" *ngFor="let org of pendingOrganisations$">
+              <td class="govuk-table__cell">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" [id]="org.organisationId" type="radio" name="pendingOrgInputRadio" formControlName="pendingOrgInputRadio" [value]="org">
+                    <label class="govuk-label govuk-radios__label" for="pendingOrgInputRadio">
+                    </label>
+                </div>
+              </td>
+              <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td> 
+              <td class="govuk-table__cell">
+                {{org.addressLine1}}<br>
+                <div *ngIf='org.addressLine2'>
+                    {{org.addressLine2}}<br>
+                </div>
+                {{org.townCity}}<br>
+                <div *ngIf='org.county'>
+                  {{org.county}}<br>
+                </div>
+              </td>
+              <td class="govuk-table__cell">{{org.admin}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span></td>
+              <td class="govuk-table__cell"><span class="hmcts-badge">{{org.status}}</span>
+              </td>
+              <td class="govuk-table__cell">
+                  <a class="govuk-link" [routerLink]="org.routerLink">View</a>
+              </td>
+            </tr>
+          </thead>
+        </table>
+        <ng-template #loading>
+            <div>Loading...</div>
+        </ng-template>
+    </form>
   </main>
 </div>
