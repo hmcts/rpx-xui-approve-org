@@ -8,7 +8,7 @@ import * as fromRoot from '../../../app/store';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
 import { OrganisationState } from 'src/org-manager/store/reducers/org-pending.reducer';
-import { FormArray, FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EventEmitter } from 'events';
 
 @Component({
@@ -32,7 +32,7 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.inputForm = this.fb.group({
-      checkedInput: this.fb.array([])
+      pendingOrgInputRadio: ['', Validators.required]
     });
     this.approveOrganisations = [];
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
@@ -51,20 +51,11 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromOrganisationPendingStore.ClearErrors());
   }
 
-  processCheckboxInput(checkboxInputArray) {
-    const formArray = this.inputForm.controls.checkedInput as FormArray;
-    if (checkboxInputArray.isChecked.isChecked) {
-      formArray.push(new FormControl(checkboxInputArray.input));
-    } else {
-      const index = formArray.controls.findIndex(x => x.value === checkboxInputArray.input);
-      formArray.removeAt(index);
-    }
-    this.approveOrganisations = formArray.value.map(element => element.input);
-    this.store.dispatch(new fromOrganisationPendingStore.AddReviewOrganisations(this.approveOrganisations));
-  }
-
   activateOrganisations() {
-    if (this.approveOrganisations.length > 0) {
+    if (this.inputForm.controls.pendingOrgInputRadio.value) {
+      this.approveOrganisations = [];
+      this.approveOrganisations.push(this.inputForm.controls.pendingOrgInputRadio.value);
+      this.store.dispatch(new fromOrganisationPendingStore.AddReviewOrganisations(this.approveOrganisations));
       this.store.dispatch(new fromRoot.Go({ path: ['pending-organisations/approve'] }));
     } else {
       this.store.dispatch(new fromOrganisationPendingStore.DisplayErrorMessageOrganisations('Select an organisation'));
