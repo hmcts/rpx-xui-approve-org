@@ -2,14 +2,14 @@ import axios, { AxiosResponse } from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
 import * as log4js from 'log4js'
-import { config } from '../lib/config'
+import {config, getEnvConfig} from '../lib/config'
 import { http } from '../lib/http'
 import { EnhancedRequest } from '../lib/models'
 import { asyncReturnOrError } from '../lib/util'
 import { getUserDetails } from '../services/idam'
 import { serviceTokenGenerator } from './serviceToken'
 
-const secret = process.env.IDAM_SECRET
+const secret = getEnvConfig<string>('IDAM_SECRET', 'string')
 const logger = log4js.getLogger('auth')
 logger.level = config.logging
 

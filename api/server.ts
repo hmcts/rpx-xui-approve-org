@@ -24,12 +24,12 @@ app.use(
             maxAge: 1800000,
             secure: config.secureCookie !== false,
         },
-        name: "xuiaowebapp",
+        name: 'xuiaowebapp',
         resave: true,
         saveUninitialized: true,
         secret: config.sessionSecret,
         store: new FileStore({
-            path: process.env.NOW ? "/tmp/sessions" : ".sessions",
+            path: config.now ? '/tmp/sessions' : '.sessions',
         })
     })
 )
@@ -67,8 +67,4 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
-app.listen(process.env.PORT || 3000)
-
-if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
-    config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY
-}
+app.listen(config.port || 3000)
