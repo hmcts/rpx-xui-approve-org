@@ -2,11 +2,11 @@ import * as express from 'express'
 import { config } from '../lib/config'
 import * as log4jui from '../lib/log4jui'
 
-const logger = log4jui.getLogger('service-token')
+const logger = log4jui.getLogger('monitoring-tools')
 
 async function handleInstrumentationKeyRoute(req, res) {
     try {
-        console.log('config.appInsightsInstrumentationKey is ' + config.appInsightsInstrumentationKey)
+        logger.info('config.appInsightsInstrumentationKey is ' + config.appInsightsInstrumentationKey)
         res.send({key: config.appInsightsInstrumentationKey})
     } catch (error) {
         const errReport = JSON.stringify({
