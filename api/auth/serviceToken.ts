@@ -48,7 +48,6 @@ export async function serviceTokenGenerator() {
 }
 
 export default async (req, res, next) => {
-    const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
 
     const token = await asyncReturnOrError(generateToken(), 'Error getting s2s token', res, logger)
     if (token) {
