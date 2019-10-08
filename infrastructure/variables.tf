@@ -55,7 +55,76 @@ variable "additional_host_name" {
     default = "null"
 }
 
-variable "aat_idam_web" {
+variable "session_secret" {
+  type = string
+  default = "secretSauce"
+}
+
+variable "node_tls_reject_unathorized" {
   type = "string"
-  default = "null"
+  default = "0"
+}
+variable "api_port" {
+  type = number
+  default = 3001
+}
+variable "api_now" {
+  type = bool
+  default = false
+}
+variable "idam_client" {
+  type = string
+  default = "xuiaowebapp"
+}
+variable "oauth_callback_url" {
+  type = string
+  default = "/oauth2/callback"
+}
+variable "max_log_line" {
+  type = number
+  default = 80
+}
+variable "exception_options_max_lines" {
+  type = number
+  default = 1
+}
+variable "index_url" {
+  type = string
+  default = "/"
+}
+variable "logging" {
+  type = string
+  default = "debug"
+}
+variable "protocol" {
+  type = string
+  default = "https"
+}
+variable "secure_cookie" {
+  type = bool
+  default = false
+}
+variable "cookie_token" {
+  type = string
+  default = "__auth__"
+}
+variable "cookie_user_id" {
+  type = string
+  default = "__userid__"
+}
+variable "microservice" {
+  type = string
+  default = "xui_webapp"
+}
+variable "ccd_data_api_service" {}
+variable "ccd_definition_api_service" {}
+variable "idam_api_service" {}
+variable "idam_web_service" {}
+variable "rd_professional_api_service" {}
+variable "s2s_service" {}
+
+variable "proxy_host" {}
+variable "proxy_port" {
+  type = number
+  default = 0
 }
