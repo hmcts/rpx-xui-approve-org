@@ -1,6 +1,6 @@
 
 import { map } from 'p-iteration'
-import config from './config'
+import config from './environment.config'
 import * as log4jui from './log4jui'
 import { some } from './util'
 
@@ -77,7 +77,7 @@ export async function process(req, res, mapping, payload, templates, store) {
     if (variables) {
         // get current store
         let stored = await store.get(`decisions_${jurisdiction}_${caseTypeId}_${caseId}`)
-        
+
         if (!(stored + '').length) {
             stored = {}
         }
@@ -144,7 +144,7 @@ export async function process(req, res, mapping, payload, templates, store) {
             meta,
             newRoute,
         }
-        
+
         req.session.save(() => res.send(JSON.stringify(response)))
     }
 }

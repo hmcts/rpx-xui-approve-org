@@ -1,4 +1,4 @@
-import config from '../lib/config'
+import config from '../lib/environment.config'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 

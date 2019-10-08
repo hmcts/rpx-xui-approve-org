@@ -7,7 +7,7 @@ import * as log4js from 'log4js'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
-import { config } from './lib/config'
+import { environmentConfig } from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
 import { exists } from './lib/util'
 import routes from './routes'
@@ -16,30 +16,30 @@ const FileStore = sessionFileStore(session)
 
 const app = express()
 const logger = log4js.getLogger('server')
-logger.level = config.logging ? config.logging : 'OFF'
+logger.level = environmentConfig.logging ? environmentConfig.logging : 'OFF'
 
 app.use(
     session({
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: config.secureCookie !== false,
+            secure: environmentConfig.secureCookie !== false,
         },
         name: 'jui-webapp',
         resave: true,
         saveUninitialized: true,
-        secret: config.sessionSecret,
+        secret: environmentConfig.sessionSecret,
         store: new FileStore({
-            path: config.now ? '/tmp/sessions' : '.sessions',
+            path: environmentConfig.now ? '/tmp/sessions' : '.sessions',
         }),
     })
 )
 
-if (exists(config.proxy, 'host') && exists(config.proxy, 'port')) {
-  logger.info('configuring proxy tunnel: ', config.proxy)
+if (exists(environmentConfig.proxy, 'host') && exists(environmentConfig.proxy, 'port')) {
+  logger.info('configuring proxy tunnel: ', environmentConfig.proxy)
   globalTunnel.initialize({
-      host: config.proxy.host,
-      port: config.proxy.port,
+      host: environmentConfig.proxy.host,
+      port: environmentConfig.proxy.port,
   })
 }
 
@@ -55,7 +55,7 @@ app.use(auth.attach)
 
 app.use('/api', routes)
 
-const port = config.port || 3001
+const port = environmentConfig.port || 3001
 app.listen(port)
 
 logger.info(`Local server up at ${port}`)

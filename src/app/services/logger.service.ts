@@ -2,7 +2,7 @@ import { MonitoringService } from './monitoring.service';
 import { NGXLogger } from 'ngx-logger';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
-import config from '../../../api/lib/config';
+import config from '../../../api/lib/environment.config';
 import { CryptoWrapper } from './cryptoWrapper';
 import { JwtDecodeWrapper } from './jwtDecodeWrapper';
 
