@@ -1,6 +1,7 @@
 import * as getenv from 'getenv'
 import * as process from 'process'
 import {EnvironmentConfig, EnvironmentConfigProxy, EnvironmentConfigServices} from '../../interfaces/environment.config'
+import {client} from '../appInsights'
 
 getenv.disableErrors()
 
@@ -8,7 +9,12 @@ export function getEnvConfig<T = string>(envConfig: string, envType: any = 'stri
   if ((process as any).browser) {
     return fallback
   }
-  return getenv[envType](envConfig, fallback)
+  try {
+    return getenv[envType](envConfig, fallback)
+  } catch (e) {
+    client.trackException(e)
+    throw e
+  }
 }
 
 export const configEnv = process ? getEnvConfig<string>('PUI_ENV', 'string', 'local') : 'local'
