@@ -1,9 +1,9 @@
 variable "product" {
-  type = "string"
+  type = string
 }
 
 variable "component" {
-  type = "string"
+  type = string
 }
 
 variable "team_name" {
@@ -15,28 +15,24 @@ variable "app_language" {
 }
 
 variable "location" {
-  type = "string"
+  type = string
   default = "UK South"
 }
 
-variable "env" {
-  type = "string"
-}
+variable "env" {}
 
 variable "shared_product_name" {
     default = "rpx"
 }
 
-variable "subscription" {
-  type = "string"
-}
+variable "subscription" {}
 
 variable "ilbIp"{}
 
 variable "tenant_id" {}
 
 variable "jenkins_AAD_objectId" {
-  type                        = "string"
+  type                        = string
   description                 = "(Required) The Azure AD object ID of a user, service principal or security group in the Azure Active Directory tenant for the vault. The object ID must be unique for the list of access policies."
 }
 
@@ -61,8 +57,8 @@ variable "session_secret" {
 }
 
 variable "node_tls_reject_unathorized" {
-  type = "string"
-  default = "0"
+  type = number
+  default = 0
 }
 variable "api_port" {
   type = number
