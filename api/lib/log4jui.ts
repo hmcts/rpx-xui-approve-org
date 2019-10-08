@@ -1,7 +1,7 @@
 import * as log4js from 'log4js'
 import * as errorStack from '../lib/errorStack'
 import { client } from './appInsights'
-import config from './config'
+import config from './environment.config'
 
 let logger = null
 

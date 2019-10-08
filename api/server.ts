@@ -9,7 +9,7 @@ import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
-import config from './lib/config'
+import config from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
 import routes from './routes'
 
