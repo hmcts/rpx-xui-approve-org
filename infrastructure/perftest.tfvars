@@ -1,0 +1,6 @@
+ccd_data_api_service = ""
+ccd_definition_api_service = ""
+idam_api_service = ""
+idam_web_service = ""
+rd_professional_api_service = ""
+s2s_service = ""
