@@ -1,11 +1,11 @@
 import * as globalTunnel from 'global-tunnel-ng'
-import { config } from './config'
+import { environmentConfig } from './environment.config'
 
 export const tunnel = globalTunnel
 
 export function init() {
     globalTunnel.initialize({
-        host: config.proxy.host,
-        port: config.proxy.port,
+        host: environmentConfig.proxy.host,
+        port: environmentConfig.proxy.port,
     })
 }

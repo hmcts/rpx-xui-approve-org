@@ -1,7 +1,6 @@
 import * as getenv from 'getenv'
 import * as process from 'process'
-import {EnvironmentConfig, EnvironmentConfigProxy, EnvironmentConfigServices} from '../../interfaces/environment.config'
-import {client} from '../appInsights'
+import {EnvironmentConfig, EnvironmentConfigProxy, EnvironmentConfigServices} from '../interfaces/environment.config'
 
 getenv.disableErrors()
 
@@ -9,12 +8,7 @@ export function getEnvConfig<T = string>(envConfig: string, envType: any = 'stri
   if ((process as any).browser) {
     return fallback
   }
-  try {
-    return getenv[envType](envConfig, fallback)
-  } catch (e) {
-    client.trackException(e)
-    throw e
-  }
+  return getenv[envType](envConfig, fallback)
 }
 
 export const configEnv = process ? getEnvConfig<string>('PUI_ENV', 'string', 'local') : 'local'
@@ -29,7 +23,7 @@ if (!isLocal()) {
   getenv.enableErrors()
 }
 
-export const config: EnvironmentConfig = {
+export const environmentConfig: EnvironmentConfig = {
   appInsightsInstrumentationKey: getEnvConfig<string>('APPINSIGHTS_INSTRUMENTATIONKEY', 'string', 'AAAAAAAAAAAAAAAA'),
   cookies: {
     token: getEnvConfig<string>('COOKIE_TOKEN', 'string', '__auth__'),
@@ -61,8 +55,8 @@ export const config: EnvironmentConfig = {
   sessionSecret: getEnvConfig<string>('SESSION_SECRET', 'string', 'secretSauce'),
 }
 
-Object.keys(config.services).forEach( service => {
-  config.health[service] = `${config.services[service]}/health`
+Object.keys(environmentConfig.services).forEach(service => {
+  environmentConfig.health[service] = `${environmentConfig.services[service]}/health`
 })
 
 const proxyConfig: EnvironmentConfigProxy = {
@@ -71,14 +65,14 @@ const proxyConfig: EnvironmentConfigProxy = {
 }
 
 if (proxyConfig.host !== '' && proxyConfig.port !== 0) {
-  config.proxy = {
+  environmentConfig.proxy = {
     host: proxyConfig.host,
     port: proxyConfig.port,
   }
 }
 
-export default { ...config }
+export default { ...environmentConfig }
 
 if (isLocal()) {
-  config.protocol = 'http'
+  environmentConfig.protocol = 'http'
 }

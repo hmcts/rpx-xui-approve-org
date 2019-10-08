@@ -1,5 +1,5 @@
 import * as log4js from 'log4js'
-import config from './config'
+import config from './environment.config'
 import { Store } from './store'
 import { isObject } from './util'
 

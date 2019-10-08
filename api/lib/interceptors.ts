@@ -3,7 +3,7 @@ import * as stringify from 'json-stringify-safe'
 import * as errorStack from '../lib/errorStack'
 import { getTrackRequestObj, shorten, valueOrNull } from '../lib/util'
 import { client } from './appInsights'
-import config from './config'
+import config from './environment.config'
 import * as log4jui from './log4jui'
 
 const exceptionOptions = {
