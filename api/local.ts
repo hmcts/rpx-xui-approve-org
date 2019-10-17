@@ -14,7 +14,7 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1'
 
 app.use(
     session({

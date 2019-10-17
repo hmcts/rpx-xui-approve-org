@@ -6,7 +6,7 @@ import organisationRouter from './organisation'
 import stateRouter from './states'
 
 const router = express.Router({ mergeParams: true })
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1'
 router.use(auth.attach)
 
 router.use('/logout', auth.logout)
