@@ -5,7 +5,7 @@ export default {
     idamWeb: 'https://idam-web-public.perftest.platform.hmcts.net',
     idamApi: 'https://idam-api.perftest.platform.hmcts.net',
     s2s: 'http://rpe-service-auth-provider-perftest.service.core-compute-perftest.internal',
-    rdProfessionalApi: 'https://rd-professional-api-perftest.service.core-compute-perftest.internal',
+    rdProfessionalApi: 'http://rd-professional-api-perftest.service.core-compute-perftest.internal',
   },
   health: {
     ccdDataApi: 'https://ccd-data-store-api-perftest.service.core-compute-perftest.internal/health',
@@ -13,7 +13,7 @@ export default {
     idamWeb: 'https://idam-web-public.perftest.platform.hmcts.net/health',
     idamApi: 'https://idam-api.perftest.platform.hmcts.net/health',
     s2s: 'http://rpe-service-auth-provider-perftest.service.core-compute-perftest.internal/health',
-    rdProfessionalApi: 'https://rd-professional-api-perftest.service.core-compute-perftest.internal/health',
+    rdProfessionalApi: 'http://rd-professional-api-perftest.service.core-compute-perftest.internal/health',
   },
     useProxy: false,
     secureCookie: false,
