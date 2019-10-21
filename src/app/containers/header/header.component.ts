@@ -1,77 +1,78 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../store';
 
+type NavItem= { text: string, href: string, active: boolean };
+type Navigations = { label: string, items: { text: string, href: string, emit?: string}[] };
+type ServiceName = { name: string, url: string };
+
 @Component({
-    selector: 'app-header',
-    templateUrl: './header.component.html',
-    styleUrls: ['./header.component.scss']
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
 
-    navItems: Array<{}>;
-    navigations;
-    serviceName;
-    @Output() navigate = new EventEmitter<string>();
+  public navItems: NavItem[];
+  public navigations: Navigations;
+  public serviceName: ServiceName;
+  @Output() public navigate = new EventEmitter<string>();
 
-    isUserLoggedIn$: Observable<boolean>;
+  // RM: This seems to be never set, look into removing this here and in template
+  public isUserLoggedIn$: Observable<boolean>;
 
-    constructor(public store: Store<fromRoot.State>) {}
+  constructor(public store: Store<fromRoot.State>) {}
 
+  ngOnInit(): void {
+    this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
+      if (rootState) {
+        this._updateNavItems(rootState.state.url);
+      }
+    });
 
-    ngOnInit(): void {
-        this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
-          if (rootState) {
-            this.updateNavItems(rootState.state.url);
-          }
-        });
+    this.navItems = [{
+      text: 'Organisation',
+      href: '/organisation',
+      active: true
+    }, {
+      text: 'Users',
+      href: '/users',
+      active: false
+    }, {
+      text: 'Fee Accounts',
+      href: '/fee-accounts',
+      active: false
+    }];
 
-        this.navItems = [{
-            text: 'Organisation',
-            href: '/organisation',
-            active: true
-        },
-        {
-            text: 'Users',
-            href: '/users',
-            active: false
-        },
-        {
-            text: 'Fee Accounts',
-            href: '/fee-accounts',
-            active: false
-        },
+    this.serviceName = {
+      name: 'Approve organisation',
+      url: '/'
+    };
 
-        ];
-        this.serviceName = {
-            name: 'Approve organisation',
-            url: '/'
-        };
-        this.navigations = {
-            label: 'Account navigation',
-            items: [{
-                text: 'Profile',
-                href: '/profile'
-            }, {
-                text: 'Sign out',
-                href: '/api/logout',
-                emit: 'sign-out'
-            }]
-        };
+    this.navigations = {
+      label: 'Account navigation',
+      items: [{
+        text: 'Profile',
+        href: '/profile'
+      }, {
+        text: 'Sign out',
+        href: '/api/logout',
+        emit: 'sign-out'
+      }]
+    };
+  }
 
-    }
+  public onNavigate(event: string) {
+    this.navigate.emit(event);
+  }
 
-  updateNavItems(url): void {
+  private _updateNavItems(url: string): void {
     this.navItems = this.navItems.map(item => {
       return {
         ...item,
         active: item['href'] === url
       };
     });
-  }
-
-  onNavigate(event) {
-    this.navigate.emit(event);
   }
 }
