@@ -93,7 +93,7 @@ export class AppUtils {
     return organisations;
   }
   static getEnvironment(url: string): string {
-    const regex = 'pr-|localhost|aat|demo|ithc|perf-test';
+    const regex = 'pr-|localhost|aat|demo|ithc|perftest';
     const matched = url.match(regex);
 
     if (matched && matched[0]) {
