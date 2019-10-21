@@ -1,15 +1,10 @@
-import { TestBed, async } from '@angular/core/testing';
-import { AppComponent } from './app.component';
-import { combineReducers, StoreModule, Store } from '@ngrx/store';
-import {Logout, reducers} from 'src/app/store';
-import { HeaderComponent } from '../header/header.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { cold } from 'jasmine-marbles';
-
-import { AppConstants } from '../../app.constants';
+import { async, TestBed } from '@angular/core/testing';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { Logout, reducers } from 'src/app/store';
 import * as fromRoot from '../../store';
-
-
+import { HeaderComponent } from '../header/header.component';
+import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   let store: Store<fromRoot.State>;

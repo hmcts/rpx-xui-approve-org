@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-
-import * as fromRoot from '../../store';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromActions from '../../store';
+import * as fromRoot from '../../store';
 
 @Component({
   selector: 'app-root',
@@ -12,16 +11,13 @@ import * as fromActions from '../../store';
 })
 export class AppComponent implements OnInit {
 
-  title$: Observable<string>;
-  identityBar$: Observable<string[]>;
-
+  public title$: Observable<string>;
 
   constructor(
     private store: Store<fromRoot.State>
   ) {}
 
   ngOnInit() {
-    // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
     this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
     this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
       if (rootState) {
@@ -30,7 +26,7 @@ export class AppComponent implements OnInit {
     });
   }
 
-  onNavigate(event): void {
+  public onNavigate(event: string): void {
     if (event === 'sign-out') {
       return this.store.dispatch(new fromActions.Logout());
     }
