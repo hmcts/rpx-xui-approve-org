@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -7,12 +8,15 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PrivacyPolicyComponent implements OnInit {
 
-    constructor(private route: ActivatedRoute) { }
+    constructor(
+        private _route: ActivatedRoute,
+        @Inject(DOCUMENT) private _document: Document
+    ) { }
 
     ngOnInit() {
-        this.route.fragment.subscribe(fragment => {
+        this._route.fragment.subscribe(fragment => {
             try {
-                document.querySelector('#' + fragment).scrollIntoView();
+                this._document && this._document.querySelector('#' + fragment).scrollIntoView();
             } catch (e) { }
         });
     }
