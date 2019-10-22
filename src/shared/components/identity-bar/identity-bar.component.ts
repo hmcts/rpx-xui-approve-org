@@ -8,7 +8,6 @@ import {Component, OnInit, Input} from '@angular/core';
 
 export class IdentityBarComponent {
 
-  @Input() data: any;
   constructor() {}
 
 }

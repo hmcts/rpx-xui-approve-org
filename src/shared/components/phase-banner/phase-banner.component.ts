@@ -4,12 +4,9 @@ import { Component, Input, OnInit } from '@angular/core';
   selector: 'app-phase-banner',
   templateUrl: './phase-banner.component.html'
 })
-export class PhaseBannerComponent implements OnInit {
-  @Input() type: string;
+export class PhaseBannerComponent {
+  @Input() public type: string;
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }
