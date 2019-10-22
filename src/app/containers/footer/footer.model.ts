@@ -7,6 +7,7 @@ export interface Helper {
 export interface NavigationItems {
     text: string;
     href: string;
+    target: string;
 }
 export interface Navigation {
     items: NavigationItems[];
