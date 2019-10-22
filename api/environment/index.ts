@@ -3,13 +3,10 @@ import { environmentConfig } from '../lib/environment.config'
 
 export const router = express.Router({ mergeParams: true })
 
-router.get('/environment.config.js', environmentRoute)
+router.get('/config', environmentRoute)
 
 async function environmentRoute(req, res) {
-  const str = `(function (window) {
-  window.__env = window.__env || ${JSON.stringify(environmentConfig)};
-}(this));`
-  res.status(200).send(str)
+  res.status(200).send(environmentConfig)
 }
 
 export default router
