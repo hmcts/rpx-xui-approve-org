@@ -103,7 +103,7 @@ describe('AppUtils', () => {
     url = AppUtils.getEnvironment(nav);
     expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.ithc);
 
-    nav = 'http://perf-test/something';
+    nav = 'http://perftest/something';
     url = AppUtils.getEnvironment(nav);
     expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.perftest);
   });

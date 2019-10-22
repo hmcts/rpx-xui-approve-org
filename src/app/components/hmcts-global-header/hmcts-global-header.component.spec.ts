@@ -41,7 +41,8 @@ describe('HmctsGlobalHeaderComponent', () => {
     };
 
     component.serviceName = {
-      name: 'some name'
+      name: 'some name',
+      url: '/'
     };
 
     fixture.detectChanges();
