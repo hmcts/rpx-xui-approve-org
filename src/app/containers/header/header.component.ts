@@ -1,11 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { Navigations, NavItem, ServiceName } from 'src/shared/types';
 import * as fromRoot from '../../store';
-
-type NavItem= { text: string, href: string, active: boolean };
-type Navigations = { label: string, items: { text: string, href: string, emit?: string}[] };
-type ServiceName = { name: string, url: string };
 
 @Component({
   selector: 'app-header',

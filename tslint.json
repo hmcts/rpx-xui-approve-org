@@ -69,6 +69,12 @@
     "use-life-cycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
-    "directive-class-suffix": true
+    "directive-class-suffix": true,
+    "variable-name": {
+      "options": [
+        "allow-leading-underscore",
+        "require-const-for-all-caps"
+      ]
+    }
   }
 }

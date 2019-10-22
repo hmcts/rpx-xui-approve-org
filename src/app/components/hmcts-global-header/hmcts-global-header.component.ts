@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import * as fromRoot from '../../store';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Store } from '@ngrx/store';
+import { NavigationItem, Navigations, ServiceName } from 'src/shared/types';
+import * as fromRoot from '../../store';
 
 @Component({
     selector: 'app-hmcts-global-header',
@@ -8,20 +9,27 @@ import { Store } from '@ngrx/store';
 })
 export class HmctsGlobalHeaderComponent {
 
-    @Input() set userLoggedIn(value) {
-        this.userValue = value;
+    @Input()
+    public set userLoggedIn(value: boolean) {
+        this._userLoggedIn = value;
+    }
+    public get userLoggedIn(): boolean {
+        return this._userLoggedIn;
     }
 
-    @Input() serviceName;
-    @Input() navigation;
+    @Input() serviceName: ServiceName;
+    @Input() navigation: Navigations;
     @Output() navigate = new EventEmitter<string>();
 
-    userValue: any;
+    private _userLoggedIn: boolean;
+
     constructor(public store: Store<fromRoot.State>) { }
 
-    onEmitEvent(index) {
+    public onEmitEvent(index: number): void {
         this.navigate.emit(this.navigation.items[index].emit);
     }
 
-
+    public shouldShowLogout(item: NavigationItem): boolean {
+        return this.userLoggedIn || (item.text === 'Sign out');
+    }
 }
