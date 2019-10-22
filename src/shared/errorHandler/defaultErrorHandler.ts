@@ -1,14 +1,13 @@
-import { ErrorHandler, Injectable} from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandler, Injectable } from '@angular/core';
 import { LoggerService } from 'src/app/services/logger.service';
 
 @Injectable()
 export class DefaultErrorHandler implements ErrorHandler {
   constructor(
-    private loggerService: LoggerService
+    private _loggerService: LoggerService
   ) { }
 
     handleError(error: Error) {
-        this.loggerService.error(error);
+        this._loggerService.error(error);
    }
 }
