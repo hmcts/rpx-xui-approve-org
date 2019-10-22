@@ -25,7 +25,7 @@ app.use(
             maxAge: 1800000,
             secure: environmentConfig.secureCookie !== false,
         },
-        name: 'jui-webapp',
+        name: 'xuiaowebapp',
         resave: true,
         saveUninitialized: true,
         secret: environmentConfig.sessionSecret,
@@ -50,8 +50,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)
-
-app.use(auth.attach)
 
 app.use('/api', routes)
 

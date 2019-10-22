@@ -23,8 +23,9 @@ if (!isLocal()) {
   getenv.enableErrors()
 }
 
-export const environmentConfig: EnvironmentConfig = {
-  appInsightsInstrumentationKey: getEnvConfig<string>('APPINSIGHTS_INSTRUMENTATIONKEY', 'string', 'AAAAAAAAAAAAAAAA'),
+const config: EnvironmentConfig = {
+  appInsightsInstrumentationKey: getEnvConfig<string>('APPINSIGHTS_INSTRUMENTATIONKEY', 'string', 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'),
+  configEnv,
   cookies: {
     token: getEnvConfig<string>('COOKIE_TOKEN', 'string', '__auth__'),
     userId: getEnvConfig<string>('COOKIE_USER_ID', 'string', '__userid__'),
@@ -55,8 +56,8 @@ export const environmentConfig: EnvironmentConfig = {
   sessionSecret: getEnvConfig<string>('SESSION_SECRET', 'string', 'secretSauce'),
 }
 
-Object.keys(environmentConfig.services).forEach(service => {
-  environmentConfig.health[service] = `${environmentConfig.services[service]}/health`
+Object.keys(config.services).forEach(service => {
+  config.health[service] = `${config.services[service]}/health`
 })
 
 const proxyConfig: EnvironmentConfigProxy = {
@@ -65,14 +66,15 @@ const proxyConfig: EnvironmentConfigProxy = {
 }
 
 if (proxyConfig.host !== '' && proxyConfig.port !== 0) {
-  environmentConfig.proxy = {
+  config.proxy = {
     host: proxyConfig.host,
     port: proxyConfig.port,
   }
 }
 
-export default { ...environmentConfig }
-
 if (isLocal()) {
-  environmentConfig.protocol = 'http'
+  config.protocol = 'http'
 }
+
+export const environmentConfig = { ...config }
+export default { ...config }
