@@ -23,6 +23,8 @@
       "gov-ui/*": [
         "dist/gov-ui/*"
       ]
-    }
+    },
+
+    "noImplicitAny": true
   }
 }
