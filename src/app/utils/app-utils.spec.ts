@@ -1,6 +1,6 @@
-import {AppUtils} from './app-utils';
-import { Organisation, OrganisationVM, OrganisationAddress } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationAddress, OrganisationVM } from 'src/org-manager/models/organisation';
 import { AppConstants } from '../app.constants';
+import { AppUtils } from './app-utils';
 
 describe('AppUtils', () => {
 

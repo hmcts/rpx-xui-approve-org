@@ -1,5 +1,5 @@
 import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
-import { AppConstants } from '../app.constants';
+import { AppConstants, EnvironmentNames } from '../app.constants';
 
 /**
  * Contains static stateless utility methods for the App
@@ -7,26 +7,23 @@ import { AppConstants } from '../app.constants';
  */
 export class AppUtils {
 
-  static setPageTitle(url): string {
+  public static setPageTitle(url: string): string {
     /**
      * it sets correct page titles
      */
     switch (url) {
-      case '/pending-organisations/organisation/': {
+      case '/pending-organisations/organisation/':
         return 'Pending organisation details - Approve organisation';
-      }
-      case '/pending-organisations/approve' : {
+      case '/pending-organisations/approve':
         return 'Check details - Approve organisations';
-      }
-      case '/pending-organisations/approve-success' : {
+      case '/pending-organisations/approve-success':
         return 'Confirmation - Approve organisations';
-      }
-      case '/pending-organisations': {
+      case '/pending-organisations':
         return 'Pending organisations - Approve organisations';
-      }
-      case '/organisations/organisation': {
+      case '/organisations/organisation':
         return 'Check details - Approve organisations';
-      }
+      default:
+        // do nothing
     }
     // need to use undex of becaue id the id that is passed on the end.
     if (url.indexOf('/organisations/organisation/') !== -1) {
@@ -37,7 +34,7 @@ export class AppUtils {
 
   }
 
-  static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
+  public static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
     const organisationModel: OrganisationVM[] = [];
     obj.forEach((apiOrg) => {
       organisationModel.push(this.mapOrganisation(apiOrg));
@@ -46,7 +43,7 @@ export class AppUtils {
     return organisationModel;
   }
 
-  static mapOrganisation(apiOrg: Organisation): OrganisationVM {
+  public static mapOrganisation(apiOrg: Organisation): OrganisationVM {
     const organisationVm = new OrganisationVM();
     organisationVm.name = apiOrg.name;
     organisationVm.adminEmail = apiOrg.superUser.email;
@@ -64,7 +61,7 @@ export class AppUtils {
     return organisationVm;
   }
 
-  static mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
+  public static mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
     const organisations: Organisation[] = [];
     obj.forEach((org) => {
       const organisation: Organisation = {
@@ -92,7 +89,7 @@ export class AppUtils {
 
     return organisations;
   }
-  static getEnvironment(url: string): string {
+  public static getEnvironment(url: string): EnvironmentNames {
     const regex = 'pr-|localhost|aat|demo|ithc|perftest';
     const matched = url.match(regex);
 
@@ -108,6 +105,8 @@ export class AppUtils {
               return AppConstants.ENVIRONMENT_NAMES.ithc;
           case AppConstants.ENVIRONMENT_NAMES.perftest:
               return AppConstants.ENVIRONMENT_NAMES.perftest;
+          default:
+              return 'localhost';
         }
       }
     return AppConstants.ENVIRONMENT_NAMES.prod;

@@ -17,9 +17,9 @@ export class HmctsGlobalHeaderComponent {
         return this._userLoggedIn;
     }
 
-    @Input() serviceName: ServiceName;
-    @Input() navigation: Navigations;
-    @Output() navigate = new EventEmitter<string>();
+    @Input() public serviceName: ServiceName;
+    @Input() public navigation: Navigations;
+    @Output() public navigate = new EventEmitter<string>();
 
     private _userLoggedIn: boolean;
 

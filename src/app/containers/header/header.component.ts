@@ -21,7 +21,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(public store: Store<fromRoot.State>) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
       if (rootState) {
         this._updateNavItems(rootState.state.url);

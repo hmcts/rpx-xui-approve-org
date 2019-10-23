@@ -12,12 +12,12 @@ interface CookieKeys {
 
 @Injectable()
 export class AuthService {
-  private _apiBaseUrl: string;
-  private _COOKIE_KEYS: CookieKeys;
+  private readonly _apiBaseUrl: string;
+  private readonly _COOKIE_KEYS: CookieKeys;
 
   constructor(
-    private _cookieService: CookieService,
-    private _jwtDecoder: JwtDecodeWrapper
+    private readonly _cookieService: CookieService,
+    private readonly _jwtDecoder: JwtDecodeWrapper
   ) {
     this._COOKIE_KEYS = {
       TOKEN: config.cookies.token,
@@ -27,7 +27,7 @@ export class AuthService {
     this._apiBaseUrl = `${window.location.protocol}//${window.location.hostname}`;
 
     if (window.location.port) { // don't add colon if there is no port
-      this._apiBaseUrl +=  ':' + window.location.port;
+      this._apiBaseUrl +=  `:${window.location.port}`;
     }
   }
 

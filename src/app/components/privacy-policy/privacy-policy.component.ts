@@ -9,14 +9,16 @@ import { ActivatedRoute } from '@angular/router';
 export class PrivacyPolicyComponent implements OnInit {
 
     constructor(
-        private _route: ActivatedRoute,
-        @Inject(DOCUMENT) private _document: Document
+        private readonly _route: ActivatedRoute,
+        @Inject(DOCUMENT) private readonly _document: Document
     ) { }
 
-    ngOnInit() {
+    public ngOnInit() {
         this._route.fragment.subscribe(fragment => {
             try {
-                this._document && this._document.querySelector('#' + fragment).scrollIntoView();
+                if (this._document) {
+                    this._document.querySelector(`#${fragment}`).scrollIntoView();
+                }
             } catch (e) { }
         });
     }

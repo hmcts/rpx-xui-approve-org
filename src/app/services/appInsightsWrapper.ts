@@ -98,9 +98,9 @@ export abstract class AbstractAppInsights implements Microsoft.ApplicationInsigh
 }
 
 export class AppInsightsWrapper implements AbstractAppInsights {
-  config: Microsoft.ApplicationInsights.IConfig;
-  context: Microsoft.ApplicationInsights.ITelemetryContext;
-  queue: (() => void)[];
+  public config: Microsoft.ApplicationInsights.IConfig;
+  public context: Microsoft.ApplicationInsights.ITelemetryContext;
+  public queue: (() => void)[];
 
   public startTrackPage(name?: string): void {
     AppInsights.startTrackPage(name);

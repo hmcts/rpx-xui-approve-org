@@ -50,9 +50,9 @@ export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
 export class MonitoringService implements IMonitoringService {
 
   constructor(
-    private http: HttpClient,
-    @Optional() private config?: MonitorConfig,
-    @Optional() private appInsights?: AbstractAppInsights
+    private readonly _http: HttpClient,
+    @Optional() private _config?: MonitorConfig,
+    @Optional() private readonly _appInsights?: AbstractAppInsights
   ) {
     if (!appInsights) {
       appInsights = AppInsights;
@@ -67,32 +67,32 @@ export class MonitoringService implements IMonitoringService {
       duration?: number
   ): void {
     this.send(() => {
-      this.appInsights.trackPageView(name, url, properties, measurements, duration);
+      this._appInsights.trackPageView(name, url, properties, measurements, duration);
     });
   }
 
   public logEvent(name: string, properties?: any, measurements?: any): void {
     this.send(() => {
-      this.appInsights.trackEvent(name, properties, measurements);
+      this._appInsights.trackEvent(name, properties, measurements);
     });
   }
 
   public logException(exception: Error): void {
     this.send(() => {
-      this.appInsights.trackException(exception);
+      this._appInsights.trackException(exception);
     });
   }
 
   private send(func: () => any): void {
-    if (this.config && this.config.instrumentationKey) {
+    if (this._config && this._config.instrumentationKey) {
       func();
     } else {
-      this.http.get('/api/monitoring-tools').subscribe(it => {
-        this.config = {
+      this._http.get<any>('/api/monitoring-tools').subscribe(it => {
+        this._config = {
           instrumentationKey: it['key']
         };
-        if (!this.appInsights.config) {
-          this.appInsights.downloadAndSetup(this.config);
+        if (!this._appInsights.config) {
+          this._appInsights.downloadAndSetup(this._config);
         }
         func();
       });

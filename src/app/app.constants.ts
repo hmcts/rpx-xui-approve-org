@@ -1,4 +1,4 @@
-const FooterData =  {
+const footerData =  {
   heading: 'Help',
   email: {
     address: 'service-desk@hmcts.gov.uk',
@@ -12,7 +12,7 @@ const FooterData =  {
   }
 };
 
-const FooterDataNavigation = {
+const footerDataNavigation = {
   items: [
     { text: 'Accessibility', href: 'accessibility', target: '_blank'},
     { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
@@ -21,10 +21,10 @@ const FooterDataNavigation = {
   ]
 };
 
-const environmentNames = {
+const environmentNames: { [key: string]: EnvironmentNames} = {
   aat: 'aat',
   localhost: 'localhost',
-  pr: 'pr-',
+  pr: 'pr',
   demo: 'demo',
   ithc: 'ithc',
   perftest: 'perftest',
@@ -38,11 +38,14 @@ const redirectUrl = {
   perftest: 'https://idam-web-public.perftest.platform.hmcts.net',
   prod: 'https://hmcts-access.service.gov.uk',
   localhost: 'https://idam-web-public.aat.platform.hmcts.net',
+  pr: ''
 };
 
+export type EnvironmentNames = 'aat' | 'localhost' | 'pr' | 'demo' | 'ithc' | 'perftest' | 'prod';
+
 export class AppConstants {
-  static FOOTER_DATA = FooterData;
-  static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static REDIRECT_URL = redirectUrl;
-  static ENVIRONMENT_NAMES = environmentNames;
+  public static FOOTER_DATA = footerData;
+  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
+  public static REDIRECT_URL = redirectUrl;
+  public static ENVIRONMENT_NAMES = environmentNames;
 }

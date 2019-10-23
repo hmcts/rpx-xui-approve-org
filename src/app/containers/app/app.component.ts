@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromActions from '../../store';
-import * as fromRoot from '../../store';
+import fromRoot = fromActions;
 
 @Component({
   selector: 'app-root',
@@ -14,21 +14,21 @@ export class AppComponent implements OnInit {
   public title$: Observable<string>;
 
   constructor(
-    private store: Store<fromRoot.State>
+    private readonly _store: Store<fromRoot.State>
   ) {}
 
-  ngOnInit() {
-    this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
-    this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
+  public ngOnInit() {
+    this.title$ = this._store.pipe(select(fromRoot.getAppPageTitle));
+    this._store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
       if (rootState) {
-        this.store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
+        this._store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
       }
     });
   }
 
   public onNavigate(event: string): void {
     if (event === 'sign-out') {
-      return this.store.dispatch(new fromActions.Logout());
+      return this._store.dispatch(new fromActions.Logout());
     }
   }
 

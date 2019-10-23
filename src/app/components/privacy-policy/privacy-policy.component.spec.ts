@@ -1,7 +1,7 @@
-import { PrivacyPolicyComponent } from './privacy-policy.component';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
+import { PrivacyPolicyComponent } from './privacy-policy.component';
 
 let component: PrivacyPolicyComponent;
 let fixture: ComponentFixture<PrivacyPolicyComponent>;

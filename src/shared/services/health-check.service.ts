@@ -14,11 +14,11 @@ export class HealthCheckService implements OnDestroy {
     private _routeSubscription: Subscription;
 
     constructor(
-        private _http: HttpClient,
-        private _store: Store<fromRoot.State>,
+        private readonly _http: HttpClient,
+        private readonly _store: Store<fromRoot.State>,
     ) { }
 
-    doHealthCheck(): Observable<HealthState> {
+    public doHealthCheck(): Observable<HealthState> {
         const healthState: boolean = true;
         const result: HealthState = { healthState };
         let path = '';
@@ -36,7 +36,7 @@ export class HealthCheckService implements OnDestroy {
             of(result);
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this._routeSubscription) {
             this._routeSubscription.unsubscribe();
         }

@@ -7,9 +7,9 @@ import { AuthService } from './auth.service';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private _authService: AuthService) {}
+  constructor(private readonly _authService: AuthService) {}
 
-  canActivate(): boolean {
+  public canActivate(): boolean {
     if (!this._authService.isAuthenticated()) {
       this._authService.loginRedirect();
       return false;
