@@ -1,15 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { EventEmitter } from 'events';
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import { OrganisationSummary, OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
-import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
-import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
-import { OrganisationState } from 'src/org-manager/store/reducers/org-pending.reducer';
-import { FormArray, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { EventEmitter } from 'events';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import { pendingOverviewColumnConfig } from '../../config/pending-overview.config';
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -18,27 +17,27 @@ import { EventEmitter } from 'events';
 
 export class OverviewPendingComponent implements OnInit, OnDestroy {
 
-  columnConfig: GovukTableColumnConfig[];
-  pendingOrgs$: any;
-  loading$: Observable<boolean>;
-  approveOrganisations: Array<OrganisationVM>;
-  pendingOrganisations$: Array<OrganisationSummary>;
-  subscription: Subscription;
-  inputForm: FormGroup;
-  valueChange = new EventEmitter();
+  public columnConfig: GovukTableColumnConfig[];
+  public pendingOrgs$: Observable<any>;
+  public loading$: Observable<boolean>;
+  public approveOrganisations: OrganisationVM[];
+  public pendingOrganisations$: OrganisationSummary[];
+  public subscription: Subscription;
+  public inputForm: FormGroup;
+  public valueChange = new EventEmitter();
 
   constructor(public store: Store<fromOrganisationPendingStore.OrganisationState>,
-              private fb: FormBuilder) {}
+              private readonly _fb: FormBuilder) {}
 
-  ngOnInit(): void {
-    this.inputForm = this.fb.group({
+  public ngOnInit(): void {
+    this.inputForm = this._fb.group({
       pendingOrgInputRadio: ['', Validators.required]
     });
     this.approveOrganisations = [];
     this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
-    this.subscription = this.pendingOrgs$.subscribe(pendingOrgs$ => {
-      if (pendingOrgs$.pendingOrganisations.length > 0) {
-        this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
+    this.subscription = this.pendingOrgs$.subscribe(pendingOrgs => {
+      if (pendingOrgs.pendingOrganisations.length > 0) {
+        this.pendingOrganisations$ = pendingOrgs.pendingOrganisations;
       } else {
         this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
       }
@@ -46,12 +45,12 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
 
     this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
-    this.columnConfig = PendingOverviewColumnConfig;
+    this.columnConfig = pendingOverviewColumnConfig;
 
     this.store.dispatch(new fromOrganisationPendingStore.ClearErrors());
   }
 
-  activateOrganisations() {
+  public activateOrganisations() {
     if (this.inputForm.controls.pendingOrgInputRadio.value) {
       this.approveOrganisations = [];
       this.approveOrganisations.push(this.inputForm.controls.pendingOrgInputRadio.value);
@@ -62,10 +61,11 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
     }
   }
 
-  onGoBack() {
+  public onGoBack() {
     this.store.dispatch(new fromRoot.Back());
   }
-  ngOnDestroy(): void {
+
+  public ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }

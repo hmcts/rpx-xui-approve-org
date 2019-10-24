@@ -1,23 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store';
-import { Store, select } from '@ngrx/store';
-import {Observable, Subscription} from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
+import * as fromRoot from '../../../app/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 
 @Component({
     selector: 'app-org-pending-approve',
     templateUrl: './org-pending-approve.component.html'
 })
 export class OrgPendingApproveComponent implements OnInit, OnDestroy {
-    reviewedOrganisations: OrganisationVM[];
-    $reviewedOrganisationsSubscription: Subscription;
-    serverResponseMessages$: Observable<any>;
+    public reviewedOrganisations: OrganisationVM[];
+    public $reviewedOrganisationsSubscription: Subscription;
+    public serverResponseMessages$: Observable<any>;
     constructor(
         public store: Store<fromOrganisationPendingStore.OrganisationState>
     ) { }
 
-    ngOnInit() {
+    public ngOnInit() {
         // TODO: should get reviewedOrganisations
         this.$reviewedOrganisationsSubscription = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs))
             .subscribe((response: any) => { // TODO: should have correct type
@@ -32,15 +32,15 @@ export class OrgPendingApproveComponent implements OnInit, OnDestroy {
     }
 
 
-    onGoBack() {
+    public onGoBack() {
         this.store.dispatch(new fromRoot.Back());
     }
 
-    onApproveOrganisations() {
+    public onApproveOrganisations() {
         this.store.dispatch(new fromOrganisationPendingStore.ApprovePendingOrganisations(this.reviewedOrganisations));
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         this.$reviewedOrganisationsSubscription.unsubscribe();
     }
 }

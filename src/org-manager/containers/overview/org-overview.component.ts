@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import * as fromOrganisationStore from '../../../org-manager/store';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import { OrganisationSummary } from '../../models/organisation';
+import fromOrganisationStore = fromOrganisationPendingStore;
 
 @Component({
   selector: 'app-prd-org-overview-component',
@@ -12,22 +11,22 @@ import { OrganisationSummary } from '../../models/organisation';
 })
 
 export class OverviewComponent implements OnInit {
-  orgs$: Observable<Array<OrganisationSummary>>;
-  loading$: Observable<boolean>;
-  pendingOrgsCount$: Observable<number>;
+  public orgs$: Observable<OrganisationSummary[]>;
+  public loading$: Observable<boolean>;
+  public pendingOrgsCount$: Observable<number>;
 
   constructor(
-    private store: Store<fromOrganisationStore.OrganisationState>,
-    private pendingStore: Store<fromOrganisationPendingStore.OrganisationState>
+    private readonly _store: Store<fromOrganisationStore.OrganisationState>,
+    private readonly _pendingStore: Store<fromOrganisationPendingStore.OrganisationState>
   ) { }
 
-  ngOnInit(): void {
-    this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
-    this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
-    this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
+  public ngOnInit(): void {
+    this._store.dispatch(new fromOrganisationStore.LoadOrganisation());
+    this.orgs$ = this._store.pipe(select(fromOrganisationStore.organisations));
+    this.loading$ = this._store.pipe(select(fromOrganisationStore.organisationsLoading));
 
-    this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
-    this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
+    this._pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
+    this.pendingOrgsCount$ = this._pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
 
   }
 }

@@ -1,4 +1,12 @@
-export const PendingOverviewColumnConfig = [
+export interface ColumnConfig {
+    header: string;
+    key: string;
+    type?: string;
+    multiColumnMapping?: string;
+    class?: string;
+}
+
+export const pendingOverviewColumnConfig: ColumnConfig[] = [
     { header: null, key: null, type: 'checkbox' },
     {
         header: 'Reference', key: 'organisationId', type: 'multi-column', multiColumnMapping: 'id',
