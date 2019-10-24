@@ -18,6 +18,7 @@ if (environment !== 'local') {
         .setAutoCollectDependencies(true)
         .setAutoCollectConsole(true)
         .setUseDiskRetryCaching(true)
+        .setSendLiveMetrics(true)
         .start()
 
     client = applicationinsights.defaultClient
