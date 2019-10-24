@@ -14,6 +14,7 @@ const FooterData =  {
 
 const FooterDataNavigation = {
   items: [
+    { text: 'Accessibility', href: 'accessibility', target: '_blank'},
     { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
     { text: 'Cookies', href: 'cookies', target: '_blank' },
     { text: 'Privacy policy', href: 'privacy-policy', target: '_blank' }
@@ -26,7 +27,7 @@ const environmentNames = {
   pr: 'pr-',
   demo: 'demo',
   ithc: 'ithc',
-  perfTest: 'perf-test',
+  perftest: 'perftest',
   prod: 'prod'
 };
 
@@ -34,7 +35,9 @@ const redirectUrl = {
   aat: 'https://idam-web-public.aat.platform.hmcts.net',
   demo: 'https://idam-web-public.demo.platform.hmcts.net',
   ithc: 'https://idam-web-public.ithc.platform.hmcts.net',
-  prod: 'https://hmcts-access.service.gov.uk'
+  perftest: 'https://idam-web-public.perftest.platform.hmcts.net',
+  prod: 'https://hmcts-access.service.gov.uk',
+  localhost: 'https://idam-web-public.aat.platform.hmcts.net',
 };
 
 export class AppConstants {
