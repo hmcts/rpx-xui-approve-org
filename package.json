@@ -27,7 +27,9 @@
     "test:smoke": "sh whitelist.sh && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
-    "test:functional:local": "protractor ./test/e2e/config/functional.conf.js --local"
+    "test:functional:local": "protractor ./test/e2e/config/functional.conf.js --local",
+    "test-pact": "NODE_PATH=. LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register api/test/pact/pact-tests/*.ts",
+    "publish-pact": "NODE_PATH=. LOG_LEVEL=error mocha 'api/test/pact/publish/*.js' --timeout 15000 --reporter spec"
   },
   "private": true,
   "dependencies": {
@@ -121,6 +123,8 @@
     "tsickle": ">=0.25.5",
     "tslib": "^1.7.1",
     "tslint": "~5.9.1",
-    "typescript": "2.9.2"
+    "typescript": "2.9.2",
+    "@pact-foundation/pact": "^9.2.0",
+    "@pact-foundation/pact-node": "^9.0.6"
   }
 }
