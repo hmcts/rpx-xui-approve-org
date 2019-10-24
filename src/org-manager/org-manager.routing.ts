@@ -1,15 +1,15 @@
 // routes
-import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
-import { OverviewComponent } from './containers/overview/org-overview.component';
-import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
-import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
-import { OverviewPendingComponent } from 'src/org-manager/containers/overview-pending/pending-overview.component';
+import { RouterModule, Routes } from '@angular/router';
+import { OrgPendingApproveComponent } from 'src/org-manager/containers/org-pending-approve/org-pending-approve.component';
 import { OrgPendingOverviewComponent } from 'src/org-manager/containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingSummaryComponent } from 'src/org-manager/containers/org-pending-summary/org-pending-summary.component';
-import { OrgPendingApproveComponent } from 'src/org-manager/containers/org-pending-approve/org-pending-approve.component';
 import { OrgApprovalSuccessComponent } from 'src/org-manager/containers/org-success/org-approval-success.component';
+import { OverviewPendingComponent } from 'src/org-manager/containers/overview-pending/pending-overview.component';
 import { AuthGuard } from 'src/services/auth/auth.guard';
+import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
+import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
+import { OverviewComponent } from './containers/overview/org-overview.component';
 
 export const ROUTES: Routes = [
   {

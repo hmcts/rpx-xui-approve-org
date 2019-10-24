@@ -1,9 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { PendingOrganisationService } from './pending-organisation.service';
 import { HttpClient } from '@angular/common/http';
-import createSpyObj = jasmine.createSpyObj;
+import { TestBed } from '@angular/core/testing';
 import { environment } from 'src/environments/environment';
 import { Organisation } from '../models/organisation';
+import { PendingOrganisationService } from './pending-organisation.service';
+import createSpyObj = jasmine.createSpyObj;
 
 describe('PendingOrganisationService', () => {
   let httpClient: HttpClient;
@@ -30,7 +30,7 @@ describe('PendingOrganisationService', () => {
 
   it('should get single organisation', () => {
     pendingOrganisationService.getSingleOrganisation({id: 'dummy'});
-    expect(httpClient.get).toHaveBeenCalledWith(environment.singleOrgUrl + 'dummy');
+    expect(httpClient.get).toHaveBeenCalledWith(`${environment.singleOrgUrl}dummy`);
   });
 
   it('should approve organisation', () => {

@@ -8,5 +8,6 @@
   "exclude": [
     "src/test.ts",
     "**/*.spec.ts"
-  ]
+  ],
+  "noImplicitAny": true
 }

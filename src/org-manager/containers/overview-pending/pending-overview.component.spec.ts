@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import * as fromRootActions from '../../../app/store/actions';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import { reviewedOrganisationFromGovTableMockCollection, reviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { reviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 import { OverviewPendingComponent } from './pending-overview.component';
 
 describe('OverviewComponent', () => {
@@ -17,7 +17,6 @@ describe('OverviewComponent', () => {
     let storePipeMock: any;
     let storeDispatchMock: any;
     const organisationsDummy = reviewedOrganisationMockCollection;
-    const organisationsFromGovTableDummy = reviewedOrganisationFromGovTableMockCollection;
 
     beforeEach((() => {
         TestBed.configureTestingModule({

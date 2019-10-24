@@ -1,5 +1,5 @@
-import { Store, StoreModule, combineReducers } from '@ngrx/store';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import { SummaryPendingComponent } from './summary-pending.component';

@@ -27,7 +27,10 @@ const configs = {
 }
 
 export const configEnv = process ? process.env.PUI_ENV || 'local' : 'local'
-export const config = { ...application, ...configs[configEnv].default }
+export const config = {
+    ...application,
+    ...configs[configEnv].default,
+}
 
 export default { ...config }
 if (process) {
