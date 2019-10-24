@@ -24,7 +24,7 @@ if (!isLocal()) {
 }
 
 const config: EnvironmentConfig = {
-  appInsightsInstrumentationKey: getEnvConfig<string>('APPINSIGHTS_INSTRUMENTATIONKEY', 'string', 'BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB'),
+  appInsightsInstrumentationKey: getEnvConfig<string>('APPINSIGHTS_INSTRUMENTATIONKEY', 'string', 'AAAAAAAAAAAAAAAA'),
   configEnv,
   cookies: {
     token: getEnvConfig<string>('COOKIE_TOKEN', 'string', '__auth__'),
