@@ -1,8 +1,9 @@
-import {Component, OnInit, Input, OnDestroy} from '@angular/core';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import { Store, select } from '@ngrx/store';
-import { OrganisationVM, OrganisationSummary} from 'src/org-manager/models/organisation';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+
 /**
  * Bootstraps the Summary Components
  */
@@ -13,20 +14,19 @@ import { Subscription } from 'rxjs';
 })
 export class SummaryComponent implements OnInit, OnDestroy {
 
-  @Input() data: OrganisationVM;
-  $orgSubscription: Subscription;
-  dxNumber: string;
-  dxExchange: string;
+  @Input() public data: OrganisationVM;
+  public $orgSubscription: Subscription;
 
   constructor(
     public store: Store<fromOrganisationPendingStore.OrganisationState>
   ) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation))
       .subscribe();
   }
-  ngOnDestroy(): void {
+
+  public ngOnDestroy(): void {
     if (this.$orgSubscription) {
       this.$orgSubscription.unsubscribe();
     }

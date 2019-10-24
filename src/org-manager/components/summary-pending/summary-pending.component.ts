@@ -1,8 +1,8 @@
-import { Input, Component, OnInit, OnDestroy } from '@angular/core';
-import { OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
-import { Subscription } from 'rxjs';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { OrganisationSummary, OrganisationVM } from 'src/org-manager/models/organisation';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 
 @Component({
   selector: 'app-org-summary-component',
@@ -11,18 +11,17 @@ import { select, Store } from '@ngrx/store';
 })
 export class SummaryPendingComponent implements OnInit, OnDestroy {
 
-  @Input() data: OrganisationVM;
-  $pageSubscription: Subscription;
-  $orgSubscription: Subscription;
-  dxNumber: string;
-  dxExchange: string;
+  @Input() public data: OrganisationVM;
+  public $pageSubscription: Subscription;
+  public $orgSubscription: Subscription;
+  public dxNumber: string;
+  public dxExchange: string;
 
   constructor(
     public store: Store<fromOrganisationPendingStore.OrganisationState>
   ) {}
 
-  ngOnInit(): void {
-
+  public ngOnInit(): void {
     this.$pageSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
       this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedPendingOrganisation(routeParams.id))).
       subscribe((data: OrganisationSummary[]) => {
@@ -33,7 +32,7 @@ export class SummaryPendingComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.$pageSubscription) {
       this.$pageSubscription.unsubscribe();
     }

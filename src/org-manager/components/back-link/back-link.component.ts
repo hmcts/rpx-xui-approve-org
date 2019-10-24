@@ -1,18 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 
 @Component({
   selector: 'app-back-link',
   templateUrl: './back-link.component.html'
 })
 export class BackLinkComponent {
-  @Input() store: Store<fromOrganisationPendingStore.OrganisationState>;
+  @Input() public store: Store<fromOrganisationPendingStore.OrganisationState>;
 
   constructor() { }
 
-  onGoBack() {
+  public onGoBack() {
     this.store.dispatch(new fromRoot.Back());
   }
 
