@@ -1,5 +1,5 @@
+import { OrganisationSummary, OrganisationVM } from 'src/org-manager/models/organisation';
 import { PendingOrgActions, PendingOrgActionTypes } from '../actions/org-pending.actions';
-import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
 
 // TODO: cleanup cascading pendingOrganisations
 export interface OrganisationState {
@@ -24,21 +24,18 @@ export function reducer(
 ): OrganisationState {
   switch (action.type) {
 
-    case PendingOrgActionTypes.CLEAR_ERRORS: {
+    case PendingOrgActionTypes.CLEAR_ERRORS:
       return {
         ...state,
         errorMessage: ''
       };
-    }
-
-    case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
+    case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS:
       return {
         ...state,
         loaded: false,
         loading: true
       };
-    }
-    case PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
+    case PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS:
       const payload: OrganisationVM[] = action.payload.slice(0);
       const reviewedOrganisationsMapped = payload.map(item => {
         return { ...item, status: 'ACTIVE' };
@@ -48,8 +45,7 @@ export function reducer(
         reviewedOrganisations: reviewedOrganisationsMapped,
         errorMessage: ''
       };
-    }
-    case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
+    case PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS:
       // TODO please fix this - something is not right
       let pendingOrganisations = action.payload;
       if (pendingOrganisations.length !== 0) {
@@ -69,7 +65,6 @@ export function reducer(
         loading: false,
         errorMessage: ''
       };
-    }
     case PendingOrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
       const errorMessage = action.payload;
       return {

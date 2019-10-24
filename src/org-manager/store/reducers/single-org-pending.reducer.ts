@@ -1,5 +1,5 @@
+import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
 import * as fromSingleOrgActions from '../actions/single-org-pending.actions';
-import {SingleOrgSummary} from '../../../org-manager/models/single-org-summary';
 
 export interface PendingSingleOrgState {
     data: {}  | SingleOrgSummary;
@@ -18,20 +18,18 @@ export function reducer(
   action: fromSingleOrgActions.SingleOrgActions
 ): PendingSingleOrgState {
   switch (action.type) {
-    case fromSingleOrgActions.SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_SUCCESS: {
+    case fromSingleOrgActions.SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_SUCCESS:
       return {
         ...state,
           data: action.payload,
           loaded: true,
           loading: false
       };
-    }
-    case fromSingleOrgActions.SinglePendingOrgActionTypes.RESET_SINGLE_ORG: {
+    case fromSingleOrgActions.SinglePendingOrgActionTypes.RESET_SINGLE_ORG:
       return initialState;
-    }
+    default:
+      return state;
   }
-
-  return state;
 }
 
 export const getSingleOrgOverview = (state: PendingSingleOrgState) => state.data;

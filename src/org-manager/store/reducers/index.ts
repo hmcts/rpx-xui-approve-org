@@ -1,9 +1,8 @@
 import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
-
-import * as fromOrganisations from './organisation.reducer';
-import * as fromSingleOrg from './single-org.reducer';
 import * as fromPendingOrganisations from './org-pending.reducer';
+import * as fromOrganisations from './organisation.reducer';
 import * as fromSingleOrgPending from './single-org-pending.reducer';
+import * as fromSingleOrg from './single-org.reducer';
 
 
 export interface OrganisationState {

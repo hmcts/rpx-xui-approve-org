@@ -1,8 +1,8 @@
+import { OrganisationSummary, OrganisationVM } from '../../models/organisation';
 import * as fromOrganisationActions from '../actions/organisation.actions';
-import {Organisation, OrganisationSummary, OrganisationVM} from '../../models/organisation';
 
 export interface OrganisationState {
-  organisations: Array<OrganisationSummary> | null;
+  organisations: OrganisationSummary[] | null;
   loaded: boolean;
   loading: boolean;
 }
@@ -18,15 +18,13 @@ export function reducer(
   action: fromOrganisationActions.OrganisationActions
 ): OrganisationState {
   switch (action.type) {
-
-    case fromOrganisationActions.LOAD_ORGANISATIONS: {
+    case fromOrganisationActions.LOAD_ORGANISATIONS:
       return {
         ...state,
         loaded: false,
         loading: true
       };
-    }
-    case fromOrganisationActions.LOAD_ORGANISATIONS_SUCCESS: {
+    case fromOrganisationActions.LOAD_ORGANISATIONS_SUCCESS:
       let organisations = action.payload;
       if (organisations.length !== 0) {
         organisations = action.payload.map((organisation: OrganisationVM) => {
@@ -44,11 +42,9 @@ export function reducer(
         loaded: true,
         loading: false
       };
-    }
-
+    default:
+      return state;
   }
-
-  return state;
 }
 
 export const getOrganisations = (state: OrganisationState) => state.organisations;

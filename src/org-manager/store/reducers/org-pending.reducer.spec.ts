@@ -2,20 +2,16 @@ import { OrganisationSummary, OrganisationVM } from 'src/org-manager/models/orga
 import { pendingOrganisationsMockCollection1, pendingOrganisationsMockSummaryCollection1 } from '../../mock/pending-organisation.mock';
 import { AddReviewOrganisations, LoadPendingOrganisations, LoadPendingOrganisationsSuccess } from '../actions';
 import * as fromPendingOrganisation from './org-pending.reducer';
-import { initialState, reducer } from './org-pending.reducer';
-
 
 describe('PendingOrganisationsReducer', () => {
-
-  const PendingOrganisationsMock: OrganisationVM[] = pendingOrganisationsMockCollection1;
-
-  const PendingOrganisationsMockSummary: OrganisationSummary[] = pendingOrganisationsMockSummaryCollection1;
+  const pendingOrganisationsMock: OrganisationVM[] = pendingOrganisationsMockCollection1;
+  const pendingOrganisationsMockSummary: OrganisationSummary[] = pendingOrganisationsMockSummaryCollection1;
 
   describe('undefined action', () => {
     it('should return the default state', () => {
       const action = {} as any;
-      const state = reducer(undefined, action);
-      expect(state).toEqual(initialState);
+      const state = fromPendingOrganisation.reducer(undefined, action);
+      expect(state).toEqual(fromPendingOrganisation.initialState);
     });
   });
 
@@ -23,8 +19,8 @@ describe('PendingOrganisationsReducer', () => {
     it('should return the initial state.pendingOrganisations', () => {
 
       const action = new LoadPendingOrganisations();
-      const state = reducer(initialState, action);
-      expect(state.reviewedOrganisations).toEqual(initialState.pendingOrganisations);
+      const state = fromPendingOrganisation.reducer(fromPendingOrganisation.initialState, action);
+      expect(state.reviewedOrganisations).toEqual(fromPendingOrganisation.initialState.pendingOrganisations);
     });
 
   });
@@ -32,9 +28,9 @@ describe('PendingOrganisationsReducer', () => {
   xdescribe('LOAD_PENDING_ORGANISATION_SUCCESS action', () => {
     it('should update the state.pendingOrganisations', () => {
 
-      const action = new LoadPendingOrganisationsSuccess(PendingOrganisationsMock);
-      const state = reducer(initialState, action);
-      expect(state.pendingOrganisations).toEqual(PendingOrganisationsMockSummary);
+      const action = new LoadPendingOrganisationsSuccess(pendingOrganisationsMock);
+      const state = fromPendingOrganisation.reducer(fromPendingOrganisation.initialState, action);
+      expect(state.pendingOrganisations).toEqual(pendingOrganisationsMockSummary);
     });
 
   });
@@ -42,34 +38,34 @@ describe('PendingOrganisationsReducer', () => {
   describe('ADD_REVIEW_ORGANISATIONS action', () => {
     it('should update the state.reviewedOrganisations', () => {
 
-      const action = new AddReviewOrganisations(PendingOrganisationsMock);
-      const state = reducer(initialState, action);
-      expect(state.reviewedOrganisations).toEqual(PendingOrganisationsMock);
+      const action = new AddReviewOrganisations(pendingOrganisationsMock);
+      const state = fromPendingOrganisation.reducer(fromPendingOrganisation.initialState, action);
+      expect(state.reviewedOrganisations).toEqual(pendingOrganisationsMock);
     });
 
   });
 
   describe('exports', () => {
     it('should return state.pendingOrganisations', () => {
-      expect(fromPendingOrganisation.getPendingOrganisations(initialState)).toEqual([]);
+      expect(fromPendingOrganisation.getPendingOrganisations(fromPendingOrganisation.initialState)).toEqual([]);
       expect();
     });
 
     describe('getPendingOrganisationsLoading export', () => {
       it('should return state.loading', () => {
-        expect(fromPendingOrganisation.getPendingOrganisationsLoading(initialState)).toEqual(false);
+        expect(fromPendingOrganisation.getPendingOrganisationsLoading(fromPendingOrganisation.initialState)).toEqual(false);
       });
     });
 
     describe('getPendingOrganisationsLoaded export', () => {
       it('should return state.loaded', () => {
-        expect(fromPendingOrganisation.getPendingOrganisationsLoaded(initialState)).toEqual(false);
+        expect(fromPendingOrganisation.getPendingOrganisationsLoaded(fromPendingOrganisation.initialState)).toEqual(false);
       });
     });
 
     describe('getReviewedOrganisations export', () => {
       it('should return state.loaded', () => {
-        expect(fromPendingOrganisation.getReviewedOrganisations(initialState)).toEqual([]);
+        expect(fromPendingOrganisation.getReviewedOrganisations(fromPendingOrganisation.initialState)).toEqual([]);
       });
     });
   });

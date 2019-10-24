@@ -1,6 +1,6 @@
-import * as fromOrganisation from '../reducers/org-pending.reducer';
 import { createSelector } from '@ngrx/store';
-import {getRootApproveOrgState} from '../reducers';
+import { getRootApproveOrgState } from '../reducers';
+import * as fromOrganisation from '../reducers/org-pending.reducer';
 
 export const getPendingOrgs = createSelector(
     getRootApproveOrgState,

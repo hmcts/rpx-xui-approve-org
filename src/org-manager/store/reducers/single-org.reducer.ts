@@ -1,7 +1,5 @@
+import { SingleOrgSummary } from '../../models/single-org-summary';
 import * as fromSingleOrgActions from '../actions/single-org.actions';
-import {SingleOrgSummary} from '../../models/single-org-summary';
-
-
 
 export interface SingleOrgState {
     data: {}  | SingleOrgSummary;
@@ -20,22 +18,18 @@ export function reducer(
   action: fromSingleOrgActions.SinglePendingOrgActions
 ): SingleOrgState {
   switch (action.type) {
-    case fromSingleOrgActions.LOAD_SINGLE_ORG_SUCCESS: {
+    case fromSingleOrgActions.LOAD_SINGLE_ORG_SUCCESS:
       return {
         ...state,
           data: action.payload,
           loaded: true,
           loading: false
       };
-
-    }
-    case fromSingleOrgActions.RESET_SINGLE_ORG: {
+    case fromSingleOrgActions.RESET_SINGLE_ORG:
       return initialState;
-    }
-
+    default:
+      return state;
   }
-
-  return state;
 }
 
 export const getSingleOrgOverview = (state: SingleOrgState) => state.data;

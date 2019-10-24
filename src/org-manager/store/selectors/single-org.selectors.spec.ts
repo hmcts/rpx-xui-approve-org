@@ -1,10 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
+import { reducers } from '../index';
 import { SingleOrgState } from '../reducers/single-org.reducer';
 import { getSingleOrgState } from './single-org.selectors';
-import { reducers } from '../index';
-import { LoadSingleOrgSuccess } from '../actions';
-import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
 
 describe('Single organisation selectors', () => {
   let store: Store<SingleOrgState>;

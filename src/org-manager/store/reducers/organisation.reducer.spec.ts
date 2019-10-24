@@ -1,20 +1,19 @@
-import { initialState, reducer } from './organisation.reducer';
+import { OrganisationSummary, OrganisationVM } from 'src/org-manager/models/organisation';
 import { LoadOrganisationSuccess } from '../actions';
-import { Organisation, OrganisationSummary, OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromOrganisation from './organisation.reducer';
 
 describe('OrganisationsReducer', () => {
   describe('undefined action', () => {
     it('should return the default state', () => {
       const action = {} as any;
-      const state = reducer( undefined, action);
-      expect(state).toEqual(initialState);
+      const state = fromOrganisation.reducer( undefined, action);
+      expect(state).toEqual(fromOrganisation.initialState);
     });
   });
 
   describe('LOAD_ORGANISATION_SUCCESS action', () => {
     it('should update the state.activeOrg', () => {
-      const OrganisationsMock: OrganisationVM[] = [
+      const organisationsMock: OrganisationVM[] = [
         {
           name: 'Speake Limited',
           addressLine1: '72 Guild Street',
@@ -30,7 +29,7 @@ describe('OrganisationsReducer', () => {
           dxNumber: ['something']
         }
       ];
-      const OrganisationsMockSummary: OrganisationSummary[] = [
+      const organisationsMockSummary: OrganisationSummary[] = [
         {
           name: 'Speake Limited',
           addressLine1: '72 Guild Street',
@@ -47,28 +46,28 @@ describe('OrganisationsReducer', () => {
           dxNumber: ['something']
         }
       ];
-      const action = new LoadOrganisationSuccess(OrganisationsMock);
-      const state = reducer(initialState, action);
-      expect(state.organisations).toEqual(OrganisationsMockSummary);
+      const action = new LoadOrganisationSuccess(organisationsMock);
+      const state = fromOrganisation.reducer(fromOrganisation.initialState, action);
+      expect(state.organisations).toEqual(organisationsMockSummary);
     });
   });
 
   describe('getOrganisations export', () => {
     it('should return state.activeOrg', () => {
-      expect(fromOrganisation.getOrganisations(initialState)).toEqual(null);
+      expect(fromOrganisation.getOrganisations(fromOrganisation.initialState)).toEqual(null);
       expect();
     });
   });
 
   describe('getOrganisationsLoading export', () => {
     it('should return state.loading', () => {
-      expect(fromOrganisation.getOrganisationsLoading(initialState)).toEqual(false);
+      expect(fromOrganisation.getOrganisationsLoading(fromOrganisation.initialState)).toEqual(false);
     });
   });
 
   describe('getOrganisationsLoaded export', () => {
     it('should return state.loaded', () => {
-      expect(fromOrganisation.getOrganisationsLoaded(initialState)).toEqual(false);
+      expect(fromOrganisation.getOrganisationsLoaded(fromOrganisation.initialState)).toEqual(false);
     });
   });
 });
