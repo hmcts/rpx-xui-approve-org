@@ -1,6 +1,5 @@
-
 import { Action } from '@ngrx/store';
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export enum PendingOrgActionTypes {
     LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
@@ -15,54 +14,47 @@ export enum PendingOrgActionTypes {
 }
 
 export class LoadPendingOrganisations implements Action {
-    readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS;
+    public readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS;
     constructor() { }
 }
 
 export class ClearErrors implements Action {
-  readonly type = PendingOrgActionTypes.CLEAR_ERRORS;
-  constructor() { }
+    public readonly type = PendingOrgActionTypes.CLEAR_ERRORS;
+    constructor() { }
 }
 
 export class LoadPendingOrganisationsSuccess implements Action {
-    readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS;
-
+    public readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS;
     constructor(public payload: OrganisationVM[]) { }
 }
 
 export class LoadPendingOrganisationsFail implements Action {
-    readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
-
+    public readonly type = PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
     constructor(public payload: any) { }
 }
 
 export class AddReviewOrganisations implements Action {
-    readonly type = PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS;
-
+    public readonly type = PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS;
     constructor(public payload: OrganisationVM[]) { }
 }
 
 export class DisplayErrorMessageOrganisations implements Action {
-    readonly type = PendingOrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
-
+    public readonly type = PendingOrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
     constructor(public payload: any) { }
 }
 
 export class ApprovePendingOrganisations implements Action {
-    readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS;
-
+    public readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS;
     constructor(public payload: any[]) { }
 }
 
 export class ApprovePendingOrganisationsSuccess implements Action {
-    readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
-
+    public readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
     constructor(public payload: any) { }
 }
 
 export class ApprovePendingOrganisationsFail implements Action {
-    readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
-
+    public readonly type = PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
     constructor(public payload: any) { }
 }
 

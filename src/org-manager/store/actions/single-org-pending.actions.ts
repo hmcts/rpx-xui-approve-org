@@ -9,22 +9,22 @@ export enum SinglePendingOrgActionTypes {
 }
 
 export class LoadSinglePendingOrg {
-  readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS;
+  public readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS;
   constructor(public payload: any) {}
 }
 
 export class LoadSinglePendingOrgSuccess  implements Action {
-  readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_SUCCESS;
+  public readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_SUCCESS;
   constructor(public payload: SingleOrgSummary) {}
 }
 
 export class LoadSinglePendingOrgFail implements Action {
-  readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_FAIL;
+  public readonly type = SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_FAIL;
   constructor(public payload: any) {}
 }
 
 export class ResetSinglePendingOrg implements Action {
-  readonly type = SinglePendingOrgActionTypes.RESET_SINGLE_ORG;
+  public readonly type = SinglePendingOrgActionTypes.RESET_SINGLE_ORG;
   constructor(public payload: any) {}
 }
 

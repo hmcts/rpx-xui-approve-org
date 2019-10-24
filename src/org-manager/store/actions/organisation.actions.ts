@@ -5,16 +5,16 @@ export const LOAD_ORGANISATIONS_SUCCESS = '[Organisations] Load Organisations Su
 export const LOAD_ORGANISATIONS_FAIL = '[Organisations] Load Organisations Fail';
 
 export class LoadOrganisation {
-  readonly type = LOAD_ORGANISATIONS;
+  public readonly type = LOAD_ORGANISATIONS;
 }
 
 export class LoadOrganisationSuccess  implements Action {
-  readonly type = LOAD_ORGANISATIONS_SUCCESS;
+  public readonly type = LOAD_ORGANISATIONS_SUCCESS;
   constructor(public payload: any[]) {}  // TODO add type list of users
 }
 
 export class LoadOrganisationFail implements Action {
-  readonly type = LOAD_ORGANISATIONS_FAIL;
+  public readonly type = LOAD_ORGANISATIONS_FAIL;
   constructor(public payload: any) {}
 }
 

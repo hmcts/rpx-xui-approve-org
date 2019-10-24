@@ -1,6 +1,5 @@
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromSingleOrg from './single-org.actions';
-import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 
 describe('Single organisation actions', () => {
   describe('LoadSingleOrganisation actions GROUP', () => {
