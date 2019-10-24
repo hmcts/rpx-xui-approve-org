@@ -1,18 +1,16 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { of, throwError } from 'rxjs';
+import { LoggerService } from 'src/app/services/logger.service';
+import { Go } from 'src/app/store';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
+import { PendingOrganisationService } from 'src/org-manager/services';
+import { pendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
+import { ApprovePendingOrganisations, ApprovePendingOrganisationsSuccess, DisplayErrorMessageOrganisations } from '../actions/org-pending.actions';
 import * as fromPendingOrganisationEffects from './org-pending.effects';
 import { PendingOrgEffects } from './org-pending.effects';
-import { LoadPendingOrganisations, ApprovePendingOrganisations,
-        ApprovePendingOrganisationsSuccess, DisplayErrorMessageOrganisations } from '../actions/org-pending.actions';
-import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
-import { PendingOrganisationService } from 'src/org-manager/services';
-import { Go } from 'src/app/store';
-import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
-import { LoggerService } from 'src/app/services/logger.service';
 
 export class LoggerServiceMock {
   error(err) {
@@ -28,7 +26,7 @@ describe('Pending Organisation Effects', () => {
     'approvePendingOrganisations'
   ]);
 
-  const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
+  const payload: OrganisationVM[] = pendingOrganisationsMockCollection1;
   const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['trace', 'info', 'debug', 'log', 'warn', 'error', 'fatal']);
 
   beforeEach(() => {

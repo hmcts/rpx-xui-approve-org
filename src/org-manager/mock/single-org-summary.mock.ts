@@ -1,6 +1,6 @@
 import {SingleOrgSummary} from '../models/single-org-summary';
 
-export const SingleOrgSummaryMock: SingleOrgSummary =  {
+export const singleOrgSummaryMock: SingleOrgSummary =  {
     status: 'Active',
     effective_date: '22/10/2022',
     dx_exchange: '',

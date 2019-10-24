@@ -29,19 +29,19 @@ export interface  Organisation {
 }
 
 export class OrganisationVM {
-  organisationId: string;
-  status: string;
-  admin: string;
-  adminEmail: string;
-  addressLine1: string;
-  addressLine2: string;
-  townCity: string;
-  county: string;
-  name: string;
-  view: string;
-  pbaNumber: [any];
-  dxNumber: [any];
-  sraId?: string;
+  public organisationId: string;
+  public status: string;
+  public admin: string;
+  public adminEmail: string;
+  public addressLine1: string;
+  public addressLine2: string;
+  public townCity: string;
+  public county: string;
+  public name: string;
+  public view: string;
+  public pbaNumber: [any];
+  public dxNumber: [any];
+  public sraId?: string;
 }
 
 export interface OrganisationSummary extends OrganisationVM {

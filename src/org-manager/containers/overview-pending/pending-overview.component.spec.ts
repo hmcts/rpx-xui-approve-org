@@ -1,14 +1,14 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { OverviewPendingComponent } from './pending-overview.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store/reducers';
-import * as fromRootActions from '../../../app/store/actions';
-import { StoreModule, Store, combineReducers } from '@ngrx/store';
-import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ReviewedOrganisationMockCollection, ReviewedOrganisationFromGovTableMockCollection } from '../../mock/pending-organisation.mock';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
+import * as fromRootActions from '../../../app/store/actions';
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import { reviewedOrganisationFromGovTableMockCollection, reviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { OverviewPendingComponent } from './pending-overview.component';
 
 describe('OverviewComponent', () => {
     let component: OverviewPendingComponent;
@@ -16,8 +16,8 @@ describe('OverviewComponent', () => {
     let store: Store<fromOrganisationPendingStore.OrganisationState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
-    const organisationsDummy = ReviewedOrganisationMockCollection;
-    const organisationsFromGovTableDummy = ReviewedOrganisationFromGovTableMockCollection;
+    const organisationsDummy = reviewedOrganisationMockCollection;
+    const organisationsFromGovTableDummy = reviewedOrganisationFromGovTableMockCollection;
 
     beforeEach((() => {
         TestBed.configureTestingModule({

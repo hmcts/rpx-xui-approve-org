@@ -1,6 +1,6 @@
-import * as fromSingleOrg from './single-org-pending.actions';
+import { singleOrgSummaryMock } from '../../../org-manager/mock/pending-organisation.mock';
 import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
-import { SingleOrgSummaryMock } from '../../../org-manager/mock/pending-organisation.mock';
+import * as fromSingleOrg from './single-org-pending.actions';
 
 describe('Single pending organisation actions', () => {
   describe('LoadSinglePendingOrganisation actions GROUP', () => {
@@ -21,7 +21,7 @@ describe('Single pending organisation actions', () => {
 // Success
 describe('LoadSinglePendingOrganisationSuccess', () => {
   it('should create an action', () => {
-    const payload: SingleOrgSummary = SingleOrgSummaryMock;
+    const payload: SingleOrgSummary = singleOrgSummaryMock;
     const action = new fromSingleOrg.LoadSinglePendingOrgSuccess(payload);
     expect({ ...action }).toEqual({
       type: fromSingleOrg.SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS_SUCCESS,

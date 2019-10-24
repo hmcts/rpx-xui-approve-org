@@ -1,8 +1,8 @@
-import { initialState, reducer } from './single-org-pending.reducer';
-import { LoadSinglePendingOrgSuccess } from '../actions';
+import { singleOrgSummaryMock } from '../../../org-manager/mock/pending-organisation.mock';
 import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
+import { LoadSinglePendingOrgSuccess } from '../actions';
 import * as fromSingleOrgPending from './single-org-pending.reducer';
-import { SingleOrgSummaryMock } from '../../../org-manager/mock/pending-organisation.mock';
+import { initialState, reducer } from './single-org-pending.reducer';
 
 describe('SingleOrgPendingReducer', () => {
   describe('undefined action', () => {
@@ -16,7 +16,7 @@ describe('SingleOrgPendingReducer', () => {
 
 describe('LOAD_SINGLE_PENDING_SUCCESS action', () => {
   it('should update the state.data', () => {
-    const payload: SingleOrgSummary = SingleOrgSummaryMock;
+    const payload: SingleOrgSummary = singleOrgSummaryMock;
     const action = new LoadSinglePendingOrgSuccess(payload);
     const state = reducer(initialState, action);
     expect(state.data).toEqual(payload);

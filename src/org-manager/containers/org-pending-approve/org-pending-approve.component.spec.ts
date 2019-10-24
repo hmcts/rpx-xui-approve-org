@@ -1,13 +1,13 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { OrgPendingApproveComponent } from './org-pending-approve.component';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store/reducers';
-import * as fromRootActions from '../../../app/store/actions';
-import { StoreModule, Store, combineReducers } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { ReviewedOrganisationMockCollection, ActiveOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 import { BackLinkComponent } from 'src/org-manager/components';
+import * as fromRootActions from '../../../app/store/actions';
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import { activeOrganisationMockCollection, reviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { OrgPendingApproveComponent } from './org-pending-approve.component';
 
 describe('OrgPendingApproveComponent', () => {
     let component: OrgPendingApproveComponent;
@@ -15,8 +15,8 @@ describe('OrgPendingApproveComponent', () => {
     let store: Store<fromOrganisationPendingStore.OrganisationState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
-    const reviewedOrganisationsDummy = ReviewedOrganisationMockCollection;
-    const activeOrganisationsDummy = ActiveOrganisationMockCollection;
+    const reviewedOrganisationsDummy = reviewedOrganisationMockCollection;
+    const activeOrganisationsDummy = activeOrganisationMockCollection;
 
     beforeEach((() => {
         TestBed.configureTestingModule({

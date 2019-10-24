@@ -1,16 +1,16 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { cold, hot } from 'jasmine-marbles';
+import { of, throwError } from 'rxjs';
+import { LoggerService } from 'src/app/services/logger.service';
+import { singleOrgSummaryMock } from '../../../org-manager/mock/pending-organisation.mock';
+import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
+import { PendingOrganisationService } from '../../../org-manager/services';
+import { LoadSinglePendingOrgSuccess } from '../actions';
+import { LoadSinglePendingOrg, LoadSinglePendingOrgFail } from '../actions/single-org-pending.actions';
 import * as fromSingleOrgPendingEffects from './single-org-pending.effects';
 import { SingleOrgPendingEffects } from './single-org-pending.effects';
-import { LoadSinglePendingOrg, LoadSinglePendingOrgFail } from '../actions/single-org-pending.actions';
-import { LoadSinglePendingOrgSuccess } from '../actions';
-import { PendingOrganisationService } from '../../../org-manager/services';
-import { SingleOrgSummary } from '../../../org-manager/models/single-org-summary';
-import { SingleOrgSummaryMock } from '../../../org-manager/mock/pending-organisation.mock';
-import { LoggerService } from 'src/app/services/logger.service';
 
 export class LoggerServiceMock {
   error(err) {
@@ -46,7 +46,7 @@ describe('Single pending organisation Effects', () => {
   });
   describe('loadSingleOrg$', () => {
     it('should return a collection from loadSingleOrg$ - LoadSingleOrgSuccess', () => {
-      const payload: SingleOrgSummary = SingleOrgSummaryMock;
+      const payload: SingleOrgSummary = singleOrgSummaryMock;
 
       PendingOrganisationServiceMock.getSingleOrganisation.and.returnValue(of(payload));
       const action = new LoadSinglePendingOrg({});

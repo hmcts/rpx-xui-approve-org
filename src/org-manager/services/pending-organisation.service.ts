@@ -1,28 +1,29 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
 import { environment } from 'src/environments/environment';
-import { Organisation, OrganisationVM } from '../models/organisation';
+import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
+import { Organisation } from '../models/organisation';
 
 @Injectable()
 export class PendingOrganisationService {
-  singleOrgUrl = environment.singleOrgUrl;
-  orgPendingUrl = environment.orgPendingUrl;
-  orgApprovePendingUrl = environment.orgApprovePendingUrl;
-  constructor(private http: HttpClient) {
+  private readonly _singleOrgUrl = environment.singleOrgUrl;
+  private readonly _orgPendingUrl = environment.orgPendingUrl;
+  private readonly _orgApprovePendingUrl = environment.orgApprovePendingUrl;
+
+  constructor(private readonly _http: HttpClient) {
   }
 
-  fetchPendingOrganisations(): Observable<Array<Organisation>> {
-    return this.http.get<Organisation[]>(this.orgPendingUrl);
+  public fetchPendingOrganisations(): Observable<Organisation[]> {
+    return this._http.get<Organisation[]>(this._orgPendingUrl);
   }
 
-  getSingleOrganisation(payload): Observable<SingleOrgSummary> {
-    return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
+  public getSingleOrganisation(payload: { id: number | string }): Observable<SingleOrgSummary> {
+    return this._http.get<SingleOrgSummary>(this._singleOrgUrl + payload.id);
   }
 
-  approvePendingOrganisations(payload: Organisation): Observable<Response> {
-    return this.http.put<Response>(this.orgApprovePendingUrl + payload.organisationIdentifier, payload);
+  public approvePendingOrganisations(payload: Organisation): Observable<Response> {
+    return this._http.put<Response>(this._orgApprovePendingUrl + payload.organisationIdentifier, payload);
   }
 
 }

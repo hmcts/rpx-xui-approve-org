@@ -1,7 +1,7 @@
 import { SingleOrgSummary } from '../../org-manager/models/single-org-summary';
-import { OrganisationVM, OrganisationSummary } from '../models/organisation';
+import { OrganisationSummary, OrganisationVM } from '../models/organisation';
 
-export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
+export const pendingOrganisationsMockCollection2: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'Byrne Limited',
@@ -32,7 +32,7 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
   }
 ];
 
-export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
+export const pendingOrganisationsMockCollection1: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'Byrne Limited',
@@ -49,7 +49,7 @@ export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
   }
 ];
 
-export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [
+export const pendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'Byrne Limited',
@@ -67,7 +67,7 @@ export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] =
   }
 ];
 
-export const ReviewedOrganisationMockCollection: OrganisationVM[] = [{
+export const reviewedOrganisationMockCollection: OrganisationVM[] = [{
   name: 'dummy 1',
   organisationId: 'dummy 1',
   addressLine1: 'dummy 1',
@@ -82,7 +82,7 @@ export const ReviewedOrganisationMockCollection: OrganisationVM[] = [{
   dxNumber: [{}]
 }];
 
-export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
+export const activeOrganisationMockCollection: OrganisationVM[] = [{
   name: 'dummy 1',
   organisationId: 'dummy 1',
   addressLine1: 'dummy 1',
@@ -97,7 +97,7 @@ export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
   dxNumber: [{}]
 }];
 
-export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
+export const reviewedOrganisationFromGovTableMockCollection: any[] = [{
   input: {
     name: 'dummy 1',
     organisationId: 'dummy 1',
@@ -112,7 +112,7 @@ export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
 }];
 
 
-export const SingleOrgSummaryMock: SingleOrgSummary = {
+export const singleOrgSummaryMock: SingleOrgSummary = {
   status: 'Active',
   effective_date: '22/10/2022',
   dx_exchange: '',
