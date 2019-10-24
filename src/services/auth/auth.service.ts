@@ -7,6 +7,8 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
 import {EnvironmentService} from '../../app/services/environment.service';
 import {Observable} from 'rxjs';
+import {AppConstants} from '../../app/app.constants';
+import {AppUtils} from '../../app/utils/app-utils';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +29,8 @@ export class AuthService {
 
   generateLoginUrl(): Observable<string> {
     return this.envService.config$.map( config => {
-      const base = config.services.idamWeb;
+      const env = AppUtils.getEnvironment(window.location.origin);
+      const base = AppConstants.REDIRECT_URL[env];
       const clientId = config.idamClient;
       const callback = `${this.apiBaseUrl}${config.oauthCallbackUrl}`;
       // tslint:disable-next-line: max-line-length
