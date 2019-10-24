@@ -14,7 +14,7 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1'
 
 app.use(
     session({
@@ -41,6 +41,7 @@ if (config.proxy) {
 }
 
 app.use(errorStack)
+console.log('use AppInsights ' + appInsights)
 app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
