@@ -1,5 +1,5 @@
 export interface ConfigurationModel {
   features: object;
-  caseEditorConfig;
+  caseEditorConfig: any;
   routes: {[id: string]: string};
 }

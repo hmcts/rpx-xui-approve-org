@@ -1,5 +1,5 @@
+import { AppUtils } from '../../utils/app-utils';
 import * as fromAction from '../actions';
-import {AppUtils} from '../../utils/app-utils';
 
 export interface AppState {
   pageTitle: string;
@@ -13,32 +13,28 @@ export function reducer(
   state = initialState,
   action: fromAction.appActions
 ): AppState {
+  let pageTitle: string;
   switch (action.type) {
-    case fromAction.SET_PAGE_TITLE: {
-      const pageTitle = AppUtils.setPageTitle(action.payload);
+    case fromAction.SET_PAGE_TITLE:
+      pageTitle = AppUtils.setPageTitle(action.payload);
       return {
         ...state,
         pageTitle
       };
-    }
-
-    case fromAction.SET_PAGE_TITLE_ERRORS: {
-      const pageTitle = 'Error: ' + state.pageTitle;
+    case fromAction.SET_PAGE_TITLE_ERRORS:
+      pageTitle = `Error: ${state.pageTitle}`;
       return {
         ...state,
         pageTitle
       };
-    }
-
-    case fromAction.LOGOUT: {
+    case fromAction.LOGOUT:
       return {
         ...state,
         ...initialState
       };
-    }
+    default:
+      return state;
   }
-
-  return state;
 }
 
 export const getPageTitle = (state: AppState) => state.pageTitle;

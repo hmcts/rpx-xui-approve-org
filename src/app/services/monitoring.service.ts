@@ -66,24 +66,24 @@ export class MonitoringService implements IMonitoringService {
       measurements?: any,
       duration?: number
   ): void {
-    this.send(() => {
+    this._send(() => {
       this._appInsights.trackPageView(name, url, properties, measurements, duration);
     });
   }
 
   public logEvent(name: string, properties?: any, measurements?: any): void {
-    this.send(() => {
+    this._send(() => {
       this._appInsights.trackEvent(name, properties, measurements);
     });
   }
 
   public logException(exception: Error): void {
-    this.send(() => {
+    this._send(() => {
       this._appInsights.trackException(exception);
     });
   }
 
-  private send(func: () => any): void {
+  private _send(func: () => any): void {
     if (this._config && this._config.instrumentationKey) {
       func();
     } else {
