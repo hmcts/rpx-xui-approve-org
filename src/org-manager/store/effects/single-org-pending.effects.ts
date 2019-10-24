@@ -1,29 +1,26 @@
-import {Injectable} from '@angular/core';
-import {Actions, Effect, ofType} from '@ngrx/effects';
+import { Injectable } from '@angular/core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
+import { of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { PendingOrganisationService } from '../../../org-manager/services';
 import * as singleOrganisationActions from '../../../org-manager/store/actions';
-import {catchError, map, switchMap} from 'rxjs/operators';
-import {of} from 'rxjs';
-import {PendingOrganisationService} from '../../../org-manager/services';
-import { LoggerService } from 'src/app/services/logger.service';
 
 @Injectable()
 export class SingleOrgPendingEffects {
   constructor(
-    private actions$: Actions,
-    private orgService: PendingOrganisationService,
-    // private loggerService: LoggerService
+    private readonly _actions$: Actions,
+    private readonly _orgService: PendingOrganisationService
   ) {}
 
   @Effect()
-  loadSingleOrg$ = this.actions$.pipe(
+  public loadSingleOrg$ = this._actions$.pipe(
     ofType(singleOrganisationActions.SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS),
-    switchMap((data: { payload: string, type: string}) => {
-      return this.orgService.getSingleOrganisation(data.payload).pipe(
-        map(singleOrgDetails => {
+    switchMap((data: { payload: { id: number | string }, type: string}) => {
+      return this._orgService.getSingleOrganisation(data.payload).pipe(
+        map((singleOrgDetails: any) => {
           return new singleOrganisationActions.LoadSinglePendingOrgSuccess(singleOrgDetails[0]);
         }),
         catchError((error: Error) => {
-        //  this.loggerService.error(error.message);
           return of(new singleOrganisationActions.LoadSinglePendingOrgFail(error));
         })
       );

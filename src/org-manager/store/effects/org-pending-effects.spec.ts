@@ -2,7 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 import { LoggerService } from 'src/app/services/logger.service';
 import { Go } from 'src/app/store';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
@@ -10,18 +10,17 @@ import { PendingOrganisationService } from 'src/org-manager/services';
 import { pendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
 import { ApprovePendingOrganisations, ApprovePendingOrganisationsSuccess, DisplayErrorMessageOrganisations } from '../actions/org-pending.actions';
 import * as fromPendingOrganisationEffects from './org-pending.effects';
-import { PendingOrgEffects } from './org-pending.effects';
 
 export class LoggerServiceMock {
-  error(err) {
+  public error(err: any) {
     return err;
   }
 }
 
 describe('Pending Organisation Effects', () => {
-  let actions$;
-  let effects: PendingOrgEffects;
-  const PendingOrganisationServiceMock = jasmine.createSpyObj('PendingOrganisationService', [
+  let actions$: Observable<any>;
+  let effects: fromPendingOrganisationEffects.PendingOrgEffects;
+  const pendingOrganisationServiceMock = jasmine.createSpyObj('PendingOrganisationService', [
     'fetchPendingOrganisations',
     'approvePendingOrganisations'
   ]);
@@ -35,7 +34,7 @@ describe('Pending Organisation Effects', () => {
       providers: [
         {
           provide: PendingOrganisationService,
-          useValue: PendingOrganisationServiceMock,
+          useValue: pendingOrganisationServiceMock,
         },
         fromPendingOrganisationEffects.PendingOrgEffects,
         provideMockActions(() => actions$),
@@ -50,14 +49,14 @@ describe('Pending Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(PendingOrgEffects);
+    effects = TestBed.get(fromPendingOrganisationEffects.PendingOrgEffects);
 
   });
 
   describe('approvPendingOrganisations$', () => {
     it('should return a collection from approvePendingOrgs$ - ApprovePendingOrganisationsSuccess', () => {
 
-      PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(of(true));
+      pendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(of(true));
       const action = new ApprovePendingOrganisations(payload);
       const completion = new ApprovePendingOrganisationsSuccess(true);
       actions$ = hot('-a', { a: action });
@@ -74,7 +73,7 @@ describe('Pending Organisation Effects', () => {
 
   describe('approvPendingOrganisations$ error', () => {
     it('should return ApprovePendingOrganisationsOrganisationsFail', () => {
-      PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(''));
+      pendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(''));
       const action = new ApprovePendingOrganisations(payload);
       const completion = new DisplayErrorMessageOrganisations('');
       actions$ = hot('-a', { a: action });

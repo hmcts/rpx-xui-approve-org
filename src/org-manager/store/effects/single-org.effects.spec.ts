@@ -1,26 +1,23 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromSingleOrgEffects from './single-org.effects';
-import { SingleOrgEffects } from './single-org.effects';
-import { LoadSingleOrg, LoadSingleOrgFail} from '../actions/single-org.actions';
-import { LoadSingleOrgSuccess } from '../actions';
-import { OrganisationService } from 'src/org-manager/services';
-import { SingleOrgSummary } from 'src/org-manager/models/single-org-summary';
+import { cold, hot } from 'jasmine-marbles';
+import { Observable, throwError } from 'rxjs';
 import { LoggerService } from 'src/app/services/logger.service';
+import { OrganisationService } from 'src/org-manager/services';
+import { LoadSingleOrg, LoadSingleOrgFail } from '../actions/single-org.actions';
+import * as fromSingleOrgEffects from './single-org.effects';
 
 export class LoggerServiceMock {
-  error(err) {
+  public error(err: any) {
     return err;
   }
 }
 
 describe('Single organisation Effects', () => {
-  let actions$;
-  let effects: SingleOrgEffects;
-  const OrganisationServiceMock = jasmine.createSpyObj('OrganisationService', [
+  let actions$: Observable<any>;
+  let effects: fromSingleOrgEffects.SingleOrgEffects;
+  const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
     'getSingleOrganisation',
   ]);
   beforeEach(() => {
@@ -29,7 +26,7 @@ describe('Single organisation Effects', () => {
       providers: [
           {
             provide: OrganisationService,
-            useValue: OrganisationServiceMock,
+            useValue: organisationServiceMock,
           },
           fromSingleOrgEffects.SingleOrgEffects,
           provideMockActions(() => actions$),
@@ -40,13 +37,13 @@ describe('Single organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(SingleOrgEffects);
+    effects = TestBed.get(fromSingleOrgEffects.SingleOrgEffects);
 
   });
 
   describe('loadSingleOrg$ error', () => {
     it('should return LoadSingleOrgFail', () => {
-      OrganisationServiceMock.getSingleOrganisation.and.returnValue(throwError(new Error()));
+      organisationServiceMock.getSingleOrganisation.and.returnValue(throwError(new Error()));
       const action = new LoadSingleOrg({});
       const completion = new LoadSingleOrgFail(new Error());
       actions$ = hot('-a', { a: action });

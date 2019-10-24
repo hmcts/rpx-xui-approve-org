@@ -1,25 +1,23 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
-import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromOrganisationEffects from './organisation.effects';
-import { OrganisationEffects } from './organisation.effects';
-import { LoadOrganisation, LoadOrganisationFail } from '../actions/organisation.actions';
-import { LoadOrganisationSuccess } from '../actions';
-import { OrganisationService } from 'src/org-manager/services';
+import { cold, hot } from 'jasmine-marbles';
+import { Observable, throwError } from 'rxjs';
 import { LoggerService } from 'src/app/services/logger.service';
+import { OrganisationService } from 'src/org-manager/services';
+import { LoadOrganisation, LoadOrganisationFail } from '../actions/organisation.actions';
+import * as fromOrganisationEffects from './organisation.effects';
 
 export class LoggerServiceMock {
-  error(err) {
+  public error(err: any) {
     return err;
   }
 }
 
 describe('Organisation Effects', () => {
-  let actions$;
-  let effects: OrganisationEffects;
-  const OrganisationServiceMock = jasmine.createSpyObj('OrganisationService', [
+  let actions$: Observable<any>;
+  let effects: fromOrganisationEffects.OrganisationEffects;
+  const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
     'fetchOrganisations',
   ]);
   beforeEach(() => {
@@ -28,7 +26,7 @@ describe('Organisation Effects', () => {
       providers: [
           {
             provide: OrganisationService,
-            useValue: OrganisationServiceMock,
+            useValue: organisationServiceMock,
           },
           fromOrganisationEffects.OrganisationEffects,
           provideMockActions(() => actions$),
@@ -39,13 +37,13 @@ describe('Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(OrganisationEffects);
+    effects = TestBed.get(fromOrganisationEffects.OrganisationEffects);
 
   });
 
   describe('loadOrganisations$ error', () => {
     it('should return LoadOrganisationsFail', () => {
-      OrganisationServiceMock.fetchOrganisations.and.returnValue(throwError(new Error()));
+      organisationServiceMock.fetchOrganisations.and.returnValue(throwError(new Error()));
       const action = new LoadOrganisation();
       const completion = new LoadOrganisationFail(new Error());
       actions$ = hot('-a', { a: action });
