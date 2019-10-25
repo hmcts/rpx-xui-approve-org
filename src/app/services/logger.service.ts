@@ -18,7 +18,6 @@ export interface ILoggerService {
 }
 
 @Injectable()
-
 export class LoggerService implements ILoggerService {
     constructor(private monitoringService: MonitoringService,
                 private ngxLogger: NGXLogger,
