@@ -1,11 +1,13 @@
 import { TestBed, inject } from '@angular/core/testing';
 
 import { EnvironmentService } from './environment.service';
+import {HttpClientModule} from '@angular/common/http';
 
 describe('EnvironmentService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [EnvironmentService]
+      providers: [EnvironmentService],
+      imports: [HttpClientModule]
     });
   });
 
