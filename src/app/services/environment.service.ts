@@ -12,7 +12,7 @@ import { shareReplay } from 'rxjs/operators';
 })
 export class EnvironmentService implements EnvironmentConfig {
 
-  config$ = this.http.get<any>('api/environment/config').pipe( shareReplay(1) );
+  config$ = this.http.get<any>('/api/environment/config').pipe( shareReplay(1) );
 
   constructor(private http: HttpClient) {
     this.config$.subscribe( config => {
