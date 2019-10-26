@@ -10,71 +10,48 @@ describe('Logger service', () => {
   const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['getConfig']);
   mockEnvironmentService.cookies = {token: 'test'};
 
-  it('should be Truthy', () => {
-    const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
+  let service: LoggerService;
+
+  beforeEach( () => {
+    service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
       mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
+  })
+
+  it('should be Truthy', () => {
     expect(service).toBeTruthy();
   });
 
   it('should be able to call info', () => {
-    const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
-      mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
     service.info('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     expect(mockedNgxLogger.info).toHaveBeenCalled();
   });
 
   it('should be able to call warn', () => {
-    try {
-      const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
-        mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
-      service.warn('message');
-    } catch (e) {
-      console.log(e)
-    }
+    service.warn('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     expect(mockedNgxLogger.warn).toHaveBeenCalled();
   });
 
   it('should be able to call error', () => {
-    try {
-      const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
-        mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
-      service.error('message');
-    } catch (e) {
-    }
+    service.error('message');
     expect(mockedMonitoringService.logException).toHaveBeenCalled();
     expect(mockedNgxLogger.error).toHaveBeenCalled();
   });
 
   it('should be able to call fatal', () => {
-    try {
-      const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
-        mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
-      service.fatal('message');
-    } catch (e) {
-    }
+    service.fatal('message');
     expect(mockedMonitoringService.logException).toHaveBeenCalled();
     expect(mockedNgxLogger.fatal).toHaveBeenCalled();
   });
 
   it('should be able to call debug', () => {
-    try {
-      const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
-        mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
-      service.debug('message');
-    } catch (e) {
-    }
+    service.debug('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
   });
 
   it('should be able to call trace', () => {
-    try {
-      const service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
-        mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
-      service.trace('message');
-    } catch (e) {
-    }
+    service.trace('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
     expect(mockedNgxLogger.trace).toHaveBeenCalled();
   });
