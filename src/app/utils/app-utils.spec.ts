@@ -1,6 +1,6 @@
-import {AppUtils} from './app-utils';
-import { Organisation, OrganisationVM, OrganisationAddress } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationAddress, OrganisationVM } from 'src/org-manager/models/organisation';
 import { AppConstants } from '../app.constants';
+import { AppUtils } from './app-utils';
 
 describe('AppUtils', () => {
 
@@ -39,12 +39,12 @@ describe('AppUtils', () => {
       townCity: 'London',
       county: 'Middlesex',
       dxAddress: [
-          {
-              dxNumber: '1111111111111',
-              dxExchange: 'DX Exchange 1'
-          }
-              ]
-      }
+        {
+          dxNumber: '1111111111111',
+          dxExchange: 'DX Exchange 1'
+        }
+      ]
+    }
     ];
     const organisations: [Organisation] = [{
       organisationIdentifier: '9VR9JLM',
@@ -52,14 +52,14 @@ describe('AppUtils', () => {
       status: 'PENDING',
       sraId: 'SRA1234560123',
       superUser: {
-          userIdentifier: '1fab0a19-e83a-436e-8ceb-e43ab487c6ed',
-          firstName: 'Vam',
-          lastName: 'Shi',
-          email: 'vam@ff.com'
+        userIdentifier: '1fab0a19-e83a-436e-8ceb-e43ab487c6ed',
+        firstName: 'Vam',
+        lastName: 'Shi',
+        email: 'vam@ff.com'
       },
       paymentAccount: [{}],
       contactInformation: orgAddress
-  }];
+    }];
     const organisationVM = AppUtils.mapOrganisations(organisations);
     expect(organisationVM[0].organisationId).toEqual(organisations[0].organisationIdentifier);
     expect(organisationVM[0].name).toEqual(organisations[0].name);
@@ -105,7 +105,7 @@ describe('AppUtils', () => {
 
     nav = 'http://perf-test/something';
     url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.perfTest);
+    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.perftest);
   });
 
   it('should return prod as it does not match any', () => {
@@ -113,4 +113,4 @@ describe('AppUtils', () => {
     const url = AppUtils.getEnvironment(nav);
     expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.prod);
   });
- });
+});

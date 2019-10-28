@@ -15,10 +15,10 @@ export class AppUtils {
       case '/pending-organisations/organisation/': {
         return 'Pending organisation details - Approve organisation';
       }
-      case '/pending-organisations/approve' : {
+      case '/pending-organisations/approve': {
         return 'Check details - Approve organisations';
       }
-      case '/pending-organisations/approve-success' : {
+      case '/pending-organisations/approve-success': {
         return 'Confirmation - Approve organisations';
       }
       case '/pending-organisations': {
@@ -76,7 +76,7 @@ export class AppUtils {
           townCity: org.townCity,
           county: org.county,
           dxAddress: org.dxNumber
-          }],
+        }],
         superUser: {
           userIdentifier: org.admin,
           firstName: org.admin,
@@ -97,19 +97,19 @@ export class AppUtils {
     const matched = url.match(regex);
 
     if (matched && matched[0]) {
-        switch (matched[0]) {
-          case AppConstants.ENVIRONMENT_NAMES.aat:
-          case AppConstants.ENVIRONMENT_NAMES.localhost:
-          case AppConstants.ENVIRONMENT_NAMES.pr:
-             return AppConstants.ENVIRONMENT_NAMES.aat;
-          case AppConstants.ENVIRONMENT_NAMES.demo:
-              return AppConstants.ENVIRONMENT_NAMES.demo;
-          case AppConstants.ENVIRONMENT_NAMES.ithc:
-              return AppConstants.ENVIRONMENT_NAMES.ithc;
-          case AppConstants.ENVIRONMENT_NAMES.perfTest:
-              return AppConstants.ENVIRONMENT_NAMES.perfTest;
-        }
+      switch (matched[0]) {
+        case AppConstants.ENVIRONMENT_NAMES.aat:
+        case AppConstants.ENVIRONMENT_NAMES.localhost:
+        case AppConstants.ENVIRONMENT_NAMES.pr:
+          return AppConstants.ENVIRONMENT_NAMES.aat;
+        case AppConstants.ENVIRONMENT_NAMES.demo:
+          return AppConstants.ENVIRONMENT_NAMES.demo;
+        case AppConstants.ENVIRONMENT_NAMES.ithc:
+          return AppConstants.ENVIRONMENT_NAMES.ithc;
+        case AppConstants.ENVIRONMENT_NAMES.perftest:
+          return AppConstants.ENVIRONMENT_NAMES.perftest;
       }
+    }
     return AppConstants.ENVIRONMENT_NAMES.prod;
   }
 }
