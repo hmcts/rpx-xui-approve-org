@@ -106,8 +106,8 @@ export class AppUtils {
               return AppConstants.ENVIRONMENT_NAMES.demo;
           case AppConstants.ENVIRONMENT_NAMES.ithc:
               return AppConstants.ENVIRONMENT_NAMES.ithc;
-          case AppConstants.ENVIRONMENT_NAMES.perfTest:
-              return AppConstants.ENVIRONMENT_NAMES.perfTest;
+          case AppConstants.ENVIRONMENT_NAMES.perftest:
+              return AppConstants.ENVIRONMENT_NAMES.perftest;
         }
       }
     return AppConstants.ENVIRONMENT_NAMES.prod;
