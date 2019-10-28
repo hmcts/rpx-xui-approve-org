@@ -1,19 +1,14 @@
-FROM node:8.9.0-alpine
+ARG base=hmctspublic.azurecr.io/base/node/stretch-slim-lts-8:8-stretch-slim
 
-MAINTAINER "HMCTS Team <https://github.com/hmcts>"
+FROM ${base} AS build
 LABEL maintainer = "HMCTS Team <https://github.com/hmcts>"
 
-RUN mkdir -p /usr/src/app
-RUN chmod 777 /usr/src/app
-WORKDIR /usr/src/app
-
-COPY package.json .
-COPY yarn.lock .
-
-RUN yarn
-
+COPY package.json yarn.lock ./
+RUN yarn install
 COPY . .
 RUN yarn build
+RUN yarn install --production
 
-EXPOSE 8080
+FROM ${base} AS runtime
+COPY --from=build ${WORKDIR}/ .
 CMD [ "yarn", "start" ]

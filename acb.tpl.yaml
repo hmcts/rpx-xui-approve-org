@@ -1,0 +1,33 @@
+version: 1.0-preview-1
+steps:
+  - id: pull-build
+    cmd: docker pull {{.Run.Registry}}/rpx/xui-approve-org/build:latest || true
+    when: ["-"]
+    keep: true
+
+  - id: build
+    build: >
+      -t {{.Run.Registry}}/rpx/xui-approve-org/build
+      --cache-from {{.Run.Registry}}/rpx/xui-approve-org/build:latest
+      --target build
+      .
+    when:
+      - pull-build
+    keep: true
+
+  - id: runtime
+    build: >
+      -t {{.Run.Registry}}/{{CI_IMAGE_TAG}}
+      --cache-from {{.Run.Registry}}/rpx/xui-approve-org/build:latest
+      --target runtime
+      .
+    when:
+      - build
+    keep: true
+
+  - id: push-images
+    push:
+      - "{{.Run.Registry}}/rpx/xui-approve-org/build:latest"
+      - "{{.Run.Registry}}/{{CI_IMAGE_TAG}}"
+    when:
+      - runtime
