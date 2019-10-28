@@ -1,6 +1,7 @@
 ARG base=hmctspublic.azurecr.io/base/node/stretch-slim-lts-8:8-stretch-slim
 
 FROM ${base} AS build
+USER root
 LABEL maintainer = "HMCTS Team <https://github.com/hmcts>"
 
 COPY package.json yarn.lock ./
