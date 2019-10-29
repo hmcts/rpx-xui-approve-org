@@ -1,9 +1,8 @@
-//const expect = require("chai").expect
+import { Pact } from '@pact-foundation/pact'
 import { expect } from 'chai'
 import * as path from 'path'
-//const { Pact } = require("@pact-foundation/pact")
-import { Pact } from '@pact-foundation/pact'
-import {getUserDetails} from '../../../services/idam'
+import { getUserDetails } from '../../../services/idam'
+
 
 describe("Reference Data API", () => {
   const idamTestUrl = "http://localhost:8992"
