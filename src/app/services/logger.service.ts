@@ -65,7 +65,8 @@ export class LoggerService implements ILoggerService {
         this.monitoringService.logException(error);
     }
     getMessage(message: any): string {
-        const jwt = this.cookieService.get(this.envService.cookies.token);
+        // const jwt = this.cookieService.get(this.envService.cookies.token);
+        const jwt = this.cookieService.get(this.envService.get('cookies').token);
         const jwtData = this.jwtDecodeWrapper.decode(jwt);
         if (jwtData) {
             const userIdEncrypted = this.cryptoWrapper.encrypt(jwtData.sub);
