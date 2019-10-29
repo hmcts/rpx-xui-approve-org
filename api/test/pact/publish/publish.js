@@ -4,7 +4,7 @@ const opts = {
   pactFilesOrDirs: [
     path.resolve(
       __dirname,
-      "../pacts/xui_approve_org_sidam_user_details-sidam_user_details.json"
+      "../pacts/"
     ),
   ],
   pactBroker: "https://pact-broker.platform.hmcts.net",
