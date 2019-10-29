@@ -103,9 +103,9 @@ describe('AppUtils', () => {
     url = AppUtils.getEnvironment(nav);
     expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.ithc);
 
-    nav = 'http://perf-test/something';
+    nav = 'http://perftest/something';
     url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.perfTest);
+    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.perftest);
   });
 
   it('should return prod as it does not match any', () => {
