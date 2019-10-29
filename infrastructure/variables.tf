@@ -58,7 +58,7 @@ variable "session_secret" {
 
 variable "node_tls_reject_unathorized" {
   type = number
-  default = 0
+  default = 1
 }
 variable "api_port" {
   type = number
