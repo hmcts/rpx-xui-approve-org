@@ -7,23 +7,23 @@ import { Organisation } from '../models/organisation';
 
 @Injectable()
 export class PendingOrganisationService {
-  private readonly _singleOrgUrl = environment.singleOrgUrl;
-  private readonly _orgPendingUrl = environment.orgPendingUrl;
-  private readonly _orgApprovePendingUrl = environment.orgApprovePendingUrl;
+  private readonly singleOrgUrl = environment.singleOrgUrl;
+  private readonly orgPendingUrl = environment.orgPendingUrl;
+  private readonly orgApprovePendingUrl = environment.orgApprovePendingUrl;
 
-  constructor(private readonly _http: HttpClient) {
+  constructor(private readonly http: HttpClient) {
   }
 
   public fetchPendingOrganisations(): Observable<Organisation[]> {
-    return this._http.get<Organisation[]>(this._orgPendingUrl);
+    return this.http.get<Organisation[]>(this.orgPendingUrl);
   }
 
   public getSingleOrganisation(payload: { id: number | string }): Observable<SingleOrgSummary> {
-    return this._http.get<SingleOrgSummary>(this._singleOrgUrl + payload.id);
+    return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
   }
 
   public approvePendingOrganisations(payload: Organisation): Observable<Response> {
-    return this._http.put<Response>(this._orgApprovePendingUrl + payload.organisationIdentifier, payload);
+    return this.http.put<Response>(this.orgApprovePendingUrl + payload.organisationIdentifier, payload);
   }
 
 }

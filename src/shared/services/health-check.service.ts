@@ -11,11 +11,11 @@ export interface HealthState {
 @Injectable()
 export class HealthCheckService implements OnDestroy {
 
-    private _routeSubscription: Subscription;
+    private routeSubscription: Subscription;
 
     constructor(
-        private readonly _http: HttpClient,
-        private readonly _store: Store<fromRoot.State>,
+        private readonly http: HttpClient,
+        private readonly store: Store<fromRoot.State>,
     ) { }
 
     public doHealthCheck(): Observable<HealthState> {
@@ -23,7 +23,7 @@ export class HealthCheckService implements OnDestroy {
         const result: HealthState = { healthState };
         let path = '';
 
-        this._routeSubscription = this._store.pipe(
+        this.routeSubscription = this.store.pipe(
             select(fromRoot.getRouterUrl)
         ).subscribe(value => {
             path = value;
@@ -32,13 +32,13 @@ export class HealthCheckService implements OnDestroy {
         const encodedPath = encodeURIComponent(path);
 
         return path ?
-            this._http.get<HealthState>(`/api/healthCheck?path=${encodedPath}`) :
+            this.http.get<HealthState>(`/api/healthCheck?path=${encodedPath}`) :
             of(result);
     }
 
     public ngOnDestroy() {
-        if (this._routeSubscription) {
-            this._routeSubscription.unsubscribe();
+        if (this.routeSubscription) {
+            this.routeSubscription.unsubscribe();
         }
     }
 

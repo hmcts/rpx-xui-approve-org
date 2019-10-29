@@ -10,19 +10,19 @@ import * as organisationActions from '../actions';
 @Injectable()
 export class OrganisationEffects {
   constructor(
-    private readonly _actions$: Actions,
-    private readonly _organisationService: OrganisationService,
-    private readonly _loggerService: LoggerService
+    private readonly actions$: Actions,
+    private readonly organisationService: OrganisationService,
+    private readonly loggerService: LoggerService
   ) {}
 
   @Effect()
-  public loadOrganisations$ = this._actions$.pipe(
+  public loadOrganisations$ = this.actions$.pipe(
     ofType(organisationActions.LOAD_ORGANISATIONS),
     switchMap(() => {
-      return this._organisationService.fetchOrganisations().pipe(
+      return this.organisationService.fetchOrganisations().pipe(
         map(organisationDetails => new organisationActions.LoadOrganisationSuccess(AppUtils.mapOrganisations(organisationDetails))),
         catchError((error: Error) => {
-          this._loggerService.error(error.message);
+          this.loggerService.error(error.message);
           return of(new organisationActions.LoadOrganisationFail(error));
         })
       );

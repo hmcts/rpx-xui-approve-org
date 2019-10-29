@@ -11,17 +11,17 @@ export class HmctsGlobalHeaderComponent {
 
     @Input()
     public set userLoggedIn(value: boolean) {
-        this._userLoggedIn = value;
+        this.userLoggedInFlag = value;
     }
     public get userLoggedIn(): boolean {
-        return this._userLoggedIn;
+        return this.userLoggedInFlag;
     }
 
     @Input() public serviceName: ServiceName;
     @Input() public navigation: Navigations;
     @Output() public navigate = new EventEmitter<string>();
 
-    private _userLoggedIn: boolean;
+    private userLoggedInFlag: boolean;
 
     constructor(public store: Store<fromRoot.State>) { }
 

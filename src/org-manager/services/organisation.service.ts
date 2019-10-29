@@ -6,18 +6,18 @@ import { Organisation } from '../models/organisation';
 
 @Injectable()
 export class OrganisationService {
-  private readonly _singleOrgUrl = environment.singleOrgUrl;
-  private readonly _orgActiveUrl = environment.orgActiveUrl;
-  constructor(private readonly _http: HttpClient) {
+  private readonly singleOrgUrl = environment.singleOrgUrl;
+  private readonly orgActiveUrl = environment.orgActiveUrl;
+  constructor(private readonly http: HttpClient) {
   }
 
   public fetchOrganisations(): Observable<Organisation[]> {
-    const organisations$ = this._http.get<Organisation[]>(this._orgActiveUrl);
+    const organisations$ = this.http.get<Organisation[]>(this.orgActiveUrl);
     return organisations$;
   }
 
   public getSingleOrganisation(payload: { id: number | string}): Observable<Organisation> {
-    return this._http.get<Organisation>(this._singleOrgUrl + payload.id);
+    return this.http.get<Organisation>(this.singleOrgUrl + payload.id);
   }
 
 }

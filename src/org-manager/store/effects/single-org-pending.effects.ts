@@ -8,15 +8,15 @@ import * as singleOrganisationActions from '../../../org-manager/store/actions';
 @Injectable()
 export class SingleOrgPendingEffects {
   constructor(
-    private readonly _actions$: Actions,
-    private readonly _orgService: PendingOrganisationService
+    private readonly actions$: Actions,
+    private readonly orgService: PendingOrganisationService
   ) {}
 
   @Effect()
-  public loadSingleOrg$ = this._actions$.pipe(
+  public loadSingleOrg$ = this.actions$.pipe(
     ofType(singleOrganisationActions.SinglePendingOrgActionTypes.LOAD_SINGLE_PENDING_ORGANISATIONS),
     switchMap((data: { payload: { id: number | string }, type: string}) => {
-      return this._orgService.getSingleOrganisation(data.payload).pipe(
+      return this.orgService.getSingleOrganisation(data.payload).pipe(
         map((singleOrgDetails: any) => {
           return new singleOrganisationActions.LoadSinglePendingOrgSuccess(singleOrgDetails[0]);
         }),

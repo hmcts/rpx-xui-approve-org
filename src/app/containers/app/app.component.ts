@@ -14,21 +14,21 @@ export class AppComponent implements OnInit {
   public title$: Observable<string>;
 
   constructor(
-    private readonly _store: Store<fromRoot.State>
+    private readonly store: Store<fromRoot.State>
   ) {}
 
   public ngOnInit() {
-    this.title$ = this._store.pipe(select(fromRoot.getAppPageTitle));
-    this._store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
+    this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
+    this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
       if (rootState) {
-        this._store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
+        this.store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
       }
     });
   }
 
   public onNavigate(event: string): void {
     if (event === 'sign-out') {
-      return this._store.dispatch(new fromActions.Logout());
+      return this.store.dispatch(new fromActions.Logout());
     }
   }
 

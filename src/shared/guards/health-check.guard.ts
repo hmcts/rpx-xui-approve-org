@@ -10,8 +10,8 @@ import { HealthCheckService, HealthState } from '../services/health-check.servic
 @Injectable()
 export class HealthCheckGuard implements CanActivate {
     constructor(
-        private readonly _healthCheck: HealthCheckService,
-        private readonly _store: Store<fromRoot.State>,
+        private readonly healthCheck: HealthCheckService,
+        private readonly store: Store<fromRoot.State>,
     ) {
     }
 
@@ -32,11 +32,11 @@ export class HealthCheckGuard implements CanActivate {
     }
 
     private _checkHealth(): Observable<HealthState> {
-        return this._healthCheck.doHealthCheck();
+        return this.healthCheck.doHealthCheck();
     }
 
     private _redirectToServiceDownPage() {
-        this._store.dispatch(new fromRoot.Go({ path: ['/service-down'] }));
+        this.store.dispatch(new fromRoot.Go({ path: ['/service-down'] }));
     }
 }
 

@@ -6,11 +6,11 @@ import * as appActions from '../actions';
 @Injectable()
 export class AppEffects {
     constructor(
-        private readonly _actions$: Actions,
+        private readonly actions$: Actions,
     ) { }
 
     @Effect({ dispatch: false })
-    public logout$ = this._actions$.pipe(
+    public logout$ = this.actions$.pipe(
         ofType(appActions.LOGOUT),
         map(() => {
             window.location.href = '/api/logout';

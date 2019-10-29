@@ -13,16 +13,16 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
   public $routeSubscription: Subscription;
   public pageId: string;
   constructor(
-    private readonly _store: Store<fromfeatureStore.OrganisationState>) { }
+    private readonly store: Store<fromfeatureStore.OrganisationState>) { }
 
   public ngOnInit() {
-    this.orgSummary$ = this._store.pipe(select(fromfeatureStore.getSingleOrgOverview));
-    this.loading$ = this._store.pipe(select(fromfeatureStore.orgSummaryLoading));
+    this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleOrgOverview));
+    this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
 
-    this.$routeSubscription = this._store.pipe(select(fromfeatureStore.getCurrentPage)).subscribe((routeParams) => {
+    this.$routeSubscription = this.store.pipe(select(fromfeatureStore.getCurrentPage)).subscribe((routeParams) => {
       if (routeParams.id && routeParams.id !== this.pageId) { // TODO see why double call.
         this.pageId = routeParams.id;
-        this._store.dispatch(new fromfeatureStore.LoadSingleOrg({ id: this.pageId
+        this.store.dispatch(new fromfeatureStore.LoadSingleOrg({ id: this.pageId
         }));
       }
     });
@@ -30,7 +30,7 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy() {
-    this._store.dispatch(new fromfeatureStore.ResetSingleOrg({}));
+    this.store.dispatch(new fromfeatureStore.ResetSingleOrg({}));
     this.$routeSubscription.unsubscribe();
   }
 }

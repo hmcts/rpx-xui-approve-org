@@ -27,10 +27,10 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
   public valueChange = new EventEmitter();
 
   constructor(public store: Store<fromOrganisationPendingStore.OrganisationState>,
-              private readonly _fb: FormBuilder) {}
+              private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
-    this.inputForm = this._fb.group({
+    this.inputForm = this.fb.group({
       pendingOrgInputRadio: ['', Validators.required]
     });
     this.approveOrganisations = [];

@@ -4,10 +4,10 @@ import { LoggerService } from 'src/app/services/logger.service';
 @Injectable()
 export class DefaultErrorHandler implements ErrorHandler {
   constructor(
-    private readonly _loggerService: LoggerService
+    private readonly loggerService: LoggerService
   ) { }
 
   public handleError(error: Error) {
-    this._loggerService.error(error);
+    this.loggerService.error(error);
   }
 }

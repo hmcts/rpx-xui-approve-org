@@ -16,24 +16,24 @@ export class OrgPendingSummaryComponent implements OnInit, OnDestroy {
   public pageId: string;
 
   constructor(
-    private readonly _store: Store<fromOrganisationPendingStore.OrganisationState>) { }
+    private readonly store: Store<fromOrganisationPendingStore.OrganisationState>) { }
 
   public ngOnInit() {
 
-    this.orgSummary$ = this._store.pipe(select(fromOrganisationPendingStore.getSingleOrgOverview));
-    this.loading$ = this._store.pipe(select(fromOrganisationPendingStore.orgSummaryLoading));
+    this.orgSummary$ = this.store.pipe(select(fromOrganisationPendingStore.getSingleOrgOverview));
+    this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.orgSummaryLoading));
 
-    this.$routeSubscription = this._store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
+    this.$routeSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
       if (routeParams.id && routeParams.id !== this.pageId) { // TODO see why double call.
         this.pageId = routeParams.id;
-        this._store.dispatch(new fromOrganisationPendingStore.LoadSingleOrg({ id: this.pageId
+        this.store.dispatch(new fromOrganisationPendingStore.LoadSingleOrg({ id: this.pageId
         }));
       }
     });
   }
 
   public ngOnDestroy() {
-    this._store.dispatch(new fromOrganisationPendingStore.ResetSingleOrg({}));
+    this.store.dispatch(new fromOrganisationPendingStore.ResetSingleOrg({}));
     this.$routeSubscription.unsubscribe();
   }
 }

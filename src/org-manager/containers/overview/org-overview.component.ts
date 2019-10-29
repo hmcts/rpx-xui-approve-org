@@ -16,17 +16,17 @@ export class OverviewComponent implements OnInit {
   public pendingOrgsCount$: Observable<number>;
 
   constructor(
-    private readonly _store: Store<fromOrganisationStore.OrganisationState>,
-    private readonly _pendingStore: Store<fromOrganisationPendingStore.OrganisationState>
+    private readonly store: Store<fromOrganisationStore.OrganisationState>,
+    private readonly pendingStore: Store<fromOrganisationPendingStore.OrganisationState>
   ) { }
 
   public ngOnInit(): void {
-    this._store.dispatch(new fromOrganisationStore.LoadOrganisation());
-    this.orgs$ = this._store.pipe(select(fromOrganisationStore.organisations));
-    this.loading$ = this._store.pipe(select(fromOrganisationStore.organisationsLoading));
+    this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
+    this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
+    this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
 
-    this._pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
-    this.pendingOrgsCount$ = this._pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
+    this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
+    this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
 
   }
 }

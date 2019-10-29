@@ -7,11 +7,11 @@ import { AuthService } from './auth.service';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private readonly _authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   public canActivate(): boolean {
-    if (!this._authService.isAuthenticated()) {
-      this._authService.loginRedirect();
+    if (!this.authService.isAuthenticated()) {
+      this.authService.loginRedirect();
       return false;
     }
     return true;

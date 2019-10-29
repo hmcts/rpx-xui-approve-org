@@ -11,38 +11,38 @@ import * as pendingOrgActions from '../../../org-manager/store/actions/org-pendi
 @Injectable()
 export class PendingOrgEffects {
   constructor(
-    private readonly _actions$: Actions,
-    private readonly _pendingOrgService: PendingOrganisationService,
-    private readonly _loggerService: LoggerService
+    private readonly actions$: Actions,
+    private readonly pendingOrgService: PendingOrganisationService,
+    private readonly loggerService: LoggerService
   ) { }
 
   @Effect()
-  public loadPendingOrgs$ = this._actions$.pipe(
+  public loadPendingOrgs$ = this.actions$.pipe(
     ofType(pendingOrgActions.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS),
     switchMap(() => {
-      return this._pendingOrgService.fetchPendingOrganisations().pipe(
+      return this.pendingOrgService.fetchPendingOrganisations().pipe(
         map(pendingOrganisations => new pendingOrgActions.LoadPendingOrganisationsSuccess(
         AppUtils.mapOrganisations(pendingOrganisations)),
         catchError((error: Error) => {
-         this._loggerService.error(error.message);
+         this.loggerService.error(error.message);
          return of(new pendingOrgActions.LoadPendingOrganisationsFail(error));
         })
       ));
     }));
 
   @Effect()
-  public approvePendingOrgs$ = this._actions$.pipe(
+  public approvePendingOrgs$ = this.actions$.pipe(
     ofType(pendingOrgActions.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS),
     map((action: pendingOrgActions.ApprovePendingOrganisations) => action.payload),
     switchMap(payload => {
       const pendingOrganisation = AppUtils.mapOrganisationsVm(payload)[0];
-      return this._pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
+      return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
         map(pendingOrganisations => {
-          this._loggerService.log('Approved Organisation successfully');
+          this.loggerService.log('Approved Organisation successfully');
           return new pendingOrgActions.ApprovePendingOrganisationsSuccess(pendingOrganisations);
         }),
         catchError((error: Error) => {
-         this._loggerService.error(error.message);
+         this.loggerService.error(error.message);
          return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
         })
       );
@@ -50,7 +50,7 @@ export class PendingOrgEffects {
   );
 
   @Effect()
-  public approvePendingOrgsSuccess$ = this._actions$.pipe(
+  public approvePendingOrgsSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS),
     map(() => {
       return new fromRoot.Go({ path: ['pending-organisations/approve-success'] });
