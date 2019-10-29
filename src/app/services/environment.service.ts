@@ -10,7 +10,8 @@ export class EnvironmentService {
 
   private data: EnvironmentConfig;
 
-  config$ = this.http.get<EnvironmentConfig>('/api/environment/config').pipe( shareReplay(1) );
+  config$ = this.http.get<EnvironmentConfig>('/api/environment/config')
+    .pipe<EnvironmentConfig>( shareReplay<EnvironmentConfig>(1) );
 
   constructor(private http: HttpClient) {
     this.config$.subscribe( config => {
@@ -22,6 +23,3 @@ export class EnvironmentService {
     return this.data[key];
   }
 }
-
-
-export type Test = 'testA' | 'testB';

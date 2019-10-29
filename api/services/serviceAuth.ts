@@ -8,7 +8,7 @@ import { getHealth, getInfo } from '../lib/util'
 import * as log4jui from '../lib/log4jui'
 
 const url = environmentConfig.services.s2s
-const s2sSecretUnTrimmed = getEnvConfig<string>('S2S_SECRET', 'string', 'AAAAAAAAAAAAAAAA')
+const s2sSecretUnTrimmed = getEnvConfig<string>('S2S_SECRET', 'string')
 const microservice = environmentConfig.microservice
 const s2sSecret = s2sSecretUnTrimmed.trim()
 
