@@ -1,45 +1,27 @@
-import {
-  EnvironmentConfig,
-  EnvironmentConfigCookies,
-  EnvironmentConfigExceptionOptions, EnvironmentConfigProxy, EnvironmentConfigServices
-} from '../../../api/interfaces/environment.config';
-import {HttpClient} from '@angular/common/http';
-import {Injectable} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { shareReplay } from 'rxjs/operators';
+import { EnvironmentConfig } from 'src/models/environmentConfig.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EnvironmentService implements EnvironmentConfig {
+export class EnvironmentService {
 
-  config$ = this.http.get<any>('/api/environment/config').pipe( shareReplay(1) );
+  private data: EnvironmentConfig;
+
+  config$ = this.http.get<EnvironmentConfig>('/api/environment/config').pipe( shareReplay(1) );
 
   constructor(private http: HttpClient) {
     this.config$.subscribe( config => {
-      for (const configKey in config) {
-        if (config.hasOwnProperty(configKey)) {
-          this[configKey] = config[configKey];
-        }
-      }
+      this.data = config;
     });
   }
 
-  readonly appInsightsInstrumentationKey: string;
-  readonly configEnv: string;
-  readonly cookies: EnvironmentConfigCookies;
-  readonly exceptionOptions: EnvironmentConfigExceptionOptions;
-  readonly health: EnvironmentConfigServices;
-  readonly idamClient: string;
-  readonly indexUrl: string;
-  readonly logging: string;
-  readonly maxLogLine: number;
-  readonly microservice: string;
-  readonly now: boolean;
-  readonly oauthCallbackUrl: string;
-  readonly port: number;
-  readonly protocol: string;
-  readonly proxy: EnvironmentConfigProxy;
-  readonly secureCookie: boolean;
-  readonly services: EnvironmentConfigServices;
-  readonly sessionSecret: string;
+  public get<K extends keyof EnvironmentConfig>(key: K): EnvironmentConfig[K] {
+    return this.data[key];
+  }
 }
+
+
+export type Test = 'testA' | 'testB';
