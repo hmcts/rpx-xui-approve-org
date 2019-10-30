@@ -9,6 +9,7 @@ import { asyncReturnOrError } from '../lib/util'
 import { getUserDetails } from '../services/idam'
 import { serviceTokenGenerator } from './serviceToken'
 
+const idamUrl = environmentConfig.services.idamApi
 const secret = getEnvConfig<string>('IDAM_SECRET', 'string')
 const logger = log4js.getLogger('auth')
 logger.level = environmentConfig.logging
@@ -75,8 +76,8 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
 async function sessionChainCheck(req: EnhancedRequest, res: express.Response, accessToken: string) {
     if (!req.session.auth) {
         logger.warn('Session expired. Trying to get user details again')
-        console.log(getUserDetails(accessToken))
-        const details = await asyncReturnOrError(getUserDetails(accessToken), 'Cannot get user details', res, logger, false)
+        console.log(getUserDetails(accessToken, idamUrl))
+        const details = await asyncReturnOrError(getUserDetails(accessToken, idamUrl), 'Cannot get user details', res, logger, false)
 
         if (details) {
             logger.info('Setting session')
@@ -116,7 +117,7 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
     const accessToken = response.data.access_token
 
     if (accessToken) {
-        const userDetails = await asyncReturnOrError(getUserDetails(accessToken), 'Cannot get user details', res, logger, false)
+        const userDetails = await asyncReturnOrError(getUserDetails(accessToken, idamUrl), 'Cannot get user details', res, logger, false)
         const isPrdAdminRole = havePrdAdminRole(userDetails)
         if (isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN');

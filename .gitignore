@@ -35,6 +35,8 @@ yarn-error.log
 testem.log
 /typings
 db.json
+/api/test/pact/logs
+/api/test/pact/pacts
 .env
 
 # System Files
