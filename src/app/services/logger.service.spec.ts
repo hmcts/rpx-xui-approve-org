@@ -15,7 +15,7 @@ describe('Logger service', () => {
   beforeEach( () => {
     service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
       mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
-  })
+  });
 
   it('should be Truthy', () => {
     expect(service).toBeTruthy();
