@@ -7,8 +7,7 @@ describe('Logger service', () => {
   const mockedCookieService = jasmine.createSpyObj('mockedCookieService', ['get']);
   const mockedCryptoWrapper = jasmine.createSpyObj('mockedCryptoWrapper', ['encrypt', 'decrypt']);
   const mockJwtDecodeWrapper = jasmine.createSpyObj('mockJwtDecodeWrapper', ['decode']);
-  const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', ['getConfig']);
-  mockEnvironmentService.cookies = {token: 'test'};
+  const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', {get: { cookies: { token: 'test' } }});
 
   let service: LoggerService;
 
