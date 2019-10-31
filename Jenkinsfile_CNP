@@ -13,7 +13,9 @@ properties([
 
 @Library("Infrastructure")
 
-import uk.gov.hmcts.contino.AppPipelineDsl
+// Disable pact testing on pipeline
+//
+// import uk.gov.hmcts.contino.AppPipelineDsl
 
 def type      = "nodejs"
 def product   = "xui"
@@ -47,9 +49,11 @@ withPipeline(type, product, component) {
     enableDockerBuild()
     installCharts()
 
-    enablePactAs([
-      AppPipelineDsl.PactRoles.CONSUMER
-    ])
+// Disable pact testing on pipeline
+//
+//    enablePactAs([
+//      AppPipelineDsl.PactRoles.CONSUMER
+//    ])
 
     after('checkout') {sh 'yarn cache clean'}
 
