@@ -64,13 +64,13 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
 
     logger.info('Getting Token from auth code.')
 
-    return http.post(
-        `${environmentConfig.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
-        environmentConfig.protocol
-        }://${req.headers.host}${environmentConfig.oauthCallbackUrl}`,
-        {},
-        options
-    )
+    const url = `${environmentConfig.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
+    environmentConfig.protocol
+  }://${req.headers.host}${environmentConfig.oauthCallbackUrl}`
+
+  logger.info('POST ==>', url, {}, options)
+
+    return http.post(url, {}, options)
 }
 
 async function sessionChainCheck(req: EnhancedRequest, res: express.Response, accessToken: string) {
