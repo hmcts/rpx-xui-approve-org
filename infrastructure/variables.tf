@@ -124,3 +124,7 @@ variable "proxy_port" {
   type = number
   default = 0
 }
+
+variable "node_tls_reject_unauthorized" {
+  default = "1"
+}
