@@ -59,3 +59,7 @@ variable "aat_idam_web" {
   type = "string"
   default = "null"
 }
+
+variable "node_tls_reject_unauthorized" {
+  default = "1"
+}
