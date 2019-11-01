@@ -7,10 +7,7 @@ nodejs:
     REFORM_SERVICE_NAME: xui-ao-webapp
     NODE_ENV: production
     UV_THREADPOOL_SIZE: 64
-    APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
     PUI_ENV: preview
-    S2S_SECRET: ${S2S_SECRET}
-    IDAM_SECRET: ${IDAM_SECRET}
     SESSION_SECRET: secretSauce
     NODE_TLS_REJECT_UNAUTHORIZED: 1
     PORT: 3000
@@ -36,5 +33,4 @@ nodejs:
         - xui-oauth2-token
         - AppInsightsInstrumentationKey
   # Don't modify below here
-  image: ${IMAGE_NAME}
-  ingressHost: ${SERVICE_FQDN}
+  image: 'hmctspublic.azurecr.io/xui/ao-webapp:latest'
