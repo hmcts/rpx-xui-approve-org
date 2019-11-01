@@ -13,3 +13,25 @@ nodejs:
     IDAM_WEB_SERVICE: https://idam-web-public.aat.platform.hmcts.net
     RD_PROFESSIONAL_API_SERVICE: http://rd-professional-api-aat.service.core-compute-aat.internal
     S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+    PROXY_HOST:
+    PROXY_PORT: 0
+    REFORM_TEAM: rpx
+    REFORM_SERVICE_NAME: xui-ao-webapp
+    NODE_ENV: production
+    UV_THREADPOOL_SIZE: 64
+    APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
+    PUI_ENV: preview
+    SESSION_SECRET: secretSauce
+    PORT: 3000
+    NOW: false
+    IDAM_CLIENT: xuiaowebapp
+    OAUTH_CALLBACK_URL: /oauth2/callback
+    MAX_LOG_LINE: 80
+    EXCEPTION_OPTIONS_MAX_LINES: 1
+    INDEX_URL: /
+    LOGGING: debug
+    PROTOCOL: http
+    SECURE_COOKIE: false
+    COOKIE_TOKEN: __auth__
+    COOKIE_USER_ID: __userid__
+    MICROSERVICE: xui_webapp
