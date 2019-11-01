@@ -4,6 +4,9 @@ nodejs:
   environment:
     IDAM_URL: https://idam-api.aat.platform.hmcts.net
     S2S_URL: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
+    NODE_TLS_REJECT_UNAUTHORIZED: 0
+    S2S_SECRET: ${S2S_SECRET}
+    IDAM_SECRET: ${IDAM_SECRET}
     CCD_DATA_API_SERVICE: https://ccd-data-store-api-demo.service.core-compute-demo.internal
     CCD_DEFINITION_API_SERVICE: https://ccd-definition-store-api-demo.service.core-compute-demo.internal
     IDAM_API_SERVICE: https://idam-api.aat.platform.hmcts.net
