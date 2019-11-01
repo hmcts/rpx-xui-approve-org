@@ -12,8 +12,8 @@ nodejs:
     S2S_SECRET: ${S2S_SECRET}
     IDAM_SECRET: ${IDAM_SECRET}
     SESSION_SECRET: secretSauce
-    NODE_TLS_REJECT_UNAUTHORIZED: 0
-    PORT: 3001
+    NODE_TLS_REJECT_UNAUTHORIZED: 1
+    PORT: 3000
     NOW: false
     IDAM_CLIENT: xuiaowebapp
     OAUTH_CALLBACK_URL: /oauth2/callback
@@ -26,6 +26,8 @@ nodejs:
     COOKIE_TOKEN: __auth__
     COOKIE_USER_ID: __userid__
     MICROSERVICE: xui_webapp
+    PROXY_HOST:
+    PROXY_PORT: 0
   keyVaults:
     rpx:
       resourceGroup: rpx
