@@ -9,7 +9,9 @@ nodejs:
     UV_THREADPOOL_SIZE: 64
     PUI_ENV: prod
     SESSION_SECRET: secretSauce
-    NODE_TLS_REJECT_UNAUTHORIZED: 0
+    NODE_TLS_REJECT_UNAUTHORIZED: 1
+    PROXY_HOST: 172.16.0.7
+    PROXY_PORT: 0
     PORT: 3000
     NOW: false
     IDAM_CLIENT: xuiaowebapp
@@ -18,7 +20,7 @@ nodejs:
     EXCEPTION_OPTIONS_MAX_LINES: 1
     INDEX_URL: /
     LOGGING: debug
-    PROTOCOL: http
+    PROTOCOL: https
     SECURE_COOKIE: false
     COOKIE_TOKEN: __auth__
     COOKIE_USER_ID: __userid__

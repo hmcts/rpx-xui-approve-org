@@ -69,4 +69,3 @@ if (isLocal()) {
 }
 
 export const environmentConfig = { ...config }
-export default { ...config }

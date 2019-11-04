@@ -1,10 +1,8 @@
-import * as log4js from 'log4js'
-import config from './environment.config'
+import * as log4jui from '../lib/log4jui'
 import { Store } from './store'
 import { isObject } from './util'
 
-const logger = log4js.getLogger('scss engine')
-logger.level = config.logging ? config.logging : 'OFF'
+const logger = log4jui.getLogger('scss engine')
 
 export async function pushStack(req, stack) {
     logger.info('Pushing stack')

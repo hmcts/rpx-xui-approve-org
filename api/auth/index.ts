@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
-import * as log4js from 'log4js'
 import {environmentConfig, getEnvConfig} from '../lib/environment.config'
 import { http } from '../lib/http'
+import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest } from '../lib/models'
 import { asyncReturnOrError } from '../lib/util'
 import { getUserDetails } from '../services/idam'
@@ -11,8 +11,7 @@ import { serviceTokenGenerator } from './serviceToken'
 
 const idamUrl = environmentConfig.services.idamApi
 const secret = getEnvConfig<string>('IDAM_SECRET', 'string')
-const logger = log4js.getLogger('auth')
-logger.level = environmentConfig.logging
+const logger = log4jui.getLogger('auth')
 
 export async function attach(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     const session = req.session!
@@ -22,7 +21,7 @@ export async function attach(req: EnhancedRequest, res: express.Response, next: 
 
     if (accessToken) {
         const jwtData = jwtDecode(accessToken)
-        const expires = new Date(jwtData.exp).getTime()
+        const expires = new Date(jwtData.exp as string).getTime()
         const now = new Date().getTime() / 1000
         expired = expires < now
     }
@@ -127,7 +126,7 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
         res.cookie(environmentConfig.cookies.token, accessToken)
 
         const jwtData: any = jwtDecode(accessToken)
-        const expires = new Date(jwtData.exp).getTime()
+        const expires = new Date(jwtData.exp as string).getTime()
         const now = new Date().getTime() / 1000
         const expired = expires < now
 
