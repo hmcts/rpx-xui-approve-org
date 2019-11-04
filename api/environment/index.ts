@@ -6,7 +6,9 @@ export const router = express.Router({ mergeParams: true })
 router.get('/config', environmentRoute)
 
 async function environmentRoute(req, res) {
-  res.status(200).send(environmentConfig)
+  const config = { ...environmentConfig }
+  delete config.appInsightsInstrumentationKey
+  res.status(200).send(config)
 }
 
 export default router

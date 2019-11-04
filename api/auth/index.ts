@@ -68,8 +68,6 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
     environmentConfig.protocol
   }://${req.headers.host}${environmentConfig.oauthCallbackUrl}`
 
-  logger.info('POST ==>', url, {}, options)
-
     return http.post(url, {}, options)
 }
 

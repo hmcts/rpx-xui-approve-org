@@ -4,14 +4,13 @@ import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as session from 'express-session'
-import * as globalTunnel from "global-tunnel-ng"
 import * as path from 'path'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
 import { environmentConfig } from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
-import {exists} from "./lib/util"
+import * as tunnel from './lib/tunnel'
 import routes from './routes'
 
 const FileStore = sessionFileStore(session)
@@ -42,16 +41,7 @@ app.set('views', __dirname)
 app.use(express.static(path.join(__dirname, '..', 'assets'), { index: false }))
 app.use(express.static(path.join(__dirname, '..'), { index: false }))
 
-if (exists(environmentConfig.proxy, 'host') && exists(environmentConfig.proxy, 'port')) {
-  console.log('using tunnel: ', {
-    host: environmentConfig.proxy.host,
-    port: environmentConfig.proxy.port,
-  })
-  globalTunnel.initialize({
-    host: environmentConfig.proxy.host,
-    port: environmentConfig.proxy.port,
-  })
-}
+tunnel.init()
 
 app.use(errorStack)
 app.use(appInsights)
