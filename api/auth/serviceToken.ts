@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 import * as jwtDecode from 'jwt-decode'
 import { environmentConfig } from '../lib/environment.config'
 import * as log4jui from '../lib/log4jui'

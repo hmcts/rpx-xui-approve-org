@@ -62,7 +62,7 @@ variable "node_tls_reject_unathorized" {
 }
 variable "api_port" {
   type = number
-  default = 3001
+  default = 3000
 }
 variable "api_now" {
   type = bool

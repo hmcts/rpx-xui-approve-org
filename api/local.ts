@@ -2,8 +2,8 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
-import * as log4js from 'log4js'
 import * as sessionFileStore from 'session-file-store'
+import * as log4jui from '../lib/log4jui'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
 import { environmentConfig } from './lib/environment.config'
@@ -14,8 +14,7 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
-const logger = log4js.getLogger('server')
-logger.level = environmentConfig.logging ? environmentConfig.logging : 'OFF'
+const logger = log4jui.getLogger('server')
 
 app.use(
     session({
