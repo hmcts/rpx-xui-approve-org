@@ -1,7 +1,7 @@
 import * as express from 'express'
-import * as log4jui from '../../api/lib/log4jui'
 import { environmentConfig } from '../lib/environment.config'
 import { http } from '../lib/http'
+import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('return')
 
