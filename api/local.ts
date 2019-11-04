@@ -2,14 +2,13 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
-import * as globalTunnel from 'global-tunnel-ng'
 import * as log4js from 'log4js'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
 import { environmentConfig } from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
-import { exists } from './lib/util'
+import * as tunnel from './lib/tunnel'
 import routes from './routes'
 
 const FileStore = sessionFileStore(session)
@@ -35,13 +34,7 @@ app.use(
     })
 )
 
-if (exists(environmentConfig.proxy, 'host') && exists(environmentConfig.proxy, 'port')) {
-  logger.info('configuring proxy tunnel: ', environmentConfig.proxy)
-  globalTunnel.initialize({
-      host: environmentConfig.proxy.host,
-      port: environmentConfig.proxy.port,
-  })
-}
+tunnel.init()
 
 app.use(errorStack)
 app.use(appInsights)
