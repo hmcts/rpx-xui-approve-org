@@ -1,6 +1,6 @@
 import * as globalTunnel from 'global-tunnel-ng'
-import * as log4jui from '../lib/log4jui'
 import { environmentConfig } from './environment.config'
+import * as log4jui from './log4jui'
 import {exists} from './util'
 
 const logger = log4jui.getLogger('proxy')
