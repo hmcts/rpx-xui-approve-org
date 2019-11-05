@@ -1,28 +1,27 @@
 import axios, { AxiosResponse } from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
-import * as log4js from 'log4js'
-import { config } from '../lib/config'
+import {environmentConfig, getEnvConfig} from '../lib/environment.config'
 import { http } from '../lib/http'
+import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest } from '../lib/models'
 import { asyncReturnOrError } from '../lib/util'
 import { getUserDetails } from '../services/idam'
 import { serviceTokenGenerator } from './serviceToken'
 
-const idamUrl = config.services.idamApi
-const secret = process.env.IDAM_SECRET
-const logger = log4js.getLogger('auth')
-logger.level = config.logging
+const idamUrl = environmentConfig.services.idamApi
+const secret = getEnvConfig<string>('IDAM_SECRET', 'string')
+const logger = log4jui.getLogger('auth')
 
 export async function attach(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
     const session = req.session!
-    const accessToken = req.cookies[config.cookies.token]
+    const accessToken = req.cookies[environmentConfig.cookies.token]
 
     let expired
 
     if (accessToken) {
         const jwtData = jwtDecode(accessToken)
-        const expires = new Date(jwtData.exp).getTime()
+        const expires = new Date(jwtData.exp as string).getTime()
         const now = new Date().getTime() / 1000
         expired = expires < now
     }
@@ -53,8 +52,8 @@ export async function attach(req: EnhancedRequest, res: express.Response, next: 
 }
 
 export async function getTokenFromCode(req: express.Request, res: express.Response): Promise<AxiosResponse> {
-    console.log(`${config.idamClient}:${secret}`)
-    const Authorization = `Basic ${new Buffer(`${config.idamClient}:${secret}`).toString('base64')}`
+    console.log(`${environmentConfig.idamClient}:${secret}`)
+    const Authorization = `Basic ${new Buffer(`${environmentConfig.idamClient}:${secret}`).toString('base64')}`
     const options = {
         headers: {
             Authorization,
@@ -64,13 +63,11 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
 
     logger.info('Getting Token from auth code.')
 
-    return http.post(
-        `${config.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
-        config.protocol
-        }://${req.headers.host}${config.oauthCallbackUrl}`,
-        {},
-        options
-    )
+    const url = `${environmentConfig.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
+    environmentConfig.protocol
+  }://${req.headers.host}${environmentConfig.oauthCallbackUrl}`
+
+    return http.post(url, {}, options)
 }
 
 async function sessionChainCheck(req: EnhancedRequest, res: express.Response, accessToken: string) {
@@ -122,14 +119,14 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
         if (isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN');
             // tslint:disable-next-line
-            res.redirect(`${config.services.idamLoginUrl}/login?response_type=code&client_id=${config.idamClient}&redirect_uri=${config.protocol}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
+            res.redirect(`${environmentConfig.services.idamApi}/login?response_type=code&client_id=${environmentConfig.idamClient}&redirect_uri=${environmentConfig.protocol}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
             return false
         }
         // set browser cookie
-        res.cookie(config.cookies.token, accessToken)
+        res.cookie(environmentConfig.cookies.token, accessToken)
 
         const jwtData: any = jwtDecode(accessToken)
-        const expires = new Date(jwtData.exp).getTime()
+        const expires = new Date(jwtData.exp as string).getTime()
         const now = new Date().getTime() / 1000
         const expired = expires < now
 
@@ -148,19 +145,19 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
 
               logger.info('save session', req.session)
               req.session.save(() => {
-                res.redirect(config.indexUrl || '/')
+                res.redirect(environmentConfig.indexUrl || '/')
               })
             }
         }
     } else {
         logger.error('No auth token')
-        res.redirect(config.indexUrl || '/')
+        res.redirect(environmentConfig.indexUrl || '/')
     }
 }
 
 export function doLogout(req: EnhancedRequest, res: express.Response, status: number = 302) {
-    res.clearCookie(config.cookies.token)
-    res.clearCookie(config.cookies.userId)
+    res.clearCookie(environmentConfig.cookies.token)
+    res.clearCookie(environmentConfig.cookies.userId)
     req.session.user = null
     req.session.save(() => {
         res.redirect(status, req.query.redirect || '/')
