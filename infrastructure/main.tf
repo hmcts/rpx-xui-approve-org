@@ -51,12 +51,12 @@ data "azurerm_key_vault" "key_vault" {
 }
 
 data "azurerm_key_vault_secret" "s2s_secret" {
-    name = "xui-s2s-token"
+    name = "ao-s2s-client-secret"
     vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "oauth2_secret" {
-    name = "xui-oauth2-token"
+    name = "ao-idam-client-secret"
     vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
 
