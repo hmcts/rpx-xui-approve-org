@@ -13,6 +13,8 @@ import { errorStack } from './lib/errorStack'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
 
+console.log('start server.js')
+
 const FileStore = sessionFileStore(session)
 
 const app = express()
@@ -69,4 +71,8 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
-app.listen(environmentConfig.port || 3000)
+const port = environmentConfig.port || 3000
+
+console.log('server running on port:', port)
+
+app.listen(port)
