@@ -108,7 +108,9 @@ variable "idam_web_service" {}
 variable "rd_professional_api_service" {}
 variable "s2s_service" {}
 
-variable "proxy_host" {}
+variable "proxy_host" {
+  default = "172.16.0.7"
+}
 variable "proxy_port" {
   default = "0"
 }
