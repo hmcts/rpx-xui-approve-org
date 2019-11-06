@@ -68,4 +68,6 @@ if (isLocal()) {
   config.protocol = 'http'
 }
 
+console.log('envConfig', config)
+
 export const environmentConfig = { ...config }
