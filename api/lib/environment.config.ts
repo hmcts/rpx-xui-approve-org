@@ -33,7 +33,6 @@ const config: EnvironmentConfig = {
   microservice: getEnvConfig<string>('MICROSERVICE', 'string'),
   now: getEnvConfig<boolean>('NOW', 'bool'),
   oauthCallbackUrl: getEnvConfig<string>('OAUTH_CALLBACK_URL', 'string'),
-  port: getEnvConfig<number>('PORT', 'int'),
   protocol: getEnvConfig<string>('PROTOCOL', 'string'),
   proxy: {} as EnvironmentConfigProxy,
   secureCookie: getEnvConfig<boolean>('SECURE_COOKIE', 'bool'),
@@ -67,7 +66,5 @@ if (proxyConfig.host !== '' && proxyConfig.port !== 0) {
 if (isLocal()) {
   config.protocol = 'http'
 }
-
-console.log('envConfig', config)
 
 export const environmentConfig = { ...config }

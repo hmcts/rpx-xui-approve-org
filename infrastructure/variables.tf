@@ -114,7 +114,3 @@ variable "proxy_host" {
 variable "proxy_port" {
   default = "0"
 }
-
-variable "node_tls_reject_unauthorized" {
-  default = "1"
-}
