@@ -11,7 +11,6 @@ export interface EnvironmentConfig {
   maxLogLine: number,
   microservice: string,
   oauthCallbackUrl: string,
-  port: number,
   protocol: string,
   proxy: EnvironmentConfigProxy,
   secureCookie: boolean,
