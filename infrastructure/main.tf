@@ -39,7 +39,6 @@ module "app" {
         # API CONFIG
         SESSION_SECRET = "${var.session_secret}"
         NODE_TLS_REJECT_UNAUTHORIZED = "${var.node_tls_reject_unathorized}"
-        PORT = "${var.api_port}"
         NOW = "${var.api_now}"
         IDAM_CLIENT = "${var.idam_client}"
         OAUTH_CALLBACK_URL = "${var.oauth_callback_url}"
