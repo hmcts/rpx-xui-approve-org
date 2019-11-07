@@ -62,9 +62,6 @@ variable "session_secret" {
 variable "node_tls_reject_unathorized" {
   default = "1"
 }
-variable "api_port" {
-  default = "3000"
-}
 variable "api_now" {
   default = "false"
 }
