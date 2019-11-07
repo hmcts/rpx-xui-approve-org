@@ -2,6 +2,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
@@ -45,7 +46,5 @@ app.get('/oauth2/callback', auth.oauth)
 
 app.use('/api', routes)
 
-const port = environmentConfig.port || 3001
-app.listen(port)
-
-logger.info(`Local server up at ${port}`)
+const port = process.env.PORT || 3001
+app.listen(port, () => logger.info(`Local server up at ${port}`))
