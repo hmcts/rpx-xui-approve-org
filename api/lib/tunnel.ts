@@ -7,7 +7,6 @@ const logger = log4jui.getLogger('proxy')
 
 export function init() {
   if (exists(environmentConfig.proxy, 'host') && exists(environmentConfig.proxy, 'port')) {
-    console.log('configuring tunnel: ', environmentConfig.proxy)
     logger.info('configuring tunnel: ', environmentConfig.proxy)
     globalTunnel.initialize({...environmentConfig.proxy})
   }
