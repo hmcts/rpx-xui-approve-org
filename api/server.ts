@@ -1,10 +1,10 @@
-
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as path from 'path'
+import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
@@ -12,8 +12,6 @@ import { environmentConfig } from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
-
-console.log('start server.js')
 
 const FileStore = sessionFileStore(session)
 
@@ -71,8 +69,6 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
-const port = environmentConfig.port || 3000
+const port = process.env.PORT || 3000
 
-console.log('server running on port:', port)
-
-app.listen(port)
+app.listen(port, () => console.log('server running on port:', port) )
