@@ -1,7 +1,7 @@
 import * as express from 'express'
-import { config } from '../lib/config'
+import { environmentConfig } from '../lib/environment.config'
 import { http } from '../lib/http'
-import * as log4jui from '../../api/lib/log4jui'
+import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('return')
 
@@ -44,7 +44,7 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
 }
 
 function getOrganisationUri(status, organisationId): string {
-    let url = `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations`
+    let url = `${environmentConfig.services.rdProfessionalApi}/refdata/internal/v1/organisations`
 
     if (status) {
         url = `${url}?status=${status}`
@@ -61,7 +61,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
         res.status(400).send('Organisation id is missing')
     } else {
         try {
-            const putOrganisationsUrl = `${config.services.rdProfessionalApi}/refdata/internal/v1/organisations/${req.params.id}`
+            const putOrganisationsUrl = `${environmentConfig.services.rdProfessionalApi}/refdata/internal/v1/organisations/${req.params.id}`
             await http.put(putOrganisationsUrl, req.body)
             res.status(200).send()
         } catch (error) {
