@@ -16,6 +16,7 @@ if (!isLocal()) {
         .setAutoCollectExceptions(true)
         .setAutoCollectDependencies(true)
         .setAutoCollectConsole(true)
+        .setSendLiveMetrics(true)
         .setUseDiskRetryCaching(true)
         .start()
 
