@@ -10,6 +10,7 @@ import { OrgPendingSummaryComponent } from 'src/org-manager/containers/org-pendi
 import { OrgPendingApproveComponent } from 'src/org-manager/containers/org-pending-approve/org-pending-approve.component';
 import { OrgApprovalSuccessComponent } from 'src/org-manager/containers/org-success/org-approval-success.component';
 import { AuthGuard } from 'src/services/auth/auth.guard';
+import {OrganisationDetailsComponent} from './components';
 
 export const ROUTES: Routes = [
   {
@@ -52,7 +53,12 @@ export const ROUTES: Routes = [
         component: OrgApprovalSuccessComponent
       }
     ]
-  }
+  },
+  {
+    path: 'organisation-details/:id',
+    component: OrganisationDetailsComponent,
+    canActivate: [],
+  },
 ];
 
 export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

@@ -27,20 +27,11 @@ export function reducer(
       };
     }
     case fromOrganisationActions.LOAD_ORGANISATIONS_SUCCESS: {
-      let organisations = action.payload;
-      if (organisations.length !== 0) {
-        organisations = action.payload.map((organisation: OrganisationVM) => {
-            const routerLink: OrganisationSummary = {
-              ...organisation,
-              routerLink: `/organisations/organisation/${organisation.organisationId}/`
-            };
-            return routerLink;
-          });
-      }
-      const organisationsMapped = organisations;
+      const organisations = action.payload;
+
       return {
         ...state,
-        organisations: organisationsMapped,
+        organisations,
         loaded: true,
         loading: false
       };

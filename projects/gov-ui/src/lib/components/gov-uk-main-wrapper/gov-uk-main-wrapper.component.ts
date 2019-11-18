@@ -18,8 +18,8 @@ import {Component, Input} from '@angular/core';
           <h1 *ngIf="title" class="govuk-heading-xl">{{title}}</h1>
           <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
-          <ng-content></ng-content>
-        </div>
+            <ng-content></ng-content>
+          </div>
       </div>
     </main>
   `

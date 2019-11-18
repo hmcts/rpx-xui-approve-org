@@ -16,10 +16,6 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
     private store: Store<fromfeatureStore.OrganisationState>) { }
 
   ngOnInit() {
-
-    this.orgSummary$ = this.store.pipe(select(fromfeatureStore.getSingleOrgOverview));
-    this.loading$ = this.store.pipe(select(fromfeatureStore.orgSummaryLoading));
-
     this.$routeSubscription = this.store.pipe(select(fromfeatureStore.getCurrentPage)).subscribe((routeParams) => {
       if (routeParams.id && routeParams.id !== this.pageId) { // TODO see why double call.
         this.pageId = routeParams.id;

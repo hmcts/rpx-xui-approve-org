@@ -24,6 +24,7 @@ export const selectedOrganisation = createSelector(
   getOrganisationsState,
   fromRoot.getRouterState,
   (organisationState: any, router) => {
+    debugger;
   if (organisationState && organisationState.organisations) {
     return organisationState.organisations.filter(x => x.organisationId === router.state.params.id)[0];
   } else {
@@ -37,10 +38,12 @@ export const selectedPendingOrganisation = (orgId: string) => createSelector( ge
     return {};
   }
 });
+
 export const organisationsLoading = createSelector(
   getOrganisationsState,
   fromOrganisation.getOrganisationsLoading
 );
+
 export const organisationsLoaded = createSelector(
   getOrganisationsState,
   fromOrganisation.getOrganisationsLoaded
