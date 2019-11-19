@@ -10,7 +10,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReviewedOrganisationMockCollection, ReviewedOrganisationFromGovTableMockCollection } from '../../mock/pending-organisation.mock';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
-describe('OverviewComponent', () => {
+describe('ActiveOrganisationsComponent', () => {
     let component: OverviewPendingComponent;
     let fixture: ComponentFixture<OverviewPendingComponent>;
     let store: Store<fromOrganisationPendingStore.OrganisationState>;

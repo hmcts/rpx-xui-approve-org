@@ -24,7 +24,7 @@ export class OrganisationDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.orgSubscription$ = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation));
+    this.orgSubscription$ = this.store.pipe(select(fromOrganisationPendingStore.selectedActiveOrganisation));
   }
 
 }

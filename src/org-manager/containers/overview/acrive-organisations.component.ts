@@ -10,7 +10,7 @@ import {tap} from 'rxjs/operators';
   templateUrl: './org-overview.component.html',
 })
 
-export class OverviewComponent implements OnInit {
+export class ActiveOrganisationsComponent implements OnInit {
   orgs$: Observable<any>;
   loading$: Observable<boolean>;
   pendingOrgsCount$: Observable<number>;

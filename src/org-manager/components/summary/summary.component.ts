@@ -23,7 +23,7 @@ export class SummaryComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation))
+    this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedActiveOrganisation))
       .subscribe();
   }
   ngOnDestroy(): void {

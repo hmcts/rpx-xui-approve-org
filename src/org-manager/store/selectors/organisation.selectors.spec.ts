@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { OrganisationState } from '../reducers/organisation.reducer';
-import { getOrganisationsState, selectedOrganisation } from './organisation.selectors';
+import { getOrganisationsState, selectedActiveOrganisation } from './organisation.selectors';
 import { reducers } from '../index';
 
 describe('Organisation selectors', () => {
@@ -28,10 +28,10 @@ describe('Organisation selectors', () => {
     });
   });
 
-  describe('selectedOrganisation', () => {
+  describe('selectedActiveOrganisation', () => {
     it('should return blank organisation', () => {
       let result;
-      store.pipe(select(selectedOrganisation)).subscribe(value => {
+      store.pipe(select(selectedActiveOrganisation)).subscribe(value => {
         result = value;
 
       });

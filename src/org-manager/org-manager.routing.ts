@@ -1,6 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
-import { OverviewComponent } from './containers/overview/org-overview.component';
+import { ActiveOrganisationsComponent } from './containers/overview/acrive-organisations.component';
 import { OverviewPendingComponent } from 'src/org-manager/containers/overview-pending/pending-overview.component';
 import { OrgPendingOverviewComponent } from 'src/org-manager/containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingApproveComponent } from 'src/org-manager/containers/org-pending-approve/org-pending-approve.component';
@@ -11,7 +11,7 @@ import {OrganisationDetailsComponent} from './components';
 export const ROUTES: Routes = [
   {
     path: '',
-    component: OverviewComponent,
+    component: ActiveOrganisationsComponent,
     canActivate: [AuthGuard],
   },
   {

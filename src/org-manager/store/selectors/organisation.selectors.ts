@@ -18,16 +18,17 @@ export const getActiveOrganisation = createSelector(
   getActiveOrganisationState,
   (orgState) => orgState.orgs
 );
-
+// entry for Pending Organisations
 export const getPendingOrganisationsState = createSelector(
   getOrganisationsState,
-  (state: any) => state.pendingOrganisations
+  fromOrganisation.getPendingOrg
 );
 
-export const selectedOrganisation = createSelector(
+export const selectedActiveOrganisation = createSelector(
   getOrganisationsState,
   fromRoot.getRouterState,
   (organisationState: any, router) => {
+    debugger
     // TODO find the elegant way of doing this
   if (organisationState && organisationState.organisations) {
     return organisationState.organisations.filter(x => x.organisationId === router.state.params.id)[0];
