@@ -22,12 +22,12 @@ export class OverviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
-    this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
-    this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
-
-    this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
-    this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
+    // this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
+    // this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
+    // this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
+    //
+    // this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
+    // this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));
 
   }
 }

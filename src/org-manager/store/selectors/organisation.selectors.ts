@@ -1,7 +1,7 @@
 import {createSelector} from '@ngrx/store';
 
 
-import * as fromOrganisation from '../reducers/organisation.reducer';
+// import * as fromOrganisation from '../reducers/organisation.reducer';
 import * as fromRoot from '../../../app/store';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 
@@ -16,10 +16,10 @@ export const getPendingOrganisationsState = createSelector(
   getRootApproveOrgState,
   (state: any) => state.pendingOrganisations
 );
-export const organisations = createSelector(
-  getOrganisationsState,
-  fromOrganisation.getOrganisations
-);
+// export const organisations = createSelector(
+//   getOrganisationsState,
+//   fromOrganisation.getOrganisations
+// );
 export const selectedOrganisation = createSelector(
   getOrganisationsState,
   fromRoot.getRouterState,
@@ -39,15 +39,15 @@ export const selectedPendingOrganisation = (orgId: string) => createSelector( ge
   }
 });
 
-export const organisationsLoading = createSelector(
-  getOrganisationsState,
-  fromOrganisation.getOrganisationsLoading
-);
-
-export const organisationsLoaded = createSelector(
-  getOrganisationsState,
-  fromOrganisation.getOrganisationsLoaded
-);
+// export const organisationsLoading = createSelector(
+//   getOrganisationsState,
+//   fromOrganisation.getOrganisationsLoading
+// );
+//
+// export const organisationsLoaded = createSelector(
+//   getOrganisationsState,
+//   fromOrganisation.getOrganisationsLoaded
+// );
 
 export const getCurrentPage = createSelector(
     fromRoot.getRouterState,

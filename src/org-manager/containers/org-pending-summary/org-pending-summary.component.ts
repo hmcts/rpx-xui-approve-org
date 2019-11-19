@@ -19,17 +19,17 @@ export class OrgPendingSummaryComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.$routeSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
-      if (routeParams.id && routeParams.id !== this.pageId) { // TODO see why double call.
-        this.pageId = routeParams.id;
-        this.store.dispatch(new fromOrganisationPendingStore.LoadSingleOrg({ id: this.pageId
-        }));
-      }
-    });
+    // this.$routeSubscription = this.store.pipe(select(fromOrganisationPendingStore.getCurrentPage)).subscribe((routeParams) => {
+    //   if (routeParams.id && routeParams.id !== this.pageId) { // TODO see why double call.
+    //     this.pageId = routeParams.id;
+    //     this.store.dispatch(new fromOrganisationPendingStore.LoadSingleOrg({ id: this.pageId
+    //     }));
+    //   }
+    // });
   }
 
 ngOnDestroy() {
-  this.store.dispatch(new fromOrganisationPendingStore.ResetSingleOrg({}));
+  // this.store.dispatch(new fromOrganisationPendingStore.ResetSingleOrg({}));
   this.$routeSubscription.unsubscribe();
 }
 }

@@ -19,14 +19,14 @@ export class OrgSummaryComponent implements OnInit, OnDestroy {
     this.$routeSubscription = this.store.pipe(select(fromfeatureStore.getCurrentPage)).subscribe((routeParams) => {
       if (routeParams.id && routeParams.id !== this.pageId) { // TODO see why double call.
         this.pageId = routeParams.id;
-        this.store.dispatch(new fromfeatureStore.LoadSingleOrg({ id: this.pageId
-        }));
+        // this.store.dispatch(new fromfeatureStore.LoadSingleOrg({ id: this.pageId
+        // }));
       }
     });
 
   }
   ngOnDestroy() {
-    this.store.dispatch(new fromfeatureStore.ResetSingleOrg({}));
+    // this.store.dispatch(new fromfeatureStore.ResetSingleOrg({}));
     this.$routeSubscription.unsubscribe();
   }
 }

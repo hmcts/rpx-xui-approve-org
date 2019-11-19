@@ -35,7 +35,7 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
       pendingOrgInputRadio: ['', Validators.required]
     });
     this.approveOrganisations = [];
-    this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
+    // this.pendingOrgs$ = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs));
     this.subscription = this.pendingOrgs$.subscribe(pendingOrgs$ => {
       if (pendingOrgs$.pendingOrganisations.length > 0) {
         this.pendingOrganisations$ = pendingOrgs$.pendingOrganisations;
@@ -44,7 +44,7 @@ export class OverviewPendingComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
+    // this.loading$ = this.store.pipe(select(fromOrganisationPendingStore.pendingOrganisationsLoading));
 
     this.columnConfig = PendingOverviewColumnConfig;
 
