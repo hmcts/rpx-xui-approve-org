@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
-import * as fromOrganisationStore from '../../../org-manager/store';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
+import * as fromOrganisation from '../../../org-manager/store/';
 import { Observable } from 'rxjs';
-import { OrganisationSummary } from '../../models/organisation';
+import { OrganisationVM } from '../../models/organisation';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-prd-org-overview-component',
@@ -12,19 +11,18 @@ import { OrganisationSummary } from '../../models/organisation';
 })
 
 export class OverviewComponent implements OnInit {
-  orgs$: Observable<Array<OrganisationSummary>>;
+  orgs$: Observable<any>;
   loading$: Observable<boolean>;
   pendingOrgsCount$: Observable<number>;
 
   constructor(
-    private store: Store<fromOrganisationStore.OrganisationState>,
-    private pendingStore: Store<fromOrganisationPendingStore.OrganisationState>
+    private store: Store<fromOrganisation.OrganisationState>,
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(new fromOrganisationStore.LoadOrganisation());
-    // this.orgs$ = this.store.pipe(select(fromOrganisationStore.organisations));
-    // this.loading$ = this.store.pipe(select(fromOrganisationStore.organisationsLoading));
+    this.store.dispatch(new fromOrganisation.LoadOrganisation());
+    this.orgs$ = this.store.pipe(select(fromOrganisation.getActiveOrganisation));
+    // this.loading$ = this.store.pipe(select(fromOrganisation.organisationsLoading));
     //
     // this.pendingStore.dispatch(new fromOrganisationPendingStore.LoadPendingOrganisations());
     // this.pendingOrgsCount$ = this.pendingStore.pipe(select(fromOrganisationPendingStore.pendingOrganisationsCount));

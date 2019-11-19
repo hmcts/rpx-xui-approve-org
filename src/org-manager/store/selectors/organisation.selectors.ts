@@ -1,25 +1,29 @@
 import {createSelector} from '@ngrx/store';
 
-
-// import * as fromOrganisation from '../reducers/organisation.reducer';
 import * as fromRoot from '../../../app/store';
+import * as fromOrganisation from '../reducers';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 
-import {getRootApproveOrgState} from '../reducers';
-
 export const getOrganisationsState = createSelector(
-  getRootApproveOrgState,
-  (state: any) => state.activeOrg
+  fromOrganisation.getRootApproveOrgState,
+  (state: fromOrganisation.OrganisationState) => state.organisations
+);
+// entry for Active Organisations
+export const getActiveOrganisationState = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getActiveOrg
+);
+
+export const getActiveOrganisation = createSelector(
+  getActiveOrganisationState,
+  (orgState) => orgState.orgs
 );
 
 export const getPendingOrganisationsState = createSelector(
-  getRootApproveOrgState,
+  getOrganisationsState,
   (state: any) => state.pendingOrganisations
 );
-// export const organisations = createSelector(
-//   getOrganisationsState,
-//   fromOrganisation.getOrganisations
-// );
+
 export const selectedOrganisation = createSelector(
   getOrganisationsState,
   fromRoot.getRouterState,
@@ -38,17 +42,17 @@ export const selectedPendingOrganisation = (orgId: string) => createSelector( ge
     return {};
   }
 });
-
-// export const organisationsLoading = createSelector(
-//   getOrganisationsState,
-//   fromOrganisation.getOrganisationsLoading
-// );
 //
-// export const organisationsLoaded = createSelector(
-//   getOrganisationsState,
-//   fromOrganisation.getOrganisationsLoaded
-// );
-
+// // export const organisationsLoading = createSelector(
+// //   getOrganisationsState,
+// //   fromOrganisation.getOrganisationsLoading
+// // );
+// //
+// // export const organisationsLoaded = createSelector(
+// //   getOrganisationsState,
+// //   fromOrganisation.getOrganisationsLoaded
+// // );
+//
 export const getCurrentPage = createSelector(
     fromRoot.getRouterState,
     (router) => router.state.params

@@ -2,7 +2,7 @@ import * as fromActions from '../actions/organisations.actions';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export interface OrganisationState {
-  activeOrganisation: {
+  activeOrganisations: {
     orgs: OrganisationVM[],
     loaded: boolean;
     loading: boolean;
@@ -16,8 +16,8 @@ export interface OrganisationState {
 }
 
 export const initialState: OrganisationState = {
-  pendingOrganisations: {orgs: null, loaded: false, loading: false},
-  activeOrganisation: {orgs: null, loaded: false, loading: false},
+  activeOrganisations: {orgs: [], loaded: false, loading: false},
+  pendingOrganisations: {orgs: [], loaded: false, loading: false},
   errorMessage: ''
 };
 
@@ -28,27 +28,26 @@ export function reducer(
   switch (action.type) {
 
     case fromActions.OrgActionTypes.LOAD_ORGANISATIONS: {
-      const activeOrganisation = {
+      const activeOrganisations = {
         orgs: null,
         loaded: false,
         loading: true
       }
       return {
         ...state,
-        activeOrganisation
+        activeOrganisations
       };
     }
     case fromActions.OrgActionTypes.LOAD_ORGANISATIONS_SUCCESS: {
       const orgs = action.payload;
-      debugger;
-      const activeOrganisation = {
+      const activeOrganisations = {
         orgs,
-        loaded: false,
-        loading: true
+        loaded: true,
+        loading: false
       }
       return {
         ...state,
-        activeOrganisation
+        activeOrganisations
       };
     }
 
@@ -61,7 +60,7 @@ export function reducer(
 
     case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
       const pendingOrganisations = {
-        orgs: {...state.activeOrganisation.orgs},
+        orgs: {...state.activeOrganisations.orgs},
         loaded: false,
         loading: true
       }
@@ -112,5 +111,6 @@ export function reducer(
 export const getPendingOrganisations = (state: OrganisationState) => state.pendingOrganisations;
 export const getPendingOrganisationsLoading = (state: OrganisationState) => state.pendingOrganisations.loading;
 export const getPendingOrganisationsLoaded = (state: OrganisationState) => state.pendingOrganisations.loaded;
-export const getReviewedOrganisations = (state: OrganisationState) => state.activeOrganisation;
+export const getActiveOrg = (state: OrganisationState) => state.activeOrganisations;
+export const getPendingOrg = (state: OrganisationState) => state.pendingOrganisations;
 export const getErrorMessage = (state: OrganisationState) => state.errorMessage;

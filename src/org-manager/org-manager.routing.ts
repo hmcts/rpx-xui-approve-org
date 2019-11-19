@@ -1,9 +1,6 @@
-// routes
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
 import { OverviewComponent } from './containers/overview/org-overview.component';
-import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
-import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
 import { OverviewPendingComponent } from 'src/org-manager/containers/overview-pending/pending-overview.component';
 import { OrgPendingOverviewComponent } from 'src/org-manager/containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingApproveComponent } from 'src/org-manager/containers/org-pending-approve/org-pending-approve.component';
