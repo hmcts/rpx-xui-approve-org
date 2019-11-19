@@ -1,8 +1,9 @@
-import {Component, OnInit, Input, OnDestroy} from '@angular/core';
+import {Component, OnInit, Input} from '@angular/core';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+
 /**
  * Bootstraps Organisation Details
 */
@@ -11,10 +12,10 @@ import { Subscription } from 'rxjs';
   templateUrl: './organisation-details.component.html',
   styleUrls: ['./organisation-details.component.scss']
 })
-export class OrganisationDetailsComponent implements OnInit, OnDestroy {
+export class OrganisationDetailsComponent implements OnInit {
 
   @Input() data: OrganisationVM;
-  $orgSubscription: Subscription;
+  orgSubscription$: Observable<OrganisationVM>; // TODO CHANGE TYPINGS
   dxNumber: string;
   dxExchange: string;
 
@@ -23,10 +24,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.$orgSubscription = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation))
-      .subscribe(console.log);
+    this.orgSubscription$ = this.store.pipe(select(fromOrganisationPendingStore.selectedOrganisation));
   }
-  ngOnDestroy(): void {
 
-  }
 }

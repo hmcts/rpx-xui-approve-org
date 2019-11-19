@@ -1,7 +1,7 @@
 <app-identity-bar-component><span>{{data.name}} </span><span class="hmcts-badge hmcts-badge--green">{{data.status}}</span></app-identity-bar-component>
 <div class="hmcts-width-container">
 <app-back-link [store]="store"></app-back-link>
-<lib-gov-uk-main-wrapper [title]="'Organisation details'">
+<lib-gov-uk-main-wrapper [title]="'Organisation details'" *ngIf="orgSubscription$ | async as data">
       <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
          <div class="govuk-check-your-answers__contents">
             <dt class="govuk-check-your-answers__question">
@@ -24,7 +24,7 @@
                </div>
                {{data.townCity}}<br>
                <div *ngIf='data.county'>
-                  {{data.county}}<br>
+                  {{data?.county}}<br>
                </div>
             </dd>
             <dd class="govuk-check-your-answers__change">
@@ -35,7 +35,7 @@
                PBA number
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.pbaNumber}}
+               {{data?.pbaNumber}}
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -45,7 +45,7 @@
                DX number
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.dxNumber[0].dxNumber}}
+               {{data.dxNumber[0]?.dxNumber}}
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -55,7 +55,7 @@
                DX exchange
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.dxNumber[0].dxExchange}}
+               {{data.dxNumber[0]?.dxExchange}}
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -65,8 +65,8 @@
                Administrator
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               <div>{{data.admin}}</div>
-               <div class="govuk-caption-m govuk-!-font-size-16">{{data.adminEmail}}</div>
+               <div>{{data?.admin}}</div>
+               <div class="govuk-caption-m govuk-!-font-size-16">{{data?.adminEmail}}</div>
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -76,11 +76,11 @@
                SRA Id
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.sraId}}
+               {{data?.sraId}}
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
          </div>
       </dl>
 </lib-gov-uk-main-wrapper>
-   </div>
+</div>

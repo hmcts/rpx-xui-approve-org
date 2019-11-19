@@ -1,4 +1,4 @@
-import {createFeatureSelector, createSelector} from '@ngrx/store';
+import {createSelector} from '@ngrx/store';
 
 
 import * as fromOrganisation from '../reducers/organisation.reducer';
@@ -24,7 +24,7 @@ export const selectedOrganisation = createSelector(
   getOrganisationsState,
   fromRoot.getRouterState,
   (organisationState: any, router) => {
-    debugger;
+    // TODO find the elegant way of doing this
   if (organisationState && organisationState.organisations) {
     return organisationState.organisations.filter(x => x.organisationId === router.state.params.id)[0];
   } else {
