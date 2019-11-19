@@ -2,7 +2,7 @@ import { SummaryComponent } from './organisation-details.component';
 import { Store, StoreModule, combineReducers } from '@ngrx/store';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import * as fromRoot from '../../../app/store/reducers';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import * as fromOrganisationPendingStore from '../../store';
 
 let component: SummaryComponent;
 let fixture: ComponentFixture<SummaryComponent>;

@@ -7,9 +7,9 @@ import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 @Component({
     selector: 'app-org-pending-approve',
-    templateUrl: './org-pending-approve.component.html'
+    templateUrl: './approve-organisation.component.html'
 })
-export class OrgPendingApproveComponent implements OnInit, OnDestroy {
+export class ApproveOrganisationComponent implements OnInit, OnDestroy {
     reviewedOrganisations: OrganisationVM[];
     $reviewedOrganisationsSubscription: Subscription;
     serverResponseMessages$: Observable<any>;

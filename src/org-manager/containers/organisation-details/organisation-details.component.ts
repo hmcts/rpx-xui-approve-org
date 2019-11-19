@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import * as fromOrganisationPendingStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import { Observable } from 'rxjs';

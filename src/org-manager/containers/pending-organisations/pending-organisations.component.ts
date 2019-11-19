@@ -6,17 +6,16 @@ import 'rxjs/add/observable/of';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
-import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
-import { OrganisationState } from 'src/org-manager/store/reducers/organisation.reducer';
-import { FormArray, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EventEmitter } from 'events';
 
 @Component({
   selector: 'app-pending-overview-component',
-  templateUrl: './pending-overview.component.html',
+  templateUrl: './pending-organisations.component.html',
 })
 
-export class OverviewPendingComponent implements OnInit, OnDestroy {
+export class PendingOrganisationsComponent implements OnInit, OnDestroy {
 
   columnConfig: GovukTableColumnConfig[];
   pendingOrgs$: any;

@@ -1,5 +1,5 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { OrgPendingApproveComponent } from './org-pending-approve.component';
+import { ApproveOrganisationComponent } from './approve-organisation.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store/reducers';
@@ -9,9 +9,9 @@ import { of } from 'rxjs';
 import { ReviewedOrganisationMockCollection, ActiveOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 import { BackLinkComponent } from 'src/org-manager/components';
 
-describe('OrgPendingApproveComponent', () => {
-    let component: OrgPendingApproveComponent;
-    let fixture: ComponentFixture<OrgPendingApproveComponent>;
+describe('ApproveOrganisationComponent', () => {
+    let component: ApproveOrganisationComponent;
+    let fixture: ComponentFixture<ApproveOrganisationComponent>;
     let store: Store<fromOrganisationPendingStore.OrganisationState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
@@ -29,7 +29,7 @@ describe('OrgPendingApproveComponent', () => {
             ],
             declarations: [
                 BackLinkComponent,
-                OrgPendingApproveComponent
+                ApproveOrganisationComponent
             ]
         }).compileComponents();
         store = TestBed.get(Store);
@@ -37,7 +37,7 @@ describe('OrgPendingApproveComponent', () => {
         storePipeMock = spyOn(store, 'pipe');
         storeDispatchMock = spyOn(store, 'dispatch');
 
-        fixture = TestBed.createComponent(OrgPendingApproveComponent);
+        fixture = TestBed.createComponent(ApproveOrganisationComponent);
         component = fixture.componentInstance;
     }));
 

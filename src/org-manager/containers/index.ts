@@ -1,23 +1,17 @@
-import { ActiveOrganisationsComponent } from './overview/active-organisations.component';
-import { OrgOverviewComponent } from './org-overview/org-overview.component';
-import { OverviewPendingComponent } from './overview-pending/pending-overview.component';
-import { OrgPendingOverviewComponent } from './org-pending-overview/org-pending-overview.component';
-import { OrgPendingApproveComponent } from './org-pending-approve/org-pending-approve.component';
-import { OrgApprovalSuccessComponent } from './org-success/org-approval-success.component';
+import { ActiveOrganisationsComponent } from './active-organisations/active-organisations.component';
+import { PendingOrganisationsComponent } from './pending-organisations/pending-organisations.component';
+import { ApproveOrganisationComponent } from './approve-organisation/approve-organisation.component';
+import { ApproveOrganisationSuccessComponent } from './approve-organisation-success/approve-organisation-success.component';
 
 export const containers: any[] = [
   ActiveOrganisationsComponent,
-  OrgOverviewComponent,
-  OverviewPendingComponent,
-
-  OrgPendingOverviewComponent,
-  OrgPendingApproveComponent,
-  OrgApprovalSuccessComponent
+  PendingOrganisationsComponent,
+  ApproveOrganisationComponent,
+  ApproveOrganisationSuccessComponent
 ];
 
-export * from './overview/active-organisations.component';
-export * from './org-overview/org-overview.component';
-export * from './../../org-manager/containers/overview-pending/pending-overview.component';
+export * from './active-organisations/active-organisations.component';
+export * from './pending-organisations/pending-organisations.component';
 
 
 

@@ -1,5 +1,5 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { OverviewPendingComponent } from './pending-overview.component';
+import { PendingOrganisations } from './pending-organisations.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store/reducers';
@@ -11,8 +11,8 @@ import { ReviewedOrganisationMockCollection, ReviewedOrganisationFromGovTableMoc
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 describe('ActiveOrganisationsComponent', () => {
-    let component: OverviewPendingComponent;
-    let fixture: ComponentFixture<OverviewPendingComponent>;
+    let component: PendingOrganisations;
+    let fixture: ComponentFixture<PendingOrganisations>;
     let store: Store<fromOrganisationPendingStore.OrganisationState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
@@ -31,7 +31,7 @@ describe('ActiveOrganisationsComponent', () => {
             ],
             providers: [FormBuilder],
             declarations: [
-                OverviewPendingComponent
+                PendingOrganisations
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
@@ -42,7 +42,7 @@ describe('ActiveOrganisationsComponent', () => {
         storePipeMock = spyOn(store, 'pipe');
         storeDispatchMock = spyOn(store, 'dispatch');
 
-        fixture = TestBed.createComponent(OverviewPendingComponent);
+        fixture = TestBed.createComponent(PendingOrganisations);
         component = fixture.componentInstance;
         storePipeMock.and.returnValue(of({ pendingOrganisations: organisationsDummy }));
         fixture.detectChanges();
