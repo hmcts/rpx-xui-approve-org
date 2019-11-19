@@ -7,7 +7,7 @@ import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { Organisation, OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
-import { OrganisationState } from 'src/org-manager/store/reducers/org-pending.reducer';
+import { OrganisationState } from 'src/org-manager/store/reducers/organisation.reducer';
 import { FormArray, FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { EventEmitter } from 'events';
 

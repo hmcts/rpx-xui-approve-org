@@ -1,4 +1,4 @@
-import * as fromPendingOrganisation from './org-pending.actions';
+import * as fromPendingOrganisation from './organisations.actions';
 import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 import { PendingOrganisationsMockCollection1 } from 'src/org-manager/mock/pending-organisation.mock';
 
@@ -11,7 +11,7 @@ describe('PendingOrganisationActions actions', () => {
       it('should create an action', () => {
         const action = new fromPendingOrganisation.LoadPendingOrganisations();
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS,
+          type: fromPendingOrganisation.OrgActionTypes.LOAD_PENDING_ORGANISATIONS,
         });
       });
     });
@@ -21,7 +21,7 @@ describe('PendingOrganisationActions actions', () => {
       it('should create an action', () => {
         const action = new fromPendingOrganisation.LoadPendingOrganisationsSuccess(payload);
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS,
+          type: fromPendingOrganisation.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS,
           payload
         });
       });
@@ -33,7 +33,7 @@ describe('PendingOrganisationActions actions', () => {
         const action = new fromPendingOrganisation.LoadPendingOrganisationsFail('error');
         const errorPayload = 'error';
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL,
+          type: fromPendingOrganisation.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL,
           payload: errorPayload
         });
       });
@@ -46,7 +46,7 @@ describe('PendingOrganisationActions actions', () => {
       it('should add organisation to review action', () => {
         const action = new fromPendingOrganisation.AddReviewOrganisations(payload);
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS,
+          type: fromPendingOrganisation.OrgActionTypes.ADD_REVIEW_ORGANISATIONS,
           payload
         });
       });
@@ -58,7 +58,7 @@ describe('PendingOrganisationActions actions', () => {
 
         const action = new fromPendingOrganisation.ApprovePendingOrganisationsSuccess(payload);
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS,
+          type: fromPendingOrganisation.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS,
           payload
         });
       });
@@ -70,7 +70,7 @@ describe('PendingOrganisationActions actions', () => {
         const action = new fromPendingOrganisation.ApprovePendingOrganisationsFail('error');
         const errorPayload = 'error';
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL,
+          type: fromPendingOrganisation.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL,
           payload: errorPayload
         });
       });

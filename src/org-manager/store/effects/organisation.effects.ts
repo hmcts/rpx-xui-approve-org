@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Actions, Effect, ofType} from '@ngrx/effects';
 
-import * as organisationActions from '../actions';
+import * as fromActions from '../actions';
 import {catchError, map, switchMap} from 'rxjs/operators';
 import {of} from 'rxjs';
 import { OrganisationService } from '../../services';
@@ -20,13 +20,13 @@ export class OrganisationEffects {
 
   @Effect()
   loadOrganisations$ = this.actions$.pipe(
-    ofType(organisationActions.LOAD_ORGANISATIONS),
+    ofType(fromActions.OrgActionTypes.LOAD_ORGANISATIONS),
     switchMap(() => {
       return this.organisationService.fetchOrganisations().pipe(
-        map(organisationDetails => new organisationActions.LoadOrganisationSuccess(AppUtils.mapOrganisations(organisationDetails))),
+        map(organisationDetails => new fromActions.LoadOrganisationSuccess(AppUtils.mapOrganisations(organisationDetails))),
         catchError((error: Error) => {
           this.loggerService.error(error.message);
-          return of(new organisationActions.LoadOrganisationFail(error));
+          return of(new fromActions.LoadOrganisationFail(error));
         })
       );
     })

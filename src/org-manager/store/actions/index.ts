@@ -1,3 +1,3 @@
 
-export * from './org-pending.actions';
+export * from './organisations.actions';
 

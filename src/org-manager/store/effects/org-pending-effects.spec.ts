@@ -6,7 +6,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromPendingOrganisationEffects from './org-pending.effects';
 import { PendingOrgEffects } from './org-pending.effects';
 import { LoadPendingOrganisations, ApprovePendingOrganisations,
-        ApprovePendingOrganisationsSuccess, DisplayErrorMessageOrganisations } from '../actions/org-pending.actions';
+        ApprovePendingOrganisationsSuccess, DisplayErrorMessageOrganisations } from '../actions/organisations.actions';
 import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
 import { PendingOrganisationService } from 'src/org-manager/services';
 import { Go } from 'src/app/store';

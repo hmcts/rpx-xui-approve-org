@@ -1,35 +1,35 @@
-import { PendingOrgActions, } from '../actions/org-pending.actions';
-import * as fromActions from '../actions/org-pending.actions';
-import {OrganisationVM} from 'src/org-manager/models/organisation';
+import * as fromActions from '../actions/organisations.actions';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export interface OrganisationState {
   activeOrganisation: {
     orgs: OrganisationVM[],
     loaded: boolean;
     loading: boolean;
-  } | null;
+  };
   pendingOrganisations: {
     orgs: OrganisationVM[];
     loaded: boolean;
     loading: boolean;
-  } | null;
+  };
   errorMessage: string;
 }
 
 export const initialState: OrganisationState = {
-  pendingOrganisations: null,
-  activeOrganisation: null,
+  pendingOrganisations: {orgs: null, loaded: false, loading: false},
+  activeOrganisation: {orgs: null, loaded: false, loading: false},
   errorMessage: ''
 };
 
 export function reducer(
   state = initialState,
-  action: PendingOrgActions
+  action: fromActions.OrganisationsActions
 ): OrganisationState {
   switch (action.type) {
-    case fromActions.LOAD_ORGANISATIONS: {
+
+    case fromActions.OrgActionTypes.LOAD_ORGANISATIONS: {
       const activeOrganisation = {
-        orgs: {...state.activeOrganisation.orgs},
+        orgs: null,
         loaded: false,
         loading: true
       }
@@ -38,8 +38,9 @@ export function reducer(
         activeOrganisation
       };
     }
-    case fromActions.LOAD_ORGANISATIONS_SUCCESS: {
+    case fromActions.OrgActionTypes.LOAD_ORGANISATIONS_SUCCESS: {
       const orgs = action.payload;
+      debugger;
       const activeOrganisation = {
         orgs,
         loaded: false,
@@ -51,14 +52,14 @@ export function reducer(
       };
     }
 
-    case fromActions.PendingOrgActionTypes.CLEAR_ERRORS: {
+    case fromActions.OrgActionTypes.CLEAR_ERRORS: {
       return {
         ...state,
         errorMessage: ''
       };
     }
 
-    case fromActions.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
+    case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
       const pendingOrganisations = {
         orgs: {...state.activeOrganisation.orgs},
         loaded: false,
@@ -70,7 +71,7 @@ export function reducer(
       };
     }
 
-    case fromActions.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
+    case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
       // TODO please fix this - something is not right
       const orgs = action.payload;
       const pendingOrganisations = {
@@ -84,7 +85,7 @@ export function reducer(
       };
     }
 
-    // case fromActions.PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
+    // case fromActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
     //   const payload: OrganisationVM[] = action.payload.slice(0);
     //   const reviewedOrganisationsMapped = payload.map(item => {
     //     return { ...item, status: 'ACTIVE' };
@@ -97,7 +98,7 @@ export function reducer(
     // }
 
 
-    case fromActions.PendingOrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
+    case fromActions.OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
       const errorMessage = action.payload;
       return {
         ...state,

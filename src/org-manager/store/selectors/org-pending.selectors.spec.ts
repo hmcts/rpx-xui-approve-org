@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
-import { OrganisationState } from '../reducers/org-pending.reducer';
+import { OrganisationState } from '../reducers/organisation.reducer';
 import { getPendingOrgs } from './org-pending.selectors';
 import { reducers } from '../index';
 
