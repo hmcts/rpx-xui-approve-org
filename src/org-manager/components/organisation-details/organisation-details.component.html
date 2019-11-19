@@ -8,7 +8,7 @@
                Name
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.name}}
+               {{data?.name}}
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -18,9 +18,9 @@
                Address
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data.addressLine1}}<br>
+               {{data?.addressLine1}}<br>
                <div *ngIf='data.addressLine2'>
-                   {{data.addressLine2}}<br>
+                   {{data?.addressLine2}}<br>
                </div>
                {{data.townCity}}<br>
                <div *ngIf='data.county'>

@@ -1,6 +1,6 @@
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
-import { ActiveOrganisationsComponent } from './containers/overview/acrive-organisations.component';
+import { ActiveOrganisationsComponent } from './containers/overview/active-organisations.component';
 import { OverviewPendingComponent } from 'src/org-manager/containers/overview-pending/pending-overview.component';
 import { OrgPendingOverviewComponent } from 'src/org-manager/containers/org-pending-overview/org-pending-overview.component';
 import { OrgPendingApproveComponent } from 'src/org-manager/containers/org-pending-approve/org-pending-approve.component';

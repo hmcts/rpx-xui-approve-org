@@ -18,6 +18,7 @@ export const getActiveOrganisation = createSelector(
   getActiveOrganisationState,
   (orgState) => orgState.orgs
 );
+
 // entry for Pending Organisations
 export const getPendingOrganisationsState = createSelector(
   getOrganisationsState,
@@ -28,14 +29,11 @@ export const selectedActiveOrganisation = createSelector(
   getActiveOrganisation,
   fromRoot.getRouterState,
   (organisationState: OrganisationVM[], router) => {
-    debugger
-    // TODO find the elegant way of doing this
   if (organisationState) {
-    return organisationState.filter(x => x.organisationId === router.state.params.id)[0];
-  } else {
-    return {};
+    return organisationState.filter(x => x.organisationId === router.state.params.id)[0] || {};
   }
 });
+
 export const selectedPendingOrganisation = (orgId: string) => createSelector( getPendingOrganisationsState, (organisationState: any) => {
   if (organisationState && organisationState.pendingOrganisations) {
     return organisationState.pendingOrganisations.filter(x => x.organisationId === orgId) as OrganisationVM;
@@ -43,7 +41,12 @@ export const selectedPendingOrganisation = (orgId: string) => createSelector( ge
     return {};
   }
 });
-//
+
+export const pendingOrganisationsCount = createSelector(
+  getActiveOrganisation,
+  (orgArr) =>  orgArr ? orgArr.length : 0
+);
+
 // // export const organisationsLoading = createSelector(
 // //   getOrganisationsState,
 // //   fromOrganisation.getOrganisationsLoading
