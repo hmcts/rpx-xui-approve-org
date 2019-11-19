@@ -25,13 +25,13 @@ export const getPendingOrganisationsState = createSelector(
 );
 
 export const selectedActiveOrganisation = createSelector(
-  getOrganisationsState,
+  getActiveOrganisation,
   fromRoot.getRouterState,
-  (organisationState: any, router) => {
+  (organisationState: OrganisationVM[], router) => {
     debugger
     // TODO find the elegant way of doing this
-  if (organisationState && organisationState.organisations) {
-    return organisationState.organisations.filter(x => x.organisationId === router.state.params.id)[0];
+  if (organisationState) {
+    return organisationState.filter(x => x.organisationId === router.state.params.id)[0];
   } else {
     return {};
   }

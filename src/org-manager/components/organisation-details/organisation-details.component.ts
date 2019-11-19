@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 export class OrganisationDetailsComponent implements OnInit {
 
   @Input() data: OrganisationVM;
-  orgSubscription$: Observable<OrganisationVM>;
+  orgSubscription$: Observable<{}>;
   dxNumber: string;
   dxExchange: string;
 
