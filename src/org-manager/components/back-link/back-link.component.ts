@@ -8,7 +8,7 @@ import * as fromRoot from '../../../app/store';
   templateUrl: './back-link.component.html'
 })
 export class BackLinkComponent {
-  @Input() store: Store<fromOrganisationPendingStore.OrganisationState>;
+  @Input() store: Store<fromOrganisationPendingStore.OrganisationRootState>;
 
   constructor() { }
 

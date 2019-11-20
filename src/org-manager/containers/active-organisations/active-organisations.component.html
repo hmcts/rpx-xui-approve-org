@@ -5,7 +5,7 @@
       <span>{{orgCount}} organisations are pending activation. <a [routerLink]="['/pending-organisations']"> Check now.</a></span>
     </app-notification-banner-component>
     </div>
-     <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations</h1>
+     <h1 class="hmcts-page-heading__title govuk-heading-xl">Active organisations</h1>
         <table class="govuk-table" *ngIf="!(loading$ | async); else loading">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
@@ -31,7 +31,7 @@
               <td class="govuk-table__cell"><span class="hmcts-badge hmcts-badge--green">{{org.status}}</span>
               </td>
               <td class="govuk-table__cell">
-                  <a class="govuk-link" [routerLink]="'/organisation-details/' + org.organisationId">View</a>
+                  <a class="govuk-link" [routerLink]="'/organisation-details/activeOrganisations/' + org.organisationId">View</a>
               </td>
             </tr>
           </thead>

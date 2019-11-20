@@ -23,7 +23,7 @@ export class PendingOrganisationsComponent implements OnInit, OnDestroy {
   inputForm: FormGroup;
   errorMessage$: Observable<string>;
 
-  constructor(public store: Store<fromStore.OrganisationState>,
+  constructor(public store: Store<fromStore.OrganisationRootState>,
               private fb: FormBuilder) {}
 
   ngOnInit(): void {

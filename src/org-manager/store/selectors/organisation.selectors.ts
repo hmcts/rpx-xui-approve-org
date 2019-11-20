@@ -6,7 +6,7 @@ import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export const getOrganisationsState = createSelector(
   fromOrganisation.getRootApproveOrgState,
-  (state: fromOrganisation.OrganisationState) => state.organisations
+  (state: fromOrganisation.OrganisationRootState) => state.organisations
 );
 // entry for Active Organisations
 export const getActiveOrganisationState = createSelector(
@@ -59,15 +59,11 @@ export const getErrorMessage = createSelector(
   (orgState) => orgState.errorMessage
 );
 
-// todo change
 export const selectedActiveOrganisation = createSelector(
-  getActiveOrganisation,
+  getOrganisationsState,
   fromRoot.getRouterState,
-  (organisationState: {[id: string]: OrganisationVM }, router) => {
-  if (organisationState) {
-    return {} // todo
-  }
-});
+  (organisationState: fromOrganisation.OrganisationState, router) =>
+    organisationState[router.state.params.type].orgEntities[router.state.params.id]);
 
 export const getOrganisationForReview = createSelector(
   getOrganisationsState,

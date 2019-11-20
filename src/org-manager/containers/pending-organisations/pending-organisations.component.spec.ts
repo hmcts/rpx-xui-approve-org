@@ -13,7 +13,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 describe('ActiveOrganisationsComponent', () => {
     let component: PendingOrganisations;
     let fixture: ComponentFixture<PendingOrganisations>;
-    let store: Store<fromOrganisationPendingStore.OrganisationState>;
+    let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
     const organisationsDummy = ReviewedOrganisationMockCollection;

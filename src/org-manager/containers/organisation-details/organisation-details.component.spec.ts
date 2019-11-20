@@ -6,7 +6,7 @@ import * as fromOrganisationPendingStore from '../../store';
 
 let component: SummaryComponent;
 let fixture: ComponentFixture<SummaryComponent>;
-let store: Store<fromOrganisationPendingStore.OrganisationState>;
+let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
 describe('SummaryComponent', () => {
 beforeEach((() => {
     TestBed.configureTestingModule({

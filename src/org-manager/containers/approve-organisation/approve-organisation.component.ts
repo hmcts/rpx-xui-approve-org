@@ -15,7 +15,7 @@ export class ApproveOrganisationComponent implements OnInit, OnDestroy {
     orgForReview: OrganisationVM | null;
     serverResponseMessages$: Observable<any>;
     constructor(
-        public store: Store<fromOrganisationPendingStore.OrganisationState>
+        public store: Store<fromOrganisationPendingStore.OrganisationRootState>
     ) { }
 
     ngOnInit() {

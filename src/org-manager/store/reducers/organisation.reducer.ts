@@ -108,7 +108,10 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS: {
-      const approvedOrg = action.payload;
+      const approvedOrg =  {
+        ...action.payload,
+        status: 'ACTIVE'
+      }
       const activeEntities = {
         ...state.activeOrganisations.orgEntities,
         [approvedOrg.organisationId]: approvedOrg

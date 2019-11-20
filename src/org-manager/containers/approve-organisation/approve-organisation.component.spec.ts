@@ -12,7 +12,7 @@ import { BackLinkComponent } from 'src/org-manager/components';
 describe('ApproveOrganisationComponent', () => {
     let component: ApproveOrganisationComponent;
     let fixture: ComponentFixture<ApproveOrganisationComponent>;
-    let store: Store<fromOrganisationPendingStore.OrganisationState>;
+    let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
     const reviewedOrganisationsDummy = ReviewedOrganisationMockCollection;

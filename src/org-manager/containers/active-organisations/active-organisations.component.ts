@@ -16,7 +16,7 @@ export class ActiveOrganisationsComponent implements OnInit {
   pendingOrgsCount$: Observable<number>;
 
   constructor(
-    private store: Store<fromOrganisation.OrganisationState>,
+    private store: Store<fromOrganisation.OrganisationRootState>,
   ) { }
 
   ngOnInit(): void {

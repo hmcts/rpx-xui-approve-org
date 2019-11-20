@@ -3,6 +3,7 @@ import * as fromOrganisationPendingStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import { Observable } from 'rxjs';
+import {tap} from 'rxjs/operators';
 
 /**
  * Bootstraps Organisation Details
@@ -20,7 +21,7 @@ export class OrganisationDetailsComponent implements OnInit {
   dxExchange: string;
 
   constructor(
-    public store: Store<fromOrganisationPendingStore.OrganisationState>
+    public store: Store<fromOrganisationPendingStore.OrganisationRootState>
   ) {}
 
   ngOnInit(): void {
