@@ -7,7 +7,7 @@
 //     state => state.organisations
 // );
 //
-// export const pendingOrganisations = createSelector( getPendingOrgs, fromOrganisation.getPendingOrganisations);
+// export const pendingOrganisations = createSelector( getPendingOrgs, fromOrganisation.getPendingOrganis);
 // export const orgForReview = createSelector(
 //   getPendingOrgs,
 //   fromOrganisation.getReviewedOrganisations

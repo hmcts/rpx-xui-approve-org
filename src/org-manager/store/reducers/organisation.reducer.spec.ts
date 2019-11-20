@@ -51,7 +51,7 @@ describe('PendingOrganisationsReducer', () => {
 
   describe('exports', () => {
     it('should return state.pendingOrganisations', () => {
-      expect(fromPendingOrganisation.getPendingOrganisations(initialState)).toEqual([]);
+      expect(fromPendingOrganisation.getPendingOrganis(initialState)).toEqual([]);
       expect();
     });
 

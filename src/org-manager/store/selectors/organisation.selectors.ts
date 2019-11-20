@@ -11,12 +11,17 @@ export const getOrganisationsState = createSelector(
 // entry for Active Organisations
 export const getActiveOrganisationState = createSelector(
   getOrganisationsState,
-  fromOrganisation.getActiveOrg
+  fromOrganisation.getActiveOrgEntities
 );
 
 export const getActiveOrganisation = createSelector(
   getActiveOrganisationState,
-  (orgState) => orgState.orgs
+  (orgState) => orgState.orgEntities
+);
+
+export const getActiveOrganisationArray = createSelector(
+  getActiveOrganisation,
+  (orgState) => Object.keys(orgState).map(id => orgState[id])
 );
 
 export const getActiveLoaded = createSelector(
@@ -28,16 +33,20 @@ export const getActiveLoading = createSelector(
   getActiveOrganisationState,
   (orgState) => orgState.loading
 );
-
 // entry for Pending Organisations
 export const getPendingOrganisationsState = createSelector(
   getOrganisationsState,
-  fromOrganisation.getPendingOrg
+  fromOrganisation.getPendingOrgEntities
+);
+
+export const getPendingOrganisations = createSelector(
+  getPendingOrganisationsState,
+  (orgsArray) => orgsArray.orgEntities
 );
 
 export const getPendingOrganisationsArray = createSelector(
-  getPendingOrganisationsState,
-  (orgsArray) => orgsArray.orgs
+  getPendingOrganisations,
+  (orgEntities) => Object.keys(orgEntities).map(orgId => orgEntities[orgId])
 );
 export const getPendingLoaded = createSelector(
   getPendingOrganisationsState,
@@ -54,9 +63,9 @@ export const getErrorMessage = createSelector(
 export const selectedActiveOrganisation = createSelector(
   getActiveOrganisation,
   fromRoot.getRouterState,
-  (organisationState: OrganisationVM[], router) => {
+  (organisationState: {[id: string]: OrganisationVM }, router) => {
   if (organisationState) {
-    return organisationState.filter(x => x.organisationId === router.state.params.id)[0] || {};
+    return {} // todo
   }
 });
 
@@ -66,7 +75,7 @@ export const getOrganisationForReview = createSelector(
 );
 
 export const pendingOrganisationsCount = createSelector(
-  getActiveOrganisation,
+  getPendingOrganisationsArray,
   (orgArr) =>  orgArr ? orgArr.length : 0
 );
 

@@ -3,12 +3,12 @@ import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export interface OrganisationState {
   activeOrganisations: {
-    orgs: OrganisationVM[],
+    orgEntities: {[id: string]: OrganisationVM},
     loaded: boolean;
     loading: boolean;
   };
   pendingOrganisations: {
-    orgs: OrganisationVM[];
+    orgEntities: {[id: string]: OrganisationVM},
     loaded: boolean;
     loading: boolean;
   };
@@ -17,8 +17,8 @@ export interface OrganisationState {
 }
 
 export const initialState: OrganisationState = {
-  activeOrganisations: {orgs: [], loaded: false, loading: false},
-  pendingOrganisations: {orgs: [], loaded: false, loading: false},
+  activeOrganisations: {orgEntities: {}, loaded: false, loading: false},
+  pendingOrganisations: {orgEntities: {}, loaded: false, loading: false},
   errorMessage: '',
   orgForReview: null
 };
@@ -31,7 +31,7 @@ export function reducer(
 
     case fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS: {
       const activeOrganisations = {
-        orgs: null,
+        orgEntities: {},
         loaded: false,
         loading: true
       }
@@ -42,8 +42,14 @@ export function reducer(
     }
     case fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS: {
       const orgs = action.payload;
+      const orgEntities = orgs.reduce((entities: {[id: string]: OrganisationVM}, org: OrganisationVM) => {
+        return {
+          ...entities,
+          [org.organisationId]: org
+        }
+      }, {...state.activeOrganisations.orgEntities});
       const activeOrganisations = {
-        orgs,
+        orgEntities,
         loaded: true,
         loading: false
       }
@@ -62,7 +68,7 @@ export function reducer(
 
     case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
       const pendingOrganisations = {
-        orgs: {...state.activeOrganisations.orgs},
+        orgEntities: {},
         loaded: false,
         loading: true
       }
@@ -74,8 +80,15 @@ export function reducer(
 
     case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
       const orgs = action.payload;
+      const orgEntities = orgs.reduce((entities: {[id: string]: OrganisationVM}, org: OrganisationVM) => {
+        return {
+          ...entities,
+          [org.organisationId]: org
+        }
+      }, {...state.pendingOrganisations.orgEntities});
+
       const pendingOrganisations = {
-        orgs,
+        orgEntities,
         loaded: true,
         loading: true
       }
@@ -86,6 +99,17 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
+      const orgForReview = action.payload;
+      return {
+        ...state,
+        orgForReview,
+        errorMessage: ''
+      };
+    }
+
+    case fromActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS: {
+      // REMOVE FROM PENDING LIST
+      // ADD TO ACTIVE LIST
       const orgForReview = action.payload;
       return {
         ...state,
@@ -106,7 +130,7 @@ export function reducer(
   }
 }
 
-export const getPendingOrganisations = (state: OrganisationState) => state.pendingOrganisations;
-export const getActiveOrg = (state: OrganisationState) => state.activeOrganisations;
-export const getPendingOrg = (state: OrganisationState) => state.pendingOrganisations;
+export const getPendingOrganis = (state: OrganisationState) => state.pendingOrganisations;
+export const getActiveOrgEntities = (state: OrganisationState) => state.activeOrganisations;
+export const getPendingOrgEntities = (state: OrganisationState) => state.pendingOrganisations;
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;

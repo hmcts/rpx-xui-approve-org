@@ -37,7 +37,7 @@ export class ActiveOrganisationsComponent implements OnInit {
     });
 
 
-    this.orgs$ = this.store.pipe(select(fromOrganisation.getActiveOrganisation));
+    this.orgs$ = this.store.pipe(select(fromOrganisation.getActiveOrganisationArray));
     this.loading$ = this.store.pipe(select(fromOrganisation.getActiveLoading));
     this.pendingOrgsCount$ = this.store.pipe(select(fromOrganisation.pendingOrganisationsCount));
 
