@@ -34,8 +34,9 @@ export class PendingOrgEffects {
   approvePendingOrgs$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS),
     map((action: pendingOrgActions.ApprovePendingOrganisations) => action.payload),
-    switchMap(payload => {
-      const pendingOrganisation = AppUtils.mapOrganisationsVm(payload)[0];
+    switchMap(organisation => {
+      const pendingOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
+
       return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
         map(pendingOrganisations => {
           this.loggerService.log('Approved Organisation successfully');
@@ -53,7 +54,7 @@ export class PendingOrgEffects {
   approvePendingOrgsSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS),
     map(() => {
-      return new fromRoot.Go({ path: ['pending-organisations/approve-success'] });
+      return new fromRoot.Go({ path: ['/approve-organisations-success'] });
     })
   );
 }

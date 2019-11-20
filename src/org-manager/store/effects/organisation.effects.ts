@@ -19,7 +19,7 @@ export class OrganisationEffects {
   ) {}
 
   @Effect()
-  loadOrganisations$ = this.actions$.pipe(
+  loadActiveOrganisations$ = this.actions$.pipe(
     ofType(fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS),
     switchMap(() => {
       return this.organisationService.fetchOrganisations().pipe(

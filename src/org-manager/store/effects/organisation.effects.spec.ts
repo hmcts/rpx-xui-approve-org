@@ -43,14 +43,14 @@ describe('Organisation Effects', () => {
 
   });
 
-  describe('loadOrganisations$ error', () => {
+  describe('loadActiveOrganisations$ error', () => {
     it('should return LoadOrganisationsFail', () => {
       OrganisationServiceMock.fetchOrganisations.and.returnValue(throwError(new Error()));
       const action = new LoadOrganisation();
       const completion = new LoadOrganisationFail(new Error());
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
-      expect(effects.loadOrganisations$).toBeObservable(expected);
+      expect(effects.loadActiveOrganisations$).toBeObservable(expected);
     });
   });
 

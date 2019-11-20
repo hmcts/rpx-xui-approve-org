@@ -53,19 +53,16 @@ export class DisplayErrorMessageOrganisations implements Action {
 
 export class ApprovePendingOrganisations implements Action {
     readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS;
-
-    constructor(public payload: any[]) { }
+    constructor(public payload: OrganisationVM) { }
 }
 
 export class ApprovePendingOrganisationsSuccess implements Action {
     readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
-
     constructor(public payload: any) { }
 }
 
 export class ApprovePendingOrganisationsFail implements Action {
     readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
-
     constructor(public payload: any) { }
 }
 

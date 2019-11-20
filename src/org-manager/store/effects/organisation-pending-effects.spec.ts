@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { hot, cold } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromPendingOrganisationEffects from './org-pending.effects';
-import { PendingOrgEffects } from './org-pending.effects';
+import * as fromPendingOrganisationEffects from './organisation-pending.effects';
+import { PendingOrgEffects } from './organisation-pending.effects';
 import { LoadPendingOrganisations, ApprovePendingOrganisations,
         ApprovePendingOrganisationsSuccess, DisplayErrorMessageOrganisations } from '../actions/organisations.actions';
 import { LoadPendingOrganisationsSuccess, LoadPendingOrganisationsFail } from '../actions';
