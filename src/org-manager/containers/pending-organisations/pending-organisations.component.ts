@@ -6,10 +6,9 @@ import 'rxjs/add/observable/of';
 import * as fromStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
-import { OrganisationVM, OrganisationSummary } from 'src/org-manager/models/organisation';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { EventEmitter } from 'events';
-import {tap} from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-pending-overview-component',
@@ -19,13 +18,10 @@ import {tap} from 'rxjs/operators';
 export class PendingOrganisationsComponent implements OnInit, OnDestroy {
 
   columnConfig: GovukTableColumnConfig[];
-  pendingOrgs$: any;
-  loading$: Observable<boolean>;
-  approveOrganisations: Array<OrganisationVM>;
-  pendingOrganisations$: Array<OrganisationSummary>;
+  pendingOrgs$: Observable<OrganisationVM[]>;
   subscription: Subscription;
   inputForm: FormGroup;
-  valueChange = new EventEmitter();
+  errorMessage$: Observable<string>;
 
   constructor(public store: Store<fromStore.OrganisationState>,
               private fb: FormBuilder) {}
@@ -34,7 +30,6 @@ export class PendingOrganisationsComponent implements OnInit, OnDestroy {
     this.inputForm = this.fb.group({
       pendingOrgInputRadio: ['', Validators.required]
     });
-    this.approveOrganisations = [];
     this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
     this.pendingOrgs$.subscribe(orgs => {
       if (orgs.length === 0) {
@@ -43,16 +38,16 @@ export class PendingOrganisationsComponent implements OnInit, OnDestroy {
     });
 
     this.columnConfig = PendingOverviewColumnConfig;
+    this.errorMessage$ = this.store.pipe(select(fromStore.getErrorMessage));
 
     this.store.dispatch(new fromStore.ClearErrors());
   }
 
   activateOrganisations() {
-    if (this.inputForm.controls.pendingOrgInputRadio.value) {
-      this.approveOrganisations = [];
-      this.approveOrganisations.push(this.inputForm.controls.pendingOrgInputRadio.value);
-      this.store.dispatch(new fromStore.AddReviewOrganisations(this.approveOrganisations));
-      this.store.dispatch(new fromRoot.Go({ path: ['pending-organisations/approve'] }));
+    const {valid, value} = this.inputForm.controls.pendingOrgInputRadio;
+    if (valid) {
+      this.store.dispatch(new fromStore.AddReviewOrganisations(value));
+      this.store.dispatch(new fromRoot.Go({ path: ['/approve-organisations'] }));
     } else {
       this.store.dispatch(new fromStore.DisplayErrorMessageOrganisations('Select an organisation'));
     }

@@ -43,7 +43,12 @@ export const getPendingLoaded = createSelector(
   getPendingOrganisationsState,
   (orgState) => orgState.loaded
 );
+/////
 
+export const getErrorMessage = createSelector(
+  getOrganisationsState,
+  (orgState) => orgState.errorMessage
+);
 export const selectedActiveOrganisation = createSelector(
   getActiveOrganisation,
   fromRoot.getRouterState,

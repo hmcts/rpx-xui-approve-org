@@ -42,7 +42,7 @@ export class LoadPendingOrganisationsFail implements Action {
 export class AddReviewOrganisations implements Action {
     readonly type = OrgActionTypes.ADD_REVIEW_ORGANISATIONS;
 
-    constructor(public payload: OrganisationVM[]) { }
+    constructor(public payload: OrganisationVM) { }
 }
 
 export class DisplayErrorMessageOrganisations implements Action {

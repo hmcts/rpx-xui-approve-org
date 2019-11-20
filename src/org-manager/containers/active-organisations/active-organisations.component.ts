@@ -7,7 +7,7 @@ import {takeWhile} from 'rxjs/operators';
 
 @Component({
   selector: 'app-prd-org-overview-component',
-  templateUrl: './org-overview.component.html',
+  templateUrl: './active-organisations.component.html',
 })
 
 export class ActiveOrganisationsComponent implements OnInit {

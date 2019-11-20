@@ -1,6 +1,6 @@
 <div class="hmcts-width-container">
   <app-back-link [store]="store"></app-back-link>
-  <lib-gov-uk-error-summary *ngIf="(pendingOrgs$ | async)?.errorMessage" [errorMessages]="[{message: (pendingOrgs$ | async)?.errorMessage}]"></lib-gov-uk-error-summary>
+  <lib-gov-uk-error-summary *ngIf="(errorMessage$ | async) as message" [errorMessages]="[{message: message}]"></lib-gov-uk-error-summary>
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <h1 class="govuk-heading-xl">Organisations pending activation</h1>
     <form [formGroup]="inputForm">

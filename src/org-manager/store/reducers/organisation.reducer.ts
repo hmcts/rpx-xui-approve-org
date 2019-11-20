@@ -113,4 +113,3 @@ export const getPendingOrganisationsLoading = (state: OrganisationState) => stat
 export const getPendingOrganisationsLoaded = (state: OrganisationState) => state.pendingOrganisations.loaded;
 export const getActiveOrg = (state: OrganisationState) => state.activeOrganisations;
 export const getPendingOrg = (state: OrganisationState) => state.pendingOrganisations;
-export const getErrorMessage = (state: OrganisationState) => state.errorMessage;
