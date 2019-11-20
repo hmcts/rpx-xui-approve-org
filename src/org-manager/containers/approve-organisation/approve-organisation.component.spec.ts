@@ -44,7 +44,7 @@ describe('ApproveOrganisationComponent', () => {
     it('should return reviewed organisations', () => {
         storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
         fixture.detectChanges();
-        expect(component.reviewedOrganisations).toEqual(reviewedOrganisationsDummy);
+        expect(component.orgForReview).toEqual(reviewedOrganisationsDummy);
     });
 
     xit('should dispatch a router "back" action when there are no reviewed activeOrg', () => {

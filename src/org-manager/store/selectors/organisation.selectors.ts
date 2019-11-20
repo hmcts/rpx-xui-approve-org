@@ -49,6 +49,8 @@ export const getErrorMessage = createSelector(
   getOrganisationsState,
   (orgState) => orgState.errorMessage
 );
+
+// todo change
 export const selectedActiveOrganisation = createSelector(
   getActiveOrganisation,
   fromRoot.getRouterState,
@@ -58,30 +60,13 @@ export const selectedActiveOrganisation = createSelector(
   }
 });
 
-export const selectedPendingOrganisation = (orgId: string) => createSelector( getPendingOrganisationsState, (organisationState: any) => {
-  if (organisationState && organisationState.pendingOrganisations) {
-    return organisationState.pendingOrganisations.filter(x => x.organisationId === orgId) as OrganisationVM;
-  } else {
-    return {};
-  }
-});
+export const getOrganisationForReview = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getOrgForReview
+);
 
 export const pendingOrganisationsCount = createSelector(
   getActiveOrganisation,
   (orgArr) =>  orgArr ? orgArr.length : 0
 );
 
-// // export const organisationsLoading = createSelector(
-// //   getOrganisationsState,
-// //   fromOrganisation.getOrganisationsLoading
-// // );
-// //
-// // export const organisationsLoaded = createSelector(
-// //   getOrganisationsState,
-// //   fromOrganisation.getOrganisationsLoaded
-// // );
-//
-export const getCurrentPage = createSelector(
-    fromRoot.getRouterState,
-    (router) => router.state.params
-  );

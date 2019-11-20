@@ -40,7 +40,7 @@ describe('PendingOrganisationsReducer', () => {
   });
 
   describe('ADD_REVIEW_ORGANISATIONS action', () => {
-    it('should update the state.reviewedOrganisations', () => {
+    it('should update the state.orgForReview', () => {
 
       const action = new AddReviewOrganisations(PendingOrganisationsMock);
       const state = reducer(initialState, action);

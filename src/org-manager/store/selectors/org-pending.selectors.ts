@@ -8,7 +8,7 @@
 // );
 //
 // export const pendingOrganisations = createSelector( getPendingOrgs, fromOrganisation.getPendingOrganisations);
-// export const reviewedOrganisations = createSelector(
+// export const orgForReview = createSelector(
 //   getPendingOrgs,
 //   fromOrganisation.getReviewedOrganisations
 // );

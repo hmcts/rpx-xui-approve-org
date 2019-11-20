@@ -19,8 +19,8 @@
                 <div class="govuk-grid-column-two-thirds">
                     <h1 class="govuk-heading-xl">Check selected organisations before you activate them</h1>
 
-                    <ng-container *ngFor="let organisation of reviewedOrganisations">
-                        <h2 class="govuk-heading-m">{{organisation.name}}</h2>
+                    <ng-container *ngIf="orgForReview">
+                        <h2 class="govuk-heading-m">{{orgForReview.name}}</h2>
                         <dl class="govuk-summary-list">
 
                             <div class="govuk-summary-list__row">
@@ -28,13 +28,13 @@
                                     Address
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    {{organisation.addressLine1}}<br>
-                                    <div *ngIf='organisation.addressLine2'>
-                                        {{organisation.addressLine2}}<br>
+                                    {{orgForReview.addressLine1}}<br>
+                                    <div *ngIf='orgForReview.addressLine2'>
+                                        {{orgForReview.addressLine2}}<br>
                                     </div>
-                                    {{organisation.townCity}}<br>
-                                    <div *ngIf='organisation.county'>
-                                        {{organisation.county}}<br>
+                                    {{orgForReview.townCity}}<br>
+                                    <div *ngIf='orgForReview.county'>
+                                        {{orgForReview.county}}<br>
                                     </div>
                                 </dd>
 
@@ -45,8 +45,8 @@
                                     Administrator
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    <div>{{organisation.admin}}</div>
-                                    <div class="govuk-caption-m govuk-!-font-size-16">{{organisation.adminEmail}}</div>
+                                    <div>{{orgForReview.admin}}</div>
+                                    <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.adminEmail}}</div>
                                 </dd>
 
                             </div>

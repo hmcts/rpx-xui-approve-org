@@ -13,12 +13,14 @@ export interface OrganisationState {
     loading: boolean;
   };
   errorMessage: string;
+  orgForReview: OrganisationVM | null;
 }
 
 export const initialState: OrganisationState = {
   activeOrganisations: {orgs: [], loaded: false, loading: false},
   pendingOrganisations: {orgs: [], loaded: false, loading: false},
-  errorMessage: ''
+  errorMessage: '',
+  orgForReview: null
 };
 
 export function reducer(
@@ -71,7 +73,6 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
-      // TODO please fix this - something is not right
       const orgs = action.payload;
       const pendingOrganisations = {
         orgs,
@@ -84,17 +85,14 @@ export function reducer(
       };
     }
 
-    // case fromActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
-    //   const payload: OrganisationVM[] = action.payload.slice(0);
-    //   const reviewedOrganisationsMapped = payload.map(item => {
-    //     return { ...item, status: 'ACTIVE' };
-    //   });
-    //   return {
-    //     ...state,
-    //     reviewedOrganisations: reviewedOrganisationsMapped,
-    //     errorMessage: ''
-    //   };
-    // }
+    case fromActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS: {
+      const orgForReview = action.payload;
+      return {
+        ...state,
+        orgForReview,
+        errorMessage: ''
+      };
+    }
 
 
     case fromActions.OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
@@ -109,7 +107,6 @@ export function reducer(
 }
 
 export const getPendingOrganisations = (state: OrganisationState) => state.pendingOrganisations;
-export const getPendingOrganisationsLoading = (state: OrganisationState) => state.pendingOrganisations.loading;
-export const getPendingOrganisationsLoaded = (state: OrganisationState) => state.pendingOrganisations.loaded;
 export const getActiveOrg = (state: OrganisationState) => state.activeOrganisations;
 export const getPendingOrg = (state: OrganisationState) => state.pendingOrganisations;
+export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
