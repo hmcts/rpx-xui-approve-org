@@ -27,7 +27,7 @@ export function reducer(
 ): OrganisationState {
   switch (action.type) {
 
-    case fromActions.OrgActionTypes.LOAD_ORGANISATIONS: {
+    case fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS: {
       const activeOrganisations = {
         orgs: null,
         loaded: false,
@@ -38,7 +38,7 @@ export function reducer(
         activeOrganisations
       };
     }
-    case fromActions.OrgActionTypes.LOAD_ORGANISATIONS_SUCCESS: {
+    case fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS: {
       const orgs = action.payload;
       const activeOrganisations = {
         orgs,
@@ -75,7 +75,7 @@ export function reducer(
       const orgs = action.payload;
       const pendingOrganisations = {
         orgs,
-        loaded: false,
+        loaded: true,
         loading: true
       }
       return {

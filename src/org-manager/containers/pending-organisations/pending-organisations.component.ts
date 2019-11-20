@@ -37,13 +37,10 @@ export class PendingOrganisationsComponent implements OnInit, OnDestroy {
     this.approveOrganisations = [];
     this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
     this.pendingOrgs$.subscribe(orgs => {
-      console.log(orgs)
       if (orgs.length === 0) {
          this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
       }
     });
-
-    // this.loading$ = this.store.pipe(select(fromStore.pendingOrganisationsLoading));
 
     this.columnConfig = PendingOverviewColumnConfig;
 

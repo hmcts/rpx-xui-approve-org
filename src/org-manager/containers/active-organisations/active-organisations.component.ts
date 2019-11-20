@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Store, select } from '@ngrx/store';
 import * as fromOrganisation from '../../../org-manager/store/';
 import { Observable } from 'rxjs';
+import {takeWhile} from 'rxjs/operators';
 
 
 @Component({
@@ -19,11 +20,25 @@ export class ActiveOrganisationsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.store.dispatch(new fromOrganisation.LoadOrganisation());
+    this.store.pipe(select(
+      fromOrganisation.getActiveLoaded),
+      takeWhile(loaded => !loaded)).subscribe(loaded => {
+      if (!loaded) {
+        this.store.dispatch(new fromOrganisation.LoadOrganisation());
+      }
+    });
+
+    this.store.pipe(select(
+      fromOrganisation.getPendingLoaded),
+      takeWhile(loaded => !loaded)).subscribe(loaded => {
+      if (!loaded) {
+        this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
+      }
+    });
+
+
     this.orgs$ = this.store.pipe(select(fromOrganisation.getActiveOrganisation));
-    // this.loading$ = this.store.pipe(select(fromOrganisation.organisationsLoading));
-    //
-    this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
+    this.loading$ = this.store.pipe(select(fromOrganisation.getActiveLoading));
     this.pendingOrgsCount$ = this.store.pipe(select(fromOrganisation.pendingOrganisationsCount));
 
   }

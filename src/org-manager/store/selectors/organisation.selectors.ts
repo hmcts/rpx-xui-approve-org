@@ -19,6 +19,16 @@ export const getActiveOrganisation = createSelector(
   (orgState) => orgState.orgs
 );
 
+export const getActiveLoaded = createSelector(
+  getActiveOrganisationState,
+  (orgState) => orgState.loaded
+);
+
+export const getActiveLoading = createSelector(
+  getActiveOrganisationState,
+  (orgState) => orgState.loading
+);
+
 // entry for Pending Organisations
 export const getPendingOrganisationsState = createSelector(
   getOrganisationsState,
@@ -28,6 +38,10 @@ export const getPendingOrganisationsState = createSelector(
 export const getPendingOrganisationsArray = createSelector(
   getPendingOrganisationsState,
   (orgsArray) => orgsArray.orgs
+);
+export const getPendingLoaded = createSelector(
+  getPendingOrganisationsState,
+  (orgState) => orgState.loaded
 );
 
 export const selectedActiveOrganisation = createSelector(

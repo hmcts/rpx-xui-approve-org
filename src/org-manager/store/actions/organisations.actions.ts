@@ -3,8 +3,8 @@ import { Action } from '@ngrx/store';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export enum OrgActionTypes {
-    LOAD_ORGANISATIONS = '[Organisations] Load Organisations',
-    LOAD_ORGANISATIONS_SUCCESS = '[Organisations] Load Organisations Success',
+    LOAD_ACTIVE_ORGANISATIONS = '[Organisations] Load Active Organisations',
+    LOAD_ACTIVE_ORGANISATIONS_SUCCESS = '[Organisations] Load Active Organisations Success',
     LOAD_ORGANISATIONS_FAIL = '[Organisations] Load Organisations Fail',
     LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
     LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
@@ -71,11 +71,11 @@ export class ApprovePendingOrganisationsFail implements Action {
 
 // Load Active Organisation Action
 export class LoadOrganisation {
-  readonly type = OrgActionTypes.LOAD_ORGANISATIONS;
+  readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS;
 }
 
 export class LoadOrganisationSuccess  implements Action {
-  readonly type = OrgActionTypes.LOAD_ORGANISATIONS_SUCCESS;
+  readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS;
   constructor(public payload: any[]) {}  // TODO add type list of users
 }
 
