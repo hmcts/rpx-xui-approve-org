@@ -19,7 +19,7 @@ export class ApproveOrganisationComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         // // TODO: should get reviewedOrganisations
-        // this.$reviewedOrganisationsSubscription = this.store.pipe(select(fromOrganisationPendingStore.getPendingOrgs))
+        // this.$reviewedOrganisationsSubscription = this.store.pipe(select(fromStore.getPendingOrgs))
         //     .subscribe((response: any) => { // TODO: should have correct type
         //         if (response.reviewedOrganisations.length > 0) {
         //             this.reviewedOrganisations = response.reviewedOrganisations;
@@ -28,7 +28,7 @@ export class ApproveOrganisationComponent implements OnInit, OnDestroy {
         //         }
         //     });
         // // Organisation error
-        // this.serverResponseMessages$ = this.store.pipe( select(fromOrganisationPendingStore.errorOrganisations));
+        // this.serverResponseMessages$ = this.store.pipe( select(fromStore.errorOrganisations));
     }
 
 

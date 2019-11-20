@@ -5,7 +5,7 @@
     <h1 class="govuk-heading-xl">Organisations pending activation</h1>
     <form [formGroup]="inputForm">
         <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisation</button>
-        <table class="govuk-table" *ngIf="(pendingOrganisations$)?.length > 0">
+        <table class="govuk-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
               <th class="govuk-table__header" scope="col"></th>
@@ -16,7 +16,7 @@
               <th class="govuk-table__header" scope="col">Status</th>
               <th class="govuk-table__header" scope="col"></th>
             </tr>
-            <tr class="govuk-table__row govuk-radios" *ngFor="let org of pendingOrganisations$">
+            <tr class="govuk-table__row govuk-radios" *ngFor="let org of (pendingOrgs$ | async)">
               <td class="govuk-table__cell">
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" [id]="org.organisationId" type="radio" name="pendingOrgInputRadio" formControlName="pendingOrgInputRadio" [value]="org">

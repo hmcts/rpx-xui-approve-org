@@ -25,6 +25,11 @@ export const getPendingOrganisationsState = createSelector(
   fromOrganisation.getPendingOrg
 );
 
+export const getPendingOrganisationsArray = createSelector(
+  getPendingOrganisationsState,
+  (orgsArray) => orgsArray.orgs
+);
+
 export const selectedActiveOrganisation = createSelector(
   getActiveOrganisation,
   fromRoot.getRouterState,
