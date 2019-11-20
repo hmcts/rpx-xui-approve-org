@@ -108,16 +108,37 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS: {
-      // REMOVE FROM PENDING LIST
-      // ADD TO ACTIVE LIST
-      const orgForReview = action.payload;
+      const approvedOrg = action.payload;
+      const activeEntities = {
+        ...state.activeOrganisations.orgEntities,
+        [approvedOrg.organisationId]: approvedOrg
+      };
+      const activeOrganisations = {
+        orgEntities: activeEntities,
+        loaded: true,
+        loading: false
+      };
+
+      const pendingEntities = {
+        ...state.pendingOrganisations.orgEntities,
+      };
+
+      if (pendingEntities.hasOwnProperty(approvedOrg.organisationId)) {
+        delete pendingEntities[approvedOrg.organisationId];
+      }
+
+      const pendingOrganisations = {
+        ...state.pendingOrganisations,
+        orgEntities: pendingEntities
+      };
       return {
         ...state,
-        orgForReview,
-        errorMessage: ''
+        activeOrganisations,
+        pendingOrganisations,
+        errorMessage: '',
+        orgForReview: null
       };
     }
-
 
     case fromActions.OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
       const errorMessage = action.payload;
