@@ -1,4 +1,9 @@
-<app-identity-bar-component><span>{{data.name}} </span><span class="hmcts-badge hmcts-badge--green">{{data.status}}</span></app-identity-bar-component>
+<app-identity-bar-component><span>
+    {{data?.name}}
+  </span><span class="hmcts-badge hmcts-badge--green">
+    {{data?.status}}
+  </span>
+</app-identity-bar-component>
 <div class="hmcts-width-container">
 <app-back-link [store]="store"></app-back-link>
 <lib-gov-uk-main-wrapper [title]="'Organisation details'" *ngIf="orgSubscription$ | async as data">
