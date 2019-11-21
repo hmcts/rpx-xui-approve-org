@@ -2,7 +2,6 @@ import {createSelector} from '@ngrx/store';
 
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisation from '../reducers';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export const getOrganisationsState = createSelector(
   fromOrganisation.getRootApproveOrgState,
@@ -52,7 +51,7 @@ export const getPendingLoaded = createSelector(
   getPendingOrganisationsState,
   (orgState) => orgState.loaded
 );
-/////
+//
 
 export const getErrorMessage = createSelector(
   getOrganisationsState,
