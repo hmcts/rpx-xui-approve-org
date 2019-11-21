@@ -90,7 +90,7 @@ export function reducer(
       const pendingOrganisations = {
         orgEntities,
         loaded: true,
-        loading: true
+        loading: false
       }
       return {
         ...state,
