@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
-import * as fromStore from '../../store/'
+import * as fromStore from '../../store/';
 import { Store, select } from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
 import { OrganisationVM } from 'src/org-manager/models/organisation';

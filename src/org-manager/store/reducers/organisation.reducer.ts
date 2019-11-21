@@ -1,5 +1,5 @@
 import * as fromActions from '../actions/organisations.actions';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
+import {OrganisationVM} from 'src/org-manager/models/organisation';
 
 export interface OrganisationState {
   activeOrganisations: {
@@ -34,25 +34,24 @@ export function reducer(
         orgEntities: {},
         loaded: false,
         loading: true
-      }
+      };
       return {
         ...state,
         activeOrganisations
       };
     }
     case fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS: {
-      const orgs = action.payload;
-      const orgEntities = orgs.reduce((entities: {[id: string]: OrganisationVM}, org: OrganisationVM) => {
+      const orgEntities = action.payload.reduce((entities: {[id: string]: OrganisationVM}, org: OrganisationVM) => {
         return {
           ...entities,
           [org.organisationId]: org
-        }
+        };
       }, {...state.activeOrganisations.orgEntities});
       const activeOrganisations = {
         orgEntities,
         loaded: true,
         loading: false
-      }
+      };
       return {
         ...state,
         activeOrganisations
@@ -71,7 +70,7 @@ export function reducer(
         orgEntities: {},
         loaded: false,
         loading: true
-      }
+      };
       return {
         ...state,
         pendingOrganisations
@@ -79,19 +78,18 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
-      const orgs = action.payload;
-      const orgEntities = orgs.reduce((entities: {[id: string]: OrganisationVM}, org: OrganisationVM) => {
+      const orgEntities = action.payload.reduce((entities: {[id: string]: OrganisationVM}, org: OrganisationVM) => {
         return {
           ...entities,
           [org.organisationId]: org
-        }
+        };
       }, {...state.pendingOrganisations.orgEntities});
 
       const pendingOrganisations = {
         orgEntities,
         loaded: true,
         loading: false
-      }
+      };
       return {
         ...state,
         pendingOrganisations
@@ -111,7 +109,7 @@ export function reducer(
       const approvedOrg =  {
         ...action.payload,
         status: 'ACTIVE'
-      }
+      };
       const activeEntities = {
         ...state.activeOrganisations.orgEntities,
         [approvedOrg.organisationId]: approvedOrg

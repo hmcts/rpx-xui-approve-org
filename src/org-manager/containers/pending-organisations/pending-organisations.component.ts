@@ -20,9 +20,9 @@ export class PendingOrganisationsComponent implements OnInit {
   pendingOrgs$: Observable<OrganisationVM[]>;
   inputForm: FormGroup;
   errorMessage$: Observable<string>;
-  loading$: Observable<boolean>
+  loading$: Observable<boolean>;
 
-  constructor(private store: Store<fromStore.OrganisationRootState>,
+  constructor(public store: Store<fromStore.OrganisationRootState>,
               private fb: FormBuilder) {}
 
   ngOnInit(): void {

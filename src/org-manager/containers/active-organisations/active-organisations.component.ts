@@ -13,7 +13,7 @@ import {takeWhile} from 'rxjs/operators';
 export class ActiveOrganisationsComponent implements OnInit {
   orgs$: Observable<any>;
   loading$: Observable<boolean>;
-  pendingLoading$: Observable<boolean>
+  pendingLoading$: Observable<boolean>;
   pendingOrgsCount$: Observable<number>;
 
   constructor(

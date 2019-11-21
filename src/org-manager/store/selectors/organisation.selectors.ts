@@ -65,7 +65,7 @@ export const selectedActiveOrganisation = createSelector(
   (organisationState: fromOrganisation.OrganisationState, router) => {
     return organisationState[router.state.params.type] ?
       organisationState[router.state.params.type].orgEntities[router.state.params.id] : null;
-  })
+  });
 
 export const getOrganisationForReview = createSelector(
   getOrganisationsState,

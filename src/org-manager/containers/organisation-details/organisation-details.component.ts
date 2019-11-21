@@ -8,7 +8,7 @@ import {map, takeWhile} from 'rxjs/operators';
 
 /**
  * Bootstraps Organisation Details
-*/
+ */
 @Component({
   selector: 'app-org-details',
   templateUrl: './organisation-details.component.html'
@@ -28,7 +28,7 @@ export class OrganisationDetailsComponent implements OnInit {
       if (!org) {
         this.store.dispatch(new fromRoot.Go({path: ['/active-organisation']}));
       }
-    })
+    });
   }
 
 }
