@@ -1,9 +1,9 @@
 import {Component, OnInit, Input} from '@angular/core';
-import * as fromOrganisationPendingStore from '../../store';
+import * as fromStore from '../../store';
+import * as fromRoot from '../../../app/store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import { Observable } from 'rxjs';
-import {tap} from 'rxjs/operators';
 
 /**
  * Bootstraps Organisation Details
@@ -21,11 +21,16 @@ export class OrganisationDetailsComponent implements OnInit {
   dxExchange: string;
 
   constructor(
-    public store: Store<fromOrganisationPendingStore.OrganisationRootState>
+    public store: Store<fromStore.OrganisationRootState>
   ) {}
 
   ngOnInit(): void {
-    this.orgSubscription$ = this.store.pipe(select(fromOrganisationPendingStore.selectedActiveOrganisation));
+    this.orgSubscription$ = this.store.pipe(select(fromStore.selectedActiveOrganisation));
+    this.orgSubscription$.subscribe(org => {
+      if (!org) {
+        this.store.dispatch(new fromRoot.Go({path: ['/active-organisation']}));
+      }
+    })
   }
 
 }

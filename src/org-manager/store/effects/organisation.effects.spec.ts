@@ -6,7 +6,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromOrganisationEffects from './organisation.effects';
 import { OrganisationEffects } from './organisation.effects';
 import { LoadOrganisation, LoadOrganisationFail } from '../actions/organisation.actions';
-import { LoadOrganisationSuccess } from '../actions';
+import { LoadActiveOrganisationSuccess } from '../actions';
 import { OrganisationService } from 'src/org-manager/services';
 import { LoggerService } from 'src/app/services/logger.service';
 

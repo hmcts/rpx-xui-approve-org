@@ -13,6 +13,7 @@ import {takeWhile} from 'rxjs/operators';
 export class ActiveOrganisationsComponent implements OnInit {
   orgs$: Observable<any>;
   loading$: Observable<boolean>;
+  pendingLoading$: Observable<boolean>
   pendingOrgsCount$: Observable<number>;
 
   constructor(
@@ -24,13 +25,12 @@ export class ActiveOrganisationsComponent implements OnInit {
       fromOrganisation.getActiveLoaded),
       takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
-        this.store.dispatch(new fromOrganisation.LoadOrganisation());
+        this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
       }
     });
 
-    this.store.pipe(select(
-      fromOrganisation.getPendingLoaded),
-      takeWhile(loaded => !loaded)).subscribe(loaded => {
+    this.pendingLoading$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
+    this.pendingLoading$.subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }

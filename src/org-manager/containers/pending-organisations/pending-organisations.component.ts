@@ -8,6 +8,8 @@ import * as fromRoot from '../../../app/store';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import * as fromOrganisation from '../../store/';
+import {takeWhile} from 'rxjs/operators';
 
 
 @Component({
@@ -22,6 +24,7 @@ export class PendingOrganisationsComponent implements OnInit, OnDestroy {
   subscription: Subscription;
   inputForm: FormGroup;
   errorMessage$: Observable<string>;
+  loading$: Observable<boolean>
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
               private fb: FormBuilder) {}
@@ -31,11 +34,19 @@ export class PendingOrganisationsComponent implements OnInit, OnDestroy {
       pendingOrgInputRadio: ['', Validators.required]
     });
     this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
-    this.pendingOrgs$.subscribe(orgs => {
-      if (orgs.length === 0) {
-         this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
+
+    this.loading$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
+    this.loading$.subscribe(loaded => {
+      if (!loaded) {
+        this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }
     });
+
+    // this.pendingOrgs$.subscribe(orgs => {
+    //   if (orgs.length === 0) {
+    //      this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
+    //   }
+    // });
 
     this.columnConfig = PendingOverviewColumnConfig;
     this.errorMessage$ = this.store.pipe(select(fromStore.getErrorMessage));
@@ -53,9 +64,6 @@ export class PendingOrganisationsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onGoBack() {
-    this.store.dispatch(new fromRoot.Back());
-  }
   ngOnDestroy(): void {
     if (this.subscription) {
       this.subscription.unsubscribe();

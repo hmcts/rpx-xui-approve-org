@@ -1,91 +1,94 @@
-<app-identity-bar-component><span>
-    {{data?.name}}
-  </span><span class="hmcts-badge hmcts-badge--green">
+<ng-container *ngIf="orgSubscription$ | async as data">
+<app-identity-bar-component>
+  <strong>{{data?.name}}</strong>
+  <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(data?.status=='ACTIVE') ?
+  'hmcts-badge--green':'hmcts-badge--blue'">
     {{data?.status}}
   </span>
 </app-identity-bar-component>
 <div class="hmcts-width-container">
-<app-back-link [store]="store"></app-back-link>
-<lib-gov-uk-main-wrapper [title]="'Organisation details'" *ngIf="orgSubscription$ | async as data">
-      <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               Name
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data?.name}}
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               Address
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data?.addressLine1}}<br>
-               <div *ngIf='data.addressLine2'>
-                   {{data?.addressLine2}}<br>
-               </div>
-               {{data.townCity}}<br>
-               <div *ngIf='data.county'>
-                  {{data?.county}}<br>
-               </div>
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               PBA number
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data?.pbaNumber}}
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               DX number
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data.dxNumber[0]?.dxNumber}}
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               DX exchange
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data.dxNumber[0]?.dxExchange}}
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               Administrator
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               <div>{{data?.admin}}</div>
-               <div class="govuk-caption-m govuk-!-font-size-16">{{data?.adminEmail}}</div>
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               SRA Id
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data?.sraId}}
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-      </dl>
-</lib-gov-uk-main-wrapper>
+  <lib-gov-uk-main-wrapper [title]="'Organisation details'"
+                           [backLink]="data?.status === 'ACTIVE' ? '/active-organisation': '/pending-organisations'">
+        <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
+           <div class="govuk-check-your-answers__contents">
+              <dt class="govuk-check-your-answers__question">
+                 Name
+              </dt>
+              <dd class="govuk-check-your-answers__answer">
+                 {{data?.name}}
+              </dd>
+              <dd class="govuk-check-your-answers__change">
+              </dd>
+           </div>
+           <div class="govuk-check-your-answers__contents">
+              <dt class="govuk-check-your-answers__question">
+                 Address
+              </dt>
+              <dd class="govuk-check-your-answers__answer">
+                 {{data?.addressLine1}}<br>
+                 <div *ngIf='data.addressLine2'>
+                     {{data?.addressLine2}}<br>
+                 </div>
+                 {{data.townCity}}<br>
+                 <div *ngIf='data.county'>
+                    {{data?.county}}<br>
+                 </div>
+              </dd>
+              <dd class="govuk-check-your-answers__change">
+              </dd>
+           </div>
+           <div class="govuk-check-your-answers__contents">
+              <dt class="govuk-check-your-answers__question">
+                 PBA number
+              </dt>
+              <dd class="govuk-check-your-answers__answer">
+                 {{data?.pbaNumber}}
+              </dd>
+              <dd class="govuk-check-your-answers__change">
+              </dd>
+           </div>
+           <div class="govuk-check-your-answers__contents">
+              <dt class="govuk-check-your-answers__question">
+                 DX number
+              </dt>
+              <dd class="govuk-check-your-answers__answer">
+                 {{data.dxNumber[0]?.dxNumber}}
+              </dd>
+              <dd class="govuk-check-your-answers__change">
+              </dd>
+           </div>
+           <div class="govuk-check-your-answers__contents">
+              <dt class="govuk-check-your-answers__question">
+                 DX exchange
+              </dt>
+              <dd class="govuk-check-your-answers__answer">
+                 {{data.dxNumber[0]?.dxExchange}}
+              </dd>
+              <dd class="govuk-check-your-answers__change">
+              </dd>
+           </div>
+           <div class="govuk-check-your-answers__contents">
+              <dt class="govuk-check-your-answers__question">
+                 Administrator
+              </dt>
+              <dd class="govuk-check-your-answers__answer">
+                 <div>{{data?.admin}}</div>
+                 <div class="govuk-caption-m govuk-!-font-size-16">{{data?.adminEmail}}</div>
+              </dd>
+              <dd class="govuk-check-your-answers__change">
+              </dd>
+           </div>
+           <div class="govuk-check-your-answers__contents">
+              <dt class="govuk-check-your-answers__question">
+                 SRA Id
+              </dt>
+              <dd class="govuk-check-your-answers__answer">
+                 {{data?.sraId}}
+              </dd>
+              <dd class="govuk-check-your-answers__change">
+              </dd>
+           </div>
+        </dl>
+  </lib-gov-uk-main-wrapper>
 </div>
+</ng-container>

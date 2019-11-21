@@ -67,16 +67,16 @@ export class ApprovePendingOrganisationsFail implements Action {
 }
 
 // Load Active Organisation Action
-export class LoadOrganisation {
+export class LoadActiveOrganisation {
   readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS;
 }
 
-export class LoadOrganisationSuccess  implements Action {
+export class LoadActiveOrganisationSuccess  implements Action {
   readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS;
   constructor(public payload: any[]) {}  // TODO add type list of users
 }
 
-export class LoadOrganisationFail implements Action {
+export class LoadActiveOrganisationFail implements Action {
   readonly type = OrgActionTypes.LOAD_ORGANISATIONS_FAIL;
   constructor(public payload: any) {
   }
@@ -92,6 +92,6 @@ export type OrganisationsActions =
     | ApprovePendingOrganisationsSuccess
     | ApprovePendingOrganisationsFail
     | ClearErrors
-    | LoadOrganisation
-    | LoadOrganisationSuccess
-    | LoadOrganisationFail;
+    | LoadActiveOrganisation
+    | LoadActiveOrganisationSuccess
+    | LoadActiveOrganisationFail;
