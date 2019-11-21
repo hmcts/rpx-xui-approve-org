@@ -18,7 +18,7 @@ const OrganisationState = {
   },
   errorMessage: '',
   orgForReview: null
-}
+};
 
 describe('Organisation selectors', () => {
   let store: Store<OrganisationState>;
@@ -26,7 +26,7 @@ describe('Organisation selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('orgState', reducers),
+        StoreModule.forFeature('orgStatePending', reducers),
       ],
     });
     store = TestBed.get(Store);

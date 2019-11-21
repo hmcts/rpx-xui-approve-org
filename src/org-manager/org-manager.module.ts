@@ -22,7 +22,7 @@ import { reducers, effects } from './store';
     HttpClientModule,
     orgManagerRouting,
     SharedModule,
-    StoreModule.forFeature('orgState', reducers),
+    StoreModule.forFeature('orgStatePending', reducers),
     EffectsModule.forFeature(effects)
   ],
   exports: [...fromContainers.containers],

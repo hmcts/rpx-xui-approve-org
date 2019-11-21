@@ -11,7 +11,7 @@ export const reducers: ActionReducerMap<OrganisationRootState> = {
 };
 
 export const getRootApproveOrgState = createFeatureSelector<OrganisationRootState>(
-  'orgState'
+  'orgStatePending'
 );
 
 export * from './organisation.reducer';

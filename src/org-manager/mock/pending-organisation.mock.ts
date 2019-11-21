@@ -35,7 +35,7 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
 export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
-    organisationId: 'Byrne Limited',
+    organisationId: 'ByrneLimited',
     addressLine1: '13 Berryfield drive, Finglas',
     addressLine2: '',
     townCity: '',
@@ -47,12 +47,73 @@ export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
     adminEmail: 'glen@byrne.com',
     dxNumber: [{}]
   }
-];
+  ];
+
+
+export const orgStatePending = {
+ activeOrganisations: {
+   orgEntities: {},
+   loaded: false,
+   loading: false
+ },
+ pendingOrganisations: {
+   orgEntities: {
+     ByrneLimited: {
+       name: 'Glen Byrne',
+       organisationId: 'ByrneLimited',
+       addressLine1: '13 Berryfield drive, Finglas',
+       addressLine2: '',
+       townCity: '',
+       county: '',
+       pbaNumber: ['101010'],
+       admin: 'Glen Byrne',
+       status: 'ACTIVE',
+       view: 'View',
+       adminEmail: 'glen@byrne.com',
+       dxNumber: [{}]
+     }
+     },
+   loaded: true,
+   loading: false
+ },
+ errorMessage: '',
+ orgForReview: null
+};
+
+export const orgStateActive = {
+  activeOrganisations: {
+    orgEntities: {
+      ByrneLimited: {
+        name: 'Glen Byrne',
+        organisationId: 'ByrneLimited',
+        addressLine1: '13 Berryfield drive, Finglas',
+        addressLine2: '',
+        townCity: '',
+        county: '',
+        pbaNumber: ['101010'],
+        admin: 'Glen Byrne',
+        status: 'ACTIVE',
+        view: 'View',
+        adminEmail: 'glen@byrne.com',
+        dxNumber: [{}]
+      }
+    },
+    loaded: true,
+    loading: false
+  },
+  pendingOrganisations: {
+    orgEntities: {},
+    loaded: false,
+    loading: false
+  },
+  errorMessage: '',
+  orgForReview: null
+};
 
 export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [
   {
-    name: 'Glen Byrne',
-    organisationId: 'Byrne Limited',
+    name: 'GlenByrne',
+    organisationId: 'ByrneLimited',
     addressLine1: '13 Berryfield drive, Finglas',
     addressLine2: '',
     townCity: '',
