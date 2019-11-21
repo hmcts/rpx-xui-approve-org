@@ -54,7 +54,7 @@
                         </dl>
                     </ng-container>
 
-                    <button type="button" class="govuk-button" (click)="onApproveOrganisations()">
+                    <button type="button" class="govuk-button" [disabled]="!disabled" (click)="onApproveOrganisations()">
                         Approve organisations
                     </button>
 

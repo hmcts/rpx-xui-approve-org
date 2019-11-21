@@ -118,7 +118,7 @@ export function reducer(
       };
       const activeOrganisations = {
         orgEntities: activeEntities,
-        loaded: true,
+        loaded: state.activeOrganisations.loaded,
         loading: false
       };
 

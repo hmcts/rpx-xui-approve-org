@@ -4,29 +4,27 @@ import * as fromRoot from '../../../app/store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import { Observable } from 'rxjs';
+import {map, takeWhile} from 'rxjs/operators';
 
 /**
  * Bootstraps Organisation Details
 */
 @Component({
   selector: 'app-org-details',
-  templateUrl: './organisation-details.component.html',
-  styleUrls: ['./organisation-details.component.scss']
+  templateUrl: './organisation-details.component.html'
 })
 export class OrganisationDetailsComponent implements OnInit {
 
-  @Input() data: OrganisationVM;
-  orgSubscription$: Observable<{}>;
+  orgSubscription$: Observable<OrganisationVM[]>;
   dxNumber: string;
   dxExchange: string;
 
-  constructor(
-    public store: Store<fromStore.OrganisationRootState>
-  ) {}
+  constructor(public store: Store<fromStore.OrganisationRootState>) {}
 
   ngOnInit(): void {
     this.orgSubscription$ = this.store.pipe(select(fromStore.selectedActiveOrganisation));
-    this.orgSubscription$.subscribe(org => {
+    this.orgSubscription$.pipe(takeWhile(org => !org), map(console.log)).subscribe(org => {
+
       if (!org) {
         this.store.dispatch(new fromRoot.Go({path: ['/active-organisation']}));
       }

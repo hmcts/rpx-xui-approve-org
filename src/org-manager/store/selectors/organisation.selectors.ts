@@ -62,8 +62,10 @@ export const getErrorMessage = createSelector(
 export const selectedActiveOrganisation = createSelector(
   getOrganisationsState,
   fromRoot.getRouterState,
-  (organisationState: fromOrganisation.OrganisationState, router) =>
-    organisationState[router.state.params.type].orgEntities[router.state.params.id]);
+  (organisationState: fromOrganisation.OrganisationState, router) => {
+    return organisationState[router.state.params.type] ?
+      organisationState[router.state.params.type].orgEntities[router.state.params.id] : null;
+  })
 
 export const getOrganisationForReview = createSelector(
   getOrganisationsState,

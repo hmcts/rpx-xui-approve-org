@@ -10,47 +10,36 @@ import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import * as fromOrganisation from '../../store/';
 import {takeWhile} from 'rxjs/operators';
-
-
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-organisations.component.html',
 })
 
-export class PendingOrganisationsComponent implements OnInit, OnDestroy {
-
+export class PendingOrganisationsComponent implements OnInit {
   columnConfig: GovukTableColumnConfig[];
   pendingOrgs$: Observable<OrganisationVM[]>;
-  subscription: Subscription;
   inputForm: FormGroup;
   errorMessage$: Observable<string>;
   loading$: Observable<boolean>
 
-  constructor(public store: Store<fromStore.OrganisationRootState>,
+  constructor(private store: Store<fromStore.OrganisationRootState>,
               private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.inputForm = this.fb.group({
       pendingOrgInputRadio: ['', Validators.required]
     });
-    this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
 
     this.loading$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
-    this.loading$.subscribe(loaded => {
+    this.loading$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }
     });
 
-    // this.pendingOrgs$.subscribe(orgs => {
-    //   if (orgs.length === 0) {
-    //      this.store.dispatch(new fromRoot.Go({ path: ['/'] }));
-    //   }
-    // });
-
+    this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
     this.columnConfig = PendingOverviewColumnConfig;
     this.errorMessage$ = this.store.pipe(select(fromStore.getErrorMessage));
-
     this.store.dispatch(new fromStore.ClearErrors());
   }
 
@@ -64,9 +53,4 @@ export class PendingOrganisationsComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-  }
 }
