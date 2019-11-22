@@ -43,7 +43,7 @@ export class PendingOrganisationsComponent implements OnInit {
     this.store.dispatch(new fromStore.ClearErrors());
   }
 
-  public ctivateOrganisations() {
+  public activateOrganisations() {
     const {valid, value} = this.inputForm.controls.pendingOrgInputRadio;
     if (valid) {
       this.store.dispatch(new fromStore.AddReviewOrganisations(value));
