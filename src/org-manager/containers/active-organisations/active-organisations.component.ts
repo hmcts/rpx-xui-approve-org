@@ -12,10 +12,10 @@ import {OrganisationVM} from '../../models/organisation';
 })
 
 export class ActiveOrganisationsComponent implements OnInit {
-  orgs$: Observable<OrganisationVM[]>;
-  loading$: Observable<boolean>;
-  pendingLoaded$: Observable<boolean>;
-  pendingOrgsCount$: Observable<number>;
+  public orgs$: Observable<OrganisationVM[]>;
+  public loading$: Observable<boolean>;
+  public pendingLoaded$: Observable<boolean>;
+  public pendingOrgsCount$: Observable<number>;
 
   constructor(
     private store: Store<fromOrganisation.OrganisationRootState>,

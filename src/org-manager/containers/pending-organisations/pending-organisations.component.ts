@@ -16,11 +16,11 @@ import {takeWhile} from 'rxjs/operators';
 })
 
 export class PendingOrganisationsComponent implements OnInit {
-  columnConfig: GovukTableColumnConfig[];
-  pendingOrgs$: Observable<OrganisationVM[]>;
-  inputForm: FormGroup;
-  errorMessage$: Observable<string>;
-  loaded$: Observable<boolean>;
+  public columnConfig: GovukTableColumnConfig[];
+  public pendingOrgs$: Observable<OrganisationVM[]>;
+  public inputForm: FormGroup;
+  public errorMessage$: Observable<string>;
+  public loaded$: Observable<boolean>;
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
               private fb: FormBuilder) {}
