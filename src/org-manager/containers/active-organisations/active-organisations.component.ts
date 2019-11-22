@@ -30,7 +30,7 @@ export class ActiveOrganisationsComponent implements OnInit {
     });
 
     this.pendingLoading$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
-    this.pendingLoading$.subscribe(loaded => {
+    this.pendingLoading$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }
