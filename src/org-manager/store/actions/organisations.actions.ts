@@ -2,6 +2,7 @@
 import { Action } from '@ngrx/store';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 import {HttpErrorResponse} from '@angular/common/http';
+import {error} from 'selenium-webdriver';
 
 export enum OrgActionTypes {
     LOAD_ACTIVE_ORGANISATIONS = '[Organisations] Load Active Organisations',
@@ -37,7 +38,7 @@ export class LoadPendingOrganisationsSuccess implements Action {
 export class LoadPendingOrganisationsFail implements Action {
     readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
-    constructor(public payload: any) { }
+    constructor(public payload: Error) { }
 }
 
 export class AddReviewOrganisations implements Action {
@@ -49,7 +50,7 @@ export class AddReviewOrganisations implements Action {
 export class DisplayErrorMessageOrganisations implements Action {
     readonly type = OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
 
-    constructor(public payload: any) { }
+    constructor(public payload: any) { } // TODO change type it needs to change in the service used
 }
 
 export class ApprovePendingOrganisations implements Action {
@@ -59,12 +60,12 @@ export class ApprovePendingOrganisations implements Action {
 
 export class ApprovePendingOrganisationsSuccess implements Action {
     readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
-    constructor(public payload: any) { }
+    constructor(public payload: OrganisationVM) { }
 }
 
 export class ApprovePendingOrganisationsFail implements Action {
     readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
-    constructor(public payload: any) { }
+    constructor(public payload: Error) { }
 }
 
 // Load Active Organisation Action
