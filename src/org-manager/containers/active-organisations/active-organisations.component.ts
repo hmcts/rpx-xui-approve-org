@@ -3,6 +3,7 @@ import { Store, select } from '@ngrx/store';
 import * as fromOrganisation from '../../../org-manager/store/';
 import { Observable } from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
+import {OrganisationVM} from '../../models/organisation';
 
 
 @Component({
@@ -11,9 +12,9 @@ import {takeWhile} from 'rxjs/operators';
 })
 
 export class ActiveOrganisationsComponent implements OnInit {
-  orgs$: Observable<any>;
+  orgs$: Observable<OrganisationVM[]>;
   loading$: Observable<boolean>;
-  pendingLoading$: Observable<boolean>;
+  pendingLoaded$: Observable<boolean>;
   pendingOrgsCount$: Observable<number>;
 
   constructor(
@@ -29,8 +30,8 @@ export class ActiveOrganisationsComponent implements OnInit {
       }
     });
 
-    this.pendingLoading$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
-    this.pendingLoading$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
+    this.pendingLoaded$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
+    this.pendingLoaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }

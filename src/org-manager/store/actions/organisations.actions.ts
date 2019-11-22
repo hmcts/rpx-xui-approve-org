@@ -1,6 +1,7 @@
 
 import { Action } from '@ngrx/store';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
+import {HttpErrorResponse} from '@angular/common/http';
 
 export enum OrgActionTypes {
     LOAD_ACTIVE_ORGANISATIONS = '[Organisations] Load Active Organisations',
@@ -73,12 +74,12 @@ export class LoadActiveOrganisation {
 
 export class LoadActiveOrganisationSuccess  implements Action {
   readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS;
-  constructor(public payload: any[]) {}  // TODO add type list of users
+  constructor(public payload: OrganisationVM[]) {}
 }
 
 export class LoadActiveOrganisationFail implements Action {
   readonly type = OrgActionTypes.LOAD_ORGANISATIONS_FAIL;
-  constructor(public payload: any) {
+  constructor(public payload: Error) {
   }
 }
 

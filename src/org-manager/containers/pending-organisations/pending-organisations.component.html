@@ -3,7 +3,7 @@
   <lib-gov-uk-error-summary *ngIf="(errorMessage$ | async) as message" [errorMessages]="[{message: message}]"></lib-gov-uk-error-summary>
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <h1 class="govuk-heading-xl">Organisations pending activation</h1>
-    <ng-container *ngIf="(loading$ | async); else loading">
+    <ng-container *ngIf="(loaded$ | async); else loading">
       <form [formGroup]="inputForm">
         <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisation</button>
         <table class="govuk-table">

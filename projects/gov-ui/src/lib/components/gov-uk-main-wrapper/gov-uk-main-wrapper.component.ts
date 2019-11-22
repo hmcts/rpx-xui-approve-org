@@ -27,13 +27,13 @@ import {Location} from '@angular/common';
 })
 export class GovUkMainWrapperComponent  {
 
-  @Input() backLink: string;
-  @Input() title: string;
-  @Input() summaryErrors: string[];
+  @Input() public backLink: string;
+  @Input() public title: string;
+  @Input() public summaryErrors: string[];
 
   constructor( private location: Location) { }
 
-  onGoBack() {
+  public onGoBack() {
     this.location.back();
   }
 

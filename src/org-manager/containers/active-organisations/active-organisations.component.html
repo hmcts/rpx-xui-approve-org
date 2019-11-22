@@ -4,7 +4,7 @@
       <ng-container *ngIf="(pendingOrgsCount$ | async) as pendingOrg; ">
         <span>{{pendingOrg}} organisations are pending activation. <a [routerLink]="['/pending-organisations']"> Check now.</a></span>
       </ng-container>
-      <ng-container *ngIf="!(pendingLoading$ | async)">
+      <ng-container *ngIf="!(pendingLoaded$ | async)">
         <h3 class="govuk-heading-s">Loading pending organisations...</h3>
       </ng-container>
     </app-notification-banner-component>

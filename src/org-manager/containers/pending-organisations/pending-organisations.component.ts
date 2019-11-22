@@ -20,18 +20,18 @@ export class PendingOrganisationsComponent implements OnInit {
   pendingOrgs$: Observable<OrganisationVM[]>;
   inputForm: FormGroup;
   errorMessage$: Observable<string>;
-  loading$: Observable<boolean>;
+  loaded$: Observable<boolean>;
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
               private fb: FormBuilder) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.inputForm = this.fb.group({
       pendingOrgInputRadio: ['', Validators.required]
     });
 
-    this.loading$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
-    this.loading$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
+    this.loaded$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
+    this.loaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }
@@ -43,7 +43,7 @@ export class PendingOrganisationsComponent implements OnInit {
     this.store.dispatch(new fromStore.ClearErrors());
   }
 
-  activateOrganisations() {
+  public ctivateOrganisations() {
     const {valid, value} = this.inputForm.controls.pendingOrgInputRadio;
     if (valid) {
       this.store.dispatch(new fromStore.AddReviewOrganisations(value));
