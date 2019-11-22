@@ -1,10 +1,9 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as fromStore from '../../store';
-import * as fromRoot from '../../../app/store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import { Observable } from 'rxjs';
-import {map, takeWhile, tap} from 'rxjs/operators';
+import {takeWhile} from 'rxjs/operators';
 import * as fromOrganisation from '../../store/';
 
 /**
@@ -19,7 +18,6 @@ export class OrganisationDetailsComponent implements OnInit {
   public orgs$: Observable<OrganisationVM[]>;
   public dxNumber: string;
   public dxExchange: string;
-  public allLoaded$: Observable<boolean>;
 
   constructor(public store: Store<fromStore.OrganisationRootState>) {}
 

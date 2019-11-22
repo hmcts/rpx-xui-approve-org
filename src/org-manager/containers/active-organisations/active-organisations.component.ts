@@ -5,7 +5,9 @@ import { Observable } from 'rxjs';
 import {takeWhile} from 'rxjs/operators';
 import {OrganisationVM} from '../../models/organisation';
 
-
+/**
+ * Bootstraps Active Organisations
+ */
 @Component({
   selector: 'app-prd-org-overview-component',
   templateUrl: './active-organisations.component.html',
