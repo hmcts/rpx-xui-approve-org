@@ -58,13 +58,19 @@ export const getErrorMessage = createSelector(
   (orgState) => orgState.errorMessage
 );
 
-export const selectedActiveOrganisation = createSelector(
+export const getSelectedActiveOrganisation = createSelector(
   getOrganisationsState,
   fromRoot.getRouterState,
   (organisationState: fromOrganisation.OrganisationState, router) => {
     return organisationState[router.state.params.type] ?
       organisationState[router.state.params.type].orgEntities[router.state.params.id] : null;
   });
+
+export const getAllLoaded = createSelector(
+  getActiveLoaded,
+  getPendingLoaded,
+  (activeLoaded, pendingLoaded) =>  activeLoaded && pendingLoaded
+);
 
 export const getOrganisationForReview = createSelector(
   getOrganisationsState,

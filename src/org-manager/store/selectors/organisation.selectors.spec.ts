@@ -44,7 +44,7 @@ describe('Organisation selectors', () => {
     });
   });
 
-  describe('selectedActiveOrganisation', () => {
+  describe('getSelectedActiveOrganisation', () => {
     it('should return initial active org state', () => {
       let result;
       store.pipe(select(fromSelectors.getActiveOrganisationState)).subscribe(value => {
@@ -155,6 +155,16 @@ describe('Organisation selectors', () => {
         result = value;
       });
       expect(result).toEqual(0);
+    });
+  });
+
+  describe('getAllLoaded', () => {
+    it('should return boolean', () => {
+      let result;
+      store.pipe(select(fromSelectors.getAllLoaded)).subscribe(value => {
+        result = value;
+      });
+      expect(result).toEqual(false);
     });
   });
 
