@@ -1,9 +1,9 @@
 import * as fromPendingOrganisation from './organisations.actions';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
-import { PendingOrganisationsMockCollection1 } from 'src/org-manager/mock/pending-organisation.mock';
+import {PendingOrganisationsMockCollection1, PendingOrganisationsMockCollectionObj} from 'src/org-manager/mock/pending-organisation.mock';
 
 describe('PendingOrganisationActions actions', () => {
-  const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
+  const payload = PendingOrganisationsMockCollection1;
 
   describe('LoadPendingOrganisations actions GROUP', () => {
     // Init state
@@ -44,10 +44,10 @@ describe('PendingOrganisationActions actions', () => {
   describe('ApprovePendingOrganisationsSuccess', () => {
     it('should create an action', () => {
 
-      const action = new fromPendingOrganisation.ApprovePendingOrganisationsSuccess(payload);
+      const action = new fromPendingOrganisation.ApprovePendingOrganisationsSuccess(PendingOrganisationsMockCollectionObj);
       expect({ ...action }).toEqual({
         type: fromPendingOrganisation.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS,
-        payload
+        payload: payload[0]
       });
     });
   });

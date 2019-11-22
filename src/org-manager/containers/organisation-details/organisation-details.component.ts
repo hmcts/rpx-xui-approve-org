@@ -15,13 +15,13 @@ import {map, takeWhile} from 'rxjs/operators';
 })
 export class OrganisationDetailsComponent implements OnInit {
 
-  orgSubscription$: Observable<OrganisationVM[]>;
-  dxNumber: string;
-  dxExchange: string;
+  public orgSubscription$: Observable<OrganisationVM[]>;
+  public dxNumber: string;
+  public dxExchange: string;
 
   constructor(public store: Store<fromStore.OrganisationRootState>) {}
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.orgSubscription$ = this.store.pipe(select(fromStore.selectedActiveOrganisation));
     this.orgSubscription$.pipe(takeWhile(org => !org), map(console.log)).subscribe(org => {
 

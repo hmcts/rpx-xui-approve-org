@@ -49,6 +49,21 @@ export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
   }
   ];
 
+export const PendingOrganisationsMockCollectionObj: OrganisationVM = {
+  name: 'Glen Byrne',
+  organisationId: 'ByrneLimited',
+  addressLine1: '13 Berryfield drive, Finglas',
+  addressLine2: '',
+  townCity: '',
+  county: '',
+  pbaNumber: ['101010'],
+  admin: 'Glen Byrne',
+  status: 'ACTIVE',
+  view: 'View',
+  adminEmail: 'glen@byrne.com',
+  dxNumber: [{}]
+
+  };
 
 export const orgStatePending = {
  activeOrganisations: {

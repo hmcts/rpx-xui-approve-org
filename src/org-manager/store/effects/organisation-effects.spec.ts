@@ -66,12 +66,12 @@ describe('Organisation Effects', () => {
 
       PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(of(true));
       const action = new fromActons.ApprovePendingOrganisations(payload[0]);
-      const completion = new fromActons.ApprovePendingOrganisationsSuccess(true);
+      const completion = new fromActons.ApprovePendingOrganisationsSuccess({} as OrganisationVM);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.approvePendingOrgs$).toBeObservable(expected);
 
-      const successAction = new fromActons.ApprovePendingOrganisationsSuccess(true);
+      const successAction = new fromActons.ApprovePendingOrganisationsSuccess({} as OrganisationVM);
       const successCompletion = new Go({ path: ['/approve-organisations'] });
       actions$ = hot('-a', { a: successAction });
       const successExpected = cold('--b', { b: successCompletion });

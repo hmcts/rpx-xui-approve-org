@@ -38,7 +38,7 @@ export class LoadPendingOrganisationsSuccess implements Action {
 export class LoadPendingOrganisationsFail implements Action {
     readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
-    constructor(public payload: Error) { }
+    constructor(public payload: any) { } // TODO change type it needs to change in the service used
 }
 
 export class AddReviewOrganisations implements Action {
@@ -65,7 +65,7 @@ export class ApprovePendingOrganisationsSuccess implements Action {
 
 export class ApprovePendingOrganisationsFail implements Action {
     readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
-    constructor(public payload: Error) { }
+    constructor(public payload: any) { } // TODO change type it needs to change in the service used
 }
 
 // Load Active Organisation Action
