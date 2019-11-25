@@ -6,6 +6,7 @@ import { ApproveOrganisationComponent } from 'src/org-manager/containers/approve
 import { ApproveOrganisationSuccessComponent } from 'src/org-manager/containers/approve-organisation-success/approve-organisation-success.component';
 import { AuthGuard } from 'src/services/auth/auth.guard';
 import { OrganisationDetailsComponent } from './components';
+import { ChangeDetailsComponent } from './containers/change-details/change-details.component';
 
 export const ROUTES: Routes = [
   {
@@ -40,7 +41,7 @@ export const ROUTES: Routes = [
   },
   {
     path: 'change/:fields/:id',
-    component: OrganisationDetailsComponent,
+    component: ChangeDetailsComponent,
     canActivate: [AuthGuard],
   },
 ];
