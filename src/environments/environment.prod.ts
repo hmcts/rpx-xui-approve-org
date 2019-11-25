@@ -4,7 +4,7 @@ export const environment = {
   serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
   serviceDeskTel: '0300 3030686',
   singleOrgUrl: 'api/organisations?organisationId=',
-  orgActiveUrl: 'api/organisations',
+  orgActiveUrl: 'api/organisations?status=ACTIVE',
   orgPendingUrl: 'api/organisations?status=PENDING',
   orgApprovePendingUrl: 'api/organisations/',
   loggingLevel: 'DEBUG',
