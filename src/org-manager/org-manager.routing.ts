@@ -38,6 +38,11 @@ export const ROUTES: Routes = [
     component: OrganisationDetailsComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'change/:fields/:id',
+    component: OrganisationDetailsComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
