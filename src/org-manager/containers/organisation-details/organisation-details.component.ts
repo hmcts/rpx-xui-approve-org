@@ -19,7 +19,7 @@ export class OrganisationDetailsComponent implements OnInit {
   public dxNumber: string;
   public dxExchange: string;
 
-  constructor(public store: Store<fromStore.OrganisationRootState>) {}
+  constructor(private store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
    this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
