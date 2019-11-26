@@ -16,8 +16,6 @@ import * as fromOrganisation from '../../store/';
 export class OrganisationDetailsComponent implements OnInit {
 
   public orgs$: Observable<OrganisationVM>;
-  public dxNumber: string;
-  public dxExchange: string;
 
   constructor(private store: Store<fromStore.OrganisationRootState>) {}
 

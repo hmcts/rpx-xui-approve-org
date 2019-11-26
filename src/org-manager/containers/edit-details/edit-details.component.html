@@ -1,0 +1,34 @@
+<app-identity-bar-component>
+  <strong>{{data?.name}}</strong>
+  <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(data?.status=='ACTIVE') ?
+  'hmcts-badge--green':'hmcts-badge--blue'">
+    {{data?.status}}
+  </span>
+</app-identity-bar-component>
+<div class="hmcts-width-container">
+  <lib-gov-uk-main-wrapper title="Organisation payment by account (PBA) number" [backLink]="true">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+    <form [formGroup]="changePba" (ngSubmit)="onSubmitPba()" >
+      <lib-gov-uk-input
+        [config]="{label: 'PBA 1', hint: '', name: 'pba1', id: 'pba', type: 'text', classes: 'testClass'}"
+        [errorMessage]=""
+        [group]="changePba">
+      </lib-gov-uk-input>
+
+      <lib-gov-uk-input
+        [config]="{label: 'PBA 2', name: 'pba2', id: 'pba2', type: 'text'}"
+        [errorMessage]=""
+        [group]="changePba">
+      </lib-gov-uk-input>
+      <button type="submit" class="govuk-button">
+        Save
+      </button>
+    </form>
+      </div>
+    </div>
+
+  </lib-gov-uk-main-wrapper>
+</div>
+
+
