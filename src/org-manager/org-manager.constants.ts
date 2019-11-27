@@ -7,7 +7,7 @@ const pbaInputFeed =  [
       label: 'PBA number 1 (optional)',
       hint: '',
       name: 'pba1',
-      id: 'pba1,',
+      id: 'pba1',
       type: 'text',
       classes: ''
     },
