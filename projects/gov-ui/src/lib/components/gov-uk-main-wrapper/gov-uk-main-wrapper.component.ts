@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Location} from '@angular/common';
 
 /*
@@ -16,23 +16,29 @@ import {Location} from '@angular/common';
   template: `
     <a *ngIf="backLink" [routerLink]="" (click)="onGoBack()" class="govuk-back-link">Back</a>
     <main id="content" role="main" class="govuk-main-wrapper">
-          <div class="govuk-grid-row">
-          <div class="govuk-grid-column-two-thirds">
-            <h1 *ngIf="title" class="govuk-heading-xl">{{title}}</h1>
-            <ng-content></ng-content>
-          </div>
+      <app-hmcts-error-summary
+        *ngIf="errors && !errors.isFormValid"
+        [errorMessages]="errors.items"
+        [header]="errors.header">
+      </app-hmcts-error-summary>
+        <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <h1 *ngIf="title" class="govuk-heading-xl">{{title}}</h1>
+          <ng-content></ng-content>
+        </div>
       </div>
     </main>
   `
 })
-export class GovUkMainWrapperComponent  {
-
+export class GovUkMainWrapperComponent {
+  private errors:{isFormValid: boolean; items: { id: string; message: any; }[]}
   @Input() public backLink: string;
   @Input() public title: string;
-  @Input() public summaryErrors: string[];
+  @Input() public set summaryErrors(value) {
+    this.errors = value;
+  };
 
   constructor( private location: Location) { }
-
   public onGoBack() {
     this.location.back();
   }

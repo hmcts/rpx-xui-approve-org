@@ -3,13 +3,13 @@ import * as fromActions from '../actions/edit-details.actions';
 export interface EditDetailsState {
   pba: {
     errorMessages: {[id: string]: {isInvalid: boolean; messages: string[]}}
-    isFromValid: boolean;
+    isFormValid: boolean;
   };
 }
 export const initialState: EditDetailsState = {
   pba: {
     errorMessages: {},
-    isFromValid: false
+    isFormValid: true
   }
 };
 
@@ -31,10 +31,11 @@ export function reducer(
             return acc;
         } else {return acc}
       }, {});
-
+      const isFormValid = !Object.keys(errorMessages).filter(key => errorMessages[key].isInvalid).length;
       const pba =  {
         ...state.pba,
-        errorMessages
+        errorMessages,
+        isFormValid
       };
 
       return {
@@ -45,3 +46,6 @@ export function reducer(
   }
   return state;
 }
+
+export const getInviteUserData = (state: EditDetailsState) => state.pba;
+export const getPbaIsFormValid = (state: EditDetailsState) => state.pba.isFormValid;
