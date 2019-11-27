@@ -3,7 +3,7 @@ import * as fromStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OrgManagerConstants} from '../../org-manager.constants';
-import {take} from 'rxjs/operators';
+import {take, tap} from 'rxjs/operators';
 import * as fromEditDetails from '../../store'
 import {Observable} from 'rxjs';
 
@@ -20,7 +20,8 @@ export class EditDetailsComponent implements OnInit {
   public dxExchange: string;
   public changePbaFG: FormGroup;
   public pbaInputs: {config: {name: string}}[];
-  public pbaError$: Observable<object>
+  public pbaError$: Observable<object>;
+  public pbaErrorsHeader$: Observable<any>;
   public formValidationMessages = [
     'Enter a PBA number, for example PBA1234567'
   ];
@@ -37,6 +38,7 @@ export class EditDetailsComponent implements OnInit {
 
   getErrorMsgs() {
    this.pbaError$ = this.store.pipe(select(fromEditDetails.getPbaFromErrors));
+   this.pbaErrorsHeader$ = this.store.pipe(select(fromEditDetails.getPbaHeaderErrors));
   }
   createPbaForm() {
     for (const inputs of this.pbaInputs ) {

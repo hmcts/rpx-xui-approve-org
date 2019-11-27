@@ -14,3 +14,27 @@ export const getPbaFromErrors = createSelector(
   (editDetails: fromEditDetails.EditDetailsState) => editDetails.pba.errorMessages
 );
 
+export const getIsFormValid = createSelector(
+  getEditDetailsState,
+  fromEditDetails.getPbaIsFormValid
+);
+
+export const getPbaHeaderErrors = createSelector(
+  getPbaFromErrors,
+  getIsFormValid,
+  (pbaFormErrors, isFormValid) => {
+    const items = Object.keys(pbaFormErrors).map(key => {
+      if (key) {
+        return {
+          id: key,
+          message: pbaFormErrors[key].messages
+        };
+      }
+    });
+    return {
+      items,
+      isFormValid
+    };
+  }
+);
+
