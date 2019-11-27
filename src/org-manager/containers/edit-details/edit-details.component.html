@@ -9,22 +9,16 @@
   <lib-gov-uk-main-wrapper title="Organisation payment by account (PBA) number" [backLink]="true">
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
-    <form [formGroup]="changePba" (ngSubmit)="onSubmitPba()" >
-      <lib-gov-uk-input
-        [config]="{label: 'PBA 1', hint: '', name: 'pba1', id: 'pba', type: 'text', classes: 'testClass'}"
-        [errorMessage]=""
-        [group]="changePba">
-      </lib-gov-uk-input>
-
-      <lib-gov-uk-input
-        [config]="{label: 'PBA 2', name: 'pba2', id: 'pba2', type: 'text'}"
-        [errorMessage]=""
-        [group]="changePba">
-      </lib-gov-uk-input>
-      <button type="submit" class="govuk-button">
-        Save
-      </button>
-    </form>
+        <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
+          <lib-gov-uk-input *ngFor="let data of pbaInputs"
+            [config]="data.config"
+            [errorMessage]="formValidationMessages[data.config.name]"
+            [group]="changePbaFG">
+          </lib-gov-uk-input>
+          <button type="submit" class="govuk-button">
+            Save
+          </button>
+        </form>
       </div>
     </div>
 
