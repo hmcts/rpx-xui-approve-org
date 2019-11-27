@@ -4,6 +4,8 @@ import { Store, select } from '@ngrx/store';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OrgManagerConstants} from '../../org-manager.constants';
 import {take} from 'rxjs/operators';
+import * as fromEditDetails from '../../store'
+import {Observable} from 'rxjs';
 
 /**
  * Bootstraps Organisation Details
@@ -18,6 +20,7 @@ export class EditDetailsComponent implements OnInit {
   public dxExchange: string;
   public changePbaFG: FormGroup;
   public pbaInputs: {config: {name: string}}[];
+  public pbaError$: Observable<object>
   public formValidationMessages = [
     'Enter a PBA number, for example PBA1234567'
   ];
@@ -29,8 +32,12 @@ export class EditDetailsComponent implements OnInit {
     this.pbaInputs = OrgManagerConstants.PBA_INPUT_FEED;
     this.changePbaFG = new FormGroup({});
     this.createPbaForm();
+    this.getErrorMsgs();
   }
 
+  getErrorMsgs() {
+   this.pbaError$ = this.store.pipe(select(fromEditDetails.getPbaFromErrors));
+  }
   createPbaForm() {
     for (const inputs of this.pbaInputs ) {
       this.changePbaFG.addControl(inputs.config.name, new FormControl(''));
@@ -77,10 +84,7 @@ export class EditDetailsComponent implements OnInit {
       },
       errorMsg: this.formValidationMessages
     };
-
-    console.log(validation);
     this.store.dispatch(new fromStore.DispatchSubmitValidation(validation));
-
   }
 
 }

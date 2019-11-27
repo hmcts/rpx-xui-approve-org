@@ -5,7 +5,7 @@ import * as fromEditOrganisation from './edit-details.reducer';
 
 export interface OrganisationRootState {
   organisations: fromPendingOrganisations.OrganisationState;
-  editDetails: fromEditOrganisation.EditDetailsState
+  editDetails: fromEditOrganisation.EditDetailsState;
 }
 
 export const reducers: ActionReducerMap<OrganisationRootState> = {

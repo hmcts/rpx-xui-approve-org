@@ -2,7 +2,7 @@ import * as fromActions from '../actions/edit-details.actions';
 
 export interface EditDetailsState {
   pba: {
-    errorMessages: {[id: string]: string}
+    errorMessages: {[id: string]: {isInvalid: boolean; messages: string[]}}
     isFromValid: boolean;
   };
 }
@@ -24,11 +24,12 @@ export function reducer(
       const errorMessages = Object.keys(isInvalid).reduce((acc, key) => {
         const hasErrors = isInvalid[key].filter((item) => item !== null).length;
         if (hasErrors) {
-          return {
-            ...acc,
-            [key]: errorMsg[0]
-          };
-        } else {return {...acc}}
+            acc[key] = {
+              messages: [errorMsg[0]],
+              isInvalid: !!hasErrors
+            }
+            return acc;
+        } else {return acc}
       }, {});
 
       const pba =  {

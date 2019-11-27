@@ -10,18 +10,19 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
-          <lib-gov-uk-input *ngFor="let data of pbaInputs"
-            [config]="data.config"
-            [errorMessage]="formValidationMessages[data.config.name]"
-            [group]="changePbaFG">
-          </lib-gov-uk-input>
+          <ng-container *ngIf="(pbaError$ | async) as errors">
+            <lib-gov-uk-input *ngFor="let data of pbaInputs"
+              [config]="data.config"
+              [errorMessage]="errors[data.config.name]"
+              [group]="changePbaFG">
+            </lib-gov-uk-input>
+          </ng-container>
           <button type="submit" class="govuk-button">
             Save
           </button>
         </form>
       </div>
     </div>
-
   </lib-gov-uk-main-wrapper>
 </div>
 
