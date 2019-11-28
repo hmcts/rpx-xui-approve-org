@@ -27,7 +27,7 @@ export class OrganisationDetailsComponent implements OnInit {
       }
     });
 
-   this.orgs$ = this.store.pipe(select(fromStore.getSelectedActiveOrganisation));
+   this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
   }
 
 }
