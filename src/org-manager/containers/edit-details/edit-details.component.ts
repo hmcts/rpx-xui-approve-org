@@ -65,7 +65,7 @@ export class EditDetailsComponent implements OnInit {
   public onSubmitPba(): void {
     this.dispatchSaveValidation();
     const {valid, value} = this.changePbaFG;
-    const paymentAccounts: string[] = Object.keys(value).map(key => value[key]);
+    const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     if (valid) {
       this.store.dispatch(new fromStore.SubmitPba({paymentAccounts, orgId: this.orgId}));
     }
