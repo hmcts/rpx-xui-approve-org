@@ -40,7 +40,7 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'change/:fields/:id',
+    path: 'change/:fields/:orgId/:id',
     component: EditDetailsComponent,
     canActivate: [AuthGuard],
   },
