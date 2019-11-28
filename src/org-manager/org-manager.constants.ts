@@ -24,9 +24,14 @@ const pbaInputFeed =  [
   }
 ];
 
+const pbaErrorMessages =  [
+  'Enter a PBA number, for example PBA1234567'
+];
+
 
 
 export class OrgManagerConstants {
   static PBA_INPUT_FEED = pbaInputFeed;
+  static PBA_ERROR_MESSAGES = pbaErrorMessages;
 
 }
