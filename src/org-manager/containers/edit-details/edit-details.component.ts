@@ -22,6 +22,7 @@ export class EditDetailsComponent implements OnInit {
   public pbaInputs: {config: {name: string}}[];
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
+  public orgDetails$: Observable<any>;
   public formValidationMessages = [
     'Enter a PBA number, for example PBA1234567'
   ];
@@ -30,6 +31,7 @@ export class EditDetailsComponent implements OnInit {
   constructor(private store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
+    this.orgDetails$ = this.store.pipe(select(fromEditDetails.getActiveAndPending));
     this.pbaInputs = OrgManagerConstants.PBA_INPUT_FEED;
     this.changePbaFG = new FormGroup({});
     this.createPbaForm();
@@ -46,8 +48,8 @@ export class EditDetailsComponent implements OnInit {
       // if (inputs.config.name === 'pba1') {
       const validators = [
         Validators.pattern(/(PBA\w*)/i),
-        Validators.maxLength(10),
-        Validators.minLength(10)
+        Validators.minLength(10),
+        Validators.maxLength(10)
       ];
       this.changePbaFG.controls[inputs.config.name].setValidators(validators);
       this.changePbaFG.controls[inputs.config.name].updateValueAndValidity();
@@ -72,16 +74,14 @@ export class EditDetailsComponent implements OnInit {
     const validation = {
       isInvalid: {
         pba1: [
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.required) || null,
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.pattern) || null,
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.maxLength) || null,
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.minlength) || null
+          (this.fPba.pba1.errors && this.fPba.pba1.errors.pattern),
+          (this.fPba.pba1.errors && this.fPba.pba1.errors.minlength),
+          (this.fPba.pba1.errors && this.fPba.pba1.errors.maxLength)
         ],
         pba2: [
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.required) || null,
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.pattern) || null,
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.maxLength)|| null,
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.minlength) || null
+          (this.fPba.pba2.errors && this.fPba.pba2.errors.pattern),
+          (this.fPba.pba2.errors && this.fPba.pba2.errors.minlength),
+          (this.fPba.pba2.errors && this.fPba.pba2.errors.maxLength)
         ]
       },
       errorMsg: this.formValidationMessages

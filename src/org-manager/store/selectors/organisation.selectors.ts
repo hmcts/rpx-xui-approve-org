@@ -66,6 +66,15 @@ export const getSelectedActiveOrganisation = createSelector(
       organisationState[router.state.params.type].orgEntities[router.state.params.id] : null;
   });
 
+export const getActiveAndPending = createSelector(
+  getActiveOrganisationState,
+  getPendingOrganisationsState,
+  fromRoot.getRouterState,
+  (active, pending, router) => (active.orgEntities[router.state.params.orgId]) ||
+      (pending.orgEntities[router.state.params.orgId]
+      ));
+
+
 export const getPbaNumber = createSelector(
   fromRoot.getRouterState,
   (router) => router.state.params.id
