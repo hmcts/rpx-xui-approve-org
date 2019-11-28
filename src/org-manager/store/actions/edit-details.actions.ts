@@ -1,13 +1,33 @@
 
 import { Action } from '@ngrx/store';
-export const DISPATCH_SUBMIT_VALIDATION = '[Edit Details] Dispatch submit validation';
+export const DISPATCH_SAVE_PBA_VALIDATION = '[Edit Details] Dispatch save PBA validation';
+export const SUBMIT_PBA = '[Edit Details] Submit PBA';
+export const SUBMIT_PBA_SUCCESS = '[Edit Details] Submit PBA Success';
+export const SUBMIT_PBA_FAILURE = '[Edit Details] Submit PBA Failure';
 
-export class DispatchSubmitValidation implements Action {
-  readonly type = DISPATCH_SUBMIT_VALIDATION;
+export class DispatchSaveValidation implements Action {
+  readonly type = DISPATCH_SAVE_PBA_VALIDATION;
   constructor(public payload: {isInvalid: object, errorMsg: any[]}) { }
 }
 
+export class SubmitPba implements Action {
+  readonly type = SUBMIT_PBA;
+  constructor(public payload: {paymentAccounts: string[]; orgId: string}) { }
+}
+
+export class SubmitPbaSuccsess implements Action {
+  readonly type = SUBMIT_PBA_SUCCESS;
+  constructor(public payload) { }
+}
+
+export class SubmitPbaFailure implements Action {
+  readonly type = SUBMIT_PBA_FAILURE;
+  constructor(public payload: Error) { }
+}
 
 export type EditDetailsActions =
-  | DispatchSubmitValidation;
+  | DispatchSaveValidation
+  | SubmitPba
+  | SubmitPbaSuccsess
+  | SubmitPbaFailure;
 
