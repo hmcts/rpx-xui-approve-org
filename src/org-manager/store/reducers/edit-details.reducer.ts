@@ -18,7 +18,7 @@ export function reducer(
   action: fromActions.EditDetailsActions
 ): EditDetailsState {
   switch (action.type) {
-    case fromActions.DISPATCH_SUBMIT_VALIDATION: {
+    case fromActions.DISPATCH_SAVE_PBA_VALIDATION: {
       const {isInvalid, errorMsg} = action.payload;
 
       const errorMessages = Object.keys(isInvalid).reduce((acc, key) => {

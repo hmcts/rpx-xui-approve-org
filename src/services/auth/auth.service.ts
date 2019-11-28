@@ -29,7 +29,6 @@ export class AuthService {
 
   generateLoginUrl(): Observable<string> {
     return this.envService.config$.map( config => {
-      debugger
       const env = AppUtils.getEnvironment(window.location.origin);
       const base = AppConstants.REDIRECT_URL[env];
       const clientId = config.idamClient;

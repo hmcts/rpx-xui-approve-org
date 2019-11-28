@@ -11,6 +11,7 @@ export const environment = {
     serviceDeskTel: '0300 3030686',
     singleOrgUrl: 'api/organisations?organisationId=',
     orgActiveUrl: 'api/organisations?status=ACTIVE',
+    updatePbaUrl: 'api/update-pba',
     orgPendingUrl: 'api/organisations?status=PENDING',
     orgApprovePendingUrl: 'api/organisations/',
     loggingLevel: 'DEBUG',
