@@ -44,17 +44,6 @@ describe('Organisation selectors', () => {
     });
   });
 
-  describe('getSelectedActiveOrganisation', () => {
-    it('should return initial active org state', () => {
-      let result;
-      store.pipe(select(fromSelectors.getActiveOrganisationState)).subscribe(value => {
-        result = value;
-
-      });
-      expect(result).toEqual({loading: false, loaded: false, orgEntities: {}});
-    });
-  });
-
   describe('getActiveOrganisationArray', () => {
     it('should return an array', () => {
       let result;
