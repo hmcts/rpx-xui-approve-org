@@ -20,7 +20,7 @@ export class EditDetailsEffects {
     map((action: fromActions.SubmitPba) => action.payload),
     switchMap((body) => {
       return this.updatePbaServices.updatePba(body).pipe(
-        map(serverResponse => new fromActions.SubmitPbaSuccsess(serverResponse)),
+        map(serverResponse => new fromActions.SubmitPbaSuccess(serverResponse)),
         catchError((error: Error) => {
           this.logerService.error(error.message);
           return of(new fromActions.SubmitPbaFailure(error));

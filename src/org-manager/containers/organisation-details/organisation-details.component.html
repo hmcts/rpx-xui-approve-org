@@ -44,9 +44,8 @@
               {{data?.pbaNumber}}
             </dd>
             <dd class="govuk-check-your-answers__change">
-              <a *ngIf="data?.pbaNumber.length"
-                 [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
-                Change
+              <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
+                  {{data?.pbaNumber.length ? 'Change' : 'Add'}}
               </a>
             </dd>
          </div>
