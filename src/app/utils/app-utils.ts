@@ -101,7 +101,7 @@ export class AppUtils {
           case AppConstants.ENVIRONMENT_NAMES.aat:
           case AppConstants.ENVIRONMENT_NAMES.localhost:
           case AppConstants.ENVIRONMENT_NAMES.pr:
-             return AppConstants.ENVIRONMENT_NAMES.aat;
+             return AppConstants.ENVIRONMENT_NAMES.demo;
           case AppConstants.ENVIRONMENT_NAMES.demo:
               return AppConstants.ENVIRONMENT_NAMES.demo;
           case AppConstants.ENVIRONMENT_NAMES.ithc:
@@ -111,5 +111,6 @@ export class AppUtils {
         }
       }
     return AppConstants.ENVIRONMENT_NAMES.prod;
+    // return AppConstants.ENVIRONMENT_NAMES.demo;
   }
 }

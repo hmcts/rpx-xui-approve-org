@@ -1,10 +1,12 @@
+<ng-container *ngIf="(orgDetails$ | async) as org">
 <app-identity-bar-component>
-  <strong>{{data?.name}}</strong>
-  <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(data?.status=='ACTIVE') ?
+  <strong>{{org?.name}}</strong>
+  <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(org?.status=='ACTIVE') ?
   'hmcts-badge--green':'hmcts-badge--blue'">
-    {{data?.status}}
+    {{org?.status}}
   </span>
 </app-identity-bar-component>
+</ng-container>
 <div class="hmcts-width-container">
   <lib-gov-uk-main-wrapper [summaryErrors]="pbaErrorsHeader$ | async" title="Organisation payment by account (PBA) number" [backLink]="true">
     <div class="govuk-grid-row">
