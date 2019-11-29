@@ -19,7 +19,7 @@
               [group]="changePbaFG">
             </lib-gov-uk-input>
           </ng-container>
-          <button type="submit" class="govuk-button">
+          <button type="submit" class="govuk-button" [disabled]="!saveDisabled">
             Save
           </button>
         </form>

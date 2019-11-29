@@ -3,10 +3,9 @@ import * as fromStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OrgManagerConstants} from '../../org-manager.constants';
-import {take, takeWhile, tap} from 'rxjs/operators';
+import {take, tap} from 'rxjs/operators';
 import * as fromEditDetails from '../../store';
 import {Observable} from 'rxjs';
-import * as fromOrganisation from '../../store/selectors/organisation.selectors';
 
 /**
  * Bootstraps Organisation Details
@@ -22,15 +21,18 @@ export class EditDetailsComponent implements OnInit {
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
   public orgId: string;
+  public pbaNumbers: string[];
+  public saveDisabled = true;
 
   constructor(private store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
-    this.getOrgs();
     this.pbaInputs = OrgManagerConstants.PBA_INPUT_FEED;
     this.changePbaFG = new FormGroup({});
+    this.getOrgs();
     this.createPbaForm();
     this.getErrorMsgs();
+
   }
 
   private getOrgs(): void {
@@ -38,6 +40,8 @@ export class EditDetailsComponent implements OnInit {
         tap((value) => {
           if (value) {
             this.orgId = value.organisationId;
+            this.pbaNumbers = value.pbaNumber;
+            this.saveDisabled = !value.pbaNumber;
           } else {
             this.store.dispatch(new fromStore.LoadActiveOrganisation());
             this.store.dispatch(new fromStore.LoadPendingOrganisations());
@@ -49,7 +53,7 @@ export class EditDetailsComponent implements OnInit {
    this.pbaErrorsHeader$ = this.store.pipe(select(fromEditDetails.getPbaHeaderErrors));
   }
 
-  createPbaForm() {
+  createPbaForm(): void {
     for (const inputs of this.pbaInputs ) {
       this.changePbaFG.addControl(inputs.config.name, new FormControl(''));
       const validators = [
@@ -67,13 +71,19 @@ export class EditDetailsComponent implements OnInit {
       });
     });
 
+    this.changePbaFG.valueChanges.subscribe(value => {
+      const pba: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+      const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
+      this.saveDisabled = !isNewPba;
+    })
+
   }
 
   // convenience getter for easy access to form fields
   get fPba() { return this.changePbaFG.controls; }
 
   public onSubmitPba(): void {
-    this.dispatchSaveValidation();
+    this.dispatchStoreValidation();
     const {valid, value} = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     if (valid) {
@@ -81,7 +91,7 @@ export class EditDetailsComponent implements OnInit {
     }
   }
 
-  private dispatchSaveValidation(): void {
+  private dispatchStoreValidation(): void {
     const validation = {
       isInvalid: {
         pba1: [
