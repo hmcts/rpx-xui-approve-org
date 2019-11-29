@@ -3,7 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as fromActions from '../actions';
-import {UpdatePbaServices} from '../../services/update-pba.services';
+import {UpdatePbaServices} from '../../services';
 import {LoggerService} from '../../../app/services/logger.service';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class EditDetailsEffects {
   constructor(
     private actions$: Actions,
     private updatePbaServices: UpdatePbaServices,
-    private logerService: LoggerService
+    private loggerService: LoggerService
   ) { }
 
   @Effect()
@@ -20,9 +20,9 @@ export class EditDetailsEffects {
     map((action: fromActions.SubmitPba) => action.payload),
     switchMap((body) => {
       return this.updatePbaServices.updatePba(body).pipe(
-        map(serverResponse => new fromActions.SubmitPbaSuccess(serverResponse)),
+        map(() => new fromActions.SubmitPbaSuccess(body)),
         catchError((error: Error) => {
-          this.logerService.error(error.message);
+          this.loggerService.error(error.message);
           return of(new fromActions.SubmitPbaFailure(error));
         })
       );

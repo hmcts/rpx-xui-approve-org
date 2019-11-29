@@ -17,7 +17,7 @@ export class SubmitPba implements Action {
 
 export class SubmitPbaSuccess implements Action {
   readonly type = SUBMIT_PBA_SUCCESS;
-  constructor(public payload) { }
+  constructor(public payload: {paymentAccounts: string[], orgId: string}) { }
 }
 
 export class SubmitPbaFailure implements Action {
