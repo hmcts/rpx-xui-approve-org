@@ -3,9 +3,10 @@ import * as fromStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OrgManagerConstants} from '../../org-manager.constants';
-import {take, tap} from 'rxjs/operators';
+import {take, takeWhile, tap} from 'rxjs/operators';
 import * as fromEditDetails from '../../store';
 import {Observable} from 'rxjs';
+import * as fromOrganisation from '../../store/selectors/organisation.selectors';
 
 /**
  * Bootstraps Organisation Details
@@ -25,20 +26,29 @@ export class EditDetailsComponent implements OnInit {
   constructor(private store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
-    this.orgDetails$ = this.store.pipe(select(fromEditDetails.getActiveAndPending),
-      tap((value) => {
-        this.orgId = value.organisationId;
-      }));
+    this.getOrgs();
     this.pbaInputs = OrgManagerConstants.PBA_INPUT_FEED;
     this.changePbaFG = new FormGroup({});
     this.createPbaForm();
     this.getErrorMsgs();
   }
 
-  getErrorMsgs() {
+  private getOrgs(): void {
+    this.orgDetails$ = this.store.pipe(select(fromEditDetails.getActiveAndPending),
+        tap((value) => {
+          if (value) {
+            this.orgId = value.organisationId;
+          } else {
+            this.store.dispatch(new fromStore.LoadActiveOrganisation());
+            this.store.dispatch(new fromStore.LoadPendingOrganisations());
+          }
+        }));
+  }
+  private getErrorMsgs() {
    this.pbaError$ = this.store.pipe(select(fromEditDetails.getPbaFromErrors));
    this.pbaErrorsHeader$ = this.store.pipe(select(fromEditDetails.getPbaHeaderErrors));
   }
+
   createPbaForm() {
     for (const inputs of this.pbaInputs ) {
       this.changePbaFG.addControl(inputs.config.name, new FormControl(''));

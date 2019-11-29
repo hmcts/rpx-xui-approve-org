@@ -95,7 +95,7 @@
     </lib-gov-uk-main-wrapper>
   </div>
   </ng-container>
- <ng-container *ngIf="!(orgs$ | async) as data">
+ <ng-container *ngIf="!(orgs$ | async)">
    <div class="hmcts-width-container">
      <lib-gov-uk-main-wrapper [title]="'Organisation details'">
        <h3 class="govuk-heading-s">Loading...</h3>
