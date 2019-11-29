@@ -6,6 +6,7 @@ export interface EditDetailsState {
     isFormValid: boolean;
   };
 }
+
 export const initialState: EditDetailsState = {
   pba: {
     errorMessages: {},
@@ -44,9 +45,23 @@ export function reducer(
       };
     }
 
-    case fromActions.SUBMIT_PBA_SUCCESS : {
-      const {paymentAccounts, orgId} = action.payload;
-
+    case fromActions.SUBMIT_PBA_FAILURE : {
+      const id = {
+          messages: (action.payload)['error'].apiError,
+          isFormValid: false
+      };
+      const errorMessages = {
+        ...state.pba.errorMessages,
+        id
+      };
+      const pba = {
+        ...state.pba.errorMessages,
+        errorMessages
+      } as any; // todo revisity why this any
+      return {
+        ...state,
+        pba
+      };
 
     }
   }

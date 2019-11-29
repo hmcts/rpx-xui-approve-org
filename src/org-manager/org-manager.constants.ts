@@ -25,7 +25,7 @@ const pbaInputFeed =  [
 ];
 
 const pbaErrorMessages =  [
-  'Enter a PBA number, for example PBA1234567'
+  'There is a problem. Enter a PBA number, for example PBA1234567'
 ];
 
 
