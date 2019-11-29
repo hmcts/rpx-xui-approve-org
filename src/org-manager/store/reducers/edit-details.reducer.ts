@@ -43,6 +43,12 @@ export function reducer(
         pba
       };
     }
+
+    case fromActions.SUBMIT_PBA_SUCCESS : {
+      const {paymentAccounts, orgId} = action.payload;
+
+
+    }
   }
   return state;
 }
