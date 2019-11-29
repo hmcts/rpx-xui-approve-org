@@ -150,7 +150,7 @@ export function reducer(
       };
     }
 
-    case fromActions.SUBMIT_PBA_SUCCESS : {
+    case fromActions.SUBMIT_PBA_SUCCESS: {
       const {paymentAccounts, orgId} = action.payload;
 
       const pbaNumber = [...paymentAccounts];
