@@ -3,6 +3,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 import * as fromActions from '../actions';
+import * as fromRood from '../../../app/store';
 import {UpdatePbaServices} from '../../services';
 import {LoggerService} from '../../../app/services/logger.service';
 
@@ -27,5 +28,13 @@ export class EditDetailsEffects {
         })
       );
     })
+  );
+
+  @Effect()
+  submitPbaSuccess = this.actions$.pipe(
+      ofType(fromActions.SUBMIT_PBA_SUCCESS),
+      map(() => {
+        return new fromRood.Back();
+      }),
   );
 }
