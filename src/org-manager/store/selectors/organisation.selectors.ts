@@ -62,8 +62,9 @@ export const getActiveAndPending = createSelector(
   getActiveOrganisationState,
   getPendingOrganisationsState,
   fromRoot.getRouterState,
-  (active, pending, router) => (active.orgEntities[router.state.params.orgId]) ||
-    (pending.orgEntities[router.state.params.orgId]
+  (active, pending, router) =>
+      (active.orgEntities[router.state.params.orgId]) ||
+      (pending.orgEntities[router.state.params.orgId]
     ));
 
 

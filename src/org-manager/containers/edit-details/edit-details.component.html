@@ -6,7 +6,7 @@
     {{org?.status}}
   </span>
 </app-identity-bar-component>
-</ng-container>
+
 <div class="hmcts-width-container">
   <lib-gov-uk-main-wrapper [summaryErrors]="pbaErrorsHeader$ | async" title="Organisation payment by account (PBA) number" [backLink]="true">
     <div class="govuk-grid-row">
@@ -27,5 +27,13 @@
     </div>
   </lib-gov-uk-main-wrapper>
 </div>
+</ng-container>
+<ng-container *ngIf="!(orgDetails$ | async)">
+  <div class="hmcts-width-container">
+    <lib-gov-uk-main-wrapper title="Organisation payment by account (PBA) number">
+      <h3 class="govuk-heading-s">Loading...</h3>
+    </lib-gov-uk-main-wrapper>
+  </div>
+</ng-container>
 
 
