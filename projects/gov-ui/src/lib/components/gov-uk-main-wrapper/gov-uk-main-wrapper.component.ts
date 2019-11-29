@@ -23,6 +23,7 @@ import {Location} from '@angular/common';
       </app-hmcts-error-summary>
         <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+        <lib-banner *ngIf="banner" [message]="banner.message" [type]="banner.type"></lib-banner>
           <h1 *ngIf="title" class="govuk-heading-xl">{{title}}</h1>
           <ng-content></ng-content>
         </div>
@@ -34,6 +35,7 @@ export class GovUkMainWrapperComponent {
   private errors:{isFormValid: boolean; items: { id: string; message: any; }[]}
   @Input() public backLink: string;
   @Input() public title: string;
+  @Input() public banner: {type: string; message: string};
   @Input() public set summaryErrors(value) {
     this.errors = value;
   };

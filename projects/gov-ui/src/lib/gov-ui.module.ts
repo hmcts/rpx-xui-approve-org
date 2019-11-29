@@ -13,6 +13,7 @@ import {GovUkLabelComponent} from './components/gov-uk-label/gov-uk-label.compon
 import {GovUkErrorMessageComponent} from './components/gov-uk-error-message/gov-uk-error-message.component';
 import {GovUkCheckboxComponent} from './components/gov-uk-checkbox/gov-uk-checkbox.component';
 import {HmctsErrorSummaryComponent} from './components/hmcts-error-summary/hmcts-error-summary.component';
+import {HmctsBannerComponent} from './components/hmcts-banner/hmcts-banner.component';
 
 const COMPONENTS = [
   GovukTableComponent,
@@ -25,7 +26,8 @@ const COMPONENTS = [
   GovUkCheckboxComponent,
   GovUkLabelComponent,
   GovUkErrorMessageComponent,
-  HmctsErrorSummaryComponent
+  HmctsErrorSummaryComponent,
+  HmctsBannerComponent
 ];
 
 @NgModule({
