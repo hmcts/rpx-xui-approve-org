@@ -75,7 +75,7 @@ export class EditDetailsComponent implements OnInit {
       const pba: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
       const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
       this.saveDisabled = !isNewPba;
-    })
+    });
 
   }
 

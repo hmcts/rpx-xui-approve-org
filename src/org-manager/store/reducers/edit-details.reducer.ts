@@ -28,9 +28,9 @@ export function reducer(
             acc[key] = {
               messages: [errorMsg[0]],
               isInvalid: !!hasErrors
-            }
+            };
             return acc;
-        } else {return acc}
+        } else { return acc; }
       }, {});
       const isFormValid = !Object.keys(errorMessages).filter(key => errorMessages[key].isInvalid).length;
       const pba =  {
