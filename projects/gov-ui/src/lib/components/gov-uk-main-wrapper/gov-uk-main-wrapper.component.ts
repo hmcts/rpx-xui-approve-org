@@ -32,7 +32,7 @@ import {Location} from '@angular/common';
   `
 })
 export class GovUkMainWrapperComponent {
-  private errors:{isFormValid: boolean; items: { id: string; message: any; }[]}
+  public errors:{isFormValid: boolean; items: { id: string; message: any; }[]};
   @Input() public backLink: string;
   @Input() public title: string;
   @Input() public banner: {type: string; message: string};

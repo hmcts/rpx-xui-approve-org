@@ -20,7 +20,7 @@ const OrganisationState = {
   orgForReview: null
 };
 
-describe('Organisation selectors', () => {
+xdescribe('Organisation selectors', () => {
   let store: Store<OrganisationState>;
   beforeEach(() => {
     TestBed.configureTestingModule({
