@@ -1,5 +1,6 @@
-import * as fromActions from '../actions/organisations.actions';
+import * as fromActions from '../actions';
 import {OrganisationVM} from 'src/org-manager/models/organisation';
+import {ofType} from '@ngrx/effects';
 
 export interface OrganisationState {
   activeOrganisations: {
@@ -25,7 +26,7 @@ export const initialState: OrganisationState = {
 
 export function reducer(
   state = initialState,
-  action: fromActions.OrganisationsActions
+  action: fromActions.OrganisationsActions | fromActions.EditDetailsActions
 ): OrganisationState {
   switch (action.type) {
 
@@ -141,15 +142,55 @@ export function reducer(
       };
     }
 
-    case fromActions.OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS:
+    case fromActions.OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS: {
       const errorMessage = action.payload;
       return {
         ...state,
         errorMessage
       };
-    default:
-      return state;
+    }
+
+    case fromActions.SUBMIT_PBA_SUCCESS : {
+      const {paymentAccounts, orgId} = action.payload;
+
+      const pbaNumber = [...paymentAccounts];
+      const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
+
+      const entity = {
+       ...state[orgType].orgEntities[orgId],
+       pbaNumber
+      } as OrganisationVM;
+
+      const orgEntities = {
+       ...state[orgType].orgEntities,
+       [orgId]: entity
+      };
+
+      if (orgType === 'activeOrganisations') {
+        const activeOrganisations = {
+         ...state[orgType],
+         orgEntities
+        };
+        return {
+          ...state,
+         activeOrganisations
+        };
+      } else {
+        const pendingOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          pendingOrganisations
+        };
+      }
+
+
+
+    }
   }
+  return state;
 }
 
 export const getPendingOrganis = (state: OrganisationState) => state.pendingOrganisations;
