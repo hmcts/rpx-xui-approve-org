@@ -70,7 +70,7 @@ export const getActiveAndPending = createSelector(
 
 export const getPbaNumber = createSelector(
   fromRoot.getRouterState,
-  (router) => router.state.params.id
+  (router) => router.state.params.id || ''
 );
 
 export const getAllLoaded = createSelector(

@@ -1,16 +1,19 @@
 import * as fromActions from '../actions/edit-details.actions';
+import {OrgManagerConstants} from '../../org-manager.constants';
 
 export interface EditDetailsState {
   pba: {
     errorMessages: {[id: string]: {isInvalid: boolean; messages: string[]}}
     isFormValid: boolean;
+    serverError: {type: string; message: string}
   };
 }
 
 export const initialState: EditDetailsState = {
   pba: {
     errorMessages: {},
-    isFormValid: true
+    isFormValid: true,
+    serverError: null
   }
 };
 
@@ -46,6 +49,26 @@ export function reducer(
     }
 
     case fromActions.SUBMIT_PBA_FAILURE : {
+      const status = action.payload['status'];
+      const isServerError = OrgManagerConstants.STATUS_CODES.serverErrors.includes(status);
+
+      if (isServerError) {
+        const serverError = {
+          type: 'warning',
+          message: OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE
+        };
+
+        const pba = {
+          ...state.pba,
+          serverError
+        };
+
+        return {
+          ...state,
+          pba
+        };
+      }
+
       const id = {
           messages: (action.payload)['error'].apiError,
           isFormValid: false
@@ -57,12 +80,12 @@ export function reducer(
       const pba = {
         ...state.pba.errorMessages,
         errorMessages
-      } as any; // todo revisity why this any
+      } as any; // todo revisit why this any
+
       return {
         ...state,
         pba
       };
-
     }
   }
   return state;
@@ -70,3 +93,4 @@ export function reducer(
 
 export const getInviteUserData = (state: EditDetailsState) => state.pba;
 export const getPbaIsFormValid = (state: EditDetailsState) => state.pba.isFormValid;
+export const getPbaServerError = (state: EditDetailsState) => state.pba.serverError;

@@ -14,6 +14,11 @@ export const getPbaFromErrors = createSelector(
   (editDetails: fromEditDetails.EditDetailsState) => editDetails.pba.errorMessages
 );
 
+export const getServerErrors = createSelector(
+  getEditDetailsState,
+  fromEditDetails.getPbaServerError
+);
+
 export const getIsFormValid = createSelector(
   getEditDetailsState,
   fromEditDetails.getPbaIsFormValid
