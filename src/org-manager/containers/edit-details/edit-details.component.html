@@ -12,7 +12,8 @@
   <lib-gov-uk-main-wrapper
           [summaryErrors]="pbaErrorsHeader$ | async"
           title="Organisation payment by account (PBA) number"
-          [backLink]="true">
+          [backLink]="true"
+          [banner]="serverError$ | async">
 
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
@@ -25,11 +26,12 @@
             </lib-gov-uk-input>
           </ng-container>
           <button type="submit" class="govuk-button" [disabled]="!saveDisabled">
-            Save
+            Submit
           </button>
         </form>
       </div>
     </div>
+
   </lib-gov-uk-main-wrapper>
 </div>
 </ng-container>

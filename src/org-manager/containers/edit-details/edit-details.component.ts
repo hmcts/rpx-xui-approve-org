@@ -1,28 +1,30 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import * as fromStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {OrgManagerConstants} from '../../org-manager.constants';
 import {take, tap} from 'rxjs/operators';
 import * as fromEditDetails from '../../store';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 
 /**
- * Bootstraps Organisation Details
+ * Bootstraps Edit Organisation Details
  */
 @Component({
   selector: 'app-change-details',
   templateUrl: './edit-details.component.html'
 })
-export class EditDetailsComponent implements OnInit {
+export class EditDetailsComponent implements OnInit, OnDestroy {
   public changePbaFG: FormGroup;
   public pbaInputs: {config: {name: string}}[];
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
+  private subscirptions: Subscription;
   public orgId: string;
   public pbaNumbers: string[];
   public saveDisabled = true;
+  public serverError$: Observable<{ type: string; message: string }>;
 
   constructor(private store: Store<fromStore.OrganisationRootState>) {}
 
@@ -32,7 +34,6 @@ export class EditDetailsComponent implements OnInit {
     this.getOrgs();
     this.createPbaForm();
     this.getErrorMsgs();
-
   }
 
   private getOrgs(): void {
@@ -51,6 +52,7 @@ export class EditDetailsComponent implements OnInit {
   private getErrorMsgs() {
    this.pbaError$ = this.store.pipe(select(fromEditDetails.getPbaFromErrors));
    this.pbaErrorsHeader$ = this.store.pipe(select(fromEditDetails.getPbaHeaderErrors));
+   this.serverError$ = this.store.pipe(select(fromEditDetails.getServerErrors));
   }
 
   createPbaForm(): void {
@@ -71,7 +73,7 @@ export class EditDetailsComponent implements OnInit {
       });
     });
 
-    this.changePbaFG.valueChanges.subscribe(value => {
+    this.subscirptions = this.changePbaFG.valueChanges.subscribe(value => {
       const pba: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
       const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
       this.saveDisabled = !isNewPba;
@@ -108,6 +110,10 @@ export class EditDetailsComponent implements OnInit {
       errorMsg: OrgManagerConstants.PBA_ERROR_MESSAGES
     };
     this.store.dispatch(new fromStore.DispatchSaveValidation(validation));
+  }
+
+  ngOnDestroy(): void {
+    this.subscirptions.unsubscribe();
   }
 
 }
