@@ -60,6 +60,19 @@ export function reducer(
       };
     }
 
+    case fromActions.CLEAR_ERRORS: {
+      const pba = {
+        ...state.pba,
+        errorMessages: {},
+        isFormValid: true
+      };
+
+      return {
+        ...state,
+        pba
+      };
+    }
+
     case fromActions.SUBMIT_PBA_FAILURE : {
       const status = action.payload['status'];
       const isServerError = OrgManagerConstants.STATUS_CODES.serverErrors.includes(status);
