@@ -41,7 +41,6 @@ export function successInterceptor(response) {
 }
 
 export function errorInterceptor(error) {
-  console.log(error)
     const errorConfig = error.config
     if (errorConfig && errorConfig.metadata) {
         errorConfig.metadata.endTime = new Date()
