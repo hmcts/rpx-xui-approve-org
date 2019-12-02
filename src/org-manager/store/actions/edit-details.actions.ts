@@ -4,6 +4,7 @@ export const DISPATCH_SAVE_PBA_VALIDATION = '[Edit Details] Dispatch save PBA va
 export const SUBMIT_PBA = '[Edit Details] Submit PBA';
 export const SUBMIT_PBA_SUCCESS = '[Edit Details] Submit PBA Success';
 export const SUBMIT_PBA_FAILURE = '[Edit Details] Submit PBA Failure';
+export const CLEAR_ERRORS = '[Edit Details] Clear Errors';
 
 export class DispatchSaveValidation implements Action {
   readonly type = DISPATCH_SAVE_PBA_VALIDATION;
@@ -25,9 +26,14 @@ export class SubmitPbaFailure implements Action {
   constructor(public payload: Error) { }
 }
 
+export class ClearPbaErrors implements Action {
+  readonly type = CLEAR_ERRORS;
+}
+
 export type EditDetailsActions =
   | DispatchSaveValidation
   | SubmitPba
   | SubmitPbaSuccess
-  | SubmitPbaFailure;
+  | SubmitPbaFailure
+  | ClearPbaErrors;
 
