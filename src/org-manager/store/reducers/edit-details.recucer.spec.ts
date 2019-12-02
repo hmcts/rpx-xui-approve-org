@@ -38,7 +38,7 @@ describe('Edit Details Reducer', () => {
         };
         const action = new fromActions.SubmitPbaFailure(payload);
         const state = reducer(initialState, action);
-        const errorMessages: any = {id: {isFormValid: false, messages: 'Some error message'}}
+        const errorMessages: any = {id: {isFormValid: false, messages: 'Some error message'}};
         // @ts-ignore
         expect(state.pba).toEqual({errorMessages});
       });
