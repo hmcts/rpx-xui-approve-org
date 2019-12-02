@@ -48,6 +48,18 @@ export function reducer(
       };
     }
 
+    case fromActions.SUBMIT_PBA_SUCCESS: {
+      const pba = {
+        ...state.pba,
+        serverError: null
+      };
+
+      return {
+        ...state,
+        pba
+      };
+    }
+
     case fromActions.SUBMIT_PBA_FAILURE : {
       const status = action.payload['status'];
       const isServerError = OrgManagerConstants.STATUS_CODES.serverErrors.includes(status);
@@ -58,14 +70,14 @@ export function reducer(
           message: OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE
         };
 
-        const pba = {
+        const newPba = {
           ...state.pba,
           serverError
         };
 
         return {
           ...state,
-          pba
+          pba: newPba
         };
       }
 
@@ -91,6 +103,5 @@ export function reducer(
   return state;
 }
 
-export const getInviteUserData = (state: EditDetailsState) => state.pba;
 export const getPbaIsFormValid = (state: EditDetailsState) => state.pba.isFormValid;
 export const getPbaServerError = (state: EditDetailsState) => state.pba.serverError;

@@ -20,13 +20,13 @@ const OrganisationState = {
   orgForReview: null
 };
 
-xdescribe('Organisation selectors', () => {
+describe('Organisation selectors', () => {
   let store: Store<OrganisationState>;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('orgStatePending', reducers),
+        StoreModule.forFeature('orgState', reducers),
       ],
     });
     store = TestBed.get(Store);
