@@ -16,7 +16,6 @@ describe('Edit Details actions', () => {
       });
     });
 
-
     describe('SubmitPba', () => {
       it('should create an action', () => {
         const payload = {

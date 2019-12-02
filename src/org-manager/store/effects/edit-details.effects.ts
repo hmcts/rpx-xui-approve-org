@@ -16,7 +16,7 @@ export class EditDetailsEffects {
   ) { }
 
   @Effect()
-  submitPBA = this.actions$.pipe(
+  submitPBA$ = this.actions$.pipe(
     ofType(fromActions.SUBMIT_PBA),
     map((action: fromActions.SubmitPba) => action.payload),
     switchMap((body) => {
@@ -31,7 +31,7 @@ export class EditDetailsEffects {
   );
 
   @Effect()
-  submitPbaSuccess = this.actions$.pipe(
+  submitPbaSuccess$ = this.actions$.pipe(
       ofType(fromActions.SUBMIT_PBA_SUCCESS),
       map(() => {
         return new fromRood.Back();
