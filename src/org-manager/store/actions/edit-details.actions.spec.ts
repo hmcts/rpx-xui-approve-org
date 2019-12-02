@@ -7,7 +7,7 @@ describe('Edit Details actions', () => {
         const payload = {
           isInvalid: {},
           errorMsg: [{some: 'prop'}]
-        }
+        };
         const action = new fromActions.DispatchSaveValidation(payload);
         expect({...action}).toEqual({
           type: fromActions.DISPATCH_SAVE_PBA_VALIDATION,
@@ -22,7 +22,7 @@ describe('Edit Details actions', () => {
         const payload = {
           paymentAccounts: ['12345', '54321'],
           orgId: '0987865'
-        }
+        };
         const action = new fromActions.SubmitPba(payload);
         expect({...action}).toEqual({
           type: fromActions.SUBMIT_PBA,
@@ -36,7 +36,7 @@ describe('Edit Details actions', () => {
         const payload = {
           paymentAccounts: ['12345', '54321'],
           orgId: '0987865'
-        }
+        };
         const action = new fromActions.SubmitPbaSuccess(payload);
         expect({...action}).toEqual({
           type: fromActions.SUBMIT_PBA_SUCCESS,
