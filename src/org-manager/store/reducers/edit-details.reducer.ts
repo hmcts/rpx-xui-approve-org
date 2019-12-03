@@ -60,7 +60,7 @@ export function reducer(
       };
     }
 
-    case fromActions.CLEAR_ERRORS: {
+    case fromActions.CLEAR_PBA_ERRORS: {
       const pba = {
         ...state.pba,
         errorMessages: {},

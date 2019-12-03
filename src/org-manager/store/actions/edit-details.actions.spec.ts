@@ -57,6 +57,19 @@ describe('Edit Details actions', () => {
         });
       });
     });
+
+    describe('CLEAR_ERRORS', () => {
+      it('should create an action', () => {
+        const payload = {
+          name: 'Some Name',
+          message: 'Some Message'
+        };
+        const action = new fromActions.ClearPbaErrors();
+        expect({...action}).toEqual({
+          type: fromActions.CLEAR_PBA_ERRORS,
+        });
+      });
+    });
   });
 });
 
