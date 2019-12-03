@@ -20,7 +20,8 @@ async function handleUpdatePBARoute(req: express.Request, res: express.Response,
           res.status(200).send()
       } catch (error) {
           console.error(error)
-          const errReport = { apiError: error.data.errorMessage, apiStatusCode: error.status,
+
+          const errReport = { apiError: error.data, apiStatusCode: error.status,
               message: 'handleUpdatePBARoute error' }
           res.status(error.status).send(errReport)
       }
