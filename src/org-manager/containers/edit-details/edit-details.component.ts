@@ -43,7 +43,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
             this.orgId = value.organisationId;
             this.pbaNumbers = value.pbaNumber;
             this.saveDisabled = !value.pbaNumber;
-          } else {
+          } else if (!value && !this.orgId) {
             this.store.dispatch(new fromStore.LoadActiveOrganisation());
             this.store.dispatch(new fromStore.LoadPendingOrganisations());
           }
