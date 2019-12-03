@@ -23,7 +23,7 @@ export class EditDetailsEffects {
       return this.updatePbaServices.updatePba(body).pipe(
         map(() => new fromActions.SubmitPbaSuccess(body)),
         catchError((error: Error) => {
-          this.loggerService.error(error.message);
+          this.loggerService.error(error);
           return of(new fromActions.SubmitPbaFailure(error));
         })
       );

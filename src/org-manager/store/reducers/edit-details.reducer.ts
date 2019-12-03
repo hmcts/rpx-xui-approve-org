@@ -93,9 +93,8 @@ export function reducer(
           pba: newPba
         };
       }
-
       const id = {
-          messages: (action.payload)['error'].apiError,
+          messages: action.payload['error'].apiError.errorDescription,
           isFormValid: false
       };
       const errorMessages = {
