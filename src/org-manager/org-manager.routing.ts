@@ -1,58 +1,43 @@
-// routes
 import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
-import { OverviewComponent } from './containers/overview/org-overview.component';
-import { OrgOverviewComponent } from './containers/org-overview/org-overview.component';
-import { OrgSummaryComponent } from './containers/org-summary/org-summary.component';
-import { OverviewPendingComponent } from 'src/org-manager/containers/overview-pending/pending-overview.component';
-import { OrgPendingOverviewComponent } from 'src/org-manager/containers/org-pending-overview/org-pending-overview.component';
-import { OrgPendingSummaryComponent } from 'src/org-manager/containers/org-pending-summary/org-pending-summary.component';
-import { OrgPendingApproveComponent } from 'src/org-manager/containers/org-pending-approve/org-pending-approve.component';
-import { OrgApprovalSuccessComponent } from 'src/org-manager/containers/org-success/org-approval-success.component';
+import { ActiveOrganisationsComponent } from './containers';
+import { PendingOrganisationsComponent} from 'src/org-manager/containers/pending-organisations/pending-organisations.component';
+import { ApproveOrganisationComponent } from 'src/org-manager/containers/approve-organisation/approve-organisation.component';
+import { ApproveOrganisationSuccessComponent } from 'src/org-manager/containers/approve-organisation-success/approve-organisation-success.component';
 import { AuthGuard } from 'src/services/auth/auth.guard';
+import { OrganisationDetailsComponent } from './components';
 
 export const ROUTES: Routes = [
   {
     path: '',
-    component: OverviewComponent,
-    canActivate: [AuthGuard],
+    redirectTo: 'active-organisation',
+    pathMatch: 'full',
   },
   {
-    path: 'organisations/organisation',
-    component: OrgOverviewComponent,
+    path: 'active-organisation',
+    component: ActiveOrganisationsComponent,
     canActivate: [AuthGuard],
-    children: [
-      {
-        path: ':id',
-        component: OrgSummaryComponent,
-        canActivate: [
-        ]
-      }
-    ]
   },
   {
     path: 'pending-organisations',
-    component: OrgPendingOverviewComponent,
+    component: PendingOrganisationsComponent,
     canActivate: [AuthGuard],
-    children: [
-      {
-        path: '',
-        component: OverviewPendingComponent,
-      },
-      {
-        path: 'organisation/:id',
-        component: OrgPendingSummaryComponent
-      },
-      {
-        path: 'approve',
-        component: OrgPendingApproveComponent
-      },
-      {
-        path: 'approve-success',
-        component: OrgApprovalSuccessComponent
-      }
-    ]
-  }
+  },
+  {
+    path: 'approve-organisations',
+    component: ApproveOrganisationComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'approve-organisations-success',
+    component: ApproveOrganisationSuccessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'organisation-details/:type/:id',
+    component: OrganisationDetailsComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
