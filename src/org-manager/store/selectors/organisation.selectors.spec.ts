@@ -26,7 +26,7 @@ describe('Organisation selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('orgStatePending', reducers),
+        StoreModule.forFeature('orgState', reducers),
       ],
     });
     store = TestBed.get(Store);
@@ -41,17 +41,6 @@ describe('Organisation selectors', () => {
 
       });
       expect(result).toEqual(OrganisationState);
-    });
-  });
-
-  describe('getSelectedActiveOrganisation', () => {
-    it('should return initial active org state', () => {
-      let result;
-      store.pipe(select(fromSelectors.getActiveOrganisationState)).subscribe(value => {
-        result = value;
-
-      });
-      expect(result).toEqual({loading: false, loaded: false, orgEntities: {}});
     });
   });
 

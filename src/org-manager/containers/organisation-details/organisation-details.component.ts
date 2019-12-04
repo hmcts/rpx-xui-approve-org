@@ -3,7 +3,7 @@ import * as fromStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import { Observable } from 'rxjs';
-import {takeWhile} from 'rxjs/operators';
+import {takeWhile, tap} from 'rxjs/operators';
 import * as fromOrganisation from '../../store/';
 
 /**
@@ -15,9 +15,7 @@ import * as fromOrganisation from '../../store/';
 })
 export class OrganisationDetailsComponent implements OnInit {
 
-  public orgs$: Observable<OrganisationVM[]>;
-  public dxNumber: string;
-  public dxExchange: string;
+  public orgs$: Observable<OrganisationVM>;
 
   constructor(private store: Store<fromStore.OrganisationRootState>) {}
 
@@ -29,8 +27,7 @@ export class OrganisationDetailsComponent implements OnInit {
       }
     });
 
-   this.orgs$ = this.store.pipe(select(fromStore.getSelectedActiveOrganisation));
-
+   this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
   }
 
 }
