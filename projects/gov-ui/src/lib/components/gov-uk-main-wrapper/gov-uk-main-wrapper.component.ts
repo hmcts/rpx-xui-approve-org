@@ -1,4 +1,5 @@
 import {Component, Input} from '@angular/core';
+import {Location} from '@angular/common';
 
 /*
 * Main Content wrapper
@@ -13,23 +14,27 @@ import {Component, Input} from '@angular/core';
 @Component({
   selector: 'lib-gov-uk-main-wrapper',
   template: `
-    <a *ngIf="backLink" [routerLink]="backLink" class="govuk-back-link">Back</a>
+    <a *ngIf="backLink" [routerLink]="" (click)="onGoBack()" class="govuk-back-link">Back</a>
     <main id="content" role="main" class="govuk-main-wrapper">
           <h1 *ngIf="title" class="govuk-heading-xl">{{title}}</h1>
           <div class="govuk-grid-row">
           <div class="govuk-grid-column-two-thirds">
-          <ng-content></ng-content>
-        </div>
+            <ng-content></ng-content>
+          </div>
       </div>
     </main>
   `
 })
 export class GovUkMainWrapperComponent  {
 
-  @Input() backLink: string;
-  @Input() title: string;
-  @Input() summaryErrors: string[];
+  @Input() public backLink: string;
+  @Input() public title: string;
+  @Input() public summaryErrors: string[];
 
-  constructor() { }
+  constructor( private location: Location) { }
+
+  public onGoBack() {
+    this.location.back();
+  }
 
 }
