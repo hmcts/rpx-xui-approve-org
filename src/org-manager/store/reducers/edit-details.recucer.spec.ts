@@ -31,14 +31,13 @@ describe('Edit Details Reducer', () => {
 
     describe('SUBMIT_PBA_FAILURE action', () => {
       it('should return clear the state', () => {
-        const payload = {
+        const payload: any = {
           name: 'Some Name',
-          message: 'Some Message',
-          error: {apiError: 'Some error message'}
+          error: {apiError: {errorDescription: 'some error message'}}
         };
         const action = new fromActions.SubmitPbaFailure(payload);
         const state = reducer(initialState, action);
-        const errorMessages: any = {id: {isFormValid: false, messages: 'Some error message'}};
+        const errorMessages: any = {id: {isFormValid: false, messages: 'some error message'}};
         // @ts-ignore
         expect(state.pba).toEqual({errorMessages});
       });
