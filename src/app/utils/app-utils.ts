@@ -60,6 +60,7 @@ export class AppUtils {
     organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
     organisationVm.townCity = apiOrg.contactInformation[0].townCity;
     organisationVm.county = apiOrg.contactInformation[0].county;
+    organisationVm.postCode = apiOrg.contactInformation[0].postCode;
     organisationVm.sraId = apiOrg.sraId;
     return organisationVm;
   }

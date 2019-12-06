@@ -1,12 +1,16 @@
 
-<form [formGroup]="searchOrgForm" (ngSubmit)="onSubmit()" >
-  <lib-gov-uk-input
-    [config]="{label: 'Search', hint: 'Search for approved organisations by name or unique reference.', name: 'search', id: 'search', type: 'text', classes: 'search'}"
-    [errorMessage]="'invalid search input'"
-    [group]="searchOrgForm">
-  </lib-gov-uk-input>
+<div class="govuk-grid-column-two-thirds">
 
-  <button type="submit" class="govuk-button">
-    Search
-  </button>
-</form>
+  <form [formGroup]="searchOrgForm" (ngSubmit)="onSubmit()" >
+    <div class="govuk-form-group">
+      <lib-gov-uk-input
+        [config]="{label: 'Search', hint: 'Search for approved organisations by name or unique reference.', name: 'search', id: 'search', type: 'text', classes: 'search'}"
+       [group]="searchOrgForm">
+      </lib-gov-uk-input>
+    </div>
+    <button type="submit" class="govuk-button">
+      Search
+    </button>
+  </form>
+</div>
+

@@ -15,6 +15,7 @@ import {StoreModule} from '@ngrx/store';
 import {HttpClientModule} from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { reducers, effects } from './store';
+import { FilterOrganisationsPipe } from './pipes/filter-organisations.pipe';
 
 @NgModule({
   imports: [
@@ -26,7 +27,7 @@ import { reducers, effects } from './store';
     EffectsModule.forFeature(effects)
   ],
   exports: [...fromContainers.containers],
-  declarations: [...fromContainers.containers, ...fromComponents.components],
+  declarations: [...fromContainers.containers, ...fromComponents.components, FilterOrganisationsPipe],
   providers: [...fromServices.services]
 })
 
