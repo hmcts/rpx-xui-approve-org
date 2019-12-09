@@ -1,52 +1,91 @@
-import {createFeatureSelector, createSelector} from '@ngrx/store';
+import {createSelector} from '@ngrx/store';
 
-
-import * as fromOrganisation from '../reducers/organisation.reducer';
 import * as fromRoot from '../../../app/store';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
-
-import {getRootApproveOrgState} from '../reducers';
+import * as fromOrganisation from '../reducers';
 
 export const getOrganisationsState = createSelector(
-  getRootApproveOrgState,
-  (state: any) => state.activeOrg
+  fromOrganisation.getRootApproveOrgState,
+  (state: fromOrganisation.OrganisationRootState) => state.organisations
+);
+// entry for Active Organisations
+export const getActiveOrganisationState = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getActiveOrgEntities
 );
 
+export const getActiveOrganisation = createSelector(
+  getActiveOrganisationState,
+  (orgState) => orgState.orgEntities
+);
+
+export const getActiveOrganisationArray = createSelector(
+  getActiveOrganisation,
+  (orgState) => Object.keys(orgState).map(id => orgState[id])
+);
+
+export const getActiveLoaded = createSelector(
+  getActiveOrganisationState,
+  (orgState) => orgState.loaded
+);
+
+export const getActiveLoading = createSelector(
+  getActiveOrganisationState,
+  (orgState) => orgState.loading
+);
+// entry for Pending Organisations
 export const getPendingOrganisationsState = createSelector(
-  getRootApproveOrgState,
-  (state: any) => state.pendingOrganisations
-);
-export const organisations = createSelector(
   getOrganisationsState,
-  fromOrganisation.getOrganisations
-);
-export const selectedOrganisation = createSelector(
-  getOrganisationsState,
-  fromRoot.getRouterState,
-  (organisationState: any, router) => {
-  if (organisationState && organisationState.organisations) {
-    return organisationState.organisations.filter(x => x.organisationId === router.state.params.id)[0];
-  } else {
-    return {};
-  }
-});
-export const selectedPendingOrganisation = (orgId: string) => createSelector( getPendingOrganisationsState, (organisationState: any) => {
-  if (organisationState && organisationState.pendingOrganisations) {
-    return organisationState.pendingOrganisations.filter(x => x.organisationId === orgId) as OrganisationVM;
-  } else {
-    return {};
-  }
-});
-export const organisationsLoading = createSelector(
-  getOrganisationsState,
-  fromOrganisation.getOrganisationsLoading
-);
-export const organisationsLoaded = createSelector(
-  getOrganisationsState,
-  fromOrganisation.getOrganisationsLoaded
+  fromOrganisation.getPendingOrgEntities
 );
 
-export const getCurrentPage = createSelector(
-    fromRoot.getRouterState,
-    (router) => router.state.params
-  );
+export const getPendingOrganisations = createSelector(
+  getPendingOrganisationsState,
+  (orgsArray) => orgsArray.orgEntities
+);
+
+export const getPendingOrganisationsArray = createSelector(
+  getPendingOrganisations,
+  (orgEntities) => Object.keys(orgEntities).map(orgId => orgEntities[orgId])
+);
+export const getPendingLoaded = createSelector(
+  getPendingOrganisationsState,
+  (orgState) => orgState.loaded
+);
+//
+
+export const getErrorMessage = createSelector(
+  getOrganisationsState,
+  (orgState) => orgState.errorMessage
+);
+
+export const getActiveAndPending = createSelector(
+  getActiveOrganisationState,
+  getPendingOrganisationsState,
+  fromRoot.getRouterState,
+  (active, pending, router) =>
+      (active.orgEntities[router.state.params.orgId]) ||
+      (pending.orgEntities[router.state.params.orgId]
+    ));
+
+
+export const getPbaNumber = createSelector(
+  fromRoot.getRouterState,
+  (router) => router.state.params.id || ''
+);
+
+export const getAllLoaded = createSelector(
+  getActiveLoaded,
+  getPendingLoaded,
+  (activeLoaded, pendingLoaded) =>  activeLoaded && pendingLoaded
+);
+
+export const getOrganisationForReview = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getOrgForReview
+);
+
+export const pendingOrganisationsCount = createSelector(
+  getPendingOrganisationsArray,
+  (orgArr) =>  orgArr ? orgArr.length : 0
+);
+
