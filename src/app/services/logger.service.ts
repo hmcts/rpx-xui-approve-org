@@ -2,9 +2,9 @@ import { MonitoringService } from './monitoring.service';
 import { NGXLogger } from 'ngx-logger';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
-import config from '../../../api/lib/config';
 import { CryptoWrapper } from './cryptoWrapper';
 import { JwtDecodeWrapper } from './jwtDecodeWrapper';
+import {EnvironmentService} from './environment.service';
 
 export interface ILoggerService {
     trace(message: any, ...additional: any[]): void;
@@ -18,18 +18,13 @@ export interface ILoggerService {
 }
 
 @Injectable()
-
 export class LoggerService implements ILoggerService {
-    COOKIE_KEYS;
     constructor(private monitoringService: MonitoringService,
                 private ngxLogger: NGXLogger,
                 private cookieService: CookieService,
                 private cryptoWrapper: CryptoWrapper,
-                private jwtDecodeWrapper: JwtDecodeWrapper) {
-                    this.COOKIE_KEYS = {
-                        TOKEN: config.cookies.token,
-                        USER: config.cookies.userId
-                      };
+                private jwtDecodeWrapper: JwtDecodeWrapper,
+                private envService: EnvironmentService) {
     }
 
     trace(message: any, ...additional: any[]): void {
@@ -70,7 +65,8 @@ export class LoggerService implements ILoggerService {
         this.monitoringService.logException(error);
     }
     getMessage(message: any): string {
-        const jwt = this.cookieService.get(this.COOKIE_KEYS.TOKEN);
+        // const jwt = this.cookieService.get(this.envService.cookies.token);
+        const jwt = this.cookieService.get(this.envService.get('cookies').token);
         const jwtData = this.jwtDecodeWrapper.decode(jwt);
         if (jwtData) {
             const userIdEncrypted = this.cryptoWrapper.encrypt(jwtData.sub);
