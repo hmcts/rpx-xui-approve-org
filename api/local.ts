@@ -1,5 +1,9 @@
+import * as setupConfig from './setupConfig'
+setupConfig.init()
+
 import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
+import * as config from 'config'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
@@ -17,40 +21,15 @@ const FileStore = sessionFileStore(session)
 
 const app = express()
 
-/**
- * We get the root directory where the application is hosted.
- *
- * TODO: Will this work on higher environments? Where is the /config directory?
- * The Angular and Node layer must sit on the same box, therefore we require the path to it.
- */
-// const getRootDirectory = () => __dirname + '/../../'
-const getRootDirectory = () => '/Users/philip/projects/rpx-xui-approve-org'
-
-/**
- * 
- * @returns {string}
- */
-const getNodePath = () => process.env.NODE_PATH
-
-/**
- * NODE_CONFIG_DIR environmental variable is a variable provided by Node-config to allow Node-config to be configured to point
- * to a different directory. This allows /config to be located outside of the node server directory.
- *
- * We need to leverage this as our Node service does not sit within our webserver root; it sits within /api and our
- * /config folder will sit at the root of our webserver - wwwroot.
- *
- * @see node_modules config
- */
-process.env['NODE_CONFIG_DIR'] = getRootDirectory() + '/config'
-console.log(process.env['NODE_CONFIG_DIR'])
-
-import * as config from 'config'
+// I want to keep NODE_CONFIG_DIR?
+//
+// import * as config from 'config'
 
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
 propertiesVolume.addTo(config)
-
+// TODO: We want to be able to call config here.
 console.log(config.get('parent.child'))
 
 const logger = log4jui.getLogger('server')
