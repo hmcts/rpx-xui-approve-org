@@ -1,0 +1,21 @@
+testNode:
+  testProperty: 'test value'
+database:
+  name: POSTGRES_DB_NAME
+  host: POSTGRES_SERVER_NAME
+  username: POSTGRES_USERNAME
+  port: POSTGRES_SERVER_PORT
+  ssl: POSTGRES_SSL
+secrets:
+  rpx:
+    postgresql-pw: POSTGRES_PASSWORD
+    AppInsightsInstrumentationKey: APPINSIGHTS_INSTRUMENTATIONKEY
+proxy:
+  host: PROXY_HOST
+  port: PROXY_PORT
+client:
+  whitelist: CLIENT_WHITELIST
+services:
+  s2s: S2S_TOKEN_URL
+  idam:
+    api-url: IDAM_SERVICE_URL
