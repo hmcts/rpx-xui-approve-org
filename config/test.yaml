@@ -1,0 +1,6 @@
+database:
+  // We are currently not using this test.yaml file.
+  // The reform project config package expects a test.yaml file to exist hence this file exists
+  // otherwise we are returned the following error
+  // WARNING NODE_ENV value of 'test' did not match any deployment config file names
+  // when we run `yarn test`
