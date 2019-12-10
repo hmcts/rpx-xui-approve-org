@@ -66,6 +66,7 @@ module "app" {
         PROXY_HOST = "${var.proxy_host}"
         PROXY_PORT = "${var.proxy_port}"
 
+        TEST_ITHC_VAR = "${var.test_ithc_var}"
     }
 }
 

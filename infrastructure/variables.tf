@@ -111,3 +111,8 @@ variable "proxy_host" {
 variable "proxy_port" {
   default = "0"
 }
+
+variable "test_ithc_var" {
+  default = "test"
+}
+
