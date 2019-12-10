@@ -31,6 +31,7 @@ if (!process.env.NODE_PATH) {
   console.log('NODE_PATH is required to retrieve the configuration parameters for the application.')
 }
 
+// TODO: Why don't we just have a NODE_CONFIG_DIR on each environment which is our NODE_PATH + '/config'
 export const init = () => {
   process.env['NODE_CONFIG_DIR'] = getEnvConfigProperties()
 }

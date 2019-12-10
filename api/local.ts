@@ -3,7 +3,12 @@ setupConfig.init()
 
 import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
+
+/**
+ * Note that we need to have the NODE_CONFIG_DIR set
+ */
 import * as config from 'config'
+
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
