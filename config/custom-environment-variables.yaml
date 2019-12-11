@@ -1,4 +1,4 @@
-environment: 'AAT ENVIRONMENT'
+environment: 'DEFAULT ENVIRONMENT'
 parent:
   child: 'testRead aat.yaml'
 appInsightsInstrumentationKey: APPINSIGHTS_INSTRUMENTATIONKEY
