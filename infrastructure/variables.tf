@@ -54,3 +54,7 @@ variable "capacity" {
 variable "additional_host_name" {
     default = "null"
 }
+
+variable "phil_kubenetes" {
+    default = "test"
+}

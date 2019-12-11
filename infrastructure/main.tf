@@ -37,6 +37,7 @@ module "app" {
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
+        PHIL_KUBENETES = "${var.phil_kubenetes}"
 
     }
 }
