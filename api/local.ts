@@ -40,6 +40,9 @@ propertiesVolume.addTo(config)
 
 setupConfig.checkConfigPropertiesSet()
 
+// TODO: Pull in the correct file per environment.
+console.log(config.get('environment'))
+
 const logger = log4jui.getLogger('server')
 
 app.use(
