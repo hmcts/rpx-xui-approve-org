@@ -14,6 +14,7 @@ import * as bodyParser from 'body-parser'
  * @see node_modules config search for 'NODE_CONFIG_DIR'
  */
 import * as config from 'config'
+import * as setupConfig from './setupConfig'
 
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -36,8 +37,8 @@ const app = express()
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
 propertiesVolume.addTo(config)
-// TODO: We want to be able to call config here.
-console.log(config.get('parent.child'))
+
+setupConfig.checkConfigPropertiesSet()
 
 const logger = log4jui.getLogger('server')
 
