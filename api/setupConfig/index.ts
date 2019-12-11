@@ -23,11 +23,14 @@ export const checkConfigPropertiesSet = () => {
  *
  * If no NODE_ENV is set the default.yaml is used to config the application.
  * If NODE_ENV=aat is set the aat.yaml file is used to config the application.
- * If NODE_ENV=test is set the aat.yaml file is used to config the application.
+ * If NODE_ENV=test is set the test.yaml file is used to config the application.
  * etc.
  *
  * Important note: We never place local.yaml file into the /config folder as it overrides all other config files
  * on that environment.
+ *
+ * If a config property does not exist in a config file, the property in the default.yaml file is used. The default.yaml
+ * file should be reflective of the values on production, so that we do not accidentally break production.
  *
  * @see https://github.com/lorenwest/node-config/wiki/Configuration-Files #local files
  */
