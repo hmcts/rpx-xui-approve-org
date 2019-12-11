@@ -1,2 +1,3 @@
+environment: 'LOCAL DEVELOPMENT'
 parent:
-  child: 'testRead'
+  child: 'testRead test.yaml'
