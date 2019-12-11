@@ -13,21 +13,16 @@ properties([
 
 @Library("Infrastructure")
 
-// Disable pact testing on pipeline
-//
-// import uk.gov.hmcts.contino.AppPipelineDsl
-
 def type      = "nodejs"
 def product   = "xui"
 def component = "ao-webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def secrets = [
   'rpx-${env}': [
-    secret('ao-s2s-client-secret', 'S2S_SECRET'),
-    secret('ao-idam-client-secret', 'IDAM_SECRET'),
+    secret('xui-s2s-token', 'S2S_SECRET'),
+    secret('xui-oauth2-token', 'IDAM_SECRET'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
     secret('APPINSIGHTS-INSTRUMENTATIONKEY-AO', 'APPINSIGHTS_INSTRUMENTATIONKEY')
@@ -50,21 +45,14 @@ withPipeline(type, product, component) {
     enableDockerBuild()
     installCharts()
 
-// Disable pact testing on pipeline
-//
-//    enablePactAs([
-//      AppPipelineDsl.PactRoles.CONSUMER
-//    ])
 
     after('checkout') {sh 'yarn cache clean'}
 
-    if (deployToAatOnly) {
-      before('buildinfra:prod') {
-        currentBuild.result = 'SUCCESS'
-        currentBuild.description = "SUCCESS TILL AAT"
-        error 'XUI  projects are not authorised to be in production environments yet.'
-      }
-    }
+// before('buildinfra:prod') {
+  // currentBuild.result = 'SUCCESS'
+  // currentBuild.description = "SUCCESS"
+  // error 'XUI  projects are not authorised to be in production environments yet.'
+// }
 
     after('build') {
         sh 'yarn build'
