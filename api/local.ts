@@ -1,11 +1,17 @@
-import * as setupConfig from './setupConfig'
-setupConfig.init()
-
 import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
 
 /**
- * Note that we need to have the NODE_CONFIG_DIR set
+ * Note that the NODE_CONFIG_DIR environmental variable needs to be setup as an environmental variable.
+ *
+ * Why? The NODE_CONFIG_DIR is used by Node-config to allow Node-config to point at a configuration outside of the node server directory.
+ *
+ * This is required as our Node service does not sit at our webserver root, it is run from api/ whereas our configuration files sit
+ * at /config ( up one directory )
+ *
+ * NODE_CONFIG_DIR ie. - D:\home\site\wwwroot\config OR /Users/x/projects/rpx-xui-approve-org/config locally.
+ *
+ * @see node_modules config search for 'NODE_CONFIG_DIR'
  */
 import * as config from 'config'
 
@@ -25,10 +31,6 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
-
-// I want to keep NODE_CONFIG_DIR?
-//
-// import * as config from 'config'
 
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
