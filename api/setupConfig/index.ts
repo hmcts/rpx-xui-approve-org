@@ -15,3 +15,23 @@ export const checkConfigPropertiesSet = () => {
     console.log(ERROR_CONFIG_PROPS)
   }
 }
+
+/**
+ * Logs the Configuration .yaml file this environment is pointing to, for debugging purposes.
+ *
+ * The .yaml is selected by Node-config dependent on the NODE_ENV variable.
+ *
+ * If no NODE_ENV is set the default.yaml is used to config the application.
+ * If NODE_ENV=aat is set the aat.yaml file is used to config the application.
+ * If NODE_ENV=test is set the aat.yaml file is used to config the application.
+ * etc.
+ *
+ * Important note: We never place local.yaml file into the /config folder as it overrides all other config files
+ * on that environment.
+ *
+ * @see https://github.com/lorenwest/node-config/wiki/Configuration-Files #local files
+ */
+export const checkEnvironment = () => {
+
+  console.log(`NODE_ENV is set as ${process.env.NODE_ENV} therefore using we are using the ${config.get('environment')} config.`)
+}

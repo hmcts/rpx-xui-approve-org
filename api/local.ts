@@ -1,5 +1,9 @@
 import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
+import * as cookieParser from 'cookie-parser'
+import * as express from 'express'
+import * as session from 'express-session'
+import * as process from 'process'
 
 /**
  * Note that the NODE_CONFIG_DIR environmental variable needs to be setup as an environmental variable.
@@ -16,10 +20,6 @@ import * as bodyParser from 'body-parser'
 import * as config from 'config'
 import * as setupConfig from './setupConfig'
 
-import * as cookieParser from 'cookie-parser'
-import * as express from 'express'
-import * as session from 'express-session'
-import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
@@ -38,10 +38,9 @@ const app = express()
  */
 propertiesVolume.addTo(config)
 
+// TODO: Rename
 setupConfig.checkConfigPropertiesSet()
-
-// TODO: Pull in the correct file per environment.
-console.log(config.get('environment'))
+setupConfig.checkEnvironment()
 
 const logger = log4jui.getLogger('server')
 
