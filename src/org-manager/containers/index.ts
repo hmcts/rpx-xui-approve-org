@@ -1,19 +1,28 @@
-import { ActiveOrganisationsComponent } from './active-organisations/active-organisations.component';
-import { PendingOrganisationsComponent } from './pending-organisations/pending-organisations.component';
-import { ApproveOrganisationComponent } from './approve-organisation/approve-organisation.component';
-import { ApproveOrganisationSuccessComponent } from './approve-organisation-success/approve-organisation-success.component';
-import {EditDetailsComponent} from './edit-details/edit-details.component';
+import { OverviewComponent } from './overview/org-overview.component';
+import { OrgOverviewComponent } from './org-overview/org-overview.component';
+import { OrgSummaryComponent } from './org-summary/org-summary.component';
+import { OverviewPendingComponent } from './../../org-manager/containers/overview-pending/pending-overview.component';
+import { OrgPendingOverviewComponent } from './../../org-manager/containers/org-pending-overview/org-pending-overview.component';
+import { OrgPendingSummaryComponent } from './../../org-manager/containers/org-pending-summary/org-pending-summary.component';
+import { OrgPendingApproveComponent } from './../../org-manager/containers/org-pending-approve/org-pending-approve.component';
+import { OrgApprovalSuccessComponent } from './../../org-manager/containers/org-success/org-approval-success.component';
 
 export const containers: any[] = [
-  ActiveOrganisationsComponent,
-  PendingOrganisationsComponent,
-  ApproveOrganisationComponent,
-  ApproveOrganisationSuccessComponent,
-  EditDetailsComponent
+  OverviewComponent,
+  OrgOverviewComponent,
+  OrgSummaryComponent,
+  OverviewPendingComponent,
+  OrgPendingSummaryComponent,
+  OrgPendingOverviewComponent,
+  OrgPendingApproveComponent,
+  OrgApprovalSuccessComponent
 ];
 
-export * from './active-organisations/active-organisations.component';
-export * from './pending-organisations/pending-organisations.component';
+export * from './overview/org-overview.component';
+export * from './org-overview/org-overview.component';
+export * from './org-summary/org-summary.component';
+export * from './../../org-manager/containers/overview-pending/pending-overview.component';
+export * from './../../org-manager/containers/org-pending-summary/org-pending-summary.component';
 
 
 

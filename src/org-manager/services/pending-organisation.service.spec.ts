@@ -23,12 +23,12 @@ describe('PendingOrganisationService', () => {
     pendingOrganisationService = TestBed.get(PendingOrganisationService);
   });
 
-  xit('should fetch pending organisations', () => {
+  it('should fetch pending organisations', () => {
     pendingOrganisationService.fetchPendingOrganisations();
     expect(httpClient.get).toHaveBeenCalledWith(environment.orgPendingUrl);
   });
 
-  xit('should get single organisation', () => {
+  it('should get single organisation', () => {
     pendingOrganisationService.getSingleOrganisation({id: 'dummy'});
     expect(httpClient.get).toHaveBeenCalledWith(environment.singleOrgUrl + 'dummy');
   });
