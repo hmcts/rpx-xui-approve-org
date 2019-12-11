@@ -42,6 +42,17 @@ propertiesVolume.addTo(config)
 setupConfig.checkConfigPropertiesSet()
 setupConfig.checkEnvironment()
 
+// TODO: Testing that we can get the environment variables on AAT from the .yaml file
+console.log('COOKIE_TOKEN')
+console.log(config.get('cookies.token'))
+console.log(config.get('cookies.userId'))
+console.log(config.get('exceptionOptions.maxLines'))
+console.log(config.get('services.ccdDataApi'))
+console.log(config.get('services.ccdDefApi'))
+console.log(config.get('services.idamApi'))
+console.log(config.get('sessionSecret'))
+console.log(config.get('idamClient'))
+
 const logger = log4jui.getLogger('server')
 
 app.use(
