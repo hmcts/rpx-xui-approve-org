@@ -1,9 +1,9 @@
-import * as fromPendingOrganisation from './organisations.actions';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
-import {PendingOrganisationsMockCollection1, PendingOrganisationsMockCollectionObj} from 'src/org-manager/mock/pending-organisation.mock';
+import * as fromPendingOrganisation from './org-pending.actions';
+import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { PendingOrganisationsMockCollection1 } from 'src/org-manager/mock/pending-organisation.mock';
 
 describe('PendingOrganisationActions actions', () => {
-  const payload = PendingOrganisationsMockCollection1;
+  const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
 
   describe('LoadPendingOrganisations actions GROUP', () => {
     // Init state
@@ -11,7 +11,7 @@ describe('PendingOrganisationActions actions', () => {
       it('should create an action', () => {
         const action = new fromPendingOrganisation.LoadPendingOrganisations();
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.OrgActionTypes.LOAD_PENDING_ORGANISATIONS,
+          type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS,
         });
       });
     });
@@ -21,7 +21,7 @@ describe('PendingOrganisationActions actions', () => {
       it('should create an action', () => {
         const action = new fromPendingOrganisation.LoadPendingOrganisationsSuccess(payload);
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS,
+          type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS,
           payload
         });
       });
@@ -33,35 +33,47 @@ describe('PendingOrganisationActions actions', () => {
         const action = new fromPendingOrganisation.LoadPendingOrganisationsFail('error');
         const errorPayload = 'error';
         expect({ ...action }).toEqual({
-          type: fromPendingOrganisation.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL,
+          type: fromPendingOrganisation.PendingOrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL,
           payload: errorPayload
         });
       });
     });
   });
 
-  // Success
-  describe('ApprovePendingOrganisationsSuccess', () => {
-    it('should create an action', () => {
-
-      const action = new fromPendingOrganisation.ApprovePendingOrganisationsSuccess(PendingOrganisationsMockCollectionObj);
-      expect({ ...action }).toEqual({
-        type: fromPendingOrganisation.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS,
-        payload: payload[0]
+  describe('ApprovePendingOrganisations actions', () => {
+    // add to review state
+    describe('ApprovePendingOrganisationsSuccess', () => {
+      it('should add organisation to review action', () => {
+        const action = new fromPendingOrganisation.AddReviewOrganisations(payload);
+        expect({ ...action }).toEqual({
+          type: fromPendingOrganisation.PendingOrgActionTypes.ADD_REVIEW_ORGANISATIONS,
+          payload
+        });
       });
     });
-  });
 
-  // Fail
-  describe('ApprovePendingOrganisationsFail', () => {
-    it('should create an action', () => {
-      const action = new fromPendingOrganisation.ApprovePendingOrganisationsFail('error');
-      const errorPayload = 'error';
-      expect({ ...action }).toEqual({
-        type: fromPendingOrganisation.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL,
-        payload: errorPayload
+    // Success
+    describe('ApprovePendingOrganisationsSuccess', () => {
+      it('should create an action', () => {
+
+        const action = new fromPendingOrganisation.ApprovePendingOrganisationsSuccess(payload);
+        expect({ ...action }).toEqual({
+          type: fromPendingOrganisation.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS,
+          payload
+        });
+      });
+    });
+
+    // Fail
+    describe('ApprovePendingOrganisationsFail', () => {
+      it('should create an action', () => {
+        const action = new fromPendingOrganisation.ApprovePendingOrganisationsFail('error');
+        const errorPayload = 'error';
+        expect({ ...action }).toEqual({
+          type: fromPendingOrganisation.PendingOrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL,
+          payload: errorPayload
+        });
       });
     });
   });
 });
-

@@ -1,20 +1,25 @@
 import { ActionReducerMap, createFeatureSelector } from '@ngrx/store';
 
-import * as fromPendingOrganisations from './organisation.reducer';
-import * as fromEditOrganisation from './edit-details.reducer';
+import * as fromOrganisations from './organisation.reducer';
+import * as fromSingleOrg from './single-org.reducer';
+import * as fromPendingOrganisations from './org-pending.reducer';
+import * as fromSingleOrgPending from './single-org-pending.reducer';
 
-export interface OrganisationRootState {
-  organisations: fromPendingOrganisations.OrganisationState;
-  editDetails: fromEditOrganisation.EditDetailsState;
+
+export interface OrganisationState {
+  activeOrg: fromOrganisations.OrganisationState;
+  orgDetails: fromSingleOrg.SingleOrgState;
+  pendingOrganisations: fromPendingOrganisations.OrganisationState;
+  singleOrgPending: fromSingleOrgPending.PendingSingleOrgState;
 }
 
-export const reducers: ActionReducerMap<OrganisationRootState> = {
-  organisations: fromPendingOrganisations.reducer,
-  editDetails: fromEditOrganisation.reducer
+export const reducers: ActionReducerMap<OrganisationState> = {
+  activeOrg: fromOrganisations.reducer,
+  orgDetails: fromSingleOrg.reducer,
+  pendingOrganisations: fromPendingOrganisations.reducer,
+  singleOrgPending: fromSingleOrgPending.reducer
 };
 
-export const getRootApproveOrgState = createFeatureSelector<OrganisationRootState>(
-  'orgState'
+export const getRootApproveOrgState = createFeatureSelector<OrganisationState>(
+  'approveOrg'
 );
-
-export * from './organisation.reducer';

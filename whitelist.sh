@@ -4,7 +4,7 @@ then
 
 NUMBER=$(echo "$JOB_NAME" |  grep -o -E '[0-9]+')
 
-echo "PR Number $NUMBER"
+echo "PR Number $NUMBER" 
 echo "Will try and whitelist https://xui-ao-webapp-pr-${NUMBER}.service.core-compute-preview.internal/oauth2/callback"
 
 PARAM="{
@@ -14,7 +14,7 @@ PARAM="{
 }"
 
 https_proxy=proxyout.reform.hmcts.net:8080 curl -v -X PATCH \
- https://idam-api.aat.platform.hmcts.net/testing-support/services/XUIAO \
+ https://idam-api.aat.platform.hmcts.net/testing-support/services/XUI \
  -H 'Accept: application/json' \
  -H 'Content-Type: application/json' \
  -d "[${PARAM}]"

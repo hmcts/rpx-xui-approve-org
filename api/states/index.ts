@@ -1,10 +1,10 @@
 import * as express from 'express'
 import * as log4jui from '../lib/log4jui'
-import { makeOrganisationPayload } from '../lib/payloadBuilder'
 import { process } from '../lib/stateEngine'
 import { Store } from '../lib/store'
 import { asyncReturnOrError } from '../lib/util'
 import * as rdProfessional from '../services/rdProfessional'
+import { makeOrganisationPayload } from '../lib/payloadBuilder'
 import mapping from './mapping'
 import templates from './templates'
 

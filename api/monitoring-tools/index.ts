@@ -1,13 +1,13 @@
 import * as express from 'express'
-import { environmentConfig } from '../lib/environment.config'
+import { config } from '../lib/config'
 import * as log4jui from '../lib/log4jui'
 
-const logger = log4jui.getLogger('monitoring-tools')
+const logger = log4jui.getLogger('service-token')
 
 async function handleInstrumentationKeyRoute(req, res) {
     try {
-        logger.info('environmentConfig.appInsightsInstrumentationKey is ' + environmentConfig.appInsightsInstrumentationKey)
-        res.send({key: environmentConfig.appInsightsInstrumentationKey})
+        console.log('config.appInsightsInstrumentationKey is ' + config.appInsightsInstrumentationKey)
+        res.send({key: config.appInsightsInstrumentationKey})
     } catch (error) {
         const errReport = JSON.stringify({
             apiError: error,

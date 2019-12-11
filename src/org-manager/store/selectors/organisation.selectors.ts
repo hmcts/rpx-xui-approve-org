@@ -1,91 +1,52 @@
-import {createSelector} from '@ngrx/store';
+import {createFeatureSelector, createSelector} from '@ngrx/store';
 
+
+import * as fromOrganisation from '../reducers/organisation.reducer';
 import * as fromRoot from '../../../app/store';
-import * as fromOrganisation from '../reducers';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
+
+import {getRootApproveOrgState} from '../reducers';
 
 export const getOrganisationsState = createSelector(
-  fromOrganisation.getRootApproveOrgState,
-  (state: fromOrganisation.OrganisationRootState) => state.organisations
-);
-// entry for Active Organisations
-export const getActiveOrganisationState = createSelector(
-  getOrganisationsState,
-  fromOrganisation.getActiveOrgEntities
+  getRootApproveOrgState,
+  (state: any) => state.activeOrg
 );
 
-export const getActiveOrganisation = createSelector(
-  getActiveOrganisationState,
-  (orgState) => orgState.orgEntities
-);
-
-export const getActiveOrganisationArray = createSelector(
-  getActiveOrganisation,
-  (orgState) => Object.keys(orgState).map(id => orgState[id])
-);
-
-export const getActiveLoaded = createSelector(
-  getActiveOrganisationState,
-  (orgState) => orgState.loaded
-);
-
-export const getActiveLoading = createSelector(
-  getActiveOrganisationState,
-  (orgState) => orgState.loading
-);
-// entry for Pending Organisations
 export const getPendingOrganisationsState = createSelector(
+  getRootApproveOrgState,
+  (state: any) => state.pendingOrganisations
+);
+export const organisations = createSelector(
   getOrganisationsState,
-  fromOrganisation.getPendingOrgEntities
+  fromOrganisation.getOrganisations
 );
-
-export const getPendingOrganisations = createSelector(
-  getPendingOrganisationsState,
-  (orgsArray) => orgsArray.orgEntities
-);
-
-export const getPendingOrganisationsArray = createSelector(
-  getPendingOrganisations,
-  (orgEntities) => Object.keys(orgEntities).map(orgId => orgEntities[orgId])
-);
-export const getPendingLoaded = createSelector(
-  getPendingOrganisationsState,
-  (orgState) => orgState.loaded
-);
-//
-
-export const getErrorMessage = createSelector(
+export const selectedOrganisation = createSelector(
   getOrganisationsState,
-  (orgState) => orgState.errorMessage
-);
-
-export const getActiveAndPending = createSelector(
-  getActiveOrganisationState,
-  getPendingOrganisationsState,
   fromRoot.getRouterState,
-  (active, pending, router) =>
-      (active.orgEntities[router.state.params.orgId]) ||
-      (pending.orgEntities[router.state.params.orgId]
-    ));
-
-
-export const getPbaNumber = createSelector(
-  fromRoot.getRouterState,
-  (router) => router.state.params.id || ''
-);
-
-export const getAllLoaded = createSelector(
-  getActiveLoaded,
-  getPendingLoaded,
-  (activeLoaded, pendingLoaded) =>  activeLoaded && pendingLoaded
-);
-
-export const getOrganisationForReview = createSelector(
+  (organisationState: any, router) => {
+  if (organisationState && organisationState.organisations) {
+    return organisationState.organisations.filter(x => x.organisationId === router.state.params.id)[0];
+  } else {
+    return {};
+  }
+});
+export const selectedPendingOrganisation = (orgId: string) => createSelector( getPendingOrganisationsState, (organisationState: any) => {
+  if (organisationState && organisationState.pendingOrganisations) {
+    return organisationState.pendingOrganisations.filter(x => x.organisationId === orgId) as OrganisationVM;
+  } else {
+    return {};
+  }
+});
+export const organisationsLoading = createSelector(
   getOrganisationsState,
-  fromOrganisation.getOrgForReview
+  fromOrganisation.getOrganisationsLoading
+);
+export const organisationsLoaded = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getOrganisationsLoaded
 );
 
-export const pendingOrganisationsCount = createSelector(
-  getPendingOrganisationsArray,
-  (orgArr) =>  orgArr ? orgArr.length : 0
-);
-
+export const getCurrentPage = createSelector(
+    fromRoot.getRouterState,
+    (router) => router.state.params
+  );

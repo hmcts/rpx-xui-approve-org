@@ -93,7 +93,7 @@ export class AppUtils {
     return organisations;
   }
   static getEnvironment(url: string): string {
-    const regex = 'pr-|localhost|aat|demo|ithc|perftest';
+    const regex = 'pr-|localhost|aat|demo|ithc|perf-test|local';
     const matched = url.match(regex);
 
     if (matched && matched[0]) {
@@ -106,8 +106,8 @@ export class AppUtils {
               return AppConstants.ENVIRONMENT_NAMES.demo;
           case AppConstants.ENVIRONMENT_NAMES.ithc:
               return AppConstants.ENVIRONMENT_NAMES.ithc;
-          case AppConstants.ENVIRONMENT_NAMES.perftest:
-              return AppConstants.ENVIRONMENT_NAMES.perftest;
+          case AppConstants.ENVIRONMENT_NAMES.perfTest:
+              return AppConstants.ENVIRONMENT_NAMES.perfTest;
         }
       }
     return AppConstants.ENVIRONMENT_NAMES.prod;
