@@ -1,4 +1,4 @@
-capacity = "2"
+#capacity = "2"
 ccd_data_api_service = "http://ccd-data-store-api-demo.service.core-compute-demo.internal"
 ccd_definition_api_service = "http://ccd-definition-store-api-demo.service.core-compute-demo.internal"
 idam_api_service = "https://idam-api.ithc.platform.hmcts.net"
