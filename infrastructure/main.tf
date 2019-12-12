@@ -61,8 +61,3 @@ data "azurerm_key_vault_secret" "oauth2_secret" {
 provider "azurerm" {
     version = "1.22.1"
 }
-
-resource "azurerm_resource_group" "rg" {
-  name     = "${local.app_full_name}-${var.env}"
-  location = "${var.location}"
-}
