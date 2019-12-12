@@ -14,7 +14,8 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
     status: 'PENDING',
     view: 'View',
     adminEmail: 'glen@byrne.com',
-    dxNumber: [{}]
+    dxNumber: [{}],
+    postCode: ''
   },
   {
     name: 'Siofra Moley',
@@ -28,7 +29,8 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
     status: 'PENDING',
     view: 'View',
     adminEmail: 'siofra@moley.com',
-    dxNumber: [{}]
+    dxNumber: [{}],
+    postCode: ''
   }
 ];
 
@@ -45,7 +47,8 @@ export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
     status: 'ACTIVE',
     view: 'View',
     adminEmail: 'glen@byrne.com',
-    dxNumber: [{}]
+    dxNumber: [{}],
+    postCode: ''
   }
   ];
 
@@ -61,7 +64,8 @@ export const PendingOrganisationsMockCollectionObj: OrganisationVM = {
   status: 'ACTIVE',
   view: 'View',
   adminEmail: 'glen@byrne.com',
-  dxNumber: [{}]
+  dxNumber: [{}],
+  postCode: ''
 
   };
 
@@ -139,7 +143,8 @@ export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] =
     view: 'View',
     adminEmail: 'glen@byrne.com',
     routerLink: '/pending-organisations/organisation/101010/',
-    dxNumber: [{}]
+    dxNumber: [{}],
+    postCode: ''
   }
 ];
 
@@ -155,7 +160,8 @@ export const ReviewedOrganisationMockCollection: OrganisationVM[] = [{
   status: 'dummy 1',
   view: 'dummy 1',
   adminEmail: 'dummy 1',
-  dxNumber: [{}]
+  dxNumber: [{}],
+  postCode: ''
 }];
 
 export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
@@ -170,7 +176,8 @@ export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
   status: 'dummy 1',
   view: 'dummy 1',
   adminEmail: 'dummy 1',
-  dxNumber: [{}]
+  dxNumber: [{}],
+  postCode: ''
 }];
 
 export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
@@ -183,7 +190,8 @@ export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
     status: 'dummy 1',
     view: 'dummy 1',
     adminEmail: 'dummy 1',
-    dxNumber: [{}]
+    dxNumber: [{}],
+    postCode: ''
   }
 }];
 
