@@ -9,7 +9,7 @@ data "terraform_remote_state" "core_apps_infrastructure" {
     resource_group_name  = "mgmt-state-store-${var.subscription}"
     storage_account_name = "mgmtstatestore${var.subscription}"
     container_name       = "mgmtstatestorecontainer${var.env}"
-    key                  = "core-infra/${var.env}/terraform.tfstate"
+    key                  = "core-infra-ao/${var.env}/terraform.tfstate"
   }
 }
 
@@ -20,6 +20,6 @@ data "terraform_remote_state" "core_apps_compute" {
     resource_group_name  = "mgmt-state-store-${var.subscription}"
     storage_account_name = "mgmtstatestore${var.subscription}"
     container_name       = "mgmtstatestorecontainer${var.env}"
-    key                  = "core-compute/${var.env}/terraform.tfstate"
+    key                  = "core-compute-ao/${var.env}/terraform.tfstate"
   }
 }
