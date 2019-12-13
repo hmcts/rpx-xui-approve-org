@@ -32,13 +32,10 @@ module "app" {
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
         PUI_ENV = "${var.env}"
-        DUMMY_VAR = "bla bla"
-        NEW_DUMMY_VAR = "ASREQUESTED_TEST"
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
 
-        EM_TEST = "${var.em_test}"
     }
 }
 
@@ -49,12 +46,12 @@ data "azurerm_key_vault" "key_vault" {
 }
 
 data "azurerm_key_vault_secret" "s2s_secret" {
-    name = "xui-s2s-token"
+    name = "ao-s2s-client-secret"
     vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
 
 data "azurerm_key_vault_secret" "oauth2_secret" {
-    name = "xui-oauth2-token"
+    name = "ao-idam-client-secret"
     vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
 

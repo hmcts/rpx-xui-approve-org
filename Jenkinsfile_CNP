@@ -167,7 +167,6 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Functional Test'
         ])
     }
-
 }
 
                         
