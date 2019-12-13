@@ -54,7 +54,7 @@ stage("Overwrite KV name for ITHC - ${product}")
     {def vaultName = (product=="xui") ? "rpx" : product
         onIthc {
                     withSubscription('qa') {
-                        KeyVault keyVault = new KeyVault(this, 'qa', "${product}-${env}")
+                        KeyVault keyVault = new KeyVault(this, 'qa', "rpx-${env}")
                     }
                 }
     }
