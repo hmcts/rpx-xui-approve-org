@@ -19,6 +19,7 @@ export class ActiveOrganisationsComponent implements OnInit {
   public pendingLoaded$: Observable<boolean>;
   public pendingOrgsCount$: Observable<number>;
   public searchString = '';
+  public searchFields = {};
 
   constructor(
     private store: Store<fromOrganisation.OrganisationRootState>,
@@ -47,7 +48,8 @@ export class ActiveOrganisationsComponent implements OnInit {
 
   }
 
-  public submitSearch(searchInput: string) {
-    this.searchString = searchInput;
+  public submitSearch(search: any) {
+    this.searchString = search.searchString;
+    this.searchFields = search.searchFields;
   }
 }

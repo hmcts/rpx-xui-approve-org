@@ -21,7 +21,7 @@
               <th class="govuk-table__header" scope="col">Status</th>
               <th class="govuk-table__header" scope="col"></th>
             </tr>
-            <tr class="govuk-table__row" *ngFor="let org of orgs$ | async | filterOrganisations: searchString">
+            <tr class="govuk-table__row" *ngFor="let org of orgs$ | async | filterOrganisations: searchString : searchFields">
               <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
               <td class="govuk-table__cell">
                 {{org.addressLine1}}<br>
