@@ -37,7 +37,7 @@ def secrets = [
   ]
 ]
 
-def vaultName = 'rpx-${env}'
+// def vaultName = 'rpx-${env}'
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
