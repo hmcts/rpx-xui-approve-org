@@ -48,7 +48,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     ]
 }
 
-node {
 
 stage("Overwrite KV name for ITHC - ${product}")
     {def vaultName = (product=="xui") ? "rpx" : product
@@ -183,5 +182,4 @@ withPipeline(type, product, component) {
 
 }
 
-}
                         
