@@ -48,6 +48,8 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     ]
 }
 
+node {
+
 stage("Overwrite KV name for ITHC - ${product}")
     {def vaultName = (product=="xui") ? "rpx" : product
         onIthc {
@@ -178,6 +180,8 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Functional Test'
         ])
     }
+
+}
 
 }
                         
