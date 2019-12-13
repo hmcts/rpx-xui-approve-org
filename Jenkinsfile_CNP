@@ -37,8 +37,6 @@ def secrets = [
   ]
 ]
 
-// def vaultName = 'rpx-${env}'
-
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
       secretType: 'Secret',
@@ -47,16 +45,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
       envVariable: envVar
     ]
 }
-
-
-stage("Overwrite KV name for ITHC - ${product}")
-    {def vaultName = (product=="xui") ? "rpx" : product
-        onIthc {
-                    withSubscription('qa') {
-                        KeyVault keyVault = new KeyVault(this, 'qa', "rpx-${env}")
-                    }
-                }
-    }
 
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
