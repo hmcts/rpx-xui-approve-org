@@ -4,6 +4,8 @@ import { Store, select } from '@ngrx/store';
 import * as fromRoot from '../../store';
 import { Observable } from 'rxjs';
 import * as fromActions from '../../store';
+import { GoogleAnalyticsService } from '@hmcts/rpx-xui-common-lib';
+import { environment as config } from '../../../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -17,10 +19,12 @@ export class AppComponent implements OnInit {
 
 
   constructor(
-    private store: Store<fromRoot.State>
+    private store: Store<fromRoot.State>,
+    private googleAnalyticsService: GoogleAnalyticsService
   ) {}
 
   ngOnInit() {
+    this.googleAnalyticsService.init(config.googleAnalyticsKey);
     // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
     this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
     this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {

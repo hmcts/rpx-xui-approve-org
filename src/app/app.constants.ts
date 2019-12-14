@@ -27,7 +27,7 @@ const environmentNames = {
   pr: 'pr-',
   demo: 'demo',
   ithc: 'ithc',
-  perfTest: 'perf-test',
+  perftest: 'perftest',
   prod: 'prod'
 };
 
@@ -35,7 +35,9 @@ const redirectUrl = {
   aat: 'https://idam-web-public.aat.platform.hmcts.net',
   demo: 'https://idam-web-public.demo.platform.hmcts.net',
   ithc: 'https://idam-web-public.ithc.platform.hmcts.net',
-  prod: 'https://hmcts-access.service.gov.uk'
+  perftest: 'https://idam-web-public.perftest.platform.hmcts.net',
+  prod: 'https://hmcts-access.service.gov.uk',
+  localhost: 'https://idam-web-public.aat.platform.hmcts.net',
 };
 
 export class AppConstants {
