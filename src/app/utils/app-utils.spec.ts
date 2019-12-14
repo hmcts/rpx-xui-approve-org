@@ -84,14 +84,15 @@ describe('AppUtils', () => {
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId);
     expect(organisations[0].name).toEqual(organisationVM[0].name);
   });
+
   it('should return aat environment string', () => {
     let nav = 'http://localhost';
     let url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.aat);
+    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.demo);
 
     nav = 'http://aat/something';
     url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.aat);
+    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.demo);
   });
 
   it('should return demo or ithc  or perf-test environment string', () => {
@@ -103,9 +104,9 @@ describe('AppUtils', () => {
     url = AppUtils.getEnvironment(nav);
     expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.ithc);
 
-    nav = 'http://perf-test/something';
+    nav = 'http://perftest/something';
     url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.perfTest);
+    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.perftest);
   });
 
   it('should return prod as it does not match any', () => {

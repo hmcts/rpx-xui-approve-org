@@ -1,11 +1,12 @@
 export const environment = {
   production: true,
-  googleAnalyticsKey: 'UA-124734893-1',
+  googleAnalyticsKey: 'UA-124734893-5',
   serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
   serviceDeskTel: '0300 3030686',
   singleOrgUrl: 'api/organisations?organisationId=',
-  orgActiveUrl: 'api/organisations',
+  orgActiveUrl: 'api/organisations?status=ACTIVE',
   orgPendingUrl: 'api/organisations?status=PENDING',
+  updatePbaUrl: 'api/update-pba',
   orgApprovePendingUrl: 'api/organisations/',
   loggingLevel: 'DEBUG',
   cookies: {
