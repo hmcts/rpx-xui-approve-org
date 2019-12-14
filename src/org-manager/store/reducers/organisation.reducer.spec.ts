@@ -1,75 +1,67 @@
 import { initialState, reducer } from './organisation.reducer';
-import { LoadOrganisationSuccess } from '../actions';
-import { Organisation, OrganisationSummary, OrganisationVM } from 'src/org-manager/models/organisation';
-import * as fromOrganisation from './organisation.reducer';
+import * as fromActions from '../actions';
 
-describe('OrganisationsReducer', () => {
+import * as fromMock from '../../mock/pending-organisation.mock';
+import {OrganisationVM } from 'src/org-manager/models/organisation';
+
+
+describe('Organisation Reducer', () => {
+
+  const PendingOrganisationsMock: OrganisationVM[] = fromMock.PendingOrganisationsMockCollection1;
+
   describe('undefined action', () => {
     it('should return the default state', () => {
       const action = {} as any;
-      const state = reducer( undefined, action);
+      const state = reducer(undefined, action);
       expect(state).toEqual(initialState);
     });
   });
 
-  describe('LOAD_ORGANISATION_SUCCESS action', () => {
-    it('should update the state.activeOrg', () => {
-      const OrganisationsMock: OrganisationVM[] = [
-        {
-          name: 'Speake Limited',
-          addressLine1: '72 Guild Street',
-          addressLine2: '',
-          townCity: 'London',
-          county: '',
-          pbaNumber: ['12345678'],
-          admin: 'Matt Speake',
-          status: 'ACTIVE',
-          view: 'View',
-          organisationId: '12345678',
-          adminEmail: 'matt@speake.com',
-          dxNumber: ['something']
-        }
-      ];
-      const OrganisationsMockSummary: OrganisationSummary[] = [
-        {
-          name: 'Speake Limited',
-          addressLine1: '72 Guild Street',
-          addressLine2: '',
-          townCity: 'London',
-          county: '',
-          pbaNumber: ['12345678'],
-          admin: 'Matt Speake',
-          status: 'ACTIVE',
-          view: 'View',
-          organisationId: '12345678',
-          adminEmail: 'matt@speake.com',
-          routerLink: '/organisations/organisation/12345678/',
-          dxNumber: ['something']
-        }
-      ];
-      const action = new LoadOrganisationSuccess(OrganisationsMock);
+  describe('LOAD_PENDING_ORGANISATION action', () => {
+    it('should return the initial state.pendingOrganisations', () => {
+
+      const action = new fromActions.LoadPendingOrganisations();
       const state = reducer(initialState, action);
-      expect(state.organisations).toEqual(OrganisationsMockSummary);
+      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: true});
     });
+
   });
 
-  describe('getOrganisations export', () => {
-    it('should return state.activeOrg', () => {
-      expect(fromOrganisation.getOrganisations(initialState)).toEqual(null);
-      expect();
+  describe('LOAD_ACTIVE_ORGANISATION action', () => {
+    it('should return the initial state.pendingOrganisations', () => {
+
+      const action = new fromActions.LoadActiveOrganisation();
+      const state = reducer(initialState, action);
+      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: false});
     });
+
   });
 
-  describe('getOrganisationsLoading export', () => {
-    it('should return state.loading', () => {
-      expect(fromOrganisation.getOrganisationsLoading(initialState)).toEqual(false);
+  describe('LOAD_PENDING_ORGANISATION_SUCCESS action', () => {
+    it('should update the state.pendingOrganisations', () => {
+      const action = new fromActions.LoadPendingOrganisationsSuccess(PendingOrganisationsMock);
+      const state = reducer(initialState, action);
+      expect(state).toEqual(fromMock.orgStatePending as any);
     });
+
   });
 
-  describe('getOrganisationsLoaded export', () => {
-    it('should return state.loaded', () => {
-      expect(fromOrganisation.getOrganisationsLoaded(initialState)).toEqual(false);
+  describe('LOAD_ACTIVE_ORGANISATION_SUCCESS action', () => {
+    it('should update the state.pendingOrganisations', () => {
+      const action = new fromActions.LoadActiveOrganisationSuccess(PendingOrganisationsMock);
+      const state = reducer(initialState, action);
+      expect(state).toEqual(fromMock.orgStateActive as any);
     });
+
+  });
+
+  describe('ADD_REVIEW_ORGANISATIONS action', () => {
+    it('should update the state.orgForReview', () => {
+
+      const action = new fromActions.AddReviewOrganisations(PendingOrganisationsMock[0]);
+      const state = reducer(initialState, action);
+      expect(state.orgForReview).toEqual(PendingOrganisationsMock[0]);
+    });
+
   });
 });
-

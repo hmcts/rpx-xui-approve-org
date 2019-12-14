@@ -14,12 +14,14 @@ export class AuthGuard implements CanActivate {
   }
 
 
-  canActivate() {
-    if (!this.authService.isAuthenticated()) {
-      this.authService.loginRedirect();
-      return false;
-    }
+  canActivate(): Observable<boolean> {
+    return this.authService.isAuthenticated().map( isAuth => {
+      if (!isAuth) {
+        this.authService.loginRedirect();
+        return false;
+      }
 
-    return true;
+      return true;
+    });
   }
 }
