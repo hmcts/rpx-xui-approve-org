@@ -88,11 +88,11 @@ describe('AppUtils', () => {
   it('should return aat environment string', () => {
     let nav = 'http://localhost';
     let url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.demo);
+    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.aat);
 
     nav = 'http://aat/something';
     url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.demo);
+    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.aat);
   });
 
   it('should return demo or ithc  or perf-test environment string', () => {
