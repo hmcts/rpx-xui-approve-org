@@ -14,7 +14,7 @@
 
 .app-cookie-banner__message {
   margin: 0;
-  @include govuk-width-container;
+  @include hmcts-width-container;
 }
 
 @include govuk-media-query($media-type: print) {

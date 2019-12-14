@@ -1,23 +1,24 @@
 import * as applicationinsights from 'applicationinsights'
 import * as express from 'express'
-import config from './config'
+import {environmentConfig, isLocal} from './environment.config'
 
 export let client
 
 // shouldnt do this check here but this is a high level dep
-const environment = process.env.PUI_ENV || 'local'
 
-if (environment !== 'local') {
-    console.log('config.appInsightsInstrumentationKey is ' + config.appInsightsInstrumentationKey)
+if (!isLocal()) {
+    console.log('environmentConfig.appInsightsInstrumentationKey is ' + environmentConfig.appInsightsInstrumentationKey)
     applicationinsights
-        .setup(config.appInsightsInstrumentationKey)
+        .setup(environmentConfig.appInsightsInstrumentationKey)
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
         .setAutoCollectPerformance(true)
         .setAutoCollectExceptions(true)
         .setAutoCollectDependencies(true)
         .setAutoCollectConsole(true)
+        .setSendLiveMetrics(true)
         .setUseDiskRetryCaching(true)
+        .setSendLiveMetrics(true)
         .start()
 
     client = applicationinsights.defaultClient
