@@ -10,6 +10,8 @@ import { getUserDetails } from '../services/idam'
 import { serviceTokenGenerator } from './serviceToken'
 
 const idamUrl = environmentConfig.services.idamApi
+
+// TODO: This directly accesses the IDAM_SECRET, is this still required?
 const secret = getEnvConfig<string>('IDAM_SECRET', 'string')
 const logger = log4jui.getLogger('auth')
 
