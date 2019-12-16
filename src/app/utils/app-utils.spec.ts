@@ -84,6 +84,7 @@ describe('AppUtils', () => {
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId);
     expect(organisations[0].name).toEqual(organisationVM[0].name);
   });
+
   it('should return aat environment string', () => {
     let nav = 'http://localhost';
     let url = AppUtils.getEnvironment(nav);

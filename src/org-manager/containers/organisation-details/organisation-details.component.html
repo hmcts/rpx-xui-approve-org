@@ -41,9 +41,12 @@
                PBA number
             </dt>
             <dd class="govuk-check-your-answers__answer">
-               {{data?.pbaNumber}}
+              {{data?.pbaNumber}}
             </dd>
             <dd class="govuk-check-your-answers__change">
+              <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
+                  {{data?.pbaNumber.length ? 'Change' : 'Add'}}
+              </a>
             </dd>
          </div>
          <div class="govuk-check-your-answers__contents">
@@ -92,7 +95,7 @@
     </lib-gov-uk-main-wrapper>
   </div>
   </ng-container>
- <ng-container *ngIf="!(orgs$ | async) as data">
+ <ng-container *ngIf="!(orgs$ | async)">
    <div class="hmcts-width-container">
      <lib-gov-uk-main-wrapper [title]="'Organisation details'">
        <h3 class="govuk-heading-s">Loading...</h3>
