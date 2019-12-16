@@ -39,8 +39,14 @@ const app = express()
 propertiesVolume.addTo(config)
 
 // TODO: Rename
+// These needs to throw errors back if something is not set.
 setupConfig.checkConfigPropertiesSet()
 setupConfig.checkEnvironment()
+
+// If we leave it as is, then it's hard
+// setup the environment config
+environmentConfig.init()
+// so now if it's working we need to initialise the config.
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
