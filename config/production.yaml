@@ -1,3 +1,0 @@
-environment: 'PRODUCTION ENVIRONMENT'
-parent:
-  child: 'testRead test.yaml'

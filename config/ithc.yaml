@@ -1,4 +1,4 @@
-environment: 'AAT ENVIRONMENT'
+environment: 'ITHC ENVIRONMENT'
 appInsightsInstrumentationKey: APPINSIGHTS_INSTRUMENTATIONKEY
 cookies:
   token: COOKIE_TOKEN
