@@ -11,6 +11,7 @@ export const environment = {
     serviceDeskTel: '0300 3030686',
     singleOrgUrl: 'api/organisations?organisationId=',
     orgActiveUrl: 'api/organisations?status=ACTIVE',
+    updatePbaUrl: 'api/update-pba',
     orgPendingUrl: 'api/organisations?status=PENDING',
     orgApprovePendingUrl: 'api/organisations/',
     loggingLevel: 'DEBUG',
@@ -20,10 +21,9 @@ export const environment = {
     },
     urls: {
       idam: {
-        idamApiUrl: 'https://idam-api.aat.platform.hmcts.net',
+        idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
         idamClientID: 'xuiaowebapp',
-        idamLoginUrl: 'https://idam-web-public.aat.platform.hmcts.net',
-        idamWeb: 'https://hmcts-access.service.gov.uk',
+        idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
         indexUrl: '/',
         oauthCallbackUrl: 'oauth2/callback'
       }

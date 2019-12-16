@@ -58,13 +58,20 @@ export const getErrorMessage = createSelector(
   (orgState) => orgState.errorMessage
 );
 
-export const getSelectedActiveOrganisation = createSelector(
-  getOrganisationsState,
+export const getActiveAndPending = createSelector(
+  getActiveOrganisationState,
+  getPendingOrganisationsState,
   fromRoot.getRouterState,
-  (organisationState: fromOrganisation.OrganisationState, router) => {
-    return organisationState[router.state.params.type] ?
-      organisationState[router.state.params.type].orgEntities[router.state.params.id] : null;
-  });
+  (active, pending, router) =>
+      (active.orgEntities[router.state.params.orgId]) ||
+      (pending.orgEntities[router.state.params.orgId]
+    ));
+
+
+export const getPbaNumber = createSelector(
+  fromRoot.getRouterState,
+  (router) => router.state.params.id || ''
+);
 
 export const getAllLoaded = createSelector(
   getActiveLoaded,
