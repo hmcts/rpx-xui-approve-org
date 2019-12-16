@@ -2,18 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-privacy-policy',
-    templateUrl: './privacy-policy.component.html'
+  selector: 'app-privacy-policy',
+  templateUrl: './privacy-policy.component.html'
 })
 export class PrivacyPolicyComponent implements OnInit {
 
-    constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute) { }
 
-    ngOnInit() {
-        this.route.fragment.subscribe(fragment => {
-            try {
-                document.querySelector('#' + fragment).scrollIntoView();
-            } catch (e) { }
-        });
-    }
+  ngOnInit() {
+    this.route.fragment.subscribe(fragment => {
+      try {
+        document.querySelector('#' + fragment).scrollIntoView();
+      } catch (e) { }
+    });
+  }
 }
