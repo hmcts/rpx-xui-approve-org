@@ -11,7 +11,8 @@ export const ERROR_CONFIG_PROPS = `Error: configuration properties are not set, 
  */
 export const checkConfigPropertiesSet = () => {
 
-  if (!config.has('parent.child')) {
+  console.log('checkConfigPropertiesSet')
+  if (!config.has('environment')) {
     console.log(ERROR_CONFIG_PROPS)
   }
 }

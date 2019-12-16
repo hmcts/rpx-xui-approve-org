@@ -1,3 +1,0 @@
-environment: 'TEST ENVIRONMENT'
-parent:
-  child: 'testRead test.yaml'

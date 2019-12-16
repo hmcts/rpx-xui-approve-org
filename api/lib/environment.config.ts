@@ -89,35 +89,35 @@ export const isLocal = () => configEnv === 'local'
   // TODO: Add types
 
 export const configParams: EnvironmentConfig = {
-    appInsightsInstrumentationKey: config.get('appInsightsInstrumentationKey'), //getEnvConfig<string>('APPINSIGHTS_INSTRUMENTATIONKEY', 'string'),
+    appInsightsInstrumentationKey: config.get('appInsightsInstrumentationKey'),
     configEnv,
     cookies: {
-      token: config.get('cookies.token'), // getEnvConfig<string>('COOKIE_TOKEN', 'string'),
-      userId: config.get('cookies.userId'), // getEnvConfig<string>('COOKIE_USER_ID', 'string'),
+      token: config.get('cookies.token'),
+      userId: config.get('cookies.userId'),
     },
     exceptionOptions: {
-      maxLines: config.get('exceptionOptions.maxLines'), // getEnvConfig<number>('EXCEPTION_OPTIONS_MAX_LINES', 'int'),
+      maxLines: config.get('exceptionOptions.maxLines'),
     },
     health: {} as EnvironmentConfigServices,
-    idamClient: config.get('idamClient'), // getEnvConfig<string>('IDAM_CLIENT', 'string'),
-    indexUrl: config.get('indexUrl'), // getEnvConfig<string>('INDEX_URL', 'string'),
-    logging: config.get('logging'), // getEnvConfig<string>('LOGGING', 'string'),
-    maxLogLine: config.get('maxLogLine'), // getEnvConfig<number>('MAX_LOG_LINE', 'int'),
-    microservice: config.get('microservice'), // getEnvConfig<string>('MICROSERVICE', 'string'),
-    now: config.get('now'), // getEnvConfig<boolean>('NOW', 'bool'),
-    oauthCallbackUrl: config.get('oauthCallbackUrl'), // getEnvConfig<string>('OAUTH_CALLBACK_URL', 'string'),
-    protocol: config.get('protocol'), // getEnvConfig<string>('PROTOCOL', 'string'),
+    idamClient: config.get('idamClient'),
+    indexUrl: config.get('indexUrl'),
+    logging: config.get('logging'),
+    maxLogLine: config.get('maxLogLine'),
+    microservice: config.get('microservice'),
+    now: config.get('now'),
+    oauthCallbackUrl: config.get('oauthCallbackUrl'),
+    protocol: config.get('protocol'),
     proxy: {} as EnvironmentConfigProxy,
-    secureCookie: config.get('secureCookie'), //getEnvConfig<boolean>('SECURE_COOKIE', 'bool'),
+    secureCookie: config.get('secureCookie'),
     services: {
-      ccdDataApi: config.get('services.ccdDataApi'), //getEnvConfig<string>('CCD_DATA_API_SERVICE', 'string'),
-      ccdDefApi: config.get('services.ccdDefApi'), // getEnvConfig<string>('CCD_DEFINITION_API_SERVICE', 'string'),
-      idamApi: config.get('services.idamApi'), // getEnvConfig<string>('IDAM_API_SERVICE', 'string'),
-      idamWeb: config.get('services.idamWeb'), // getEnvConfig<string>('IDAM_WEB_SERVICE', 'string'),
-      rdProfessionalApi: config.get('services.rdProfessionalApi'), // getEnvConfig<string>('RD_PROFESSIONAL_API_SERVICE', 'string'),
-      s2s: config.get('services.s2s'), // getEnvConfig<string>('S2S_SERVICE', 'string'),
+      ccdDataApi: config.get('services.ccdDataApi'),
+      ccdDefApi: config.get('services.ccdDefApi'),
+      idamApi: config.get('services.idamApi'),
+      idamWeb: config.get('services.idamWeb'),
+      rdProfessionalApi: config.get('services.rdProfessionalApi'),
+      s2s: config.get('services.s2s'),
     },
-    sessionSecret: config.get('sessionSecret'), // getEnvConfig<string>('SESSION_SECRET', 'string'),
+    sessionSecret: config.get('sessionSecret'),
   }
 
 // Get health for each service should be placed into different function
@@ -149,4 +149,6 @@ if (isLocal()) {
   configParams.protocol = 'http'
 }
 
+// TODO: As this is called first
+// this throws an error, but no human readable error is returned.
 export const environmentConfig = {...configParams}
