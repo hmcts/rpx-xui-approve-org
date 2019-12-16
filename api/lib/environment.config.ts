@@ -6,18 +6,45 @@ import {EnvironmentConfig, EnvironmentConfigProxy, EnvironmentConfigServices} fr
 getenv.disableFallbacks()
 getenv.enableErrors()
 
-// Is this required now?
+/**
+ * Currently used to access the S2S_SECRET and IDAM_SECRET.
+ *
+ * [16.12.2019]
+ *
+ * @param {string} envConfig
+ * @param envType
+ * @returns {T}
+ */
 export function getEnvConfig<T = string>(envConfig: string, envType: any = 'string'): T {
   return getenv[envType](envConfig)
 }
 
-// Is this required now?
-// what is process?
-export const configEnv = process ? getEnvConfig<string>('PUI_ENV', 'string') : 'local'
+/**
+ * Gets the current environment the Node service is running on.
+ *
+ * TODO: Add NODE_ENV to the terraform file, so that it is pushed to the environment.
+ *
+ * Note that dependent on the NODE_ENV we set which config file is used. This happens automatically
+ * when using Node-config
+ *
+ * Check if Node-config automatically sets itself to local if there is no NODE_ENV set, if it
+ * does then we don't really need this, but we would still have to change.
+ *
+ * configParams.protocol to be 'http'. So having the function isLocal is fine.
+ *
+ * This function is nice because it explains what's going on if there is no NODE_ENV set.
+ *
+ * @see node_modules/config
+ * @returns {string}
+ */
+export const configEnv = process ? getEnvConfig<string>('NODE_ENV', 'string') : 'local'
 
-export function isLocal() {
-  return configEnv === 'local'
-}
+/**
+ * Checks if the environment is the local environment.
+ *
+ * @returns {boolean}
+ */
+export const isLocal = () => configEnv === 'local'
 
 /**
  * environmentConfig.secureCookie
@@ -60,37 +87,38 @@ export function isLocal() {
 // So let's make sure everything hooks into this, then let's leverage this.
   // TODO: This should be tested
   // TODO: Add types
-const configParams: EnvironmentConfig = {
-  appInsightsInstrumentationKey: config.get('appInsightsInstrumentationKey'), //getEnvConfig<string>('APPINSIGHTS_INSTRUMENTATIONKEY', 'string'),
-  configEnv, // TODO: Look at this.
-  cookies: {
-    token: config.get('cookies.token'), // getEnvConfig<string>('COOKIE_TOKEN', 'string'),
-    userId: config.get('cookies.userId'), // getEnvConfig<string>('COOKIE_USER_ID', 'string'),
-  },
-  exceptionOptions: {
-    maxLines: config.get('exceptionOptions.maxLines'), // getEnvConfig<number>('EXCEPTION_OPTIONS_MAX_LINES', 'int'),
-  },
-  health: {} as EnvironmentConfigServices,
-  idamClient: config.get('idamClient'), // getEnvConfig<string>('IDAM_CLIENT', 'string'),
-  indexUrl: config.get('indexUrl'), // getEnvConfig<string>('INDEX_URL', 'string'),
-  logging: config.get('logging'), // getEnvConfig<string>('LOGGING', 'string'),
-  maxLogLine: config.get('maxLogLine'), // getEnvConfig<number>('MAX_LOG_LINE', 'int'),
-  microservice: config.get('microservice'), // getEnvConfig<string>('MICROSERVICE', 'string'),
-  now: config.get('now'), // getEnvConfig<boolean>('NOW', 'bool'),
-  oauthCallbackUrl: config.get('oauthCallbackUrl'), // getEnvConfig<string>('OAUTH_CALLBACK_URL', 'string'),
-  protocol: config.get('protocol'), // getEnvConfig<string>('PROTOCOL', 'string'),
-  proxy: {} as EnvironmentConfigProxy,
-  secureCookie: config.get('secureCookie'), //getEnvConfig<boolean>('SECURE_COOKIE', 'bool'),
-  services: {
-    ccdDataApi: config.get('services.ccdDataApi'), //getEnvConfig<string>('CCD_DATA_API_SERVICE', 'string'),
-    ccdDefApi: config.get('services.ccdDefApi'), // getEnvConfig<string>('CCD_DEFINITION_API_SERVICE', 'string'),
-    idamApi: config.get('services.idamApi'), // getEnvConfig<string>('IDAM_API_SERVICE', 'string'),
-    idamWeb: config.get('services.idamWeb'), // getEnvConfig<string>('IDAM_WEB_SERVICE', 'string'),
-    rdProfessionalApi: config.get('services.rdProfessionalApi'), // getEnvConfig<string>('RD_PROFESSIONAL_API_SERVICE', 'string'),
-    s2s: config.get('services.s2s'), // getEnvConfig<string>('S2S_SERVICE', 'string'),
-  },
-  sessionSecret: config.get('sessionSecret'), // getEnvConfig<string>('SESSION_SECRET', 'string'),
-}
+
+export const configParams: EnvironmentConfig = {
+    appInsightsInstrumentationKey: config.get('appInsightsInstrumentationKey'), //getEnvConfig<string>('APPINSIGHTS_INSTRUMENTATIONKEY', 'string'),
+    configEnv,
+    cookies: {
+      token: config.get('cookies.token'), // getEnvConfig<string>('COOKIE_TOKEN', 'string'),
+      userId: config.get('cookies.userId'), // getEnvConfig<string>('COOKIE_USER_ID', 'string'),
+    },
+    exceptionOptions: {
+      maxLines: config.get('exceptionOptions.maxLines'), // getEnvConfig<number>('EXCEPTION_OPTIONS_MAX_LINES', 'int'),
+    },
+    health: {} as EnvironmentConfigServices,
+    idamClient: config.get('idamClient'), // getEnvConfig<string>('IDAM_CLIENT', 'string'),
+    indexUrl: config.get('indexUrl'), // getEnvConfig<string>('INDEX_URL', 'string'),
+    logging: config.get('logging'), // getEnvConfig<string>('LOGGING', 'string'),
+    maxLogLine: config.get('maxLogLine'), // getEnvConfig<number>('MAX_LOG_LINE', 'int'),
+    microservice: config.get('microservice'), // getEnvConfig<string>('MICROSERVICE', 'string'),
+    now: config.get('now'), // getEnvConfig<boolean>('NOW', 'bool'),
+    oauthCallbackUrl: config.get('oauthCallbackUrl'), // getEnvConfig<string>('OAUTH_CALLBACK_URL', 'string'),
+    protocol: config.get('protocol'), // getEnvConfig<string>('PROTOCOL', 'string'),
+    proxy: {} as EnvironmentConfigProxy,
+    secureCookie: config.get('secureCookie'), //getEnvConfig<boolean>('SECURE_COOKIE', 'bool'),
+    services: {
+      ccdDataApi: config.get('services.ccdDataApi'), //getEnvConfig<string>('CCD_DATA_API_SERVICE', 'string'),
+      ccdDefApi: config.get('services.ccdDefApi'), // getEnvConfig<string>('CCD_DEFINITION_API_SERVICE', 'string'),
+      idamApi: config.get('services.idamApi'), // getEnvConfig<string>('IDAM_API_SERVICE', 'string'),
+      idamWeb: config.get('services.idamWeb'), // getEnvConfig<string>('IDAM_WEB_SERVICE', 'string'),
+      rdProfessionalApi: config.get('services.rdProfessionalApi'), // getEnvConfig<string>('RD_PROFESSIONAL_API_SERVICE', 'string'),
+      s2s: config.get('services.s2s'), // getEnvConfig<string>('S2S_SERVICE', 'string'),
+    },
+    sessionSecret: config.get('sessionSecret'), // getEnvConfig<string>('SESSION_SECRET', 'string'),
+  }
 
 // Get health for each service should be placed into different function
 // Not easily testable + side effecting
@@ -121,4 +149,4 @@ if (isLocal()) {
   configParams.protocol = 'http'
 }
 
-export const environmentConfig = { ...configParams }
+export const environmentConfig = {...configParams}
