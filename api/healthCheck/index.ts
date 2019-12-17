@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { environmentConfig } from '../lib/environment.config'
+// import { environmentConfig } from '../lib/environment.config'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 

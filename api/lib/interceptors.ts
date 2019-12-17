@@ -1,7 +1,7 @@
 import * as exceptionFormatter from 'exception-formatter'
 import * as stringify from 'json-stringify-safe'
 import * as errorStack from '../lib/errorStack'
-import {environmentConfig} from './environment.config'
+// import {environmentConfig} from './environment.config'
 import * as log4jui from './log4jui'
 import {exists, getTrackRequestObj, shorten, valueOrNull} from './util'
 
