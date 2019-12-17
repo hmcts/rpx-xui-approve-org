@@ -58,6 +58,7 @@ export class AppUtils {
     organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
     organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
     organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
+    organisationVm.postCode = apiOrg.contactInformation[0].postCode;
     organisationVm.townCity = apiOrg.contactInformation[0].townCity;
     organisationVm.county = apiOrg.contactInformation[0].county;
     organisationVm.sraId = apiOrg.sraId;
@@ -91,25 +92,5 @@ export class AppUtils {
     });
 
     return organisations;
-  }
-  static getEnvironment(url: string): string {
-    const regex = 'pr-|localhost|aat|demo|ithc|perftest';
-    const matched = url.match(regex);
-
-    if (matched && matched[0]) {
-        switch (matched[0]) {
-          case AppConstants.ENVIRONMENT_NAMES.aat:
-          case AppConstants.ENVIRONMENT_NAMES.localhost:
-          case AppConstants.ENVIRONMENT_NAMES.pr:
-             return AppConstants.ENVIRONMENT_NAMES.aat;
-          case AppConstants.ENVIRONMENT_NAMES.demo:
-              return AppConstants.ENVIRONMENT_NAMES.demo;
-          case AppConstants.ENVIRONMENT_NAMES.ithc:
-              return AppConstants.ENVIRONMENT_NAMES.ithc;
-          case AppConstants.ENVIRONMENT_NAMES.perftest:
-              return AppConstants.ENVIRONMENT_NAMES.perftest;
-        }
-      }
-    return AppConstants.ENVIRONMENT_NAMES.prod;
   }
 }
