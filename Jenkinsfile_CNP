@@ -16,6 +16,8 @@ properties([
 // Disable pact testing on pipeline
 //
 // import uk.gov.hmcts.contino.AppPipelineDsl
+import uk.gov.hmcts.contino.azure.KeyVault
+import uk.gov.hmcts.contino.Environment
 
 def type      = "nodejs"
 def product   = "xui"
@@ -165,5 +167,5 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Functional Test'
         ])
     }
-
 }
+

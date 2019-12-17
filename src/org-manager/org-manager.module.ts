@@ -23,7 +23,7 @@ import { FilterOrganisationsPipe } from './pipes/filter-organisations.pipe';
     HttpClientModule,
     orgManagerRouting,
     SharedModule,
-    StoreModule.forFeature('orgStatePending', reducers),
+    StoreModule.forFeature('orgState', reducers),
     EffectsModule.forFeature(effects)
   ],
   exports: [...fromContainers.containers],

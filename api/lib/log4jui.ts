@@ -55,7 +55,6 @@ function debug(...messages: any[]) {
 }
 
 function trackRequest(obj: any) {
-    console.log('client is ' + client)
     if (client) {
         try {
             client.trackRequest(obj)
