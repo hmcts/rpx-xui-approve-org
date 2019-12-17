@@ -12,12 +12,17 @@ export const COOKIES_USERID = 'cookies.userId'
 export const MAX_LINES = 'exceptionOptions.maxLines'
 export const IDAM_CLIENT = 'idamClient'
 export const ENVIRONMENT = 'environment'
+export const MAX_LOG_LINE = 'maxLogLine'
+export const INDEX_URL = 'indexUrl'
+export const OAUTH_CALLBACK_URL = 'oauthCallbackUrl'
+export const PROTOCOL = 'protocol'
 
 /**
  * Services
  */
 export const SERVICE_S2S_PATH = 'services.s2s'
 export const SERVICES_IDAM_API_PATH = 'services.idamApi'
+export const SERVICES_IDAM_WEB = 'services.idamWeb'
 export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi'
 export const SERVICES_CCD_DATA_API_PATH = 'services.ccdDataApi'
 export const SERVICES_CCD_DEF_API_PATH = 'services.ccdDefApi'
