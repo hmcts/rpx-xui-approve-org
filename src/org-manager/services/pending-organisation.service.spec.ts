@@ -41,6 +41,7 @@ describe('PendingOrganisationService', () => {
         addressLine2: '',
         townCity: 'string',
         county: 'string',
+        postCode: 'string',
         dxAddress: [{
           dxNumber: 'string',
           dxExchange: 'string',
