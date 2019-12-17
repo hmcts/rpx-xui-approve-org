@@ -18,7 +18,6 @@ import * as process from 'process'
  * @see node_modules config search for 'NODE_CONFIG_DIR'
  */
 import * as config from 'config'
-import * as setupConfig from './setupConfig'
 
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
