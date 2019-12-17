@@ -1,9 +1,11 @@
 import * as exceptionFormatter from 'exception-formatter'
-import * as stringify from 'json-stringify-safe'
+import { getConfigProp } from '../configuration'
 import * as errorStack from '../lib/errorStack'
+import * as stringify from 'json-stringify-safe'
 // import {environmentConfig} from './environment.config'
 import * as log4jui from './log4jui'
 import {exists, getTrackRequestObj, shorten, valueOrNull} from './util'
+import { MAX_LOG_LINE } from '../configuration/constants'
 
 const exceptionOptions = {
   maxLines: 1,
@@ -12,7 +14,7 @@ const exceptionOptions = {
 export function requestInterceptor(request) {
   const logger = log4jui.getLogger('outgoing')
 
-  const url = shorten(request.url, environmentConfig.maxLogLine)
+  const url = shorten(request.url, getConfigProp(MAX_LOG_LINE))
   logger.info(`${request.method.toUpperCase()} to ${url}`)
   //add timings to requests
   request.metadata = {startTime: new Date()}
@@ -26,7 +28,7 @@ export function successInterceptor(response) {
 
   const logger = log4jui.getLogger('return')
 
-  const url = shorten(response.config.url, environmentConfig.maxLogLine)
+  const url = shorten(response.config.url, getConfigProp(MAX_LOG_LINE))
 
   logger.trackRequest({
     duration: response.duration,
@@ -51,7 +53,7 @@ export function errorInterceptor(error) {
 
   let url = ''
   if (errorConfig.url) {
-    url = shorten(errorConfig.url, environmentConfig.maxLogLine)
+    url = shorten(errorConfig.url, getConfigProp(MAX_LOG_LINE))
   }
 
   // application insights logging
