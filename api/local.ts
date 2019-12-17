@@ -63,6 +63,7 @@ console.log(environmentCheckText())
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
+console.log(process.env.NODE_ENV) // config.get('cookies.token')
 console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
 console.log(getConfigProp(COOKIES_USERID))
 console.log(getConfigProp(MAX_LINES))

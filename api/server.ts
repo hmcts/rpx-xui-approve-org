@@ -9,9 +9,16 @@ import * as path from 'path'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import { getConfigProp } from './configuration'
+import {environmentCheckText, ERROR_NODE_ENV, getConfigProp, hasNodeEnvironment} from './configuration'
 import {
-  NOW, SECURE_COOKIE, SESSION_SECRET,
+  COOKIE_TOKEN,
+  COOKIES_USERID,
+  IDAM_CLIENT,
+  MAX_LINES, NOW, SECURE_COOKIE,
+  SERVICES_CCD_DATA_API_PATH,
+  SERVICES_CCD_DEF_API_PATH,
+  SERVICES_IDAM_API_PATH,
+  SESSION_SECRET,
 } from './configuration/constants'
 import { appInsights } from './lib/appInsights'
 // import { environmentConfig } from './lib/environment.config'
@@ -27,6 +34,32 @@ const app = express()
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
 propertiesVolume.addTo(config)
+
+/**
+ * If there are no configuration properties found we highlight this to the DevOps
+ * / Developer installing this application on an environment.
+ */
+if (!hasNodeEnvironment()) {
+  console.log(ERROR_NODE_ENV)
+}
+
+/**
+ * TODO: Implement a logger on the Node layer.
+ */
+console.log(environmentCheckText())
+
+// TODO: Testing that we can get the environment variables on AAT from the .yaml file
+console.log('COOKIE_TOKEN')
+console.log(process.env.NODE_ENV)
+console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
+console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
+console.log(getConfigProp(COOKIES_USERID))
+console.log(getConfigProp(MAX_LINES))
+console.log(getConfigProp(SERVICES_CCD_DATA_API_PATH))
+console.log(getConfigProp(SERVICES_CCD_DEF_API_PATH))
+console.log(getConfigProp(SERVICES_IDAM_API_PATH))
+console.log(getConfigProp(SESSION_SECRET))
+console.log(getConfigProp(IDAM_CLIENT))
 
 app.use(
     session({
