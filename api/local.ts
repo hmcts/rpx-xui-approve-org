@@ -22,12 +22,23 @@ import * as setupConfig from './setupConfig'
 
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import { appInsights } from './lib/appInsights'
-import { environmentConfig } from './lib/environment.config'
-import { errorStack } from './lib/errorStack'
+import {appInsights} from './lib/appInsights'
+// import { environmentConfig } from './lib/environment.config'
+import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
+import {environmentCheckText, ERROR_NODE_ENV, getConfigProp, hasNodeEnvironment} from './configuration'
+import {
+  COOKIE_TOKEN,
+  COOKIES_USERID,
+  IDAM_CLIENT,
+  MAX_LINES, NOW, SECURE_COOKIE,
+  SERVICES_CCD_DATA_API_PATH,
+  SERVICES_CCD_DEF_API_PATH,
+  SERVICES_IDAM_API_PATH,
+  SESSION_SECRET,
+} from './configuration/constants'
 
 const FileStore = sessionFileStore(session)
 
@@ -38,44 +49,47 @@ const app = express()
  */
 propertiesVolume.addTo(config)
 
-// TODO: Rename
-// These needs to throw errors back if something is not set.
-setupConfig.checkConfigPropertiesSet()
-setupConfig.checkEnvironment()
+/**
+ * If there are no configuration properties found we highlight this to the DevOps
+ * / Developer installing this application on an environment.
+ */
+if (!hasNodeEnvironment()) {
+  console.log(ERROR_NODE_ENV)
+}
 
-// If we leave it as is, then it's hard
-// setup the environment config
-environmentConfig.init()
-// so now if it's working we need to initialise the config.
+/**
+ * TODO: Implement a logger on the Node layer.
+ */
+console.log(environmentCheckText())
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
-console.log(config.get('cookies.token'))
-console.log(config.get('cookies.userId'))
-console.log(config.get('exceptionOptions.maxLines'))
-console.log(config.get('services.ccdDataApi'))
-console.log(config.get('services.ccdDefApi'))
-console.log(config.get('services.idamApi'))
-console.log(config.get('sessionSecret'))
-console.log(config.get('idamClient'))
+console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
+console.log(getConfigProp(COOKIES_USERID))
+console.log(getConfigProp(MAX_LINES))
+console.log(getConfigProp(SERVICES_CCD_DATA_API_PATH))
+console.log(getConfigProp(SERVICES_CCD_DEF_API_PATH))
+console.log(getConfigProp(SERVICES_IDAM_API_PATH))
+console.log(getConfigProp(SESSION_SECRET))
+console.log(getConfigProp(IDAM_CLIENT))
 
 const logger = log4jui.getLogger('server')
 
 app.use(
-    session({
-        cookie: {
-            httpOnly: true,
-            maxAge: 1800000,
-            secure: environmentConfig.secureCookie !== false,
-        },
-        name: 'xuiaowebapp',
-        resave: true,
-        saveUninitialized: true,
-        secret: environmentConfig.sessionSecret,
-        store: new FileStore({
-            path: environmentConfig.now ? '/tmp/sessions' : '.sessions',
-        }),
-    })
+  session({
+    cookie: {
+      httpOnly: true,
+      maxAge: 1800000,
+      secure: getConfigProp(SECURE_COOKIE) !== false,
+    },
+    name: 'xuiaowebapp',
+    resave: true,
+    saveUninitialized: true,
+    secret: getConfigProp(SESSION_SECRET),
+    store: new FileStore({
+      path: getConfigProp(NOW) ? '/tmp/sessions' : '.sessions',
+    }),
+  })
 )
 
 tunnel.init()
@@ -83,7 +97,7 @@ tunnel.init()
 app.use(errorStack)
 app.use(appInsights)
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)

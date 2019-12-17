@@ -1,7 +1,9 @@
 import * as log4js from 'log4js'
 import * as errorStack from '../lib/errorStack'
 import { client } from './appInsights'
-import { environmentConfig } from './environment.config'
+// import { environmentConfig } from './environment.config'
+import { getConfigProp } from '../configuration'
+import { LOGGING } from '../configuration/constants'
 
 let logger = null
 
@@ -9,7 +11,7 @@ let logger = null
 
 export function getLogger(category: string) {
     logger = log4js.getLogger(category)
-    logger.level = environmentConfig.logging || 'off'
+    logger.level = getConfigProp(LOGGING) || 'off'
 
     return {
         _logger: logger,
@@ -78,7 +80,7 @@ function error(...messages: any[]) {
     }
     this._logger.error(fullMessage)
 
-    if (environmentConfig.logging === 'debug' || environmentConfig.logging === 'error') {
+    if (getConfigProp(LOGGING) === 'debug' || getConfigProp(LOGGING) === 'error') {
         errorStack.push([category, fullMessage])
     }
 }

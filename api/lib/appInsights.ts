@@ -1,15 +1,16 @@
 import * as applicationinsights from 'applicationinsights'
 import * as express from 'express'
-import {environmentConfig, isLocal} from './environment.config'
+import {getConfigProp, isLocalEnvironment} from '../configuration'
+import {APP_INSIGHTS_KEY} from '../configuration/constants'
 
 export let client
 
 // shouldnt do this check here but this is a high level dep
 
-if (!isLocal()) {
-    console.log('environmentConfig.appInsightsInstrumentationKey is ' + environmentConfig.appInsightsInstrumentationKey)
+if (!isLocalEnvironment()) {
+    console.log('environmentConfig.appInsightsInstrumentationKey is ' + getConfigProp(APP_INSIGHTS_KEY))
     applicationinsights
-        .setup(environmentConfig.appInsightsInstrumentationKey)
+        .setup(getConfigProp(APP_INSIGHTS_KEY))
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
         .setAutoCollectPerformance(true)

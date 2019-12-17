@@ -1,14 +1,16 @@
 import axios from 'axios'
 import * as jwtDecode from 'jwt-decode'
-import { environmentConfig } from '../lib/environment.config'
+// import { environmentConfig } from '../lib/environment.config'
 import * as log4jui from '../lib/log4jui'
 import { asyncReturnOrError } from '../lib/util'
 import { postS2SLease } from '../services/serviceAuth'
+import { getConfigProp } from '../configuration'
+import { MICROSERVICE } from '../configuration/constants'
 
 const logger = log4jui.getLogger('service-token')
 
 const _cache = {}
-const microservice = environmentConfig.microservice
+const microservice = getConfigProp(MICROSERVICE) // environmentConfig.microservice
 
 export function validateCache() {
     logger.info('validating s2s cache')

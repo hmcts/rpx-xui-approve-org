@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { environmentConfig } from '../lib/environment.config'
+// import { environmentConfig } from '../lib/environment.config'
 import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('monitoring-tools')
