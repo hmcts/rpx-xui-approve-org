@@ -1,5 +1,5 @@
 import * as config from 'config'
-import {ENVIRONMENT} from './constants'
+import {ENVIRONMENT, PROTOCOL} from './constants'
 // import * as getenv from 'getenv'
 // import * as process from 'process'
 // import {EnvironmentConfig, EnvironmentConfigProxy, EnvironmentConfigServices} from '../interfaces/environment.config'
@@ -74,36 +74,7 @@ import {ENVIRONMENT} from './constants'
  * environmentConfig.health[endpoint]
  *
  */
-// Not needed currently
-// export const getHealthCheckRoutes = services => {
-//
-//   const map = {}
-//   Object.keys(services).forEach(service => {
-//     map[service] = `${services[service]}/health`
-//   })
-//
-//   return map
-// }
 
-// const getServices = () => {
-//
-//   const CCD_DATA_API_CONFIG_REF = 'services.ccdDataApi'
-//
-//   return {
-//     ccdDataApi: config.get(CCD_DATA_API_CONFIG_REF),
-//     ccdDefApi: config.get('services.ccdDefApi'),
-//     idamApi: config.get('services.idamApi'),
-//     idamWeb: config.get('services.idamWeb'),
-//     rdProfessionalApi: config.get('services.rdProfessionalApi'),
-//     s2s: config.get('services.s2s'),
-//   }
-// }
-
-// export const CCD_DATA_API_CONFIG_REF = 'services.ccdDataApi'
-// export const COOKIE_TOKEN = 'cookies.token'
-// export const SECURE_COOKIE = 'secureCookie'
-// export const SESSION_SECRET = 'sessionSecret'
-// export const NOW = 'now'
 /**
  * get Configuration Property
  *
@@ -154,6 +125,14 @@ export const hasNodeEnvironment = () => process.env.NODE_ENV
  */
 export const environmentCheckText = () => `NODE_ENV is set as ${process.env.NODE_ENV} therefore we are using the ${config.get(ENVIRONMENT)} config.`
 
+// TODO: Can be done better, but just testing something.
+export const getProtocol = () => {
+  if (process.env.NODE_ENV === 'local') {
+    return 'http'
+  } else {
+    return config.get(PROTOCOL)
+  }
+}
 // TODO: As this is called first
 // this throws an error, but no human readable error is returned.
 // export const environmentConfig = {...configParams}
