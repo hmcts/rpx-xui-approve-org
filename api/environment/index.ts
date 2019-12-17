@@ -30,7 +30,7 @@ router.get('/config', environmentRoute)
 
 async function environmentRoute(req, res) {
   // const config = { ...environmentConfig }
-
+  const HEALTH = '/health'
   const configEnv = process.env.NODE_ENV
 
   const config = {
@@ -42,7 +42,14 @@ async function environmentRoute(req, res) {
     exceptionOptions: {
       maxLines: getConfigProp(MAX_LINES),
     } as EnvironmentConfigExceptionOptions,
-    health: {} as EnvironmentHealthServices,
+    health: {
+      ccdDataApi: getConfigProp(SERVICES_CCD_DATA_API_PATH) + HEALTH,
+      ccdDefApi: getConfigProp(SERVICES_CCD_DEF_API_PATH) + HEALTH,
+      idamApi: getConfigProp(SERVICES_IDAM_API_PATH) + HEALTH,
+      idamWeb: getConfigProp(SERVICES_IDAM_WEB) + HEALTH,
+      rdProfessionalApi: getConfigProp(SERVICES_RD_PROFESSIONAL_API_PATH) + HEALTH,
+      s2s: getConfigProp(SERVICE_S2S_PATH) + HEALTH,
+    } as EnvironmentConfigServices,
     idamClient: getConfigProp(IDAM_CLIENT),
     indexUrl: getConfigProp(INDEX_URL),
     logging: getConfigProp(LOGGING),
