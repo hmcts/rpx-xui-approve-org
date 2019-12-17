@@ -9,6 +9,10 @@ import * as path from 'path'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
+import { getConfigProp } from './configuration'
+import {
+  NOW, SECURE_COOKIE, SESSION_SECRET,
+} from './configuration/constants'
 import { appInsights } from './lib/appInsights'
 // import { environmentConfig } from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
@@ -29,14 +33,14 @@ app.use(
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: environmentConfig.secureCookie !== false,
+            secure: getConfigProp(SECURE_COOKIE) !== false,
         },
         name: 'xuiaowebapp',
         resave: true,
         saveUninitialized: true,
-        secret: environmentConfig.sessionSecret,
+        secret: getConfigProp(SESSION_SECRET) ,
         store: new FileStore({
-            path: environmentConfig.now ? '/tmp/sessions' : '.sessions',
+            path: getConfigProp(NOW)  ? '/tmp/sessions' : '.sessions',
         }),
     })
 )
