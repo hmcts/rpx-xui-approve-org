@@ -8,8 +8,8 @@ import { EnhancedRequest } from '../lib/models'
 import { asyncReturnOrError } from '../lib/util'
 import { getUserDetails } from '../services/idam'
 import { serviceTokenGenerator } from './serviceToken'
-import { getConfigProp } from '../configuration'
-import { COOKIE_TOKEN, SERVICES_IDAM_API_PATH } from '../configuration/constants'
+import { getConfigProp, getProtocol } from '../configuration'
+import {COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, INDEX_URL, OAUTH_CALLBACK_URL, SERVICES_IDAM_API_PATH} from '../configuration/constants'
 
 const idamUrl = getConfigProp(SERVICES_IDAM_API_PATH)
 
@@ -56,8 +56,8 @@ export async function attach(req: EnhancedRequest, res: express.Response, next: 
 }
 
 export async function getTokenFromCode(req: express.Request, res: express.Response): Promise<AxiosResponse> {
-    console.log(`${environmentConfig.idamClient}:${secret}`)
-    const Authorization = `Basic ${new Buffer(`${environmentConfig.idamClient}:${secret}`).toString('base64')}`
+    console.log(`${getConfigProp(IDAM_CLIENT)}:${secret}`)
+    const Authorization = `Basic ${new Buffer(`${getConfigProp(IDAM_CLIENT)}:${secret}`).toString('base64')}`
     const options = {
         headers: {
             Authorization,
@@ -67,9 +67,9 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
 
     logger.info('Getting Token from auth code.')
 
-    const url = `${environmentConfig.services.idamApi}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
-    environmentConfig.protocol
-  }://${req.headers.host}${environmentConfig.oauthCallbackUrl}`
+    const url = `${getConfigProp(SERVICES_IDAM_API_PATH)}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
+      getProtocol()
+  }://${req.headers.host}${getConfigProp(OAUTH_CALLBACK_URL)}`
 
     return http.post(url, {}, options)
 }
@@ -123,11 +123,11 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
         if (isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN');
             // tslint:disable-next-line
-            res.redirect(`${environmentConfig.services.idamApi}/login?response_type=code&client_id=${environmentConfig.idamClient}&redirect_uri=${environmentConfig.protocol}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
+            res.redirect(`${getConfigProp(SERVICES_IDAM_API_PATH)}/login?response_type=code&client_id=${getConfigProp(IDAM_CLIENT)}&redirect_uri=${getProtocol()}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
             return false
         }
         // set browser cookie
-        res.cookie(environmentConfig.cookies.token, accessToken)
+        res.cookie(getConfigProp(COOKIE_TOKEN), accessToken)
 
         const jwtData: any = jwtDecode(accessToken)
         const expires = new Date(jwtData.exp as string).getTime()
@@ -149,19 +149,19 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
 
               logger.info('save session', req.session)
               req.session.save(() => {
-                res.redirect(environmentConfig.indexUrl || '/')
+                res.redirect(getConfigProp(INDEX_URL) || '/')
               })
             }
         }
     } else {
         logger.error('No auth token')
-        res.redirect(environmentConfig.indexUrl || '/')
+        res.redirect(getConfigProp(INDEX_URL) || '/')
     }
 }
 
 export function doLogout(req: EnhancedRequest, res: express.Response, status: number = 302) {
-    res.clearCookie(environmentConfig.cookies.token)
-    res.clearCookie(environmentConfig.cookies.userId)
+    res.clearCookie(getConfigProp(COOKIE_TOKEN))
+    res.clearCookie(getConfigProp(COOKIES_USERID))
     req.session.user = null
     req.session.save(() => {
         res.redirect(status, req.query.redirect || '/')
