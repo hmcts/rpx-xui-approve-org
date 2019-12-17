@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { environmentConfig } from '../lib/environment.config'
+// import { environmentConfig } from '../lib/environment.config'
 
 export const router = express.Router({ mergeParams: true })
 
