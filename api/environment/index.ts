@@ -28,10 +28,29 @@ export const router = express.Router({mergeParams: true})
 
 router.get('/config', environmentRoute)
 
+// TODO: Make DRY
+// Should this be here or in configuration index?
+// This is more or less the same thing as configuration, so move into the same
+// folder
+export const healthEndpoints = () => {
+
+  const HEALTH = '/health'
+
+  return {
+    ccdDataApi: getConfigProp(SERVICES_CCD_DATA_API_PATH) + HEALTH,
+    ccdDefApi: getConfigProp(SERVICES_CCD_DEF_API_PATH) + HEALTH,
+    idamApi: getConfigProp(SERVICES_IDAM_API_PATH) + HEALTH,
+    idamWeb: getConfigProp(SERVICES_IDAM_WEB) + HEALTH,
+    rdProfessionalApi: getConfigProp(SERVICES_RD_PROFESSIONAL_API_PATH) + HEALTH,
+    s2s: getConfigProp(SERVICE_S2S_PATH) + HEALTH,
+  }
+}
+
+// Have this as UI config, and explain that it's an exposed route.
 async function environmentRoute(req, res) {
   // const config = { ...environmentConfig }
-  const HEALTH = '/health'
   const configEnv = process.env.NODE_ENV
+  const HEALTH = '/health'
 
   const config = {
     configEnv,

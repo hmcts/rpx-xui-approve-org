@@ -1,6 +1,7 @@
 import * as express from 'express'
 // import { environmentConfig } from '../lib/environment.config'
 import { http } from '../lib/http'
+import { healthEndpoints } from '../environment'
 import * as log4jui from '../lib/log4jui'
 
 export const router = express.Router({ mergeParams: true })
@@ -39,7 +40,10 @@ function getPromises(path): any[] {
     const Promises = []
     if (healthCheckEndpointDictionary[path]) {
         healthCheckEndpointDictionary[path].forEach(endpoint => {
-            Promises.push(http.get(environmentConfig.health[endpoint]))
+            // TODO: Have health config for this.
+            console.log('healthEndpoints')
+            console.log(healthEndpoints()[endpoint])
+            Promises.push(http.get(healthEndpoints()[endpoint]))
         })
     }
     return Promises

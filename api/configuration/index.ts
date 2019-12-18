@@ -133,6 +133,7 @@ export const getProtocol = () => {
     return config.get(PROTOCOL)
   }
 }
+
 // TODO: As this is called first
 // this throws an error, but no human readable error is returned.
 // export const environmentConfig = {...configParams}
