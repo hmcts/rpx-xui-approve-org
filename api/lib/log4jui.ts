@@ -1,7 +1,7 @@
 import * as log4js from 'log4js'
 import * as errorStack from '../lib/errorStack'
 import { client } from './appInsights'
-import config from './config'
+import { environmentConfig } from './environment.config'
 
 let logger = null
 
@@ -9,7 +9,7 @@ let logger = null
 
 export function getLogger(category: string) {
     logger = log4js.getLogger(category)
-    logger.level = config.logging || 'off'
+    logger.level = environmentConfig.logging || 'off'
 
     return {
         _logger: logger,
@@ -55,7 +55,6 @@ function debug(...messages: any[]) {
 }
 
 function trackRequest(obj: any) {
-    console.log('client is ' + client)
     if (client) {
         try {
             client.trackRequest(obj)
@@ -79,7 +78,7 @@ function error(...messages: any[]) {
     }
     this._logger.error(fullMessage)
 
-    if (config.logging === 'debug' || config.logging === 'error') {
+    if (environmentConfig.logging === 'debug' || environmentConfig.logging === 'error') {
         errorStack.push([category, fullMessage])
     }
 }

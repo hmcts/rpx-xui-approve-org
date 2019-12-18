@@ -52,7 +52,7 @@ export class MonitoringService implements IMonitoringService {
   constructor(private http: HttpClient, @Optional() private config?: MonitorConfig,
               @Optional() private appInsights?: AbstractAppInsights) {
                 if (!appInsights) {
-                appInsights = AppInsights;
+                this.appInsights = AppInsights;
               }
             }
 

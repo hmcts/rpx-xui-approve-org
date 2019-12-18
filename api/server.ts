@@ -1,16 +1,16 @@
-
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as session from 'express-session'
-import * as log4js from 'log4js'
 import * as path from 'path'
+import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
-import config from './lib/config'
+import { environmentConfig } from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
+import * as tunnel from './lib/tunnel'
 import routes from './routes'
 
 const FileStore = sessionFileStore(session)
@@ -22,15 +22,15 @@ app.use(
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: config.secureCookie !== false,
+            secure: environmentConfig.secureCookie !== false,
         },
-        name: "xuiaowebapp",
+        name: 'xuiaowebapp',
         resave: true,
         saveUninitialized: true,
-        secret: config.sessionSecret,
+        secret: environmentConfig.sessionSecret,
         store: new FileStore({
-            path: process.env.NOW ? "/tmp/sessions" : ".sessions",
-        })
+            path: environmentConfig.now ? '/tmp/sessions' : '.sessions',
+        }),
     })
 )
 
@@ -40,6 +40,8 @@ app.set('views', __dirname)
 
 app.use(express.static(path.join(__dirname, '..', 'assets'), { index: false }))
 app.use(express.static(path.join(__dirname, '..'), { index: false }))
+
+tunnel.init()
 
 app.use(errorStack)
 app.use(appInsights)
@@ -67,8 +69,6 @@ app.use('/*', (req, res) => {
     console.timeEnd(`GET: ${req.originalUrl}`)
 })
 
-app.listen(process.env.PORT || 3000)
+const port = process.env.PORT || 3000
 
-if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY) {
-    config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY
-}
+app.listen(port, () => console.log('server running on port:', port) )
