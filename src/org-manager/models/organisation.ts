@@ -3,7 +3,6 @@ export interface OrganisationAddress {
   addressLine2: string;
   townCity: string;
   county: string;
-  postCode: string;
   dxAddress: [OrganisationDxAddress];
   postCode?: string;
   }
@@ -40,7 +39,6 @@ export class OrganisationVM {
   postCode?: string;
   townCity: string;
   county: string;
-  postCode: string;
   name: string;
   view: string;
   pbaNumber: [any];
