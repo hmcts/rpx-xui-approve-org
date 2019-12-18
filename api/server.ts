@@ -9,7 +9,7 @@ import * as path from 'path'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {environmentCheckText, ERROR_NODE_ENV, getConfigProp, hasNodeEnvironment} from './configuration'
+import {environmentCheckText, ERROR_NODE_CONFIG_ENV, getConfigProp, hasNodeEnvironment} from './configuration'
 import {
   COOKIE_TOKEN,
   COOKIES_USERID,
@@ -40,7 +40,7 @@ propertiesVolume.addTo(config)
  * / Developer installing this application on an environment.
  */
 if (!hasNodeEnvironment()) {
-  console.log(ERROR_NODE_ENV)
+  console.log(ERROR_NODE_CONFIG_ENV)
 }
 
 /**
@@ -50,7 +50,7 @@ console.log(environmentCheckText())
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
-console.log(process.env.NODE_ENV)
+console.log(process.env.NODE_CONFIG_ENV)
 console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
 console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
 console.log(getConfigProp(COOKIES_USERID))

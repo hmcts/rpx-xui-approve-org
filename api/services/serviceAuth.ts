@@ -20,9 +20,9 @@ const logger = log4jui.getLogger('service auth')
 
 export async function postS2SLease() {
   let response: AxiosResponse<any>
-  console.log('NODE_ENV is now:', process.env.NODE_ENV)
+  console.log('NODE_CONFIG_ENV is now:', process.env.NODE_CONFIG_ENV)
   console.log('postS2SLease url:', url)
-  if (process.env.NODE_ENV !== 'ldocker') {
+  if (process.env.NODE_CONFIG_ENV !== 'ldocker') {
     try {
       const oneTimePassword = otp({secret: s2sSecret}).totp()
       logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)

@@ -20,11 +20,11 @@ export const checkConfigPropertiesSet = () => {
 /**
  * Logs the Configuration .yaml file this environment is pointing to, for debugging purposes.
  *
- * The .yaml is selected by Node-config dependent on the NODE_ENV variable.
+ * The .yaml is selected by Node-config dependent on the NODE_CONFIG_ENV variable.
  *
- * If no NODE_ENV is set the default.yaml is used to config the application.
- * If NODE_ENV=aat is set the aat.yaml file is used to config the application.
- * If NODE_ENV=test is set the test.yaml file is used to config the application.
+ * If no NODE_CONFIG_ENV is set the development.yaml is used to config the application.
+ * If NODE_CONFIG_ENV=aat is set the aat.yaml file is used to config the application.
+ * If NODE_CONFIG_ENV=test is set the test.yaml file is used to config the application.
  * etc.
  *
  * Important note: We never place local.yaml file into the /config folder as it overrides all other config files
