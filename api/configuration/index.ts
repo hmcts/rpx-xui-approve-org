@@ -87,9 +87,9 @@ export const getConfigProp = property => config.get(property)
 // Yes this should come from the config file, as Node-config sets up local if
 // no NODE_ENV is set.
 // TODO: check this logic.
-export const isLocalEnvironment = () => !process.env.NODE_ENV
+export const isLocalEnvironment = () => !process.env.NODE_CONFIG_ENV
 
-export const ERROR_NODE_ENV = `Error: NODE_ENV is not set. Please make sure you have the NODE_ENV
+export const ERROR_NODE_CONFIG_ENV = `Error: NODE_CONFIG_ENV is not set. Please make sure you have the NODE_CONFIG_ENV
   setup in your environmental variables.`
 
 /**
@@ -103,16 +103,16 @@ export const ERROR_NODE_ENV = `Error: NODE_ENV is not set. Please make sure you 
  *
  * @returns {string}
  */
-export const hasNodeEnvironment = () => process.env.NODE_ENV
+export const hasNodeEnvironment = () => process.env.NODE_CONFIG_ENV
 
 /**
  * Logs the Configuration .yaml file this environment is pointing to, for debugging purposes.
  *
  * The .yaml is selected by Node-config dependent on the NODE_ENV variable.
  *
- * If no NODE_ENV is set the default.yaml is used to config the application.
- * If NODE_ENV=aat is set the aat.yaml file is used to config the application.
- * If NODE_ENV=test is set the test.yaml file is used to config the application.
+ * If no NODE_CONFIG_ENV is set the default.yaml is used to config the application.
+ * If NODE_CONFIG_ENV=aat is set the aat.yaml file is used to config the application.
+ * If NODE_CONFIG_ENV=test is set the test.yaml file is used to config the application.
  * etc.
  *
  * Important note: We never place local.yaml file into the /config folder as it overrides all other config files
@@ -123,11 +123,11 @@ export const hasNodeEnvironment = () => process.env.NODE_ENV
  *
  * @see https://github.com/lorenwest/node-config/wiki/Configuration-Files #local files
  */
-export const environmentCheckText = () => `NODE_ENV is set as ${process.env.NODE_ENV} therefore we are using the ${config.get(ENVIRONMENT)} config.`
+export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore we are using the ${config.get(ENVIRONMENT)} config.`
 
 // TODO: Can be done better, but just testing something.
 export const getProtocol = () => {
-  if (process.env.NODE_ENV === 'local') {
+  if (process.env.NODE_CONFIG_ENV === 'local') {
     return 'http'
   } else {
     return config.get(PROTOCOL)
