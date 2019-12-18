@@ -27,7 +27,7 @@ import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
-import {environmentCheckText, ERROR_NODE_ENV, getConfigProp, hasNodeEnvironment} from './configuration'
+import {environmentCheckText, ERROR_NODE_CONFIG_ENV, getConfigProp, hasNodeEnvironment} from './configuration'
 import {
   COOKIE_TOKEN,
   COOKIES_USERID,
@@ -53,7 +53,7 @@ propertiesVolume.addTo(config)
  * / Developer installing this application on an environment.
  */
 if (!hasNodeEnvironment()) {
-  console.log(ERROR_NODE_ENV)
+  console.log(ERROR_NODE_CONFIG_ENV)
 }
 
 /**
