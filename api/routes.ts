@@ -4,7 +4,8 @@ import environment from './environment'
 import healthCheck from './healthCheck'
 import getappInsightsInstrumentationKey from './monitoring-tools'
 import organisationRouter from './organisation'
-import pbaRouteer from './update-pba'
+import pbaAccounts from './pbaAccounts'
+import pbaRouter from './updatePba'
 import stateRouter from './states'
 
 const router = express.Router({ mergeParams: true })
@@ -18,7 +19,7 @@ router.use('/logout', auth.logout)
 router.use('/decisions', stateRouter)
 router.use('/healthCheck', healthCheck)
 router.use('/organisations', organisationRouter)
-router.use('/update-pba', pbaRouteer)
-
+router.use('/updatePba', pbaRouter)
+router.use('/pba-accounts/', pbaAccounts)
 router.use('/monitoring-tools', getappInsightsInstrumentationKey)
 export default router

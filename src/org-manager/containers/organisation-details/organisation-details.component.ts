@@ -3,7 +3,7 @@ import * as fromStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import { Observable } from 'rxjs';
-import {takeWhile, tap} from 'rxjs/operators';
+import {filter, pluck, take, takeWhile} from 'rxjs/operators';
 import * as fromOrganisation from '../../store/';
 
 /**
@@ -20,14 +20,21 @@ export class OrganisationDetailsComponent implements OnInit {
   constructor(private store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
-   this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
+    this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
         this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }
     });
 
-   this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
+    this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
+    this.orgs$.pipe(
+        filter(value => value !== undefined),
+        pluck('pbaNumber'),
+        take(1)
+    ).subscribe(pbas => {
+      this.store.dispatch(new fromOrganisation.LoadPbaAccountName(pbas.toString()));
+    });
   }
 
 }
