@@ -49,7 +49,7 @@ export const healthEndpoints = () => {
 // Have this as UI config, and explain that it's an exposed route.
 async function environmentRoute(req, res) {
   // const config = { ...environmentConfig }
-  const configEnv = process.env.NODE_ENV
+  const configEnv = process.env.NODE_CONFIG_ENV
   const HEALTH = '/health'
 
   const config = {
