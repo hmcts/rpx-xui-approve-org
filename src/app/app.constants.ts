@@ -31,18 +31,9 @@ const environmentNames = {
   prod: 'prod'
 };
 
-const redirectUrl = {
-  aat: 'https://idam-web-public.aat.platform.hmcts.net',
-  demo: 'https://idam-web-public.demo.platform.hmcts.net',
-  ithc: 'https://idam-web-public.ithc.platform.hmcts.net',
-  perftest: 'https://idam-web-public.perftest.platform.hmcts.net',
-  prod: 'https://hmcts-access.service.gov.uk',
-  localhost: 'https://idam-web-public.aat.platform.hmcts.net',
-};
 
 export class AppConstants {
   static FOOTER_DATA = FooterData;
   static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static REDIRECT_URL = redirectUrl;
   static ENVIRONMENT_NAMES = environmentNames;
 }
