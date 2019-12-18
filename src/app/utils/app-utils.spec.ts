@@ -1,6 +1,5 @@
 import {AppUtils} from './app-utils';
 import { Organisation, OrganisationVM, OrganisationAddress } from 'src/org-manager/models/organisation';
-import { AppConstants } from '../app.constants';
 
 describe('AppUtils', () => {
 
@@ -85,35 +84,5 @@ describe('AppUtils', () => {
     const organisations = AppUtils.mapOrganisationsVm(organisationVM);
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId);
     expect(organisations[0].name).toEqual(organisationVM[0].name);
-  });
-
-  it('should return aat environment string', () => {
-    let nav = 'http://localhost';
-    let url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.aat);
-
-    nav = 'http://aat/something';
-    url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.aat);
-  });
-
-  it('should return demo or ithc  or perf-test environment string', () => {
-    let nav = 'http://demo/something';
-    let url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.demo);
-
-    nav = 'http://ithc/something';
-    url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.ithc);
-
-    nav = 'http://perftest/something';
-    url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.perftest);
-  });
-
-  it('should return prod as it does not match any', () => {
-    const nav = 'http://notany/something';
-    const url = AppUtils.getEnvironment(nav);
-    expect(url).toEqual(AppConstants.ENVIRONMENT_NAMES.prod);
   });
  });

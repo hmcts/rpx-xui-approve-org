@@ -26,11 +26,10 @@ export class AuthService {
 
     this.user = null;
   }
-
+  // TODO perhaps move this logic to BE
   generateLoginUrl(): Observable<string> {
     return this.envService.config$.map( config => {
-      const env = AppUtils.getEnvironment(window.location.origin);
-      const base = AppConstants.REDIRECT_URL[env];
+      const base = config.services.idamWeb;
       const clientId = config.idamClient;
       const callback = `${this.apiBaseUrl}${config.oauthCallbackUrl}`;
       // tslint:disable-next-line: max-line-length

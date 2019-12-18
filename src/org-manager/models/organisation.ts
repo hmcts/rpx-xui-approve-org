@@ -5,6 +5,7 @@ export interface OrganisationAddress {
   county: string;
   postCode: string;
   dxAddress: [OrganisationDxAddress];
+  postCode?: string;
   }
 
 export interface OrganisationDxAddress {
@@ -36,6 +37,7 @@ export class OrganisationVM {
   adminEmail: string;
   addressLine1: string;
   addressLine2: string;
+  postCode?: string;
   townCity: string;
   county: string;
   postCode: string;
