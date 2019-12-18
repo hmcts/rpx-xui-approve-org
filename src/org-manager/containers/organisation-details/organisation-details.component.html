@@ -32,6 +32,9 @@
                <div *ngIf='data.county'>
                   {{data?.county}}<br>
                </div>
+                <div *ngIf='data.postCode'>
+                    {{data?.postCode}}<br>
+                </div>
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -44,9 +47,10 @@
               {{data?.pbaNumber}}
             </dd>
             <dd class="govuk-check-your-answers__change">
-              <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
-                  {{data?.pbaNumber.length ? 'Change' : 'Add'}}
-              </a>
+                <!--  TODO undo this when pba live  -->
+                <!--  <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">-->
+                <!--  {{data?.pbaNumber.length ? 'Change' : 'Add'}}-->
+                <!--  </a>-->
             </dd>
          </div>
          <div class="govuk-check-your-answers__contents">
