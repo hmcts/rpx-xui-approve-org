@@ -13,7 +13,6 @@ import * as tunnel from './lib/tunnel'
 import routes from './routes'
 
 const FileStore = sessionFileStore(session)
-
 const app = express()
 const logger = log4jui.getLogger('server')
 
