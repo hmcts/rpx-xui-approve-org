@@ -1,6 +1,6 @@
 import * as globalTunnel from 'global-tunnel-ng'
 import {getConfigProp} from '../configuration'
-import {PROXY_HOST, PROXY_PORT} from '../configuration/constants'
+import {PROXY_HOST, PROXY_PORT} from '../configuration/references'
 import * as log4jui from './log4jui'
 import {exists} from './util'
 

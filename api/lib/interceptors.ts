@@ -1,11 +1,10 @@
 import * as exceptionFormatter from 'exception-formatter'
-import { getConfigProp } from '../configuration'
-import * as errorStack from '../lib/errorStack'
 import * as stringify from 'json-stringify-safe'
-// import {environmentConfig} from './environment.config'
+import { getConfigProp } from '../configuration'
+import { MAX_LOG_LINE } from '../configuration/references'
+import * as errorStack from '../lib/errorStack'
 import * as log4jui from './log4jui'
 import {exists, getTrackRequestObj, shorten, valueOrNull} from './util'
-import { MAX_LOG_LINE } from '../configuration/constants'
 
 const exceptionOptions = {
   maxLines: 1,

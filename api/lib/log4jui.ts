@@ -1,6 +1,6 @@
 import * as log4js from 'log4js'
 import { getConfigProp } from '../configuration'
-import { LOGGING } from '../configuration/constants'
+import { LOGGING } from '../configuration/references'
 import * as errorStack from '../lib/errorStack'
 import { client } from './appInsights'
 

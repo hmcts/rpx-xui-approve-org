@@ -9,7 +9,8 @@ import * as path from 'path'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {environmentCheckText, ERROR_NODE_CONFIG_ENV, getConfigProp, hasNodeEnvironment} from './configuration'
+import {environmentCheckText, getConfigProp, getEnvironment} from './configuration'
+import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
   COOKIE_TOKEN,
   COOKIES_USERID,
@@ -19,7 +20,7 @@ import {
   SERVICES_CCD_DEF_API_PATH,
   SERVICES_IDAM_API_PATH,
   SESSION_SECRET,
-} from './configuration/constants'
+} from './configuration/references'
 import { appInsights } from './lib/appInsights'
 import { errorStack } from './lib/errorStack'
 import * as tunnel from './lib/tunnel'
@@ -38,7 +39,7 @@ propertiesVolume.addTo(config)
  * If there are no configuration properties found we highlight this to the DevOps
  * / Developer installing this application on an environment.
  */
-if (!hasNodeEnvironment()) {
+if (!getEnvironment()) {
   console.log(ERROR_NODE_CONFIG_ENV)
 }
 
