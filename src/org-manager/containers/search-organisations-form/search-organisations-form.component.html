@@ -1,29 +1,15 @@
 
-<div class="govuk-grid-column-two-thirds">
-
-  <form [formGroup]="searchOrgForm" (ngSubmit)="onSubmit()" >
-    <div class="govuk-form-group">
+<div class="search-organisations-form govuk-grid-column-two-thirds">
+  <div class="hmcts-search">
+    <form [formGroup]="searchOrgForm" (ngSubmit)="onSubmit()" >
       <lib-gov-uk-input
-        [config]="{label: 'Search', hint: 'Search for approved organisations by name or unique reference.', name: 'search', id: 'search', type: 'text', classes: 'search'}"
-       [group]="searchOrgForm">
+        [config]="{label: 'Search', hint: 'Search for approved organisations by name or unique reference', name: 'search', id: 'search', type: 'text', classes: 'hmcts-search__input'}"
+        [group]="searchOrgForm">
       </lib-gov-uk-input>
-    </div>
-    <lib-gov-uk-form-group-wrapper
-      [error]="fieldError"
-      [config]="{hint: 'Choose at least one filter field', legend: 'Fields', key: 'fields'}"
-      [formGroupName]="'fields'">
-
-      <div class="govuk-checkboxes">
-        <div class="govuk-checkboxes__item" *ngFor="let field of checkboxFields">
-          <input class="govuk-checkboxes__input" type="checkbox" [id]="field.id" [name]="field.id" [formControlName]="field.id">
-          <label class="govuk-checkboxes__label govuk-label" [for]="field.id">{{ field.label }}</label>
-          <span class="govuk-hint govuk-checkboxes__hint"></span>
-        </div>
-      </div>
-    </lib-gov-uk-form-group-wrapper>
-    <button type="submit" class="govuk-button">
-      Search
-    </button>
-  </form>
+      <button type="submit" class="govuk-button hmcts-search__button">
+        Search
+      </button>
+    </form>
+  </div>
 </div>
 
