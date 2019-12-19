@@ -8,7 +8,7 @@
 # dependencies
 /node_modules
 
-# environments - stop accidental commit of a local.yaml file. See setupConfig.
+# environments - stop accidental commit of a local.yaml file. See Readme.
 /config/local.yaml
 
 # IDEs and editors

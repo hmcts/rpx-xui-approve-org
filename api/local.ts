@@ -4,19 +4,6 @@ import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as process from 'process'
-
-/**
- * Note that the NODE_CONFIG_DIR environmental variable needs to be setup as an environmental variable.
- *
- * Why? The NODE_CONFIG_DIR is used by Node-config to allow Node-config to point at a configuration outside of the node server directory.
- *
- * This is required as our Node service does not sit at our webserver root, it is run from api/ whereas our configuration files sit
- * at /config ( up one directory )
- *
- * NODE_CONFIG_DIR ie. - D:\home\site\wwwroot\config OR /Users/x/projects/rpx-xui-approve-org/config locally.
- *
- * @see node_modules config search for 'NODE_CONFIG_DIR'
- */
 import * as config from 'config'
 
 import * as sessionFileStore from 'session-file-store'
@@ -57,7 +44,8 @@ if (!getEnvironment()) {
 }
 
 /**
- * TODO: Implement a logger on the Node layer.
+ * If there are no configuration properties found we highlight this to the person attempting to initialise
+ * this application.
  */
 console.log(environmentCheckText())
 
