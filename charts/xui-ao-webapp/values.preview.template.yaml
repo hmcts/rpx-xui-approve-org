@@ -15,3 +15,4 @@ nodejs:
     S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
     APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
     PUI_ENV: preview
+    NODE_CONFIG_ENV: preview
