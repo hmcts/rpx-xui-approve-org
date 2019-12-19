@@ -10,8 +10,7 @@ export class PbaAccountDetails {
   }
 
   getAccountDetails(pbas): Observable<any> {
-    return this.http.get<any>(`${this.updatePbaUrl}?accountNames=${pbas}`);
+    return this.http.get<any>(`${this.updatePbaUrl}/?accountNames=${pbas}`);
   }
-
 
 }

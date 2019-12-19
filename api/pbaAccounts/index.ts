@@ -1,7 +1,7 @@
 import { AxiosPromise } from 'axios'
 import * as express from 'express'
+import { environmentConfig } from '../lib/environment.config'
 import { http } from '../lib/http'
-import {environmentConfig} from '../lib/environment.config';
 
 async function handleAddressRoute(req, res) {
   let errReport: any
@@ -14,7 +14,6 @@ async function handleAddressRoute(req, res) {
     res.status(500).send(errReport)
   }
   const accountNames = req.query.accountNames.split(',')
-  console.log('accountNames', accountNames)
   const accounts = []
   const accountPromises = new Array<AxiosPromise<any>>()
   accountNames.forEach((accountName: string) => accountPromises.push(getAccount(accountName)))
