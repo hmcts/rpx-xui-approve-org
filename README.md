@@ -30,9 +30,14 @@ we default to the production variables. Reform standard*
 - Note that we DO NOT use or change NODE_ENV=production on any of the environments as NODE_ENV=production is being used
 for template caching and other reform things, therefore it needs to be set as NODE_ENV.
 
-## Local Environmental Variables Values
+- WARNING: Do not place a local.yaml file into the /config directory otherwise it will OVERRIDE all other files. We've made sure that it never gets
+placed into the repository as it's in the .gitignore file.
 
-export IDAM_SECRET=* && export S2S_SECRET=* && export NODE_CONFIG_ENV=local && export NODE_CONFIG_DIR=/Users/*/projects/rpx-xui-approve-org/config && npm run start:node
+- We DO use development.yaml for development locally.
+
+## Development Environmental Variables Setup
+
+export IDAM_SECRET=* && export S2S_SECRET=* && export NODE_CONFIG_DIR=/Users/*/projects/rpx-xui-approve-org/config && export NODE_CONFIG_ENV=development && npm run start:node
 
 ## Development server
 
