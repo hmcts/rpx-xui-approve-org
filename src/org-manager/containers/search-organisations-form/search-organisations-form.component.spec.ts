@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SearchOrganisationsFormComponent } from './search-organisations-form.component';
 import { GovUiModule } from 'projects/gov-ui/src/lib/gov-ui.module';
+import { SearchOrganisationsFormComponent } from './search-organisations-form.component';
 
 describe('SearchOrganisationsFormComponent', () => {
   let component: SearchOrganisationsFormComponent;
@@ -23,5 +23,14 @@ describe('SearchOrganisationsFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should call the output submitForm when onSubmit is called', () => {
+    spyOn(component.submitForm, 'emit').and.callThrough();
+    component.onSubmit();
+    expect(component.submitForm.emit).toHaveBeenCalledTimes(0);
+    component.searchOrgForm.controls.search.setValue('test');
+    component.onSubmit();
+    expect(component.submitForm.emit).toHaveBeenCalledWith('test');
   });
 });
