@@ -36,8 +36,8 @@ const app = express()
 propertiesVolume.addTo(config)
 
 /**
- * If there are no configuration properties found we highlight this to the DevOps
- * / Developer installing this application on an environment.
+ * If there are no configuration properties found we highlight this to the person attempting to initialise
+ * this application.
  */
 if (!getEnvironment()) {
   console.log(ERROR_NODE_CONFIG_ENV)
