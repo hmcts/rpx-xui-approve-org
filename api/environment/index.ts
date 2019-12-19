@@ -1,88 +1,16 @@
 import * as express from 'express'
-import {getConfigValue, getEnvironment} from '../configuration'
-import {
-  COOKIE_TOKEN,
-  COOKIES_USERID,
-  IDAM_CLIENT,
-  INDEX_URL,
-  LOGGING,
-  MAX_LINES,
-  MAX_LOG_LINE,
-  MICROSERVICE,
-  NOW,
-  OAUTH_CALLBACK_URL,
-  PROTOCOL, PROXY_HOST, PROXY_PORT,
-  SECURE_COOKIE,
-  SERVICE_S2S_PATH,
-  SERVICES_CCD_DATA_API_PATH,
-  SERVICES_CCD_DEF_API_PATH,
-  SERVICES_IDAM_API_PATH,
-  SERVICES_IDAM_WEB,
-  SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET
-} from '../configuration/references'
-import {EnvironmentConfigCookies, EnvironmentConfigExceptionOptions, EnvironmentConfigProxy, EnvironmentConfigServices} from '../interfaces/environment.config'
+import {uiConfig} from '../configuration/ui'
 
 export const router = express.Router({mergeParams: true})
 
 router.get('/config', environmentRoute)
 
-export const healthEndpoints = (): EnvironmentConfigServices => {
-
-  const HEALTH = '/health'
-
-  return {
-    ccdDataApi: getConfigValue(SERVICES_CCD_DATA_API_PATH) + HEALTH,
-    ccdDefApi: getConfigValue(SERVICES_CCD_DEF_API_PATH) + HEALTH,
-    idamApi: getConfigValue(SERVICES_IDAM_API_PATH) + HEALTH,
-    idamWeb: getConfigValue(SERVICES_IDAM_WEB) + HEALTH,
-    rdProfessionalApi: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH) + HEALTH,
-    s2s: getConfigValue(SERVICE_S2S_PATH) + HEALTH,
-  }
-}
-
 /**
- * All the environmental variables are passed to the front-end.
+ * All the environmental variables are passed to the ui.
  */
 async function environmentRoute(req, res) {
 
-  const configEnv = getEnvironment()
-
-  const config = {
-    configEnv,
-    cookies: {
-      token: getConfigValue(COOKIE_TOKEN),
-      userId: getConfigValue(COOKIES_USERID),
-    } as EnvironmentConfigCookies,
-    exceptionOptions: {
-      maxLines: getConfigValue(MAX_LINES),
-    } as EnvironmentConfigExceptionOptions,
-    health: healthEndpoints() as EnvironmentConfigServices,
-    idamClient: getConfigValue(IDAM_CLIENT),
-    indexUrl: getConfigValue(INDEX_URL),
-    logging: getConfigValue(LOGGING),
-    maxLogLine: getConfigValue(MAX_LOG_LINE),
-    microservice: getConfigValue(MICROSERVICE),
-    now: getConfigValue(NOW),
-    oauthCallbackUrl: getConfigValue(OAUTH_CALLBACK_URL),
-    protocol: getConfigValue(PROTOCOL),
-    proxy: {
-      host: getConfigValue(PROXY_HOST),
-      port: getConfigValue(PROXY_PORT),
-    } as EnvironmentConfigProxy,
-    secureCookie: getConfigValue(SECURE_COOKIE),
-    services: {
-      ccdDataApi: getConfigValue(SERVICES_CCD_DATA_API_PATH),
-      ccdDefApi: getConfigValue(SERVICES_CCD_DEF_API_PATH),
-      idamApi: getConfigValue(SERVICES_IDAM_API_PATH),
-      idamWeb: getConfigValue(SERVICES_IDAM_WEB),
-      rdProfessionalApi: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH),
-      s2s: getConfigValue(SERVICE_S2S_PATH),
-    } as EnvironmentConfigServices,
-    sessionSecret: getConfigValue(SESSION_SECRET),
-  }
-
-  res.status(200).send(config)
+  res.status(200).send(uiConfig())
 }
 
 export default router

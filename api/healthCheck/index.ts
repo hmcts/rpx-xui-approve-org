@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { healthEndpoints } from '../environment'
+import { healthEndpoints } from '../configuration/health'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 
