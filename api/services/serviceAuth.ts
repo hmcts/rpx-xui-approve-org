@@ -5,13 +5,13 @@ import * as log4jui from '../lib/log4jui'
 import { http } from '../lib/http'
 import { getHealth, getInfo } from '../lib/util'
 
-import { getConfigProp, getS2SSecret } from '../configuration'
+import { getConfigValue, getS2SSecret } from '../configuration'
 import { MICROSERVICE, SERVICE_S2S_PATH } from '../configuration/references'
 
-const url = getConfigProp(SERVICE_S2S_PATH)
+const url = getConfigValue(SERVICE_S2S_PATH)
 
 const s2sSecretUnTrimmed = getS2SSecret()
-const microservice = getConfigProp(MICROSERVICE)
+const microservice = getConfigValue(MICROSERVICE)
 const s2sSecret = s2sSecretUnTrimmed.trim()
 
 const logger = log4jui.getLogger('service auth')

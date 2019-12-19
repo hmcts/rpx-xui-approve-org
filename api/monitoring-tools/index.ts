@@ -1,5 +1,5 @@
 import * as express from 'express'
-import { getConfigProp } from '../configuration'
+import { getConfigValue } from '../configuration'
 import { APP_INSIGHTS_KEY } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 
@@ -7,8 +7,8 @@ const logger = log4jui.getLogger('monitoring-tools')
 
 async function handleInstrumentationKeyRoute(req, res) {
     try {
-        logger.info('environmentConfig.appInsightsInstrumentationKey is ' + getConfigProp(APP_INSIGHTS_KEY))
-        res.send({key: getConfigProp(APP_INSIGHTS_KEY)})
+        logger.info('environmentConfig.appInsightsInstrumentationKey is ' + getConfigValue(APP_INSIGHTS_KEY))
+        res.send({key: getConfigValue(APP_INSIGHTS_KEY)})
     } catch (error) {
         const errReport = JSON.stringify({
             apiError: error,

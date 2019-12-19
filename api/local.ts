@@ -21,12 +21,7 @@ import * as config from 'config'
 
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {appInsights} from './lib/appInsights'
-import {errorStack} from './lib/errorStack'
-import * as log4jui from './lib/log4jui'
-import * as tunnel from './lib/tunnel'
-import routes from './routes'
-import {environmentCheckText, getConfigProp, getEnvironment} from './configuration'
+import {environmentCheckText, getConfigValue, getEnvironment} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
   COOKIE_TOKEN,
@@ -38,6 +33,11 @@ import {
   SERVICES_IDAM_API_PATH,
   SESSION_SECRET,
 } from './configuration/references'
+import {appInsights} from './lib/appInsights'
+import {errorStack} from './lib/errorStack'
+import * as log4jui from './lib/log4jui'
+import * as tunnel from './lib/tunnel'
+import routes from './routes'
 
 const FileStore = sessionFileStore(session)
 
@@ -63,14 +63,14 @@ console.log(environmentCheckText())
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
-console.log(getConfigProp(COOKIE_TOKEN))
-console.log(getConfigProp(COOKIES_USERID))
-console.log(getConfigProp(MAX_LINES))
-console.log(getConfigProp(SERVICES_CCD_DATA_API_PATH))
-console.log(getConfigProp(SERVICES_CCD_DEF_API_PATH))
-console.log(getConfigProp(SERVICES_IDAM_API_PATH))
-console.log(getConfigProp(SESSION_SECRET))
-console.log(getConfigProp(IDAM_CLIENT))
+console.log(getConfigValue(COOKIE_TOKEN))
+console.log(getConfigValue(COOKIES_USERID))
+console.log(getConfigValue(MAX_LINES))
+console.log(getConfigValue(SERVICES_CCD_DATA_API_PATH))
+console.log(getConfigValue(SERVICES_CCD_DEF_API_PATH))
+console.log(getConfigValue(SERVICES_IDAM_API_PATH))
+console.log(getConfigValue(SESSION_SECRET))
+console.log(getConfigValue(IDAM_CLIENT))
 
 const logger = log4jui.getLogger('server')
 
@@ -79,14 +79,14 @@ app.use(
     cookie: {
       httpOnly: true,
       maxAge: 1800000,
-      secure: getConfigProp(SECURE_COOKIE) !== false,
+      secure: getConfigValue(SECURE_COOKIE) !== false,
     },
     name: 'xuiaowebapp',
     resave: true,
     saveUninitialized: true,
-    secret: getConfigProp(SESSION_SECRET),
+    secret: getConfigValue(SESSION_SECRET),
     store: new FileStore({
-      path: getConfigProp(NOW) ? '/tmp/sessions' : '.sessions',
+      path: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
     }),
   })
 )
@@ -105,8 +105,3 @@ app.use('/api', routes)
 
 const port = process.env.PORT || 3001
 app.listen(port, () => logger.info(`Local server up at ${port}`))
-
-// not defined.
-// const dbConfig = config.get('Customer.dbConfig')
-// console.log(dbConfig)
-// console.log(config.get('testNode.testProperty'))
