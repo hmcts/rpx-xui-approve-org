@@ -10,6 +10,9 @@
                     <li *ngFor="let item of navigation.items; let i = index" class="hmcts-header__navigation-item">
                         <a class="hmcts-header__navigation-link" *ngIf="userValue || item.text=='Sign out'" (click)="onEmitEvent(i)" [routerLink]="[item.href]">{{item.text}}</a>
                     </li>
+                    <li *xuilibFeatureToggle="'ao-test-flag'">
+                        Feature toggled entry
+                    </li>
                 </ul>
             </nav>
         </div>

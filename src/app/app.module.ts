@@ -1,40 +1,34 @@
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AppComponent } from './containers/app/app.component';
-import { SharedModule } from '../shared/shared.module';
-import { CookieModule } from 'ngx-cookie';
-import { environment } from '../environments/environment';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { EffectsModule } from '@ngrx/effects';
+import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
 import { MetaReducer, StoreModule } from '@ngrx/store';
-import { storeFreeze } from 'ngrx-store-freeze';
-import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { effects } from './store/effects';
-import { CustomSerializer, reducers } from './store/';
-
-// from Containers
-import * as fromContainers from './containers/';
-
+import config from 'config';
+import { storeFreeze } from 'ngrx-store-freeze';
+import { CookieModule } from 'ngx-cookie';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { OrgManagerModule } from 'src/org-manager/org-manager.module';
+import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
+import { environment } from '../environments/environment';
+import { AuthService } from '../services/auth/auth.service';
+import { SharedModule } from '../shared/shared.module';
+import { ROUTES } from './app.routes';
 // from Components
 import * as fromComponents from './components';
-
-import { ROUTES } from './app.routes';
-
-import { OrgManagerModule } from 'src/org-manager/org-manager.module';
-
-import config from 'config';
-import {AuthService} from '../services/auth/auth.service';
-import { MonitoringService } from './services/monitoring.service';
+// from Containers
+import * as fromContainers from './containers/';
+import { AppComponent } from './containers/app/app.component';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
-import { LoggerService } from './services/logger.service';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
 import { CryptoWrapper } from './services/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-
+import { LoggerService } from './services/logger.service';
+import { MonitoringService } from './services/monitoring.service';
+import { CustomSerializer, reducers } from './store/';
+import { effects } from './store/effects';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -61,7 +55,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule
+    ExuiCommonLibModule.forRoot()
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer },
