@@ -6,13 +6,15 @@ import * as fromActions from '../actions';
 import * as fromRood from '../../../app/store';
 import {UpdatePbaServices} from '../../services';
 import {LoggerService} from '../../../app/services/logger.service';
+import {PbaAccountDetails} from '../../services/pba-account-details.services';
 
 @Injectable()
 export class EditDetailsEffects {
   constructor(
     private actions$: Actions,
     private updatePbaServices: UpdatePbaServices,
-    private loggerService: LoggerService
+    private loggerService: LoggerService,
+    private pbaAccountDetails: PbaAccountDetails
   ) { }
 
   @Effect()
@@ -28,6 +30,21 @@ export class EditDetailsEffects {
         })
       );
     })
+  );
+
+  @Effect()
+  loadPba$ = this.actions$.pipe(
+      ofType(fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME),
+      map((action: fromActions.SubmitPba) => action.payload),
+      switchMap((body) => {
+        return this.pbaAccountDetails.getAccountDetails(body).pipe(
+            map(() => new fromActions.LoadPbaAccountNameSuccess(body)),
+            catchError((error: Error) => {
+              this.loggerService.error(error);
+              return of(new fromActions.LoadPbaAccountNameFail(error));
+            })
+        );
+      })
   );
 
   @Effect()

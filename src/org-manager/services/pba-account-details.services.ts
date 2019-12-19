@@ -5,12 +5,12 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class PbaAccountDetails {
-  private updatePbaUrl = environment.updatePbaUrl;
+  private updatePbaUrl = environment.pbaAccUrl;
   constructor(private http: HttpClient) {
   }
 
-  getAccountDetails(body): Observable<any> {
-    return this.http.get<any>(this.updatePbaUrl, body);
+  getAccountDetails(pbas): Observable<any> {
+    return this.http.get<any>(`${this.updatePbaUrl}?accountNames=${pbas}`);
   }
 
 

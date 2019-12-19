@@ -20,6 +20,6 @@ router.use('/decisions', stateRouter)
 router.use('/healthCheck', healthCheck)
 router.use('/organisations', organisationRouter)
 router.use('/updatePba', pbaRouter)
-router.use('/pba-accounts/', pbaAccounts)
+router.use('/pbaAccounts', pbaAccounts)
 router.use('/monitoring-tools', getappInsightsInstrumentationKey)
 export default router
