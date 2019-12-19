@@ -9,7 +9,7 @@ import * as path from 'path'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {environmentCheckText, getConfigProp, getEnvironment} from './configuration'
+import {environmentCheckText, getConfigValue, getEnvironment} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
   COOKIE_TOKEN,
@@ -51,29 +51,28 @@ console.log(environmentCheckText())
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
 console.log(process.env.NODE_CONFIG_ENV)
-console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
-console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
-console.log(getConfigProp(COOKIES_USERID))
-console.log(getConfigProp(MAX_LINES))
-console.log(getConfigProp(SERVICES_CCD_DATA_API_PATH))
-console.log(getConfigProp(SERVICES_CCD_DEF_API_PATH))
-console.log(getConfigProp(SERVICES_IDAM_API_PATH))
-console.log(getConfigProp(SESSION_SECRET))
-console.log(getConfigProp(IDAM_CLIENT))
+console.log(getConfigValue(COOKIE_TOKEN))
+console.log(getConfigValue(COOKIES_USERID))
+console.log(getConfigValue(MAX_LINES))
+console.log(getConfigValue(SERVICES_CCD_DATA_API_PATH))
+console.log(getConfigValue(SERVICES_CCD_DEF_API_PATH))
+console.log(getConfigValue(SERVICES_IDAM_API_PATH))
+console.log(getConfigValue(SESSION_SECRET))
+console.log(getConfigValue(IDAM_CLIENT))
 
 app.use(
     session({
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: getConfigProp(SECURE_COOKIE) !== false,
+            secure: getConfigValue(SECURE_COOKIE) !== false,
         },
         name: 'xuiaowebapp',
         resave: true,
         saveUninitialized: true,
-        secret: getConfigProp(SESSION_SECRET) ,
+        secret: getConfigValue(SESSION_SECRET) ,
         store: new FileStore({
-            path: getConfigProp(NOW)  ? '/tmp/sessions' : '.sessions',
+            path: getConfigValue(NOW)  ? '/tmp/sessions' : '.sessions',
         }),
     })
 )

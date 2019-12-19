@@ -1,5 +1,5 @@
 import * as express from 'express'
-import {getConfigProp} from '../configuration'
+import {getConfigValue} from '../configuration'
 import {
 SERVICES_RD_PROFESSIONAL_API_PATH,
 } from '../configuration/references'
@@ -19,7 +19,7 @@ import { http } from '../lib/http'
 async function handleUpdatePBARoute(req: express.Request, res: express.Response, next: express.NextFunction) {
       try {
           const {paymentAccounts, orgId} = req.body
-          const updatePbaUrl = `${getConfigProp(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${orgId}/pbas`
+          const updatePbaUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${orgId}/pbas`
           await http.put(updatePbaUrl, {paymentAccounts})
           res.status(200).send()
       } catch (error) {
