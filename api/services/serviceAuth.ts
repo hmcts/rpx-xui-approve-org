@@ -6,7 +6,7 @@ import { http } from '../lib/http'
 import { getHealth, getInfo } from '../lib/util'
 
 import { getConfigProp, getS2SSecret } from '../configuration'
-import { MICROSERVICE, SERVICE_S2S_PATH } from '../configuration/constants'
+import { MICROSERVICE, SERVICE_S2S_PATH } from '../configuration/references'
 
 const url = getConfigProp(SERVICE_S2S_PATH)
 
@@ -16,6 +16,7 @@ const s2sSecret = s2sSecretUnTrimmed.trim()
 
 const logger = log4jui.getLogger('service auth')
 
+// TODO: process.env should all be located in configuration
 export async function postS2SLease() {
   let response: AxiosResponse<any>
   console.log('NODE_CONFIG_ENV is now:', process.env.NODE_CONFIG_ENV)

@@ -1,5 +1,5 @@
 import { getConfigProp } from '../configuration'
-import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/constants'
+import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 
