@@ -1,5 +1,5 @@
 import * as config from 'config'
-import {HTTP, DEVELOPMENT} from './constants'
+import {DEVELOPMENT, HTTP} from './constants'
 import {ENVIRONMENT, PROTOCOL} from './references'
 
 /**
@@ -9,7 +9,7 @@ import {ENVIRONMENT, PROTOCOL} from './references'
  * 'Environmental Variables Setup & Error Handling'
  *
  * @see Readme
- * @returns {string} ie. - local / preview / aat / prod
+ * @returns {string} ie. - development / preview / aat / ithc, prod
  */
 export const getEnvironment = () => process.env.NODE_CONFIG_ENV
 
@@ -48,7 +48,7 @@ export const getS2SSecret = () => process.env.S2S_SECRET
 /**
  * Generate Environment Check Text
  *
- * We generate text to be used for debugging purposes, so as the developer knows
+ * We generate text to be used for debugging purposes, so as the person attempting to initialise the application knows
  * what the NODE_CONFIG_ENV is set as and what config file is being used.
  */
 export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore we are using the ${config.get(ENVIRONMENT)} config.`
