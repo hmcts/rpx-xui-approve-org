@@ -20,7 +20,7 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
-} from '../configuration/constants'
+} from '../configuration/references'
 import {EnvironmentConfigCookies, EnvironmentConfigExceptionOptions, EnvironmentConfigProxy, EnvironmentConfigServices} from '../interfaces/environment.config'
 
 export const router = express.Router({mergeParams: true})

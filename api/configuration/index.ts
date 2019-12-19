@@ -1,5 +1,6 @@
 import * as config from 'config'
-import {ENVIRONMENT, PROTOCOL} from './constants'
+import {HTTP, LOCAL} from './constants'
+import {ENVIRONMENT, PROTOCOL} from './references'
 
 /**
  * get Configuration Property
@@ -27,9 +28,6 @@ export const getIdamSecret = () => process.env.IDAM_SECRET
 
 export const getS2SSecret = () => process.env.S2S_SECRET
 
-export const ERROR_NODE_CONFIG_ENV = `Error: NODE_CONFIG_ENV is not set. Please make sure you have the NODE_CONFIG_ENV
-  setup in your environmental variables.`
-
 /**
  * Checks if the environment has the configuration properties setup. If they are not set we throw a message back to the developer.
  * So that we give that developer feedback on how to resolve.
@@ -42,17 +40,12 @@ export const ERROR_NODE_CONFIG_ENV = `Error: NODE_CONFIG_ENV is not set. Please 
  *
  * @returns {string}
  */
-export const hasNodeEnvironment = () => process.env.NODE_CONFIG_ENV
-
-// TODO: This should come from configuration file? So as to all come from one location,
-// Remember that S2S secret and one other environmental variable do not.
-// Yes this should come from the config file, as Node-config sets up local if
-// no NODE_ENV is set.
-// TODO: check this logic.
-export const isLocalEnvironment = () => !process.env.NODE_CONFIG_ENV
+export const getEnvironment = () => process.env.NODE_CONFIG_ENV
 
 /**
- * Logs the Configuration .yaml file this environment is pointing to, for debugging purposes.
+ * Generate Environment Check Text
+ *
+ * We generate text to logs the Configuration .yaml file this environment is pointing to, for debugging purposes.
  *
  * The .yaml is selected by Node-config dependent on the NODE_ENV variable.
  *
@@ -71,11 +64,11 @@ export const isLocalEnvironment = () => !process.env.NODE_CONFIG_ENV
  */
 export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore we are using the ${config.get(ENVIRONMENT)} config.`
 
-// TODO: Can be done better, but just testing something.
-export const getProtocol = () => {
-  if (process.env.NODE_CONFIG_ENV === 'local') {
-    return 'http'
-  } else {
-    return config.get(PROTOCOL)
-  }
-}
+/**
+ * Get Protocol
+ *
+ * If running locally we return 'http'
+ *
+ * @returns {string | string}
+ */
+export const getProtocol = () => getEnvironment() === LOCAL ? HTTP : PROTOCOL

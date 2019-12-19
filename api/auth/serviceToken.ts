@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as jwtDecode from 'jwt-decode'
 import { getConfigProp } from '../configuration'
-import { MICROSERVICE } from '../configuration/constants'
+import { MICROSERVICE } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 import { asyncReturnOrError } from '../lib/util'
 import { postS2SLease } from '../services/serviceAuth'
