@@ -1,7 +1,6 @@
 import * as express from 'express'
 import { getConfigProp } from '../configuration'
 import { APP_INSIGHTS_KEY } from '../configuration/constants'
-// import { environmentConfig } from '../lib/environment.config'
 import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('monitoring-tools')

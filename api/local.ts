@@ -22,7 +22,6 @@ import * as config from 'config'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import {appInsights} from './lib/appInsights'
-// import { environmentConfig } from './lib/environment.config'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
@@ -63,8 +62,7 @@ console.log(environmentCheckText())
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
-console.log(process.env.NODE_CONFIG_ENV) // config.get('cookies.token')
-console.log(getConfigProp(COOKIE_TOKEN)) // config.get('cookies.token')
+console.log(getConfigProp(COOKIE_TOKEN))
 console.log(getConfigProp(COOKIES_USERID))
 console.log(getConfigProp(MAX_LINES))
 console.log(getConfigProp(SERVICES_CCD_DATA_API_PATH))

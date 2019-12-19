@@ -2,18 +2,16 @@ import { AxiosResponse } from 'axios'
 import * as express from 'express'
 import * as otp from 'otp'
 import * as log4jui from '../lib/log4jui'
-// import {configEnv, environmentConfig, getEnvConfig} from '../lib/environment.config'
 import { http } from '../lib/http'
 import { getHealth, getInfo } from '../lib/util'
 
-import { getConfigProp } from '../configuration'
+import { getConfigProp, getS2SSecret } from '../configuration'
 import { MICROSERVICE, SERVICE_S2S_PATH } from '../configuration/constants'
 
-const url = getConfigProp(SERVICE_S2S_PATH) // environmentConfig.services.s2s
+const url = getConfigProp(SERVICE_S2S_PATH)
 
-// TODO: This directly accesses the environment variable S2S_SECRET, is this still required?
-const s2sSecretUnTrimmed = process.env.S2S_SECRET // getEnvConfig<string>('S2S_SECRET', 'string')
-const microservice = getConfigProp(MICROSERVICE) //environmentConfig.microservice
+const s2sSecretUnTrimmed = getS2SSecret()
+const microservice = getConfigProp(MICROSERVICE)
 const s2sSecret = s2sSecretUnTrimmed.trim()
 
 const logger = log4jui.getLogger('service auth')

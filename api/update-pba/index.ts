@@ -1,10 +1,10 @@
 import * as express from 'express'
-// import { environmentConfig } from '../lib/environment.config'
-import {
-  SERVICES_RD_PROFESSIONAL_API_PATH,
-} from '../configuration/constants'
 import {getConfigProp} from '../configuration'
+import {
+SERVICES_RD_PROFESSIONAL_API_PATH,
+} from '../configuration/constants'
 import { http } from '../lib/http'
+
 /**
  * Handle Update PBA Number
  *
