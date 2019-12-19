@@ -22,7 +22,6 @@ import {
   SESSION_SECRET
 } from '../configuration/constants'
 import {EnvironmentConfigCookies, EnvironmentConfigExceptionOptions, EnvironmentConfigProxy, EnvironmentConfigServices} from '../interfaces/environment.config'
-// import { environmentConfig } from '../lib/environment.config'
 
 export const router = express.Router({mergeParams: true})
 
@@ -32,7 +31,7 @@ router.get('/config', environmentRoute)
 // Should this be here or in configuration index?
 // This is more or less the same thing as configuration, so move into the same
 // folder
-export const healthEndpoints = () => {
+export const healthEndpoints = (): EnvironmentConfigServices => {
 
   const HEALTH = '/health'
 
@@ -46,9 +45,9 @@ export const healthEndpoints = () => {
   }
 }
 
-// Have this as UI config, and explain that it's an exposed route.
+//TODO: Have this as UI config, and explain that it's an exposed route.
 async function environmentRoute(req, res) {
-  // const config = { ...environmentConfig }
+
   const configEnv = process.env.NODE_CONFIG_ENV
   const HEALTH = '/health'
 

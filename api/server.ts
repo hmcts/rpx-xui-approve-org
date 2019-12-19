@@ -21,7 +21,6 @@ import {
   SESSION_SECRET,
 } from './configuration/constants'
 import { appInsights } from './lib/appInsights'
-// import { environmentConfig } from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
