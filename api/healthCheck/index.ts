@@ -1,7 +1,6 @@
 import * as express from 'express'
-// import { environmentConfig } from '../lib/environment.config'
-import { http } from '../lib/http'
 import { healthEndpoints } from '../environment'
+import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 
 export const router = express.Router({ mergeParams: true })

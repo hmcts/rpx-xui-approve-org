@@ -1,20 +1,18 @@
 import axios, { AxiosResponse } from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
-// import {environmentConfig, getEnvConfig} from '../lib/environment.config'
+import { getConfigProp, getIdamSecret, getProtocol } from '../configuration'
+import {COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, INDEX_URL, OAUTH_CALLBACK_URL, SERVICES_IDAM_API_PATH} from '../configuration/constants'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest } from '../lib/models'
 import { asyncReturnOrError } from '../lib/util'
 import { getUserDetails } from '../services/idam'
 import { serviceTokenGenerator } from './serviceToken'
-import { getConfigProp, getProtocol } from '../configuration'
-import {COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, INDEX_URL, OAUTH_CALLBACK_URL, SERVICES_IDAM_API_PATH} from '../configuration/constants'
 
 const idamUrl = getConfigProp(SERVICES_IDAM_API_PATH)
 
-// TODO: This directly accesses the IDAM_SECRET, is this still required?
-const secret = process.env.IDAM_SECRET // getEnvConfig<string>('IDAM_SECRET', 'string')
+const secret = getIdamSecret()
 const logger = log4jui.getLogger('auth')
 
 export async function attach(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {

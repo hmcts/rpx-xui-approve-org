@@ -1,4 +1,3 @@
-// import { environmentConfig } from '../lib/environment.config'
 import { getConfigProp } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/constants'
 import { http } from '../lib/http'
