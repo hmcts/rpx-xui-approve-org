@@ -3,4 +3,4 @@ export const ERROR_NODE_CONFIG_ENV = `Error: NODE_CONFIG_ENV is not set. Please 
 
 export const HTTP = 'http'
 
-export const LOCAL = 'local'
+export const DEVELOPMENT = 'development'

@@ -1,14 +1,14 @@
 import * as applicationinsights from 'applicationinsights'
 import * as express from 'express'
 import {getConfigValue, getEnvironment} from '../configuration'
-import {LOCAL} from '../configuration/constants'
+import {DEVELOPMENT} from '../configuration/constants'
 import {APP_INSIGHTS_KEY} from '../configuration/references'
 
 export let client
 
 // shouldnt do this check here but this is a high level dep
 
-if (getEnvironment() !== LOCAL) {
+if (getEnvironment() !== DEVELOPMENT) {
     console.log('environmentConfig.appInsightsInstrumentationKey is ' + getConfigValue(APP_INSIGHTS_KEY))
     applicationinsights
         .setup(getConfigValue(APP_INSIGHTS_KEY))

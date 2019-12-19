@@ -1,5 +1,5 @@
 import * as config from 'config'
-import {HTTP, LOCAL} from './constants'
+import {HTTP, DEVELOPMENT} from './constants'
 import {ENVIRONMENT, PROTOCOL} from './references'
 
 /**
@@ -60,4 +60,4 @@ export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.e
  *
  * @returns {string | string}
  */
-export const getProtocol = () => getEnvironment() === LOCAL ? HTTP : PROTOCOL
+export const getProtocol = () => getEnvironment() === DEVELOPMENT ? HTTP : getConfigValue(PROTOCOL)
