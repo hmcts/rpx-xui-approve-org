@@ -3,7 +3,7 @@ import * as fromStore from '../../store';
 import { Store, select } from '@ngrx/store';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import { Observable } from 'rxjs';
-import {filter, pluck, take, takeWhile} from 'rxjs/operators';
+import {filter, map, pluck, take, takeWhile} from 'rxjs/operators';
 import * as fromOrganisation from '../../store/';
 
 /**
@@ -30,10 +30,18 @@ export class OrganisationDetailsComponent implements OnInit {
     this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
     this.orgs$.pipe(
         filter(value => value !== undefined),
-        pluck('pbaNumber'),
+        map(value => {
+          const {pbaNumber, organisationId} = value;
+          return {pbaNumber, organisationId};
+        }),
         take(1)
-    ).subscribe(pbas => {
-      this.store.dispatch(new fromOrganisation.LoadPbaAccountName(pbas.toString()));
+    ).subscribe(({organisationId, pbaNumber}) => {
+      this.store.dispatch(new fromOrganisation.LoadPbaAccountName({
+            orgId: organisationId,
+            pbas: pbaNumber.toString()
+          }
+        )
+      );
     });
   }
 

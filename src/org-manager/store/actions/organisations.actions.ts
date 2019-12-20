@@ -86,19 +86,19 @@ export class LoadActiveOrganisationFail implements Action {
 
 export class LoadPbaAccountName implements Action {
   readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME;
-  constructor(public payload: string) {
+  constructor(public payload: {pbas: string; orgId: string}) {
   }
 }
 
 export class LoadPbaAccountNameSuccess implements Action {
   readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS;
-  constructor(public payload: any) {
+  constructor(public payload: {orgId: string; data: any}) {
   }
 }
 
 export class LoadPbaAccountNameFail implements Action {
-  readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS;
-  constructor(public payload: any) {
+  readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL;
+  constructor(public payload: {orgId: string; error: Error}) {
   }
 }
 

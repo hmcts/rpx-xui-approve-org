@@ -6,7 +6,7 @@ import * as fromActions from '../actions';
 import * as fromRood from '../../../app/store';
 import {UpdatePbaServices} from '../../services';
 import {LoggerService} from '../../../app/services/logger.service';
-import {PbaAccountDetails} from '../../services/pba-account-details.services';
+import {PbaAccountDetails} from '../../services';
 
 @Injectable()
 export class EditDetailsEffects {
@@ -33,15 +33,15 @@ export class EditDetailsEffects {
   );
 
   @Effect()
-  loadPba$ = this.actions$.pipe(
+  loadPbaAccountDetails$ = this.actions$.pipe(
       ofType(fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME),
-      map((action: fromActions.SubmitPba) => action.payload),
-      switchMap((body) => {
-        return this.pbaAccountDetails.getAccountDetails(body).pipe(
-            map(() => new fromActions.LoadPbaAccountNameSuccess(body)),
+      map((action: fromActions.LoadPbaAccountName) => action.payload),
+      switchMap((payload) => {
+        return this.pbaAccountDetails.getAccountDetails(payload.pbas).pipe(
+            map((data) => new fromActions.LoadPbaAccountNameSuccess({orgId: payload.orgId, data})),
             catchError((error: Error) => {
               this.loggerService.error(error);
-              return of(new fromActions.LoadPbaAccountNameFail(error));
+              return of(new fromActions.LoadPbaAccountNameFail({orgId: payload.orgId, error}));
             })
         );
       })

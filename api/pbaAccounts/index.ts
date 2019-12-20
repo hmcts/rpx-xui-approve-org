@@ -20,7 +20,7 @@ async function handleAddressRoute(req, res) {
 
   try {
     console.log(accounts)
-    await Promise.all(accountPromises).then(allAccounts => {
+    await Promise.all(accountPromises).catch(err => err).then(allAccounts => {
       allAccounts.forEach(account => {
         accounts.push(account.data)
       })
@@ -40,7 +40,6 @@ async function handleAddressRoute(req, res) {
 }
 
 function getAccount(accountName: string): AxiosPromise<any> {
-  console.log(`${environmentConfig.services.feeAndPayApi}/accounts/${accountName}`)
   const url = `${environmentConfig.services.feeAndPayApi}/accounts/${accountName}`
   const promise = http.get(url)
   return promise

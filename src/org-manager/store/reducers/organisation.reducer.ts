@@ -1,6 +1,5 @@
 import * as fromActions from '../actions';
 import {OrganisationVM} from 'src/org-manager/models/organisation';
-import {ofType} from '@ngrx/effects';
 
 export interface OrganisationState {
   activeOrganisations: {
@@ -185,9 +184,22 @@ export function reducer(
           pendingOrganisations
         };
       }
+    }
 
+    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS: {
+      const payload = action.payload;
+      debugger
+      return {
+        ...state
+      };
+    }
 
-
+    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL: {
+      const payload = action.payload;
+      debugger
+      return {
+        ...state
+      };
     }
   }
   return state;
