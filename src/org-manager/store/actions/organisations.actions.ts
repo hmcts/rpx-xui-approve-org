@@ -84,19 +84,19 @@ export class LoadActiveOrganisationFail implements Action {
   }
 }
 
-export class LoadPbaAccountName implements Action {
+export class LoadPbaAccountsDetails implements Action {
   readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME;
   constructor(public payload: {pbas: string; orgId: string}) {
   }
 }
 
-export class LoadPbaAccountNameSuccess implements Action {
+export class LoadPbaAccountDetailsSuccess implements Action {
   readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS;
   constructor(public payload: {orgId: string; data: any}) {
   }
 }
 
-export class LoadPbaAccountNameFail implements Action {
+export class LoadPbaAccountDetailsFail implements Action {
   readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL;
   constructor(public payload: {orgId: string; error: Error}) {
   }
@@ -116,6 +116,6 @@ export type OrganisationsActions =
     | LoadActiveOrganisation
     | LoadActiveOrganisationSuccess
     | LoadActiveOrganisationFail
-    | LoadPbaAccountName
-    | LoadPbaAccountNameSuccess
-    | LoadPbaAccountNameFail;
+    | LoadPbaAccountsDetails
+    | LoadPbaAccountDetailsSuccess
+    | LoadPbaAccountDetailsFail;

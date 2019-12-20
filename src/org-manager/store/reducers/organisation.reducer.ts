@@ -188,15 +188,42 @@ export function reducer(
 
     case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS: {
       const payload = action.payload;
-      debugger
-      return {
-        ...state
+      const orgId = payload.orgId;
+      const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
+      const accountDetails =  payload.data;
+      const entity = {
+        ...state[orgType].orgEntities[orgId],
+        isAccLoaded: true,
+        accountDetails
       };
+      const orgEntities = {
+        ...state[orgType].orgEntities,
+        [orgId]: entity
+      };
+
+      if (orgType === 'activeOrganisations') {
+        const activeOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          activeOrganisations
+        };
+      } else {
+        const pendingOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          pendingOrganisations
+        };
+      }
     }
 
     case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL: {
       const payload = action.payload;
-      debugger
       return {
         ...state
       };

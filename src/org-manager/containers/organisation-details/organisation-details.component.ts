@@ -30,19 +30,18 @@ export class OrganisationDetailsComponent implements OnInit {
     this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
     this.orgs$.pipe(
         filter(value => value !== undefined),
-        map(value => {
-          const {pbaNumber, organisationId} = value;
-          return {pbaNumber, organisationId};
-        }),
         take(1)
-    ).subscribe(({organisationId, pbaNumber}) => {
-      this.store.dispatch(new fromOrganisation.LoadPbaAccountName({
-            orgId: organisationId,
-            pbas: pbaNumber.toString()
-          }
-        )
-      );
+    ).subscribe(({organisationId, pbaNumber, isAccLoaded}) => {
+      if (!isAccLoaded) {
+        this.store.dispatch(new fromOrganisation.LoadPbaAccountsDetails({
+              orgId: organisationId,
+              pbas: pbaNumber.toString()
+            }
+          )
+        );
+      }
     });
   }
 
 }
+

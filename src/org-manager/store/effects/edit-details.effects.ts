@@ -35,13 +35,13 @@ export class EditDetailsEffects {
   @Effect()
   loadPbaAccountDetails$ = this.actions$.pipe(
       ofType(fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME),
-      map((action: fromActions.LoadPbaAccountName) => action.payload),
+      map((action: fromActions.LoadPbaAccountsDetails) => action.payload),
       switchMap((payload) => {
         return this.pbaAccountDetails.getAccountDetails(payload.pbas).pipe(
-            map((data) => new fromActions.LoadPbaAccountNameSuccess({orgId: payload.orgId, data})),
+            map((data) => new fromActions.LoadPbaAccountDetailsSuccess({orgId: payload.orgId, data})),
             catchError((error: Error) => {
               this.loggerService.error(error);
-              return of(new fromActions.LoadPbaAccountNameFail({orgId: payload.orgId, error}));
+              return of(new fromActions.LoadPbaAccountDetailsFail({orgId: payload.orgId, error}));
             })
         );
       })

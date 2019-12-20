@@ -35,7 +35,6 @@ async function handleAddressRoute(req, res) {
     res.status(500).send(errReport)
     return
   }
-  console.log(accounts)
   res.send(accounts)
 }
 
