@@ -63,5 +63,41 @@ describe('PendingOrganisationActions actions', () => {
       });
     });
   });
+
+  // Load
+  describe('LoadPbaAccountsDetails', () => {
+    it('should create an action', () => {
+      const payload = {pbas: 'PBA1234567', orgId: '12345'};
+      const action = new fromPendingOrganisation.LoadPbaAccountsDetails(payload);
+      expect({ ...action }).toEqual({
+        type: fromPendingOrganisation.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME,
+        payload
+      });
+    });
+  });
+
+  // Success
+  describe('LoadPbaAccountDetailsSuccess', () => {
+    it('should create an action', () => {
+      const payload2 = {data: [{account_name: 'PBA1234567'}], orgId: '12345'};
+      const action = new fromPendingOrganisation.LoadPbaAccountDetailsSuccess(payload2);
+      expect({ ...action }).toEqual({
+        type: fromPendingOrganisation.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS,
+        payload: payload2
+      });
+    });
+  });
+
+  // Fail
+  describe('LoadPbaAccountDetailsFail', () => {
+    it('should create an action', () => {
+      const payload2 = {data: [{account_name: 'PBA1234567'}], orgId: '12345'};
+      const action = new fromPendingOrganisation.LoadPbaAccountDetailsSuccess(payload2);
+      expect({ ...action }).toEqual({
+        type: fromPendingOrganisation.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS,
+        payload: payload2
+      });
+    });
+  });
 });
 
