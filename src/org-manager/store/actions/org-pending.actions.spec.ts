@@ -67,11 +67,11 @@ describe('PendingOrganisationActions actions', () => {
   // Load
   describe('LoadPbaAccountsDetails', () => {
     it('should create an action', () => {
-      const payload = {pbas: 'PBA1234567', orgId: '12345'};
-      const action = new fromPendingOrganisation.LoadPbaAccountsDetails(payload);
+      const payload0 = {pbas: 'PBA1234567', orgId: '12345'};
+      const action = new fromPendingOrganisation.LoadPbaAccountsDetails(payload0);
       expect({ ...action }).toEqual({
         type: fromPendingOrganisation.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME,
-        payload
+        payload: payload0
       });
     });
   });
