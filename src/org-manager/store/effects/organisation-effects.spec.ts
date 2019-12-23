@@ -8,7 +8,7 @@ import { OrganisationEffects } from './organisation.effects';
 import * as fromActons from '../actions/organisations.actions';
 import {OrganisationService, PbaAccountDetails, PendingOrganisationService} from 'src/org-manager/services';
 import { Go } from 'src/app/store';
-import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
+import {LoadPbaAccuntsObj, PendingOrganisationsMockCollection1} from '../../mock/pending-organisation.mock';
 import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 import { LoggerService } from 'src/app/services/logger.service';
 
@@ -111,13 +111,7 @@ describe('Organisation Effects', () => {
 
   describe('loadPbaAccountDetails$', () => {
     it('should return LoadPbaAccountDetailsSuccess', () => {
-      const payload0 = [{
-        account_number: 'PBA0088487',
-        account_name: 'RAY NIXON BROWN',
-        credit_limit: 5000,
-        available_balance: 5000,
-        status: 'Deleted',
-        effective_date: '2019-12-22T19:30:55.000Z'}];
+      const payload0 = LoadPbaAccuntsObj;
       getAccountDetailsServiceMock.getAccountDetails.and.returnValue(of(payload0));
       const action = new fromActons.LoadPbaAccountsDetails({pbas: 'PBA0088487', orgId: '12345'});
       const completion = new fromActons.LoadPbaAccountDetailsSuccess({orgId: '12345', data: payload0});

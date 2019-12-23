@@ -65,6 +65,15 @@ export const PendingOrganisationsMockCollectionObj: OrganisationVM = {
 
   };
 
+export const LoadPbaAccuntsObj = [{
+    account_number: 'PBA0088487',
+    account_name: 'RAY NIXON BROWN',
+    credit_limit: 5000,
+    available_balance: 5000,
+    status: 'Deleted',
+    effective_date: '2019-12-22T19:30:55.000Z'
+}];
+
 export const orgStatePending = {
  activeOrganisations: {
    orgEntities: {},
