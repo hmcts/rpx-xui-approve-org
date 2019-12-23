@@ -69,8 +69,8 @@ describe('Organisation Effects', () => {
 
   });
 
-  describe('approvPendingOrganisations$', () => {
-    xit('should return a collection from approvePendingOrgs$ - ApprovePendingOrganisationsSuccess', () => {
+  xdescribe('approvPendingOrganisations$', () => {
+    it('should return a collection from approvePendingOrgs$ - ApprovePendingOrganisationsSuccess', () => {
 
       pendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(of(true));
       const action = new fromActons.ApprovePendingOrganisations(payload[0]);
@@ -106,6 +106,24 @@ describe('Organisation Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadActiveOrganisations$).toBeObservable(expected);
+    });
+  });
+
+  describe('loadPbaAccountDetails$', () => {
+    it('should return LoadPbaAccountDetailsSuccess', () => {
+      const payload0 = [{
+        account_number: 'PBA0088487',
+        account_name: 'RAY NIXON BROWN',
+        credit_limit: 5000,
+        available_balance: 5000,
+        status: 'Deleted',
+        effective_date: '2019-12-22T19:30:55.000Z'}];
+      getAccountDetailsServiceMock.getAccountDetails.and.returnValue(of(payload0));
+      const action = new fromActons.LoadPbaAccountsDetails({pbas: 'PBA0088487', orgId: '12345'});
+      const completion = new fromActons.LoadPbaAccountDetailsSuccess({orgId: '12345', data: payload0});
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.loadPbaAccountDetails$).toBeObservable(expected);
     });
   });
 });
