@@ -156,8 +156,9 @@ export function reducer(
       const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
 
       const entity = {
-       ...state[orgType].orgEntities[orgId],
-       pbaNumber
+        ...state[orgType].orgEntities[orgId],
+        pbaNumber,
+        isAccLoaded: false,
       } as OrganisationVM;
 
       const orgEntities = {
