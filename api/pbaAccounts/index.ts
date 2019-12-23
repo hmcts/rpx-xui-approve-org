@@ -19,10 +19,9 @@ async function handleAddressRoute(req, res) {
   accountNames.forEach((accountName: string) => accountPromises.push(getAccount(accountName)))
 
   try {
-    console.log(accounts)
     await Promise.all(accountPromises).catch(err => err).then(allAccounts => {
       allAccounts.forEach(account => {
-        const data = account.data === 'Account not found' ? {account_name: 'account not found'} : account.data
+        const data = account.data === 'Account not found' ? {account_name: 'not found'} : account.data
         accounts.push(data)
       })
     })
