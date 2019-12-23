@@ -22,7 +22,8 @@ async function handleAddressRoute(req, res) {
     console.log(accounts)
     await Promise.all(accountPromises).catch(err => err).then(allAccounts => {
       allAccounts.forEach(account => {
-        accounts.push(account.data)
+        const data = account.data === 'Account not found' ? {account_name: 'account not found'} : account.data
+        accounts.push(data)
       })
     })
   } catch (error) {
@@ -32,7 +33,7 @@ async function handleAddressRoute(req, res) {
       apiStatusCode: error && error.status ? error.status : '',
       message: `Fee And Pay route error `,
     }
-    res.status(500).send(errReport)
+    res.status(error && error.status ? error.status : 500).send(errReport)
     return
   }
   res.send(accounts)
@@ -40,7 +41,7 @@ async function handleAddressRoute(req, res) {
 
 function getAccount(accountName: string): AxiosPromise<any> {
   const url = `${environmentConfig.services.feeAndPayApi}/accounts/${accountName}`
-  const promise = http.get(url)
+  const promise = http.get(url).catch(err => err);
   return promise
 }
 

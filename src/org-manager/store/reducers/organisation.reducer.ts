@@ -1,5 +1,5 @@
-import * as fromActions from '../actions';
 import {OrganisationVM} from 'src/org-manager/models/organisation';
+import * as fromActions from '../actions';
 
 export interface OrganisationState {
   activeOrganisations: {
@@ -186,7 +186,8 @@ export function reducer(
       }
     }
 
-    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS: {
+    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS:
+    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL: {
       const payload = action.payload;
       const orgId = payload.orgId;
       const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
@@ -220,13 +221,6 @@ export function reducer(
           pendingOrganisations
         };
       }
-    }
-
-    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL: {
-      const payload = action.payload;
-      return {
-        ...state
-      };
     }
   }
   return state;

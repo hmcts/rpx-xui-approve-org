@@ -32,7 +32,7 @@ export class OrganisationDetailsComponent implements OnInit {
         filter(value => value !== undefined),
         take(1)
     ).subscribe(({organisationId, pbaNumber, isAccLoaded}) => {
-      if (!isAccLoaded) {
+      if (!isAccLoaded && pbaNumber.length) {
         this.store.dispatch(new fromOrganisation.LoadPbaAccountsDetails({
               orgId: organisationId,
               pbas: pbaNumber.toString()

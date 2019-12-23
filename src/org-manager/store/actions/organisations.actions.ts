@@ -98,7 +98,7 @@ export class LoadPbaAccountDetailsSuccess implements Action {
 
 export class LoadPbaAccountDetailsFail implements Action {
   readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL;
-  constructor(public payload: {orgId: string; error: Error}) {
+  constructor(public payload: {orgId: string; data: any}) {
   }
 }
 
