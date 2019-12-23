@@ -165,7 +165,7 @@ export function reducer(
        ...state[orgType].orgEntities,
        [orgId]: entity
       };
-
+      // TODO create helper function instead of duplicating code
       if (orgType === 'activeOrganisations') {
         const activeOrganisations = {
          ...state[orgType],
@@ -174,6 +174,41 @@ export function reducer(
         return {
           ...state,
          activeOrganisations
+        };
+      } else {
+        const pendingOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          pendingOrganisations
+        };
+      }
+    }
+    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME: {
+      const {orgId} = action.payload;
+      const accountDetails =  [{account_name: 'loading...'}];
+      const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
+      const entity = {
+        ...state[orgType].orgEntities[orgId],
+        isAccLoaded: false,
+        accountDetails
+      };
+
+      const orgEntities = {
+        ...state[orgType].orgEntities,
+        [orgId]: entity
+      };
+      // TODO create helper function instead of duplicating code
+      if (orgType === 'activeOrganisations') {
+        const activeOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          activeOrganisations
         };
       } else {
         const pendingOrganisations = {
@@ -202,7 +237,7 @@ export function reducer(
         ...state[orgType].orgEntities,
         [orgId]: entity
       };
-
+      // TODO create helper function instead of duplicating code
       if (orgType === 'activeOrganisations') {
         const activeOrganisations = {
           ...state[orgType],
