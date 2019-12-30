@@ -40,7 +40,7 @@ for template caching and other reform things*, therefore we set NODE_CONFIG_ENV.
 - WARNING: Do not place a local.yaml file into the /config directory otherwise it will OVERRIDE all other files. We've made sure that it never gets
 placed into the repository as it's in the .gitignore file.
 
-- We DO use development.yaml for development locally.
+- We CAN use development.yaml for development locally.
 
 ## Development Environmental Variables Setup
 
