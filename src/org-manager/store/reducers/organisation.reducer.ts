@@ -226,8 +226,12 @@ export function reducer(
     case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL: {
       const payload = action.payload;
       const orgId = payload.orgId;
+      const errorData = [
+        {account_name: 'There is a problem retrieving the account name. Try again later'},
+        {account_name: 'There is a problem retrieving the account name. Try again later'}
+      ];
       const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
-      const accountDetails =  payload.data;
+      const accountDetails = !(action.type === fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL) ? payload.data : errorData;
       const entity = {
         ...state[orgType].orgEntities[orgId],
         isAccLoaded: true,
