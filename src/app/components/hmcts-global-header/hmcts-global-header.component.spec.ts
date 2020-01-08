@@ -1,11 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { StoreModule } from '@ngrx/store';
-import { reducers } from 'src/app/store';
-import { metaReducers } from 'src/app/app.module';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { StoreModule } from '@ngrx/store';
+import { metaReducers } from 'src/app/app.module';
+import { reducers } from 'src/app/store';
+import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
 describe('HmctsGlobalHeaderComponent', () => {
   let component: HmctsGlobalHeaderComponent;
@@ -17,7 +17,8 @@ describe('HmctsGlobalHeaderComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         StoreModule.forRoot(reducers, { metaReducers }),
-        RouterTestingModule
+        RouterTestingModule,
+        ExuiCommonLibModule.forRoot({ launchDarklyKey: '' })
       ]
     })
       .compileComponents();
