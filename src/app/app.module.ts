@@ -1,7 +1,7 @@
 import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, LAUNCHDARKLYKEY, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
@@ -55,14 +55,18 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot()
+    ExuiCommonLibModule.forRoot({ launchDarklyKey: 'sdk-b7cacf33-0628-4313-9f65-77a0fd66ec0c' })
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer },
     AuthService,
-    { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
-    CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
-    {provide: ErrorHandler, useClass: DefaultErrorHandler}],
+    { provide: AbstractAppInsights, useClass: AppInsightsWrapper },
+    CryptoWrapper,
+    JwtDecodeWrapper,
+    MonitoringService,
+    LoggerService,
+    { provide: ErrorHandler, useClass: DefaultErrorHandler }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

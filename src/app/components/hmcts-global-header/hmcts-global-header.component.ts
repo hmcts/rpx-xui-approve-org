@@ -9,22 +9,22 @@ import * as fromRoot from '../../store';
 })
 export class HmctsGlobalHeaderComponent {
 
-    @Input() set userLoggedIn(value) {
+    @Input() public set userLoggedIn(value) {
         this.userValue = value;
     }
 
-    @Input() serviceName;
-    @Input() navigation;
-    @Output() navigate = new EventEmitter<string>();
+    @Input() public serviceName;
+    @Input() public navigation;
+    @Output() public navigate = new EventEmitter<string>();
 
-    userValue: any;
+    public userValue: any;
 
     constructor(
         public store: Store<fromRoot.State>,
-        private featureService: FeatureToggleService
+        private readonly featureService: FeatureToggleService,
     ) { }
 
-    onEmitEvent(index) {
+    public onEmitEvent(index) {
         this.navigate.emit(this.navigation.items[index].emit);
     }
 
