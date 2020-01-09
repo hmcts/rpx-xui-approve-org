@@ -14,6 +14,43 @@ import {ENVIRONMENT, PROTOCOL} from './references'
 export const getEnvironment = () => process.env.NODE_CONFIG_ENV
 
 /**
+ * Has Config Value
+ *
+ * Returns if the configuration value is available, using a config reference. It uses the reference to pull out the value
+ * from the .yaml file
+ *
+ * Note: If within a .yaml file you have
+ *
+ * database:
+ *   name: POSTGRES_DB_NAME
+ *
+ * If POSTGRES_DB_NAME is unable to be pulled from the JenkinsFile_CNP,
+ * then .yaml will return a string of 'POSTGRES_DB_NAME'
+ *
+ * This means that config.has('database.name') will always return true
+ * as 'database.name'.
+ *
+ * This also means that config.get('database.name') will return 'POSTGRES_DB_NAME' and not
+ * undefined.
+ *
+ * We return null if the value config.get receives has not been overridden.
+ *
+ * Example implementation:
+ * hasConfigValue('database.name', 'POSTGRES_DB_NAME')
+ *
+ * @see /config .yaml
+ * @see references.ts
+ * @param reference - ie. 'services.ccdDefApi'
+ * @param shouldBeOverridden - ie. 'POSTGRES_DB_NAME'
+ */
+export const hasConfigValue = (reference, shouldBeOverridden) => {
+
+  const configurationValue = config.get(reference)
+
+  return configurationValue !== shouldBeOverridden
+}
+
+/**
  * Get Configuration Value
  *
  * Returns the configuration value, using a config reference. It uses the reference to pull out the value
