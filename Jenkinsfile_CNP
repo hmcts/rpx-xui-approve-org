@@ -69,7 +69,19 @@ withPipeline(type, product, component) {
     }
 
     after('build') {
-        sh 'yarn build'
+        if (env == 'aat') {
+            sh 'yarn build:ng:aat && yarn build:node'
+        } else if (env == 'demo') {
+            sh 'yarn build:ng:demo && yarn build:node'
+        } else if (env == 'ithc') {
+            sh 'yarn build:ng:ithc && yarn build:node'
+        } else if (env == 'perftest') {
+            sh 'yarn build:ng:perftest && yarn build:node'
+        } else if (env == 'sandbox') {
+            sh 'yarn build:ng:sandbox && yarn build:node'
+        } else {
+            sh 'yarn build'
+        }
 
         publishHTML([
             allowMissing         : true,
