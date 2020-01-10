@@ -48,6 +48,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
     after('checkout') {sh 'yarn cache clean'}
 
     after('build') {
+        sh 'echo "building for environment ${params.ENVIRONMENT}"'
         if (params.ENVIRONMENT == 'saat') {
             sh 'yarn build:ng:aat'
         } else {
