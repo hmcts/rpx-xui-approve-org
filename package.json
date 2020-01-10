@@ -14,6 +14,7 @@
     "ng": "ng",
     "start:ng": "ng serve --port 3000 --host 0.0.0.0 --proxy-config proxy.config.json",
     "build:ng": "ng build",
+    "build:ng:aat": "ng build -c=aat",
     "test:ng": "ng test",
     "test:coverage": "echo 'not implemented'",
     "test:a11y": "echo 'not implemented'",
