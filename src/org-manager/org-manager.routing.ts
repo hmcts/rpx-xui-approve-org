@@ -39,17 +39,16 @@ export const ROUTES: Routes = [
     component: OrganisationDetailsComponent,
     canActivate: [AuthGuard],
   },
-  // TODO undo this when PBA live
-  // {
-  //   path: 'change/:fields/:orgId',
-  //   component: EditDetailsComponent,
-  //   canActivate: [AuthGuard],
-  // },
-  // {
-  //   path: 'change/:fields/:orgId/:id',
-  //   component: EditDetailsComponent,
-  //   canActivate: [AuthGuard],
-  // },
+  {
+    path: 'change/:fields/:orgId',
+    component: EditDetailsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'change/:fields/:orgId/:id',
+    component: EditDetailsComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
