@@ -26,8 +26,6 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
-echo "Env: ${env}"
-
 def secrets = [
   'rpx-${env}': [
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
@@ -69,6 +67,8 @@ withPipeline(type, product, component) {
         error 'XUI  projects are not authorised to be in production environments yet.'
       }
     }
+
+    sh 'echo "building for environment env: ${env}, type: ${type}, product: ${product}, component: ${component}"'
 
     after('build') {
         def environment = env
