@@ -8,9 +8,6 @@ properties([
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']
-    ]),
-    parameters([
-        string(name: 'ENVIRONMENT', defaultValue: 'defVal', description: 'Environment where code should be build and deployed')
     ])
 ])
 
@@ -72,7 +69,7 @@ withPipeline(type, product, component) {
     }
 
     after('build') {
-        def environment = params.ENVIRONMENT
+        def environment = secrets.envVariable
         sh 'echo "building for environment env: ${env}, type: ${type}, product: ${product}, component: ${component}, envParam: ${ENVIRONMENT}"'
         if (env == 'aat') {
             sh 'yarn build:ng:aat && yarn build:node'
