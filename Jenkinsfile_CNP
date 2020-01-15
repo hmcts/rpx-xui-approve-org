@@ -72,7 +72,8 @@ withPipeline(type, product, component) {
     }
 
     after('build') {
-        sh 'echo "building for environment env: ${env}, type: ${type}, product: ${product}, component: ${component}, envParam: ${params.ENVIRONMENT}"'
+        def environment = params.ENVIRONMENT
+        sh 'echo "building for environment env: ${env}, type: ${type}, product: ${product}, component: ${component}, envParam: ${ENVIRONMENT}"'
         if (env == 'aat') {
             sh 'yarn build:ng:aat && yarn build:node'
         } else if (env == 'demo') {
