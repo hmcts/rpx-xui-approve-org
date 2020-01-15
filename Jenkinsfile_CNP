@@ -8,10 +8,10 @@ properties([
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']
-    ],
+    ]),
     parameters([
         string(name: 'ENVIRONMENT', defaultValue: 'defVal', description: 'Environment where code should be build and deployed')
-    ]))
+    ])
 ])
 
 @Library("Infrastructure")
