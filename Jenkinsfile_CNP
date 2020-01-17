@@ -26,8 +26,6 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
-def environment = '${env}'
-
 def secrets = [
   'rpx-${env}': [
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
@@ -71,20 +69,7 @@ withPipeline(type, product, component) {
     }
 
     after('build') {
-        sh 'echo "building for environment env: \'${env}\', type: ${type}, product: ${product}, component: ${component}, envParam: ${environment}"'
-        if ('${env}' == 'aat') {
-            sh 'yarn build:ng:aat && yarn build:node'
-        } else if (env == 'demo') {
-            sh 'yarn build:ng:demo && yarn build:node'
-        } else if (env == 'ithc') {
-            sh 'yarn build:ng:ithc && yarn build:node'
-        } else if (env == 'perftest') {
-            sh 'yarn build:ng:perftest && yarn build:node'
-        } else if (env == 'sandbox') {
-            sh 'yarn build:ng:sandbox && yarn build:node'
-        } else {
-            sh 'yarn build'
-        }
+        sh 'yarn build'
 
         publishHTML([
             allowMissing         : true,
