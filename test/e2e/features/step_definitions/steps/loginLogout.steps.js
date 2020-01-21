@@ -87,11 +87,11 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
-      .equal('Approve organisations');
+      .equal('Approve organisation');
 
   });
 
-  Given(/^I am logged into approve organisation with SSCS judge details$/, async function () {
+  Given(/^I am logged into approve organisation with HMCTS admin$/, async function () {
     browser.sleep(LONG_DELAY);
     await loginPage.emailAddress.sendKeys(this.config.username);
     await loginPage.password.sendKeys(this.config.password);
