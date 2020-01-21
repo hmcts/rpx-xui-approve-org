@@ -56,7 +56,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(bannerPage.mainHeader.getText())
       .to
       .eventually
-      .equals('Organisations');
+      .equals('Active organisations');
   });
 
 });

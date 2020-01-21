@@ -1,33 +1,18 @@
-@smoke
+
 Feature: Login
 
   Background:
-    When I navigate to approve organisation Url
-
-#
-#  Scenario: Login and Logout as SSCS user
-#    Then I login as SSCS user
-#    Then I check the user is logged
-#    Then I click the signout
-#    Then I logout successfully and back to Login page
-#
-#  Scenario: Login and Logout as FR user
-#    Then I login as FR user
-#    Then I check the user is logged
-#    Then I click the signout
-#    Then I logout successfully and back to Login page
-
-
-
+    When I navigate to EUI Approve Organisation Url
+@all
   Scenario: un-authenticated user login
     Then I am on Idam login page
     When I enter an Invalid email-address and password to login
     Then I should be redirected to the Idam login page
     Then I should see failure error summary
 
-
-  Scenario: login and log out from approve organisation as SSCS user
-    Given I am logged into approve organisation with SSCS judge details
+@all
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
     Then I should be redirected to approve organisation dashboard page
     When I select the sign out link
     Then I should be redirected to the Idam login page
@@ -40,7 +25,7 @@ Feature: Login
     Then I should be redirected to the Idam login page
 
 
-  @ignore
+  @all
   Scenario: Verify the direct link navigate to login page
     Given I navigate to approve organisation Url direct link
     Then I should be redirected back to Login page after direct link
