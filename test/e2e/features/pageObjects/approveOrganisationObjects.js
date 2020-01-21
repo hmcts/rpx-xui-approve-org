@@ -9,27 +9,30 @@ function approveOrganisationBannerObjects() {
   this.submit_button= element(by.css("[class='div.govuk-button']"));
 
   this.approveorgBanner= element(by.xpath("//*[@id='content']/div"));
-  this.bannerText= element(by.xpath("//*[@id='content']/div/div"));
-  this.checkNow= element(by.xpath("//a[contains(text(),'Check now.')]"));
+  this.bannerText= element(by.xpath("//div[@class='hmcts-banner__message']"));
+  //this.checkNow= element(by.xpath("//a[contains(text(),'Check now.')]"));
+  this.checkNow= element(by.partialLinkText("Check no"));
   this.pendingOrganisationText= element(by.xpath("//*[@id='main-content']/h1"));
 
-  this.selectCheckBox= element(by.xpath("//*[@id='main-content']/lib-govuk-table/table/tbody/tr[1]/td[1]/lib-gov-checkbox/div/input"));
-  this.activate_button= element(by.xpath("//*[@id='main-content']/button"));
+  this.selectCheckBox= element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[1]/div"));
+  this.activate_button= element(by.xpath("//button[@class='govuk-button']"));
   this.approve_button= element(by.xpath("//button[@class='govuk-button']"));
   this.confirmationScreen= element(by.xpath("//div[@class='govuk-panel govuk-panel--confirmation']"));
-  this.backtoOrganisations= element(by.xpath("//a[contains(text(),'Back to Organisations')]"));
+  this.backtoOrganisations= element(by.partialLinkText("Back to organisatio"));
   this.mainHeader=element(by.xpath("//h1[@class='hmcts-page-heading__title govuk-heading-xl']"));
 
-  this.orgName=element(by.xpath("//*[@id='main-content']/lib-govuk-table/table/tbody/tr[1]/td[2]/span[1]"));
-  this.administratorText=element(by.xpath("//*[@id='main-content']/lib-govuk-table/table/tbody/tr[1]/td[4]/span[2]"));
-  this.addressText=element(by.xpath("//*[@id='main-content']/lib-govuk-table/table/tbody/tr[1]/td[3]"));
+  this.orgName=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[2]]"));
+  this.administratorText=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[4]"));
+  this.addressText=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[3]"));
 
-  this.approveOrgName= element(by.xpath("//*[@id='main-content']/div/div/div/h2"));
+  this.approveOrgName= element(by.xpath("//h2[@class='govuk-heading-m']"));
   this.approveAdministratorText= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[2]/dd/div[2]"));
   this.approveAddress= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[1]/dd"));
 
 
+//*[@id="main-content"]/form/table/thead/tr[2]/td[1]/div
 
+  //*[@id="G33DM47"]
 
   this.givenIAmUnauthenticatedUser = async function () {
     await this.enterUrEmail("test@gmail.com");
