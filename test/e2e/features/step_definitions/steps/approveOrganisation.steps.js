@@ -28,6 +28,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^I Verify the Text on Banner$/, { timeout: 600 * 1000 }, async function () {
+      browser.sleep(AMAZING_DELAY)
       await expect(bannerPage.bannerText.isDisplayed()).to.eventually.be.true;
       await expect(bannerPage.bannerText.getText())
         .to
@@ -36,6 +37,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
   Then(/^I Verify the Check Now Link$/, { timeout: 600 * 1000 }, async function () {
+    browser.sleep(AMAZING_DELAY)
     await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
     await expect(bannerPage.checkNow.getText())
       .to
