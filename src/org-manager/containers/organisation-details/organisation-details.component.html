@@ -7,7 +7,7 @@
     </span>
   </app-identity-bar-component>
   <div class="hmcts-width-container">
-    <lib-gov-uk-main-wrapper [title]="'Organisation details'" [backLink]="true">
+    <xuilib-hmcts-main-wrapper [title]="'Organisation details'" [backLink]="true" (backEvent)="onGoBack()">
       <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
          <div class="govuk-check-your-answers__contents">
             <dt class="govuk-check-your-answers__question">
@@ -96,14 +96,14 @@
          </div>
       </dl>
 
-    </lib-gov-uk-main-wrapper>
+    </xuilib-hmcts-main-wrapper>
   </div>
   </ng-container>
  <ng-container *ngIf="!(orgs$ | async)">
    <div class="hmcts-width-container">
-     <lib-gov-uk-main-wrapper [title]="'Organisation details'">
+     <xuilib-hmcts-main-wrapper [title]="'Organisation details'">
        <h3 class="govuk-heading-s">Loading...</h3>
-     </lib-gov-uk-main-wrapper>
+     </xuilib-hmcts-main-wrapper>
    </div>
  </ng-container>
 

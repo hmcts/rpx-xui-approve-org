@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store, select } from '@ngrx/store';
-import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GovukTableColumnConfig } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/components/gov-uk-table/gov-uk-table.component';
+import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as fromStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store';
+import {takeWhile} from 'rxjs/operators';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import * as fromRoot from '../../../app/store';
+import * as fromStore from '../../../org-manager/store';
 import * as fromOrganisation from '../../store/';
-import {takeWhile} from 'rxjs/operators';
+
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-organisations.component.html',

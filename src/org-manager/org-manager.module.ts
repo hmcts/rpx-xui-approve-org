@@ -10,11 +10,12 @@ import * as fromContainers from './containers';
 import * as fromComponents from './components';
 
 // services
-import * as fromServices from './services';
-import {StoreModule} from '@ngrx/store';
 import {HttpClientModule} from '@angular/common/http';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
-import { reducers, effects } from './store';
+import {StoreModule} from '@ngrx/store';
+import * as fromServices from './services';
+import { effects, reducers } from './store';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { reducers, effects } from './store';
     orgManagerRouting,
     SharedModule,
     StoreModule.forFeature('orgState', reducers),
-    EffectsModule.forFeature(effects)
+    EffectsModule.forFeature(effects),
+    ExuiCommonLibModule.forChild()
   ],
   exports: [...fromContainers.containers],
   declarations: [...fromContainers.containers, ...fromComponents.components],
