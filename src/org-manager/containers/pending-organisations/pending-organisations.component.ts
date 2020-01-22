@@ -47,7 +47,7 @@ export class PendingOrganisationsComponent implements OnInit {
       }
     });
 
-    this.activeOrgsCount$ = this.store.pipe(select(fromOrganisation.pendingOrganisationsCount));
+    this.activeOrgsCount$ = this.store.pipe(select(fromOrganisation.activeOrganisationsCount));
     this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
     this.columnConfig = PendingOverviewColumnConfig;
     this.errorMessage$ = this.store.pipe(select(fromStore.getErrorMessage));
