@@ -22,7 +22,7 @@ describe('Organisation Reducer', () => {
 
       const action = new fromActions.LoadPendingOrganisations();
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: true});
+      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: true, searchString: ''});
     });
 
   });
@@ -32,7 +32,7 @@ describe('Organisation Reducer', () => {
 
       const action = new fromActions.LoadActiveOrganisation();
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: false});
+      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: false, searchString: ''});
     });
 
   });

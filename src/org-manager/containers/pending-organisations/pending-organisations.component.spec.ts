@@ -6,6 +6,7 @@ import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisations.pipe';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import * as fromOrganisation from '../../../org-manager/store/';
 import { PendingOrganisationsComponent } from './pending-organisations.component';
 
 describe('PendingOrganisationComponent', () => {
@@ -39,5 +40,12 @@ describe('PendingOrganisationComponent', () => {
 
     it('should create', () => {
       expect(component).toBeTruthy();
+    });
+
+    it('should dispatch UpdatePendingOrganisationsSearchString action on submitSearch', () => {
+      const expectedAction = new fromOrganisation.UpdatePendingOrganisationsSearchString('');
+      spyOn(store, 'dispatch').and.callThrough();
+      component.submitSearch('');
+      expect(store.dispatch).toHaveBeenCalledWith(expectedAction);
     });
 });

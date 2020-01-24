@@ -14,6 +14,8 @@ export enum OrgActionTypes {
     APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
     APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
     CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
+    UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Active Organisations Search String',
+    UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
 }
 
 export class LoadPendingOrganisations implements Action {
@@ -81,6 +83,18 @@ export class LoadActiveOrganisationFail implements Action {
   }
 }
 
+export class UpdateActiveOrganisationsSearchString implements Action {
+  public readonly type = OrgActionTypes.UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING;
+  constructor(public payload: string) {
+  }
+}
+
+export class UpdatePendingOrganisationsSearchString implements Action {
+  public readonly type = OrgActionTypes.UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING;
+  constructor(public payload: string) {
+  }
+}
+
 export type OrganisationsActions =
     | LoadPendingOrganisations
     | LoadPendingOrganisationsSuccess
@@ -93,4 +107,6 @@ export type OrganisationsActions =
     | ClearErrors
     | LoadActiveOrganisation
     | LoadActiveOrganisationSuccess
-    | LoadActiveOrganisationFail;
+    | LoadActiveOrganisationFail
+    | UpdateActiveOrganisationsSearchString
+    | UpdatePendingOrganisationsSearchString;
