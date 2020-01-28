@@ -1,0 +1,15 @@
+
+<div class="search-organisations-form govuk-grid-column-two-thirds">
+  <div class="hmcts-search">
+    <form [formGroup]="searchOrgForm" (ngSubmit)="onSubmit()" >
+      <lib-gov-uk-input
+        [config]="{label: 'Search', hint: 'Search for approved organisations by name or unique reference', name: 'search', id: 'search', type: 'text', classes: 'hmcts-search__input'}"
+        [group]="searchOrgForm">
+      </lib-gov-uk-input>
+      <button type="submit" class="govuk-button hmcts-search__button">
+        Search
+      </button>
+    </form>
+  </div>
+</div>
+

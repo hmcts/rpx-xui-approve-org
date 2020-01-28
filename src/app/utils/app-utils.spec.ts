@@ -37,6 +37,7 @@ describe('AppUtils', () => {
       addressLine2: 'Some Address1',
       townCity: 'London',
       county: 'Middlesex',
+      postCode: 'org.postCode',
       dxAddress: [
           {
               dxNumber: '1111111111111',
@@ -77,7 +78,8 @@ describe('AppUtils', () => {
       view: 'View',
       pbaNumber: [{}],
       dxNumber: [{}],
-      sraId: null
+      sraId: null,
+      postCode: 'postcode'
     }];
     const organisations = AppUtils.mapOrganisationsVm(organisationVM);
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId);
