@@ -24,6 +24,7 @@ export class PendingOrganisationsComponent implements OnInit {
   public loaded$: Observable<boolean>;
   public activeOrgsCount$: Observable<number>;
   public activeLoaded$: Observable<boolean>;
+  public searchString = '';
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
               private readonly fb: FormBuilder) {}
@@ -62,6 +63,10 @@ export class PendingOrganisationsComponent implements OnInit {
     } else {
       this.store.dispatch(new fromStore.DisplayErrorMessageOrganisations('Select an organisation'));
     }
+  }
+
+  public submitSearch(searchString: string) {
+    this.searchString = searchString;
   }
 
 }
