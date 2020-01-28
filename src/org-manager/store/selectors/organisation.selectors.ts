@@ -54,6 +54,7 @@ export const getPendingOrganisationsArray = createSelector(
   getPendingOrganisations,
   (orgEntities) => Object.keys(orgEntities).map(orgId => orgEntities[orgId])
 );
+
 export const getPendingLoaded = createSelector(
   getPendingOrganisationsState,
   (orgState) => orgState.loaded
@@ -101,4 +102,10 @@ export const pendingOrganisationsCount = createSelector(
   getPendingOrganisationsArray,
   (orgArr) =>  orgArr ? orgArr.length : 0
 );
+
+export const activeOrganisationsCount = createSelector(
+  getActiveOrganisationArray,
+  (orgArr) =>  orgArr ? orgArr.length : 0
+);
+
 

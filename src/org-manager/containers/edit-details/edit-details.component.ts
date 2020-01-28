@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import * as fromStore from '../../store';
-import { Store, select } from '@ngrx/store';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {OrgManagerConstants} from '../../org-manager.constants';
-import {take, tap} from 'rxjs/operators';
-import * as fromEditDetails from '../../store';
+import { select, Store } from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
+import {take, tap} from 'rxjs/operators';
+import * as fromRoot from '../../../app/store';
+import {OrgManagerConstants} from '../../org-manager.constants';
+import * as fromStore from '../../store';
 
 /**
  * Bootstraps Edit Organisation Details
@@ -37,7 +37,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getOrgs(): void {
-    this.orgDetails$ = this.store.pipe(select(fromEditDetails.getActiveAndPending),
+    this.orgDetails$ = this.store.pipe(select(fromStore.getActiveAndPending),
         tap((value) => {
           if (value) {
             this.orgId = value.organisationId;
@@ -50,10 +50,10 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         }));
   }
   private getErrorMsgs() {
-    this.store.dispatch(new fromEditDetails.ClearPbaErrors());
-    this.pbaError$ = this.store.pipe(select(fromEditDetails.getPbaFromErrors));
-    this.pbaErrorsHeader$ = this.store.pipe(select(fromEditDetails.getPbaHeaderErrors));
-    this.serverError$ = this.store.pipe(select(fromEditDetails.getServerErrors));
+    this.store.dispatch(new fromStore.ClearPbaErrors());
+    this.pbaError$ = this.store.pipe(select(fromStore.getPbaFromErrors));
+    this.pbaErrorsHeader$ = this.store.pipe(select(fromStore.getPbaHeaderErrors));
+    this.serverError$ = this.store.pipe(select(fromStore.getServerErrors));
   }
 
   createPbaForm(): void {
@@ -115,6 +115,10 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscirptions.unsubscribe();
+  }
+
+  public onGoBack() {
+    this.store.dispatch(new fromRoot.Back());
   }
 
 }

@@ -16,8 +16,6 @@ import {OrganisationVM} from '../../models/organisation';
 export class ActiveOrganisationsComponent implements OnInit {
   public orgs$: Observable<OrganisationVM[]>;
   public loading$: Observable<boolean>;
-  public pendingLoaded$: Observable<boolean>;
-  public pendingOrgsCount$: Observable<number>;
   public activeSearchString$: Observable<string>;
 
   constructor(
@@ -33,17 +31,8 @@ export class ActiveOrganisationsComponent implements OnInit {
       }
     });
 
-    this.pendingLoaded$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
-    this.pendingLoaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
-      if (!loaded) {
-        this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
-      }
-    });
-
-
     this.orgs$ = this.store.pipe(select(fromOrganisation.getActiveOrganisationArray));
     this.loading$ = this.store.pipe(select(fromOrganisation.getActiveLoading));
-    this.pendingOrgsCount$ = this.store.pipe(select(fromOrganisation.pendingOrganisationsCount));
     this.activeSearchString$ = this.store.pipe(select(fromOrganisation.getActiveSearchString));
 
   }
