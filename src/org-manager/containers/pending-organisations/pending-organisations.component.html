@@ -1,7 +1,14 @@
 <div class="hmcts-width-container">
-  <app-back-link [store]="store"></app-back-link>
   <lib-gov-uk-error-summary *ngIf="(errorMessage$ | async) as message" [errorMessages]="[{message: message}]"></lib-gov-uk-error-summary>
   <main class="govuk-main-wrapper" id="main-content" role="main">
+    <app-notification-banner-component>
+      <ng-container *ngIf="(activeOrgsCount$ | async) as activeOrgCount; ">
+        <span>{{activeOrgCount}} organisations are active. <a [routerLink]="['/active-organisation']"> Check now.</a></span>
+      </ng-container>
+      <ng-container *ngIf="!(activeLoaded$ | async)">
+        <h3 class="govuk-heading-s">Loading active organisations...</h3>
+      </ng-container>
+    </app-notification-banner-component>
     <app-search-organisations-form (submitForm)="submitSearch($event)"></app-search-organisations-form>
     <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
     <ng-container *ngIf="(loaded$ | async); else loading">

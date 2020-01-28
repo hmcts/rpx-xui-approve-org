@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
 import { GovukTableColumnConfig } from 'projects/gov-ui/src/lib/components/govuk-table/govuk-table.component';
 import { Observable, Subscription } from 'rxjs';
 import 'rxjs/add/observable/of';
-import * as fromStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store';
+import {takeWhile} from 'rxjs/operators';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import * as fromRoot from '../../../app/store';
+import * as fromStore from '../../../org-manager/store';
 import * as fromOrganisation from '../../store/';
-import {takeWhile} from 'rxjs/operators';
+
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-organisations.component.html',
@@ -21,10 +22,12 @@ export class PendingOrganisationsComponent implements OnInit {
   public inputForm: FormGroup;
   public errorMessage$: Observable<string>;
   public loaded$: Observable<boolean>;
+  public activeOrgsCount$: Observable<number>;
+  public activeLoaded$: Observable<boolean>;
   public searchString = '';
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
-              private fb: FormBuilder) {}
+              private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
     this.inputForm = this.fb.group({
@@ -38,6 +41,14 @@ export class PendingOrganisationsComponent implements OnInit {
       }
     });
 
+    this.activeLoaded$ = this.store.pipe(select(fromOrganisation.getActiveLoaded));
+    this.activeLoaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
+      if (!loaded) {
+        this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
+      }
+    });
+
+    this.activeOrgsCount$ = this.store.pipe(select(fromOrganisation.activeOrganisationsCount));
     this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
     this.columnConfig = PendingOverviewColumnConfig;
     this.errorMessage$ = this.store.pipe(select(fromStore.getErrorMessage));
