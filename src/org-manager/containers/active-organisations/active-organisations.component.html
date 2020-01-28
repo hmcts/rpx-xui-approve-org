@@ -1,14 +1,7 @@
 <div class="hmcts-width-container">
+  <app-back-link [store]="store"></app-back-link>
   <main class="govuk-main-wrapper">
-    <app-notification-banner-component>
-      <ng-container *ngIf="(pendingOrgsCount$ | async) as pendingOrg; ">
-        <span>{{pendingOrg}} organisations are pending activation. <a [routerLink]="['/pending-organisations']"> Check now.</a></span>
-      </ng-container>
-      <ng-container *ngIf="!(pendingLoaded$ | async)">
-        <h3 class="govuk-heading-s">Loading pending organisations...</h3>
-      </ng-container>
-    </app-notification-banner-component>
-
+    <app-search-organisations-form (submitForm)="submitSearch($event)"></app-search-organisations-form>
      <h1 class="hmcts-page-heading__title govuk-heading-xl">Active organisations</h1>
         <table class="govuk-table" *ngIf="!(loading$ | async); else loading">
           <thead class="govuk-table__head">
@@ -19,7 +12,7 @@
               <th class="govuk-table__header" scope="col">Status</th>
               <th class="govuk-table__header" scope="col"></th>
             </tr>
-            <tr class="govuk-table__row" *ngFor="let org of orgs$ | async">
+            <tr class="govuk-table__row" *ngFor="let org of orgs$ | async | filterOrganisations: searchString">
               <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
               <td class="govuk-table__cell">
                 {{org.addressLine1}}<br>

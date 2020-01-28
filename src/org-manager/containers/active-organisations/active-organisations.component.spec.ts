@@ -1,10 +1,11 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store/reducers';
-import { StoreModule, Store } from '@ngrx/store';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Store, StoreModule } from '@ngrx/store';
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import {ActiveOrganisationsComponent} from './active-organisations.component';
+import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisations.pipe';
 
 describe('Active Organisation', () => {
   let component: ActiveOrganisationsComponent;
@@ -19,7 +20,7 @@ describe('Active Organisation', () => {
         }),
       ],
       declarations: [
-        ActiveOrganisationsComponent
+        ActiveOrganisationsComponent, FilterOrganisationsPipe
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA

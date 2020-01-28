@@ -22,9 +22,12 @@ export class PendingOrganisationsComponent implements OnInit {
   public inputForm: FormGroup;
   public errorMessage$: Observable<string>;
   public loaded$: Observable<boolean>;
+  public activeOrgsCount$: Observable<number>;
+  public activeLoaded$: Observable<boolean>;
+  public searchString = '';
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
-              private fb: FormBuilder) {}
+              private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
     this.inputForm = this.fb.group({
@@ -38,6 +41,14 @@ export class PendingOrganisationsComponent implements OnInit {
       }
     });
 
+    this.activeLoaded$ = this.store.pipe(select(fromOrganisation.getActiveLoaded));
+    this.activeLoaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
+      if (!loaded) {
+        this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
+      }
+    });
+
+    this.activeOrgsCount$ = this.store.pipe(select(fromOrganisation.activeOrganisationsCount));
     this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
     this.columnConfig = PendingOverviewColumnConfig;
     this.errorMessage$ = this.store.pipe(select(fromStore.getErrorMessage));
@@ -52,6 +63,10 @@ export class PendingOrganisationsComponent implements OnInit {
     } else {
       this.store.dispatch(new fromStore.DisplayErrorMessageOrganisations('Select an organisation'));
     }
+  }
+
+  public submitSearch(searchString: string) {
+    this.searchString = searchString;
   }
 
 }
