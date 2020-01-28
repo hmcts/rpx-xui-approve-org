@@ -3,9 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
 import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisations.pipe';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import { ReviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 import { PendingOrganisationsComponent } from './pending-organisations.component';
 
 describe('PendingOrganisationComponent', () => {
