@@ -2,7 +2,8 @@
   <app-back-link [store]="store"></app-back-link>
   <lib-gov-uk-error-summary *ngIf="(errorMessage$ | async) as message" [errorMessages]="[{message: message}]"></lib-gov-uk-error-summary>
   <main class="govuk-main-wrapper" id="main-content" role="main">
-    <h1 class="govuk-heading-xl">Organisations pending activation</h1>
+    <app-search-organisations-form (submitForm)="submitSearch($event)"></app-search-organisations-form>
+    <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
     <ng-container *ngIf="(loaded$ | async); else loading">
       <form [formGroup]="inputForm">
         <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisation</button>
@@ -17,7 +18,7 @@
               <th class="govuk-table__header" scope="col">Status</th>
               <th class="govuk-table__header" scope="col"></th>
             </tr>
-            <tr class="govuk-table__row govuk-radios" *ngFor="let org of (pendingOrgs$ | async)">
+            <tr class="govuk-table__row govuk-radios" *ngFor="let org of pendingOrgs$ | async | filterOrganisations: searchString">
               <td class="govuk-table__cell">
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" [id]="org.organisationId" type="radio" name="pendingOrgInputRadio" formControlName="pendingOrgInputRadio" [value]="org">
