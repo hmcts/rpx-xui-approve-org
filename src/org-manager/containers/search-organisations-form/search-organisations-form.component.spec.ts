@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GovUiModule } from 'projects/gov-ui/src/lib/gov-ui.module';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { SearchOrganisationsFormComponent } from './search-organisations-form.component';
 
 describe('SearchOrganisationsFormComponent', () => {
@@ -10,7 +10,7 @@ describe('SearchOrganisationsFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ SearchOrganisationsFormComponent ],
-      imports: [FormsModule, ReactiveFormsModule, GovUiModule]
+      imports: [FormsModule, ReactiveFormsModule, ExuiCommonLibModule]
     })
     .compileComponents();
   }));

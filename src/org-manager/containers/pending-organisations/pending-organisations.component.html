@@ -1,5 +1,6 @@
 <div class="hmcts-width-container">
-  <lib-gov-uk-error-summary *ngIf="(errorMessage$ | async) as message" [errorMessages]="[{message: message}]"></lib-gov-uk-error-summary>
+  <app-back-link [store]="store"></app-back-link>
+  <xuilib-hmcts-error-summary *ngIf="(errorMessage$ | async) as message" [errorMessages]="[{message: message}]"></xuilib-hmcts-error-summary>
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <app-notification-banner-component>
       <ng-container *ngIf="(activeOrgsCount$ | async) as activeOrgCount; ">
