@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.store.dispatch(new fromRoot.GetUserDetails());
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
