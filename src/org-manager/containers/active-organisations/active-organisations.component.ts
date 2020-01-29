@@ -19,7 +19,7 @@ export class ActiveOrganisationsComponent implements OnInit {
   public activeSearchString$: Observable<string>;
 
   constructor(
-    private readonly store: Store<fromOrganisation.OrganisationRootState>,
+    public readonly store: Store<fromOrganisation.OrganisationRootState>,
   ) { }
 
   public ngOnInit(): void {
