@@ -55,16 +55,6 @@ export class PendingOrganisationsComponent implements OnInit {
     this.store.dispatch(new fromStore.ClearErrors());
   }
 
-  public activateOrganisations() {
-    const {valid, value} = this.inputForm.controls.pendingOrgInputRadio;
-    if (valid) {
-      this.store.dispatch(new fromStore.AddReviewOrganisations(value));
-      this.store.dispatch(new fromRoot.Go({ path: ['/approve-organisations'] }));
-    } else {
-      this.store.dispatch(new fromStore.DisplayErrorMessageOrganisations('Select an organisation'));
-    }
-  }
-
   public submitSearch(searchString: string) {
     this.searchString = searchString;
   }

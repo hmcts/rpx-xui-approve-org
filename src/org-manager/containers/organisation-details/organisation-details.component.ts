@@ -35,4 +35,11 @@ export class OrganisationDetailsComponent implements OnInit {
     this.store.dispatch(new fromRoot.Back());
   }
 
+  public approveOrganisation(data: OrganisationVM) {
+    if (data) {
+      this.store.dispatch(new fromStore.AddReviewOrganisations(data));
+      this.store.dispatch(new fromRoot.Go({ path: ['/approve-organisations'] }));
+    }
+  }
+
 }
