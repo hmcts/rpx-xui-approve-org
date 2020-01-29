@@ -303,10 +303,24 @@
   resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
   integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
 
-"@hmcts/rpx-xui-common-lib@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.0.14.tgz#3be3af4ec6c4303cc2188cc2692c1175b19a5ce4"
-  integrity sha512-g5eSY7kmlllVbnju4S6SZwn4FtJ0ZKhdebpa8BRGngt97MB0/l1Kk+BLzkpHJ9WLpvtixc+bYBSUiFk4qY/H7A==
+"@hmcts/rpx-xui-common-lib@0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.0.29.tgz#8e67cf97e0bc851298442d67d8523f0ca3f30e1f"
+  integrity sha512-AhCdV5bCTqEEOQ12aJpzOATULHH1U96AQUnxRVLxvukBsOobpw1sSRdw+WARiNM0v4O6kYnexm42mMEP4tamBA==
+  dependencies:
+    tslib "^1.9.0"
+
+"@ng-idle/core@^8.0.0-beta.4":
+  version "8.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@ng-idle/core/-/core-8.0.0-beta.4.tgz#c856bb2dd3c8407321380faac8c5692a5728fd0d"
+  integrity sha512-bI/tt7F5+z/w6b6SzNPc0+9rJ1knWgLzQweLd6xUQ7HHFrHsmBlJYUGiSv0cYUY+2RZAmIDbevwUDKLWmdE55w==
+  dependencies:
+    tslib "^1.9.0"
+
+"@ng-idle/keepalive@^8.0.0-beta.4":
+  version "8.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@ng-idle/keepalive/-/keepalive-8.0.0-beta.4.tgz#db385ad8833a9c42d1d8301531c47a68515a3089"
+  integrity sha512-yj7Y0pu2C7LhcjTcBE9DK5mFPFVHDj3vIVPTDzK3dN+51WoDQMrELl7BMuvzmTViat7mjsSP+00EwFvg6+FDEQ==
   dependencies:
     tslib "^1.9.0"
 
