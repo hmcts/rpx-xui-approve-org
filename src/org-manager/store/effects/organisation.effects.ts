@@ -76,7 +76,7 @@ export class OrganisationEffects {
   );
 
   @Effect()
-  public approvingPendingOrg$ = this.actions$.pipe(
+  public addReviewOrganisations$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS),
     map(() => {
       return new fromRoot.Go({ path: ['/approve-organisations'] });
