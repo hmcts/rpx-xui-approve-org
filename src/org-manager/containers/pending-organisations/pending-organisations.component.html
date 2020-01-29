@@ -1,5 +1,4 @@
 <div class="hmcts-width-container">
-  <app-back-link [store]="store"></app-back-link>
   <xuilib-hmcts-error-summary *ngIf="(errorMessage$ | async) as message" [errorMessages]="[{message: message}]"></xuilib-hmcts-error-summary>
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <app-notification-banner-component>
@@ -10,9 +9,9 @@
         <h3 class="govuk-heading-s">Loading active organisations...</h3>
       </ng-container>
     </app-notification-banner-component>
-    <app-search-organisations-form [searchString]="pendingSearchString$ | async" (submitForm)="submitSearch($event)"></app-search-organisations-form>
     <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
     <ng-container *ngIf="(loaded$ | async); else loading">
+      <app-search-organisations-form [searchString]="pendingSearchString$ | async" (submitForm)="submitSearch($event)"></app-search-organisations-form>
       <form [formGroup]="inputForm">
         <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisation</button>
         <table class="govuk-table">

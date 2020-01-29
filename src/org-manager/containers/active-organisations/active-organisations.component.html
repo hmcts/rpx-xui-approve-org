@@ -1,9 +1,9 @@
 <div class="hmcts-width-container">
   <app-back-link [store]="store"></app-back-link>
   <main class="govuk-main-wrapper">
-    <app-search-organisations-form [searchString]="activeSearchString$ | async" (submitForm)="submitSearch($event)"></app-search-organisations-form>
-
      <h1 class="hmcts-page-heading__title govuk-heading-xl">Active organisations</h1>
+     <app-search-organisations-form *ngIf="!(loading$ | async)" [searchString]="activeSearchString$ | async" (submitForm)="submitSearch($event)"></app-search-organisations-form>
+
         <table class="govuk-table" *ngIf="!(loading$ | async); else loading">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
