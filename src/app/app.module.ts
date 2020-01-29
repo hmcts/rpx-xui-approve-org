@@ -35,6 +35,7 @@ import { CryptoWrapper } from './services/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
+import {LogOutKeepAliveService} from './services/keep-alive/keep-alive.services';
 
 
 export const metaReducers: MetaReducer<any>[] = !config.production
@@ -66,6 +67,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
+    LogOutKeepAliveService,
     { provide: RouterStateSerializer, useClass: CustomSerializer },
     AuthService,
     { provide: AbstractAppInsights, useClass: AppInsightsWrapper},

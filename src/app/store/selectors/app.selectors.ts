@@ -14,21 +14,21 @@ export const getAppPageTitle = createSelector(
 );
 
 export const getUser = createSelector(
-    getAppState,
-    fromAppFeature.getUserDetails
+  getAppState,
+  fromAppFeature.getUserDetails
 );
 
 export const getUserIdleTime = createSelector(
-    getUser,
-    (user) => (user && user.idleTime) ? user.idleTime : NaN
+  getUser,
+  (user) => (user && user.idleTime) ? user.idleTime : NaN
 );
 
 export const getUserTimeOut = createSelector(
-    getUser,
-    (user) => (user && user.timeout) ? user.timeout : NaN
+  getUser,
+  (user) => (user && user.timeout) ? user.timeout : NaN
 );
 
 export const getModalSessionData = createSelector(
-    getAppState,
-    (state) => state.modal.session
+  getAppState,
+  (state) => state.modal.session
 );
