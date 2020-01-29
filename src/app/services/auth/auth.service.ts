@@ -5,10 +5,10 @@ import * as jwtDecode from 'jwt-decode';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
-import {EnvironmentService} from '../../app/services/environment.service';
+import {EnvironmentService} from '../environment.service';
 import {Observable} from 'rxjs';
-import {AppConstants} from '../../app/app.constants';
-import {AppUtils} from '../../app/utils/app-utils';
+import {AppConstants} from '../../app.constants';
+import {AppUtils} from '../../utils/app-utils';
 
 @Injectable()
 export class AuthService {
