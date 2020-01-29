@@ -6,8 +6,8 @@ import {combineLatest, Observable} from 'rxjs';
 import * as fromActions from '../../store';
 import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
 import { environment as config } from '../../../environments/environment';
-import * as fromUser from '../../../user-profile/store';
 import {filter, first, take} from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-root',
@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
-    this.modalData$ = this.store.pipe(select(fromUser.getModalSessionData));
+    this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
     this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
       if (rootState) {
@@ -50,11 +50,11 @@ export class AppComponent implements OnInit {
       }
       case 'signout': {
         this.dispatchModal(undefined, false);
-        this.store.dispatch(new fromUser.SignedOut()); // sing out BE
+        this.store.dispatch(new fromRoot.SignedOut()); // sing out BE
         return;
       }
       case 'keepalive': {
-        this.store.dispatch(new fromUser.KeepAlive());
+        this.store.dispatch(new fromRoot.KeepAlive());
         return;
       }
     }
@@ -62,8 +62,8 @@ export class AppComponent implements OnInit {
 
   public idleStart() {
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
-    const userIdleSession$ =  this.store.pipe(select(fromUser.getUserIdleTime));
-    const userTimeOut$ =  this.store.pipe(select(fromUser.getUserTimeOut));
+    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTime));
+    const userTimeOut$ =  this.store.pipe(select(fromRoot.getUserTimeOut));
     combineLatest([
       route$.pipe(first(value => typeof value === 'string' )),
       userIdleSession$.pipe(filter(value => !isNaN(value)), take(1)),
@@ -89,7 +89,7 @@ export class AppComponent implements OnInit {
         isVisible
       }
     };
-    this.store.dispatch(new fromUser.SetModal(modalConfig));
+    this.store.dispatch(new fromRoot.SetModal(modalConfig));
   }
 
   public onStaySignedIn() {
@@ -98,7 +98,7 @@ export class AppComponent implements OnInit {
         isVisible: false
       }
     };
-    this.store.dispatch(new fromUser.SetModal(payload));
+    this.store.dispatch(new fromRoot.SetModal(payload));
   }
 
   onNavigate(event): void {
