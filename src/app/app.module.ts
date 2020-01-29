@@ -25,7 +25,7 @@ import { ROUTES } from './app.routes';
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
 import config from 'config';
-import {AuthService} from '../services/auth/auth.service';
+import {AuthService} from './services/auth/auth.service';
 import { MonitoringService } from './services/monitoring.service';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
 import { LoggerService } from './services/logger.service';
