@@ -34,6 +34,7 @@ import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler
 import { CryptoWrapper } from './services/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
 
 
 export const metaReducers: MetaReducer<any>[] = !config.production
@@ -61,7 +62,8 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule
+    ExuiCommonLibModule.forRoot({launchDarklyKey: ''}),
+    NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer },
