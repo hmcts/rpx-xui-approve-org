@@ -11,7 +11,6 @@ export class LogOutKeepAliveService {
   }
 
   heartBeat(): Observable<any> {
-    // return of('somethig')
     return this.http.get('auth/keepalive');
   }
 }
