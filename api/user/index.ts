@@ -4,8 +4,6 @@ import * as log4jui from '../lib/log4jui'
 const logger = log4jui.getLogger('auth')
 
 export const router = express.Router({ mergeParams: true })
-
-
 router.get('/details', handleUserRoute)
 
 function handleUserRoute(req, res) {
@@ -18,8 +16,8 @@ function handleUserRoute(req, res) {
     special: isProd ? 20 * 60 * 1000 :  60 * 1000, // 20 min
   }
 
-  const userRoles: string[] = req.session.passport.user.userinfo.roles
-
+  // const userRoles: string[] = req.session.passport.user.userinfo.roles
+  const userRoles: string[] = ['pui-case-manager']
   const isDwpOrHomeOffice: boolean = (
     userRoles.includes('caseworker-sscs-dwpresponsewriter') ||
     userRoles.includes('caseworker-ia-homeofficeapc') ||
