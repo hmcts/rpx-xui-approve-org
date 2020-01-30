@@ -7,9 +7,9 @@ Feature: Confirmation Screen
     Then I should be redirected to approve organisation dashboard page
     Then I Check the active Organisation banner appear
 
-
 @all
   Scenario: Verify the confirmation screen of Approve Organisation
+    Then I click first organization view link
     Then I Select the Organisation and click Activate
     Then I approve the selected Organisations button
     Then I see the Confirmation screen of Organisations

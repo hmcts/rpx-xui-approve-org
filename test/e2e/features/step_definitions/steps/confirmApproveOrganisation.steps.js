@@ -1,6 +1,8 @@
 'use strict';
 
 const bannerPage = require('../../pageObjects/approveOrganisationObjects');
+const organisationList = require('../../pageObjects/organisationListPage');
+
 const { defineSupportCode } = require('cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const config = require('../../../config/conf.js');
@@ -13,17 +15,22 @@ async function waitForElement(el) {
     }, 600000);
 }
 
-defineSupportCode(function ({ Given, When, Then }) {
+defineSupportCode(function ({ Given, When, Then,And }) {
 
+  Then('I click first organization view link', async function(){
+    await organisationList.waitForOrgListToDisplay();
+    await organisationList.clickViewOnFirstOrganisation();
 
+  });
 
     Then(/^I Select the Organisation and click Activate$/, async function () {
         // await waitForElement(bannerPage.approveorgBanner);
      // await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
      // await expect(bannerPage.selectCheckBox.isDisplayed()).to.eventually.be.true;
-      await browserWaits.waitForElement(bannerPage.selectCheckBox);
-      await bannerPage.selectCheckBox.click();
-      browser.sleep(MID_DELAY);
+      // await browserWaits.waitForElement(bannerPage.selectCheckBox);
+      // await bannerPage.selectCheckBox.click();
+      // browser.sleep(MID_DELAY);
+      await browserWaits.waitForElement(bannerPage.activate_button,60); 
       await expect(bannerPage.activate_button.isDisplayed()).to.eventually.be.true;
       await bannerPage.activate_button.click();
       browser.sleep(MID_DELAY);
