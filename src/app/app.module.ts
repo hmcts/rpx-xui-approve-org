@@ -61,7 +61,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule
+    ExuiCommonLibModule.forRoot({launchDarklyKey: ''})
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer },

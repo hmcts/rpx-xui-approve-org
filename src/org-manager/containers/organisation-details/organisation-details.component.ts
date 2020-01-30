@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import * as fromStore from '../../store';
-import { Store, select } from '@ngrx/store';
-import { OrganisationVM} from 'src/org-manager/models/organisation';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import {filter, map, pluck, take, takeWhile} from 'rxjs/operators';
+import {filter, take, takeWhile} from 'rxjs/operators';
+import { OrganisationVM} from 'src/org-manager/models/organisation';
+import * as fromRoot from '../../../app/store';
+import * as fromStore from '../../store';
 import * as fromOrganisation from '../../store/';
 
 /**
@@ -17,7 +18,8 @@ export class OrganisationDetailsComponent implements OnInit {
 
   public orgs$: Observable<OrganisationVM>;
 
-  constructor(private store: Store<fromStore.OrganisationRootState>) {}
+  constructor(
+    private readonly store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
@@ -41,6 +43,16 @@ export class OrganisationDetailsComponent implements OnInit {
         );
       }
     });
+  }
+
+  public onGoBack() {
+    this.store.dispatch(new fromRoot.Back());
+  }
+
+  public approveOrganisation(data: OrganisationVM) {
+    if (data) {
+      this.store.dispatch(new fromStore.AddReviewOrganisations(data));
+    }
   }
 
 }

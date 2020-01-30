@@ -2,10 +2,11 @@ import {createSelector} from '@ngrx/store';
 
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisation from '../reducers';
+import * as fromPendingOrganisations from '../reducers/organisation.reducer';
 
 export const getOrganisationsState = createSelector(
   fromOrganisation.getRootApproveOrgState,
-  (state: fromOrganisation.OrganisationRootState) => state.organisations
+  (state: fromOrganisation.OrganisationRootState) => (state && state.organisations) ? state.organisations : fromPendingOrganisations.initialState
 );
 // entry for Active Organisations
 export const getActiveOrganisationState = createSelector(
@@ -47,6 +48,7 @@ export const getPendingOrganisationsArray = createSelector(
   getPendingOrganisations,
   (orgEntities) => Object.keys(orgEntities).map(orgId => orgEntities[orgId])
 );
+
 export const getPendingLoaded = createSelector(
   getPendingOrganisationsState,
   (orgState) => orgState.loaded
@@ -88,4 +90,10 @@ export const pendingOrganisationsCount = createSelector(
   getPendingOrganisationsArray,
   (orgArr) =>  orgArr ? orgArr.length : 0
 );
+
+export const activeOrganisationsCount = createSelector(
+  getActiveOrganisationArray,
+  (orgArr) =>  orgArr ? orgArr.length : 0
+);
+
 

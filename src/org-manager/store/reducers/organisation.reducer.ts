@@ -262,8 +262,10 @@ export function reducer(
         };
       }
     }
+    default:
+        return state;
+
   }
-  return state;
 }
 
 export const getPendingOrganis = (state: OrganisationState) => state.pendingOrganisations;

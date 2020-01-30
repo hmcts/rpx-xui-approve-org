@@ -120,6 +120,19 @@ describe('Organisation Effects', () => {
       expect(effects.loadPbaAccountDetails$).toBeObservable(expected);
     });
   });
+
+  describe('addReviewOrganisations$', () => {
+    it('should addReviewOrganisations  action', () => {
+      const action = new fromActons.AddReviewOrganisations({} as OrganisationVM);
+      const completion = new Go({
+        path: ['/approve-organisations']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.addReviewOrganisations$).toBeObservable(expected);
+    });
+  });
+
 });
 
 
