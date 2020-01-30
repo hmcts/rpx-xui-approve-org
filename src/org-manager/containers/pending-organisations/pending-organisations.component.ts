@@ -7,7 +7,6 @@ import 'rxjs/add/observable/of';
 import {takeWhile} from 'rxjs/operators';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
-import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../../org-manager/store';
 import * as fromOrganisation from '../../store/';
 
