@@ -1,5 +1,5 @@
 <div class="hmcts-width-container">
-  <xuilib-hmcts-error-summary *ngIf="(errorMessage$ | async) as message" [errorMessages]="[{message: message}]"></xuilib-hmcts-error-summary>
+  <app-back-link [store]="store"></app-back-link>
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <app-notification-banner-component>
       <ng-container *ngIf="(activeOrgsCount$ | async) as activeOrgCount; ">
@@ -13,26 +13,16 @@
     <ng-container *ngIf="(loaded$ | async); else loading">
       <app-search-organisations-form [searchString]="pendingSearchString$ | async" (submitForm)="submitSearch($event)"></app-search-organisations-form>
       <form [formGroup]="inputForm">
-        <button (click)="activateOrganisations()" type="submit" class=govuk-button>Activate organisation</button>
-        <table class="govuk-table">
+       <table class="govuk-table">
           <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th class="govuk-table__header" scope="col"></th>
-              <th class="govuk-table__header" scope="col"></th>
-              <th class="govuk-table__header" scope="col">Reference</th>
+              <th class="govuk-table__header" scope="col">Name</th>
               <th class="govuk-table__header" scope="col">Address</th>
               <th class="govuk-table__header" scope="col">Administrator</th>
               <th class="govuk-table__header" scope="col">Status</th>
               <th class="govuk-table__header" scope="col"></th>
             </tr>
-            <tr class="govuk-table__row govuk-radios" *ngFor="let org of pendingOrgs$ | async | filterOrganisations: (pendingSearchString$ | async)">
-              <td class="govuk-table__cell">
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" [id]="org.organisationId" type="radio" name="pendingOrgInputRadio" formControlName="pendingOrgInputRadio" [value]="org">
-                    <label class="govuk-label govuk-radios__label" for="pendingOrgInputRadio">
-                    </label>
-                </div>
-              </td>
+            <tr class="govuk-table__row govuk-radios" *ngFor="let org of pendingOrgs$ | async | filterOrganisations: searchString">
               <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
               <td class="govuk-table__cell">
                 {{org.addressLine1}}<br>
