@@ -6,17 +6,18 @@ import { PendingOrganisationService } from 'src/org-manager/services/pending-org
 import { LoggerService } from '../../../app/services/logger.service';
 import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
-import {OrganisationService} from '../../services';
+import {OrganisationService, PbaAccountDetails} from '../../services';
 import * as fromActions from '../actions';
 import * as pendingOrgActions from '../actions/organisations.actions';
 
 @Injectable()
 export class OrganisationEffects {
   constructor(
-    private readonly actions$: Actions,
-    private readonly pendingOrgService: PendingOrganisationService,
-    private readonly loggerService: LoggerService,
-    private readonly organisationService: OrganisationService,
+    private actions$: Actions,
+    private pendingOrgService: PendingOrganisationService,
+    private loggerService: LoggerService,
+    private organisationService: OrganisationService,
+    private pbaAccountDetails: PbaAccountDetails
   ) { }
 
   @Effect()
@@ -76,6 +77,21 @@ export class OrganisationEffects {
   );
 
   @Effect()
+  loadPbaAccountDetails$ = this.actions$.pipe(
+    ofType(fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME),
+    map((action: fromActions.LoadPbaAccountsDetails) => action.payload),
+    switchMap((payload) => {
+      return this.pbaAccountDetails.getAccountDetails(payload.pbas).pipe(
+          map((data) => new fromActions.LoadPbaAccountDetailsSuccess({orgId: payload.orgId, data})),
+          catchError((error: Error) => {
+            this.loggerService.error(error);
+            const data = [error];
+            return of(new fromActions.LoadPbaAccountDetailsFail({orgId: payload.orgId, data}));
+          })
+      );
+    })
+  );
+  
   public addReviewOrganisations$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS),
     map(() => {

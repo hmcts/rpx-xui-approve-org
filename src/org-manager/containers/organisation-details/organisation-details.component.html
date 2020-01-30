@@ -45,13 +45,20 @@
                PBA number
             </dt>
             <dd class="govuk-check-your-answers__answer">
-              {{data?.pbaNumber}}
+                <div *ngFor="let pba of data?.pbaNumber; let i = index">
+                    {{pba}}
+                    <span class="govuk-caption-m govuk-!-font-size-16">
+                        Account name:
+                        <span *ngIf="data?.accountDetails">
+                            {{data?.accountDetails[i]?.account_name}}
+                        </span>
+                    </span>
+                </div>
             </dd>
             <dd class="govuk-check-your-answers__change">
-                <!--  TODO undo this when pba live  -->
-              <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
-                {{data?.pbaNumber.length ? 'Change' : 'Add'}}
-              </a>
+                  <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
+                  {{data?.pbaNumber.length ? 'Change' : 'Add'}}
+                  </a>
             </dd>
          </div>
          <div class="govuk-check-your-answers__contents">
