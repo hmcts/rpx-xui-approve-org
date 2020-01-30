@@ -7,8 +7,8 @@ class BrowserWaits {
         this.pageErrors = $$(".error-summary");
     }
 
-    async waitForElement(waitelement) {
-        await browser.wait(EC.visibilityOf(waitelement), this.waitTime, "Error : " + waitelement.locator().toString());
+    async waitForElement(waitelement,customWaitInSec) {
+        await browser.wait(EC.visibilityOf(waitelement), customWaitInSec ? customWaitInSec*1000 : this.waitTime, "Error : " + waitelement.locator().toString());
     }
 
     async waitForElementNotVisible(element) {
@@ -26,6 +26,7 @@ class BrowserWaits {
     async waitForCondition(condition) {
         await browser.wait(condition(), this.waitTime);
     }
+
 
     async waitForSelector(selector) {
         var selectorElement = $(selector);
