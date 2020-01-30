@@ -6,6 +6,8 @@ import getappInsightsInstrumentationKey from './monitoring-tools'
 import organisationRouter from './organisation'
 import pbaRouteer from './update-pba'
 import stateRouter from './states'
+import userDetailsRouter from './user'
+
 
 const router = express.Router({ mergeParams: true })
 // open routes
@@ -19,6 +21,7 @@ router.use('/decisions', stateRouter)
 router.use('/healthCheck', healthCheck)
 router.use('/organisations', organisationRouter)
 router.use('/update-pba', pbaRouteer)
+router.use('/user', userDetailsRouter)
 
 router.use('/monitoring-tools', getappInsightsInstrumentationKey)
 export default router
