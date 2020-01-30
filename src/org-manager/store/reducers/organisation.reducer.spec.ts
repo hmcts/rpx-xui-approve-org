@@ -1,4 +1,5 @@
 import {OrganisationVM } from 'src/org-manager/models/organisation';
+import {LoadPbaAccuntsObj} from '../../mock/pending-organisation.mock';
 import * as fromMock from '../../mock/pending-organisation.mock';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
@@ -60,6 +61,14 @@ describe('Organisation Reducer', () => {
       const action = new fromActions.AddReviewOrganisations(pendingOrganisationsMock[0]);
       const state = reducer(initialState, action);
       expect(state.orgForReview).toEqual(pendingOrganisationsMock[0]);
+    });
+  });
+
+  describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
+    it('should update the state with account details', () => {
+      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: LoadPbaAccuntsObj});
+      const state = reducer(initialState, action);
+      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: LoadPbaAccuntsObj }} as any);
     });
 
   });
