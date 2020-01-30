@@ -15,6 +15,7 @@
             </dt>
             <dd class="govuk-check-your-answers__answer">
                {{data?.name}}
+               <div class="govuk-caption-m govuk-!-font-size-16">{{data?.organisationId}}</div>
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -96,6 +97,7 @@
          </div>
       </dl>
 
+      <button *ngIf="data?.status=='PENDING'" (click)="approveOrganisation(data)" type="submit" class=govuk-button>Approve organisation</button>
     </xuilib-hmcts-main-wrapper>
   </div>
   </ng-container>

@@ -1,6 +1,5 @@
-import * as fromActions from '../actions';
 import {OrganisationVM} from 'src/org-manager/models/organisation';
-import {ofType} from '@ngrx/effects';
+import * as fromActions from '../actions';
 
 export interface OrganisationState {
   activeOrganisations: {
@@ -185,12 +184,11 @@ export function reducer(
           pendingOrganisations
         };
       }
-
-
-
     }
+    default:
+        return state;
+
   }
-  return state;
 }
 
 export const getPendingOrganis = (state: OrganisationState) => state.pendingOrganisations;
