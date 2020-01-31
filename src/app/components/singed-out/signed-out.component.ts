@@ -16,7 +16,4 @@ export class SignedOutComponent implements OnInit {
     this.redirectUrl = './';
   }
 
-
-
-
 }

@@ -12,11 +12,6 @@ import userDetailsRouter from './user'
 const router = express.Router({ mergeParams: true })
 // open routes
 router.use('/environment', environment)
-
-router.use(auth.attach)
-
-router.use('/logout', auth.logout)
-
 router.use('/decisions', stateRouter)
 router.use('/healthCheck', healthCheck)
 router.use('/organisations', organisationRouter)
