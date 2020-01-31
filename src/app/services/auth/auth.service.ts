@@ -5,18 +5,16 @@ import * as jwtDecode from 'jwt-decode';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/map';
-import {EnvironmentService} from '../environment.service';
 import {Observable} from 'rxjs';
-import {AppConstants} from '../../app.constants';
-import {AppUtils} from '../../utils/app-utils';
+import {EnvironmentService} from '../environment.service';
 
 @Injectable()
 export class AuthService {
   apiBaseUrl;
   user;
   constructor(
-    private cookieService: CookieService,
-    private envService: EnvironmentService
+      private cookieService: CookieService,
+      private envService: EnvironmentService
   ) {
     this.apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
 
@@ -35,19 +33,17 @@ export class AuthService {
       // tslint:disable-next-line: max-line-length
       return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=profile openid roles manage-user create-user manage-roles`;
     });
-  }
+    }
 
   loginRedirect() {
-    this.generateLoginUrl().subscribe( url => {
-      window.location.href = url;
-    });
+    window.location.href = '/auth/login';
   }
 
   decodeJwt(jwt) {
     return jwtDecode(jwt);
   }
 
- isAuthenticated(): Observable<boolean> {
+  isAuthenticated(): Observable<boolean> {
     return this.envService.config$.map( config => {
       const jwt = this.cookieService.get(config.cookies.token);
       if (!jwt) {

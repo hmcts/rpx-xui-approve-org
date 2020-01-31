@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/app/services/auth/auth.guard';
 import { PrivacyPolicyComponent, CookiePolicyComponent, TermsAndConditionsComponent, AccessibilityComponent } from './components';
+import { SignedOutComponent } from './components/singed-out/signed-out.component';
 
 export const ROUTES: Routes = [
   {
@@ -28,6 +29,10 @@ export const ROUTES: Routes = [
   {
     path: 'accessibility',
     component: AccessibilityComponent
+  },
+  {
+    path: 'signed-out',
+    component: SignedOutComponent
   },
   {
     path: '**',
