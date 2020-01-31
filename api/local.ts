@@ -1,81 +1,10 @@
-import * as bodyParser from 'body-parser'
-import * as express from 'express'
-import * as session from 'express-session'
 import * as process from 'process'
-import * as sessionFileStore from 'session-file-store'
-import * as auth from './auth'
-import { appInsights } from './lib/appInsights'
-import { environmentConfig } from './lib/environment.config'
-import { errorStack } from './lib/errorStack'
+import { app } from './application'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
-import routes from './routes'
-import * as passport from 'passport'
-
-const FileStore = sessionFileStore(session)
-export const app = express()
 const logger = log4jui.getLogger('server')
 
-app.use(
-    session({
-        cookie: {
-            httpOnly: true,
-            maxAge: 1800000,
-            secure: environmentConfig.secureCookie !== false,
-        },
-        name: 'xuiaowebapp',
-        resave: true,
-        saveUninitialized: true,
-        secret: environmentConfig.sessionSecret,
-        store: new FileStore({
-            path: environmentConfig.now ? '/tmp/sessions' : '.sessions',
-        }),
-    })
-)
-
 tunnel.init()
-
-app.use(errorStack)
-app.use(appInsights)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(passport.initialize())
-app.use(passport.session())
-
-passport.serializeUser((user, done) => {
-  done(null, user)
-})
-
-passport.deserializeUser((id, done) => {
-  done(null, id)
-})
-
-app.get('/oauth2/callback',  (req: any, res, next) => {
-  passport.authenticate('oidc', (error, user, info) => {
-
-    // TODO: give a more meaningful error to user rather than redirect back to idam
-    // return next(error) would pass off to error.handler.ts to show users a proper error page etc
-    if (error) {
-      logger.error(error)
-      // return next(error)
-    }
-    if (info) {
-      logger.info(info)
-      // return next(info)
-    }
-    if (!user) {
-      return res.redirect('/auth/login')
-    }
-    req.logIn(user, err => {
-      if (err) {
-        return next(err)
-      }
-      return auth.authCallbackSuccess(req, res)
-    })
-  })(req, res, next)
-})
-
-app.use('/api', routes)
 
 const port = process.env.PORT || 3001
 app.listen(port, () => logger.info(`Local server up at ${port}`))

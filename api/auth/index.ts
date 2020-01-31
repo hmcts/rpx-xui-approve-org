@@ -4,11 +4,11 @@ import * as net from 'net'
 import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
 import * as passport from 'passport'
 import * as process from 'process'
+import {app} from '../application'
 import {router as keepAlive} from '../keepalive'
 import {environmentConfig} from '../lib/environment.config'
 import * as log4jui from '../lib/log4jui'
 import {propsExist} from '../lib/objectUtilities'
-import {app} from '../local'
 
 export const router = Router({mergeParams: true})
 
