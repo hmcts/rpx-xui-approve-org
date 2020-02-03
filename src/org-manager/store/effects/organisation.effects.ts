@@ -91,7 +91,7 @@ export class OrganisationEffects {
       );
     })
   );
-  
+
   public addReviewOrganisations$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS),
     map(() => {
