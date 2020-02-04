@@ -27,7 +27,7 @@
     "test:smoke": "sh whitelist.sh",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js",
-    "test:functional:local": "protractor ./test/e2e/config/functional.conf.js --local",
+    "test:functional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test-pact": "NODE_PATH=. LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/*.ts",
     "publish-pact": "NODE_PATH=. LOG_LEVEL=error mocha 'api/test/pact/publish/*.js' --timeout 15000 --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact"
