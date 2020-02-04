@@ -9,8 +9,9 @@
       </ng-container>
     </app-notification-banner-component>
     <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
-    <ng-container *ngIf="(loaded$ | async); else loading">
-      <app-search-organisations-form [searchString]="pendingSearchString$ | async" (submitForm)="submitSearch($event)"></app-search-organisations-form>
+    <ng-container *ngIf="{pendingSearchString: pendingSearchString$ | async, pendingOrgs: pendingOrgs$ | async } as data">
+     <ng-container *ngIf="(loaded$ | async); else loading">
+      <app-search-organisations-form [searchString]="data.pendingSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
       <form [formGroup]="inputForm">
        <table class="govuk-table">
           <thead class="govuk-table__head">
@@ -21,7 +22,7 @@
               <th class="govuk-table__header" scope="col">Status</th>
               <th class="govuk-table__header" scope="col"></th>
             </tr>
-            <tr class="govuk-table__row govuk-radios" *ngFor="let org of pendingOrgs$ | async | filterOrganisations: (pendingSearchString$ | async)">
+            <tr class="govuk-table__row govuk-radios" *ngFor="let org of data.pendingOrgs | filterOrganisations: data.pendingSearchString">
               <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
               <td class="govuk-table__cell">
                 {{org.addressLine1}}<br>
@@ -50,5 +51,6 @@
     <ng-template #loading>
       <h3 class="govuk-heading-s"><span>Loading...</span></h3>
     </ng-template>
+    </ng-container>
   </main>
 </div>
