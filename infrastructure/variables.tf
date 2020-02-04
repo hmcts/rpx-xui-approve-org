@@ -104,6 +104,7 @@ variable "idam_api_service" {}
 variable "idam_web_service" {}
 variable "rd_professional_api_service" {}
 variable "s2s_service" {}
+variable "fee_and_pay_api" {}
 
 variable "proxy_host" {
   default = "172.16.0.7"
