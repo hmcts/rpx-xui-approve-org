@@ -1,15 +1,19 @@
-
-<div class="search-organisations-form govuk-grid-column-two-thirds">
-  <div class="hmcts-search">
-    <form [formGroup]="searchOrgForm" (ngSubmit)="onSubmit()" >
-      <xuilib-gov-uk-input
-        [config]="{label: 'Search', hint: 'Search for approved organisations by name or unique reference', name: 'search', id: 'search', type: 'text', classes: 'hmcts-search__input'}"
-        [group]="searchOrgForm">
-      </xuilib-gov-uk-input>
-      <button type="submit" class="govuk-button hmcts-search__button">
-        Search
-      </button>
-    </form>
-  </div>
+<div class="govuk-grid-row">
+  <div class="search-organisations-form govuk-grid-column-two-thirds">
+    <div class="hmcts-search">
+      <form [formGroup]="searchOrgForm" (ngSubmit)="onSubmit()" >
+        <xuilib-gov-uk-input
+          [config]="{label: 'Search', hint: 'Search for an organisation, for example by name or postcode', name: 'search', id: 'search', type: 'text', classes: 'hmcts-search__input'}"
+          [group]="searchOrgForm">
+        </xuilib-gov-uk-input>
+        <button type="submit" class="govuk-button hmcts-search__button">
+          Search
+        </button>
+        <button (click)="onReset()" class="govuk-button hmcts-search__button govuk-button--secondary" data-module="govuk-button">
+          Reset
+        </button>
+      </form>
+    </div>
+  </div>  
 </div>
 

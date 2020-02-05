@@ -1,4 +1,4 @@
-import {Component,  EventEmitter, OnInit, Output} from '@angular/core';
+import {Component,  EventEmitter, OnInit, Output, Input} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 
 @Component({
@@ -7,12 +7,13 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
   styleUrls: ['./search-organisations-form.component.scss']
 })
 export class SearchOrganisationsFormComponent implements OnInit {
+  @Input() public searchString: string;
   @Output() public submitForm = new EventEmitter();
   public searchOrgForm: FormGroup;
 
   public ngOnInit(): void {
     this.searchOrgForm = new FormGroup({
-      search: new FormControl('', Validators.required)
+      search: new FormControl(this.searchString)
     });
   }
 
@@ -20,5 +21,10 @@ export class SearchOrganisationsFormComponent implements OnInit {
     if (this.searchOrgForm.valid) {
       this.submitForm.emit(this.searchOrgForm.controls.search.value);
     }
+  }
+
+  public onReset() {
+    this.searchOrgForm.controls.search.setValue('');
+    this.onSubmit();
   }
 }

@@ -15,11 +15,12 @@ export class FilterOrganisationsPipe implements PipeTransform {
         const isIncludeInName = org.name && org.name.toLowerCase().includes(searchFilter);
         const isIncludeInPostcode = org.postCode && org.postCode.toLowerCase().includes(searchFilter);
         const isIncludeInSraId = org.sraId && org.sraId.toLowerCase().includes(searchFilter);
+        const isIncludeInAdmin = org.admin && org.admin.toLowerCase().includes(searchFilter);
         const isIncludeInPbaNumber1 = org.pbaNumber && org.pbaNumber.length >= 1 && org.pbaNumber[0].toLowerCase().includes(searchFilter);
         const isIncludeInPbaNumber2 = org.pbaNumber && org.pbaNumber.length >= 2 && org.pbaNumber[org.pbaNumber.length - 1].toLowerCase().includes(searchFilter);
         const isIncludeInDxNumber = org.dxNumber && org.dxNumber.length >= 1 && org.dxNumber[0] && org.dxNumber[0].dxNumber && org.dxNumber[0].dxNumber.toLowerCase().includes(searchFilter);
         const isIncludeInDxExchange = org.dxNumber && org.dxNumber.length >= 1 && org.dxNumber[0] && org.dxNumber[0].dxExchange && org.dxNumber[0].dxExchange.toLowerCase().includes(searchFilter);
-        return isIncludeInName || isIncludeInPostcode || isIncludeInSraId || isIncludeInPbaNumber1 || isIncludeInPbaNumber2 || isIncludeInDxNumber || isIncludeInDxExchange;
+        return isIncludeInName || isIncludeInPostcode || isIncludeInSraId || isIncludeInPbaNumber1 || isIncludeInPbaNumber2 || isIncludeInDxNumber || isIncludeInDxExchange || isIncludeInAdmin;
       }
       return false;
     });
