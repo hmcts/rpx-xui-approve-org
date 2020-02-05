@@ -13,11 +13,11 @@ import * as pendingOrgActions from '../actions/organisations.actions';
 @Injectable()
 export class OrganisationEffects {
   constructor(
-    private actions$: Actions,
-    private pendingOrgService: PendingOrganisationService,
-    private loggerService: LoggerService,
-    private organisationService: OrganisationService,
-    private pbaAccountDetails: PbaAccountDetails
+    private readonly actions$: Actions,
+    private readonly pendingOrgService: PendingOrganisationService,
+    private readonly loggerService: LoggerService,
+    private readonly organisationService: OrganisationService,
+    private readonly pbaAccountDetails: PbaAccountDetails
   ) { }
 
   @Effect()
@@ -77,7 +77,7 @@ export class OrganisationEffects {
   );
 
   @Effect()
-  loadPbaAccountDetails$ = this.actions$.pipe(
+  public loadPbaAccountDetails$ = this.actions$.pipe(
     ofType(fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME),
     map((action: fromActions.LoadPbaAccountsDetails) => action.payload),
     switchMap((payload) => {
@@ -91,7 +91,8 @@ export class OrganisationEffects {
       );
     })
   );
-  
+
+  @Effect()
   public addReviewOrganisations$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS),
     map(() => {

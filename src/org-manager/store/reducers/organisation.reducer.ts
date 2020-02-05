@@ -6,19 +6,21 @@ export interface OrganisationState {
     orgEntities: {[id: string]: OrganisationVM},
     loaded: boolean;
     loading: boolean;
+    searchString: string;
   };
   pendingOrganisations: {
     orgEntities: {[id: string]: OrganisationVM},
     loaded: boolean;
     loading: boolean;
+    searchString: string;
   };
   errorMessage: string;
   orgForReview: OrganisationVM | null;
 }
 
 export const initialState: OrganisationState = {
-  activeOrganisations: {orgEntities: {}, loaded: false, loading: false},
-  pendingOrganisations: {orgEntities: {}, loaded: false, loading: false},
+  activeOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
+  pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   errorMessage: '',
   orgForReview: null
 };
@@ -33,7 +35,8 @@ export function reducer(
       const activeOrganisations = {
         orgEntities: {},
         loaded: false,
-        loading: true
+        loading: true,
+        searchString: ''
       };
       return {
         ...state,
@@ -50,7 +53,8 @@ export function reducer(
       const activeOrganisations = {
         orgEntities,
         loaded: true,
-        loading: false
+        loading: false,
+        searchString: ''
       };
       return {
         ...state,
@@ -69,7 +73,8 @@ export function reducer(
       const pendingOrganisations = {
         orgEntities: {},
         loaded: false,
-        loading: true
+        loading: true,
+        searchString: ''
       };
       return {
         ...state,
@@ -88,7 +93,8 @@ export function reducer(
       const pendingOrganisations = {
         orgEntities,
         loaded: true,
-        loading: false
+        loading: false,
+        searchString: ''
       };
       return {
         ...state,
@@ -117,7 +123,8 @@ export function reducer(
       const activeOrganisations = {
         orgEntities: activeEntities,
         loaded: state.activeOrganisations.loaded,
-        loading: false
+        loading: false,
+        searchString: ''
       };
 
       const pendingEntities = {
@@ -262,9 +269,37 @@ export function reducer(
         };
       }
     }
-    default:
-        return state;
 
+    case fromActions.OrgActionTypes.UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING: {
+      const activeOrganisations = {
+        orgEntities: state.activeOrganisations.orgEntities,
+        loaded: state.activeOrganisations.loaded,
+        loading: false,
+        searchString: action.payload
+      };
+
+      return {
+        ...state,
+        activeOrganisations
+      };
+    }
+
+    case fromActions.OrgActionTypes.UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING: {
+      const pendingOrganisations = {
+        orgEntities: state.pendingOrganisations.orgEntities,
+        loaded: state.pendingOrganisations.loaded,
+        loading: false,
+        searchString: action.payload
+      };
+
+      return {
+        ...state,
+        pendingOrganisations
+      };
+    }
+
+    default:
+      return state;
   }
 }
 

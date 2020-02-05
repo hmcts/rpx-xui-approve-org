@@ -36,8 +36,10 @@ function OrganisationListPage() {
         const rowsCount = await this.getOrgCount();
         for(var row = 0; row < rowsCount; row++){
             const orgName = await this.getOrgNameFromRow(row+1);
-            console.log("Expected " + name + " Found: " + orgName);
             assert(orgName === name, "Search result with name does not match. Expected: "+name+" Found: "+orgName);
+            if (rowsCount > 20){
+                break;
+           } 
         }
     };
 
