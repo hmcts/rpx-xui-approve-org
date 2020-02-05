@@ -1,5 +1,4 @@
 <div class="hmcts-width-container">
-  <app-back-link [store]="store"></app-back-link>
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <app-notification-banner-component>
       <ng-container *ngIf="(activeOrgsCount$ | async) as activeOrgCount; ">
@@ -9,9 +8,10 @@
         <h3 class="govuk-heading-s">Loading active organisations...</h3>
       </ng-container>
     </app-notification-banner-component>
-    <app-search-organisations-form (submitForm)="submitSearch($event)"></app-search-organisations-form>
     <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
-    <ng-container *ngIf="(loaded$ | async); else loading">
+    <ng-container *ngIf="{pendingSearchString: pendingSearchString$ | async, pendingOrgs: pendingOrgs$ | async } as data">
+     <ng-container *ngIf="(loaded$ | async); else loading">
+      <app-search-organisations-form [searchString]="data.pendingSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
       <form [formGroup]="inputForm">
        <table class="govuk-table">
           <thead class="govuk-table__head">
@@ -22,7 +22,7 @@
               <th class="govuk-table__header" scope="col">Status</th>
               <th class="govuk-table__header" scope="col"></th>
             </tr>
-            <tr class="govuk-table__row govuk-radios" *ngFor="let org of pendingOrgs$ | async | filterOrganisations: searchString">
+            <tr class="govuk-table__row govuk-radios" *ngFor="let org of data.pendingOrgs | filterOrganisations: data.pendingSearchString">
               <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
               <td class="govuk-table__cell">
                 {{org.addressLine1}}<br>
@@ -32,6 +32,9 @@
                 {{org.townCity}}<br>
                 <div *ngIf='org.county'>
                   {{org.county}}<br>
+                </div>
+                <div *ngIf='org.postCode'>
+                  {{org.postCode}}<br>
                 </div>
               </td>
               <td class="govuk-table__cell">{{org.admin}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span></td>
@@ -48,5 +51,6 @@
     <ng-template #loading>
       <h3 class="govuk-heading-s"><span>Loading...</span></h3>
     </ng-template>
+    </ng-container>
   </main>
 </div>
