@@ -10,10 +10,12 @@ import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
 
 
-let component: OrganisationDetailsComponent;
-let fixture: ComponentFixture<OrganisationDetailsComponent>;
-let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
 describe('SummaryComponent', () => {
+
+  let component: OrganisationDetailsComponent;
+  let fixture: ComponentFixture<OrganisationDetailsComponent>;
+  let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+
   beforeEach((() => {
     TestBed.configureTestingModule({
         imports: [
