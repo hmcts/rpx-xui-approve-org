@@ -82,7 +82,8 @@ export const orgStatePending = {
  activeOrganisations: {
    orgEntities: {},
    loaded: false,
-   loading: false
+   loading: false,
+   searchString: ''
  },
  pendingOrganisations: {
    orgEntities: {
@@ -103,7 +104,8 @@ export const orgStatePending = {
      }
      },
    loaded: true,
-   loading: false
+   loading: false,
+   searchString: ''
  },
  errorMessage: '',
  orgForReview: null
@@ -129,12 +131,14 @@ export const orgStateActive = {
       }
     },
     loaded: true,
-    loading: false
+    loading: false,
+    searchString: ''
   },
   pendingOrganisations: {
     orgEntities: {},
     loaded: false,
-    loading: false
+    loading: false,
+    searchString: ''
   },
   errorMessage: '',
   orgForReview: null

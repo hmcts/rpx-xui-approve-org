@@ -16,7 +16,7 @@ import {OrganisationVM} from '../../models/organisation';
 export class ActiveOrganisationsComponent implements OnInit {
   public orgs$: Observable<OrganisationVM[]>;
   public loading$: Observable<boolean>;
-  public searchString = '';
+  public activeSearchString$: Observable<string>;
 
   constructor(
     public readonly store: Store<fromOrganisation.OrganisationRootState>,
@@ -33,9 +33,11 @@ export class ActiveOrganisationsComponent implements OnInit {
 
     this.orgs$ = this.store.pipe(select(fromOrganisation.getActiveOrganisationArray));
     this.loading$ = this.store.pipe(select(fromOrganisation.getActiveLoading));
+    this.activeSearchString$ = this.store.pipe(select(fromOrganisation.getActiveSearchString));
+
   }
 
   public submitSearch(searchString: string) {
-    this.searchString = searchString;
+    this.store.dispatch(new fromOrganisation.UpdateActiveOrganisationsSearchString(searchString));
   }
 }

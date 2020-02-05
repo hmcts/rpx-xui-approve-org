@@ -7,7 +7,6 @@ import 'rxjs/add/observable/of';
 import {takeWhile} from 'rxjs/operators';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
-import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../../org-manager/store';
 import * as fromOrganisation from '../../store/';
 
@@ -21,9 +20,10 @@ export class PendingOrganisationsComponent implements OnInit {
   public pendingOrgs$: Observable<OrganisationVM[]>;
   public inputForm: FormGroup;
   public loaded$: Observable<boolean>;
+  public pendingSearchString$: Observable<string>;
+
   public activeOrgsCount$: Observable<number>;
   public activeLoaded$: Observable<boolean>;
-  public searchString = '';
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
               private readonly fb: FormBuilder) {}
@@ -51,10 +51,11 @@ export class PendingOrganisationsComponent implements OnInit {
     this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
     this.columnConfig = PendingOverviewColumnConfig;
     this.store.dispatch(new fromStore.ClearErrors());
+    this.pendingSearchString$ = this.store.pipe(select(fromOrganisation.getPendingSearchString));
   }
 
   public submitSearch(searchString: string) {
-    this.searchString = searchString;
+    this.store.dispatch(new fromOrganisation.UpdatePendingOrganisationsSearchString(searchString));
   }
 
 }
