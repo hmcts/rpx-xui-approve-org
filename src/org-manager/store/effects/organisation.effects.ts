@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { PendingOrganisationService } from 'src/org-manager/services/pending-organisation.service';
 import { LoggerService } from '../../../app/services/logger.service';
 import * as fromRoot from '../../../app/store';
