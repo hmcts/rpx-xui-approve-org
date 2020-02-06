@@ -49,8 +49,13 @@
                     {{pba}}
                     <span class="govuk-caption-m govuk-!-font-size-16">
                         Account name:
-                        <span *ngIf="data?.accountDetails">
+                        <span>
+                          <ng-container *ngIf="data?.accountDetails[i]?.account_name; else noAccountName" >
                             {{data?.accountDetails[i]?.account_name}}
+                          </ng-container>
+                          <ng-template #noAccountName>
+                             currently unavailable
+                          </ng-template>
                         </span>
                     </span>
                 </div>
