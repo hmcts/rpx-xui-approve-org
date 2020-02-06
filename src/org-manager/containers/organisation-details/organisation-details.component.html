@@ -8,6 +8,20 @@
   </app-identity-bar-component>
   <div class="hmcts-width-container">
     <xuilib-hmcts-main-wrapper [title]="'Organisation details'" [backLink]="true" (backEvent)="onGoBack()">
+      <nav class="hmcts-sub-navigation" aria-label="Sub navigation">
+      <ul class="hmcts-sub-navigation__list">
+        <li class="hmcts-sub-navigation__item">
+          <a class="hmcts-sub-navigation__link" aria-current="page">
+            Organisation details
+          </a>
+        </li>
+        <li class="hmcts-sub-navigation__item">
+          <a class="hmcts-sub-navigation__link" href="#2">
+            Users
+          </a>
+        </li>
+      </ul>
+      </nav> 
       <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
          <div class="govuk-check-your-answers__contents">
             <dt class="govuk-check-your-answers__question">
