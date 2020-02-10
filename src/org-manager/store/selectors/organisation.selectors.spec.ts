@@ -9,12 +9,14 @@ const OrganisationState = {
   activeOrganisations: {
     orgEntities: {},
     loaded: false,
-    loading: false
+    loading: false,
+    searchString: ''
   },
   pendingOrganisations: {
     orgEntities: {},
     loaded: false,
     loading: false,
+    searchString: ''
   },
   errorMessage: '',
   orgForReview: null
@@ -83,7 +85,7 @@ describe('Organisation selectors', () => {
       store.pipe(select(fromSelectors.getPendingOrganisationsState)).subscribe(value => {
         result = value;
       });
-      expect(result).toEqual({loading: false, loaded: false, orgEntities: {}});
+      expect(result).toEqual({loading: false, loaded: false, orgEntities: {}, searchString: ''});
     });
   });
 

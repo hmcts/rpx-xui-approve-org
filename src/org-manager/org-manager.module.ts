@@ -1,20 +1,18 @@
-import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {orgManagerRouting} from './org-manager.routing';
+import {HttpClientModule} from '@angular/common/http';
+import {NgModule} from '@angular/core';
+import { EffectsModule } from '@ngrx/effects';
+import {StoreModule} from '@ngrx/store';
 import {SharedModule} from '../shared/shared.module';
-
-// containers
-import * as fromContainers from './containers';
-
-// components
 import * as fromComponents from './components';
 
 // services
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import * as fromContainers from './containers';
+import {orgManagerRouting} from './org-manager.routing';
+import * as fromPipes from './pipes';
 import * as fromServices from './services';
-import {StoreModule} from '@ngrx/store';
-import {HttpClientModule} from '@angular/common/http';
-import { EffectsModule } from '@ngrx/effects';
-import { reducers, effects } from './store';
+import { effects, reducers } from './store';
 
 @NgModule({
   imports: [
@@ -23,10 +21,11 @@ import { reducers, effects } from './store';
     orgManagerRouting,
     SharedModule,
     StoreModule.forFeature('orgState', reducers),
-    EffectsModule.forFeature(effects)
+    EffectsModule.forFeature(effects),
+    ExuiCommonLibModule.forChild()
   ],
   exports: [...fromContainers.containers],
-  declarations: [...fromContainers.containers, ...fromComponents.components],
+  declarations: [...fromContainers.containers, ...fromComponents.components, ...fromPipes.pipes],
   providers: [...fromServices.services]
 })
 

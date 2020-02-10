@@ -39,6 +39,7 @@ const config: EnvironmentConfig = {
   services: {
     ccdDataApi: getEnvConfig<string>('CCD_DATA_API_SERVICE', 'string'),
     ccdDefApi: getEnvConfig<string>('CCD_DEFINITION_API_SERVICE', 'string'),
+    feeAndPayApi: getEnvConfig<string>('FEE_AND_PAY_API', 'string'),
     idamApi: getEnvConfig<string>('IDAM_API_SERVICE', 'string'),
     idamWeb: getEnvConfig<string>('IDAM_WEB_SERVICE', 'string'),
     iss: getEnvConfig<string>('ISS', 'string'),
