@@ -2,6 +2,8 @@
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 
+const browserWaits = require('../../support/customWaits');
+
 function approveOrganisationBannerObjects() {
 
   this.emailAddress = element(by.css("[id='emailAddress']"));
@@ -9,17 +11,19 @@ function approveOrganisationBannerObjects() {
   this.submit_button= element(by.css("[class='div.govuk-button']"));
 
   this.approveorgBanner= element(by.xpath("//*[@id='content']/div"));
+  this.bannerMessageContainer = element(by.css('.hmcts-banner__message'));
   this.bannerText= element(by.xpath("//div[@class='hmcts-banner__message']"));
+  this.activeOrganisationTextBanner = element(by.xpath("//div[@class='hmcts-banner__message']//span[contains(text(),'organisations are active')]")); 
   //this.checkNow= element(by.xpath("//a[contains(text(),'Check now.')]"));
   this.checkNow= element(by.partialLinkText("Check no"));
-  this.pendingOrganisationText= element(by.xpath("//*[@id='main-content']/h1"));
+  this.activeOrganisationPageHeading = element(by.xpath("//h1[contains(@class,'hmcts-page-heading__title') and contains(text(),'Active organisations')]"));
 
   this.selectCheckBox= element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[1]/div"));
   this.activate_button= element(by.xpath("//button[@class='govuk-button']"));
   this.approve_button= element(by.xpath("//button[@class='govuk-button']"));
   this.confirmationScreen= element(by.xpath("//div[@class='govuk-panel govuk-panel--confirmation']"));
   this.backtoOrganisations= element(by.partialLinkText("Back to organisatio"));
-  this.mainHeader=element(by.xpath("//h1[@class='hmcts-page-heading__title govuk-heading-xl']"));
+  this.mainHeader = element(by.xpath("//h1[contains(@class,'govuk-heading-xl')]"));
 
   this.orgName=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[2]]"));
   this.administratorText=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[4]"));
@@ -43,6 +47,12 @@ function approveOrganisationBannerObjects() {
   this.enterUrEmail = async function (email) {
     await this.emailAddress.sendKeys(email);
   };
+
+  this.validateBannerTextContains = async function(containsText){
+    await browserWaits.waitForElement(this.bannerMessageContainer);
+    const bannerText = await this.bannerMessageContainer.getText();
+    assert(bannerText.includes(containsText), bannerText + ' does not contains expected text => ' + containsText); 
+  }
 
   this.enterPassword = async function (password) {
     await this.password.sendKeys(password);
