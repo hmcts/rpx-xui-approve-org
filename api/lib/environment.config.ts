@@ -41,9 +41,9 @@ const config: EnvironmentConfig = {
     ccdDefApi: getEnvConfig<string>('CCD_DEFINITION_API_SERVICE', 'string'),
     idamApi: getEnvConfig<string>('IDAM_API_SERVICE', 'string'),
     idamWeb: getEnvConfig<string>('IDAM_WEB_SERVICE', 'string'),
-    iss: getEnvConfig<string>('S2S_SERVICE', 'string'),
+    iss: getEnvConfig<string>('ISS', 'string'),
     rdProfessionalApi: getEnvConfig<string>('RD_PROFESSIONAL_API_SERVICE', 'string'),
-    s2s: getEnvConfig<string>('ISS', 'string'),
+    s2s: getEnvConfig<string>('S2S_SERVICE', 'string'),
   },
   sessionSecret: getEnvConfig<string>('SESSION_SECRET', 'string'),
 }
