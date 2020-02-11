@@ -297,10 +297,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@hmcts/frontend@0.0.39-alpha":
-  version "0.0.39-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.39-alpha.tgz#782d4a4698dae040dd72b26711f04a8d8299d25c"
-  integrity sha512-M1364rFLuvktYz5+jVjJ5ZmNUx0/SgoAvH3RsIaT2wFqFf92emuiRyXqax5oSEC5kM9Jpw0rcxEcRbBJWMoglg==
+"@hmcts/frontend@0.0.41-alpha":
+  version "0.0.41-alpha"
+  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.41-alpha.tgz#a1f3bd75a640e92be914d42f18ce52d3dea770d2"
+  integrity sha512-1EJhRYycSMsTUYAx+FsrQ3O9mB9WVsoULikd4J9Xu9nSMk2D4mABIzRdcqvXvlIIMSmVDXJD2xDxInJBg57TsA==
 
 "@hmcts/nodejs-healthcheck@^1.5.1":
   version "1.5.1"
