@@ -5,8 +5,6 @@ import { HmctsGlobalHeaderComponent } from './hmcts-global-header/hmcts-global-h
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
-import { CookiePolicyComponent } from './cookie-policy/cookie-policy.component';
-import { AccessibilityComponent } from './accessibility/accessibility.component';
 import {SignedOutComponent} from './singed-out/signed-out.component';
 
 export const components: any[] = [
