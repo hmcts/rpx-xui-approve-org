@@ -1,25 +1,26 @@
-import * as fromActions from '../actions';
 import {OrganisationVM} from 'src/org-manager/models/organisation';
-import {ofType} from '@ngrx/effects';
+import * as fromActions from '../actions';
 
 export interface OrganisationState {
   activeOrganisations: {
     orgEntities: {[id: string]: OrganisationVM},
     loaded: boolean;
     loading: boolean;
+    searchString: string;
   };
   pendingOrganisations: {
     orgEntities: {[id: string]: OrganisationVM},
     loaded: boolean;
     loading: boolean;
+    searchString: string;
   };
   errorMessage: string;
   orgForReview: OrganisationVM | null;
 }
 
 export const initialState: OrganisationState = {
-  activeOrganisations: {orgEntities: {}, loaded: false, loading: false},
-  pendingOrganisations: {orgEntities: {}, loaded: false, loading: false},
+  activeOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
+  pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   errorMessage: '',
   orgForReview: null
 };
@@ -34,7 +35,8 @@ export function reducer(
       const activeOrganisations = {
         orgEntities: {},
         loaded: false,
-        loading: true
+        loading: true,
+        searchString: ''
       };
       return {
         ...state,
@@ -51,7 +53,8 @@ export function reducer(
       const activeOrganisations = {
         orgEntities,
         loaded: true,
-        loading: false
+        loading: false,
+        searchString: ''
       };
       return {
         ...state,
@@ -70,7 +73,8 @@ export function reducer(
       const pendingOrganisations = {
         orgEntities: {},
         loaded: false,
-        loading: true
+        loading: true,
+        searchString: ''
       };
       return {
         ...state,
@@ -89,7 +93,8 @@ export function reducer(
       const pendingOrganisations = {
         orgEntities,
         loaded: true,
-        loading: false
+        loading: false,
+        searchString: ''
       };
       return {
         ...state,
@@ -118,7 +123,8 @@ export function reducer(
       const activeOrganisations = {
         orgEntities: activeEntities,
         loaded: state.activeOrganisations.loaded,
-        loading: false
+        loading: false,
+        searchString: ''
       };
 
       const pendingEntities = {
@@ -157,15 +163,16 @@ export function reducer(
       const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
 
       const entity = {
-       ...state[orgType].orgEntities[orgId],
-       pbaNumber
+        ...state[orgType].orgEntities[orgId],
+        pbaNumber,
+        isAccLoaded: false,
       } as OrganisationVM;
 
       const orgEntities = {
        ...state[orgType].orgEntities,
        [orgId]: entity
       };
-
+      // TODO create helper function instead of duplicating code
       if (orgType === 'activeOrganisations') {
         const activeOrganisations = {
          ...state[orgType],
@@ -185,12 +192,115 @@ export function reducer(
           pendingOrganisations
         };
       }
-
-
-
     }
+    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME: {
+      const {orgId} = action.payload;
+      const accountDetails =  [{account_name: 'loading...'}];
+      const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
+      const entity = {
+        ...state[orgType].orgEntities[orgId],
+        isAccLoaded: false,
+        accountDetails
+      };
+
+      const orgEntities = {
+        ...state[orgType].orgEntities,
+        [orgId]: entity
+      };
+      // TODO create helper function instead of duplicating code
+      if (orgType === 'activeOrganisations') {
+        const activeOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          activeOrganisations
+        };
+      } else {
+        const pendingOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          pendingOrganisations
+        };
+      }
+    }
+
+    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS:
+    case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL: {
+      const payload = action.payload;
+      const orgId = payload.orgId;
+      const errorData = [
+        {account_name: 'There is a problem retrieving the account name. Try again later'},
+        {account_name: 'There is a problem retrieving the account name. Try again later'}
+      ];
+      const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
+      const accountDetails = !(action.type === fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL) ? payload.data : errorData;
+      const entity = {
+        ...state[orgType].orgEntities[orgId],
+        isAccLoaded: true,
+        accountDetails
+      };
+      const orgEntities = {
+        ...state[orgType].orgEntities,
+        [orgId]: entity
+      };
+      // TODO create helper function instead of duplicating code
+      if (orgType === 'activeOrganisations') {
+        const activeOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          activeOrganisations
+        };
+      } else {
+        const pendingOrganisations = {
+          ...state[orgType],
+          orgEntities
+        };
+        return {
+          ...state,
+          pendingOrganisations
+        };
+      }
+    }
+
+    case fromActions.OrgActionTypes.UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING: {
+      const activeOrganisations = {
+        orgEntities: state.activeOrganisations.orgEntities,
+        loaded: state.activeOrganisations.loaded,
+        loading: false,
+        searchString: action.payload
+      };
+
+      return {
+        ...state,
+        activeOrganisations
+      };
+    }
+
+    case fromActions.OrgActionTypes.UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING: {
+      const pendingOrganisations = {
+        orgEntities: state.pendingOrganisations.orgEntities,
+        loaded: state.pendingOrganisations.loaded,
+        loading: false,
+        searchString: action.payload
+      };
+
+      return {
+        ...state,
+        pendingOrganisations
+      };
+    }
+
+    default:
+      return state;
   }
-  return state;
 }
 
 export const getPendingOrganis = (state: OrganisationState) => state.pendingOrganisations;
