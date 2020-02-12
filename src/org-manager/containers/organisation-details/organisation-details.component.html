@@ -7,7 +7,7 @@
     </span>
   </app-identity-bar-component>
   <div class="hmcts-width-container">
-    <lib-gov-uk-main-wrapper [title]="'Organisation details'" [backLink]="true">
+    <xuilib-hmcts-main-wrapper [title]="'Organisation details'" [backLink]="true" (backEvent)="onGoBack()">
       <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
          <div class="govuk-check-your-answers__contents">
             <dt class="govuk-check-your-answers__question">
@@ -15,6 +15,7 @@
             </dt>
             <dd class="govuk-check-your-answers__answer">
                {{data?.name}}
+               <div class="govuk-caption-m govuk-!-font-size-16">{{data?.organisationId}}</div>
             </dd>
             <dd class="govuk-check-your-answers__change">
             </dd>
@@ -44,13 +45,25 @@
                PBA number
             </dt>
             <dd class="govuk-check-your-answers__answer">
-              {{data?.pbaNumber}}
+                <div *ngFor="let pba of data?.pbaNumber; let i = index">
+                    {{pba}}
+                    <span class="govuk-caption-m govuk-!-font-size-16">
+                        Account name:
+                        <span>
+                          <ng-container *ngIf="data?.accountDetails[i]?.account_name; else noAccountName" >
+                            {{data?.accountDetails[i]?.account_name}}
+                          </ng-container>
+                          <ng-template #noAccountName>
+                             currently unavailable
+                          </ng-template>
+                        </span>
+                    </span>
+                </div>
             </dd>
             <dd class="govuk-check-your-answers__change">
-                <!--  TODO undo this when pba live  -->
-              <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
-                {{data?.pbaNumber.length ? 'Change' : 'Add'}}
-              </a>
+                  <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
+                  {{data?.pbaNumber.length ? 'Change' : 'Add'}}
+                  </a>
             </dd>
          </div>
          <div class="govuk-check-your-answers__contents">
@@ -96,14 +109,15 @@
          </div>
       </dl>
 
-    </lib-gov-uk-main-wrapper>
+      <button *ngIf="data?.status=='PENDING'" (click)="approveOrganisation(data)" type="submit" class=govuk-button>Approve organisation</button>
+    </xuilib-hmcts-main-wrapper>
   </div>
   </ng-container>
  <ng-container *ngIf="!(orgs$ | async)">
    <div class="hmcts-width-container">
-     <lib-gov-uk-main-wrapper [title]="'Organisation details'">
+     <xuilib-hmcts-main-wrapper [title]="'Organisation details'">
        <h3 class="govuk-heading-s">Loading...</h3>
-     </lib-gov-uk-main-wrapper>
+     </xuilib-hmcts-main-wrapper>
    </div>
  </ng-container>
 
