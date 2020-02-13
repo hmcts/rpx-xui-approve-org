@@ -1,16 +1,14 @@
 import { createGlobalProxyAgent } from 'global-agent'
-//TODO: May need to change this.
-import { environmentConfig, isLocal } from './environment.config'
+import {getConfigValue, getEnvironment} from '../configuration'
+import {DEVELOPMENT} from '../configuration/constants'
+import {HTTP_PROXY, NO_PROXY} from '../configuration/references'
 import * as log4jui from './log4jui'
-import {exists} from './util'
 
 const logger = log4jui.getLogger('proxy')
 
 export function init(): void {
-  if (isLocal() && exists(environmentConfig.proxy, 'host') && exists(environmentConfig.proxy, 'port')) {
-    const globalProxyAgent = createGlobalProxyAgent()
-    logger.info('configuring global-agent: ', environmentConfig.proxy)
-    globalProxyAgent.HTTP_PROXY = `http://${environmentConfig.proxy.host}:${environmentConfig.proxy.port}`
-    globalProxyAgent.NO_PROXY = 'localhost'
+  if (getEnvironment() === DEVELOPMENT) {
+    logger.info('configuring global-agent: ', getConfigValue(HTTP_PROXY), 'no proxy:', getConfigValue(NO_PROXY))
+    createGlobalProxyAgent({})
   }
 }

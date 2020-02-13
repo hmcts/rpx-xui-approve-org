@@ -1,8 +1,9 @@
+import * as propertiesVolume from '@hmcts/properties-volume'
 import { AxiosResponse } from 'axios'
 import * as express from 'express'
 import * as otp from 'otp'
-import * as log4jui from '../lib/log4jui'
 import { http } from '../lib/http'
+import * as log4jui from '../lib/log4jui'
 import { getHealth, getInfo } from '../lib/util'
 
 import { getConfigValue, getS2SSecret } from '../configuration'
@@ -10,7 +11,9 @@ import { MICROSERVICE, SERVICE_S2S_PATH } from '../configuration/references'
 
 const url = getConfigValue(SERVICE_S2S_PATH)
 
-const s2sSecretUnTrimmed = getS2SSecret()
+const secrets = propertiesVolume.addTo({}, { failOnError: true })
+
+const s2sSecretUnTrimmed = getS2SSecret(secrets)
 const microservice = getConfigValue(MICROSERVICE)
 const s2sSecret = s2sSecretUnTrimmed.trim()
 
