@@ -1,6 +1,9 @@
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as globalTunnel from 'global-tunnel-ng'
+import * as passport from 'passport'
+import * as process from "process"
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
@@ -9,14 +12,10 @@ import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
-import * as passport from 'passport'
-import * as process from "process";
-import * as globalTunnel from 'global-tunnel-ng'
 const FileStore = sessionFileStore(session)
 export const app = express()
 const logger = log4jui.getLogger('server')
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-
 
 app.use(
     session({

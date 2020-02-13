@@ -14,17 +14,6 @@ export interface EnhancedRequest extends express.Request {
         expires: number
         email: string
     }
-    session?: {
-        save?: any
-        auth?: {
-            orgId: string
-            email?: string
-            roles?: string
-            token?: string
-            userId?: string
-        }
-        user?
-    }
 }
 
 export interface Token {
