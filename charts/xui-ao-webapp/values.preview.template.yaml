@@ -16,3 +16,4 @@ nodejs:
     FEE_AND_PAY_API: https://payment-api-aat.service.core-compute-aat.internal
     APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
     PUI_ENV: preview
+    PADDY_POWER: yay
