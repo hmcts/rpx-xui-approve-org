@@ -50,7 +50,9 @@ export class OrganisationDetailsComponent implements OnInit {
   }
 
   public approveOrganisation(data: OrganisationVM) {
+    console.log('parent approve org');
     if (data) {
+      console.log(data);
       this.store.dispatch(new fromStore.AddReviewOrganisations(data));
     }
   }

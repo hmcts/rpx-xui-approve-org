@@ -14,6 +14,7 @@ export interface OrganisationState {
     loading: boolean;
     searchString: string;
   };
+  organisationDetails: any;
   errorMessage: string;
   orgForReview: OrganisationVM | null;
 }
@@ -21,6 +22,7 @@ export interface OrganisationState {
 export const initialState: OrganisationState = {
   activeOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
+  organisationDetails: null,
   errorMessage: '',
   orgForReview: null
 };
@@ -59,6 +61,15 @@ export function reducer(
       return {
         ...state,
         activeOrganisations
+      };
+    }
+
+    case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS: {
+      console.log('LOAD_ORGANISATION_USERS_SUCCESS');
+      console.log(action.payload);
+      return {
+        ...state,
+        organisationDetails: action.payload
       };
     }
 
