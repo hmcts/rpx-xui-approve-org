@@ -1,6 +1,6 @@
 import axios from 'axios'
 import * as express from 'express'
-import {app} from '../local'
+import {app} from '../application'
 import {environmentConfig} from '../lib/environment.config'
 
 const cookieToken = environmentConfig.cookies.token
