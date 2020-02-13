@@ -34,6 +34,7 @@ module "app" {
         PUI_ENV = "${var.env}"
         NODE_ENV = "${var.env}"
         NODE_CONFIG_ENV = "${var.env}"
+        WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"

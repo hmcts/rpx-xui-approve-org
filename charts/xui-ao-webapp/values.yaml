@@ -3,6 +3,15 @@ nodejs:
   memoryLimits: 1024Mi
   cpuLimits: 1000m
   environment:
+    IDAM_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+    S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    CCD_DATA_API_SERVICE: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    CCD_DEFINITION_API_SERVICE: http://ccd-definition-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    IDAM_API_SERVICE: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+    IDAM_WEB_SERVICE: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
+    RD_PROFESSIONAL_API_SERVICE: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    FEE_AND_PAY_API: https://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     REFORM_TEAM: rpx
     REFORM_SERVICE_NAME: xui-ao-webapp
     NODE_ENV: production
@@ -10,8 +19,8 @@ nodejs:
     PUI_ENV: prod
     SESSION_SECRET: secretSauce
     NODE_TLS_REJECT_UNAUTHORIZED: 1
-    PROXY_HOST: 172.16.0.7
-    PROXY_PORT: 0
+    AO_HTTP_PROXY: http://172.16.0.7:8080
+    AO_NO_PROXY: localhost
     PORT: 3000
     NOW: false
     IDAM_CLIENT: xuiaowebapp

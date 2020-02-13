@@ -1,10 +1,10 @@
 import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
+import * as config from 'config'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as process from 'process'
-import * as config from 'config'
 
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
@@ -33,6 +33,7 @@ const app = express()
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
 propertiesVolume.addTo(config)
+const secrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/', failOnError: true })
 
 /**
  * If there are no configuration properties found we highlight this to the DevOps
