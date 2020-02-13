@@ -1,3 +1,4 @@
+import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -40,6 +41,27 @@ app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
+
+function healthcheckConfig(msUrl) {
+  return healthcheck.web(`${msUrl}/health`, {
+    deadline: 6000,
+    timeout: 6000,
+  })
+}
+
+const healthchecks = {
+  checks: {
+    ccdDataApi: healthcheckConfig(environmentConfig.services.ccdDataApi),
+    ccdDefApi: healthcheckConfig(environmentConfig.services.ccdDefApi),
+    feeAndPayApi: healthcheckConfig(environmentConfig.services.feeAndPayApi),
+    idamApi: healthcheckConfig(environmentConfig.services.idamApi),
+    idamWeb: healthcheckConfig(environmentConfig.services.idamWeb),
+    rdProfessionalApi: healthcheckConfig(environmentConfig.services.rdProfessionalApi),
+    s2s: healthcheckConfig(environmentConfig.services.s2s),
+  },
+}
+
+healthcheck.addTo(app, healthchecks)
 
 app.get('/oauth2/callback', auth.oauth)
 
