@@ -8,6 +8,9 @@ export enum OrgActionTypes {
     LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
     LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
     LOAD_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Load Fail',
+    LOAD_ORGANISATION_USERS = '[Organisations] Load Single Organisation',
+    LOAD_ORGANISATION_USERS_SUCCESS = '[Organisations] Load Single Organisation Success',
+    LOAD_ORGANISATION_USERS_FAIL = '[Organisations] Load Single Organisation Fail',
     ADD_REVIEW_ORGANISATIONS = '[Pending Organisations] Add to Review Organisations',
     DISPLAY_ERROR_MESSAGE_ORGANISATIONS = '[Pending Organisations] Display Error message Organisations',
     APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
@@ -116,6 +119,24 @@ export class LoadPbaAccountDetailsFail implements Action {
   }
 }
 
+export class LoadOrganisationUsers implements Action {
+  readonly type = OrgActionTypes.LOAD_ORGANISATION_USERS;
+  constructor(public payload: string) {
+  }
+}
+
+export class LoadOrganisationUsersSuccess implements Action {
+  readonly type = OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS;
+  constructor(public payload: any) {
+  }
+}
+
+export class LoadOrganisationUsersFail implements Action {
+  readonly type = OrgActionTypes.LOAD_ORGANISATION_USERS_FAIL;
+  constructor(public payload: Error) {
+  }
+}
+
 
 export type OrganisationsActions =
     | LoadPendingOrganisations
@@ -134,4 +155,7 @@ export type OrganisationsActions =
     | UpdatePendingOrganisationsSearchString
     | LoadPbaAccountsDetails
     | LoadPbaAccountDetailsSuccess
-    | LoadPbaAccountDetailsFail;
+    | LoadPbaAccountDetailsFail
+    | LoadOrganisationUsers
+    | LoadOrganisationUsersSuccess
+    | LoadOrganisationUsersFail;
