@@ -40,3 +40,5 @@ export const HTTP_PROXY = 'httpProxy'
 export const NO_PROXY = 'noProxy'
 
 export const LOGGING = 'logging'
+
+export const S2S_SECRET = 'secrets.rpx.ao-s2s-client-secret'
