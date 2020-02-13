@@ -14,7 +14,7 @@ import {
   COOKIE_TOKEN,
   COOKIES_USERID,
   IDAM_CLIENT,
-  MAX_LINES, NOW, SECURE_COOKIE,
+  MAX_LINES, NOW, S2S_SECRET, SECURE_COOKIE,
   SERVICES_CCD_DATA_API_PATH,
   SERVICES_CCD_DEF_API_PATH,
   SERVICES_IDAM_API_PATH,
@@ -32,8 +32,10 @@ const app = express()
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
-propertiesVolume.addTo(config)
-const secrets = propertiesVolume.addTo({}, { mountPoint: '/Volumes/mnt/secrets/', failOnError: true })
+// propertiesVolume.addTo(config)
+propertiesVolume.addTo(config, { failOnError: true })
+
+console.log(config.get(S2S_SECRET))
 
 /**
  * If there are no configuration properties found we highlight this to the DevOps

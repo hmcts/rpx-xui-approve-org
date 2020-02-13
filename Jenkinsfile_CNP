@@ -52,6 +52,7 @@ withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     installCharts()
+    enableAksStagingDeployment()
 
 // Disable pact testing on pipeline
 //
