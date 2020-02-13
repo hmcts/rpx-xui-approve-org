@@ -35,6 +35,22 @@ export class OrganisationEffects {
   );
 
   @Effect()
+  public loadOrganisationUsers$ = this.actions$.pipe(
+    ofType(fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS),
+    map((action: fromActions.LoadOrganisationUsers) => action.payload),
+    switchMap((payload) => {
+      console.log('effect loadSingle organisation ', payload);
+      return this.organisationService.getSingleOrganisation(payload).pipe(
+          map((data) => new fromActions.LoadOrganisationUsersSuccess(data)),
+          catchError((error: Error) => {
+            this.loggerService.error(error);
+            return of(new fromActions.LoadOrganisationUsersFail(error));
+          })
+      );
+    })
+  );
+
+  @Effect()
   public loadPendingOrgs$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS),
     switchMap(() => {

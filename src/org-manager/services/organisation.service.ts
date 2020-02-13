@@ -20,4 +20,8 @@ export class OrganisationService {
     return this.http.get<Organisation>(this.singleOrgUrl + payload.id);
   }
 
+  getOrganisationUsers(payload): Observable<any> {
+    return this.http.get<any>(payload);
+  }
+
 }
