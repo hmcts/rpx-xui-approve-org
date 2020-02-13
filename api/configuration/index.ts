@@ -86,7 +86,7 @@ export const getIdamSecret = () => process.env.IDAM_SECRET
  */
 export const getS2SSecret = (secretsConfig): string => {
   const ERROR_S2S_SECRET_NOT_FOUND =
-    'secrets.rpx.mc-s2s-client-secret not found on this environment.'
+    'secrets.rpx.ao-s2s-client-secret not found on this environment.'
   if (exists(secretsConfig, 'secrets.rpx.ao-s2s-client-secret')) {
     // tslint:disable-next-line: no-string-literal
     return secretsConfig['secrets']['rpx']['ao-s2s-client-secret']
