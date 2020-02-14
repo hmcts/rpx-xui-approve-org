@@ -36,8 +36,6 @@ export const SERVICES_FEE_AND_PAY_PATH = 'services.feeAndPayApi'
 export const SERVICE_S2S_PATH = 'services.s2s'
 
 export const SESSION_SECRET = 'sessionSecret'
-export const HTTP_PROXY = 'httpProxy'
-export const NO_PROXY = 'noProxy'
 
 export const LOGGING = 'logging'
 
