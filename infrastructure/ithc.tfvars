@@ -1,6 +1,6 @@
 #capacity = "2"
-ccd_data_api_service = "http://ccd-data-store-api-demo.service.core-compute-demo.internal"
-ccd_definition_api_service = "http://ccd-definition-store-api-demo.service.core-compute-demo.internal"
+ccd_data_api_service = "http://ccd-data-store-api-ithc.service.core-compute-ithc.internal"
+ccd_definition_api_service = "http://ccd-definition-store-api-ithc.service.core-compute-ithc.internal"
 idam_api_service = "https://idam-api.ithc.platform.hmcts.net"
 idam_web_service = "https://idam-web-public.ithc.platform.hmcts.net"
 rd_professional_api_service = "http://rd-professional-api-ithc.service.core-compute-ithc.internal"
