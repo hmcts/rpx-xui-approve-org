@@ -1,13 +1,13 @@
-import {OrganisationVM } from 'src/org-manager/models/organisation';
-import {LoadPbaAccuntsObj} from '../../mock/pending-organisation.mock';
-import * as fromMock from '../../mock/pending-organisation.mock';
-import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
+import * as fromActions from '../actions';
+
+import * as fromMock from '../../mock/pending-organisation.mock';
+import {OrganisationVM } from 'src/org-manager/models/organisation';
 
 
 describe('Organisation Reducer', () => {
 
-  const pendingOrganisationsMock: OrganisationVM[] = fromMock.PendingOrganisationsMockCollection1;
+  const PendingOrganisationsMock: OrganisationVM[] = fromMock.PendingOrganisationsMockCollection1;
 
   describe('undefined action', () => {
     it('should return the default state', () => {
@@ -22,7 +22,7 @@ describe('Organisation Reducer', () => {
 
       const action = new fromActions.LoadPendingOrganisations();
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: true, searchString: ''});
+      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: true});
     });
 
   });
@@ -32,14 +32,14 @@ describe('Organisation Reducer', () => {
 
       const action = new fromActions.LoadActiveOrganisation();
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: false, searchString: ''});
+      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: false});
     });
 
   });
 
   describe('LOAD_PENDING_ORGANISATION_SUCCESS action', () => {
     it('should update the state.pendingOrganisations', () => {
-      const action = new fromActions.LoadPendingOrganisationsSuccess(pendingOrganisationsMock);
+      const action = new fromActions.LoadPendingOrganisationsSuccess(PendingOrganisationsMock);
       const state = reducer(initialState, action);
       expect(state).toEqual(fromMock.orgStatePending as any);
     });
@@ -48,7 +48,7 @@ describe('Organisation Reducer', () => {
 
   describe('LOAD_ACTIVE_ORGANISATION_SUCCESS action', () => {
     it('should update the state.pendingOrganisations', () => {
-      const action = new fromActions.LoadActiveOrganisationSuccess(pendingOrganisationsMock);
+      const action = new fromActions.LoadActiveOrganisationSuccess(PendingOrganisationsMock);
       const state = reducer(initialState, action);
       expect(state).toEqual(fromMock.orgStateActive as any);
     });
@@ -58,17 +58,9 @@ describe('Organisation Reducer', () => {
   describe('ADD_REVIEW_ORGANISATIONS action', () => {
     it('should update the state.orgForReview', () => {
 
-      const action = new fromActions.AddReviewOrganisations(pendingOrganisationsMock[0]);
+      const action = new fromActions.AddReviewOrganisations(PendingOrganisationsMock[0]);
       const state = reducer(initialState, action);
-      expect(state.orgForReview).toEqual(pendingOrganisationsMock[0]);
-    });
-  });
-
-  describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
-    it('should update the state with account details', () => {
-      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: LoadPbaAccuntsObj});
-      const state = reducer(initialState, action);
-      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: LoadPbaAccuntsObj }} as any);
+      expect(state.orgForReview).toEqual(PendingOrganisationsMock[0]);
     });
 
   });
