@@ -12,11 +12,11 @@
   "logging": "LOGGING",
   "maxLogLine": "MAX_LOG_LINE",
   "idamClient": "IDAM_CLIENT",
-  "microservice": "MICROSERVICE",
+  "microservice": "xui_webapp",
   "now": "NOW",
-  "oauthCallbackUrl": "OAUTH_CALLBACK_URL",
-  "protocol": "PROTOCOL",
-  "secureCookie": "SECURE_COOKIE",
+  "oauthCallbackUrl": "/oauth2/callback",
+  "protocol": "https",
+  "secureCookie": true,
   "services": {
     "ccdDataApi": "CCD_DATA_API_SERVICE",
     "ccdDefApi": "CCD_DEFINITION_API_SERVICE",
@@ -26,7 +26,7 @@
     "feeAndPayApi": "FEE_AND_PAY_API",
     "s2s": "S2S_SERVICE"
   },
-  "sessionSecret": "SESSION_SECRET",
+  "sessionSecret": "secretSauce",
   "proxyConfig": {
     "host": "PROXY_HOST",
     "port": "PROXY_PORT"
