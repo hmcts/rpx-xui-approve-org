@@ -32,8 +32,7 @@ const app = express()
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
-// propertiesVolume.addTo(config)
-propertiesVolume.addTo(config, { failOnError: true })
+propertiesVolume.addTo(config)
 
 console.log(config.get(S2S_SECRET))
 

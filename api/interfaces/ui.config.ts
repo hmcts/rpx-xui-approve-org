@@ -11,8 +11,6 @@ export interface UIConfig {
   microservice: string,
   oauthCallbackUrl: string,
   protocol: string,
-  proxy: string,
-  noProxy: string,
   secureCookie: boolean,
   services: UIConfigServices,
   sessionSecret: string,
