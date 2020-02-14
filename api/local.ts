@@ -42,7 +42,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-function healthcheckConfig(msUrl) {
+/*function healthcheckConfig(msUrl) {
   return healthcheck.web(`${msUrl}/health`, {
     deadline: 6000,
     timeout: 6000,
@@ -61,7 +61,11 @@ const healthchecks = {
   },
 }
 
-healthcheck.addTo(app, healthchecks)
+healthcheck.addTo(app, healthchecks)*/
+
+app.get('/health', (req, res) => {
+  res.status(200).send('ExpertUI is Up')
+})
 
 app.get('/oauth2/callback', auth.oauth)
 
