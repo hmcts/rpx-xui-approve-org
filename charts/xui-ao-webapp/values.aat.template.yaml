@@ -14,6 +14,5 @@ nodejs:
     RD_PROFESSIONAL_API_SERVICE: http://rd-professional-api-aat.service.core-compute-aat.internal
     S2S_SERVICE: http://rpe-service-auth-provider-aat.service.core-compute-aat.internal
     APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
-    FEE_AND_PAY_API: https://payment-api-aat.service.core-compute-aat.internal
     PUI_ENV: aat
     LOGGING: debug

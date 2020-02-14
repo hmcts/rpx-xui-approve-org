@@ -34,8 +34,7 @@ export interface EnvironmentConfigServices {
   idamWeb: string,
   rdProfessionalApi: string,
   s2s: string,
-  iss: string,
-  feeAndPayApi: string,
+  iss: string
 }
 
 export interface EnvironmentConfigProxy {

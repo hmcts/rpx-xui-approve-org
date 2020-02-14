@@ -14,8 +14,7 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
     status: 'PENDING',
     view: 'View',
     adminEmail: 'glen@byrne.com',
-    dxNumber: [{}],
-    postCode: ''
+    dxNumber: [{}]
   },
   {
     name: 'Siofra Moley',
@@ -29,8 +28,7 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
     status: 'PENDING',
     view: 'View',
     adminEmail: 'siofra@moley.com',
-    dxNumber: [{}],
-    postCode: ''
+    dxNumber: [{}]
   }
 ];
 
@@ -47,8 +45,7 @@ export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
     status: 'ACTIVE',
     view: 'View',
     adminEmail: 'glen@byrne.com',
-    dxNumber: [{}],
-    postCode: ''
+    dxNumber: [{}]
   }
   ];
 
@@ -64,26 +61,15 @@ export const PendingOrganisationsMockCollectionObj: OrganisationVM = {
   status: 'ACTIVE',
   view: 'View',
   adminEmail: 'glen@byrne.com',
-  dxNumber: [{}],
-  postCode: ''
+  dxNumber: [{}]
 
   };
-
-export const LoadPbaAccuntsObj = [{
-    account_number: 'PBA0088487',
-    account_name: 'RAY NIXON BROWN',
-    credit_limit: 5000,
-    available_balance: 5000,
-    status: 'Deleted',
-    effective_date: '2019-12-22T19:30:55.000Z'
-}];
 
 export const orgStatePending = {
  activeOrganisations: {
    orgEntities: {},
    loaded: false,
-   loading: false,
-   searchString: ''
+   loading: false
  },
  pendingOrganisations: {
    orgEntities: {
@@ -94,7 +80,6 @@ export const orgStatePending = {
        addressLine2: '',
        townCity: '',
        county: '',
-       postCode: '',
        pbaNumber: ['101010'],
        admin: 'Glen Byrne',
        status: 'ACTIVE',
@@ -104,8 +89,7 @@ export const orgStatePending = {
      }
      },
    loaded: true,
-   loading: false,
-   searchString: ''
+   loading: false
  },
  errorMessage: '',
  orgForReview: null
@@ -121,7 +105,6 @@ export const orgStateActive = {
         addressLine2: '',
         townCity: '',
         county: '',
-        postCode: '',
         pbaNumber: ['101010'],
         admin: 'Glen Byrne',
         status: 'ACTIVE',
@@ -131,14 +114,12 @@ export const orgStateActive = {
       }
     },
     loaded: true,
-    loading: false,
-    searchString: ''
+    loading: false
   },
   pendingOrganisations: {
     orgEntities: {},
     loaded: false,
-    loading: false,
-    searchString: ''
+    loading: false
   },
   errorMessage: '',
   orgForReview: null
@@ -158,8 +139,7 @@ export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] =
     view: 'View',
     adminEmail: 'glen@byrne.com',
     routerLink: '/pending-organisations/organisation/101010/',
-    dxNumber: [{}],
-    postCode: ''
+    dxNumber: [{}]
   }
 ];
 
@@ -175,8 +155,7 @@ export const ReviewedOrganisationMockCollection: OrganisationVM[] = [{
   status: 'dummy 1',
   view: 'dummy 1',
   adminEmail: 'dummy 1',
-  dxNumber: [{}],
-  postCode: ''
+  dxNumber: [{}]
 }];
 
 export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
@@ -191,8 +170,7 @@ export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
   status: 'dummy 1',
   view: 'dummy 1',
   adminEmail: 'dummy 1',
-  dxNumber: [{}],
-  postCode: ''
+  dxNumber: [{}]
 }];
 
 export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
@@ -205,8 +183,7 @@ export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
     status: 'dummy 1',
     view: 'dummy 1',
     adminEmail: 'dummy 1',
-    dxNumber: [{}],
-    postCode: ''
+    dxNumber: [{}]
   }
 }];
 
