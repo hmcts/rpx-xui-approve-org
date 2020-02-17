@@ -1,11 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import {filter, take, takeWhile} from 'rxjs/operators';
-import { OrganisationVM} from 'src/org-manager/models/organisation';
-import * as fromRoot from '../../../app/store';
-import * as fromStore from '../../store';
-import * as fromOrganisation from '../../store';
+import {Component, OnInit, Input} from '@angular/core';
+import { OrganisationUser } from 'src/org-manager/models/organisation';
 
 /**
  * Bootstraps Organisation Details
@@ -15,8 +9,8 @@ import * as fromOrganisation from '../../store';
   templateUrl: './organisation-users.component.html'
 })
 export class OrganisationUsersComponent implements OnInit {
-  constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>) {}
+  @Input() public users: OrganisationUser[];
+  constructor() {}
 
   public ngOnInit(): void {
   }
