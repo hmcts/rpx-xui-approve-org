@@ -19,6 +19,17 @@ export interface OrganisationSuperUser {
   email: string;
 }
 
+export interface OrganisationUser {
+  userIdentifier: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  idamStatus: string;
+  idamStatusCode: string;
+  idamMessage: string;
+  roles: string[];
+}
+
 export interface  Organisation {
   sraId?: string;
   organisationIdentifier: string;

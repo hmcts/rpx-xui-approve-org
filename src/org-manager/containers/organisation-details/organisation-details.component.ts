@@ -17,11 +17,21 @@ import * as fromOrganisation from '../../store/';
 export class OrganisationDetailsComponent implements OnInit {
 
   public orgs$: Observable<OrganisationVM>;
+  public orgUsers$: Observable<any>;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
+    // TODO ONLY SEARCH FOR ACTIVE ORG NOT PENDING
+    this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
+      if (rootState) {
+        if (rootState.state.params.orgId) {
+          this.store.dispatch(new fromOrganisation.LoadOrganisationUsers(rootState.state.params.orgId));
+        }
+      }
+    });
+
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
@@ -43,6 +53,8 @@ export class OrganisationDetailsComponent implements OnInit {
         );
       }
     });
+
+    this.orgUsers$ = this.store.pipe(select(fromStore.getOrganisationUsersDetails));
   }
 
   public onGoBack() {

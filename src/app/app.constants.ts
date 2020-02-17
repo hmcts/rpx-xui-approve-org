@@ -32,6 +32,7 @@ const environmentNames = {
 };
 
 
+
 export class AppConstants {
   static FOOTER_DATA = FooterData;
   static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
