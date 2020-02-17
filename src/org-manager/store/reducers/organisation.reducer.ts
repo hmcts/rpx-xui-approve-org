@@ -318,3 +318,4 @@ export const getPendingOrganis = (state: OrganisationState) => state.pendingOrga
 export const getActiveOrgEntities = (state: OrganisationState) => state.activeOrganisations;
 export const getPendingOrgEntities = (state: OrganisationState) => state.pendingOrganisations;
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
+export const getOrganisationDetails = (state: OrganisationState) => state.organisationDetails;

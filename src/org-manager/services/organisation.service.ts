@@ -1,27 +1,28 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Organisation } from '../models/organisation';
 import { environment } from '../../environments/environment';
+import { Organisation } from '../models/organisation';
 
 @Injectable()
 export class OrganisationService {
-  private singleOrgUrl = environment.singleOrgUrl;
-  private orgActiveUrl = environment.orgActiveUrl;
-  constructor(private http: HttpClient) {
+  private readonly singleOrgUrl = environment.singleOrgUrl;
+  private readonly orgActiveUrl = environment.orgActiveUrl;
+  private readonly orgUsersUrl = environment.organisationUsersUrl;
+  constructor(private readonly http: HttpClient) {
   }
 
-  fetchOrganisations(): Observable<Array<Organisation>> {
+  public fetchOrganisations(): Observable<Organisation[]> {
     const organisations$ = this.http.get<Organisation[]>(this.orgActiveUrl);
     return organisations$;
   }
 
-  getSingleOrganisation(payload): Observable<Organisation> {
+  public getSingleOrganisation(payload): Observable<Organisation> {
     return this.http.get<Organisation>(this.singleOrgUrl + payload.id);
   }
 
-  getOrganisationUsers(payload): Observable<any> {
-    return this.http.get<any>(payload);
+  public getOrganisationUsers(payload): Observable<any> {
+    return this.http.get<any>(this.orgUsersUrl + payload);
   }
 
 }
