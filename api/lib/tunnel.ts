@@ -7,9 +7,9 @@ const logger = log4jui.getLogger('proxy')
 
 export function init(): void {
   if (isLocal() && exists(environmentConfig.proxy, 'host') && exists(environmentConfig.proxy, 'port')) {
-    const globalProxyAgent = createGlobalProxyAgent()
     logger.info('configuring global-agent: ', environmentConfig.proxy)
-    globalProxyAgent.HTTP_PROXY = `http://${environmentConfig.proxy.host}:${environmentConfig.proxy.port}`
-    globalProxyAgent.NO_PROXY = 'localhost'
+    process.env.GLOBAL_AGENT_HTTP_PROXY = `http://${environmentConfig.proxy.host}:${environmentConfig.proxy.port}`
+    process.env.GLOBAL_AGENT_NO_PROXY = 'localhost'
+    createGlobalProxyAgent({})
   }
 }

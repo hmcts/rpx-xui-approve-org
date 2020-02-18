@@ -1,6 +1,9 @@
 {
   "name": "organisation-manager",
   "version": "0.0.0",
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "scripts": {
     "start": "node ./dist/organisation-manager/api/server.js",
     "build": "yarn build:prod && yarn build:node",
@@ -98,6 +101,7 @@
     "@types/dotenv": "^6.1.1",
     "@types/express": "^4.16.0",
     "@types/getenv": "^1.0.0",
+    "@types/global-agent": "^2.1.0",
     "@types/global-tunnel-ng": "^2.1.0",
     "@types/jasmine": "~2.8.6",
     "@types/jasminewd2": "~2.0.3",
@@ -111,7 +115,7 @@
     "cucumber-html-report": "0.6.5",
     "cucumber-html-reporter": "^4.0.5",
     "cucumber-pretty": "1.5.0",
-    "dotenv-extended": "^2.4.0",
+    "dotenv-extended": "^2.7.1",
     "jasmine-core": "^2.99.1",
     "jasmine-marbles": "^0.4.1",
     "jasmine-spec-reporter": "~4.2.1",
