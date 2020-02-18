@@ -40,3 +40,6 @@ export const SESSION_SECRET = 'sessionSecret'
 export const LOGGING = 'logging'
 
 export const S2S_SECRET = 'secrets.rpx.ao-s2s-client-secret'
+export const IDAM_SECRET = 'secrets.rpx.ao-idam-client-secret'
+
+export const USE_PROXY = 'useProxy'

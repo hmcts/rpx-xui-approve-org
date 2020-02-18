@@ -9,7 +9,7 @@
 /node_modules
 
 # environments - stop accidental commit of a local.yaml file. See Readme.
-/config/local.yaml
+/config/local*.*
 
 # IDEs and editors
 /.idea

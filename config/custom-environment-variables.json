@@ -1,6 +1,5 @@
 {
-  "environment": "DEFAULT ENVIRONMENT",
-  "appInsightsInstrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY",
+  "environment": "NODE_CONFIG_ENV",
   "cookies": {
     "token": "COOKIE_TOKEN",
     "userId": "COOKIE_USER_ID"
@@ -26,10 +25,6 @@
     "feeAndPayApi": "FEE_AND_PAY_API",
     "s2s": "S2S_SERVICE"
   },
-  "sessionSecret": "SESSION_SECRET",
-  "proxyConfig": {
-    "host": "PROXY_HOST",
-    "port": "PROXY_PORT"
-  }
+  "sessionSecret": "SESSION_SECRET"
 }
 

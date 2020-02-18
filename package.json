@@ -31,7 +31,7 @@
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js",
     "test:functional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
-    "test-pact": "NODE_PATH=. LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register api/test/pact/pact-tests/*.ts",
+    "test-pact": "NODE_PATH=. LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/*.ts",
     "publish-pact": "NODE_PATH=. LOG_LEVEL=error mocha 'api/test/pact/publish/*.js' --timeout 15000 --reporter spec",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact"
   },
@@ -111,6 +111,7 @@
     "cucumber-html-report": "0.6.5",
     "cucumber-html-reporter": "^4.0.5",
     "cucumber-pretty": "1.5.0",
+    "dotenv-extended": "^2.7.1",
     "jasmine-core": "^2.99.1",
     "jasmine-marbles": "^0.4.1",
     "jasmine-spec-reporter": "~4.2.1",
