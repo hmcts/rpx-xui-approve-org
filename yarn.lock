@@ -668,6 +668,11 @@
     "@types/minimatch" "*"
     "@types/node" "*"
 
+"@types/global-agent@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@types/global-agent/-/global-agent-2.1.0.tgz#1becbcb067c9c7a8d2cd70b786ca1d062538e299"
+  integrity sha512-xBOerse4Agekl7VZJclA9bfuA9aa3u9T24TDkBiMQrZgu4qe5HMBPzVGzAt2k4dx/v3uIFI6CzG0Z9X894LHrg==
+
 "@types/global-tunnel-ng@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@types/global-tunnel-ng/-/global-tunnel-ng-2.1.0.tgz#93ef1c3de0a36458147ef8cd47b3c8c67e33d43d"
@@ -3227,10 +3232,10 @@ dot-prop@^4.1.0:
   dependencies:
     is-obj "^1.0.0"
 
-dotenv-extended@^2.4.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/dotenv-extended/-/dotenv-extended-2.5.0.tgz#2ba3b42004269a7cecc0da116a2811af9e48eaa9"
-  integrity sha512-aKpPeUHkE8sxGq2AQWresyXNXfM/KdoMOdDXN60V72YJUr+TnhZTVVZ4PHCBAX0NFLy0ZmnJIpFaNaafT/EG5g==
+dotenv-extended@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/dotenv-extended/-/dotenv-extended-2.7.1.tgz#6436564af0e371178816e754759ff28c69f332b0"
+  integrity sha512-T760hdgcoutpDoQj5MtYJ58c8KsrkTCnl5RNo/PRLVIi727Nezm5Tk1zXecmoFiZ5crplvOw5zxdVJSRI1V0mQ==
   dependencies:
     "@types/dotenv" "^6.1.1"
     auto-parse "^1.3.0"
