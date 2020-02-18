@@ -1,8 +1,16 @@
 import axios, { AxiosResponse } from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
-import { getConfigValue, getIdamSecret, getProtocol } from '../configuration'
-import {COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, INDEX_URL, OAUTH_CALLBACK_URL, SERVICES_IDAM_API_PATH} from '../configuration/references'
+import { getConfigValue } from '../configuration'
+import {
+  COOKIE_TOKEN,
+  COOKIES_USERID,
+  IDAM_CLIENT,
+  IDAM_SECRET,
+  INDEX_URL,
+  OAUTH_CALLBACK_URL, PROTOCOL,
+  SERVICES_IDAM_API_PATH
+} from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { EnhancedRequest } from '../lib/models'
@@ -12,7 +20,7 @@ import { serviceTokenGenerator } from './serviceToken'
 
 const idamUrl = getConfigValue(SERVICES_IDAM_API_PATH)
 
-const secret = getIdamSecret()
+const secret = getConfigValue(IDAM_SECRET)
 const logger = log4jui.getLogger('auth')
 
 export async function attach(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
@@ -66,7 +74,7 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
     logger.info('Getting Token from auth code.')
 
     const url = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
-      getProtocol()
+      getConfigValue(PROTOCOL)
   }://${req.headers.host}${getConfigValue(OAUTH_CALLBACK_URL)}`
 
     return http.post(url, {}, options)
@@ -121,7 +129,7 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
         if (isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN');
             // tslint:disable-next-line
-            res.redirect(`${getConfigValue(SERVICES_IDAM_API_PATH)}/login?response_type=code&client_id=${getConfigValue(IDAM_CLIENT)}&redirect_uri=${getProtocol()}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
+            res.redirect(`${getConfigValue(SERVICES_IDAM_API_PATH)}/login?response_type=code&client_id=${getConfigValue(IDAM_CLIENT)}&redirect_uri=${getConfigValue(PROTOCOL)}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
             return false
         }
         // set browser cookie

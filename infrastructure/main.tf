@@ -50,6 +50,7 @@ module "app" {
         INDEX_URL = "${var.index_url}"
         LOGGING = "${var.logging}"
         PROTOCOL = "${var.protocol}"
+        ALLOW_CONFIG_MUTATIONS = "${var.allow_config_mutations}"
 
         # COOKIE SETTINGS
         SECURE_COOKIE = "${var.secure_cookie}"
@@ -66,11 +67,9 @@ module "app" {
         S2S_SERVICE = "${var.s2s_service}"
         FEE_AND_PAY_API = "${var.fee_and_pay_api}"
 
-        # PROXY
-        PROXY_HOST = "${var.proxy_host}"
-        PROXY_PORT = "${var.proxy_port}"
-
-        TEST_ITHC_VAR = "${var.test_ithc_var}"
+        # PROXY (If required)
+        AO_HTTP_PROXY: "${var.ao_http_proxy}"
+        AO_NO_PROXY: "${var.ao_no_proxy}"
     }
 }
 

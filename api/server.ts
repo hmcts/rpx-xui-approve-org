@@ -1,6 +1,4 @@
-import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
-import * as config from 'config'
 import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
@@ -29,11 +27,6 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
-
-/**
- * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
- */
-propertiesVolume.addTo(config)
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise

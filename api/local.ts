@@ -1,6 +1,4 @@
-import * as propertiesVolume from '@hmcts/properties-volume'
 import * as bodyParser from 'body-parser'
-import * as config from 'config'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
@@ -14,7 +12,8 @@ import {
   COOKIE_TOKEN,
   COOKIES_USERID,
   IDAM_CLIENT,
-  MAX_LINES, NOW, S2S_SECRET, SECURE_COOKIE,
+  MAX_LINES, NOW,
+  SECURE_COOKIE,
   SERVICES_CCD_DATA_API_PATH,
   SERVICES_CCD_DEF_API_PATH,
   SERVICES_IDAM_API_PATH,
@@ -28,13 +27,6 @@ import routes from './routes'
 
 const FileStore = sessionFileStore(session)
 const app = express()
-
-/**
- * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
- */
-propertiesVolume.addTo(config)
-
-console.log(config.get(S2S_SECRET))
 
 /**
  * If there are no configuration properties found we highlight this to the DevOps
