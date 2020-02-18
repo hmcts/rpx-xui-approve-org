@@ -1,5 +1,8 @@
+import { User } from '@hmcts/rpx-xui-common-lib';
+import { AppConstants } from 'src/app/app.constants';
 import {OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
+import { AppUtils } from 'src/app/utils/app-utils';
 
 export interface OrganisationState {
   activeOrganisations: {
@@ -14,7 +17,7 @@ export interface OrganisationState {
     loading: boolean;
     searchString: string;
   };
-  organisationDetails: any;
+  organisationDetails: User[];
   errorMessage: string;
   orgForReview: OrganisationVM | null;
 }
@@ -67,9 +70,25 @@ export function reducer(
     case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS: {
       console.log('LOAD_ORGANISATION_USERS_SUCCESS');
       console.log(action.payload);
+      const userList = action.payload.map((user) => {
+        user.fullName = `${user.firstName} ${user.lastName}`;
+        if (user.idamStatus !== 'PENDING') {
+          user.routerLink = `user/${user.userIdentifier}`;
+        }
+
+        AppConstants.USER_ROLES.forEach((userRoles) => {
+          if (user.roles) {
+            user[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
+          }
+        });
+        user.status = AppUtils.capitalizeString(user.idamStatus);
+        return user;
+      });
+      console.log('USER LIST => ');
+      console.log(userList);
       return {
         ...state,
-        organisationDetails: action.payload
+        organisationDetails: userList
       };
     }
 

@@ -6,6 +6,7 @@ import { OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
 import * as fromOrganisation from '../../store/';
+import { User } from '@hmcts/rpx-xui-common-lib';
 
 /**
  * Bootstraps Organisation Details
@@ -17,7 +18,7 @@ import * as fromOrganisation from '../../store/';
 export class OrganisationDetailsComponent implements OnInit {
 
   public orgs$: Observable<OrganisationVM>;
-  public orgUsers$: Observable<any>;
+  public orgUsers$: Observable<User[]>;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>) {}

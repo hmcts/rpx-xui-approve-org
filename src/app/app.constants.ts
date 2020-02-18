@@ -32,9 +32,16 @@ const environmentNames = {
 };
 
 
+const userRoles = [
+
+  { role: 'pui-organisation-manager', roleType: 'manageOrganisations'},
+  { role: 'pui-user-manager', roleType: 'manageUsers' },
+  { role: 'pui-case-manager', roleType: 'manageCases'}
+];
 
 export class AppConstants {
-  static FOOTER_DATA = FooterData;
-  static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
-  static ENVIRONMENT_NAMES = environmentNames;
+  public static FOOTER_DATA = FooterData;
+  public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
+  public static ENVIRONMENT_NAMES = environmentNames;
+  public static USER_ROLES = userRoles;
 }
