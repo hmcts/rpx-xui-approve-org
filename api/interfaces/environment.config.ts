@@ -6,6 +6,7 @@ export interface EnvironmentConfig {
   health: EnvironmentConfigServices,
   idamClient: string,
   indexUrl: string,
+  launchDarklyKey: string,
   logging: string,
   now: boolean,
   maxLogLine: number,

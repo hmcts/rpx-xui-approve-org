@@ -32,6 +32,7 @@ nodejs:
         - ao-s2s-client-secret
         - ao-idam-client-secret
         - AppInsightsInstrumentationKey
+        - LaunchDarklyClientId
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

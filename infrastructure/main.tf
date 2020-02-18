@@ -36,6 +36,8 @@ module "app" {
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
 
+        LAUNCH_DARKLY_CLIENT_ID = "${data.azurerm_key_vault_secret.LaunchDarklyClientId.value}"
+
         # API CONFIG
         SESSION_SECRET = "${var.session_secret}"
         NODE_TLS_REJECT_UNAUTHORIZED = "${var.node_tls_reject_unathorized}"
@@ -83,6 +85,11 @@ data "azurerm_key_vault_secret" "s2s_secret" {
 
 data "azurerm_key_vault_secret" "oauth2_secret" {
     name = "ao-idam-client-secret"
+    vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
+}
+
+data "azurerm_key_vault_secret" "LaunchDarklyClientId" {
+    name = "LaunchDarklyClientId"
     vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
 

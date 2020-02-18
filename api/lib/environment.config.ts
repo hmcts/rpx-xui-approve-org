@@ -28,6 +28,7 @@ const config: EnvironmentConfig = {
   health: {} as EnvironmentConfigServices,
   idamClient: getEnvConfig<string>('IDAM_CLIENT', 'string'),
   indexUrl: getEnvConfig<string>('INDEX_URL', 'string'),
+  launchDarklyKey: getEnvConfig<string>('LAUNCH_DARKLY_CLIENT_ID', 'string'),
   logging: getEnvConfig<string>('LOGGING', 'string'),
   maxLogLine: getEnvConfig<number>('MAX_LOG_LINE', 'int'),
   microservice: getEnvConfig<string>('MICROSERVICE', 'string'),

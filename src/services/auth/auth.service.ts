@@ -1,62 +1,52 @@
-import {Injectable} from '@angular/core';
-import {CookieService} from 'ngx-cookie';
+import { Injectable } from '@angular/core';
 import * as jwtDecode from 'jwt-decode';
+import { CookieService } from 'ngx-cookie';
+import { Observable, of } from 'rxjs';
+import { EnvironmentService } from '../../app/services/environment.service';
 
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/map';
-import {EnvironmentService} from '../../app/services/environment.service';
-import {Observable} from 'rxjs';
-import {AppConstants} from '../../app/app.constants';
-import {AppUtils} from '../../app/utils/app-utils';
 
 @Injectable()
 export class AuthService {
-  apiBaseUrl;
-  user;
+  private readonly apiBaseUrl: string;
+  public user: any;
   constructor(
-    private cookieService: CookieService,
-    private envService: EnvironmentService
+    private readonly cookieService: CookieService,
+    private readonly envService: EnvironmentService
   ) {
-    this.apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
+    this.apiBaseUrl = `${window.location.protocol}//${window.location.hostname}`;
 
     if (window.location.port) { // don't add colon if there is no port
-      this.apiBaseUrl += ':' + window.location.port;
+      this.apiBaseUrl += `:${window.location.port}`;
     }
 
     this.user = null;
   }
   // TODO perhaps move this logic to BE
-  generateLoginUrl(): Observable<string> {
-    return this.envService.config$.map( config => {
-      const base = config.services.idamWeb;
-      const clientId = config.idamClient;
-      const callback = `${this.apiBaseUrl}${config.oauthCallbackUrl}`;
-      // tslint:disable-next-line: max-line-length
-      return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=profile openid roles manage-user create-user manage-roles`;
-    });
+  private generateLoginUrl(): Observable<string> {
+    const base = this.envService.get('services').idamWeb;
+    const clientId = this.envService.get('idamClient');
+    const callback = this.apiBaseUrl + this.envService.get('oauthCallbackUrl');
+    return of(`${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=profile openid roles manage-user create-user manage-roles`);
   }
 
-  loginRedirect() {
+  public loginRedirect() {
     this.generateLoginUrl().subscribe( url => {
       window.location.href = url;
     });
   }
 
-  decodeJwt(jwt) {
+  private decodeJwt(jwt) {
     return jwtDecode(jwt);
   }
 
- isAuthenticated(): Observable<boolean> {
-    return this.envService.config$.map( config => {
-      const jwt = this.cookieService.get(config.cookies.token);
-      if (!jwt) {
-        return false;
-      }
-      const jwtData = this.decodeJwt(jwt);
-      // do stuff!!
-      return jwtData.exp > Math.round(new Date().getTime() / 1000);
-    });
-
+ public isAuthenticated(): Observable<boolean> {
+    const token = this.envService.get('cookies').token;
+    const jwt = this.cookieService.get(token);
+    if (!jwt) {
+      return of(false);
+    }
+    const jwtData = this.decodeJwt(jwt);
+    // do stuff!!
+    return of(jwtData.exp > Math.round(new Date().getTime() / 1000));
   }
 }

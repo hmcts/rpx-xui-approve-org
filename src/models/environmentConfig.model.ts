@@ -1,3 +1,7 @@
+import { InjectionToken } from "@angular/core";
+
+export const ENVIRONMENT_CONFIG = new InjectionToken<EnvironmentConfig>('environment.config');
+
 export interface EnvironmentConfig {
     appInsightsInstrumentationKey: string;
     configEnv: string;
@@ -16,6 +20,7 @@ export interface EnvironmentConfig {
     secureCookie: boolean;
     services: EnvironmentConfigServices;
     sessionSecret: string;
+    launchDarklyKey: string;
   }
 
 export interface EnvironmentConfigCookies {

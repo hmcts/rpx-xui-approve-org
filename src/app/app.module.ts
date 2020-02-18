@@ -1,7 +1,7 @@
 import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { ExuiCommonLibModule, FeatureToggleService, LAUNCHDARKLYKEY, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
@@ -11,6 +11,7 @@ import config from 'config';
 import { storeFreeze } from 'ngrx-store-freeze';
 import { CookieModule } from 'ngx-cookie';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { EnvironmentConfig, ENVIRONMENT_CONFIG } from 'src/models/environmentConfig.model';
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
 import { environment } from '../environments/environment';
@@ -34,6 +35,10 @@ export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
   : [];
 
+export function launchDarklyKeyFactory(envConfig: EnvironmentConfig): string {
+  console.log(envConfig);
+  return envConfig.launchDarklyKey || '';
+}
 
 @NgModule({
   declarations: [
@@ -55,7 +60,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot({ launchDarklyKey: '5de6610b23ce5408280f2268' })
+    ExuiCommonLibModule.forRoot({ launchDarklyKey: '' })
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomSerializer },
@@ -65,8 +70,9 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     JwtDecodeWrapper,
     MonitoringService,
     LoggerService,
-    { provide: ErrorHandler, useClass: DefaultErrorHandler }
+    { provide: ErrorHandler, useClass: DefaultErrorHandler },
+    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyKeyFactory, deps: [ENVIRONMENT_CONFIG]}
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
