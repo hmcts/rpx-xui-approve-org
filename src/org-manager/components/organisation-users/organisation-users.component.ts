@@ -1,5 +1,5 @@
 import {Component, OnInit, Input} from '@angular/core';
-import { OrganisationUser } from 'src/org-manager/models/organisation';
+import { User } from '@hmcts/rpx-xui-common-lib';
 
 /**
  * Bootstraps Organisation Details
@@ -9,7 +9,7 @@ import { OrganisationUser } from 'src/org-manager/models/organisation';
   templateUrl: './organisation-users.component.html'
 })
 export class OrganisationUsersComponent implements OnInit {
-  @Input() public users: OrganisationUser[];
+  @Input() public users: User[];
   constructor() {}
 
   public ngOnInit(): void {
