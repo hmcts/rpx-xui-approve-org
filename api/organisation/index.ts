@@ -56,7 +56,6 @@ function getOrganisationUri(status, organisationId, usersOrgId): string {
         url = `${url}?id=${organisationId}`
     }
     if (usersOrgId) {
-      //url = `${environmentConfig.services.rdProfessionalApi}/refdata/external/v1/organisations/users`
       url = `${url}/${usersOrgId}/users`
     }
     console.log('url is ' + url)
