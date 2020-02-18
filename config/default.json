@@ -1,35 +1,31 @@
 {
-  "environment": "DEFAULT ENVIRONMENT",
-  "appInsightsInstrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY",
+  "environment": "production",
   "cookies": {
-    "token": "COOKIE_TOKEN",
-    "userId": "COOKIE_USER_ID"
+    "token": "__auth__",
+    "userId": "__userid__"
   },
   "exceptionOptions": {
-    "maxLines": "EXCEPTION_OPTIONS_MAX_LINES"
+    "maxLines": 1
   },
-  "indexUrl": "INDEX_URL",
-  "logging": "LOGGING",
-  "maxLogLine": "MAX_LOG_LINE",
-  "idamClient": "IDAM_CLIENT",
+  "indexUrl": "/",
+  "logging": "debug",
+  "maxLogLine": 80,
+  "idamClient": "xuiaowebapp",
   "microservice": "xui_webapp",
-  "now": "NOW",
+  "now": false,
   "oauthCallbackUrl": "/oauth2/callback",
   "protocol": "https",
   "secureCookie": true,
   "services": {
-    "ccdDataApi": "CCD_DATA_API_SERVICE",
-    "ccdDefApi": "CCD_DEFINITION_API_SERVICE",
-    "idamApi": "IDAM_API_SERVICE",
-    "idamWeb": "IDAM_WEB_SERVICE",
-    "rdProfessionalApi": "RD_PROFESSIONAL_API_SERVICE",
-    "feeAndPayApi": "FEE_AND_PAY_API",
-    "s2s": "S2S_SERVICE"
+    "ccdDataApi": "http://ccd-data-store-api-demo.service.core-compute-demo.internal",
+    "ccdDefApi": "http://ccd-definition-store-api-demo.service.core-compute-demo.internal",
+    "idamApi": "https://idam-api.platform.hmcts.net",
+    "idamWeb": "https://hmcts-access.service.gov.uk",
+    "rdProfessionalApi": "http://rd-professional-api-prod.service.core-compute-prod.internal",
+    "feeAndPayApi": "https://payment-api-prod.service.core-compute-prod.internal",
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
   },
   "sessionSecret": "secretSauce",
-  "proxyConfig": {
-    "host": "PROXY_HOST",
-    "port": "PROXY_PORT"
-  }
+  "useProxy": false
 }
 
