@@ -26,6 +26,7 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
   },
   "sessionSecret": "secretSauce",
-  "useProxy": false
+  "useProxy": false,
+  "appInsightsEnabled": true
 }
 
