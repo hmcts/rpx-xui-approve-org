@@ -100,7 +100,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     await loginPage.password.sendKeys(this.config.password);
     await loginPage.clickSignIn();
     browser.sleep(LONG_DELAY);
-    await browserWaits.waitForElement(headerPage.signOut);
+    // await browserWaits.waitForElement(headerPage.signOut);
   });
 
   Given(/^I am logged into approve organisation with FR judge details$/, async function () {
