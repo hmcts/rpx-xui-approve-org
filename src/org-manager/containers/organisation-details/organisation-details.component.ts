@@ -20,20 +20,13 @@ export class OrganisationDetailsComponent implements OnInit {
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<User[]>;
   public showUsers = false;
+  public showUserDetails = false;
+  public userDetails: User;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
-    // TODO ONLY SEARCH FOR ACTIVE ORG NOT PENDING
-    this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
-      if (rootState) {
-        if (rootState.state.params.orgId) {
-          this.store.dispatch(new fromOrganisation.LoadOrganisationUsers(rootState.state.params.orgId));
-        }
-      }
-    });
-
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
@@ -45,7 +38,10 @@ export class OrganisationDetailsComponent implements OnInit {
     this.orgs$.pipe(
         filter(value => value !== undefined),
         take(1)
-    ).subscribe(({organisationId, pbaNumber, isAccLoaded}) => {
+    ).subscribe(({organisationId, pbaNumber, isAccLoaded, status}) => {
+      if (status === 'ACTIVE') {
+        this.store.dispatch(new fromOrganisation.LoadOrganisationUsers(organisationId));
+      }
       if (!isAccLoaded && pbaNumber.length) {
         this.store.dispatch(new fromOrganisation.LoadPbaAccountsDetails({
               orgId: organisationId,
@@ -60,7 +56,12 @@ export class OrganisationDetailsComponent implements OnInit {
   }
 
   public onGoBack() {
-    this.store.dispatch(new fromRoot.Back());
+    if (this.showUserDetails) {
+      this.showUserDetails = false;
+      this.userDetails = null;
+    } else {
+      this.store.dispatch(new fromRoot.Back());
+    }
   }
 
   public approveOrganisation(data: OrganisationVM) {
