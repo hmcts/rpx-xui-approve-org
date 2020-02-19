@@ -95,10 +95,11 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given(/^I am logged into approve organisation with HMCTS admin$/, async function () {
-    await browserWaits.waitForElement(loginPage.emailAddress); 
+    await browserWaits.waitForElement(loginPage.emailAddress);
     await loginPage.emailAddress.sendKeys(this.config.username);
     await loginPage.password.sendKeys(this.config.password);
     await loginPage.clickSignIn();
+    browser.sleep(LONG_DELAY);
     await browserWaits.waitForElement(headerPage.signOut);
   });
 
