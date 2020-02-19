@@ -22,6 +22,7 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
         const response = await http.get(organisationsUri)
         logger.info('Organisations response' + response.data)
         if (req.query.usersOrgId) {
+          console.log('========= usersOrgId=> ', req.query.usersOrgId)
           console.log(response.data)
         }
         if (response.data.organisations) {
@@ -48,7 +49,6 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
 
 function getOrganisationUri(status, organisationId, usersOrgId): string {
     let url = `${environmentConfig.services.rdProfessionalApi}/refdata/internal/v1/organisations`
-
     if (status) {
         url = `${url}?status=${status}`
     }
@@ -58,7 +58,6 @@ function getOrganisationUri(status, organisationId, usersOrgId): string {
     if (usersOrgId) {
       url = `${url}/${usersOrgId}/users`
     }
-    console.log('url is ' + url)
     return url
 }
 

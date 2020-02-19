@@ -108,7 +108,7 @@ export const activeOrganisationsCount = createSelector(
   (orgArr) =>  orgArr ? orgArr.length : 0
 );
 
-export const getOrganisationUsersDetails = createSelector(
+export const getOrganisationUsersList = createSelector(
   getOrganisationsState,
-  fromOrganisation.getOrganisationDetails
+  fromOrganisation.getOrgUsersList
 );

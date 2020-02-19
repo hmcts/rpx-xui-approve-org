@@ -39,9 +39,8 @@ export class OrganisationEffects {
     ofType(fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS),
     map((action: fromActions.LoadOrganisationUsers) => action.payload),
     switchMap((payload) => {
-      console.log('effect getOrganisationUsers organisation ', payload);
       return this.organisationService.getOrganisationUsers(payload).pipe(
-          map((data) => new fromActions.LoadOrganisationUsersSuccess(data)),
+          map(data => new fromActions.LoadOrganisationUsersSuccess(AppUtils.mapUsers(data.users))),
           catchError((error: Error) => {
             this.loggerService.error(error);
             return of(new fromActions.LoadOrganisationUsersFail(error));

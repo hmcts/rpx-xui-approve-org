@@ -1,5 +1,6 @@
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationVM, OrganisationUser } from 'src/org-manager/models/organisation';
 import { AppConstants } from '../app.constants';
+import { User } from '@hmcts/rpx-xui-common-lib';
 
 /**
  * Contains static stateless utility methods for the App
@@ -100,5 +101,45 @@ export class AppUtils {
     });
 
     return organisations;
+  }
+
+  // [key: string]: any;
+  // routerLink?: string;
+  // fullName?: string;
+  // email?: string;
+  // status?: string;
+  // resendInvite?: boolean;
+
+  // userIdentifier: string;
+  // firstName: string;
+  // lastName: string;
+  // email: string;
+  // idamStatus: string;
+  // idamStatusCode: string;
+  // idamMessage: string;
+  // roles: string[];
+
+  public static mapUsers(obj: OrganisationUser[]): User[] {
+    const users: User[] = [];
+    if (obj) {
+      obj.forEach((user) => {
+        const newUser: User = {
+          fullName: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+          resendInvite: false
+        };
+        if (user.idamStatus !== 'PENDING') {
+          newUser.routerLink = `user/${user.userIdentifier}`;
+        }
+        AppConstants.USER_ROLES.forEach((userRoles) => {
+          if (user.roles) {
+            newUser[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
+          }
+        });
+        newUser.status = AppUtils.capitalizeString(user.idamStatus);
+        users.push(newUser);
+      });
+    }
+    return users;
   }
 }
