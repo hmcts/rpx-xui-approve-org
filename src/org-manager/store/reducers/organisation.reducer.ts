@@ -1,8 +1,9 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from 'src/app/app.constants';
+import { AppUtils } from 'src/app/utils/app-utils';
 import {OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
-import { AppUtils } from 'src/app/utils/app-utils';
+import { map } from 'rxjs/operators';
 
 export interface OrganisationState {
   activeOrganisations: {
@@ -17,7 +18,7 @@ export interface OrganisationState {
     loading: boolean;
     searchString: string;
   };
-  organisationDetails: User[];
+  organisationUsersList: User[];
   errorMessage: string;
   orgForReview: OrganisationVM | null;
 }
@@ -25,7 +26,7 @@ export interface OrganisationState {
 export const initialState: OrganisationState = {
   activeOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
-  organisationDetails: null,
+  organisationUsersList: null,
   errorMessage: '',
   orgForReview: null
 };
@@ -70,25 +71,9 @@ export function reducer(
     case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS: {
       console.log('LOAD_ORGANISATION_USERS_SUCCESS');
       console.log(action.payload);
-      const userList = action.payload.map((user) => {
-        user.fullName = `${user.firstName} ${user.lastName}`;
-        if (user.idamStatus !== 'PENDING') {
-          user.routerLink = `user/${user.userIdentifier}`;
-        }
-
-        AppConstants.USER_ROLES.forEach((userRoles) => {
-          if (user.roles) {
-            user[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
-          }
-        });
-        user.status = AppUtils.capitalizeString(user.idamStatus);
-        return user;
-      });
-      console.log('USER LIST => ');
-      console.log(userList);
       return {
         ...state,
-        organisationDetails: userList
+        organisationUsersList: action.payload
       };
     }
 
@@ -337,4 +322,4 @@ export const getPendingOrganis = (state: OrganisationState) => state.pendingOrga
 export const getActiveOrgEntities = (state: OrganisationState) => state.activeOrganisations;
 export const getPendingOrgEntities = (state: OrganisationState) => state.pendingOrganisations;
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
-export const getOrganisationDetails = (state: OrganisationState) => state.organisationDetails;
+export const getOrgUsersList = (state: OrganisationState) => state.organisationUsersList;
