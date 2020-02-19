@@ -25,6 +25,7 @@
     "feeAndPayApi": "FEE_AND_PAY_API",
     "s2s": "S2S_SERVICE"
   },
-  "sessionSecret": "SESSION_SECRET"
+  "sessionSecret": "SESSION_SECRET",
+  "appInsightsEnabled": true
 }
 
