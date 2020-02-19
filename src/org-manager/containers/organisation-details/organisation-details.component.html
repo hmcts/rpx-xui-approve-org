@@ -12,32 +12,35 @@
         <h3 class="govuk-heading-s">Loading...</h3>
       </ng-container>
       <ng-template #showOrg>
-
-        <nav class="hmcts-sub-navigation" aria-label="Sub navigation">
-          <ul class="hmcts-sub-navigation__list">
-            <li class="hmcts-sub-navigation__item">
-              <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" aria-current="page">
-                Organisation details
-              </a>
-              <a  *ngIf="showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(false)" [routerLink]="">
-                Organisation details
-              </a>
-            </li>
-            <li class="hmcts-sub-navigation__item">
-              <a *ngIf="showUsers" class="hmcts-sub-navigation__link" aria-current="page">
-                Users
-              </a>
-              <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(true)" [routerLink]="">
-                Users
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <app-org-details-info *ngIf="!showUsers" [org]="data.org" (approveEvent)="approveOrganisation($event)">
-        </app-org-details-info>
-        <app-org-users *ngIf="showUsers" [users]="data.userLists">
-        </app-org-users>
-        
+        <ng-container *ngIf="userDetails && showUserDetails; else showNav">
+          <app-org-user-details [user]="userDetails"></app-org-user-details>
+        </ng-container>
+        <ng-template #showNav>
+          <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="data.userLists">
+            <ul class="hmcts-sub-navigation__list">
+              <li class="hmcts-sub-navigation__item">
+                <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" aria-current="page">
+                  Organisation details
+                </a>
+                <a  *ngIf="showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(false)" [routerLink]="">
+                  Organisation details
+                </a>
+              </li>
+              <li class="hmcts-sub-navigation__item">
+                <a *ngIf="showUsers" class="hmcts-sub-navigation__link" aria-current="page">
+                  Users
+                </a>
+                <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(true)" [routerLink]="">
+                  Users
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <app-org-details-info *ngIf="!showUsers" [org]="data.org" (approveEvent)="approveOrganisation($event)">
+          </app-org-details-info>
+          <app-org-users *ngIf="showUsers" [users]="data.userLists">
+          </app-org-users>
+        </ng-template>
       </ng-template>
      </xuilib-hmcts-main-wrapper>
   </div>
