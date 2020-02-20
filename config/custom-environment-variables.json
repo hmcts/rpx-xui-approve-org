@@ -26,6 +26,6 @@
     "s2s": "S2S_SERVICE"
   },
   "sessionSecret": "SESSION_SECRET",
-  "appInsightsEnabled": true
+  "appInsightsEnabled": "APP_INSIGHTS_ENABLED"
 }
 

@@ -34,5 +34,8 @@
     "cache": true,
     "all": true,
     "report-dir": "../reports/tests/coverage/node"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.11"
   }
 }
