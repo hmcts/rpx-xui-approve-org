@@ -7,4 +7,5 @@ nodejs:
     IDAM_SECRET: ${IDAM_SECRET}
     APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
     PUI_ENV: preview
-    NODE_CONFIG_ENV: prod
+    IDAM_API_SERVICE: https://idam-api.preview.platform.hmcts.net
+    IDAM_WEB_SERVICE: https://idam-web-public.preview.platform.hmcts.net

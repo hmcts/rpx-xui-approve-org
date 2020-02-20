@@ -51,6 +51,7 @@ module "app" {
         LOGGING = "${var.logging}"
         PROTOCOL = "${var.protocol}"
         ALLOW_CONFIG_MUTATIONS = "${var.allow_config_mutations}"
+        APP_INSIGHTS_ENABLED = "${var.app_insights_enabled}"
 
         # COOKIE SETTINGS
         SECURE_COOKIE = "${var.secure_cookie}"

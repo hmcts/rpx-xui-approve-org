@@ -7,4 +7,5 @@ nodejs:
     IDAM_SECRET: ${IDAM_SECRET}
     APPINSIGHTS_INSTRUMENTATIONKEY: ${APPINSIGHTS_INSTRUMENTATIONKEY}
     PUI_ENV: aat
-    LOGGING: debug
+    IDAM_API_SERVICE: https://idam-api.aat.platform.hmcts.net
+    IDAM_WEB_SERVICE: https://idam-web-public.aat.platform.hmcts.net
