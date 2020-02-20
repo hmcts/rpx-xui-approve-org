@@ -9,14 +9,16 @@
   <div class="hmcts-width-container">
     <xuilib-hmcts-main-wrapper [backLink]="true" (backEvent)="onGoBack()">
       <ng-container *ngIf="!data.org; else showOrg">
+        <h1 class="govuk-heading-xl">Organisation details</h1>
         <h3 class="govuk-heading-s">Loading...</h3>
       </ng-container>
       <ng-template #showOrg>
         <ng-container *ngIf="userDetails && showUserDetails; else showNav">
-          <app-org-user-details [user]="userDetails"></app-org-user-details>
+          <h1 class="govuk-heading-xl">User</h1>
+          <xuilib-user-details [user]="userDetails"></xuilib-user-details>
         </ng-container>
         <ng-template #showNav>
-          <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="data.userLists">
+          <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="data.org.status === ACTIVE">
             <ul class="hmcts-sub-navigation__list">
               <li class="hmcts-sub-navigation__item">
                 <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" aria-current="page">
@@ -36,10 +38,14 @@
               </li>
             </ul>
           </nav>
-          <app-org-details-info *ngIf="!showUsers" [org]="data.org" (approveEvent)="approveOrganisation($event)">
+          <ng-container *ngIf="showUsers; else showOrgDetails">
+            <h1 class="govuk-heading-xl">User</h1>
+            <xuilib-user-list *ngIf="data.userLists" [users]="data.userLists" (userClick)="onShowUserDetails($event)"></xuilib-user-list>
+          </ng-container>
+          <ng-template #showOrgDetails>
+            <app-org-details-info [org]="data.org" (approveEvent)="approveOrganisation($event)">
           </app-org-details-info>
-          <app-org-users *ngIf="showUsers" [users]="data.userLists">
-          </app-org-users>
+          </ng-template>
         </ng-template>
       </ng-template>
      </xuilib-hmcts-main-wrapper>

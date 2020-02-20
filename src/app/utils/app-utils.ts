@@ -128,9 +128,6 @@ export class AppUtils {
           email: user.email,
           resendInvite: false
         };
-        if (user.idamStatus !== 'PENDING') {
-          newUser.routerLink = `user/${user.userIdentifier}`;
-        }
         AppConstants.USER_ROLES.forEach((userRoles) => {
           if (user.roles) {
             newUser[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
