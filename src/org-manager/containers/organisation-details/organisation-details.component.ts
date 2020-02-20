@@ -6,7 +6,6 @@ import {filter, take, takeWhile} from 'rxjs/operators';
 import { OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
-import * as fromOrganisation from '../../store/';
 
 /**
  * Bootstraps Organisation Details
@@ -27,10 +26,11 @@ export class OrganisationDetailsComponent implements OnInit {
     private readonly store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
+    this.store.dispatch(new fromStore.ResetOrganisationUsers());
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
-        this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
-        this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
+        this.store.dispatch(new fromStore.LoadActiveOrganisation());
+        this.store.dispatch(new fromStore.LoadPendingOrganisations());
       }
     });
 
@@ -40,10 +40,10 @@ export class OrganisationDetailsComponent implements OnInit {
         take(1)
     ).subscribe(({organisationId, pbaNumber, isAccLoaded, status}) => {
       if (status === 'ACTIVE') {
-        this.store.dispatch(new fromOrganisation.LoadOrganisationUsers(organisationId));
+        this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
       }
       if (!isAccLoaded && pbaNumber.length) {
-        this.store.dispatch(new fromOrganisation.LoadPbaAccountsDetails({
+        this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
               orgId: organisationId,
               pbas: pbaNumber.toString()
             }
@@ -51,7 +51,6 @@ export class OrganisationDetailsComponent implements OnInit {
         );
       }
     });
-
     this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
 
@@ -65,15 +64,20 @@ export class OrganisationDetailsComponent implements OnInit {
   }
 
   public approveOrganisation(data: OrganisationVM) {
-    console.log('parent approve org');
     if (data) {
-      console.log(data);
       this.store.dispatch(new fromStore.AddReviewOrganisations(data));
     }
   }
 
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
+  }
+
+  public onShowUserDetails(user: User) {
+    if (user) {
+      this.showUserDetails = true;
+      this.userDetails = user;
+    }
   }
 
 }

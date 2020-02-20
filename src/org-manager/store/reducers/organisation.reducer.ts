@@ -77,6 +77,14 @@ export function reducer(
       };
     }
 
+    case fromActions.OrgActionTypes.RESET_ORGANISATION_USERS: {
+      console.log('RESET_ORGANISATION_USERS');
+      return {
+        ...state,
+        organisationUsersList: null
+      };
+    }
+
     case fromActions.OrgActionTypes.CLEAR_ERRORS: {
       return {
         ...state,
