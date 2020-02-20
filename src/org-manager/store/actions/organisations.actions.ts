@@ -8,7 +8,8 @@ export enum OrgActionTypes {
     LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
     LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
     LOAD_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Load Fail',
-    LOAD_ORGANISATION_USERS = '[Organisations] Load Single Organisation',
+    LOAD_ORGANISATION_USERS = '[Organisations] Load Organisation Users',
+    RESET_ORGANISATION_USERS = '[Organisations] Reset Organisation Users',
     LOAD_ORGANISATION_USERS_SUCCESS = '[Organisations] Load Single Organisation Success',
     LOAD_ORGANISATION_USERS_FAIL = '[Organisations] Load Single Organisation Fail',
     ADD_REVIEW_ORGANISATIONS = '[Pending Organisations] Add to Review Organisations',
@@ -137,6 +138,10 @@ export class LoadOrganisationUsersFail implements Action {
   }
 }
 
+export class ResetOrganisationUsers implements Action {
+  public readonly type = OrgActionTypes.RESET_ORGANISATION_USERS;
+  constructor() { }
+}
 
 export type OrganisationsActions =
     | LoadPendingOrganisations
@@ -158,4 +163,5 @@ export type OrganisationsActions =
     | LoadPbaAccountDetailsFail
     | LoadOrganisationUsers
     | LoadOrganisationUsersSuccess
-    | LoadOrganisationUsersFail;
+    | LoadOrganisationUsersFail
+    | ResetOrganisationUsers;
