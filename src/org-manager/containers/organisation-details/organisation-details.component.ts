@@ -20,7 +20,7 @@ export class OrganisationDetailsComponent implements OnInit {
   public userLists$: Observable<User[]>;
   public showUsers = false;
   public showUserDetails = false;
-  public userDetails: User;
+  public userDetails: User = null;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>) {}
