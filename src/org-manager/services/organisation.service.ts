@@ -6,9 +6,9 @@ import { Organisation } from '../models/organisation';
 
 @Injectable()
 export class OrganisationService {
-  private readonly singleOrgUrl = environment.singleOrgUrl;
-  private readonly orgActiveUrl = environment.orgActiveUrl;
-  private readonly orgUsersUrl = environment.organisationUsersUrl;
+  public singleOrgUrl = environment.singleOrgUrl;
+  public orgActiveUrl = environment.orgActiveUrl;
+  public orgUsersUrl = environment.organisationUsersUrl;
   constructor(private readonly http: HttpClient) {
   }
 
