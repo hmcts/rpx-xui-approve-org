@@ -1,19 +1,12 @@
-import { Organisation, OrganisationVM, OrganisationUser } from 'src/org-manager/models/organisation';
-import { AppConstants } from '../app.constants';
 import { User } from '@hmcts/rpx-xui-common-lib';
+import { Organisation, OrganisationUser, OrganisationVM } from 'src/org-manager/models/organisation';
+import { AppConstants } from '../app.constants';
 
 /**
  * Contains static stateless utility methods for the App
  *
  */
 export class AppUtils {
-
-
-  public static capitalizeString(stringToCapitalize: string) {
-    const stringLowercase = stringToCapitalize.toLowerCase();
-    const stringCapitalised = stringLowercase.charAt(0).toUpperCase() + stringLowercase.slice(1);
-    return stringCapitalised;
-  }
 
   public static setPageTitle(url): string {
     /**
@@ -118,6 +111,13 @@ export class AppUtils {
   // idamStatusCode: string;
   // idamMessage: string;
   // roles: string[];
+
+
+  public static capitalizeString(stringToCapitalize: string) {
+    const stringLowercase = stringToCapitalize.toLowerCase();
+    const stringCapitalised = stringLowercase.charAt(0).toUpperCase() + stringLowercase.slice(1);
+    return stringCapitalised;
+  }
 
   public static mapUsers(obj: OrganisationUser[]): User[] {
     const users: User[] = [];
