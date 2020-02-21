@@ -1,5 +1,5 @@
+import { User } from '@hmcts/rpx-xui-common-lib';
 import {OrganisationVM } from 'src/org-manager/models/organisation';
-import {LoadPbaAccuntsObj} from '../../mock/pending-organisation.mock';
 import * as fromMock from '../../mock/pending-organisation.mock';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
@@ -66,10 +66,60 @@ describe('Organisation Reducer', () => {
 
   describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
     it('should update the state with account details', () => {
-      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: LoadPbaAccuntsObj});
+      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: fromMock.LoadPbaAccuntsObj});
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: LoadPbaAccuntsObj }} as any);
+      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: fromMock.LoadPbaAccuntsObj }} as any);
     });
 
+  });
+
+  describe('LOAD_ORGANISATION_USERS action', () => {
+    it('should return the initial state.organisationUsersList', () => {
+
+      const action = new fromActions.LoadOrganisationUsers('orgId');
+      const state = reducer(initialState, action);
+      expect(state.organisationUsersList).toEqual(null);
+    });
+  });
+
+  describe('LOAD_ORGANISATION_USERS_SUCCESS action', () => {
+    it('should assign LOAD_ORGANISATION_USERS_SUCCESS payload to organisationUsersList ', () => {
+      const mockUserResult: User[] = [{
+        fullName: 'hello world',
+        email: 'test@test.com',
+        resendInvite: false,
+        status: 'Active',
+        ['manageCases']: 'Yes',
+        ['manageUsers']: 'Yes',
+        ['manageOrganisations']: 'No'
+      }];
+      const action = new fromActions.LoadOrganisationUsersSuccess(mockUserResult);
+      const state = reducer(initialState, action);
+      expect(state.organisationUsersList).toEqual(mockUserResult);
+    });
+  });
+
+  describe('RESET_ORGANISATION_USERS action', () => {
+    it('should return the state.organisationUsersList to null when reset', () => {
+      const action = new fromActions.ResetOrganisationUsers();
+      const state = reducer(initialState, action);
+      expect(state.organisationUsersList).toEqual(null);
+    });
+  });
+
+  describe('DISPLAY_ERROR_MESSAGE_ORGANISATIONS action', () => {
+    it('should assigned the state.errorMessage to the payload error Message', () => {
+      const action = new fromActions.DisplayErrorMessageOrganisations('error');
+      const state = reducer(initialState, action);
+      expect(state.errorMessage).toEqual('error');
+    });
+  });
+
+  describe('UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING action', () => {
+    it('should assigned the state.activeOrganisations.searchString to the payload', () => {
+      const action = new fromActions.UpdateActiveOrganisationsSearchString('searchthis');
+      const state = reducer(initialState, action);
+      expect(state.activeOrganisations.searchString).toEqual('searchthis');
+    });
   });
 });
