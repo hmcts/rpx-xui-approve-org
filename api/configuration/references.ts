@@ -12,7 +12,6 @@
 export const ENVIRONMENT = 'environment'
 
 export const APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
-export const APP_INSIGHTS_KEY = 'appInsightsInstrumentationKey'
 
 export const COOKIE_TOKEN = 'cookies.token'
 export const COOKIES_USERID = 'cookies.userId'
@@ -42,5 +41,6 @@ export const LOGGING = 'logging'
 
 export const S2S_SECRET = 'secrets.rpx.ao-s2s-client-secret'
 export const IDAM_SECRET = 'secrets.rpx.ao-idam-client-secret'
+export const APP_INSIGHTS_KEY = 'secrets.rpx.AppInsightsInstrumentationKey'
 
 export const USE_PROXY = 'useProxy'
