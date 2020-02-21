@@ -39,7 +39,7 @@
             </ul>
           </nav>
           <ng-container *ngIf="showUsers; else showOrgDetails">
-            <h1 class="govuk-heading-xl">User</h1>
+            <h1 class="govuk-heading-xl">Users</h1>
             <xuilib-user-list *ngIf="data.userLists" [users]="data.userLists" (userClick)="onShowUserDetails($event)"></xuilib-user-list>
           </ng-container>
           <ng-template #showOrgDetails>
