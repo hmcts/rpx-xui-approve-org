@@ -96,23 +96,6 @@ export class AppUtils {
     return organisations;
   }
 
-  // [key: string]: any;
-  // routerLink?: string;
-  // fullName?: string;
-  // email?: string;
-  // status?: string;
-  // resendInvite?: boolean;
-
-  // userIdentifier: string;
-  // firstName: string;
-  // lastName: string;
-  // email: string;
-  // idamStatus: string;
-  // idamStatusCode: string;
-  // idamMessage: string;
-  // roles: string[];
-
-
   public static capitalizeString(stringToCapitalize: string) {
     const stringLowercase = stringToCapitalize.toLowerCase();
     const stringCapitalised = stringLowercase.charAt(0).toUpperCase() + stringLowercase.slice(1);
