@@ -69,8 +69,6 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS: {
-      console.log('LOAD_ORGANISATION_USERS_SUCCESS');
-      console.log(action.payload);
       return {
         ...state,
         organisationUsersList: action.payload
@@ -78,7 +76,6 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.RESET_ORGANISATION_USERS: {
-      console.log('RESET_ORGANISATION_USERS');
       return {
         ...state,
         organisationUsersList: null

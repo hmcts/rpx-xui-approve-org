@@ -18,7 +18,7 @@
           <xuilib-user-details [user]="userDetails"></xuilib-user-details>
         </ng-container>
         <ng-template #showNav>
-          <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="data.org.status === ACTIVE">
+          <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="data.org.status === 'ACTIVE'">
             <ul class="hmcts-sub-navigation__list">
               <li class="hmcts-sub-navigation__item">
                 <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" aria-current="page">
