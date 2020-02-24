@@ -21,10 +21,7 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
         const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
         const response = await http.get(organisationsUri)
         logger.info('Organisations response' + response.data)
-        if (req.query.usersOrgId) {
-          console.log('========= usersOrgId=> ', req.query.usersOrgId)
-          console.log(response.data)
-        }
+
         if (response.data.organisations) {
             res.send(response.data.organisations)
         } else {
