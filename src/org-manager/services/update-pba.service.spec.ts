@@ -5,7 +5,7 @@ import createSpyObj = jasmine.createSpyObj;
 import { UpdatePbaServices } from './update-pba.services';
 
 describe('UpdatePbaServices', () => {
-  
+
   let httpClient: HttpClient;
   let updatePbaServices: UpdatePbaServices;
 
