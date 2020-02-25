@@ -69,8 +69,8 @@ module "app" {
         FEE_AND_PAY_API = "${var.fee_and_pay_api}"
 
         # PROXY (If required)
-        AO_HTTP_PROXY: "${var.ao_http_proxy}"
-        AO_NO_PROXY: "${var.ao_no_proxy}"
+        AO_HTTP_PROXY = "${var.ao_http_proxy}"
+        AO_NO_PROXY = "${var.ao_no_proxy}"
     }
 }
 
