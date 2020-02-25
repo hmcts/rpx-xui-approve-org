@@ -121,3 +121,8 @@ variable "ao_no_proxy" {
 variable "app_insights_enabled" {
   default = "1"
 }
+
+variable "node_config_dir" {
+  // for Windows
+  default = "D:\\home\\site\\wwwroot\\config"
+}
