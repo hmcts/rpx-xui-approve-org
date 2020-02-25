@@ -1,14 +1,16 @@
 import * as express from 'express'
-import { environmentConfig } from '../lib/environment.config'
+import {uiConfig} from '../configuration/ui'
 
-export const router = express.Router({ mergeParams: true })
+export const router = express.Router({mergeParams: true})
 
 router.get('/config', environmentRoute)
 
+/**
+ * All the environmental variables are passed to the ui.
+ */
 async function environmentRoute(req, res) {
-  const config = { ...environmentConfig }
-  delete config.appInsightsInstrumentationKey
-  res.status(200).send(config)
+
+  res.status(200).send(uiConfig())
 }
 
 export default router

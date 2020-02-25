@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "build": "tsc",
+    "build": "NODE_ENV=production webpack --config ./webpack-node.config.js",
     "coverage": "npx nyc mocha -r dotenv-extended/config",
     "watch": "nodemon --watch '**/*.ts' --exec ts-node -r dotenv-extended/config local.ts",
     "test": "mocha -r dotenv-extended/config",
@@ -34,5 +34,8 @@
     "cache": true,
     "all": true,
     "report-dir": "../reports/tests/coverage/node"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.11"
   }
 }
