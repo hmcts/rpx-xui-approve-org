@@ -1,6 +1,7 @@
 import { AxiosPromise } from 'axios'
 import * as express from 'express'
-import { environmentConfig } from '../lib/environment.config'
+import {getConfigValue} from '../configuration'
+import {SERVICES_FEE_AND_PAY_PATH} from '../configuration/references'
 import { http } from '../lib/http'
 
 async function handleAddressRoute(req, res) {
@@ -39,8 +40,8 @@ async function handleAddressRoute(req, res) {
 }
 
 function getAccount(accountName: string): AxiosPromise<any> {
-  const url = `${environmentConfig.services.feeAndPayApi}/accounts/${accountName}`
-  const promise = http.get(url).catch(err => err);
+  const url = `${getConfigValue(SERVICES_FEE_AND_PAY_PATH)}/accounts/${accountName}`
+  const promise = http.get(url).catch(err => err)
   return promise
 }
 
