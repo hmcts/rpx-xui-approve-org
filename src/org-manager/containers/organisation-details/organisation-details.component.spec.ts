@@ -33,7 +33,6 @@ describe('SummaryComponent', () => {
             CUSTOM_ELEMENTS_SCHEMA
         ],
         providers: [
-          // provideMockStore(),
         ]
     }).compileComponents();
     store = TestBed.get(Store);
