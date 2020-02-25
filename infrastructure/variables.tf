@@ -106,14 +106,18 @@ variable "rd_professional_api_service" {}
 variable "s2s_service" {}
 variable "fee_and_pay_api" {}
 
-variable "proxy_host" {
-  default = "172.16.0.7"
-}
-variable "proxy_port" {
-  default = "0"
+variable "allow_config_mutations" {
+  default = "1"
 }
 
-variable "test_ithc_var" {
-  default = "test"
+variable "ao_http_proxy" {
+  default = "http://172.16.0.7:8080"
 }
 
+variable "ao_no_proxy" {
+  default = "localhost"
+}
+
+variable "app_insights_enabled" {
+  default = "1"
+}
