@@ -1,10 +1,11 @@
-import { environmentConfig } from '../lib/environment.config'
+import { getConfigValue } from '../configuration'
+import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('rd-professional')
 
-const url = environmentConfig.services.rdProfessionalApi
+const url = getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)
 
 export async function postOrganisation(body: any): Promise<any> {
   logger.info(`Post organisation body`)
