@@ -32,6 +32,9 @@ module "app" {
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
         PUI_ENV = "${var.env}"
+        NODE_ENV = "${var.env}"
+        NODE_CONFIG_ENV = "${var.env}"
+        WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
         IDAM_SECRET = "${data.azurerm_key_vault_secret.oauth2_secret.value}"
@@ -47,6 +50,8 @@ module "app" {
         INDEX_URL = "${var.index_url}"
         LOGGING = "${var.logging}"
         PROTOCOL = "${var.protocol}"
+        ALLOW_CONFIG_MUTATIONS = "${var.allow_config_mutations}"
+        APP_INSIGHTS_ENABLED = "${var.app_insights_enabled}"
 
         # COOKIE SETTINGS
         SECURE_COOKIE = "${var.secure_cookie}"
@@ -63,11 +68,9 @@ module "app" {
         S2S_SERVICE = "${var.s2s_service}"
         FEE_AND_PAY_API = "${var.fee_and_pay_api}"
 
-        # PROXY
-        PROXY_HOST = "${var.proxy_host}"
-        PROXY_PORT = "${var.proxy_port}"
-
-        TEST_ITHC_VAR = "${var.test_ithc_var}"
+        # PROXY (If required)
+        AO_HTTP_PROXY = "${var.ao_http_proxy}"
+        AO_NO_PROXY = "${var.ao_no_proxy}"
     }
 }
 

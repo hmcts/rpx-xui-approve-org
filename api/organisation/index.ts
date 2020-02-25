@@ -1,5 +1,6 @@
 import * as express from 'express'
-import { environmentConfig } from '../lib/environment.config'
+import { getConfigValue } from '../configuration'
+import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 
@@ -44,7 +45,7 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
 }
 
 function getOrganisationUri(status, organisationId): string {
-    let url = `${environmentConfig.services.rdProfessionalApi}/refdata/internal/v1/organisations`
+    let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
 
     if (status) {
         url = `${url}?status=${status}`
@@ -61,7 +62,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
         res.status(400).send('Organisation id is missing')
     } else {
         try {
-            const putOrganisationsUrl = `${environmentConfig.services.rdProfessionalApi}/refdata/internal/v1/organisations/${req.params.id}`
+            const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
             await http.put(putOrganisationsUrl, req.body)
             res.status(200).send()
         } catch (error) {
