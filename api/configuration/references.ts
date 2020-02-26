@@ -44,3 +44,5 @@ export const IDAM_SECRET = 'secrets.rpx.ao-idam-client-secret'
 export const APP_INSIGHTS_KEY = 'secrets.rpx.AppInsightsInstrumentationKey'
 
 export const USE_PROXY = 'useProxy'
+
+export const HELMET = 'helmet'
