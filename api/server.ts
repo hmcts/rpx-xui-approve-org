@@ -3,6 +3,7 @@ import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as helmet from 'helmet'
 import * as path from 'path'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
@@ -11,7 +12,7 @@ import {environmentCheckText, getConfigValue, getEnvironment} from './configurat
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
   COOKIE_TOKEN,
-  COOKIES_USERID,
+  COOKIES_USERID, HELMET,
   IDAM_CLIENT,
   MAX_LINES, NOW, SECURE_COOKIE,
   SERVICES_CCD_DATA_API_PATH,
@@ -40,6 +41,8 @@ if (!getEnvironment()) {
  * TODO: Implement a logger on the Node layer.
  */
 console.log(environmentCheckText())
+
+app.use(helmet(getConfigValue(HELMET)))
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
@@ -86,7 +89,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
 app.get('/oauth2/callback', auth.oauth)
-app.get('/api/logout', (req, res, next) => {
+app.get('/api/logout', (req, res) => {
     auth.doLogout(req, res)
 })
 
