@@ -2,6 +2,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as helmet from 'helmet'
 import * as process from 'process'
 
 import * as sessionFileStore from 'session-file-store'
@@ -9,9 +10,9 @@ import * as auth from './auth'
 import {environmentCheckText, getConfigValue, getEnvironment} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
-  APP_INSIGHTS_KEY,
   COOKIE_TOKEN,
   COOKIES_USERID,
+  HELMET,
   IDAM_CLIENT,
   MAX_LINES, NOW,
   SECURE_COOKIE,
@@ -43,7 +44,7 @@ if (!getEnvironment()) {
  */
 console.log(environmentCheckText())
 
-console.log('APP_INSIGHTS:', getConfigValue(APP_INSIGHTS_KEY))
+app.use(helmet(getConfigValue(HELMET)))
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
