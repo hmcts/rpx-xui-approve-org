@@ -44,8 +44,6 @@ if (!getEnvironment()) {
  */
 console.log(environmentCheckText())
 
-console.log('HELMET:', JSON.stringify(getConfigValue(HELMET), null, 2))
-
 app.use(helmet(getConfigValue(HELMET)))
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
