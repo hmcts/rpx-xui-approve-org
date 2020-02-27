@@ -1,6 +1,6 @@
 import * as applicationinsights from 'applicationinsights'
 import * as express from 'express'
-import {getConfigValue, getEnvironment} from '../configuration'
+import {getConfigValue} from '../configuration'
 import {APP_INSIGHTS_ENABLED, APP_INSIGHTS_KEY} from '../configuration/references'
 
 export let client

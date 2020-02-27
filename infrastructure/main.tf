@@ -34,6 +34,7 @@ module "app" {
         PUI_ENV = "${var.env}"
         NODE_ENV = "${var.env}"
         NODE_CONFIG_ENV = "${var.env}"
+        NODE_CONFIG_DIR = "${var.node_config_dir}"
         WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
@@ -69,8 +70,8 @@ module "app" {
         FEE_AND_PAY_API = "${var.fee_and_pay_api}"
 
         # PROXY (If required)
-        AO_HTTP_PROXY: "${var.ao_http_proxy}"
-        AO_NO_PROXY: "${var.ao_no_proxy}"
+        AO_HTTP_PROXY = "${var.ao_http_proxy}"
+        AO_NO_PROXY = "${var.ao_no_proxy}"
     }
 }
 
