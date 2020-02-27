@@ -4,5 +4,3 @@ nodejs:
   environment:
     NODE_TLS_REJECT_UNAUTHORIZED: 1
     PUI_ENV: aat
-    IDAM_API_SERVICE: https://idam-api.aat.platform.hmcts.net
-    IDAM_WEB_SERVICE: https://idam-web-public.aat.platform.hmcts.net
