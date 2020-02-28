@@ -6,15 +6,15 @@ import * as process from 'process'
 
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {environmentCheckText, getConfigValue, getEnvironment} from './configuration'
+import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
   APP_INSIGHTS_KEY,
   COOKIE_TOKEN,
   COOKIES_USERID,
+  FEATURE_SECURE_COOKIE_ENABLED,
   IDAM_CLIENT,
   MAX_LINES, NOW,
-  SECURE_COOKIE,
   SERVICES_CCD_DATA_API_PATH,
   SERVICES_CCD_DEF_API_PATH,
   SERVICES_IDAM_API_PATH,
@@ -63,7 +63,7 @@ app.use(
     cookie: {
       httpOnly: true,
       maxAge: 1800000,
-      secure: getConfigValue(SECURE_COOKIE) !== false,
+      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     },
     name: 'xuiaowebapp',
     resave: true,

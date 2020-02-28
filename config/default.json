@@ -15,7 +15,6 @@
   "now": false,
   "oauthCallbackUrl": "/oauth2/callback",
   "protocol": "https",
-  "secureCookie": true,
   "services": {
     "ccdDataApi": "http://ccd-data-store-api-demo.service.core-compute-demo.internal",
     "ccdDefApi": "http://ccd-definition-store-api-demo.service.core-compute-demo.internal",
@@ -26,7 +25,10 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
   },
   "sessionSecret": "secretSauce",
-  "useProxy": false,
-  "appInsightsEnabled": true
+  "feature": {
+    "appInsightsEnabled": true,
+    "proxyEnabled": false,
+    "secureCookieEnabled": false
+  }
 }
 
