@@ -7,7 +7,7 @@
     </span>
   </app-identity-bar-component>
   <div class="hmcts-width-container">
-    <xuilib-hmcts-main-wrapper [backLink]="true" (backEvent)="onGoBack()">
+    <xuilib-hmcts-main-wrapper (backEvent)="onGoBack()">
       <ng-container *ngIf="!data.org; else showOrg">
         <h1 class="govuk-heading-xl">Organisation details</h1>
         <h3 class="govuk-heading-s">Loading...</h3>
@@ -39,8 +39,15 @@
             </ul>
           </nav>
           <ng-container *ngIf="showUsers; else showOrgDetails">
-            <h1 class="govuk-heading-xl">Users</h1>
-            <xuilib-user-list *ngIf="data.userLists" [users]="data.userLists" (userClick)="onShowUserDetails($event)"></xuilib-user-list>
+            <ng-container *ngIf="data.userLists?.isError; else showUserLists">
+              <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
+              <p>Try again later.</p>
+            </ng-container>
+            <ng-template #showUserLists>
+              <h1 class="govuk-heading-xl">Users</h1>
+              <h3 class="govuk-heading-s" *ngIf="!data.userLists?.users">Loading...</h3>
+              <xuilib-user-list  *ngIf="data.userLists?.users" [users]="data.userLists.users" (userClick)="onShowUserDetails($event)"></xuilib-user-list>
+            </ng-template>
           </ng-container>
           <ng-template #showOrgDetails>
             <app-org-details-info [org]="data.org" (approveEvent)="approveOrganisation($event)">
