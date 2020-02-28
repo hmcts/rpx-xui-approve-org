@@ -1,3 +1,5 @@
+import { User } from "@hmcts/rpx-xui-common-lib";
+
 export interface OrganisationAddress {
   addressLine1: string;
   addressLine2: string;
@@ -28,6 +30,11 @@ export interface OrganisationUser {
   idamStatusCode: string;
   idamMessage: string;
   roles: string[];
+}
+
+export interface OrganisationUserListModel {
+  users: User[];
+  isError: boolean;
 }
 
 export interface  Organisation {
