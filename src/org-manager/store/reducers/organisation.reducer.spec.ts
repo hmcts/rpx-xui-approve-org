@@ -78,7 +78,7 @@ describe('Organisation Reducer', () => {
 
       const action = new fromActions.LoadOrganisationUsers('orgId');
       const state = reducer(initialState, action);
-      expect(state.organisationUsersList).toEqual(null);
+      expect(state.organisationUsersList).toEqual({users: null, isError: false});
     });
   });
 
@@ -95,7 +95,7 @@ describe('Organisation Reducer', () => {
       }];
       const action = new fromActions.LoadOrganisationUsersSuccess(mockUserResult);
       const state = reducer(initialState, action);
-      expect(state.organisationUsersList).toEqual(mockUserResult);
+      expect(state.organisationUsersList).toEqual({users: mockUserResult, isError: false});
     });
   });
 
@@ -103,7 +103,7 @@ describe('Organisation Reducer', () => {
     it('should return the state.organisationUsersList to null when reset', () => {
       const action = new fromActions.ResetOrganisationUsers();
       const state = reducer(initialState, action);
-      expect(state.organisationUsersList).toEqual(null);
+      expect(state.organisationUsersList).toEqual( { users: null, isError: false });
     });
   });
 
