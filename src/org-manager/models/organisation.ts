@@ -1,4 +1,4 @@
-import { User } from "@hmcts/rpx-xui-common-lib";
+import { User } from '@hmcts/rpx-xui-common-lib';
 
 export interface OrganisationAddress {
   addressLine1: string;
