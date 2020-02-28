@@ -3,7 +3,7 @@ import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {filter, take, takeWhile} from 'rxjs/operators';
-import { OrganisationVM} from 'src/org-manager/models/organisation';
+import { OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
 
@@ -17,7 +17,7 @@ import * as fromStore from '../../store';
 export class OrganisationDetailsComponent implements OnInit {
 
   public orgs$: Observable<OrganisationVM>;
-  public userLists$: Observable<User[]>;
+  public userLists$: Observable<OrganisationUserListModel>;
   public showUsers = false;
   public showUserDetails = false;
   public userDetails: User = null;

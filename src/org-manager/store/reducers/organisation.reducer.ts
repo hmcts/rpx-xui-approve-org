@@ -1,9 +1,6 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
-import { AppConstants } from 'src/app/app.constants';
-import { AppUtils } from 'src/app/utils/app-utils';
-import {OrganisationVM} from 'src/org-manager/models/organisation';
+import {OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
-import { map } from 'rxjs/operators';
 
 export interface OrganisationState {
   activeOrganisations: {
@@ -18,7 +15,7 @@ export interface OrganisationState {
     loading: boolean;
     searchString: string;
   };
-  organisationUsersList: User[];
+  organisationUsersList: OrganisationUserListModel;
   errorMessage: string;
   orgForReview: OrganisationVM | null;
 }
@@ -26,7 +23,7 @@ export interface OrganisationState {
 export const initialState: OrganisationState = {
   activeOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
-  organisationUsersList: null,
+  organisationUsersList: {users: null, isError: false},
   errorMessage: '',
   orgForReview: null
 };
@@ -71,14 +68,22 @@ export function reducer(
     case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS: {
       return {
         ...state,
-        organisationUsersList: action.payload
+        organisationUsersList: {users: action.payload, isError: false}
       };
     }
+
+    case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_FAIL: {
+      return {
+        ...state,
+        organisationUsersList: {users: null, isError: true}
+      };
+    }
+
 
     case fromActions.OrgActionTypes.RESET_ORGANISATION_USERS: {
       return {
         ...state,
-        organisationUsersList: null
+        organisationUsersList: {users: null, isError: false}
       };
     }
 
