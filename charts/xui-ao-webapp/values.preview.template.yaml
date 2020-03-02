@@ -6,3 +6,4 @@ nodejs:
     PUI_ENV: preview
     IDAM_API_SERVICE: https://idam-api.aat.platform.hmcts.net
     IDAM_WEB_SERVICE: https://idam-web-public.aat.platform.hmcts.net
+    FEATURE_SECURE_COOKIE_ENABLED: false
