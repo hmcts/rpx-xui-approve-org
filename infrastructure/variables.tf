@@ -117,10 +117,10 @@ variable "ao_no_proxy" {
 
 // FEATURE TOGGLE VARS
 variable "feature_secure_cookie_enabled" {
-  default = "false"
+  default = "true"
 }
 variable "feature_app_insights_enabled" {
-  default = "1"
+  default = "true"
 }
 variable "feature_proxy_enabled" {
   default = "false"
