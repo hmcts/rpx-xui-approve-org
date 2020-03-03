@@ -31,12 +31,13 @@ nodejs:
     INDEX_URL: /
     LOGGING: debug
     PROTOCOL: https
-    SECURE_COOKIE: true
     COOKIE_TOKEN: __auth__
     COOKIE_USER_ID: __userid__
     MICROSERVICE: xui_webapp
     ALLOW_CONFIG_MUTATIONS: 1
-    APP_INSIGHTS_ENABLED: true
+    FEATURE_APP_INSIGHTS_ENABLED: true
+    FEATURE_SECURE_COOKIE_ENABLED: true
+    FEATURE_PROXY_ENABLED: false
   keyVaults:
     rpx:
       resourceGroup: rpx
