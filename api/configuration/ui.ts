@@ -5,7 +5,7 @@ import {
   UIConfigServices
 } from '../interfaces/ui.config'
 import {healthEndpoints} from './health'
-import {getConfigValue, getEnvironment} from './index'
+import {getConfigValue, getEnvironment, showFeature} from './index'
 import {
   COOKIE_TOKEN,
   COOKIES_USERID,
@@ -18,7 +18,7 @@ import {
   NOW,
   OAUTH_CALLBACK_URL,
   PROTOCOL,
-  SECURE_COOKIE,
+  FEATURE_SECURE_COOKIE_ENABLED,
   SERVICE_S2S_PATH,
   SERVICES_CCD_DATA_API_PATH,
   SERVICES_CCD_DEF_API_PATH,
@@ -51,7 +51,7 @@ export const uiConfig = (): UIConfig => {
     now: getConfigValue(NOW),
     oauthCallbackUrl: getConfigValue(OAUTH_CALLBACK_URL),
     protocol: getConfigValue(PROTOCOL),
-    secureCookie: getConfigValue(SECURE_COOKIE),
+    secureCookie: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     services: {
       ccdDataApi: getConfigValue(SERVICES_CCD_DATA_API_PATH),
       ccdDefApi: getConfigValue(SERVICES_CCD_DEF_API_PATH),
