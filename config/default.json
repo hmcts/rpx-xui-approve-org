@@ -15,10 +15,9 @@
   "now": false,
   "oauthCallbackUrl": "/oauth2/callback",
   "protocol": "https",
-  "secureCookie": true,
   "services": {
-    "ccdDataApi": "http://ccd-data-store-api-demo.service.core-compute-demo.internal",
-    "ccdDefApi": "http://ccd-definition-store-api-demo.service.core-compute-demo.internal",
+    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
+    "ccdDefApi": "http://ccd-definition-store-api-prod.service.core-compute-prod.internal",
     "idamApi": "https://idam-api.platform.hmcts.net",
     "idamWeb": "https://hmcts-access.service.gov.uk",
     "rdProfessionalApi": "http://rd-professional-api-prod.service.core-compute-prod.internal",
@@ -26,8 +25,11 @@
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
   },
   "sessionSecret": "secretSauce",
-  "useProxy": false,
-  "appInsightsEnabled": true,
+  "feature": {
+    "appInsightsEnabled": true,
+    "proxyEnabled": false,
+    "secureCookieEnabled": true
+  },
   "helmet": {
     "contentSecurityPolicy": {
       "directives": {
