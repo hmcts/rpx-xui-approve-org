@@ -10,9 +10,9 @@ import * as auth from './auth'
 import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
-  APP_INSIGHTS_KEY,
   COOKIE_TOKEN,
   COOKIES_USERID,
+  FEATURE_HELMET_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
   HELMET,
   IDAM_CLIENT,
@@ -45,7 +45,10 @@ if (!getEnvironment()) {
  */
 console.log(environmentCheckText())
 
-app.use(helmet(getConfigValue(HELMET)))
+if (showFeature(FEATURE_HELMET_ENABLED)) {
+  console.log('Helmet enabled')
+  app.use(helmet(getConfigValue(HELMET)))
+}
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')

@@ -13,9 +13,10 @@ import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
   APP_INSIGHTS_KEY,
   COOKIE_TOKEN,
-  HELMET,
   COOKIES_USERID,
+  FEATURE_HELMET_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
+  HELMET,
   IDAM_CLIENT,
   MAX_LINES,
   NOW,
@@ -33,6 +34,11 @@ const FileStore = sessionFileStore(session)
 
 const app = express()
 
+if (showFeature(FEATURE_HELMET_ENABLED)) {
+  console.log('Helmet enabled')
+  app.use(helmet(getConfigValue(HELMET)))
+}
+
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
  * this application.
@@ -45,8 +51,6 @@ if (!getEnvironment()) {
  * TODO: Implement a logger on the Node layer.
  */
 console.log(environmentCheckText())
-
-app.use(helmet(getConfigValue(HELMET)))
 
 console.log('APP_INSIGHTS:', getConfigValue(APP_INSIGHTS_KEY))
 

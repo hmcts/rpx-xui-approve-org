@@ -44,5 +44,6 @@ export const APP_INSIGHTS_KEY = 'secrets.rpx.AppInsightsInstrumentationKey'
 export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled'
 export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
 export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
+export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 
 export const HELMET = 'helmet'
