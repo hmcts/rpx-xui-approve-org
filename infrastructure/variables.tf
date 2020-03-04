@@ -125,6 +125,9 @@ variable "feature_app_insights_enabled" {
 variable "feature_proxy_enabled" {
   default = "false"
 }
+variable "feature_helmet_enabled" {
+  default = "false"
+}
 
 variable "node_config_dir" {
   // for Windows
