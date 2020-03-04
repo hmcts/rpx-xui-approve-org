@@ -28,7 +28,8 @@
   "feature": {
     "appInsightsEnabled": true,
     "proxyEnabled": false,
-    "secureCookieEnabled": true
+    "secureCookieEnabled": true,
+    "helmetEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {
