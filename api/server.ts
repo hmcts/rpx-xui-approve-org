@@ -3,6 +3,7 @@ import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as helmet from 'helmet'
 import * as path from 'path'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
@@ -13,7 +14,9 @@ import {
   APP_INSIGHTS_KEY,
   COOKIE_TOKEN,
   COOKIES_USERID,
+  FEATURE_HELMET_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
+  HELMET,
   IDAM_CLIENT,
   MAX_LINES,
   NOW,
@@ -30,6 +33,11 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
+
+if (showFeature(FEATURE_HELMET_ENABLED)) {
+  console.log('Helmet enabled')
+  app.use(helmet(getConfigValue(HELMET)))
+}
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
