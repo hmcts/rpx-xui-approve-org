@@ -18,10 +18,10 @@ async function waitForElement(el) {
 defineSupportCode(function ({ Given, When, Then,And }) {
 
   Then('I click first organization view link', async function(){
-    browser.sleep(LONG_DELAY);
+    browser.sleep(AMAZING_DELAY);
     await organisationList.waitForOrgListToDisplay();
     await organisationList.clickViewOnFirstOrganisation();
-    browser.sleep(MID_DELAY);
+    browser.sleep(LONG_DELAY);
 
   });
 
