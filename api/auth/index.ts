@@ -88,6 +88,7 @@ async function sessionChainCheck(req: EnhancedRequest, res: express.Response, ac
 
         if (details) {
             logger.info('Setting session')
+           
 
             //const orgIdResponse = await getOrganisationId(details)
             // no real end point
@@ -126,8 +127,11 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
     if (accessToken) {
         const userDetails = await asyncReturnOrError(getUserDetails(accessToken, idamUrl), 'Cannot get user details', res, logger, false)
         const isPrdAdminRole = havePrdAdminRole(userDetails)
+        console.log('=========')
+        console.log(userDetails)
+        console.log('================')
         if (isPrdAdminRole) {
-            console.log('THIS USER CAN NOT LOGIN');
+            console.log('THIS USER CAN NOT LOGIN')
             // tslint:disable-next-line
             res.redirect(`${getConfigValue(SERVICES_IDAM_API_PATH)}/login?response_type=code&client_id=${getConfigValue(IDAM_CLIENT)}&redirect_uri=${getConfigValue(PROTOCOL)}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
             return false
@@ -148,7 +152,9 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
             if (check) {
               axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
               axios.defaults.headers.common['user-roles'] = req.session.auth.roles
-
+              console.log('====== user role =====')
+              console.log(req.session.auth.roles)
+              console.log('================')
               if (req.headers.ServiceAuthorization) {
                 axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
               }

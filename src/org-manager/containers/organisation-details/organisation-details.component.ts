@@ -6,6 +6,7 @@ import {filter, take, takeWhile} from 'rxjs/operators';
 import { OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
+import { CookieService } from 'ngx-cookie';
 
 /**
  * Bootstraps Organisation Details
@@ -21,11 +22,21 @@ export class OrganisationDetailsComponent implements OnInit {
   public showUsers = false;
   public showUserDetails = false;
   public userDetails: User = null;
+  public isXuiApproverUserdata = false;
+  public showUserNavigation = false;
 
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>) {}
+    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly cookieService: CookieService) {}
 
   public ngOnInit(): void {
+
+    const userRoles = this.cookieService.get('roles');
+    if (userRoles && userRoles.indexOf('xui-approver-userdata') !== -1) {
+      console.log('coming to user roles');
+      this.isXuiApproverUserdata = true;
+    }
+
     this.store.dispatch(new fromStore.ResetOrganisationUsers());
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
@@ -39,9 +50,13 @@ export class OrganisationDetailsComponent implements OnInit {
         filter(value => value !== undefined),
         take(1)
     ).subscribe(({organisationId, pbaNumber, isAccLoaded, status}) => {
-      if (status === 'ACTIVE') {
+      if (status === 'ACTIVE' && this.isXuiApproverUserdata) {
+        this.showUserNavigation = true;
         this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
+      } else {
+        this.showUserNavigation = false;
       }
+
       if (!isAccLoaded && pbaNumber.length) {
         this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
               orgId: organisationId,
