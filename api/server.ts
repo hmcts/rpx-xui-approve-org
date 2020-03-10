@@ -11,10 +11,11 @@ import {environmentCheckText, getConfigValue, getEnvironment} from './configurat
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
   APP_INSIGHTS_KEY,
+  COOKIE_ROLES,
   COOKIE_TOKEN,
   COOKIES_USERID,
-  IDAM_CLIENT,
-  MAX_LINES, NOW, SECURE_COOKIE,
+  IDAM_CLIENT, MAX_LINES, NOW,
+  SECURE_COOKIE,
   SERVICES_CCD_DATA_API_PATH,
   SERVICES_CCD_DEF_API_PATH,
   SERVICES_IDAM_API_PATH,
@@ -48,6 +49,7 @@ console.log('APP_INSIGHTS:', getConfigValue(APP_INSIGHTS_KEY))
 console.log('COOKIE_TOKEN')
 console.log(process.env.NODE_CONFIG_ENV)
 console.log(getConfigValue(COOKIE_TOKEN))
+console.log(getConfigValue(COOKIE_ROLES))
 console.log(getConfigValue(COOKIES_USERID))
 console.log(getConfigValue(MAX_LINES))
 console.log(getConfigValue(SERVICES_CCD_DATA_API_PATH))

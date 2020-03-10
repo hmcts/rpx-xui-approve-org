@@ -35,6 +35,7 @@ nodejs:
     SECURE_COOKIE: true
     COOKIE_TOKEN: __auth__
     COOKIE_USER_ID: __userid__
+    COOKIE_ROLES: roles
     MICROSERVICE: xui_webapp
     ALLOW_CONFIG_MUTATIONS: 1
     APP_INSIGHTS_ENABLED: true
