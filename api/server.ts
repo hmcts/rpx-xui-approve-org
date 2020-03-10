@@ -25,6 +25,7 @@ import {
   SERVICES_IDAM_API_PATH,
   SESSION_SECRET,
 } from './configuration/references'
+import {default as healthRouter} from './health'
 import { appInsights } from './lib/appInsights'
 import { errorStack } from './lib/errorStack'
 import * as tunnel from './lib/tunnel'
@@ -97,7 +98,7 @@ app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
-
+app.use('/health', healthRouter)
 app.get('/oauth2/callback', auth.oauth)
 app.get('/api/logout', (req, res) => {
     auth.doLogout(req, res)
