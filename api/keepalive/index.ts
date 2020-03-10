@@ -1,9 +1,10 @@
 import axios from 'axios'
 import * as express from 'express'
-import {app} from '../local'
-import {environmentConfig} from '../lib/environment.config'
+import {app} from '../application'
+import { getConfigValue } from '../configuration'
+import { COOKIE_TOKEN } from '../configuration/references'
 
-const cookieToken = environmentConfig.cookies.token
+const cookieToken = getConfigValue(COOKIE_TOKEN)
 
 async function handleAddressRoute(req, res) {
   try {
