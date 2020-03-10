@@ -101,6 +101,7 @@ variable "idam_api_service" {}
 variable "idam_web_service" {}
 variable "rd_professional_api_service" {}
 variable "s2s_service" {}
+variable "iss_service" {}
 
 variable "allow_config_mutations" {
   default = "1"
