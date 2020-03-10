@@ -7,6 +7,7 @@ import {
 import {healthEndpoints} from './health'
 import {getConfigValue, getEnvironment} from './index'
 import {
+  COOKIE_ROLES,
   COOKIE_TOKEN,
   COOKIES_USERID,
   IDAM_CLIENT,
@@ -36,6 +37,7 @@ export const uiConfig = (): UIConfig => {
   return {
     configEnv,
     cookies: {
+      roles: getConfigValue(COOKIE_ROLES),
       token: getConfigValue(COOKIE_TOKEN),
       userId: getConfigValue(COOKIES_USERID),
     } as UIConfigCookies,

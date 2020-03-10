@@ -15,6 +15,7 @@ export const APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
 
 export const COOKIE_TOKEN = 'cookies.token'
 export const COOKIES_USERID = 'cookies.userId'
+export const COOKIE_ROLES = 'cookies.roles'
 
 export const MAX_LINES = 'exceptionOptions.maxLines'
 

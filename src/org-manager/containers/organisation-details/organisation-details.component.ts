@@ -7,6 +7,8 @@ import { OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
 import { CookieService } from 'ngx-cookie';
+import { environment } from 'src/environments/environment';
+import { AppConstants } from 'src/app/app.constants';
 
 /**
  * Bootstraps Organisation Details
@@ -31,9 +33,8 @@ export class OrganisationDetailsComponent implements OnInit {
 
   public ngOnInit(): void {
 
-    const userRoles = this.cookieService.get('roles');
-    if (userRoles && userRoles.indexOf('xui-approver-userdata') !== -1) {
-      console.log('coming to user roles');
+    const userRoles = this.cookieService.get(environment.cookies.roles);
+    if (userRoles && userRoles.indexOf(AppConstants.XUI_APPROVAL_ROLE) !== -1) {
       this.isXuiApproverUserdata = true;
     }
 
