@@ -61,7 +61,6 @@ export class AppUtils {
     organisationVm.postCode = apiOrg.contactInformation[0].postCode;
     organisationVm.townCity = apiOrg.contactInformation[0].townCity;
     organisationVm.county = apiOrg.contactInformation[0].county;
-    organisationVm.postCode = apiOrg.contactInformation[0].postCode;
     organisationVm.sraId = apiOrg.sraId;
     return organisationVm;
   }
@@ -77,8 +76,7 @@ export class AppUtils {
           addressLine2: org.addressLine2,
           townCity: org.townCity,
           county: org.county,
-          dxAddress: org.dxNumber,
-          postCode: org.postCode
+          dxAddress: org.dxNumber
           }],
         superUser: {
           userIdentifier: org.admin,
