@@ -16,7 +16,7 @@ import {
   INDEX_URL, OAUTH_CALLBACK_URL,
   PROTOCOL,
   SERVICES_IDAM_API_PATH,
-  SERVICES_ISS
+  SERVICES_ISS_PATH
 } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
@@ -40,7 +40,7 @@ export async function configureIssuer(url: string) {
     issuer = await Issuer.discover(`${url}/o`)
 
     const metadata = issuer.metadata
-    metadata.issuer = getConfigValue(SERVICES_ISS)
+    metadata.issuer = getConfigValue(SERVICES_ISS_PATH)
 
     return new Issuer(metadata)
 }
