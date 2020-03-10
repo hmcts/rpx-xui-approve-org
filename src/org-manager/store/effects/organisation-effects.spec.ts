@@ -6,9 +6,9 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import * as fromEffects from './organisation.effects';
 import { OrganisationEffects } from './organisation.effects';
 import * as fromActons from '../actions/organisations.actions';
-import {OrganisationService, PbaAccountDetails, PendingOrganisationService} from 'src/org-manager/services';
+import {OrganisationService, PendingOrganisationService} from 'src/org-manager/services';
 import { Go } from 'src/app/store';
-import {LoadPbaAccuntsObj, PendingOrganisationsMockCollection1} from '../../mock/pending-organisation.mock';
+import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
 import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 import { LoggerService } from 'src/app/services/logger.service';
 
@@ -21,16 +21,12 @@ export class LoggerServiceMock {
 describe('Organisation Effects', () => {
   let actions$;
   let effects: OrganisationEffects;
-  const pendingOrganisationServiceMock = jasmine.createSpyObj('PendingOrganisationService', [
+  const PendingOrganisationServiceMock = jasmine.createSpyObj('PendingOrganisationService', [
     'fetchPendingOrganisations',
     'approvePendingOrganisations'
   ]);
-  const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
+  const OrganisationServiceMock = jasmine.createSpyObj('OrganisationService', [
     'fetchOrganisations',
-  ]);
-
-  const getAccountDetailsServiceMock = jasmine.createSpyObj('PbaAccountDetails', [
-    'getAccountDetails',
   ]);
 
   const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
@@ -42,11 +38,11 @@ describe('Organisation Effects', () => {
       providers: [
         {
           provide: OrganisationService,
-          useValue: organisationServiceMock,
+          useValue: OrganisationServiceMock,
         },
         {
           provide: PendingOrganisationService,
-          useValue: pendingOrganisationServiceMock,
+          useValue: PendingOrganisationServiceMock,
         },
         fromEffects.OrganisationEffects,
         provideMockActions(() => actions$),
@@ -58,10 +54,6 @@ describe('Organisation Effects', () => {
           provide: LoggerService,
           useValue: mockedLoggerService
         },
-        {
-          provide: PbaAccountDetails,
-          useValue: getAccountDetailsServiceMock
-        }
       ]
     });
 
@@ -69,10 +61,10 @@ describe('Organisation Effects', () => {
 
   });
 
-  xdescribe('approvPendingOrganisations$', () => {
-    it('should return a collection from approvePendingOrgs$ - ApprovePendingOrganisationsSuccess', () => {
+  describe('approvPendingOrganisations$', () => {
+    xit('should return a collection from approvePendingOrgs$ - ApprovePendingOrganisationsSuccess', () => {
 
-      pendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(of(true));
+      PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(of(true));
       const action = new fromActons.ApprovePendingOrganisations(payload[0]);
       const completion = new fromActons.ApprovePendingOrganisationsSuccess({} as OrganisationVM);
       actions$ = hot('-a', { a: action });
@@ -89,7 +81,7 @@ describe('Organisation Effects', () => {
 
   describe('approvPendingOrganisations$ error', () => {
     it('should return ApprovePendingOrganisationsOrganisationsFail', () => {
-      pendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(''));
+      PendingOrganisationServiceMock.approvePendingOrganisations.and.returnValue(throwError(''));
       const action = new fromActons.ApprovePendingOrganisations(payload[0]);
       const completion = new fromActons.DisplayErrorMessageOrganisations('');
       actions$ = hot('-a', { a: action });
@@ -100,7 +92,7 @@ describe('Organisation Effects', () => {
 
   describe('loadActiveOrganisations$ error', () => {
     it('should return LoadOrganisationsFail', () => {
-      organisationServiceMock.fetchOrganisations.and.returnValue(throwError(new Error()));
+      OrganisationServiceMock.fetchOrganisations.and.returnValue(throwError(new Error()));
       const action = new fromActons.LoadActiveOrganisation();
       const completion = new fromActons.LoadActiveOrganisationFail(new Error());
       actions$ = hot('-a', { a: action });
@@ -108,31 +100,6 @@ describe('Organisation Effects', () => {
       expect(effects.loadActiveOrganisations$).toBeObservable(expected);
     });
   });
-
-  describe('loadPbaAccountDetails$', () => {
-    it('should return LoadPbaAccountDetailsSuccess', () => {
-      const payload0 = LoadPbaAccuntsObj;
-      getAccountDetailsServiceMock.getAccountDetails.and.returnValue(of(payload0));
-      const action = new fromActons.LoadPbaAccountsDetails({pbas: 'PBA0088487', orgId: '12345'});
-      const completion = new fromActons.LoadPbaAccountDetailsSuccess({orgId: '12345', data: payload0});
-      actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
-      expect(effects.loadPbaAccountDetails$).toBeObservable(expected);
-    });
-  });
-
-  describe('addReviewOrganisations$', () => {
-    it('should addReviewOrganisations  action', () => {
-      const action = new fromActons.AddReviewOrganisations({} as OrganisationVM);
-      const completion = new Go({
-        path: ['/approve-organisations']
-      });
-      actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
-      expect(effects.addReviewOrganisations$).toBeObservable(expected);
-    });
-  });
-
 });
 
 
