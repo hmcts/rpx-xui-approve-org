@@ -2,25 +2,28 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as helmet from 'helmet'
 import * as process from 'process'
 
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {environmentCheckText, getConfigValue, getEnvironment} from './configuration'
+import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
-  APP_INSIGHTS_KEY,
   COOKIE_ROLES,
   COOKIE_TOKEN,
   COOKIES_USERID,
+  FEATURE_HELMET_ENABLED,
+  FEATURE_SECURE_COOKIE_ENABLED,
+  HELMET,
   IDAM_CLIENT,
   MAX_LINES, NOW,
-  SECURE_COOKIE,
   SERVICES_CCD_DATA_API_PATH,
   SERVICES_CCD_DEF_API_PATH,
   SERVICES_IDAM_API_PATH,
   SESSION_SECRET,
 } from './configuration/references'
+import {default as healthRouter} from './health'
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
@@ -44,7 +47,10 @@ if (!getEnvironment()) {
  */
 console.log(environmentCheckText())
 
-console.log('APP_INSIGHTS:', getConfigValue(APP_INSIGHTS_KEY))
+if (showFeature(FEATURE_HELMET_ENABLED)) {
+  console.log('Helmet enabled')
+  app.use(helmet(getConfigValue(HELMET)))
+}
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('COOKIE_TOKEN')
@@ -65,7 +71,7 @@ app.use(
     cookie: {
       httpOnly: true,
       maxAge: 1800000,
-      secure: getConfigValue(SECURE_COOKIE) !== false,
+      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     },
     name: 'xuiaowebapp',
     resave: true,
@@ -84,6 +90,8 @@ app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
+
+app.use('/health', healthRouter)
 
 app.get('/oauth2/callback', auth.oauth)
 

@@ -31,6 +31,13 @@ export const getEnvironment = () => process.env.NODE_CONFIG_ENV
 export const getConfigValue = reference => config.get(reference)
 
 /**
+ * helper method for config feature toggling
+ * @param feature
+ * @return boolean
+ */
+export const showFeature = feature => config.get(`feature.${feature}`)
+
+/**
  * Generate Environment Check Text
  *
  * We generate text to be used for debugging purposes, so as the person attempting to initialise the application knows

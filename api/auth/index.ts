@@ -128,9 +128,6 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
     if (accessToken) {
         const userDetails = await asyncReturnOrError(getUserDetails(accessToken, idamUrl), 'Cannot get user details', res, logger, false)
         const isPrdAdminRole = havePrdAdminRole(userDetails)
-        console.log('=========')
-        console.log(userDetails)
-        console.log('================')
         if (isPrdAdminRole) {
             console.log('THIS USER CAN NOT LOGIN')
             // tslint:disable-next-line
@@ -140,8 +137,6 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
         // set browser cookie
         res.cookie(getConfigValue(COOKIE_TOKEN), accessToken)
         res.cookie(getConfigValue(COOKIE_ROLES), userDetails.data.roles)
-        console.log('setting cookies roles=>')
-        console.log(userDetails.data.roles)
 
         const jwtData: any = jwtDecode(accessToken)
         const expires = new Date(jwtData.exp as string).getTime()

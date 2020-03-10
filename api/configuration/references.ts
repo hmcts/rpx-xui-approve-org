@@ -11,8 +11,6 @@
  */
 export const ENVIRONMENT = 'environment'
 
-export const APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
-
 export const COOKIE_TOKEN = 'cookies.token'
 export const COOKIES_USERID = 'cookies.userId'
 export const COOKIE_ROLES = 'cookies.roles'
@@ -26,7 +24,6 @@ export const MICROSERVICE = 'microservice'
 export const NOW = 'now'
 export const OAUTH_CALLBACK_URL = 'oauthCallbackUrl'
 export const PROTOCOL = 'protocol'
-export const SECURE_COOKIE = 'secureCookie'
 
 export const SERVICES_CCD_DATA_API_PATH = 'services.ccdDataApi'
 export const SERVICES_CCD_DEF_API_PATH = 'services.ccdDefApi'
@@ -44,4 +41,10 @@ export const S2S_SECRET = 'secrets.rpx.ao-s2s-client-secret'
 export const IDAM_SECRET = 'secrets.rpx.ao-idam-client-secret'
 export const APP_INSIGHTS_KEY = 'secrets.rpx.AppInsightsInstrumentationKey'
 
-export const USE_PROXY = 'useProxy'
+// FEATURE TOGGLES
+export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled'
+export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
+export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
+export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
+
+export const HELMET = 'helmet'
