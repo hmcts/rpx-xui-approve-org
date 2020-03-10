@@ -1,38 +1,37 @@
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as passport from 'passport'
+import * as process from "process"
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
 import { appInsights } from './lib/appInsights'
-import { environmentConfig } from './lib/environment.config'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
-import * as passport from 'passport'
-import * as process from "process";
-import * as globalTunnel from 'global-tunnel-ng'
 const FileStore = sessionFileStore(session)
 export const app = express()
 const logger = log4jui.getLogger('server')
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-
+import { getConfigValue, showFeature } from './configuration'
+import { FEATURE_SECURE_COOKIE_ENABLED, SESSION_SECRET } from './configuration/references'
 
 app.use(
-    session({
-      cookie: {
-        httpOnly: true,
-        maxAge: 1800000,
-        secure: environmentConfig.secureCookie !== false,
-      },
-      name: 'xuiaowebapp',
-      resave: true,
-      saveUninitialized: true,
-      secret: environmentConfig.sessionSecret,
-      store: new FileStore({
-        path: environmentConfig.now ? '/tmp/sessions' : '.sessions',
-      }),
-    })
+  session({
+    cookie: {
+      httpOnly: true,
+      maxAge: 1800000,
+      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
+    },
+    name: 'xuiaowebapp',
+    resave: true,
+    saveUninitialized: true,
+    secret: getConfigValue(SESSION_SECRET),
+    store: new FileStore({
+      path: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
+    }),
+  })
 )
 
 tunnel.init()
@@ -59,13 +58,6 @@ app.use((req, res, next) => {
   res.cookie('platform', platform)
   next()
 })
-
-if (environmentConfig.proxy) {
-  globalTunnel.initialize({
-    host: environmentConfig.proxy.host,
-    port: environmentConfig.proxy.port,
-  })
-}
 
 function healthcheckConfig(msUrl) {
   return healthcheck.web(`${msUrl}/health`, {

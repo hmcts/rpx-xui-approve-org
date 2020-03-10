@@ -1,12 +1,15 @@
-import * as globalTunnel from 'global-tunnel-ng'
-import { environmentConfig } from './environment.config'
+import { createGlobalProxyAgent } from 'global-agent'
+import {showFeature} from '../configuration'
+import {FEATURE_PROXY_ENABLED} from '../configuration/references'
 import * as log4jui from './log4jui'
 
 const logger = log4jui.getLogger('proxy')
 
-export function init() {
-  if (exists(environmentConfig.proxy, 'host') && exists(environmentConfig.proxy, 'port')) {
-    logger.info('configuring tunnel: ', environmentConfig.proxy)
-    globalTunnel.initialize({...environmentConfig.proxy})
+export function init(): void {
+  if (showFeature(FEATURE_PROXY_ENABLED)) {
+    logger.info('configuring global-agent: ', process.env.AO_HTTP_PROXY, ' no proxy: ', process.env.AO_NO_PROXY)
+    createGlobalProxyAgent({
+      environmentVariableNamespace: "AO_",
+    })
   }
 }
