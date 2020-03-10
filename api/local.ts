@@ -22,6 +22,7 @@ import {
   SERVICES_IDAM_API_PATH,
   SESSION_SECRET,
 } from './configuration/references'
+import {default as healthRouter} from './health'
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
@@ -87,6 +88,8 @@ app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
+
+app.use('/health', healthRouter)
 
 app.get('/oauth2/callback', auth.oauth)
 
