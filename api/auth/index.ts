@@ -45,7 +45,7 @@ export async function configureIssuer(url: string) {
     return new Issuer(metadata)
 }
 
-async function configure(req: Request, res: Response, next: NextFunction) {
+export async function configure(req: Request, res: Response, next: NextFunction) {
 
     const host = req.get('host')
     const fqdn = req.protocol + '://' + host
