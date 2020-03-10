@@ -15,7 +15,7 @@ export const app = express()
 const logger = log4jui.getLogger('server')
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import { getConfigValue, showFeature } from './configuration'
-import { FEATURE_SECURE_COOKIE_ENABLED, SESSION_SECRET } from './configuration/references'
+import { FEATURE_SECURE_COOKIE_ENABLED, NOW, SESSION_SECRET } from './configuration/references'
 
 app.use(
   session({
@@ -31,7 +31,7 @@ app.use(
     store: new FileStore({
       path: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
     }),
-  })
+  }) as express.RequestHandler
 )
 
 tunnel.init()
