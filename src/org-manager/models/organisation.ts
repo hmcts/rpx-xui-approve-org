@@ -44,9 +44,6 @@ export class OrganisationVM {
   pbaNumber: [any];
   dxNumber: [any];
   sraId?: string;
-  isAccLoaded?: boolean;
-  accountDetails?: object
-
 }
 
 export interface OrganisationSummary extends OrganisationVM {

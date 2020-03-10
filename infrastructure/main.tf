@@ -71,7 +71,6 @@ module "app" {
         IDAM_WEB_SERVICE = "${var.idam_web_service}"
         RD_PROFESSIONAL_API_SERVICE = "${var.rd_professional_api_service}"
         S2S_SERVICE = "${var.s2s_service}"
-        FEE_AND_PAY_API = "${var.fee_and_pay_api}"
 
         # PROXY (If required)
         AO_HTTP_PROXY = "${var.ao_http_proxy}"

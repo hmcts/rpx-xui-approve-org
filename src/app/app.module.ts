@@ -25,7 +25,7 @@ import { ROUTES } from './app.routes';
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
 import config from 'config';
-import {AuthService} from '../services/auth/auth.service';
+import {AuthService} from './services/auth/auth.service';
 import { MonitoringService } from './services/monitoring.service';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
 import { LoggerService } from './services/logger.service';
@@ -34,6 +34,8 @@ import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler
 import { CryptoWrapper } from './services/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
+import {LogOutKeepAliveService} from './services/keep-alive/keep-alive.services';
 
 
 export const metaReducers: MetaReducer<any>[] = !config.production
@@ -61,9 +63,11 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot({launchDarklyKey: ''})
+    ExuiCommonLibModule.forRoot({launchDarklyKey: ''}),
+    NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
+    LogOutKeepAliveService,
     { provide: RouterStateSerializer, useClass: CustomSerializer },
     AuthService,
     { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
