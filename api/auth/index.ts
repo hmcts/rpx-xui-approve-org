@@ -2,19 +2,21 @@ import axios from 'axios'
 import { NextFunction, Request, Response, Router } from 'express'
 import * as net from 'net'
 import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
+import * as passport from 'passport'
 import {app} from '../application'
 import { getConfigValue } from '../configuration'
 import {router as keepAlive} from '../keepalive'
-import {environmentConfig} from '../lib/environment.config'
 
 import {
   COOKIE_TOKEN,
   COOKIES_USERID,
+  ENVIRONMENT,
   IDAM_CLIENT,
   IDAM_SECRET,
-  INDEX_URL,
-  OAUTH_CALLBACK_URL, PROTOCOL,
-  SERVICES_IDAM_API_PATH
+  INDEX_URL, OAUTH_CALLBACK_URL,
+  PROTOCOL,
+  SERVICES_IDAM_API_PATH,
+  SERVICES_ISS
 } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
@@ -22,8 +24,8 @@ import {propsExist} from '../lib/objectUtilities'
 
 export const router = Router({mergeParams: true})
 
-const cookieToken = environmentConfig.cookies.token
-const cookieUserId = environmentConfig.cookies.userId
+const cookieToken = getConfigValue(COOKIE_TOKEN)
+const cookieUserId = getConfigValue(COOKIES_USERID)
 
 const idamUrl = getConfigValue(SERVICES_IDAM_API_PATH)
 
@@ -38,7 +40,7 @@ export async function configureIssuer(url: string) {
     issuer = await Issuer.discover(`${url}/o`)
 
     const metadata = issuer.metadata
-    metadata.issuer = environmentConfig.services.iss
+    metadata.issuer = getConfigValue(SERVICES_ISS)
 
     return new Issuer(metadata)
 }
@@ -71,7 +73,7 @@ async function configure(req: Request, res: Response, next: NextFunction) {
         client_id: idamClient,
         client_secret: secret,
         post_logout_redirect_uris: [`${fqdn}/auth/login`],
-        redirect_uris: [`${fqdn}/oauth2/callback`],
+        redirect_uris: [`${fqdn}${getConfigValue(OAUTH_CALLBACK_URL)}`],
         response_types: ['code'],
         token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
     }
@@ -147,7 +149,7 @@ export function authCallbackSuccess(req: Request, res: Response) {
     res.cookie('roles', roles)
 
     // need this so angular knows which enviroment config to use ...
-    res.cookie('platform', environmentConfig.configEnv)
+    res.cookie('platform', getConfigValue(ENVIRONMENT))
 
     res.redirect('/')
 }

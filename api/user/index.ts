@@ -1,5 +1,6 @@
 import * as express from 'express'
-import {configEnv} from '../lib/environment.config'
+import { getConfigValue } from '../configuration'
+import { ENVIRONMENT } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 const logger = log4jui.getLogger('auth')
 
@@ -8,7 +9,7 @@ router.get('/details', handleUserRoute)
 
 function handleUserRoute(req, res) {
 
-  const isProd: boolean = (configEnv === 'prod')
+  const isProd: boolean = (getConfigValue(ENVIRONMENT) === 'prod')
   // in milliseconds
   const idleTimeOuts: {caseworker: number; solicitors: number; special: number} = {
     caseworker: isProd ? 8 * 60 * 60 * 1000 : 60 * 1000, // 8 hr
