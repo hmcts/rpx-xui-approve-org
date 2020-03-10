@@ -3,24 +3,30 @@ import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as helmet from 'helmet'
 import * as path from 'path'
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
-import {environmentCheckText, getConfigValue, getEnvironment} from './configuration'
+import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
   APP_INSIGHTS_KEY,
   COOKIE_ROLES,
   COOKIE_TOKEN,
   COOKIES_USERID,
-  IDAM_CLIENT, MAX_LINES, NOW,
-  SECURE_COOKIE,
+  FEATURE_HELMET_ENABLED,
+  FEATURE_SECURE_COOKIE_ENABLED,
+  HELMET,
+  IDAM_CLIENT,
+  MAX_LINES,
+  NOW,
   SERVICES_CCD_DATA_API_PATH,
   SERVICES_CCD_DEF_API_PATH,
   SERVICES_IDAM_API_PATH,
   SESSION_SECRET,
 } from './configuration/references'
+import {default as healthRouter} from './health'
 import { appInsights } from './lib/appInsights'
 import { errorStack } from './lib/errorStack'
 import * as tunnel from './lib/tunnel'
@@ -29,6 +35,11 @@ import routes from './routes'
 const FileStore = sessionFileStore(session)
 
 const app = express()
+
+if (showFeature(FEATURE_HELMET_ENABLED)) {
+  console.log('Helmet enabled')
+  app.use(helmet(getConfigValue(HELMET)))
+}
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -63,7 +74,7 @@ app.use(
         cookie: {
             httpOnly: true,
             maxAge: 1800000,
-            secure: getConfigValue(SECURE_COOKIE) !== false,
+            secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
         },
         name: 'xuiaowebapp',
         resave: true,
@@ -89,9 +100,9 @@ app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
-
+app.use('/health', healthRouter)
 app.get('/oauth2/callback', auth.oauth)
-app.get('/api/logout', (req, res, next) => {
+app.get('/api/logout', (req, res) => {
     auth.doLogout(req, res)
 })
 
