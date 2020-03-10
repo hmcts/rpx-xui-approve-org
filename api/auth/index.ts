@@ -9,7 +9,8 @@ import {
   IDAM_SECRET,
   INDEX_URL,
   OAUTH_CALLBACK_URL, PROTOCOL,
-  SERVICES_IDAM_API_PATH
+  SERVICES_IDAM_API_PATH,
+  COOKIE_ROLES
 } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
@@ -138,6 +139,9 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
         }
         // set browser cookie
         res.cookie(getConfigValue(COOKIE_TOKEN), accessToken)
+        res.cookie(getConfigValue(COOKIE_ROLES), userDetails.data.roles)
+        console.log('setting cookies roles=>')
+        console.log(userDetails.data.roles)
 
         const jwtData: any = jwtDecode(accessToken)
         const expires = new Date(jwtData.exp as string).getTime()
@@ -173,6 +177,7 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
 
 export function doLogout(req: EnhancedRequest, res: express.Response, status: number = 302) {
     res.clearCookie(getConfigValue(COOKIE_TOKEN))
+    res.clearCookie(getConfigValue(COOKIE_ROLES))
     res.clearCookie(getConfigValue(COOKIES_USERID))
     req.session.user = null
     req.session.save(() => {

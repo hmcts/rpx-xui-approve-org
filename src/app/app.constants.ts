@@ -31,6 +31,8 @@ const environmentNames = {
   prod: 'prod'
 };
 
+const xuiApprovalRole = 'xui-approver-userdata';
+
 
 const userRoles = [
 
@@ -44,4 +46,5 @@ export class AppConstants {
   public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
   public static ENVIRONMENT_NAMES = environmentNames;
   public static USER_ROLES = userRoles;
+  public static XUI_APPROVAL_ROLE = xuiApprovalRole;
 }
