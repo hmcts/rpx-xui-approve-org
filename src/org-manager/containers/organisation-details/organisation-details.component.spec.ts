@@ -8,9 +8,10 @@ import { OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
+import { CookieService, CookieModule } from 'ngx-cookie';
 
 
-describe('SummaryComponent', () => {
+describe('OrganisationDetailsComponent', () => {
 
   let component: OrganisationDetailsComponent;
   let fixture: ComponentFixture<OrganisationDetailsComponent>;
@@ -25,6 +26,7 @@ describe('SummaryComponent', () => {
             }),
             ExuiCommonLibModule,
             RouterTestingModule,
+            CookieModule.forRoot()
         ],
         declarations: [
           OrganisationDetailsComponent
