@@ -151,9 +151,6 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
             if (check) {
               axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
               axios.defaults.headers.common['user-roles'] = req.session.auth.roles
-              console.log('====== user role =====')
-              console.log(req.session.auth.roles)
-              console.log('================')
               if (req.headers.ServiceAuthorization) {
                 axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
               }
