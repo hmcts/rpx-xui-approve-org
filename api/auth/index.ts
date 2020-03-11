@@ -47,19 +47,6 @@ export async function configureIssuer(url: string) {
 
 export async function configure(req: Request, res: Response, next: NextFunction) {
 
-    const host = req.get('host')
-    const fqdn = req.protocol + '://' + host
-
-    // we don't want to configure strategy if coming from direct IP address (e.g. could be health endpoint)
-    if (net.isIP(host)) {
-        return next()
-    }
-
-    // if client is already configured, exit early
-    if (app.locals.client) {
-        return next()
-    }
-
     if (!app.locals.issuer) {
         try {
             app.locals.issuer = await configureIssuer(idamUrl)
@@ -67,31 +54,38 @@ export async function configure(req: Request, res: Response, next: NextFunction)
             return next(error)
         }
     }
-    logger.info('fqdn: ', fqdn)
 
-    const clientMetadata: ClientMetadata = {
-        client_id: idamClient,
-        client_secret: secret,
-        post_logout_redirect_uris: [`${fqdn}/auth/login`],
-        redirect_uris: [`${fqdn}${getConfigValue(OAUTH_CALLBACK_URL)}`],
-        response_types: ['code'],
-        token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
+    if (!app.locals.client) {
+        const clientMetadata: ClientMetadata = {
+            client_id: idamClient,
+            client_secret: secret,
+            response_types: ['code'],
+            token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
+        }
+
+        app.locals.client = new app.locals.issuer.Client(clientMetadata)
     }
 
-    app.locals.client = new app.locals.issuer.Client(clientMetadata)
+    const host = req.get('host')
+    console.log('host is', host)
+    const fqdn = req.protocol + '://' + host
+    const redirectUri = `${fqdn}/${getConfigValue(OAUTH_CALLBACK_URL)}`
+    console.log('redirectUri', redirectUri)
 
-    logger.info('configuring strategy')
+    // logger.info('configuring strategy with redirect_uri:', redirectUri)
 
-    passport.use('oidc', new Strategy({
+    passport.unuse('oidc').use('oidc', new Strategy({
         client: app.locals.client,
-        params: {scope: 'profile openid roles manage-user create-user'},
+        params: {
+            prompt: 'login',
+            redirect_uri: redirectUri,
+            scope: 'profile openid roles manage-user create-user',
+        },
         sessionKey: 'xui_webapp', // being explicit here so we can set manually on logout
         usePKCE: false, // issuer doesn't support pkce - no code_challenge_methods_supported
     }, oidcVerify))
 
     next()
-
-    // passport.use('s2s', new BearerStrategy())
 }
 
 export async function doLogout(req: Request, res: Response, status = 302) {
@@ -130,7 +124,6 @@ export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse,
         logger.warn('User does not have any access roles.')
         return done(null, false, {message: 'User does not have any access roles.'})
     }
-
     return done(null, {tokenset, userinfo})
 }
 
