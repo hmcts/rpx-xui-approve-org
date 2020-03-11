@@ -1,4 +1,5 @@
 import * as express from 'express'
+import authInterceptor from '../../api/lib/middleware/auth'
 import {getConfigValue} from '../configuration'
 import {
 SERVICES_RD_PROFESSIONAL_API_PATH,
@@ -34,5 +35,5 @@ async function handleUpdatePBARoute(req: express.Request, res: express.Response,
 export const router = express.Router({ mergeParams: true })
 
 router.put('/', handleUpdatePBARoute)
-
+router.use(authInterceptor)
 export default router
