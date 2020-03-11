@@ -3,6 +3,7 @@ import { getConfigValue } from '../configuration'
 import { ENVIRONMENT } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 const logger = log4jui.getLogger('auth')
+import authInterceptor from '../../api/lib/middleware/auth'
 
 export const router = express.Router({ mergeParams: true })
 router.get('/details', handleUserRoute)
@@ -54,5 +55,5 @@ function handleUserRoute(req, res) {
       res.status(500).send(errReport)
   }
 }
-
+router.use(authInterceptor)
 export default router
