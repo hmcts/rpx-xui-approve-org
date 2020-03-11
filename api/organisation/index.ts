@@ -20,9 +20,10 @@ const logger = log4jui.getLogger('return')
  */
 async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId)
+        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
         const response = await http.get(organisationsUri)
         logger.info('Organisations response' + response.data)
+
         if (response.data.organisations) {
             res.send(response.data.organisations)
         } else {
@@ -45,7 +46,7 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
     }
 }
 
-function getOrganisationUri(status, organisationId): string {
+function getOrganisationUri(status, organisationId, usersOrgId): string {
     let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
 
     if (status) {
@@ -54,7 +55,9 @@ function getOrganisationUri(status, organisationId): string {
     if (organisationId) {
         url = `${url}?id=${organisationId}`
     }
-    console.log('url is ' + url)
+    if (usersOrgId) {
+      url = `${url}/${usersOrgId}/users`
+    }
     return url
 }
 

@@ -50,10 +50,10 @@
     "@angular/platform-browser": "^6.0.3",
     "@angular/platform-browser-dynamic": "^6.0.3",
     "@angular/router": "^6.0.3",
-    "@hmcts/rpx-xui-common-lib": "0.0.29",
     "@hmcts/nodejs-healthcheck": "^1.5.1",
     "@hmcts/frontend": "^0.0.41-alpha",
     "@hmcts/properties-volume": "^0.0.9",
+    "@hmcts/rpx-xui-common-lib": "0.1.1",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
     "@ngrx/effects": "^6.0.3",
@@ -152,6 +152,7 @@
     "typescript": "2.9.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "webpack-source-map-support": "^2.0.1"
   }
 }

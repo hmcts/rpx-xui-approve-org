@@ -8,9 +8,11 @@ import { OrganisationEffects } from './organisation.effects';
 import * as fromActons from '../actions/organisations.actions';
 import {OrganisationService, PendingOrganisationService} from 'src/org-manager/services';
 import { Go } from 'src/app/store';
-import { PendingOrganisationsMockCollection1 } from '../../mock/pending-organisation.mock';
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import {LoadPbaAccuntsObj, PendingOrganisationsMockCollection1} from '../../mock/pending-organisation.mock';
+import { Organisation, OrganisationVM, OrganisationUser } from 'src/org-manager/models/organisation';
 import { LoggerService } from 'src/app/services/logger.service';
+import { User } from '@hmcts/rpx-xui-common-lib';
+import { AppUtils } from 'src/app/utils/app-utils';
 
 export class LoggerServiceMock {
   error(err) {
@@ -25,8 +27,8 @@ describe('Organisation Effects', () => {
     'fetchPendingOrganisations',
     'approvePendingOrganisations'
   ]);
-  const OrganisationServiceMock = jasmine.createSpyObj('OrganisationService', [
-    'fetchOrganisations',
+  const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
+    'fetchOrganisations', 'getOrganisationUsers'
   ]);
 
   const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
