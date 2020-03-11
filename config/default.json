@@ -13,7 +13,7 @@
   "idamClient": "xuiaowebapp",
   "microservice": "xui_webapp",
   "now": false,
-  "oauthCallbackUrl": "/oauth2/callback",
+  "oauthCallbackUrl": "oauth2/callback",
   "protocol": "https",
   "services": {
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
