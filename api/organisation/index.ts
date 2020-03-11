@@ -1,4 +1,5 @@
 import * as express from 'express'
+import authInterceptor from '../../api/lib/middleware/auth'
 import { getConfigValue } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import { http } from '../lib/http'
@@ -75,7 +76,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
 }
 
 export const router = express.Router({ mergeParams: true })
-
+router.use(authInterceptor)
 router.get('/', handleGetOrganisationsRoute)
 router.put('/:id', handlePutOrganisationRoute)
 
