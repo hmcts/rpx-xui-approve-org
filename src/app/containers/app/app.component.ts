@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Store, select } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 
-import * as fromRoot from '../../store';
-import {combineLatest, Observable} from 'rxjs';
-import * as fromActions from '../../store';
 import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
-import { environment as config } from '../../../environments/environment';
+import {combineLatest, Observable} from 'rxjs';
 import {filter, first, take} from 'rxjs/operators';
+import { environment as config } from '../../../environments/environment';
+import * as fromRoot from '../../store';
 
 
 @Component({
@@ -16,17 +15,17 @@ import {filter, first, take} from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
 
-  title$: Observable<string>;
+  public title$: Observable<string>;
   public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
 
 
   constructor(
-    private store: Store<fromRoot.State>,
-    private googleAnalyticsService: GoogleAnalyticsService,
-    private idleService: ManageSessionServices,
+    private readonly store: Store<fromRoot.State>,
+    private readonly googleAnalyticsService: GoogleAnalyticsService,
+    private readonly idleService: ManageSessionServices,
   ) {}
 
-  ngOnInit() {
+  public ngOnInit() {
     this.store.dispatch(new fromRoot.GetUserDetails());
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
@@ -104,7 +103,7 @@ export class AppComponent implements OnInit {
 
   onNavigate(event): void {
     if (event === 'sign-out') {
-      return this.store.dispatch(new fromActions.Logout());
+      return this.store.dispatch(new fromRoot.Logout());
     }
   }
 
