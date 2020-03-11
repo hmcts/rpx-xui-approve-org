@@ -329,10 +329,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.0.28":
-  version "0.0.28"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.0.28.tgz#5e2dc8574176e75bd80b6c74e4698d9bdfebb44a"
-  integrity sha512-m8Re9iO9uf5ygeOabAe0NchCFMEmpR4kTM/nHZqqdGRFEelQTCpm5hjNGIIZlrnIXMEzUJQE1AMMWMeObxIVvA==
+"@hmcts/rpx-xui-common-lib@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.1.tgz#c87005d8119df27a78140487e56aad97efa99ac7"
+  integrity sha512-2BQVZxWSud7DjAZ+KZx0mGqmJr+tMfLreMmT77rMKsrs9vU2mYxDVRnEEdOd00Xax3/2hVroulWp4KhVbNagiA==
   dependencies:
     tslib "^1.9.0"
 
@@ -9852,6 +9852,13 @@ source-map-resolve@^0.5.0:
     source-map-url "^0.4.0"
     urix "^0.1.0"
 
+source-map-support@0.4.11:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.4.11.tgz#647f939978b38535909530885303daf23279f322"
+  integrity sha1-ZH+TmXizhTWQlTCIUwPa8jJ58yI=
+  dependencies:
+    source-map "^0.5.3"
+
 source-map-support@^0.5.0, source-map-support@^0.5.11, source-map-support@^0.5.3, source-map-support@^0.5.5, source-map-support@^0.5.7:
   version "0.5.13"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.13.tgz#31b24a9c2e73c2de85066c0feb7d44767ed52932"
@@ -9899,7 +9906,7 @@ source-map@^0.4.2:
   dependencies:
     amdefine ">=0.0.4"
 
-source-map@^0.5.0, source-map@^0.5.1, source-map@^0.5.6, source-map@^0.5.7:
+source-map@^0.5.0, source-map@^0.5.1, source-map@^0.5.3, source-map@^0.5.6, source-map@^0.5.7:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
   integrity sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w=
@@ -11282,6 +11289,13 @@ webpack-node-externals@^1.7.2:
   version "1.7.2"
   resolved "https://registry.yarnpkg.com/webpack-node-externals/-/webpack-node-externals-1.7.2.tgz#6e1ee79ac67c070402ba700ef033a9b8d52ac4e3"
   integrity sha512-ajerHZ+BJKeCLviLUUmnyd5B4RavLF76uv3cs6KNuO8W+HuQaEs0y0L7o40NQxdPy5w0pcv8Ew7yPUAQG0UdCg==
+
+webpack-source-map-support@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/webpack-source-map-support/-/webpack-source-map-support-2.0.1.tgz#6c9b9f782ae84f86fb4b2f7032a298e63e8ad43d"
+  integrity sha1-bJufeCroT4b7Sy9wMqKY5j6K1D0=
+  dependencies:
+    source-map-support "0.4.11"
 
 webpack-sources@^1.0.1, webpack-sources@^1.1.0, webpack-sources@^1.3.0, webpack-sources@^1.4.0, webpack-sources@^1.4.1:
   version "1.4.3"
