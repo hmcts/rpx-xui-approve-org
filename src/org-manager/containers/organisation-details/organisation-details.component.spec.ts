@@ -8,22 +8,23 @@ import { OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
-import { Store, StoreModule, combineReducers } from '@ngrx/store';
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import * as fromRoot from '../../../app/store/reducers';
-import * as fromOrganisationPendingStore from '../../store';
 
-let component: OrganisationDetailsComponent;
-let fixture: ComponentFixture<OrganisationDetailsComponent>;
-let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+
 describe('SummaryComponent', () => {
-beforeEach((() => {
+
+  let component: OrganisationDetailsComponent;
+  let fixture: ComponentFixture<OrganisationDetailsComponent>;
+  let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+
+  beforeEach((() => {
     TestBed.configureTestingModule({
         imports: [
             StoreModule.forRoot({
                 ...fromRoot.reducers,
                 feature: combineReducers(fromOrganisationPendingStore.reducers),
             }),
+            ExuiCommonLibModule,
+            RouterTestingModule,
         ],
         declarations: [
           OrganisationDetailsComponent
@@ -41,11 +42,11 @@ beforeEach((() => {
 
   }));
 
-it('should have a component', () => {
+  it('should have a component', () => {
       expect(component).toBeTruthy();
   });
 
-it('should dispatch fromRoot.Back action on goBack when showUserDetails is false', () => {
+  it('should dispatch fromRoot.Back action on goBack when showUserDetails is false', () => {
     const expectedAction = new fromRoot.Back();
     spyOn(store, 'dispatch').and.callThrough();
     component.showUserDetails = false;
@@ -54,14 +55,14 @@ it('should dispatch fromRoot.Back action on goBack when showUserDetails is false
   });
 
 
-it('should dispatch fromRoot.Back action on goBack when showUserDetails is true', () => {
+  it('should dispatch fromRoot.Back action on goBack when showUserDetails is true', () => {
     component.showUserDetails = true;
     component.onGoBack();
     expect(component.showUserDetails).toBeFalsy();
     expect(component.userDetails).toBeNull();
   });
 
-it('should dispatch AddReviewOrganisations action on approveOrganisation', () => {
+  it('should dispatch AddReviewOrganisations action on approveOrganisation', () => {
     const mockData: OrganisationVM = PendingOrganisationsMockCollectionObj;
     const expectedAction = new fromOrganisationPendingStore.AddReviewOrganisations(mockData);
     spyOn(store, 'dispatch').and.callThrough();
@@ -74,7 +75,7 @@ it('should dispatch AddReviewOrganisations action on approveOrganisation', () =>
 
   });
 
-it('should set showUsersTab to true or false', () => {
+  it('should set showUsersTab to true or false', () => {
     component.showUsersTab(false);
     expect(component.showUsers).toBeFalsy();
 
@@ -82,7 +83,7 @@ it('should set showUsersTab to true or false', () => {
     expect(component.showUsers).toBeTruthy();
   });
 
-it('should assigned users when onShowUserDetails', () => {
+  it('should assigned users when onShowUserDetails', () => {
     component.onShowUserDetails(null);
     expect(component.showUserDetails).toBeFalsy();
     expect(component.userDetails).toBeNull();
