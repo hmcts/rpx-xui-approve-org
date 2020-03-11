@@ -1,13 +1,13 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
-import { PendingOrganisationsComponent } from './pending-organisations.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store/reducers';
-import { StoreModule, Store, combineReducers } from '@ngrx/store';
-import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ReviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisations.pipe';
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import * as fromOrganisation from '../../../org-manager/store/';
+import { PendingOrganisationsComponent } from './pending-organisations.component';
 
 describe('PendingOrganisationComponent', () => {
     let component: PendingOrganisationsComponent;
@@ -25,7 +25,7 @@ describe('PendingOrganisationComponent', () => {
             ],
             providers: [FormBuilder],
             declarations: [
-              PendingOrganisationsComponent
+              PendingOrganisationsComponent, FilterOrganisationsPipe
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
@@ -40,5 +40,12 @@ describe('PendingOrganisationComponent', () => {
 
     it('should create', () => {
       expect(component).toBeTruthy();
+    });
+
+    it('should dispatch UpdatePendingOrganisationsSearchString action on submitSearch', () => {
+      const expectedAction = new fromOrganisation.UpdatePendingOrganisationsSearchString('');
+      spyOn(store, 'dispatch').and.callThrough();
+      component.submitSearch('');
+      expect(store.dispatch).toHaveBeenCalledWith(expectedAction);
     });
 });

@@ -11,7 +11,7 @@ import { EditDetailsComponent } from './containers/edit-details/edit-details.com
 export const ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'active-organisation',
+    redirectTo: 'pending-organisations',
     pathMatch: 'full',
   },
   {

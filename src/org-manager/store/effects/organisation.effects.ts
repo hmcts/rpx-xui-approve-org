@@ -1,26 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { PendingOrganisationService } from 'src/org-manager/services/pending-organisation.service';
-import * as pendingOrgActions from '../actions/organisations.actions';
-import { map, switchMap, catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { PendingOrganisationService } from 'src/org-manager/services/pending-organisation.service';
+import { LoggerService } from '../../../app/services/logger.service';
 import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
-import { LoggerService } from '../../../app/services/logger.service';
+import {OrganisationService, PbaAccountDetails} from '../../services';
 import * as fromActions from '../actions';
-import {OrganisationService} from '../../services';
+import * as pendingOrgActions from '../actions/organisations.actions';
 
 @Injectable()
 export class OrganisationEffects {
   constructor(
-    private actions$: Actions,
-    private pendingOrgService: PendingOrganisationService,
-    private loggerService: LoggerService,
-    private organisationService: OrganisationService,
+    private readonly actions$: Actions,
+    private readonly pendingOrgService: PendingOrganisationService,
+    private readonly loggerService: LoggerService,
+    private readonly organisationService: OrganisationService,
+    private readonly pbaAccountDetails: PbaAccountDetails
   ) { }
 
   @Effect()
-  loadActiveOrganisations$ = this.actions$.pipe(
+  public loadActiveOrganisations$ = this.actions$.pipe(
     ofType(fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS),
     switchMap(() => {
       return this.organisationService.fetchOrganisations().pipe(
@@ -34,7 +35,22 @@ export class OrganisationEffects {
   );
 
   @Effect()
-  loadPendingOrgs$ = this.actions$.pipe(
+  public loadOrganisationUsers$ = this.actions$.pipe(
+    ofType(fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS),
+    map((action: fromActions.LoadOrganisationUsers) => action.payload),
+    switchMap((payload) => {
+      return this.organisationService.getOrganisationUsers(payload).pipe(
+          map(data => new fromActions.LoadOrganisationUsersSuccess(AppUtils.mapUsers(data.users))),
+          catchError((error: Error) => {
+            this.loggerService.error(error);
+            return of(new fromActions.LoadOrganisationUsersFail(error));
+          })
+      );
+    })
+  );
+
+  @Effect()
+  public loadPendingOrgs$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS),
     switchMap(() => {
       return this.pendingOrgService.fetchPendingOrganisations().pipe(
@@ -48,7 +64,7 @@ export class OrganisationEffects {
     }));
 
   @Effect()
-  approvePendingOrgs$ = this.actions$.pipe(
+  public approvePendingOrgs$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS),
     map((action: pendingOrgActions.ApprovePendingOrganisations) => action.payload),
     switchMap(organisation => {
@@ -68,10 +84,34 @@ export class OrganisationEffects {
   );
 
   @Effect()
-  approvePendingOrgsSuccess$ = this.actions$.pipe(
+  public approvePendingOrgsSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS),
     map(() => {
       return new fromRoot.Go({ path: ['/approve-organisations-success'] });
+    })
+  );
+
+  @Effect()
+  public loadPbaAccountDetails$ = this.actions$.pipe(
+    ofType(fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME),
+    map((action: fromActions.LoadPbaAccountsDetails) => action.payload),
+    switchMap((payload) => {
+      return this.pbaAccountDetails.getAccountDetails(payload.pbas).pipe(
+          map((data) => new fromActions.LoadPbaAccountDetailsSuccess({orgId: payload.orgId, data})),
+          catchError((error: Error) => {
+            this.loggerService.error(error);
+            const data = [error];
+            return of(new fromActions.LoadPbaAccountDetailsFail({orgId: payload.orgId, data}));
+          })
+      );
+    })
+  );
+
+  @Effect()
+  public addReviewOrganisations$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS),
+    map(() => {
+      return new fromRoot.Go({ path: ['/approve-organisations'] });
     })
   );
 }
