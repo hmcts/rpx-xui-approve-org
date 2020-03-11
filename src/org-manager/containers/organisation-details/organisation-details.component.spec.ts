@@ -41,11 +41,11 @@ beforeEach((() => {
 
   }));
 
-  it('should have a component', () => {
+it('should have a component', () => {
       expect(component).toBeTruthy();
   });
 
-  it('should dispatch fromRoot.Back action on goBack when showUserDetails is false', () => {
+it('should dispatch fromRoot.Back action on goBack when showUserDetails is false', () => {
     const expectedAction = new fromRoot.Back();
     spyOn(store, 'dispatch').and.callThrough();
     component.showUserDetails = false;
@@ -54,14 +54,14 @@ beforeEach((() => {
   });
 
 
-  it('should dispatch fromRoot.Back action on goBack when showUserDetails is true', () => {
+it('should dispatch fromRoot.Back action on goBack when showUserDetails is true', () => {
     component.showUserDetails = true;
     component.onGoBack();
     expect(component.showUserDetails).toBeFalsy();
     expect(component.userDetails).toBeNull();
   });
 
-  it('should dispatch AddReviewOrganisations action on approveOrganisation', () => {
+it('should dispatch AddReviewOrganisations action on approveOrganisation', () => {
     const mockData: OrganisationVM = PendingOrganisationsMockCollectionObj;
     const expectedAction = new fromOrganisationPendingStore.AddReviewOrganisations(mockData);
     spyOn(store, 'dispatch').and.callThrough();
@@ -74,7 +74,7 @@ beforeEach((() => {
 
   });
 
-  it('should set showUsersTab to true or false', () => {
+it('should set showUsersTab to true or false', () => {
     component.showUsersTab(false);
     expect(component.showUsers).toBeFalsy();
 
@@ -82,7 +82,7 @@ beforeEach((() => {
     expect(component.showUsers).toBeTruthy();
   });
 
-  it('should assigned users when onShowUserDetails', () => {
+it('should assigned users when onShowUserDetails', () => {
     component.onShowUserDetails(null);
     expect(component.showUserDetails).toBeFalsy();
     expect(component.userDetails).toBeNull();
