@@ -90,6 +90,7 @@
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
     "sonar-scanner": "3.1.0",
+    "source-map-support": "^0.5.16",
     "striptags": "^3.1.1",
     "zone.js": "^0.8.26"
   },
