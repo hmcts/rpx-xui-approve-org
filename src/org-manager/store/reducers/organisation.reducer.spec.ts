@@ -67,7 +67,7 @@ describe('Organisation Reducer', () => {
       expect(state.orgForReview).toEqual(PendingOrganisationsMock[0]);
     });
 
-  describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
+    describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
     it('should update the state with account details', () => {
       const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: fromMock.LoadPbaAccuntsObj});
       const state = reducer(initialState, action);
@@ -76,7 +76,7 @@ describe('Organisation Reducer', () => {
 
   });
 
-  describe('LOAD_ORGANISATION_USERS action', () => {
+    describe('LOAD_ORGANISATION_USERS action', () => {
     it('should return the initial state.organisationUsersList', () => {
 
       const action = new fromActions.LoadOrganisationUsers('orgId');
@@ -85,7 +85,7 @@ describe('Organisation Reducer', () => {
     });
   });
 
-  describe('LOAD_ORGANISATION_USERS_SUCCESS action', () => {
+    describe('LOAD_ORGANISATION_USERS_SUCCESS action', () => {
     it('should assign LOAD_ORGANISATION_USERS_SUCCESS payload to organisationUsersList ', () => {
       const mockUserResult: User[] = [{
         fullName: 'hello world',
@@ -102,7 +102,7 @@ describe('Organisation Reducer', () => {
     });
   });
 
-  describe('RESET_ORGANISATION_USERS action', () => {
+    describe('RESET_ORGANISATION_USERS action', () => {
     it('should return the state.organisationUsersList to null when reset', () => {
       const action = new fromActions.ResetOrganisationUsers();
       const state = reducer(initialState, action);
@@ -110,7 +110,7 @@ describe('Organisation Reducer', () => {
     });
   });
 
-  describe('DISPLAY_ERROR_MESSAGE_ORGANISATIONS action', () => {
+    describe('DISPLAY_ERROR_MESSAGE_ORGANISATIONS action', () => {
     it('should assigned the state.errorMessage to the payload error Message', () => {
       const action = new fromActions.DisplayErrorMessageOrganisations('error');
       const state = reducer(initialState, action);
@@ -118,7 +118,7 @@ describe('Organisation Reducer', () => {
     });
   });
 
-  describe('UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING action', () => {
+    describe('UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING action', () => {
     it('should assigned the state.activeOrganisations.searchString to the payload', () => {
       const action = new fromActions.UpdateActiveOrganisationsSearchString('searchthis');
       const state = reducer(initialState, action);
