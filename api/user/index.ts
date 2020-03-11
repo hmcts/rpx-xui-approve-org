@@ -42,7 +42,7 @@ function handleUserRoute(req, res) {
   const UserDetails = {
     ...req.session.user,
     idleTime: getUserTimeouts(),
-    timeout: isProd ? 10 * 60 : 50, // in seconds
+    timeout: 8 * 60 * 60, // in seconds
   }
 
   try {
