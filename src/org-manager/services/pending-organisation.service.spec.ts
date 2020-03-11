@@ -1,36 +1,43 @@
 import { TestBed } from '@angular/core/testing';
-import { PendingOrganisationService } from './pending-organisation.service';
-import { HttpClient } from '@angular/common/http';
-import createSpyObj = jasmine.createSpyObj;
 import { environment } from 'src/environments/environment';
+import createSpyObj = jasmine.createSpyObj;
 import { Organisation } from '../models/organisation';
 
 describe('PendingOrganisationService', () => {
   let httpClient: HttpClient;
   let pendingOrganisationService: PendingOrganisationService;
 
-  beforeEach(() => {
+  const mockEnviroment = {
+    singleOrgUrl: 'single-org-url',
+    orgPendingUrl: 'org-pending-url',
+    orgApprovePendingUrl: 'org-approve-pending-url'
+  };
 
+  beforeEach(() => {
     httpClient = createSpyObj<HttpClient>('httpClient', ['get', 'post', 'put']);
 
     TestBed.configureTestingModule({
       providers: [
         PendingOrganisationService,
         { provide: HttpClient, useValue: httpClient },
+        { provide: environment, useValue: mockEnviroment },
       ]
     });
-
     pendingOrganisationService = TestBed.get(PendingOrganisationService);
+    pendingOrganisationService.orgPendingUrl = mockEnviroment.orgPendingUrl;
+    pendingOrganisationService.singleOrgUrl = mockEnviroment.singleOrgUrl;
+    pendingOrganisationService.orgApprovePendingUrl = mockEnviroment.orgApprovePendingUrl;
+
   });
 
-  xit('should fetch pending organisations', () => {
+  it('should fetch pending organisations', () => {
     pendingOrganisationService.fetchPendingOrganisations();
-    expect(httpClient.get).toHaveBeenCalledWith(environment.orgPendingUrl);
+    expect(httpClient.get).toHaveBeenCalledWith(mockEnviroment.orgPendingUrl);
   });
 
-  xit('should get single organisation', () => {
+  it('should get single organisation', () => {
     pendingOrganisationService.getSingleOrganisation({id: 'dummy'});
-    expect(httpClient.get).toHaveBeenCalledWith(environment.singleOrgUrl + 'dummy');
+    expect(httpClient.get).toHaveBeenCalledWith(`${mockEnviroment.singleOrgUrl}dummy`);
   });
 
   it('should approve organisation', () => {
@@ -57,9 +64,6 @@ describe('PendingOrganisationService', () => {
       paymentAccount: [{}]
     };
     pendingOrganisationService.approvePendingOrganisations(organisation);
-    expect(httpClient.put).toHaveBeenCalledWith(environment.orgApprovePendingUrl, organisation);
+    expect(httpClient.put).toHaveBeenCalledWith(mockEnviroment.orgApprovePendingUrl, organisation);
   });
-
-
-
 });
