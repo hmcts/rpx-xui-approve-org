@@ -1,125 +1,63 @@
- <ng-container *ngIf="(orgs$ | async) as data">
+ <ng-container *ngIf="{org: orgs$ | async, userLists: userLists$ | async} as data">
   <app-identity-bar-component>
-    <strong>{{data?.name}}</strong>
-    <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(data?.status=='ACTIVE') ?
+    <strong>{{data.org?.name}}</strong>
+    <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(data.org?.status=='ACTIVE') ?
     'hmcts-badge--green':'hmcts-badge--blue'">
-      {{data?.status}}
+      {{data.org?.status}}
     </span>
   </app-identity-bar-component>
   <div class="hmcts-width-container">
-    <xuilib-hmcts-main-wrapper [title]="'Organisation details'" [backLink]="true" (backEvent)="onGoBack()">
-      <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview">
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               Name
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data?.name}}
-               <div class="govuk-caption-m govuk-!-font-size-16">{{data?.organisationId}}</div>
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               Address
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data?.addressLine1}}<br>
-               <div *ngIf='data.addressLine2'>
-                   {{data?.addressLine2}}<br>
-               </div>
-               {{data.townCity}}<br>
-               <div *ngIf='data.county'>
-                  {{data?.county}}<br>
-               </div>
-                <div *ngIf='data.postCode'>
-                    {{data?.postCode}}<br>
-                </div>
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               PBA number
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-                <div *ngFor="let pba of data?.pbaNumber; let i = index">
-                    {{pba}}
-                    <span class="govuk-caption-m govuk-!-font-size-16">
-                        Account name:
-                        <span>
-                          <ng-container *ngIf="data?.accountDetails[i]?.account_name; else noAccountName" >
-                            {{data?.accountDetails[i]?.account_name}}
-                          </ng-container>
-                          <ng-template #noAccountName>
-                             currently unavailable
-                          </ng-template>
-                        </span>
-                    </span>
-                </div>
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-                  <a [routerLink]="['/change', 'pba', data?.organisationId, data?.pbaNumber.join(',')]">
-                  {{data?.pbaNumber.length ? 'Change' : 'Add'}}
-                  </a>
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               DX number
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data.dxNumber[0]?.dxNumber}}
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               DX exchange
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data.dxNumber[0]?.dxExchange}}
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               Administrator
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               <div>{{data?.admin}}</div>
-               <div class="govuk-caption-m govuk-!-font-size-16">{{data?.adminEmail}}</div>
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-         <div class="govuk-check-your-answers__contents">
-            <dt class="govuk-check-your-answers__question">
-               SRA Id
-            </dt>
-            <dd class="govuk-check-your-answers__answer">
-               {{data?.sraId}}
-            </dd>
-            <dd class="govuk-check-your-answers__change">
-            </dd>
-         </div>
-      </dl>
-
-      <button *ngIf="data?.status=='PENDING'" (click)="approveOrganisation(data)" type="submit" class=govuk-button>Approve organisation</button>
-    </xuilib-hmcts-main-wrapper>
+    <xuilib-hmcts-main-wrapper (backEvent)="onGoBack()">
+      <ng-container *ngIf="!data.org; else showOrg">
+        <h1 class="govuk-heading-xl">Organisation details</h1>
+        <h3 class="govuk-heading-s">Loading...</h3>
+      </ng-container>
+      <ng-template #showOrg>
+        <ng-container *ngIf="userDetails && showUserDetails; else showNav">
+          <h1 class="govuk-heading-xl">User</h1>
+          <xuilib-user-details [user]="userDetails"></xuilib-user-details>
+        </ng-container>
+        <ng-template #showNav>
+          <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="data.org.status === 'ACTIVE'">
+            <ul class="hmcts-sub-navigation__list">
+              <li class="hmcts-sub-navigation__item">
+                <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" aria-current="page">
+                  Organisation details
+                </a>
+                <a  *ngIf="showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(false)" [routerLink]="">
+                  Organisation details
+                </a>
+              </li>
+              <li class="hmcts-sub-navigation__item">
+                <a *ngIf="showUsers" class="hmcts-sub-navigation__link" aria-current="page">
+                  Users
+                </a>
+                <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(true)" [routerLink]="">
+                  Users
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <ng-container *ngIf="showUsers; else showOrgDetails">
+            <ng-container *ngIf="data.userLists?.isError; else showUserLists">
+              <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
+              <p>Try again later.</p>
+            </ng-container>
+            <ng-template #showUserLists>
+              <h1 class="govuk-heading-xl">Users</h1>
+              <h3 class="govuk-heading-s" *ngIf="!data.userLists?.users">Loading...</h3>
+              <xuilib-user-list  *ngIf="data.userLists?.users" [users]="data.userLists.users" (userClick)="onShowUserDetails($event)"></xuilib-user-list>
+            </ng-template>
+          </ng-container>
+          <ng-template #showOrgDetails>
+            <app-org-details-info [org]="data.org" (approveEvent)="approveOrganisation($event)">
+          </app-org-details-info>
+          </ng-template>
+        </ng-template>
+      </ng-template>
+     </xuilib-hmcts-main-wrapper>
   </div>
   </ng-container>
- <ng-container *ngIf="!(orgs$ | async)">
-   <div class="hmcts-width-container">
-     <xuilib-hmcts-main-wrapper [title]="'Organisation details'">
-       <h3 class="govuk-heading-s">Loading...</h3>
-     </xuilib-hmcts-main-wrapper>
-   </div>
- </ng-container>
 
 
 
