@@ -1,7 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { environment } from 'src/environments/environment';
 import createSpyObj = jasmine.createSpyObj;
 import { Organisation } from '../models/organisation';
+import { PendingOrganisationService } from './pending-organisation.service';
 
 describe('PendingOrganisationService', () => {
   let httpClient: HttpClient;
@@ -48,6 +50,7 @@ describe('PendingOrganisationService', () => {
         addressLine2: '',
         townCity: 'string',
         county: 'string',
+        postCode: 'string',
         dxAddress: [{
           dxNumber: 'string',
           dxExchange: 'string',
