@@ -14,6 +14,11 @@ async function waitForElement(el) {
 
 defineSupportCode(function ({ Given, When, Then }) {
 
+  Then('I click first organization view link', async function(){
+    browser.sleep(AMAZING_DELAY);
+   // await organisationList.waitForOrgListToDisplay();
+    await organisationList.clickViewOnFirstOrganisation();
+    browser.sleep(LONG_DELAY);
 
 
     Then(/^I Select the Organisation and click Activate$/, async function () {
