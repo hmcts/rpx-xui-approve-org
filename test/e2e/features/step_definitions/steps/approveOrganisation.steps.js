@@ -5,8 +5,6 @@ const { defineSupportCode } = require('cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const config = require('../../../config/conf.js');
 const EC = protractor.ExpectedConditions;
-const browserWaits = require('../../../support/customWaits');
-const loginPage = require('../../pageObjects/loginLogoutObjects');
 
 async function waitForElement(el) {
     await browser.wait(result => {
@@ -21,14 +19,10 @@ defineSupportCode(function ({ Given, When, Then }) {
         await browser.driver.manage()
             .deleteAllCookies();
         await browser.refresh();
-        const world = this;
-      await browserWaits.retryForPageLoad(loginPage.emailAddress,async (message) => {
-        world.attach('Retry reloading page. '+message);
-      });
-      await browserWaits.waitForElement(loginPage.emailAddress);
+        browser.sleep(AMAZING_DELAY);
     });
 
-    Then(/^I Check the active Organisation banner appear$/, async function () {
+    Then(/^I Check the pending Organisation banner appear$/, async function () {
         // await waitForElement(bannerPage.approveorgBanner);
         await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
     });
@@ -40,7 +34,7 @@ defineSupportCode(function ({ Given, When, Then }) {
       await expect(bannerPage.bannerText.getText())
         .to
         .eventually
-        .contains('organisations are active');
+        .contains('organisations are pending activation.');
     });
 
   Then(/^I Verify the Check Now Link$/, { timeout: 600 * 1000 }, async function () {
@@ -60,10 +54,10 @@ defineSupportCode(function ({ Given, When, Then }) {
     await bannerPage.checkNow.click();
     await browserWaits.waitForElement(bannerPage.activeOrganisationPageHeading);
     await waitForElement('govuk-heading-xl');
-    await expect(bannerPage.activeOrganisationPageHeading.getText())
+    await expect(bannerPage.pendingOrganisationText.getText())
       .to
       .eventually
-      .equals('Active organisations');
+      .equals('Organisations pending activation');
   });
 
 });
