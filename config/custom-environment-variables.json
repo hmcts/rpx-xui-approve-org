@@ -24,6 +24,7 @@
     "feeAndPayApi": "FEE_AND_PAY_API",
     "s2s": "S2S_SERVICE"
   },
+  "iss": "ISS_SERVICE",
   "sessionSecret": "SESSION_SECRET",
   "secrets": {
     "rpx": {
