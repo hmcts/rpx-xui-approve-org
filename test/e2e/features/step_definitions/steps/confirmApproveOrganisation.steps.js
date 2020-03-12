@@ -64,4 +64,5 @@ defineSupportCode(function ({ Given, When, Then }) {
       .equals('Active organisations');
   });
 
+})
 });
