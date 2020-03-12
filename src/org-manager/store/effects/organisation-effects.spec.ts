@@ -136,5 +136,3 @@ describe('Organisation Effects', () => {
   });
 
 });
-
-
