@@ -96,6 +96,9 @@ export async function configure(req: Request, res: Response, next: NextFunction)
 }
 
 export function getProtocol(req: Request): string {
+    console.log('req X-Forwarded-Proto', req.get('X-Forwarded-Proto'))
+    console.log('req x-forwarded-proto', req.get('x-forwarded-proto'))
+    console.log('protocol', req.protocol)
     return req.get('x-forwarded-proto') ? req.get('x-forwarded-proto') : req.protocol
 }
 

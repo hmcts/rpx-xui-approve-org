@@ -17,6 +17,7 @@ import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import { getConfigValue, showFeature } from './configuration'
 import { FEATURE_SECURE_COOKIE_ENABLED, NOW, SESSION_SECRET } from './configuration/references'
 
+app.set('trust proxy', true)
 app.use(
   session({
     cookie: {
