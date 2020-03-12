@@ -75,7 +75,7 @@ export async function configure(req: Request, res: Response, next: NextFunction)
     }
 
     console.log('host is', host)
-    const fqdn = req.protocol + '://' + host
+    const fqdn = getProtocol(req) + '://' + host
     const redirectUri = `${fqdn}/${getConfigValue(OAUTH_CALLBACK_URL)}`
     console.log('redirectUri', redirectUri)
 
@@ -93,6 +93,10 @@ export async function configure(req: Request, res: Response, next: NextFunction)
     }, oidcVerify))
 
     next()
+}
+
+export function getProtocol(req: Request): string {
+    return req.get('x-forwarded-proto') ? req.get('x-forwarded-proto') : req.protocol
 }
 
 export async function doLogout(req: Request, res: Response, status = 302) {
