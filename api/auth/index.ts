@@ -67,6 +67,13 @@ export async function configure(req: Request, res: Response, next: NextFunction)
     }
 
     const host = req.get('host')
+    if (host.indexOf(':') > 0 ) {
+        const hostwithoutPort = host.substring(0, host.indexOf(':'))
+        if (net.isIP(hostwithoutPort)) {
+            return next()
+        }
+    }
+
     console.log('host is', host)
     const fqdn = req.protocol + '://' + host
     const redirectUri = `${fqdn}/${getConfigValue(OAUTH_CALLBACK_URL)}`
