@@ -5,7 +5,7 @@ Feature: Verify Organisation Details Screen
     When I navigate to EUI Approve Organisation Url
     Given I am logged into approve organisation with HMCTS admin
     Then I should be redirected to approve organisation dashboard page
-    Then I Check the pending Organisation banner appear
+    Then I Check the active Organisation banner appear
 
 
 
