@@ -1,10 +1,14 @@
 'use strict';
 
 const loginPage = require('../../pageObjects/loginLogoutObjects');
+const headerPage = require('../../pageObjects/headerPage');
+
 const { defineSupportCode } = require('cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const config = require('../../../config/conf.js');
 const EC = protractor.ExpectedConditions;
+const browserWaits = require('../../../support/customWaits');
+
 
 async function waitForElement(el) {
   await browser.wait(result => {
@@ -62,7 +66,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Given(/^I should be redirected to the Idam login page$/, async function () {
-    browser.sleep(LONG_DELAY);
+    await browserWaits.waitForElement(loginPage.signinTitle);
     await expect(loginPage.signinTitle.getText())
       .to
       .eventually
@@ -82,7 +86,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Then(/^I should be redirected to approve organisation dashboard page$/, async function () {
     browser.sleep(LONG_DELAY);
-    // await browserWaits.waitForElement(loginPage.dashboard_header);
+    await browserWaits.waitForElement(loginPage.dashboard_header);
     await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.dashboard_header.getText())
       .to
