@@ -107,8 +107,11 @@ app.get('/oauth2/callback',  (req: any, res, next) => {
   })(req, res, next)
 })
 
-app.get('/api/logout', (req: any, res: any) => {
-  auth.doLogout(req, res)
+app.get('/api/logout', async (req: any, res: any) => {
+  if (!req.query.redirect) {
+    req.query.redirect = '/auth/login'
+  }
+  await auth.doLogout(req, res)
 })
 
 app.use('/api', routes)

@@ -16,9 +16,10 @@ import {
   INDEX_URL, OAUTH_CALLBACK_URL,
   PROTOCOL,
   SERVICES_IDAM_API_PATH,
+  SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH
 } from '../configuration/references'
-import { http } from '../lib/http'
+import {http} from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import {propsExist} from '../lib/objectUtilities'
 
@@ -27,7 +28,8 @@ export const router = Router({mergeParams: true})
 const cookieToken = getConfigValue(COOKIE_TOKEN)
 const cookieUserId = getConfigValue(COOKIES_USERID)
 
-const idamUrl = getConfigValue(SERVICES_IDAM_API_PATH)
+const idamUrl = getConfigValue(SERVICES_IDAM_WEB)
+const idamApiUrl = getConfigValue(SERVICES_IDAM_API_PATH)
 
 const secret = getConfigValue(IDAM_SECRET)
 const idamClient = getConfigValue(IDAM_CLIENT)
@@ -97,32 +99,53 @@ export async function configure(req: Request, res: Response, next: NextFunction)
 
 export async function doLogout(req: Request, res: Response, status = 302) {
 
-    req.query.redirect = app.locals.client.endSessionUrl({
+    /*req.query.redirect = app.locals.client.endSessionUrl({
         id_token_hint: req.session.passport.user.tokenset.id_token,
         // TODO: we can generate a random state and use that
         // post_logout_redirect_uri: app.locals.client.authorizationUrl({ state: 'testState' })
-    })
+    })*/
 
-    delete axios.defaults.headers.common.Authorization
-    delete axios.defaults.headers.common['user-roles']
+    try {
+      const access_token = req.session.passport.user.tokenset.access_token
+      const refresh_token = req.session.passport.user.tokenset.refresh_token
 
-    res.clearCookie('roles')
-    res.clearCookie(cookieToken)
-    res.clearCookie(cookieUserId)
+      // we need this to revoke the access/refresh_token, however it is a legacy endpoint for oauth2
+      // endSessionUrl endpoint above would be much more appropriate
+      const auth = `Basic ${Buffer.from(`${idamClient}:${secret}`).toString('base64')}`
+      await http.delete(`${idamApiUrl}/session/${access_token}`, {
+        headers: {
+          Authorization: auth,
+        },
+      })
+      await http.delete(`${idamApiUrl}/session/${refresh_token}`, {
+        headers: {
+          Authorization: auth,
+        },
+      })
 
-    //passport provides this method on request object
-    req.logout()
+      delete axios.defaults.headers.common.Authorization
+      delete axios.defaults.headers.common['user-roles']
 
-    req.session.destroy( () => {
-        if (req.query.redirect || status === 401) {  // 401 is when no accessToken
-            res.redirect(status, req.query.redirect || '/')
-            console.log('Logged out by userDetails')
-        } else {
-            const message = JSON.stringify({message: 'You have been logged out!'})
-            res.status(200).send(message)
-            console.log('Logged out by Session')
-        }
-    })
+      res.clearCookie('roles')
+      res.clearCookie(cookieToken)
+      res.clearCookie(cookieUserId)
+
+      //passport provides this method on request object
+      req.logout()
+
+      if (req.query.redirect || status === 401) {  // 401 is when no accessToken
+        res.redirect(status, req.query.redirect || '/')
+        logger.info('Logged out by userDetails')
+      } else {
+        const message = JSON.stringify({message: 'You have been logged out!'})
+        res.status(200).send(message)
+        logger.info('Logged out by Session')
+      }
+
+    } catch (e) {
+      logger.error('error during logout', e)
+      res.redirect(status, req.query.redirect || '/')
+    }
 }
 
 export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse, done: any) {
@@ -154,8 +177,8 @@ export function authCallbackSuccess(req: Request, res: Response) {
     res.redirect('/')
 }
 
-router.get('/logout', (req: Request, res: Response) => {
-    doLogout(req, res)
+router.get('/logout', async (req: Request, res: Response) => {
+    await doLogout(req, res)
 })
 
 router.get('/login', passport.authenticate('oidc'))
