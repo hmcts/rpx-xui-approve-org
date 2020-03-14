@@ -4,6 +4,7 @@
     "token": "COOKIE_TOKEN",
     "userId": "COOKIE_USER_ID"
   },
+  "userTimeoutInSeconds": "USER_TIMEOUT_IN_SECONDS",
   "exceptionOptions": {
     "maxLines": "EXCEPTION_OPTIONS_MAX_LINES"
   },

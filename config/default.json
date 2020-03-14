@@ -4,6 +4,7 @@
     "token": "__auth__",
     "userId": "__userid__"
   },
+  "userTimeoutInSeconds": 28800,
   "exceptionOptions": {
     "maxLines": 1
   },
