@@ -133,7 +133,7 @@ export async function doLogout(req: Request, res: Response, status = 302) {
       //passport provides this method on request object
       req.logout()
 
-      if (req.query.redirect || status === 401) {  // 401 is when no accessToken
+      if (!req.query.noredirect && (req.query.redirect || status === 401)) {  // 401 is when no accessToken
         res.redirect(status, req.query.redirect || '/')
         logger.info('Logged out by userDetails')
       } else {
