@@ -7,7 +7,7 @@ export class LogOutKeepAliveService {
   constructor(private http: HttpClient) { }
 
   logOut(): Observable<any> {
-    return this.http.get('api/logout?noredirect="null"');
+    return this.http.get('api/logout?noredirect=true');
   }
 
   heartBeat(): Observable<any> {
