@@ -19,7 +19,7 @@ export default async (req, res, next) => {
 
         if (!validRoles(roles)) {
             logger.warn('User role does not allow login')
-            return auth.doLogout(req, res, 401)
+            return await auth.doLogout(req, res, 401)
         }
 
         logger.info('Auth token: ' + `Bearer ${userDetails.tokenset.access_token}`)

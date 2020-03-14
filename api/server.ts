@@ -5,7 +5,6 @@ import * as process from 'process'
 import { app } from './application'
 import { appInsights } from './lib/appInsights'
 
-
 app.engine('html', ejs.renderFile)
 app.set('view engine', 'html')
 app.set('views', __dirname)
