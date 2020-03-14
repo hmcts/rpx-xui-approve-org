@@ -49,3 +49,4 @@ export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 
 export const HELMET = 'helmet'
 
+export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
