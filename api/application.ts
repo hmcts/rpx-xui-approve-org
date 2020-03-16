@@ -8,6 +8,7 @@ import * as process from "process"
 import * as auth from './auth'
 import { getConfigValue, showFeature } from './configuration'
 import {FEATURE_HELMET_ENABLED, FEATURE_SECURE_COOKIE_ENABLED, HELMET, SESSION_SECRET} from './configuration/references'
+import {default as healthRouter} from './health'
 import { appInsights } from './lib/appInsights'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
@@ -84,6 +85,8 @@ function healthcheckConfig(msUrl) {
 // }
 //
 // healthcheck.addTo(app, healthchecks)
+
+app.use('/health', healthRouter)
 
 app.use('/auth', auth.router)
 
