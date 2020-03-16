@@ -96,12 +96,14 @@ app.get('/oauth2/callback',  (req: any, res, next) => {
       // return next(info)
     }
     if (!user) {
+      logger._logger.info.log('No user found, redirecting')
       return res.redirect('/auth/login')
     }
     req.logIn(user, err => {
       if (err) {
         return next(err)
       }
+      logger._logger.info('logged in user, redirecting to authCallbackSuccess')
       return auth.authCallbackSuccess(req, res)
     })
   })(req, res, next)
