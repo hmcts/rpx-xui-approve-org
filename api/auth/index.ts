@@ -52,6 +52,7 @@ export async function configure(req: Request, res: Response, next: NextFunction)
     if (!app.locals.issuer) {
         try {
             app.locals.issuer = await configureIssuer(idamUrl)
+            logger._logger.info('Issuer configured:', app.locals.issuer)
         } catch (error) {
             return next(error)
         }
@@ -66,6 +67,7 @@ export async function configure(req: Request, res: Response, next: NextFunction)
         }
 
         app.locals.client = new app.locals.issuer.Client(clientMetadata)
+        logger._logger.info('Client configured:', app.locals.client)
     }
 
     const host = req.get('host')
@@ -109,6 +111,8 @@ export async function doLogout(req: Request, res: Response, status = 302) {
       const access_token = req.session.passport.user.tokenset.access_token
       const refresh_token = req.session.passport.user.tokenset.refresh_token
 
+      logger._logger.info('deleting tokens')
+
       // we need this to revoke the access/refresh_token, however it is a legacy endpoint for oauth2
       // endSessionUrl endpoint above would be much more appropriate
       const auth = `Basic ${Buffer.from(`${idamClient}:${secret}`).toString('base64')}`
@@ -123,6 +127,7 @@ export async function doLogout(req: Request, res: Response, status = 302) {
         },
       })
 
+      logger._logger.info('deleting auth headers')
       delete axios.defaults.headers.common.Authorization
       delete axios.defaults.headers.common['user-roles']
 
@@ -154,11 +159,12 @@ export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse,
         logger.warn('User does not have any access roles.')
         return done(null, false, {message: 'User does not have any access roles.'})
     }
+    logger._logger.info('verify okay, user:', userinfo)
     return done(null, {tokenset, userinfo})
 }
 
 export function authCallbackSuccess(req: Request, res: Response) {
-    // console.log('callback', req.session)
+    logger._logger.info('authCallbackSuccess', req.session)
 
     // we need extra logic before success redirect
     const userDetails = req.session.passport.user
@@ -181,6 +187,9 @@ router.get('/logout', async (req: Request, res: Response) => {
     await doLogout(req, res)
 })
 
-router.get('/login', passport.authenticate('oidc'))
+router.get('/login', (req, res, next) => {
+  logger._logger.info('hit /login', req.session)
+  passport.authenticate('oidc')(req, res, next)
+})
 
 router.use('/keepalive', keepAlive)
