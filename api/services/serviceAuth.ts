@@ -48,7 +48,7 @@ export async function postS2SLease() {
 export const router = express.Router({ mergeParams: true })
 
 router.get('/health', (req, res, next) => {
-    res.status(200).send(getHealth(url))
+    res.status(200).send('Approve Org is up.')
 })
 
 router.get('/info', (req, res, next) => {
