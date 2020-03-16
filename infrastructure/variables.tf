@@ -69,7 +69,7 @@ variable "idam_client" {
   default = "xuiaowebapp"
 }
 variable "oauth_callback_url" {
-  default = "/oauth2/callback"
+  default = "oauth2/callback"
 }
 variable "max_log_line" {
   default = "80"
@@ -101,7 +101,7 @@ variable "idam_api_service" {}
 variable "idam_web_service" {}
 variable "rd_professional_api_service" {}
 variable "s2s_service" {}
-variable "fee_and_pay_api" {}
+variable "iss_service" {}
 
 variable "allow_config_mutations" {
   default = "1"
@@ -126,6 +126,9 @@ variable "feature_proxy_enabled" {
   default = "false"
 }
 variable "feature_helmet_enabled" {
+  default = "false"
+}
+variable "feature_redis_enabled" {
   default = "false"
 }
 

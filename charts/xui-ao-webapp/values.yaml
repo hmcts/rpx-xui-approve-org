@@ -1,3 +1,13 @@
+redis:
+  enabled: false
+  cluster:
+    enabled: false
+    slaveCount: 0
+  password: fake-password
+  master:
+    persistence:
+      enabled: false
+
 nodejs:
   aadIdentityName: xui
   applicationPort: 3000
@@ -11,6 +21,7 @@ nodejs:
     IDAM_WEB_SERVICE: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
     RD_PROFESSIONAL_API_SERVICE: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    ISS_SERVICE: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}.internal:8443/openam/oauth2/hmcts
     FEE_AND_PAY_API: http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     REFORM_TEAM: rpx
     REFORM_SERVICE_NAME: xui-ao-webapp
@@ -25,7 +36,7 @@ nodejs:
     PORT: 3000
     NOW: false
     IDAM_CLIENT: xuiaowebapp
-    OAUTH_CALLBACK_URL: /oauth2/callback
+    OAUTH_CALLBACK_URL: oauth2/callback
     MAX_LOG_LINE: 80
     EXCEPTION_OPTIONS_MAX_LINES: 1
     INDEX_URL: /
@@ -39,6 +50,14 @@ nodejs:
     FEATURE_SECURE_COOKIE_ENABLED: true
     FEATURE_PROXY_ENABLED: false
     FEATURE_HELMET_ENABLED: true
+    FEATURE_REDIS_ENABLED: true
+    # Redis
+    REDIS_HOST: xui-ao-webapp-{{ .Values.global.environment }}.redis.cache.windows.net
+    REDIS_PORT: 6380
+    REDIS_SSL_ENABLED: true
+    REDIS_KEY_PREFIX: 'activity:'
+    REDIS_ACTIVITY_TTL: 5
+    REDIS_USER_DETAILS_TTL: 6000
   keyVaults:
     rpx:
       resourceGroup: rpx
