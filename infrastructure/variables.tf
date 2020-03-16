@@ -69,7 +69,7 @@ variable "idam_client" {
   default = "xuiaowebapp"
 }
 variable "oauth_callback_url" {
-  default = "/oauth2/callback"
+  default = "oauth2/callback"
 }
 variable "max_log_line" {
   default = "80"
