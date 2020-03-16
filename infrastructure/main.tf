@@ -32,6 +32,9 @@ module "app" {
         PACKAGES_PROJECT = "${var.team_name}"
         PACKAGES_ENVIRONMENT = "${var.env}"
         PUI_ENV = "${var.env}"
+        NODE_ENV = "${var.env}"
+        NODE_CONFIG_ENV = "${var.env}"
+        NODE_CONFIG_DIR = "${var.node_config_dir}"
         WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
@@ -48,9 +51,15 @@ module "app" {
         INDEX_URL = "${var.index_url}"
         LOGGING = "${var.logging}"
         PROTOCOL = "${var.protocol}"
+        ALLOW_CONFIG_MUTATIONS = "${var.allow_config_mutations}"
+
+        # FEATURE TOGGLES
+        FEATURE_APP_INSIGHTS_ENABLED = "${var.feature_app_insights_enabled}"
+        FEATURE_SECURE_COOKIE_ENABLED = "${var.feature_secure_cookie_enabled}"
+        FEATURE_PROXY_ENABLED = "${var.feature_proxy_enabled}"
+        FEATURE_HELMET_ENABLED = "${var.feature_helmet_enabled}"
 
         # COOKIE SETTINGS
-        SECURE_COOKIE = "${var.secure_cookie}"
         COOKIE_TOKEN = "${var.cookie_token}"
         COOKIE_USER_ID = "${var.cookie_user_id}"
         MICROSERVICE = "${var.microservice}"
@@ -62,13 +71,11 @@ module "app" {
         IDAM_WEB_SERVICE = "${var.idam_web_service}"
         RD_PROFESSIONAL_API_SERVICE = "${var.rd_professional_api_service}"
         S2S_SERVICE = "${var.s2s_service}"
-        FEE_AND_PAY_API = "${var.fee_and_pay_api}"
+        ISS_SERVICE = "${var.iss_service}"
 
-        # PROXY
-        PROXY_HOST = "${var.proxy_host}"
-        PROXY_PORT = "${var.proxy_port}"
-
-        TEST_ITHC_VAR = "${var.test_ithc_var}"
+        # PROXY (If required)
+        AO_HTTP_PROXY = "${var.ao_http_proxy}"
+        AO_NO_PROXY = "${var.ao_no_proxy}"
     }
 }
 

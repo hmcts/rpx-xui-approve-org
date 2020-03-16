@@ -4,7 +4,6 @@ import { ApproveOrganisationComponent } from './approve-organisation/approve-org
 import {EditDetailsComponent} from './edit-details/edit-details.component';
 import { PendingOrganisationsComponent } from './pending-organisations/pending-organisations.component';
 import { SearchOrganisationsFormComponent } from './search-organisations-form/search-organisations-form.component';
-
 export const containers: any[] = [
   ActiveOrganisationsComponent,
   PendingOrganisationsComponent,
@@ -13,10 +12,5 @@ export const containers: any[] = [
   SearchOrganisationsFormComponent,
   EditDetailsComponent
 ];
-
 export * from './active-organisations/active-organisations.component';
 export * from './pending-organisations/pending-organisations.component';
-
-
-
-

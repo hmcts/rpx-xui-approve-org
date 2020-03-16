@@ -1,0 +1,60 @@
+{
+  "environment": "NODE_CONFIG_ENV",
+  "cookies": {
+    "token": "COOKIE_TOKEN",
+    "userId": "COOKIE_USER_ID"
+  },
+  "userTimeoutInSeconds": "USER_TIMEOUT_IN_SECONDS",
+  "exceptionOptions": {
+    "maxLines": "EXCEPTION_OPTIONS_MAX_LINES"
+  },
+  "indexUrl": "INDEX_URL",
+  "logging": "LOGGING",
+  "maxLogLine": "MAX_LOG_LINE",
+  "idamClient": "IDAM_CLIENT",
+  "microservice": "MICROSERVICE",
+  "now": "NOW",
+  "oauthCallbackUrl": "OAUTH_CALLBACK_URL",
+  "protocol": "PROTOCOL",
+  "services": {
+    "ccdDataApi": "CCD_DATA_API_SERVICE",
+    "ccdDefApi": "CCD_DEFINITION_API_SERVICE",
+    "idamApi": "IDAM_API_SERVICE",
+    "idamWeb": "IDAM_WEB_SERVICE",
+    "rdProfessionalApi": "RD_PROFESSIONAL_API_SERVICE",
+    "feeAndPayApi": "FEE_AND_PAY_API",
+    "s2s": "S2S_SERVICE"
+  },
+  "iss": "ISS_SERVICE",
+  "sessionSecret": "SESSION_SECRET",
+  "secrets": {
+    "rpx": {
+      "AppInsightsInstrumentationKey": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "ao-s2s-client-secret": "S2S_SECRET",
+      "ao-idam-client-secret": "IDAM_SECRET"
+    }
+  },
+  "feature": {
+    "appInsightsEnabled": {
+      "__name": "FEATURE_APP_INSIGHTS_ENABLED",
+      "__format": "json"
+    },
+    "proxyEnabled": {
+      "__name": "FEATURE_PROXY_ENABLED",
+      "__format": "json"
+    },
+    "secureCookieEnabled": {
+      "__name": "FEATURE_SECURE_COOKIE_ENABLED",
+      "__format": "json"
+    },
+    "helmetEnabled": {
+      "__name": "FEATURE_HELMET_ENABLED",
+      "__format": "json"
+    }
+  },
+  "helmet": {
+    "__name": "HELMET_CONFIG",
+    "__format": "json"
+  }
+}
+

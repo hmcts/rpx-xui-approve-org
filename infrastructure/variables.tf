@@ -69,7 +69,7 @@ variable "idam_client" {
   default = "xuiaowebapp"
 }
 variable "oauth_callback_url" {
-  default = "/oauth2/callback"
+  default = "oauth2/callback"
 }
 variable "max_log_line" {
   default = "80"
@@ -86,9 +86,6 @@ variable "logging" {
 variable "protocol" {
   default = "https"
 }
-variable "secure_cookie" {
-  default = "false"
-}
 variable "cookie_token" {
   default = "__auth__"
 }
@@ -104,16 +101,35 @@ variable "idam_api_service" {}
 variable "idam_web_service" {}
 variable "rd_professional_api_service" {}
 variable "s2s_service" {}
-variable "fee_and_pay_api" {}
+variable "iss_service" {}
 
-variable "proxy_host" {
-  default = "172.16.0.7"
-}
-variable "proxy_port" {
-  default = "0"
+variable "allow_config_mutations" {
+  default = "1"
 }
 
-variable "test_ithc_var" {
-  default = "test"
+variable "ao_http_proxy" {
+  default = "http://172.16.0.7:8080"
 }
 
+variable "ao_no_proxy" {
+  default = "localhost"
+}
+
+// FEATURE TOGGLE VARS
+variable "feature_secure_cookie_enabled" {
+  default = "true"
+}
+variable "feature_app_insights_enabled" {
+  default = "true"
+}
+variable "feature_proxy_enabled" {
+  default = "false"
+}
+variable "feature_helmet_enabled" {
+  default = "false"
+}
+
+variable "node_config_dir" {
+  // for Windows
+  default = "D:\\home\\site\\wwwroot\\config"
+}

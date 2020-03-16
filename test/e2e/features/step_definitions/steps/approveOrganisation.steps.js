@@ -24,7 +24,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         const world = this;
       await browserWaits.retryForPageLoad(loginPage.emailAddress,async (message) => {
         world.attach('Retry reloading page. '+message);
-      });
+    });
       await browserWaits.waitForElement(loginPage.emailAddress);
     });
 
@@ -34,6 +34,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^I Verify the Text on Banner$/, { timeout: 600 * 1000 }, async function () {
+      browser.sleep(AMAZING_DELAY);
       await browserWaits.waitForElement(bannerPage.activeOrganisationTextBanner);
       await expect(bannerPage.bannerText.isDisplayed()).to.eventually.be.true;
       await expect(bannerPage.bannerText.getText())
@@ -43,6 +44,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
   Then(/^I Verify the Check Now Link$/, { timeout: 600 * 1000 }, async function () {
+    browser.sleep(LONG_DELAY);
     await browserWaits.waitForElement(bannerPage.checkNow);
     await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
     await expect(bannerPage.checkNow.getText())
@@ -52,10 +54,11 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Then(/^I click on Check Now Link to redirect to Active Organisations page$/, { timeout: 600 * 1000 }, async function () {
+    browser.sleep(LONG_DELAY);
     await browserWaits.waitForElement(bannerPage.checkNow);
     await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
     await bannerPage.checkNow.click();
-    await browserWaits.waitForElement(bannerPage.activeOrganisationPageHeading); 
+    await browserWaits.waitForElement(bannerPage.activeOrganisationPageHeading);
     await waitForElement('govuk-heading-xl');
     await expect(bannerPage.activeOrganisationPageHeading.getText())
       .to

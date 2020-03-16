@@ -12,7 +12,6 @@
   <xuilib-hmcts-main-wrapper
     [summaryErrors]="pbaErrorsHeader$ | async"
     title="Organisation payment by account (PBA) number"
-    [backLink]="true"
     [banner]="serverError$ | async"
     (backEvent)="onGoBack()">
 
@@ -20,11 +19,11 @@
       <div class="govuk-grid-column-two-thirds">
         <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
           <ng-container *ngIf="(pbaError$ | async) as errors">
-            <xuilib-gov-uk-input *ngFor="let data of pbaInputs"
+            <lib-gov-uk-input *ngFor="let data of pbaInputs"
               [config]="data.config"
               [errorMessage]="errors[data.config.name]"
               [group]="changePbaFG">
-            </xuilib-gov-uk-input>
+            </lib-gov-uk-input>
           </ng-container>
           <button type="submit" class="govuk-button" [disabled]="!saveDisabled">
             Submit

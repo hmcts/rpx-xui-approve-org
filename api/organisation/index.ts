@@ -1,5 +1,7 @@
 import * as express from 'express'
-import { environmentConfig } from '../lib/environment.config'
+import authInterceptor from '../../api/lib/middleware/auth'
+import { getConfigValue } from '../configuration'
+import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 
@@ -18,9 +20,10 @@ const logger = log4jui.getLogger('return')
  */
 async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId)
+        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
         const response = await http.get(organisationsUri)
         logger.info('Organisations response' + response.data)
+
         if (response.data.organisations) {
             res.send(response.data.organisations)
         } else {
@@ -43,8 +46,8 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
     }
 }
 
-function getOrganisationUri(status, organisationId): string {
-    let url = `${environmentConfig.services.rdProfessionalApi}/refdata/internal/v1/organisations`
+function getOrganisationUri(status, organisationId, usersOrgId): string {
+    let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
 
     if (status) {
         url = `${url}?status=${status}`
@@ -52,7 +55,9 @@ function getOrganisationUri(status, organisationId): string {
     if (organisationId) {
         url = `${url}?id=${organisationId}`
     }
-    console.log('url is ' + url)
+    if (usersOrgId) {
+      url = `${url}/${usersOrgId}/users`
+    }
     return url
 }
 
@@ -61,7 +66,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
         res.status(400).send('Organisation id is missing')
     } else {
         try {
-            const putOrganisationsUrl = `${environmentConfig.services.rdProfessionalApi}/refdata/internal/v1/organisations/${req.params.id}`
+            const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
             await http.put(putOrganisationsUrl, req.body)
             res.status(200).send()
         } catch (error) {
@@ -74,7 +79,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
 }
 
 export const router = express.Router({ mergeParams: true })
-
+router.use(authInterceptor)
 router.get('/', handleGetOrganisationsRoute)
 router.put('/:id', handlePutOrganisationRoute)
 
