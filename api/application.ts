@@ -1,21 +1,28 @@
+import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import * as session from 'express-session'
+import * as helmet from 'helmet'
 import * as passport from 'passport'
 import * as process from "process"
-import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
+import { getConfigValue, showFeature } from './configuration'
+import {FEATURE_HELMET_ENABLED, FEATURE_SECURE_COOKIE_ENABLED, HELMET, SESSION_SECRET} from './configuration/references'
 import { appInsights } from './lib/appInsights'
 import { errorStack } from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
+import { getStore } from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
-const FileStore = sessionFileStore(session)
+
 export const app = express()
+
+if (showFeature(FEATURE_HELMET_ENABLED)) {
+  console.log('Helmet enabled')
+  app.use(helmet(getConfigValue(HELMET)))
+}
+
 const logger = log4jui.getLogger('server')
-import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import { getConfigValue, showFeature } from './configuration'
-import { FEATURE_SECURE_COOKIE_ENABLED, NOW, SESSION_SECRET } from './configuration/references'
 
 app.set('trust proxy', true)
 app.use(
@@ -29,9 +36,7 @@ app.use(
     resave: true,
     saveUninitialized: true,
     secret: getConfigValue(SESSION_SECRET),
-    store: new FileStore({
-      path: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
-    }),
+    store: getStore(),
   }) as express.RequestHandler
 )
 
@@ -96,7 +101,7 @@ app.get('/oauth2/callback',  (req: any, res, next) => {
       // return next(info)
     }
     if (!user) {
-      logger._logger.info.log('No user found, redirecting')
+      logger._logger.info('No user found, redirecting')
       return res.redirect('/auth/login')
     }
     req.logIn(user, err => {
