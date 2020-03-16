@@ -7,7 +7,7 @@ export const environment = {
   organisationUsersUrl: 'api/organisations?usersOrgId=',
   orgActiveUrl: 'api/organisations?status=ACTIVE',
   orgPendingUrl: 'api/organisations?status=PENDING',
-  updatePbaUrl: 'api/updatePba',
+  updatePbaUrl: 'api/update-pba',
   pbaAccUrl: 'api/pbaAccounts',
   orgApprovePendingUrl: 'api/organisations/',
   loggingLevel: 'DEBUG',
