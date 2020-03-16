@@ -58,6 +58,7 @@ module "app" {
         FEATURE_SECURE_COOKIE_ENABLED = "${var.feature_secure_cookie_enabled}"
         FEATURE_PROXY_ENABLED = "${var.feature_proxy_enabled}"
         FEATURE_HELMET_ENABLED = "${var.feature_helmet_enabled}"
+        FEATURE_HELMET_ENABLED = "${var.feature_redis_enabled}"
 
         # COOKIE SETTINGS
         COOKIE_TOKEN = "${var.cookie_token}"
