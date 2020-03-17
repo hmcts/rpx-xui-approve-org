@@ -7,3 +7,4 @@ rd_professional_api_service = "http://rd-professional-api-ithc.service.core-comp
 s2s_service = "http://rpe-service-auth-provider-ithc.service.core-compute-ithc.internal"
 iss_service = "https://forgerock-am.service.core-compute-idam-ithc.internal:8443/openam/oauth2/hmcts"
 fee_and_pay_api = "http://payment-api-ithc.service.core-compute-ithc.internal"
+
