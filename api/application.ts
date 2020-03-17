@@ -16,6 +16,7 @@ const logger = log4jui.getLogger('server')
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import { getConfigValue, showFeature } from './configuration'
 import { FEATURE_SECURE_COOKIE_ENABLED, NOW, SESSION_SECRET } from './configuration/references'
+import {default as healthRouter} from './health'
 
 app.set('trust proxy', true)
 app.use(
@@ -80,6 +81,8 @@ function healthcheckConfig(msUrl) {
 //
 // healthcheck.addTo(app, healthchecks)
 
+app.use('/health', healthRouter)
+
 app.use('/auth', auth.router)
 
 app.get('/oauth2/callback',  (req: any, res, next) => {
@@ -96,7 +99,7 @@ app.get('/oauth2/callback',  (req: any, res, next) => {
       // return next(info)
     }
     if (!user) {
-      logger._logger.info.log('No user found, redirecting')
+      logger._logger.info('No user found, redirecting')
       return res.redirect('/auth/login')
     }
     req.logIn(user, err => {
