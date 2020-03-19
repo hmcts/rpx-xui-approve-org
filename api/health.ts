@@ -4,7 +4,7 @@ import {
   COOKIE_TOKEN,
   COOKIES_USERID,
   FEATURE_APP_INSIGHTS_ENABLED,
-  FEATURE_PROXY_ENABLED, FEATURE_REDIS_ENABLED,
+  FEATURE_PROXY_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
   IDAM_CLIENT,
   MAX_LINES,
@@ -51,7 +51,6 @@ router.get('/', (req, res) => {
     featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
     featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
-    featureRedisEnabled: showFeature(FEATURE_REDIS_ENABLED),
   })
 })
 
