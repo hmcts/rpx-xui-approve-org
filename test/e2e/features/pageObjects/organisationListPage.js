@@ -7,9 +7,6 @@ function OrganisationListPage() {
 
     this.rows = element.all(by.css(".govuk-table tr"));
 
-    this.orgTable = element(by.css(".govuk-table"))
-
-
     this.searchInput = element(by.css("#search"));
     this.searchBtn = element(by.xpath("//button[@type = 'submit' and contains(text(),'Search')]"));
 
@@ -48,7 +45,7 @@ function OrganisationListPage() {
 
     this.waitForOrgListToDisplay = async function()
     {
-        await browserWaits.waitForElement(this.orgTable); 
+        await browserWaits.waitForElement(this.rows.get(0)); 
     }
 
     this.clickViewOnFirstOrganisation = async function () {
