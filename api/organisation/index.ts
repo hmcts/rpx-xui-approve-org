@@ -1,5 +1,4 @@
 import * as express from 'express'
-import authInterceptor from '../../api/lib/middleware/auth'
 import { getConfigValue } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import { http } from '../lib/http'
@@ -20,10 +19,9 @@ const logger = log4jui.getLogger('return')
  */
 async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
-        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
+        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId)
         const response = await http.get(organisationsUri)
         logger.info('Organisations response' + response.data)
-
         if (response.data.organisations) {
             res.send(response.data.organisations)
         } else {
@@ -46,7 +44,7 @@ async function handleGetOrganisationsRoute(req: express.Request, res: express.Re
     }
 }
 
-function getOrganisationUri(status, organisationId, usersOrgId): string {
+function getOrganisationUri(status, organisationId): string {
     let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
 
     if (status) {
@@ -55,9 +53,7 @@ function getOrganisationUri(status, organisationId, usersOrgId): string {
     if (organisationId) {
         url = `${url}?id=${organisationId}`
     }
-    if (usersOrgId) {
-      url = `${url}/${usersOrgId}/users`
-    }
+    console.log('url is ' + url)
     return url
 }
 
@@ -79,7 +75,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
 }
 
 export const router = express.Router({ mergeParams: true })
-router.use(authInterceptor)
+
 router.get('/', handleGetOrganisationsRoute)
 router.put('/:id', handlePutOrganisationRoute)
 

@@ -1,10 +1,10 @@
 import {UIConfigServices} from '../interfaces/ui.config'
 import {getConfigValue} from './index'
 import {
+  SERVICES_FEE_AND_PAY_PATH,
   SERVICE_S2S_PATH,
   SERVICES_CCD_DATA_API_PATH,
   SERVICES_CCD_DEF_API_PATH,
-  SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
   SERVICES_RD_PROFESSIONAL_API_PATH,
