@@ -1,5 +1,4 @@
-import { User } from '@hmcts/rpx-xui-common-lib';
-import { Organisation, OrganisationUser, OrganisationVM } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 import { AppConstants } from '../app.constants';
 
 /**
@@ -8,7 +7,7 @@ import { AppConstants } from '../app.constants';
  */
 export class AppUtils {
 
-  public static setPageTitle(url): string {
+  static setPageTitle(url): string {
     /**
      * it sets correct page titles
      */
@@ -38,7 +37,7 @@ export class AppUtils {
 
   }
 
-  public static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
+  static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
     const organisationModel: OrganisationVM[] = [];
     obj.forEach((apiOrg) => {
       organisationModel.push(this.mapOrganisation(apiOrg));
@@ -47,7 +46,7 @@ export class AppUtils {
     return organisationModel;
   }
 
-  public static mapOrganisation(apiOrg: Organisation): OrganisationVM {
+  static mapOrganisation(apiOrg: Organisation): OrganisationVM {
     const organisationVm = new OrganisationVM();
     organisationVm.name = apiOrg.name;
     organisationVm.adminEmail = apiOrg.superUser.email;
@@ -62,11 +61,12 @@ export class AppUtils {
     organisationVm.postCode = apiOrg.contactInformation[0].postCode;
     organisationVm.townCity = apiOrg.contactInformation[0].townCity;
     organisationVm.county = apiOrg.contactInformation[0].county;
+    organisationVm.postCode = apiOrg.contactInformation[0].postCode;
     organisationVm.sraId = apiOrg.sraId;
     return organisationVm;
   }
 
-  public static mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
+  static mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
     const organisations: Organisation[] = [];
     obj.forEach((org) => {
       const organisation: Organisation = {
@@ -77,7 +77,8 @@ export class AppUtils {
           addressLine2: org.addressLine2,
           townCity: org.townCity,
           county: org.county,
-          dxAddress: org.dxNumber
+          dxAddress: org.dxNumber,
+          postCode: org.postCode
           }],
         superUser: {
           userIdentifier: org.admin,
@@ -93,32 +94,5 @@ export class AppUtils {
     });
 
     return organisations;
-  }
-
-  public static capitalizeString(stringToCapitalize: string) {
-    const stringLowercase = stringToCapitalize.toLowerCase();
-    const stringCapitalised = stringLowercase.charAt(0).toUpperCase() + stringLowercase.slice(1);
-    return stringCapitalised;
-  }
-
-  public static mapUsers(obj: OrganisationUser[]): User[] {
-    const users: User[] = [];
-    if (obj) {
-      obj.forEach((user) => {
-        const newUser: User = {
-          fullName: `${user.firstName} ${user.lastName}`,
-          email: user.email,
-          resendInvite: false
-        };
-        AppConstants.USER_ROLES.forEach((userRoles) => {
-          if (user.roles) {
-            newUser[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
-          }
-        });
-        newUser.status = AppUtils.capitalizeString(user.idamStatus);
-        users.push(newUser);
-      });
-    }
-    return users;
   }
 }

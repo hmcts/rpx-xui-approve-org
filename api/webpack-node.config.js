@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
-// const webpackSourceMapSupport = require("webpack-source-map-support");
 
 const {
     NODE_ENV = 'production',
@@ -17,7 +16,6 @@ module.exports = {
         __filename: false,
     },
     plugins: [
-        // new webpackSourceMapSupport(),
         new webpack.DefinePlugin({ "global.GENTLY": false })
     ],
     output: {

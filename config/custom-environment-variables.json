@@ -4,7 +4,6 @@
     "token": "COOKIE_TOKEN",
     "userId": "COOKIE_USER_ID"
   },
-  "userTimeoutInSeconds": "USER_TIMEOUT_IN_SECONDS",
   "exceptionOptions": {
     "maxLines": "EXCEPTION_OPTIONS_MAX_LINES"
   },
@@ -14,8 +13,8 @@
   "idamClient": "IDAM_CLIENT",
   "microservice": "MICROSERVICE",
   "now": {
-    "__name": "NOW",
-    "__format": "json"
+    "__name": "NOW",	
+    "__format": "json"	
   },
   "oauthCallbackUrl": "OAUTH_CALLBACK_URL",
   "protocol": "PROTOCOL",
@@ -28,7 +27,6 @@
     "feeAndPayApi": "FEE_AND_PAY_API",
     "s2s": "S2S_SERVICE"
   },
-  "iss": "ISS_SERVICE",
   "sessionSecret": "SESSION_SECRET",
   "secrets": {
     "rpx": {
@@ -53,28 +51,11 @@
     "helmetEnabled": {
       "__name": "FEATURE_HELMET_ENABLED",
       "__format": "json"
-    },
-    "redisEnabled": {
-      "__name": "FEATURE_REDIS_ENABLED",
-      "__format": "json"
     }
   },
   "helmet": {
     "__name": "HELMET_CONFIG",
     "__format": "json"
-  },
-  "redis": {
-    "host": "REDIS_HOST",
-    "port": {
-      "__name": "REDIS_PORT",
-      "__format": "json"
-    },
-    "tls": {
-      "__name": "REDIS_SSL_ENABLED",
-      "__format": "json"
-    },
-    "prefix": "REDIS_KEY_PREFIX",
-    "ttl": "REDIS_USER_DETAILS_TTL",
-    "password": "REDIS_PASSWORD"
   }
 }
+

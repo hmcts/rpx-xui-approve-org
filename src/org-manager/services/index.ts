@@ -1,7 +1,7 @@
 import { OrganisationService } from './organisation.service';
-import {PbaAccountDetails} from './pba-account-details.services';
 import { PendingOrganisationService } from './pending-organisation.service';
 import {UpdatePbaServices} from './update-pba.services';
+import {PbaAccountDetails} from './pba-account-details.services';
 
 export const services: any[] = [OrganisationService, PendingOrganisationService, UpdatePbaServices, PbaAccountDetails];
 
