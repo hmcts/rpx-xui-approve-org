@@ -1,11 +1,11 @@
-import { RouterModule, Routes } from '@angular/router';
 import { ModuleWithProviders } from '@angular/core';
-import { ActiveOrganisationsComponent } from './containers';
-import { PendingOrganisationsComponent} from 'src/org-manager/containers/pending-organisations/pending-organisations.component';
-import { ApproveOrganisationComponent } from 'src/org-manager/containers/approve-organisation/approve-organisation.component';
+import { RouterModule, Routes } from '@angular/router';
 import { ApproveOrganisationSuccessComponent } from 'src/org-manager/containers/approve-organisation-success/approve-organisation-success.component';
-import { AuthGuard } from 'src/app/services/auth/auth.guard';
+import { ApproveOrganisationComponent } from 'src/org-manager/containers/approve-organisation/approve-organisation.component';
+import { PendingOrganisationsComponent} from 'src/org-manager/containers/pending-organisations/pending-organisations.component';
+import { AuthGuard } from 'src/services/auth/auth.guard';
 import { OrganisationDetailsComponent } from './components';
+import { ActiveOrganisationsComponent } from './containers';
 import { EditDetailsComponent } from './containers/edit-details/edit-details.component';
 
 export const ROUTES: Routes = [

@@ -85,14 +85,13 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Then(/^I should be redirected to approve organisation dashboard page$/, async function () {
-    browser.sleep(LONG_DELAY);
     await browserWaits.waitForElement(loginPage.dashboard_header);
     await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
       .equal('Approve organisation');
-    browser.sleep(MID_DELAY);
+
   });
 
   Given(/^I am logged into approve organisation with HMCTS admin$/, async function () {

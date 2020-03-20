@@ -12,23 +12,3 @@ export const getAppPageTitle = createSelector(
   getAppState,
   fromAppFeature.getPageTitle
 );
-
-export const getUser = createSelector(
-  getAppState,
-  fromAppFeature.getUserDetails
-);
-
-export const getUserIdleTime = createSelector(
-  getUser,
-  (user) => (user && user.idleTime) ? user.idleTime : NaN
-);
-
-export const getUserTimeOut = createSelector(
-  getUser,
-  (user) => (user && user.timeout) ? user.timeout : NaN
-);
-
-export const getModalSessionData = createSelector(
-  getAppState,
-  (state) => state.modal.session
-);
