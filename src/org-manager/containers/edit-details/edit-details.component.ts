@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import * as fromStore from '../../store';
-import { Store, select } from '@ngrx/store';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {OrgManagerConstants} from '../../org-manager.constants';
-import {take, tap} from 'rxjs/operators';
-import * as fromEditDetails from '../../store';
+import { select, Store } from '@ngrx/store';
 import {Observable, Subscription} from 'rxjs';
+import {take, tap} from 'rxjs/operators';
+import * as fromRoot from '../../../app/store';
+import {OrgManagerConstants} from '../../org-manager.constants';
+import * as fromStore from '../../store';
 
 /**
  * Bootstraps Edit Organisation Details
@@ -26,7 +26,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public saveDisabled = true;
   public serverError$: Observable<{ type: string; message: string }>;
 
-  constructor(private store: Store<fromStore.OrganisationRootState>) {}
+  constructor(private readonly store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
     this.pbaInputs = OrgManagerConstants.PBA_INPUT_FEED;
@@ -37,7 +37,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getOrgs(): void {
-    this.orgDetails$ = this.store.pipe(select(fromEditDetails.getActiveAndPending),
+    this.orgDetails$ = this.store.pipe(select(fromStore.getActiveAndPending),
         tap((value) => {
           if (value) {
             this.orgId = value.organisationId;
@@ -50,13 +50,13 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         }));
   }
   private getErrorMsgs() {
-    this.store.dispatch(new fromEditDetails.ClearPbaErrors());
-    this.pbaError$ = this.store.pipe(select(fromEditDetails.getPbaFromErrors));
-    this.pbaErrorsHeader$ = this.store.pipe(select(fromEditDetails.getPbaHeaderErrors));
-    this.serverError$ = this.store.pipe(select(fromEditDetails.getServerErrors));
+    this.store.dispatch(new fromStore.ClearPbaErrors());
+    this.pbaError$ = this.store.pipe(select(fromStore.getPbaFromErrors));
+    this.pbaErrorsHeader$ = this.store.pipe(select(fromStore.getPbaHeaderErrors));
+    this.serverError$ = this.store.pipe(select(fromStore.getServerErrors));
   }
 
-  createPbaForm(): void {
+  public createPbaForm(): void {
     for (const inputs of this.pbaInputs ) {
       this.changePbaFG.addControl(inputs.config.name, new FormControl(''));
       const validators = [
@@ -113,8 +113,14 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromStore.DispatchSaveValidation(validation));
   }
 
-  ngOnDestroy(): void {
-    this.subscirptions.unsubscribe();
+  public ngOnDestroy(): void {
+    if (this.subscirptions) {
+      this.subscirptions.unsubscribe();
+    }
+  }
+
+  public onGoBack() {
+    this.store.dispatch(new fromRoot.Back());
   }
 
 }

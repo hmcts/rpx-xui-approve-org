@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromRoot from '../../../app/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 
 @Component({
   selector: 'app-back-link',

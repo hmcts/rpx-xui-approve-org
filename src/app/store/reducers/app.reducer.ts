@@ -1,26 +1,12 @@
 import * as fromAction from '../actions';
 import {AppUtils} from '../../utils/app-utils';
-import {UserModel} from '../../../models/user.model';
 
 export interface AppState {
   pageTitle: string;
-  userDetails: UserModel | null;
-  modal: {[id: string]: {isVisible?: boolean; countdown?: string}};
-  loaded: boolean;
-  loading: boolean;
 }
 
 export const initialState: AppState = {
-  pageTitle: '',
-  userDetails: null,
-  modal: {
-    session: {
-      isVisible: false,
-      countdown: ''
-    }
-  },
-  loaded: false,
-  loading: false
+  pageTitle: ''
 };
 
 export function reducer(
@@ -44,23 +30,6 @@ export function reducer(
       };
     }
 
-    case fromAction.GET_USER_DETAILS_SUCCESS: {
-      const userDetails = new UserModel(action.payload);
-      return {
-        ...state,
-        userDetails,
-        loaded: true,
-        loading: false,
-      };
-    }
-
-    case fromAction.SET_MODAL: {
-      return {
-        ...state,
-        modal: {...action.payload}
-      };
-    }
-
     case fromAction.LOGOUT: {
       return {
         ...state,
@@ -73,7 +42,5 @@ export function reducer(
 }
 
 export const getPageTitle = (state: AppState) => state.pageTitle;
-export const getUserDetails = (state: AppState) => state.userDetails;
-export const getModal = (state: AppState) => state.modal;
 
 
