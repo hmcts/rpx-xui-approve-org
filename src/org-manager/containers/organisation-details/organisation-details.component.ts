@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {filter, take, takeWhile} from 'rxjs/operators';
-import { OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
+import { OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
+import * as fromOrganisation from '../../store/';
 
 /**
  * Bootstraps Organisation Details
@@ -17,20 +17,15 @@ import * as fromStore from '../../store';
 export class OrganisationDetailsComponent implements OnInit {
 
   public orgs$: Observable<OrganisationVM>;
-  public userLists$: Observable<OrganisationUserListModel>;
-  public showUsers = false;
-  public showUserDetails = false;
-  public userDetails: User = null;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
-    this.store.dispatch(new fromStore.ResetOrganisationUsers());
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
-        this.store.dispatch(new fromStore.LoadActiveOrganisation());
-        this.store.dispatch(new fromStore.LoadPendingOrganisations());
+        this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
+        this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }
     });
 
@@ -38,12 +33,9 @@ export class OrganisationDetailsComponent implements OnInit {
     this.orgs$.pipe(
         filter(value => value !== undefined),
         take(1)
-    ).subscribe(({organisationId, pbaNumber, isAccLoaded, status}) => {
-      if (status === 'ACTIVE') {
-        this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
-      }
+    ).subscribe(({organisationId, pbaNumber, isAccLoaded}) => {
       if (!isAccLoaded && pbaNumber.length) {
-        this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
+        this.store.dispatch(new fromOrganisation.LoadPbaAccountsDetails({
               orgId: organisationId,
               pbas: pbaNumber.toString()
             }
@@ -51,16 +43,10 @@ export class OrganisationDetailsComponent implements OnInit {
         );
       }
     });
-    this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
 
   public onGoBack() {
-    if (this.showUserDetails) {
-      this.showUserDetails = false;
-      this.userDetails = null;
-    } else {
-      this.store.dispatch(new fromRoot.Back());
-    }
+    this.store.dispatch(new fromRoot.Back());
   }
 
   public approveOrganisation(data: OrganisationVM) {
@@ -69,15 +55,5 @@ export class OrganisationDetailsComponent implements OnInit {
     }
   }
 
-  public showUsersTab(showUsers: boolean) {
-    this.showUsers = showUsers;
-  }
-
-  public onShowUserDetails(user: User) {
-    if (user) {
-      this.showUserDetails = true;
-      this.userDetails = user;
-    }
-  }
-
 }
+

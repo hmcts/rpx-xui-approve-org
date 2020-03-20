@@ -24,7 +24,7 @@ defineSupportCode(function ({ Given, When, Then }) {
         const world = this;
       await browserWaits.retryForPageLoad(loginPage.emailAddress,async (message) => {
         world.attach('Retry reloading page. '+message);
-    });
+      });
       await browserWaits.waitForElement(loginPage.emailAddress);
     });
 

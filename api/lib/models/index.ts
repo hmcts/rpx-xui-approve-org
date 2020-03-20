@@ -6,7 +6,6 @@ export interface JurisdictionObject {
     filter: string
     jur: string
 }
-/*
 export interface EnhancedRequest extends express.Request {
     auth?: {
         roles: string
@@ -26,7 +25,7 @@ export interface EnhancedRequest extends express.Request {
         }
         user?
     }
-}*/
+}
 
 export interface Token {
     token: string
