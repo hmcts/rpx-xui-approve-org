@@ -9,10 +9,8 @@ import * as fromActons from '../actions/organisations.actions';
 import {OrganisationService, PbaAccountDetails, PendingOrganisationService} from 'src/org-manager/services';
 import { Go } from 'src/app/store';
 import {LoadPbaAccuntsObj, PendingOrganisationsMockCollection1} from '../../mock/pending-organisation.mock';
-import { Organisation, OrganisationVM, OrganisationUser } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
 import { LoggerService } from 'src/app/services/logger.service';
-import { User } from '@hmcts/rpx-xui-common-lib';
-import { AppUtils } from 'src/app/utils/app-utils';
 
 export class LoggerServiceMock {
   error(err) {
@@ -28,7 +26,7 @@ describe('Organisation Effects', () => {
     'approvePendingOrganisations'
   ]);
   const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
-    'fetchOrganisations', 'getOrganisationUsers'
+    'fetchOrganisations',
   ]);
 
   const getAccountDetailsServiceMock = jasmine.createSpyObj('PbaAccountDetails', [
@@ -136,3 +134,5 @@ describe('Organisation Effects', () => {
   });
 
 });
+
+

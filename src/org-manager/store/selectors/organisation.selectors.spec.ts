@@ -1,10 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
-import { reducers } from '../index';
-import { OrganisationState as organisationState } from '../reducers/organisation.reducer';
+import { OrganisationState } from '../reducers/organisation.reducer';
 import * as fromSelectors from './organisation.selectors';
+import { reducers } from '../index';
+import {OrganisationVM} from '../../models/organisation';
 
-const organisationState = {
+const OrganisationState = {
   activeOrganisations: {
     orgEntities: {},
     loaded: false,
@@ -18,12 +19,11 @@ const organisationState = {
     searchString: ''
   },
   errorMessage: '',
-  orgForReview: null,
-  organisationUsersList: { users: null, isError: false }
+  orgForReview: null
 };
 
 describe('Organisation selectors', () => {
-  let store: Store<organisationState>;
+  let store: Store<OrganisationState>;
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -42,7 +42,7 @@ describe('Organisation selectors', () => {
         result = value;
 
       });
-      expect(result).toEqual(organisationState);
+      expect(result).toEqual(OrganisationState);
     });
   });
 
