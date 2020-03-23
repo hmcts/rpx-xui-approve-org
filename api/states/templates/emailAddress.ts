@@ -1,16 +1,5 @@
 export default {
-    idPrefix: 'tbc',
-    name: 'email-address',
-    header: "What's your email address?",
     formGroupValidators: [],
-    validationHeaderErrorMessages: [
-        {
-            validationLevel: 'formControl',
-            controlId: 'emailAddress',
-            text: 'Enter email address',
-            href: '/register/organisation-address',
-        },
-    ],
     groups: [
         {
             hiddenInput: {
@@ -20,13 +9,13 @@ export default {
         },
         {
             input: {
-                validators: ['required', 'email'],
-                validationError: {
-                    value: 'Enter email address',
-                    controlId: 'emailAddress',
-                },
-                control: 'emailAddress',
                 classes: '',
+                control: 'emailAddress',
+                validationError: {
+                    controlId: 'emailAddress',
+                    value: 'Enter email address',
+                },
+                validators: ['required', 'email'],
             },
         },
         {
@@ -37,12 +26,23 @@ export default {
         },
         {
             button: {
-                control: 'createButton',
-                value: 'Continue',
-                type: 'submit',
                 classes: '',
+                control: 'createButton',
                 onEvent: 'continue',
+                type: 'submit',
+                value: 'Continue',
             },
+        },
+    ],
+    header: "What's your email address?",
+    idPrefix: 'tbc',
+    name: 'email-address',
+    validationHeaderErrorMessages: [
+        {
+            controlId: 'emailAddress',
+            href: '/register/organisation-address',
+            text: 'Enter email address',
+            validationLevel: 'formControl',
         },
     ],
 }

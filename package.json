@@ -24,6 +24,7 @@
     "test:coverage": "echo 'not implemented'",
     "test:a11y": "echo 'not implemented'",
     "lint": "yarn lint:ng",
+    "lint:node": "cd api && yarn lint",
     "lint:ng": "ng lint",
     "e2e": "ng e2e",
     "json-server": "json-server db.json --port 1400",
