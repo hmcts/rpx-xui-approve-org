@@ -127,7 +127,7 @@ export async function oauth(req: EnhancedRequest, res: express.Response, next: e
         const userDetails = await asyncReturnOrError(getUserDetails(accessToken, idamUrl), 'Cannot get user details', res, logger, false)
         const isPrdAdminRole = havePrdAdminRole(userDetails)
         if (isPrdAdminRole) {
-            console.log('THIS USER CAN NOT LOGIN');
+            console.log('THIS USER CAN NOT LOGIN')
             // tslint:disable-next-line
             res.redirect(`${getConfigValue(SERVICES_IDAM_API_PATH)}/login?response_type=code&client_id=${getConfigValue(IDAM_CLIENT)}&redirect_uri=${getConfigValue(PROTOCOL)}://${req.headers.host}/oauth2/callback&scope=profile openid roles manage-user create-user manage-roles`)
             return false
