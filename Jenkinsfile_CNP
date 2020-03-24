@@ -32,10 +32,10 @@ def secrets = [
   'rpx-${env}': [
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
     secret('ao-idam-client-secret', 'IDAM_SECRET'),
+    secret('ao-webapp-redis-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
     secret('APPINSIGHTS-INSTRUMENTATIONKEY-AO', 'APPINSIGHTS_INSTRUMENTATIONKEY')
-
   ]
 ]
 

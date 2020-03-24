@@ -5,16 +5,14 @@ import healthCheck from './healthCheck'
 import getappInsightsInstrumentationKey from './monitoring-tools'
 import organisationRouter from './organisation'
 import pbaAccounts from './pbaAccounts'
-import pbaRouter from './updatePba'
 import stateRouter from './states'
+import pbaRouter from './updatePba'
 
 const router = express.Router({ mergeParams: true })
 // open routes
 router.use('/environment', environment)
 
 router.use(auth.attach)
-
-router.use('/logout', auth.logout)
 
 router.use('/decisions', stateRouter)
 router.use('/healthCheck', healthCheck)
