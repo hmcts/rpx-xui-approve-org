@@ -29,7 +29,7 @@
     "json-server": "json-server db.json --port 1400",
     "pre-push": "yarn lint && yarn build:prod && ng test organisation-manager --code-coverage",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
-    "test": "yarn test:ng",
+    "test": "cd api && yarn coverage && cd .. && yarn test:ng && yarn test:mutation",
     "test:smoke": "sh whitelist.sh",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js",
