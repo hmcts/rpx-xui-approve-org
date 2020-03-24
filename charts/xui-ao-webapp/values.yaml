@@ -1,3 +1,13 @@
+redis:
+  enabled: false
+  cluster:
+    enabled: false
+    slaveCount: 0
+  password: fake-password
+  master:
+    persistence:
+      enabled: false
+
 nodejs:
   aadIdentityName: xui
   applicationPort: 3000
@@ -39,6 +49,12 @@ nodejs:
     FEATURE_SECURE_COOKIE_ENABLED: true
     FEATURE_PROXY_ENABLED: false
     FEATURE_HELMET_ENABLED: true
+    FEATURE_REDIS_ENABLED: true
+
+    # Redis
+    REDIS_KEY_PREFIX: 'activity:'
+    REDIS_TTL: 6000
+
   keyVaults:
     rpx:
       resourceGroup: rpx
@@ -46,6 +62,7 @@ nodejs:
         - ao-s2s-client-secret
         - ao-idam-client-secret
         - AppInsightsInstrumentationKey
+        - ao-webapp-redis-connection-string
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

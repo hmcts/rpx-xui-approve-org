@@ -29,7 +29,8 @@
     "appInsightsEnabled": true,
     "proxyEnabled": false,
     "secureCookieEnabled": true,
-    "helmetEnabled": false
+    "helmetEnabled": false,
+    "redisEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -79,6 +80,10 @@
     "hidePoweredBy": {
       "setTo": "XUI Server 1.0"
     }
+  },
+  "redis": {
+    "prefix": "activity:",
+    "ttl": 86400
   }
 }
 

@@ -122,6 +122,10 @@ variable "feature_secure_cookie_enabled" {
 variable "feature_app_insights_enabled" {
   default = "true"
 }
+
+variable "feature_redis_enabled" {
+  default = "false"
+}
 variable "feature_proxy_enabled" {
   default = "false"
 }
@@ -132,4 +136,12 @@ variable "feature_helmet_enabled" {
 variable "node_config_dir" {
   // for Windows
   default = "D:\\home\\site\\wwwroot\\config"
+}
+
+variable "ao_http_proxy" {
+  default = "http://172.16.0.7:8080"
+}
+
+variable "ao_no_proxy" {
+  default = "localhost"
 }
