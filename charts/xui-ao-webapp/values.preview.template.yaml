@@ -8,5 +8,5 @@ nodejs:
     IDAM_WEB_SERVICE: https://idam-web-public.aat.platform.hmcts.net
     FEATURE_SECURE_COOKIE_ENABLED: false
     REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
-    redis:
-      enabled: true
+redis:
+  enabled: true
