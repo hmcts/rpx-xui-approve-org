@@ -4,3 +4,4 @@
 --bail
 --exit
 **/*.spec.ts
+--exclude **/pact/**
