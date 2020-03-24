@@ -6,53 +6,53 @@ import {getConfigValue, showFeature} from '../configuration'
 import {
   FEATURE_REDIS_ENABLED,
   NOW,
-  REDIS_HOST, REDIS_KEY_PREFIX,
-  REDIS_PASSWORD,
-  REDIS_PORT,
-  REDIS_SSL_ENABLED,
-  REDIS_TTL
+  REDIS_KEY_PREFIX,
+  REDIS_TTL,
+  REDISCLOUD_URL
 } from '../configuration/references'
+import * as log4jui from './log4jui'
 
-const RedisStore = connectRedis(session)
-const FileStore = sessionFileStore(session)
+export const logger = log4jui.getLogger('sessionStore')
 
-let store = null
+const redisStore = connectRedis(session)
+const fileStore = sessionFileStore(session)
 
-export const getRedisStore = () => {
-  console.log('using RedisStore')
+let store: session.Store = null
+
+export const getRedisStore = (): connectRedis.RedisStore => {
+  logger.info('using RedisStore')
 
   const tlsOptions = {
-    password: getConfigValue(REDIS_PASSWORD),
     prefix: getConfigValue(REDIS_KEY_PREFIX),
-    tls: getConfigValue(REDIS_SSL_ENABLED),
   }
 
   const redisClient = redis.createClient(
-    getConfigValue(REDIS_PORT),
-    getConfigValue(REDIS_HOST),
+    getConfigValue(REDISCLOUD_URL),
     tlsOptions
   )
 
   redisClient.on('ready', () => {
-    console.log('redis client connected successfully')
+    logger.info('redis client connected successfully')
   })
 
-  redisClient.on('error', console.error)
+  redisClient.on('error', error => {
+    logger.error(error)
+  })
 
-  return new RedisStore({
+  return new redisStore({
     client: redisClient,
     ttl: getConfigValue(REDIS_TTL),
   })
 }
 
-export const getFileStore = () => {
-  console.log('using FileStore')
-  return new FileStore({
+export const getFileStore = (): session.Store => {
+  logger.info('using FileStore')
+  return new fileStore({
     path: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
   })
 }
 
-export const getStore = () => {
+export const getStore = (): session.Store => {
   if (!store) {
     if (showFeature(FEATURE_REDIS_ENABLED)) {
       store = getRedisStore()
