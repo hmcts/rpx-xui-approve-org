@@ -62,7 +62,7 @@ module "app" {
 
         // Redis Cloud
         REDISCLOUD_URL = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
-        REDIS_ENCRYPTION_SECRET = "${module.redis-cache.access_key}"
+        REDIS_KEY_PREFIX: 'activity:'
 
         # COOKIE SETTINGS
         COOKIE_TOKEN = "${var.cookie_token}"
@@ -108,12 +108,6 @@ data "azurerm_subnet" "core_infra_redis_subnet" {
   name                 = "core-infra-subnet-1-${var.env}"
   virtual_network_name = "core-infra-vnet-${var.env}"
   resource_group_name  = "core-infra-${var.env}"
-}
-
-resource "azurerm_key_vault_secret" "redis_access_key" {
-  name         = "${var.product}-redis-access-key"
-  value        = "${module.redis-cache.access_key}"
-  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
 }
 
 resource "azurerm_key_vault_secret" "redis_connection_string" {
