@@ -29,7 +29,8 @@
     "appInsightsEnabled": true,
     "proxyEnabled": false,
     "secureCookieEnabled": true,
-    "helmetEnabled": false
+    "helmetEnabled": false,
+    "redisEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -79,6 +80,13 @@
     "hidePoweredBy": {
       "setTo": "XUI Server 1.0"
     }
+  },
+  "redis": {
+    "host": "xui-ao-webapp-prod.redis.cache.windows.net",	
+    "port": 6380,	
+    "tls": true,
+    "prefix": "activity:",
+    "ttl": 86400
   }
 }
 
