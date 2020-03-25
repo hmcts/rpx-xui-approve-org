@@ -17,7 +17,7 @@
   "oauthCallbackUrl": "oauth2/callback",
   "protocol": "https",
   "services": {
-    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
+    "ccdDataApi": "https://gateway-ccd.ithc.platform.hmcts.net",
     "ccdDefApi": "http://ccd-definition-store-api-prod.service.core-compute-prod.internal",
     "idamApi": "https://idam-api.platform.hmcts.net",
     "idamWeb": "https://hmcts-access.service.gov.uk",
