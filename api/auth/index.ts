@@ -172,10 +172,11 @@ export function doLogout(req: EnhancedRequest, res: express.Response, status: nu
     res.clearCookie(getConfigValue(COOKIE_ROLES))
     res.clearCookie(getConfigValue(COOKIES_USERID))
     req.session.user = null
+    delete req.session.auth // delete so it does not get returned to FE
     req.session.save(() => {
-        res.redirect(status, req.query.redirect || '/')
+      res.redirect(status, req.query.redirect || '/')
     })
-}
+  }
 
 export function logout(req, res) {
     doLogout(req, res, 200)

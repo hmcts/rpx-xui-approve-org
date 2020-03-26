@@ -1,10 +1,7 @@
-import * as bodyParser from 'body-parser'
-import * as cookieParser from 'cookie-parser'
 import * as ejs from 'ejs'
 import * as express from 'express'
-import * as session from 'express-session'
-import * as helmet from 'helmet'
 import * as path from 'path'
+<<<<<<< HEAD
 import * as process from 'process'
 import * as sessionFileStore from 'session-file-store'
 import * as auth from './auth'
@@ -31,27 +28,16 @@ import { appInsights } from './lib/appInsights'
 import { errorStack } from './lib/errorStack'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
+=======
+import {app, logger} from './application'
+>>>>>>> develop
 
-const FileStore = sessionFileStore(session)
-
-const app = express()
-
-if (showFeature(FEATURE_HELMET_ENABLED)) {
-  console.log('Helmet enabled')
-  app.use(helmet(getConfigValue(HELMET)))
-}
+console.log('WE ARE USING server.ts on the box.')
 
 /**
- * If there are no configuration properties found we highlight this to the person attempting to initialise
- * this application.
+ * Used Server side
  */
-if (!getEnvironment()) {
-  console.log(ERROR_NODE_CONFIG_ENV)
-}
-
-/**
- * TODO: Implement a logger on the Node layer.
- */
+<<<<<<< HEAD
 console.log(environmentCheckText())
 
 console.log('APP_INSIGHTS:', getConfigValue(APP_INSIGHTS_KEY))
@@ -86,6 +72,8 @@ app.use(
     })
 )
 
+=======
+>>>>>>> develop
 app.engine('html', ejs.renderFile)
 app.set('view engine', 'html')
 app.set('views', __dirname)
@@ -93,28 +81,13 @@ app.set('views', __dirname)
 app.use(express.static(path.join(__dirname, '..', 'assets'), { index: false }))
 app.use(express.static(path.join(__dirname, '..'), { index: false }))
 
-tunnel.init()
-
-app.use(errorStack)
-app.use(appInsights)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(cookieParser())
-app.use('/health', healthRouter)
-app.get('/oauth2/callback', auth.oauth)
-app.get('/api/logout', (req, res) => {
-    auth.doLogout(req, res)
-})
-
-app.use('/api', routes)
-
+/**
+ * Used on server.ts only but should be fine to lift and shift to local.ts
+ */
 app.use('/*', (req, res) => {
     console.time(`GET: ${req.originalUrl}`)
     res.render('../index', {
-        providers: [
-            { provide: 'REQUEST', useValue: req },
-            { provide: 'RESPONSE', useValue: res },
-        ],
+        providers: [{ provide: 'REQUEST', useValue: req }, { provide: 'RESPONSE', useValue: res }],
         req,
         res,
     })
@@ -123,4 +96,4 @@ app.use('/*', (req, res) => {
 
 const port = process.env.PORT || 3000
 
-app.listen(port, () => console.log('server running on port:', port) )
+app.listen(port, () => logger.info(`Local server up at ${port}`))
