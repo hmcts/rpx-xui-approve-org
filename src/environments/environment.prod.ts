@@ -23,7 +23,7 @@ export const environment = {
       idamLoginUrl: 'https://hmcts-access.service.gov.uk',
       idamWeb: 'https://hmcts-access.service.gov.uk',
       indexUrl: '/',
-      oauthCallbackUrl: 'oauth2/callback'
+      oauthCallbackUrl: '/oauth2/callback'
       }
   }
 };
