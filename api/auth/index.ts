@@ -8,7 +8,6 @@ import {
   SERVICES_IDAM_API_PATH
 } from '../configuration/references'
 import {http} from '../lib/http'
-import {propsExist} from '../lib/objectUtilities'
 import {asyncReturnOrError} from '../lib/util'
 import {getUserDetails} from '../services/idam'
 import {serviceTokenGenerator} from './serviceToken'
