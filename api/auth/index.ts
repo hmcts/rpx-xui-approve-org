@@ -1,13 +1,13 @@
 import axios, {AxiosResponse} from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
-import * as log4js from 'log4js'
 import {getConfigValue, getProtocol} from '../configuration'
 import {
   COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, IDAM_SECRET, INDEX_URL, LOGGING, OAUTH_CALLBACK_URL,
   SERVICES_IDAM_API_PATH
 } from '../configuration/references'
 import {http} from '../lib/http'
+import * as log4jui from '../lib/log4jui'
 import {asyncReturnOrError} from '../lib/util'
 import {getUserDetails} from '../services/idam'
 import {serviceTokenGenerator} from './serviceToken'
@@ -15,8 +15,7 @@ import {havePrdAdminRole} from './userRoleAuth'
 
 const idamUrl = getConfigValue(SERVICES_IDAM_API_PATH)
 const secret = getConfigValue(IDAM_SECRET)
-const logger = log4js.getLogger('auth')
-logger.level = getConfigValue(LOGGING)
+const logger = log4jui.getLogger('auth')
 
 export async function attach(req: express.Request, res: express.Response, next: express.NextFunction) {
   const session = req.session!
