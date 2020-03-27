@@ -1,53 +1,44 @@
 import {Injectable} from '@angular/core';
-import {CookieService} from 'ngx-cookie';
 import * as jwtDecode from 'jwt-decode';
+import {CookieService} from 'ngx-cookie';
 
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/map';
-import {EnvironmentService} from '../../app/services/environment.service';
 import {Observable} from 'rxjs';
-import {AppConstants} from '../../app/app.constants';
-import {AppUtils} from '../../app/utils/app-utils';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/share';
+import {EnvironmentService} from '../../app/services/environment.service';
 
 @Injectable()
 export class AuthService {
-  apiBaseUrl;
-  user;
   constructor(
-    private cookieService: CookieService,
-    private envService: EnvironmentService
+    private readonly cookieService: CookieService,
+    private readonly envService: EnvironmentService
   ) {
-    this.apiBaseUrl = window.location.protocol + '//' + window.location.hostname;
-
-    if (window.location.port) { // don't add colon if there is no port
-      this.apiBaseUrl += ':' + window.location.port;
-    }
-
-    this.user = null;
   }
   // TODO perhaps move this logic to BE
-  generateLoginUrl(): Observable<string> {
+  public generateLoginUrl(): Observable<string> {
     return this.envService.config$.map( config => {
+      const port = window.location.port ? `:${window.location.port}` : ``;
+      const API_BASE_URL = `${config.protocol}://${window.location.hostname}${port}`;
       const base = config.services.idamWeb;
       const clientId = config.idamClient;
-      const callback = `${this.apiBaseUrl}${config.oauthCallbackUrl}`;
+      const callback = `${API_BASE_URL}${config.oauthCallbackUrl}`;
       // tslint:disable-next-line: max-line-length
       return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=profile openid roles manage-user create-user manage-roles`;
     });
   }
 
-  loginRedirect() {
+  public loginRedirect() {
     this.generateLoginUrl().subscribe( url => {
       window.location.href = url;
     });
   }
 
-  decodeJwt(jwt) {
+  public decodeJwt(jwt) {
     return jwtDecode(jwt);
   }
 
- isAuthenticated(): Observable<boolean> {
+ public isAuthenticated(): Observable<boolean> {
     return this.envService.config$.map( config => {
       const jwt = this.cookieService.get(config.cookies.token);
       if (!jwt) {
