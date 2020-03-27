@@ -118,7 +118,7 @@ app.use(
     saveUninitialized: true,
     secret: getConfigValue(SESSION_SECRET),
     store: getStore(),
-  })
+  }) as express.RequestHandler
 )
 
 app.use(errorStack)
