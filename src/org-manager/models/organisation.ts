@@ -1,3 +1,5 @@
+import { User } from '@hmcts/rpx-xui-common-lib';
+
 export interface OrganisationAddress {
   addressLine1: string;
   addressLine2: string;
@@ -17,6 +19,22 @@ export interface OrganisationSuperUser {
   firstName: string;
   lastName: string;
   email: string;
+}
+
+export interface OrganisationUser {
+  userIdentifier: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  idamStatus: string;
+  idamStatusCode: string;
+  idamMessage: string;
+  roles: string[];
+}
+
+export interface OrganisationUserListModel {
+  users: User[];
+  isError: boolean;
 }
 
 export interface  Organisation {
