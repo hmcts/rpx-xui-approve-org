@@ -1,4 +1,5 @@
-import {OrganisationVM} from 'src/org-manager/models/organisation';
+import { User } from '@hmcts/rpx-xui-common-lib';
+import {OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
 
 export interface OrganisationState {
@@ -14,6 +15,7 @@ export interface OrganisationState {
     loading: boolean;
     searchString: string;
   };
+  organisationUsersList: OrganisationUserListModel;
   errorMessage: string;
   orgForReview: OrganisationVM | null;
 }
@@ -21,6 +23,7 @@ export interface OrganisationState {
 export const initialState: OrganisationState = {
   activeOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
+  organisationUsersList: {users: null, isError: false},
   errorMessage: '',
   orgForReview: null
 };
@@ -59,6 +62,28 @@ export function reducer(
       return {
         ...state,
         activeOrganisations
+      };
+    }
+
+    case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS: {
+      return {
+        ...state,
+        organisationUsersList: {users: action.payload, isError: false}
+      };
+    }
+
+    case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_FAIL: {
+      return {
+        ...state,
+        organisationUsersList: {users: null, isError: true}
+      };
+    }
+
+
+    case fromActions.OrgActionTypes.RESET_ORGANISATION_USERS: {
+      return {
+        ...state,
+        organisationUsersList: {users: null, isError: false}
       };
     }
 
@@ -307,3 +332,4 @@ export const getPendingOrganis = (state: OrganisationState) => state.pendingOrga
 export const getActiveOrgEntities = (state: OrganisationState) => state.activeOrganisations;
 export const getPendingOrgEntities = (state: OrganisationState) => state.pendingOrganisations;
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
+export const getOrgUsersList = (state: OrganisationState) => state.organisationUsersList;
