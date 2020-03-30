@@ -62,7 +62,7 @@ nodejs:
       secrets:
         - ao-s2s-client-secret
         - ao-idam-client-secret
-        - appinsights-instrumentation-ao
+        - appinsights-instrumentationkey-ao
         - ao-webapp-redis-connection-string
   # Don't modify below here
   image: ${IMAGE_NAME}
