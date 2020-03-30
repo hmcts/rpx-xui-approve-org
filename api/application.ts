@@ -79,9 +79,6 @@ console.log(getConfigValue(SERVICES_IDAM_WEB))
 console.log(getConfigValue(SERVICE_S2S_PATH))
 console.log(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH))
 
-console.log('APP_INSIGHTS_KEY:')
-console.log(getConfigValue(APP_INSIGHTS_KEY))
-
 console.log('Secure Cookie is:')
 console.log(showFeature(FEATURE_SECURE_COOKIE_ENABLED))
 console.log('App Insights enabled:')
