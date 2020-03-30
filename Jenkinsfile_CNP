@@ -35,7 +35,7 @@ def secrets = [
     secret('ao-webapp-redis-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
-    secret('APPINSIGHTS-INSTRUMENTATIONKEY-AO', 'APPINSIGHTS_INSTRUMENTATIONKEY')
+    secret('appinsights-instrumentation-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY')
   ]
 ]
 
