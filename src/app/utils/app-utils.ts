@@ -106,17 +106,16 @@ export class AppUtils {
     const users: User[] = [];
     if (obj) {
       obj.forEach((user) => {
-        const newUser: User = {
-          fullName: `${user.firstName} ${user.lastName}`,
-          email: user.email,
-          resendInvite: false
-        };
+        const newUser: User = user;
+        newUser.fullName = `${user.firstName} ${user.lastName}`;
         AppConstants.USER_ROLES.forEach((userRoles) => {
           if (user.roles) {
             newUser[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
           }
         });
         newUser.status = AppUtils.capitalizeString(user.idamStatus);
+        newUser.resendInvite = true;
+        // newUser.resendInvite = user.idamStatus === 'Pending';
         users.push(newUser);
       });
     }

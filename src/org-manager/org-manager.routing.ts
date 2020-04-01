@@ -7,6 +7,7 @@ import { AuthGuard } from 'src/services/auth/auth.guard';
 import { OrganisationDetailsComponent } from './components';
 import { ActiveOrganisationsComponent } from './containers';
 import { EditDetailsComponent } from './containers/edit-details/edit-details.component';
+import { InviteUserComponent } from './containers/invite-user/invite-user.component';
 
 export const ROUTES: Routes = [
   {
@@ -47,6 +48,11 @@ export const ROUTES: Routes = [
   {
     path: 'change/:fields/:orgId/:id',
     component: EditDetailsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'invite-user',
+    component: InviteUserComponent,
     canActivate: [AuthGuard],
   },
 ];
