@@ -92,7 +92,12 @@ const { Given, When, Then } = require('cucumber');
 // });
 
 
-defineSupportCode(({ After }) => {
+defineSupportCode(({ After,Before }) => {
+    Before(async function(scenario,done){
+        browser.driver.manage().deleteAllCookies();
+        done();
+    });
+
     After(function(scenario, done) {
         const world = this;
         if (scenario.result.status === 'failed') {
