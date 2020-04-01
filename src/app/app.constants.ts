@@ -41,10 +41,26 @@ const userRoles = [
   { role: 'pui-case-manager', roleType: 'manageCases'}
 ];
 
+
+const ccdRoles = [
+  'caseworker',
+  'caseworker-divorce',
+  'caseworker-divorce-solicitor',
+  'caseworker-divorce-financialremedy',
+  'caseworker-divorce-financialremedy-solicitor',
+  'caseworker-probate',
+  'caseworker-ia',
+  'caseworker-probate-solicitor',
+  'caseworker-publiclaw',
+  'caseworker-ia-legalrep-solicitor',
+  'caseworker-publiclaw-solicitor'
+];
+
 export class AppConstants {
   public static FOOTER_DATA = FooterData;
   public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
   public static ENVIRONMENT_NAMES = environmentNames;
   public static USER_ROLES = userRoles;
   public static XUI_APPROVAL_ROLE = xuiApprovalRole;
+  public static CCD_ROLES = ccdRoles;
 }

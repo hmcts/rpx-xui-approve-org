@@ -1,0 +1,16 @@
+<div class="hmcts-width-container" *ngIf="{orgid: organisationId$ | async} as data">
+  <xuilib-hmcts-main-wrapper [summaryErrors]="errorsArray$ | async"
+  [backLink]="'/users'"
+  [title]="'Invite user'">
+
+    <p class="govuk-body">When you send this invitation, the user will receive an email from HM Courts and
+    Tribunals Registrations so they can finish setting up their account.</p>
+
+    <xuilib-invite-user-form [errorMessages]="errors$ | async"
+    [inviteUserForm]="inviteUserForm"
+    (submitForm)="onSubmit(data.orgid)"
+    ></xuilib-invite-user-form>
+
+  </xuilib-hmcts-main-wrapper>
+</div>
+
