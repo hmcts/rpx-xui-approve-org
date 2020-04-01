@@ -26,7 +26,7 @@ export class OrganisationDetailsComponent implements OnInit {
   public userDetails: User = null;
   public isXuiApproverUserdata = false;
   public showUserNavigation = false;
-
+  public organisationId: string;
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly cookieService: CookieService) {}
@@ -34,6 +34,7 @@ export class OrganisationDetailsComponent implements OnInit {
   public ngOnInit(): void {
 
     const userRoles = this.cookieService.get(environment.cookies.roles);
+    console.log(userRoles);
     if (userRoles && userRoles.indexOf(AppConstants.XUI_APPROVAL_ROLE) !== -1) {
       this.isXuiApproverUserdata = true;
     }
@@ -51,6 +52,7 @@ export class OrganisationDetailsComponent implements OnInit {
         filter(value => value !== undefined),
         take(1)
     ).subscribe(({organisationId, pbaNumber, isAccLoaded, status}) => {
+      this.organisationId = organisationId;
       if (status === 'ACTIVE' && this.isXuiApproverUserdata) {
         this.showUserNavigation = true;
         this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
@@ -94,6 +96,12 @@ export class OrganisationDetailsComponent implements OnInit {
       this.showUserDetails = true;
       this.userDetails = user;
     }
+  }
+
+  public reinviteUser(user: User) {
+    console.log('REINVITE USER');
+    console.log(user);
+    this.store.dispatch(new fromStore.ReinvitePendingUser({pendingUser: user, organisationId: this.organisationId}));
   }
 
 }

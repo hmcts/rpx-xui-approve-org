@@ -15,7 +15,8 @@
       <ng-template #showOrg>
         <ng-container *ngIf="userDetails && showUserDetails; else showNav">
           <h1 class="govuk-heading-xl">User</h1>
-          <xuilib-user-details [user]="userDetails"></xuilib-user-details>
+          <xuilib-user-details [user]="userDetails"
+          (reinvite)="reinviteUser($event)"></xuilib-user-details>
         </ng-container>
         <ng-template #showNav>
           <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="showUserNavigation">
