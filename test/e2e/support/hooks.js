@@ -93,7 +93,9 @@ const { Given, When, Then } = require('cucumber');
 
 
 defineSupportCode(({ After,Before }) => {
-    Before(async function(scenario,done){
+    Before(function(scenario,done){
+        browser.executeScript('window.localStorage.clear();');
+        browser.executeScript('window.sessionStorage.clear();');
         browser.driver.manage().deleteAllCookies();
         done();
     });
