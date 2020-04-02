@@ -3,7 +3,7 @@ const Cucumber = require('cucumber');
 const { defineSupportCode } = require('cucumber');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const conf = require('../config/conf').config;
+const {config} = require('../config/conf');
 // const conf = require('../config/saucelabs.conf').config;
 const reporter = require('cucumber-html-reporter');
 const report = require('cucumber-html-report');
@@ -92,14 +92,8 @@ const { Given, When, Then } = require('cucumber');
 // });
 
 
-defineSupportCode(({ After,Before }) => {
-    Before(function(scenario,done){
-        browser.executeScript('window.localStorage.clear();');
-        browser.executeScript('window.sessionStorage.clear();');
-        browser.driver.manage().deleteAllCookies();
-        done();
-    });
-
+defineSupportCode(({ After }) => {
+   
     After(function(scenario, done) {
         const world = this;
         if (scenario.result.status === 'failed') {
