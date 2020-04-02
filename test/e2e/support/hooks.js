@@ -114,7 +114,14 @@ defineSupportCode(({ After,Before }) => {
                 world.attach(decodedImage, 'image/png');
             })
                 .then(() => {
-                    done();
+                    var cookiesStorageDeletionPromises = [];
+                    cookiesStorageDeletionPromises.push(browser.executeScript('window.localStorage.clear()'));
+                    cookiesStorageDeletionPromises.push(browser.executeScript('window.sessionStorage.clear()'));
+                    cookiesStorageDeletionPromises.push(browser.driver.manage().deleteAllCookies());
+                    Promise.all(cookiesStorageDeletionPromises)
+                        .then(() => {
+                            done();
+                        });
                 });
         } else {
             done();
