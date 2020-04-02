@@ -20,7 +20,7 @@ export class UsersEffects {
     ofType(fromActions.REINVITE_PENDING_USER),
     map(() => {
       console.log('coming to effect');
-      return new fromRoot.Go({ path: ['/invite-user'] });
+      return new fromRoot.Go({ path: ['/reinvite-user'] });
     })
   );
 
@@ -39,5 +39,13 @@ export class UsersEffects {
             return of(new fromActions.SubmitReinviteUserError(error));
           }));
       })
+  );
+
+  @Effect()
+  public confirmUser$ = this.actions$.pipe(
+    ofType(fromActions.SUBMIT_REINVITE_USER_SUCCESS),
+    map(() => {
+      return new fromRoot.Go({ path: ['/reinvite-user-success'] });
+    })
   );
 }
