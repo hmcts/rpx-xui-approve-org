@@ -3,8 +3,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {select, Store} from '@ngrx/store';
 import * as fromStore from '../../store';
 
-import {Observable, Subscription} from 'rxjs';
+import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
+import { Observable } from 'rxjs';
 import {AppConstants} from '../../../app/app.constants';
+
 
 /*
 * User Form entry mediator component
@@ -12,10 +14,10 @@ import {AppConstants} from '../../../app/app.constants';
 * */
 
 @Component({
-  selector: 'app-prd-invite-user-component',
-  templateUrl: './invite-user.component.html',
+  selector: 'app-prd-reinvite-user-component',
+  templateUrl: './reinvite-user.component.html',
 })
-export class InviteUserComponent implements OnInit, OnDestroy {
+export class ReinviteUserComponent implements OnInit, OnDestroy {
 
   constructor(private readonly store: Store<fromStore.OrganisationRootState>) { }
   public inviteUserForm: FormGroup;
@@ -30,15 +32,10 @@ export class InviteUserComponent implements OnInit, OnDestroy {
     email: ['Enter email address', 'Email must contain at least the @ character'],
     roles: ['You must select at least one action'],
   };
-  // public jurisdictions: any[];
-  // public juridictionSubscription: Subscription;
-  // public isReinvite: boolean = false;
 
   public ngOnInit(): void {
-    // this.store.dispatch(new fromStore.Reset());
-    // this.isReinvite = false;
-    // this.errors$ = this.store.pipe(select(fromStore.getInviteUserErrorMessage));
-    // this.errorsArray$ = this.store.pipe(select(fromStore.getGetInviteUserErrorsArray));
+    this.errors$ = this.store.pipe(select(fromStore.getInviteUserErrorMessageSelector));
+    this.errorsArray$ = this.store.pipe(select(fromStore.getGetInviteUserErrorsArray));
 
     this.inviteUserForm = new FormGroup({
       firstName: new FormControl('', Validators.required),
@@ -49,7 +46,7 @@ export class InviteUserComponent implements OnInit, OnDestroy {
         'pui-user-manager': new FormControl(''),
         'pui-organisation-manager': new FormControl(''),
         'pui-finance-manager': new FormControl('')
-      })
+      }, checkboxesBeCheckedValidator())
     });
 
     this.store.pipe(select(fromStore.getPendingUserSelector)).subscribe(pendingUser => {
@@ -65,11 +62,6 @@ export class InviteUserComponent implements OnInit, OnDestroy {
     });
 
     this.organisationId$ = this.store.pipe(select(fromStore.getUsersOrganisationIdSelector));
-
-    // this.juridictionSubscription = this.store.pipe(select(fromAppStore.getAllJurisdictions))
-    //                                .subscribe(value => this.jurisdictions = value,
-    //                                (error) => this.store.dispatch(new fromAppStore.LoadJurisdictionsFail(error)));
-    // this.store.dispatch(new fromAppStore.LoadJurisdictions());
   }
 
   // convenience getter for easy access to form fields
@@ -93,12 +85,9 @@ export class InviteUserComponent implements OnInit, OnDestroy {
       ];
       value = {
         ...value,
-        roles,
-        // jurisdictions: this.jurisdictions,
-        // isReinvite: this.isReinvite
+        roles
       };
       this.store.dispatch(new fromStore.SubmitReinviteUser({organisationId: orgId, form: value}));
-      // this.store.dispatch(new fromStore.SendInviteUser(value));
     }
   }
 
@@ -117,14 +106,9 @@ export class InviteUserComponent implements OnInit, OnDestroy {
       errorMessages: this.errorMessages,
       isSubmitted: true
     };
-    // this.store.dispatch(new fromStore.UpdateErrorMessages(formValidationData));
-
-
+    this.store.dispatch(new fromStore.UpdateErrorMessages(formValidationData));
   }
 
   public ngOnDestroy(): void {
-    // if (this.juridictionSubscription) {
-    //   this.juridictionSubscription.unsubscribe();
-    // }
   }
 }
