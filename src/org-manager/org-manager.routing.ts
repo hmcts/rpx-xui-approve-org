@@ -7,7 +7,8 @@ import { AuthGuard } from 'src/services/auth/auth.guard';
 import { OrganisationDetailsComponent } from './components';
 import { ActiveOrganisationsComponent } from './containers';
 import { EditDetailsComponent } from './containers/edit-details/edit-details.component';
-import { InviteUserComponent } from './containers/invite-user/invite-user.component';
+import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success/reinvite-user-success.component';
+import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
 
 export const ROUTES: Routes = [
   {
@@ -51,8 +52,13 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'invite-user',
-    component: InviteUserComponent,
+    path: 'reinvite-user',
+    component: ReinviteUserComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'reinvite-user-success',
+    component: ReinviteUserSuccessComponent,
     canActivate: [AuthGuard],
   },
 ];

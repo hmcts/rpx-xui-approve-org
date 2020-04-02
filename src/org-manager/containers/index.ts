@@ -2,8 +2,9 @@ import { ActiveOrganisationsComponent } from './active-organisations/active-orga
 import { ApproveOrganisationSuccessComponent } from './approve-organisation-success/approve-organisation-success.component';
 import { ApproveOrganisationComponent } from './approve-organisation/approve-organisation.component';
 import {EditDetailsComponent} from './edit-details/edit-details.component';
-import { InviteUserComponent } from './invite-user/invite-user.component';
 import { PendingOrganisationsComponent } from './pending-organisations/pending-organisations.component';
+import { ReinviteUserSuccessComponent } from './reinvite-user-success/reinvite-user-success.component';
+import { ReinviteUserComponent } from './reinvite-user/reinvite-user.component';
 import { SearchOrganisationsFormComponent } from './search-organisations-form/search-organisations-form.component';
 
 export const containers: any[] = [
@@ -13,7 +14,8 @@ export const containers: any[] = [
   ApproveOrganisationSuccessComponent,
   SearchOrganisationsFormComponent,
   EditDetailsComponent,
-  InviteUserComponent
+  ReinviteUserComponent,
+  ReinviteUserSuccessComponent
 ];
 
 export * from './active-organisations/active-organisations.component';
