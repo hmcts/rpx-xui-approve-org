@@ -92,8 +92,20 @@ const { Given, When, Then } = require('cucumber');
 // });
 
 
-defineSupportCode(({ After }) => {
-   
+defineSupportCode(({ After,Before }) => {
+    Before(function(scenario,done){
+        browser.get(config.baseUrl).then(() =>{
+            var cookiesStorageDeletionPromises = [];
+            cookiesStorageDeletionPromises.push(browser.executeScript('window.localStorage.clear()'));
+            cookiesStorageDeletionPromises.push(browser.executeScript('window.sessionStorage.clear()'));
+            cookiesStorageDeletionPromises.push(browser.driver.manage().deleteAllCookies());
+            Promise.all(cookiesStorageDeletionPromises)
+            .then(() => {
+                done();
+            }); 
+        });  
+    });
+
     After(function(scenario, done) {
         const world = this;
         if (scenario.result.status === 'failed') {
