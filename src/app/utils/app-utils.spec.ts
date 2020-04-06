@@ -98,7 +98,7 @@ describe('AppUtils', () => {
       firstName: 'hello',
       lastName: 'world',
       email: 'test@test.com',
-      idamStatus: 'ACTIVE',
+      idamStatus: 'PENDING',
       idamStatusCode: 'code',
       idamMessage: 'message',
       roles: ['pui-case-manager', 'pui-user-manager']
@@ -106,14 +106,18 @@ describe('AppUtils', () => {
 
     const mockUserResult: User[] = [{
       fullName: 'hello world',
+      firstName: 'hello',
+      lastName: 'world',
       email: 'test@test.com',
-      resendInvite: false,
-      status: 'Active',
+      resendInvite: true,
+      status: 'Pending',
       ['manageCases']: 'Yes',
       ['manageUsers']: 'Yes',
       ['manageOrganisations']: 'No'
 
     }];
+    console.log('result is : ');
+    console.log(AppUtils.mapUsers(mockUser));
     expect(AppUtils.mapUsers(mockUser)).toEqual(mockUserResult);
   });
 
