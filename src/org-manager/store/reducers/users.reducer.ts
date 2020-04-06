@@ -27,8 +27,6 @@ export function reducer(
 ): UsersState {
   switch (action.type) {
     case fromActions.REINVITE_PENDING_USER: {
-      console.log('coming to reducer:');
-      console.log(action.payload);
       return {
         ...state,
         pendingUser: action.payload.pendingUser,
@@ -45,8 +43,6 @@ export function reducer(
     }
 
     case fromActions.SUBMIT_REINVITE_USER_ERROR: {
-      console.log('submit error response: ');
-      console.log(action.payload);
       const errorMessages = {
         serverResponse: {
           messages: [
@@ -94,7 +90,6 @@ export function reducer(
         errorHeader: 'There is a problem'
       };
     }
-
 
     default:
       return state;

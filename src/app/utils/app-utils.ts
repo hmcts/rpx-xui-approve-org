@@ -106,8 +106,11 @@ export class AppUtils {
     const users: User[] = [];
     if (obj) {
       obj.forEach((user) => {
-        const newUser: User = user;
+        const newUser: User = {};
+        newUser.firstName = user.firstName;
+        newUser.lastName = user.lastName;
         newUser.fullName = `${user.firstName} ${user.lastName}`;
+        newUser.email = user.email;
         AppConstants.USER_ROLES.forEach((userRoles) => {
           if (user.roles) {
             newUser[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
