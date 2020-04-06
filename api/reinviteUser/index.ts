@@ -10,7 +10,7 @@ async function reinviteUserRoute(req, res) {
   const orgId = req.query.organisationId
   const payload = req.body
   try {
-      const response = await http.post(`${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${orgId}/users/`, payload)
+      const response = await http.post(`${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${orgId}/users/resendinvite/`, payload)
       logger.info('response::', response.data)
       res.send(response.data)
       console.log('========= Response ========')
