@@ -8,6 +8,7 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../
 const config = require('../../../config/conf.js');
 const EC = protractor.ExpectedConditions;
 const browserWaits = require('../../../support/customWaits');
+const browserManager = require('../../../support/browserManagement');
 
 
 async function waitForElement(el) {
@@ -91,6 +92,8 @@ defineSupportCode(function ({ Given, When, Then }) {
       .to
       .eventually
       .equal('Approve organisation');
+
+    this.attach(JSON.stringify(await browserManager.getCookie('roles')) );
 
   });
 

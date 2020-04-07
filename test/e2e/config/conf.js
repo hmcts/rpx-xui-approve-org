@@ -79,6 +79,8 @@ const config = {
 
   onPrepare() {
     browser.waitForAngularEnabled(false);
+    browser.getCapabilities().then(capabilities => console.log(capabilities));
+  
     global.expect = chai.expect;
     global.assert = chai.assert;
     global.should = chai.should;
