@@ -117,7 +117,7 @@ export class AppUtils {
           }
         });
         newUser.status = AppUtils.capitalizeString(user.idamStatus);
-        newUser.resendInvite = true;
+        newUser.resendInvite = true; //TODO CHANGE IT TO IDAM STATUS PENDING
         // newUser.resendInvite = user.idamStatus === 'Pending';
         users.push(newUser);
       });

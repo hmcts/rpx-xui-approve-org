@@ -7,14 +7,19 @@ export const getUsersState = createSelector(
   (state: fromOrganisation.OrganisationRootState) => state.users
 );
 
-export const getPendingUserSelector = createSelector(
+export const getSelectedUserSelector = createSelector(
   getUsersState,
-  fromUsers.getPendingUser
+  fromUsers.getSelectedUser
 );
 
-export const getUsersOrganisationIdSelector = createSelector(
+export const getOrganisationIdSelector = createSelector(
   getUsersState,
   fromUsers.getOrganisationId
+);
+
+export const getIsSuperUserSelector = createSelector(
+  getUsersState,
+  fromUsers.getIsSuperUser
 );
 
 export const getInviteUserErrorMessageSelector = createSelector(

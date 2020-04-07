@@ -49,7 +49,7 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
       }, checkboxesBeCheckedValidator())
     });
 
-    this.store.pipe(select(fromStore.getPendingUserSelector)).subscribe(pendingUser => {
+    this.store.pipe(select(fromStore.getSelectedUserSelector)).subscribe(pendingUser => {
       if (pendingUser) {
         this.inviteUserForm.controls.firstName.setValue(pendingUser.firstName);
         this.inviteUserForm.controls.lastName.setValue(pendingUser.lastName);
@@ -61,7 +61,7 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.organisationId$ = this.store.pipe(select(fromStore.getUsersOrganisationIdSelector));
+    this.organisationId$ = this.store.pipe(select(fromStore.getOrganisationIdSelector));
   }
 
   // convenience getter for easy access to form fields
@@ -87,6 +87,9 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
         ...value,
         roles
       };
+
+      console.log('form value => ');
+      console.log(value);
       this.store.dispatch(new fromStore.SubmitReinviteUser({organisationId: orgId, form: value}));
     }
   }
