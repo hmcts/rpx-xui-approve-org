@@ -93,7 +93,7 @@ defineSupportCode(function ({ Given, When, Then }) {
       .eventually
       .equal('Approve organisation');
 
-    this.attach(JSON.stringify(await browserManager.getCookie('roles')) );
+    this.attach('user roles cookie : '+JSON.stringify(await browserManager.getCookie('roles')) );
 
   });
 
