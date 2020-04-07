@@ -1,19 +1,24 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from 'src/app/app.constants';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions/users.actions';
 
 export interface UsersState {
-  errorHeader: string;
-  errorMessages: object;
-  pendingUser: User;
+  selectedUser: User;
+  isSuperUser: boolean;
+  selectedOrg: OrganisationVM;
   organisationId: string;
   successUserEmail: string;
   isFormValid: boolean;
+  errorHeader: string;
+  errorMessages: object;
 
 }
 
 export const initialState: UsersState = {
-  pendingUser: null,
+  selectedUser: null,
+  isSuperUser: false,
+  selectedOrg: null,
   organisationId: null,
   successUserEmail: null,
   errorHeader: null,
@@ -26,11 +31,13 @@ export function reducer(
   action: fromActions.UsersAction
 ): UsersState {
   switch (action.type) {
-    case fromActions.REINVITE_PENDING_USER: {
+
+    case fromActions.SHOW_USER_DETAILS: {
       return {
         ...state,
-        pendingUser: action.payload.pendingUser,
-        organisationId: action.payload.organisationId
+        selectedUser: action.payload.userDetails,
+        organisationId: action.payload.orgId,
+        isSuperUser: action.payload.isSuperUser
       };
     }
 
@@ -96,7 +103,10 @@ export function reducer(
   }
 }
 
-export const getPendingUser = (state: UsersState) => state.pendingUser;
+export const getSelectedUser = (state: UsersState) => state.selectedUser;
+export const getSelectedOrganisation = (state: UsersState) => state.selectedOrg;
+export const getIsSuperUser = (state: UsersState) => state.isSuperUser;
+// export const getPendingUser = (state: UsersState) => state.pendingUser;
 export const getOrganisationId = (state: UsersState) => state.organisationId;
 export const getInviteUserErrorMessage = (state: UsersState) => state.errorMessages;
 export const getInviteUserIsFormValid = (state: UsersState) => state.isFormValid;

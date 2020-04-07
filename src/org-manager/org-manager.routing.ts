@@ -9,6 +9,7 @@ import { ActiveOrganisationsComponent } from './containers';
 import { EditDetailsComponent } from './containers/edit-details/edit-details.component';
 import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success/reinvite-user-success.component';
 import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
+import { UserDetailsComponent } from './containers/user-details/user-details.component';
 
 export const ROUTES: Routes = [
   {
@@ -49,6 +50,11 @@ export const ROUTES: Routes = [
   {
     path: 'change/:fields/:orgId/:id',
     component: EditDetailsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'user-details',
+    component: UserDetailsComponent,
     canActivate: [AuthGuard],
   },
   {

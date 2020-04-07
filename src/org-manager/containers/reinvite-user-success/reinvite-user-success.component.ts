@@ -15,10 +15,6 @@ export class ReinviteUserSuccessComponent implements OnInit {
     constructor(private readonly store: Store<fromStore.OrganisationRootState>) { }
 
     public ngOnInit() {
-        this.user$ = this.store.pipe(select(fromStore.getPendingUserSelector));
+        this.user$ = this.store.pipe(select(fromStore.getSelectedUserSelector));
     }
-
-    // ngOnDestroy(): void {
-    //     // this.store.dispatch(new fromStore.Reset());
-    // }
 }

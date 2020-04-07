@@ -4,12 +4,9 @@ describe('Users actions', () => {
   describe('REINVITE USERS', () => {
     describe('ReinvitePendingUser', () => {
       it('should create an action', () => {
-        const payload = {
-        };
-        const action = new fromActions.ReinvitePendingUser(payload);
+        const action = new fromActions.ReinvitePendingUser();
         expect({...action}).toEqual({
-          type: fromActions.REINVITE_PENDING_USER,
-          payload
+          type: fromActions.REINVITE_PENDING_USER
         });
       });
     });
