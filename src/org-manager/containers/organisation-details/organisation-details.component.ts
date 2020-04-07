@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
 import { Observable } from 'rxjs';
 import {filter, take, takeWhile} from 'rxjs/operators';
-import { OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
+import { AppConstants } from 'src/app/app.constants';
+import { environment } from 'src/environments/environment';
+import { OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
-import { CookieService } from 'ngx-cookie';
-import { environment } from 'src/environments/environment';
-import { AppConstants } from 'src/app/app.constants';
 
 /**
  * Bootstraps Organisation Details
@@ -22,11 +22,12 @@ export class OrganisationDetailsComponent implements OnInit {
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<OrganisationUserListModel>;
   public showUsers = false;
-  public showUserDetails = false;
-  public userDetails: User = null;
+  // public showUserDetails = false;
+  // public userDetails: User = null;
   public isXuiApproverUserdata = false;
   public showUserNavigation = false;
   public organisationId: string;
+  public organisationAdminEmail: string;
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly cookieService: CookieService) {}
@@ -51,8 +52,9 @@ export class OrganisationDetailsComponent implements OnInit {
     this.orgs$.pipe(
         filter(value => value !== undefined),
         take(1)
-    ).subscribe(({organisationId, pbaNumber, isAccLoaded, status}) => {
+    ).subscribe(({organisationId, pbaNumber, isAccLoaded, status, adminEmail}) => {
       this.organisationId = organisationId;
+      this.organisationAdminEmail = adminEmail;
       if (status === 'ACTIVE' && this.isXuiApproverUserdata) {
         this.showUserNavigation = true;
         this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
@@ -73,12 +75,7 @@ export class OrganisationDetailsComponent implements OnInit {
   }
 
   public onGoBack() {
-    if (this.showUserDetails) {
-      this.showUserDetails = false;
-      this.userDetails = null;
-    } else {
-      this.store.dispatch(new fromRoot.Back());
-    }
+    this.store.dispatch(new fromRoot.Back());
   }
 
   public approveOrganisation(data: OrganisationVM) {
@@ -93,16 +90,8 @@ export class OrganisationDetailsComponent implements OnInit {
 
   public onShowUserDetails(user: User) {
     if (user) {
-      this.showUserDetails = true;
-      this.userDetails = user;
+      this.store.dispatch(new fromStore.ShowUserDetails({userDetails: user, isSuperUser: this.organisationAdminEmail === user.email, orgId: this.organisationId}));
     }
   }
-
-  public reinviteUser(user: User) {
-    console.log('REINVITE USER');
-    console.log(user);
-    this.store.dispatch(new fromStore.ReinvitePendingUser({pendingUser: user, organisationId: this.organisationId}));
-  }
-
 }
 

@@ -31,17 +31,17 @@ describe('Edit Details selectors', () => {
   describe('getPendingUserSelector', () => {
     it('should return pending user', () => {
       let result;
-      store.pipe(select(fromSelectors.getPendingUserSelector)).subscribe(value => {
+      store.pipe(select(fromSelectors.getSelectedUserSelector)).subscribe(value => {
         result = value;
       });
-      expect(result).toEqual(initialState.pendingUser);
+      expect(result).toEqual(initialState.selectedUser);
     });
   });
 
   describe('getUsersOrganisationIdSelector', () => {
     it('should return organisation Id', () => {
       let result;
-      store.pipe(select(fromSelectors.getUsersOrganisationIdSelector)).subscribe(value => {
+      store.pipe(select(fromSelectors.getOrganisationIdSelector)).subscribe(value => {
         result = value;
       });
       expect(result).toEqual(initialState.organisationId);

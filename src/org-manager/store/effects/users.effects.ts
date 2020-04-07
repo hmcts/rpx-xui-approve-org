@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { from, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { LoggerService } from 'src/app/services/logger.service';
 import { UsersService } from 'src/org-manager/services';
@@ -14,6 +14,15 @@ export class UsersEffects {
     private readonly usersService: UsersService,
     private readonly loggerService: LoggerService
   ) { }
+
+  @Effect()
+  public showUserDetails$ = this.actions$.pipe(
+    ofType(fromActions.SHOW_USER_DETAILS),
+    map(() => {
+      console.log('SHOW_USER_DETAILScoming to effect');
+      return new fromRoot.Go({ path: ['/user-details'] });
+    })
+  );
 
   @Effect()
   public reinviteUser$ = this.actions$.pipe(

@@ -1,16 +1,21 @@
 
 import { Action } from '@ngrx/store';
 
+export const SHOW_USER_DETAILS = '[Users]Show User Details';
 export const REINVITE_PENDING_USER = '[Users] Reinvite Pending User';
 export const SUBMIT_REINVITE_USER = '[Users] Submit Reinvite User';
 export const SUBMIT_REINVITE_USER_SUCCESS = '[Users] Submit Reinvite User Success';
 export const SUBMIT_REINVITE_USER_ERROR = '[Users] Submit Reinvite User Error';
 export const UPDATE_ERROR_MESSAGES = '[Users] Update Error Messages';
 
+export class ShowUserDetails implements Action {
+  public readonly type = SHOW_USER_DETAILS;
+  constructor(public payload) { }
+}
 
 export class ReinvitePendingUser implements Action {
   public readonly type = REINVITE_PENDING_USER;
-  constructor(public payload) { }
+  constructor() { }
 }
 
 export class SubmitReinviteUser implements Action {
@@ -34,6 +39,7 @@ export class UpdateErrorMessages implements Action {
 }
 
 export type UsersAction =
+  | ShowUserDetails
   | ReinvitePendingUser
   | SubmitReinviteUser
   | SubmitReinviteUserSucces
