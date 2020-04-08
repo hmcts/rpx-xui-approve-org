@@ -1,6 +1,7 @@
-@all 
+ 
 Feature: Verify access to User tab for prd admin users
 
+@all
     Scenario: Verify access to active Organisation User tab for non approver user
         When I navigate to EUI Approve Organisation Url
         Given I am logged into approve organisation with non approver prd admin
@@ -13,6 +14,7 @@ Feature: Verify access to User tab for prd admin users
         Then I see organisation status is "ACTIVE"
         Then I see sub navigation tabs not displayed
 
+@all
     Scenario: Verify access to active Organisation User tab for approver user
         When I navigate to EUI Approve Organisation Url
         Given I am logged into approve organisation with approver prd admin
