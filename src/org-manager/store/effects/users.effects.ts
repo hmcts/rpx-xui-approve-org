@@ -19,7 +19,7 @@ export class UsersEffects {
   public showUserDetails$ = this.actions$.pipe(
     ofType(fromActions.SHOW_USER_DETAILS),
     map(() => {
-      console.log('SHOW_USER_DETAILScoming to effect');
+      console.log('SHOW_USER_DETAILS coming to effect');
       return new fromRoot.Go({ path: ['/user-details'] });
     })
   );
@@ -38,7 +38,7 @@ export class UsersEffects {
     ofType(fromActions.SUBMIT_REINVITE_USER),
     map((action: fromActions.SubmitReinviteUser) => action.payload),
     switchMap((payload) => {
-      console.log('payload submit');
+      console.log('submit reinvite =========== payload submit');
       console.log(payload);
       return this.usersService.inviteUser(payload.organisationId, payload.form).pipe(
           map(response => new fromActions.SubmitReinviteUserSucces(response)),

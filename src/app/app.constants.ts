@@ -41,7 +41,6 @@ const userRoles = [
   { role: 'pui-case-manager', roleType: 'manageCases'}
 ];
 
-
 const ccdRoles = [
   'caseworker',
   'caseworker-divorce',
@@ -55,6 +54,15 @@ const ccdRoles = [
   'caseworker-ia-legalrep-solicitor',
   'caseworker-publiclaw-solicitor'
 ];
+
+const superUserRoles = [
+  'pui-organisation-manager',
+  'pui-user-manager',
+  'pui-case-manager',
+  ...ccdRoles
+];
+
+
 
 export const errorMessageMappings = {
   1: 'A user with this email address already exists',
@@ -92,4 +100,5 @@ export class AppConstants {
   public static CCD_ROLES = ccdRoles;
   public static ERROR_MESSAGE_MAPPINGS = errorMessageMappings;
   public static API_ERRORS = apiErrors;
+  public static SUPER_USER_ROLES = superUserRoles;
 }
