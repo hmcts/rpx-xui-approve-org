@@ -22,8 +22,6 @@ export class OrganisationDetailsComponent implements OnInit {
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<OrganisationUserListModel>;
   public showUsers = false;
-  // public showUserDetails = false;
-  // public userDetails: User = null;
   public isXuiApproverUserdata = false;
   public showUserNavigation = false;
   public organisationId: string;
@@ -35,7 +33,6 @@ export class OrganisationDetailsComponent implements OnInit {
   public ngOnInit(): void {
 
     const userRoles = this.cookieService.get(environment.cookies.roles);
-    console.log(userRoles);
     if (userRoles && userRoles.indexOf(AppConstants.XUI_APPROVAL_ROLE) !== -1) {
       this.isXuiApproverUserdata = true;
     }

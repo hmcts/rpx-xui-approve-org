@@ -10,6 +10,7 @@ import { EditDetailsComponent } from './containers/edit-details/edit-details.com
 import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success/reinvite-user-success.component';
 import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
 import { UserDetailsComponent } from './containers/user-details/user-details.component';
+import { UserApprovalGuard } from './guards/users-approval.guard';
 
 export const ROUTES: Routes = [
   {
@@ -55,17 +56,17 @@ export const ROUTES: Routes = [
   {
     path: 'user-details',
     component: UserDetailsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, UserApprovalGuard],
   },
   {
     path: 'reinvite-user',
     component: ReinviteUserComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, UserApprovalGuard],
   },
   {
     path: 'reinvite-user-success',
     component: ReinviteUserSuccessComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, UserApprovalGuard],
   },
 ];
 

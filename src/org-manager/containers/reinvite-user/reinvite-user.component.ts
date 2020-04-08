@@ -87,9 +87,6 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
         ...value,
         roles
       };
-
-      console.log('form value => ');
-      console.log(value);
       this.store.dispatch(new fromStore.SubmitReinviteUser({organisationId: orgId, form: value}));
     }
   }
@@ -113,7 +110,6 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
   }
 
   public onGoBack() {
-    console.log('on go back ');
     this.store.dispatch(new fromRoot.Back());
   }
 

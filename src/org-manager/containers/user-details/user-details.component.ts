@@ -40,8 +40,6 @@ export class UserDetailsComponent implements OnInit {
 
 
   public reinviteUser(user: User) {
-    console.log('calling reinvite user =>');
-    console.log(user);
     if (this.isSuperUser) {
       const formValue = {
         firstName: user.firstName,
@@ -57,7 +55,6 @@ export class UserDetailsComponent implements OnInit {
 
 
   public onGoBack() {
-    console.log('on go back ');
     this.store.dispatch(new fromRoot.Back());
   }
 }
