@@ -1,9 +1,14 @@
 <div class="hmcts-width-container" *ngIf="{user: user$ | async} as data">
   <xuilib-hmcts-main-wrapper [summaryErrors]="errorsArray$ | async"
   (backEvent)="onGoBack()"
-  [title]="getTitle(data.user)">
-  <xuilib-user-details [user]="data.user"
-          (reinvite)="reinviteUser($event)"></xuilib-user-details>
-
+  [title]="getTitle(data?.user)">
+    <ng-container *ngIf="data.user; else noUser">
+      <xuilib-user-details [user]="data.user"
+              (reinvite)="reinviteUser($event)"></xuilib-user-details>
+    </ng-container>
+    <ng-template #noUser>
+      <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
+      <p>Try again later.</p>
+    </ng-template>
   </xuilib-hmcts-main-wrapper>
 </div>

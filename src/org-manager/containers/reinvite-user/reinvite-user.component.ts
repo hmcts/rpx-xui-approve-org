@@ -2,10 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {select, Store} from '@ngrx/store';
 import * as fromStore from '../../store';
-
 import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import {AppConstants} from '../../../app/app.constants';
+import * as fromRoot from '../../../app/store';
 
 
 /*
@@ -110,6 +110,11 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
       isSubmitted: true
     };
     this.store.dispatch(new fromStore.UpdateErrorMessages(formValidationData));
+  }
+
+  public onGoBack() {
+    console.log('on go back ');
+    this.store.dispatch(new fromRoot.Back());
   }
 
   public ngOnDestroy(): void {
