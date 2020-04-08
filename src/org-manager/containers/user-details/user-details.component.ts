@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
+import { AppConstants } from 'src/app/app.constants';
+import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
 
 @Component({
@@ -27,7 +29,7 @@ export class UserDetailsComponent implements OnInit {
     }
 
     public getTitle(user: User) {
-      if (user.status === 'Active') { //TODO Change to Pending
+      if (user && user.status === 'Active') { //TODO Change to Pending
         if (this.isSuperUser) {
           return 'Pending administrator details';
         }
@@ -37,9 +39,17 @@ export class UserDetailsComponent implements OnInit {
     }
 
 
-  public reinviteUser() {
+  public reinviteUser(user: User) {
+    console.log('calling reinvite user =>');
+    console.log(user);
     if (this.isSuperUser) {
-      this.store.dispatch(new fromStore.SubmitReinviteUser({organisationId: this.orgId, form: {}}));
+      const formValue = {
+        firstName: user.firstName,
+        lastName:  user.lastName,
+        email: user.email,
+        roles: [ ...AppConstants.SUPER_USER_ROLES]
+      };
+      this.store.dispatch(new fromStore.SubmitReinviteUser({organisationId: this.orgId, form: formValue}));
     } else {
       this.store.dispatch(new fromStore.ReinvitePendingUser());
     }
@@ -48,15 +58,6 @@ export class UserDetailsComponent implements OnInit {
 
   public onGoBack() {
     console.log('on go back ');
-    // if (this.showUserDetails) {
-    //   this.showUserDetails = false;
-    //   this.userDetails = null;
-    // } else {
-    //   this.store.dispatch(new fromRoot.Back());
-    // }
+    this.store.dispatch(new fromRoot.Back());
   }
-
-    // ngOnDestroy(): void {
-    //     // this.store.dispatch(new fromStore.Reset());
-    // }
 }

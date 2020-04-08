@@ -1,8 +1,9 @@
 <div class="hmcts-width-container" *ngIf="{orgid: organisationId$ | async} as data">
   <xuilib-hmcts-main-wrapper [summaryErrors]="errorsArray$ | async"
-  [backLink]="'/users'"
+  (backEvent)="onGoBack()"
   [title]="'Invite user'">
 
+  <ng-container *ngIf="data.orgid; else noUser">
     <p class="govuk-body">When you send this invitation, the user will receive an email from HM Courts and
     Tribunals Registrations so they can finish setting up their account.</p>
 
@@ -10,6 +11,13 @@
     [inviteUserForm]="inviteUserForm"
     (submitForm)="onSubmit(data.orgid)"
     ></xuilib-invite-user-form>
+  </ng-container>
+  <ng-template #noUser>
+    <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
+    <p>Try again later.</p>
+  </ng-template>
+
+   
 
   </xuilib-hmcts-main-wrapper>
 </div>

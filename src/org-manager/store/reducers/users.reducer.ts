@@ -34,7 +34,7 @@ export function reducer(
 
     case fromActions.SHOW_USER_DETAILS: {
       return {
-        ...state,
+        ...initialState,
         selectedUser: action.payload.userDetails,
         organisationId: action.payload.orgId,
         isSuperUser: action.payload.isSuperUser
@@ -50,6 +50,7 @@ export function reducer(
     }
 
     case fromActions.SUBMIT_REINVITE_USER_ERROR: {
+      console.log('submit error');
       const errorMessages = {
         serverResponse: {
           messages: [
