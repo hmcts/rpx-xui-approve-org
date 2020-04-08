@@ -16,7 +16,6 @@ export class UsersService {
   }
 
   public inviteUser(orgId, data): Observable<any> {
-    console.log('invite user srevice', this.reinviteUserUrl);
     return this.http.post<any>(this.reinviteUserUrl + orgId, data);
   }
 
