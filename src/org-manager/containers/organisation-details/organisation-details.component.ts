@@ -1,11 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { CookieService } from 'ngx-cookie';
 import { Observable } from 'rxjs';
 import {filter, take, takeWhile} from 'rxjs/operators';
-import { AppConstants } from 'src/app/app.constants';
-import { environment } from 'src/environments/environment';
+import { UserApprovalGuard } from 'src/org-manager/guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
@@ -28,14 +26,11 @@ export class OrganisationDetailsComponent implements OnInit {
   public organisationAdminEmail: string;
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly cookieService: CookieService) {}
+    private readonly userApprovalGuard: UserApprovalGuard) {}
 
   public ngOnInit(): void {
 
-    const userRoles = this.cookieService.get(environment.cookies.roles);
-    if (userRoles && userRoles.indexOf(AppConstants.XUI_APPROVAL_ROLE) !== -1) {
-      this.isXuiApproverUserdata = true;
-    }
+    this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
 
     this.store.dispatch(new fromStore.ResetOrganisationUsers());
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
