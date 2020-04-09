@@ -19,11 +19,18 @@ export class UserApprovalGuard implements CanActivate {
     }
 
     public canActivate() {
+      const isUserApproval = this.isUserApprovalRole();
+      if (!isUserApproval) {
+        this.redirectToPendingOrgs();
+      }
+      return isUserApproval;
+    }
+
+    public isUserApprovalRole(): boolean {
       const userRoles = this.cookieService.get(environment.cookies.roles);
       if (userRoles && userRoles.indexOf(AppConstants.XUI_APPROVAL_ROLE) !== -1) {
         return true;
       }
-      this.redirectToPendingOrgs();
       return false;
     }
 
