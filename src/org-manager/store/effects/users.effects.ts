@@ -19,7 +19,6 @@ export class UsersEffects {
   public showUserDetails$ = this.actions$.pipe(
     ofType(fromActions.SHOW_USER_DETAILS),
     map(() => {
-      console.log('SHOW_USER_DETAILS coming to effect');
       return new fromRoot.Go({ path: ['/user-details'] });
     })
   );
@@ -28,7 +27,6 @@ export class UsersEffects {
   public reinviteUser$ = this.actions$.pipe(
     ofType(fromActions.REINVITE_PENDING_USER),
     map(() => {
-      console.log('coming to effect');
       return new fromRoot.Go({ path: ['/reinvite-user'] });
     })
   );
@@ -38,8 +36,6 @@ export class UsersEffects {
     ofType(fromActions.SUBMIT_REINVITE_USER),
     map((action: fromActions.SubmitReinviteUser) => action.payload),
     switchMap((payload) => {
-      console.log('submit reinvite =========== payload submit');
-      console.log(payload);
       return this.usersService.inviteUser(payload.organisationId, payload.form).pipe(
           map(response => new fromActions.SubmitReinviteUserSucces(response)),
           tap(() => this.loggerService.info('User Reinvited')),

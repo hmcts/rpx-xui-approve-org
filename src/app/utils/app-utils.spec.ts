@@ -109,8 +109,8 @@ describe('AppUtils', () => {
       firstName: 'hello',
       lastName: 'world',
       email: 'test@test.com',
-      resendInvite: true,
       status: 'Pending',
+      resendInvite: true,
       ['manageCases']: 'Yes',
       ['manageUsers']: 'Yes',
       ['manageOrganisations']: 'No'

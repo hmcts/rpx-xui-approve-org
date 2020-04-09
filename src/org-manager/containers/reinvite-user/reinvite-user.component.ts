@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {select, Store} from '@ngrx/store';
-import * as fromStore from '../../store';
 import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
+import {select, Store} from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {AppConstants} from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
+import * as fromStore from '../../store';
 
 
 /*

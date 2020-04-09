@@ -29,7 +29,7 @@ export class UserDetailsComponent implements OnInit {
     }
 
     public getTitle(user: User) {
-      if (user && user.status === 'Active') { //TODO Change to Pending
+      if (user && user.status === 'Pending') {
         if (this.isSuperUser) {
           return 'Pending administrator details';
         }
@@ -52,7 +52,6 @@ export class UserDetailsComponent implements OnInit {
       this.store.dispatch(new fromStore.ReinvitePendingUser());
     }
   }
-
 
   public onGoBack() {
     this.store.dispatch(new fromRoot.Back());
