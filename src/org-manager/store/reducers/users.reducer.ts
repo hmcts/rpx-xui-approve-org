@@ -8,7 +8,6 @@ export interface UsersState {
   isSuperUser: boolean;
   selectedOrg: OrganisationVM;
   organisationId: string;
-  successUserEmail: string;
   isFormValid: boolean;
   errorHeader: string;
   errorMessages: object;
@@ -20,7 +19,6 @@ export const initialState: UsersState = {
   isSuperUser: false,
   selectedOrg: null,
   organisationId: null,
-  successUserEmail: null,
   errorHeader: null,
   errorMessages: {},
   isFormValid: false
@@ -41,16 +39,7 @@ export function reducer(
       };
     }
 
-    case fromActions.SUBMIT_REINVITE_USER_SUCCESS: {
-      console.log('submit success response: ');
-      console.log(action.payload);
-      return {
-        ...state
-      };
-    }
-
     case fromActions.SUBMIT_REINVITE_USER_ERROR: {
-      console.log('submit error');
       const errorMessages = {
         serverResponse: {
           messages: [
@@ -107,7 +96,6 @@ export function reducer(
 export const getSelectedUser = (state: UsersState) => state.selectedUser;
 export const getSelectedOrganisation = (state: UsersState) => state.selectedOrg;
 export const getIsSuperUser = (state: UsersState) => state.isSuperUser;
-// export const getPendingUser = (state: UsersState) => state.pendingUser;
 export const getOrganisationId = (state: UsersState) => state.organisationId;
 export const getInviteUserErrorMessage = (state: UsersState) => state.errorMessages;
 export const getInviteUserIsFormValid = (state: UsersState) => state.isFormValid;

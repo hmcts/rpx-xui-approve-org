@@ -85,6 +85,7 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
       ];
       value = {
         ...value,
+        resendInvite: true,
         roles
       };
       this.store.dispatch(new fromStore.SubmitReinviteUser({organisationId: orgId, form: value}));

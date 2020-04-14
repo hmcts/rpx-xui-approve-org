@@ -112,3 +112,8 @@ export const getOrganisationUsersList = createSelector(
   getOrganisationsState,
   fromOrganisation.getOrgUsersList
 );
+
+export const getShowOrgDetailsUserTabSelector = createSelector(
+  getOrganisationsState,
+  fromOrganisation.getShowOrgDetailsUserTab
+);
