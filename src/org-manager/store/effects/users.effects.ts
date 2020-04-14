@@ -6,6 +6,8 @@ import { LoggerService } from 'src/app/services/logger.service';
 import { UsersService } from 'src/org-manager/services';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
+import { ErrorReport } from 'src/org-manager/models/errorReport.model';
+import { Action } from '@ngrx/store';
 
 @Injectable()
 export class UsersEffects {
@@ -36,13 +38,17 @@ export class UsersEffects {
     ofType(fromActions.SUBMIT_REINVITE_USER),
     map((action: fromActions.SubmitReinviteUser) => action.payload),
     switchMap((payload) => {
+      console.log('form=> ');
+      console.log(payload.form);
       return this.usersService.inviteUser(payload.organisationId, payload.form).pipe(
-          map(response => new fromActions.SubmitReinviteUserSucces(response)),
+          map(response => new fromActions.SubmitReinviteUserSucces({...response, successEmail: payload.form.email})),
           tap(() => this.loggerService.info('User Reinvited')),
-          catchError(error => {
-            this.loggerService.error(error.message);
-            return of(new fromActions.SubmitReinviteUserError(error));
-          }));
+          catchError(errorReport => {
+            this.loggerService.error(errorReport.message);
+            const action = UsersEffects.getErrorAction(errorReport.error);
+            return of(action);
+          })
+          );
       })
   );
 
@@ -53,4 +59,45 @@ export class UsersEffects {
       return new fromRoot.Go({ path: ['/reinvite-user-success'] });
     })
   );
+
+  @Effect()
+  public failUser$ = this.actions$.pipe(
+    ofType(fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_400,
+      fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_404,
+      fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_500),
+    map(() => {
+      console.log('fail user effect1');
+      return new fromRoot.Go({ path: ['/reinvite-user-error'] });
+    })
+  );
+
+  // public failUser404$ = this.actions$.pipe(
+  //   ofType(fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_404),
+  //   map(() => {
+  //     console.log('fail user effect2');
+  //     return new fromRoot.Go({ path: ['/reinvite-user-error'] });
+  //   })
+  // );
+
+
+  public static getErrorAction(error: ErrorReport): Action {
+    console.log('get error action');
+    switch (error.apiStatusCode) {
+      case 400:
+      case 401:
+      case 402:
+      case 403:
+      case 405:
+        return new fromActions.SubmitReinviteUserErrorCode400(error);
+      case 404:
+        console.log('404');
+        return new fromActions.SubmitReinviteUserErrorCode404(error);
+      case 429:
+        return new fromActions.SubmitReinviteUserErrorCode429(error);
+      case 500:
+        return new fromActions.SubmitReinviteUserErrorCode500(error);
+      default:
+          return new fromActions.SubmitReinviteUserError(error);
+    }
+  }
 }

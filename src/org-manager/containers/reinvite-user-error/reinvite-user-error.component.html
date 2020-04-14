@@ -1,0 +1,15 @@
+<div class="hmcts-width-container" *ngIf="{header: header$ | async, reinviteError: reinviteError$ | async} as data">
+  <xuilib-hmcts-main-wrapper>
+    <h2 class="govuk-heading-l">{{ data.header }}</h2>
+    <p class="govuk-body" *ngIf="data.reinviteError.message">{{ data.reinviteError.message }}</p>
+    <p class="govuk-body" *ngIf="data.reinviteError.hasRefreshGoBack">
+      <a [routerLink]="" (click)="gotToManageUser()">Refresh and go back</a> to check the status of the user.
+    </p>
+    <p class="govuk-body" *ngIf="data.reinviteError.hasGetHelp">
+      <a [routerLink]="'/get-help'" target="_blank">Get help</a> to reactivate this account.
+    </p>
+    <p class="govuk-body" *ngIf="data.reinviteError.hasGoBackManageUsers">
+      <a [routerLink]="" (click)="gotToManageUser()">Back to manage users</a>
+    </p>
+  </xuilib-hmcts-main-wrapper>
+</div>
