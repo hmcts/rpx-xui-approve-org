@@ -31,6 +31,9 @@ export class OrganisationDetailsComponent implements OnInit {
   public ngOnInit(): void {
 
     this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
+    if (this.isXuiApproverUserdata) {
+      this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
+    }
 
     this.store.dispatch(new fromStore.ResetOrganisationUsers());
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
@@ -78,6 +81,7 @@ export class OrganisationDetailsComponent implements OnInit {
 
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
+    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab(showUsers));
   }
 
   public onShowUserDetails(user: User) {

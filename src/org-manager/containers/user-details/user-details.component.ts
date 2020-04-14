@@ -45,6 +45,7 @@ export class UserDetailsComponent implements OnInit {
         firstName: user.firstName,
         lastName:  user.lastName,
         email: user.email,
+        resendInvite: true,
         roles: [ ...AppConstants.SUPER_USER_ROLES]
       };
       this.store.dispatch(new fromStore.SubmitReinviteUser({organisationId: this.orgId, form: formValue}));
