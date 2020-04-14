@@ -1,3 +1,4 @@
+import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -13,6 +14,7 @@ import {
   FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
   FEATURE_PROXY_ENABLED,
+  FEATURE_REDIS_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
   HELMET,
   IDAM_CLIENT,
@@ -23,10 +25,11 @@ import {
   OAUTH_CALLBACK_URL,
   PROTOCOL,
   SERVICE_S2S_PATH,
+  SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET,
+  SESSION_SECRET
 } from './configuration/references'
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
@@ -116,6 +119,35 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
 
 tunnel.init()
+
+function healthcheckConfig(msUrl) {
+  return healthcheck.web(`${msUrl}/health`, {
+    deadline: 6000,
+    timeout: 6000,
+  })
+}
+
+const healthChecks = {
+  checks: {
+    feeAndPayApi: healthcheckConfig(getConfigValue(SERVICES_FEE_AND_PAY_PATH)),
+    idamApi: healthcheckConfig(getConfigValue(SERVICES_IDAM_API_PATH)),
+    idamWeb: healthcheckConfig(getConfigValue(SERVICES_IDAM_WEB)),
+    rdProfessionalApi: healthcheckConfig(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)),
+    redis: '',
+    s2s: healthcheckConfig(getConfigValue(SERVICE_S2S_PATH)),
+  },
+}
+
+if (showFeature(FEATURE_REDIS_ENABLED)) {
+  healthChecks.checks = {...healthChecks.checks, ...{
+    redis: healthcheck.raw(() => {
+      return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+    }),
+  }}
+}
+
+healthcheck.addTo(app, healthChecks)
+
 app.use(serviceRouter)
 
 /**
