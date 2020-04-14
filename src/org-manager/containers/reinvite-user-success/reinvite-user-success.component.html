@@ -1,4 +1,4 @@
-<div class="hmcts-width-container">
+<div class="hmcts-width-container" *ngIf="{user: user$ | async} as data">
     <main role="main" class="govuk-main-wrapper">
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">      
@@ -7,7 +7,7 @@
                         You've invited
                     </h1>
                     <div class="govuk-panel__body">
-                    {{this.userEmail$ | async}}
+                    {{ data.user.email }}
                     </div>
                 </div>
                 <h3 class="govuk-heading-m">What happens next</h3>
@@ -15,7 +15,7 @@
                 The recipient will receive an email from HM Courts and Tribunals Registrations so they can finish setting up their account.
                 </p>
                 <p class="govuk-body">
-                    <span text><a [routerLink]="['/pending-organisations']">Go back to Organisations</a></span>
+                    <span text><a [routerLink]="" (click)="onGoBack()">Back to manage users</a></span>
                 </p>
             </div>
         </div>
