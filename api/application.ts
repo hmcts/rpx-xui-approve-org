@@ -1,3 +1,4 @@
+import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -13,22 +14,22 @@ import {
   FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
   FEATURE_PROXY_ENABLED,
+  FEATURE_REDIS_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
   HELMET,
   IDAM_CLIENT,
-  IDAM_SECRET,
   MAX_LINES,
   MAX_LOG_LINE,
   MICROSERVICE,
   NOW,
   OAUTH_CALLBACK_URL,
   PROTOCOL,
-  S2S_SECRET,
   SERVICE_S2S_PATH,
+  SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET,
+  SESSION_SECRET
 } from './configuration/references'
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
@@ -81,16 +82,6 @@ console.log(getConfigValue(SERVICES_IDAM_WEB))
 console.log(getConfigValue(SERVICE_S2S_PATH))
 console.log(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH))
 
-// 4th set
-console.log(getConfigValue(SESSION_SECRET))
-
-console.log('S2S_SECRET:')
-console.log(getConfigValue(S2S_SECRET))
-console.log('IDAM_SECRET:')
-console.log(getConfigValue(IDAM_SECRET))
-console.log('APP_INSIGHTS_KEY:')
-console.log(getConfigValue(APP_INSIGHTS_KEY))
-
 console.log('Secure Cookie is:')
 console.log(showFeature(FEATURE_SECURE_COOKIE_ENABLED))
 console.log('App Insights enabled:')
@@ -128,6 +119,35 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
 
 tunnel.init()
+
+function healthcheckConfig(msUrl) {
+  return healthcheck.web(`${msUrl}/health`, {
+    deadline: 6000,
+    timeout: 6000,
+  })
+}
+
+const healthChecks = {
+  checks: {
+    feeAndPayApi: healthcheckConfig(getConfigValue(SERVICES_FEE_AND_PAY_PATH)),
+    idamApi: healthcheckConfig(getConfigValue(SERVICES_IDAM_API_PATH)),
+    idamWeb: healthcheckConfig(getConfigValue(SERVICES_IDAM_WEB)),
+    rdProfessionalApi: healthcheckConfig(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)),
+    redis: '',
+    s2s: healthcheckConfig(getConfigValue(SERVICE_S2S_PATH)),
+  },
+}
+
+if (showFeature(FEATURE_REDIS_ENABLED)) {
+  healthChecks.checks = {...healthChecks.checks, ...{
+    redis: healthcheck.raw(() => {
+      return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+    }),
+  }}
+}
+
+healthcheck.addTo(app, healthChecks)
+
 app.use(serviceRouter)
 
 /**
