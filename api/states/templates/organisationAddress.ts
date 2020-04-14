@@ -1,28 +1,5 @@
 export default {
-    idPrefix: 'tbc',
-    name: 'organisation-address',
-    header: "What's the address of your main office?",
     formGroupValidators: [],
-    validationHeaderErrorMessages: [
-        {
-            validationLevel: 'formControl',
-            controlId: 'officeAddressOne',
-            text: 'Enter Building and street',
-            href: '/register/organisation-address',
-        },
-        {
-            validationLevel: 'formControl',
-            controlId: 'townOrCity',
-            text: 'Enter town or city',
-            href: '/register/organisation-address',
-        },
-        {
-            validationLevel: 'formControl',
-            controlId: 'postcode',
-            text: 'Enter postcode',
-            href: '/register/organisation-address',
-        },
-    ],
     groups: [
         {
             hiddenInput: {
@@ -32,78 +9,101 @@ export default {
         },
         {
             input: {
-                label: {
-                    text: 'Building and street',
-                    classes: 'govuk-label--m',
-                },
-                validators: ['required'],
-                validationError: {
-                    value: 'Enter Building and street',
-                    controlId: 'officeAddressOne',
-                },
+                classes: '',
                 control: 'officeAddressOne',
-                classes: '',
+                label: {
+                    classes: 'govuk-label--m',
+                    text: 'Building and street',
+                },
+                validationError: {
+                    controlId: 'officeAddressOne',
+                    value: 'Enter Building and street',
+                },
+                validators: ['required'],
             },
         },
         {
             input: {
-                // validators: ['required'],
-                validationError: {
-                    value: 'Enter the length of hearing in minutes, for example "20"',
-                    controlId: 'officeAddressTwo',
-                },
+                classes: '',
                 control: 'officeAddressTwo',
-                classes: '',
+                validationError: {
+                    controlId: 'officeAddressTwo',
+                    value: 'Enter the length of hearing in minutes, for example "20"',
+                },
+
             },
         },
         {
             input: {
-                label: {
-                    text: 'Town or city',
-                    classes: 'govuk-label--m',
-                },
+                classes: 'govuk-!-width-two-thirds',
                 control: 'townOrCity',
-                validators: ['required'],
+                label: {
+                    classes: 'govuk-label--m',
+                    text: 'Town or city',
+                },
                 validationError: {
-                    value: 'Enter town or city',
                     controlId: 'townOrCity',
+                    value: 'Enter town or city',
                 },
-                classes: 'govuk-!-width-two-thirds',
-            },
-        },
-        {
-            input: {
-                label: {
-                    text: 'County',
-                    classes: 'govuk-label--m',
-                },
-                control: 'county',
-                classes: 'govuk-!-width-two-thirds',
-            },
-        },
-        {
-            input: {
-                label: {
-                    text: 'Postcode',
-                    classes: 'govuk-label--m',
-                },
-                control: 'postcode',
                 validators: ['required'],
-                validationError: {
-                    value: 'Enter enter postcode',
-                    controlId: 'Poscode',
+            },
+        },
+        {
+            input: {
+                classes: 'govuk-!-width-two-thirds',
+                control: 'county',
+                label: {
+                    classes: 'govuk-label--m',
+                    text: 'County',
                 },
+            },
+        },
+        {
+            input: {
                 classes: 'govuk-input--width-10',
+                control: 'postcode',
+                label: {
+                    classes: 'govuk-label--m',
+                    text: 'Postcode',
+                },
+                validationError: {
+                    controlId: 'Poscode',
+                    value: 'Enter enter postcode',
+                },
+                validators: ['required'],
             },
         },
         {
             button: {
-                control: 'createButton',
-                value: 'Continue',
-                type: 'submit',
                 classes: '',
+                control: 'createButton',
                 onEvent: 'continue',
+                type: 'submit',
+                value: 'Continue',
             },
+        },
+    ],
+    header: "What's the address of your main office?",
+    idPrefix: 'tbc',
+    name: 'organisation-address',
+    validationHeaderErrorMessages: [
+        {
+            controlId: 'officeAddressOne',
+            href: '/register/organisation-address',
+            text: 'Enter Building and street',
+            validationLevel: 'formControl',
+        },
+        {
+            controlId: 'townOrCity',
+            href: '/register/organisation-address',
+            text: 'Enter town or city',
+            validationLevel: 'formControl',
+        },
+        {
+            controlId: 'postcode',
+            href: '/register/organisation-address',
+            text: 'Enter postcode',
+            validationLevel: 'formControl',
         },
     ],
 }

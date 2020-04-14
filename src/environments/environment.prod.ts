@@ -4,6 +4,7 @@ export const environment = {
   serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
   serviceDeskTel: '0300 3030686',
   singleOrgUrl: 'api/organisations?organisationId=',
+  organisationUsersUrl: 'api/organisations?usersOrgId=',
   orgActiveUrl: 'api/organisations?status=ACTIVE',
   orgPendingUrl: 'api/organisations?status=PENDING',
   updatePbaUrl: 'api/updatePba',
@@ -21,7 +22,7 @@ export const environment = {
       idamLoginUrl: 'https://hmcts-access.service.gov.uk',
       idamWeb: 'https://hmcts-access.service.gov.uk',
       indexUrl: '/',
-      oauthCallbackUrl: 'oauth2/callback'
+      oauthCallbackUrl: '/oauth2/callback'
       }
   }
 };
