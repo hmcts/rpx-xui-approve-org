@@ -37,6 +37,17 @@ export const getInviteUserErrorHeaderSelector = createSelector(
   fromUsers.getInviteUserErrorHeader
 );
 
+
+export const getInviteSuccessEmailSelector = createSelector(
+  getUsersState,
+  fromUsers.getInviteSuccessEmail
+);
+
+export const getInviteErrorSelector = createSelector(
+  getUsersState,
+  fromUsers.getInviteError
+);
+
 export const getGetInviteUserErrorsArray = createSelector(
   getInviteUserErrorMessageSelector,
   getInviteUserIsFormValidSelector,
