@@ -2,27 +2,27 @@ import { Action } from '@ngrx/store';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 
 export enum OrgActionTypes {
-  LOAD_ACTIVE_ORGANISATIONS = '[Organisations] Load Active Organisations',
-  LOAD_ACTIVE_ORGANISATIONS_SUCCESS = '[Organisations] Load Active Organisations Success',
-  LOAD_ORGANISATIONS_FAIL = '[Organisations] Load Organisations Fail',
-  LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
-  LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
-  LOAD_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Load Fail',
-  LOAD_ORGANISATION_USERS = '[Organisations] Load Organisation Users',
-  RESET_ORGANISATION_USERS = '[Organisations] Reset Organisation Users',
-  LOAD_ORGANISATION_USERS_SUCCESS = '[Organisations] Load Single Organisation Success',
-  LOAD_ORGANISATION_USERS_FAIL = '[Organisations] Load Single Organisation Fail',
-  ADD_REVIEW_ORGANISATIONS = '[Pending Organisations] Add to Review Organisations',
-  DISPLAY_ERROR_MESSAGE_ORGANISATIONS = '[Pending Organisations] Display Error message Organisations',
-  APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
-  APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
-  APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
-  CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
-  UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Active Organisations Search String',
-  UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
-  LOAD_PBA_ACCOUNT_NAME = '[Organisations] Load Pba Account Name',
-  LOAD_PBA_ACCOUNT_NAME_SUCCESS = '[Organisations] Load Pba Account Name Success',
-  LOAD_PBA_ACCOUNT_NAME_FAIL = '[Organisations] Load Pba Account Name Fail'
+    LOAD_ACTIVE_ORGANISATIONS = '[Organisations] Load Active Organisations',
+    LOAD_ACTIVE_ORGANISATIONS_SUCCESS = '[Organisations] Load Active Organisations Success',
+    LOAD_ORGANISATIONS_FAIL = '[Organisations] Load Organisations Fail',
+    LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
+    LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
+    LOAD_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Load Fail',
+    LOAD_ORGANISATION_USERS = '[Organisations] Load Organisation Users',
+    RESET_ORGANISATION_USERS = '[Organisations] Reset Organisation Users',
+    LOAD_ORGANISATION_USERS_SUCCESS = '[Organisations] Load Single Organisation Success',
+    LOAD_ORGANISATION_USERS_FAIL = '[Organisations] Load Single Organisation Fail',
+    ADD_REVIEW_ORGANISATIONS = '[Pending Organisations] Add to Review Organisations',
+    DISPLAY_ERROR_MESSAGE_ORGANISATIONS = '[Pending Organisations] Display Error message Organisations',
+    APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
+    APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
+    APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
+    CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
+    UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Active Organisations Search String',
+    UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
+    LOAD_PBA_ACCOUNT_NAME = '[Organisations] Load Pba Account Name',
+    LOAD_PBA_ACCOUNT_NAME_SUCCESS = '[Organisations] Load Pba Account Name Success',
+    LOAD_PBA_ACCOUNT_NAME_FAIL = '[Organisations] Load Pba Account Name Fail'
 }
 
 export class LoadPendingOrganisations implements Action {

@@ -2,7 +2,7 @@ import * as express from 'express'
 
 let  request = null
 
-export function errorStack(req: express.Request , res: express.Response , next){
+export function errorStack(req: express.Request , res: express.Response , next) {
     request = req
     request.session.errorStack = []
     next()

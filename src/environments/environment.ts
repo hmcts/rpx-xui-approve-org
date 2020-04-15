@@ -12,7 +12,7 @@ export const environment = {
     singleOrgUrl: 'api/organisations?organisationId=',
     organisationUsersUrl: 'api/organisations?usersOrgId=',
     orgActiveUrl: 'api/organisations?status=ACTIVE',
-    updatePbaUrl: 'api/update-pba',
+    updatePbaUrl: 'api/updatePba',
     pbaAccUrl: 'api/pbaAccounts',
     orgPendingUrl: 'api/organisations?status=PENDING',
     orgApprovePendingUrl: 'api/organisations/',

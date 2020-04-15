@@ -1,195 +1,178 @@
-import axios from 'axios'
-import { NextFunction, Request, Response, Router } from 'express'
-import * as net from 'net'
-import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
-import * as passport from 'passport'
-import {app} from '../application'
-import { getConfigValue } from '../configuration'
-import {router as keepAlive} from '../keepalive'
-
+import axios, {AxiosResponse} from 'axios'
+import * as express from 'express'
+import * as jwtDecode from 'jwt-decode'
+import {getConfigValue, getProtocol} from '../configuration'
 import {
-  COOKIE_TOKEN,
-  COOKIES_USERID,
-  ENVIRONMENT,
-  IDAM_CLIENT,
-  IDAM_SECRET,
-  INDEX_URL, OAUTH_CALLBACK_URL,
-  PROTOCOL,
-  SERVICES_IDAM_API_PATH,
-  SERVICES_IDAM_WEB,
-  SERVICES_ISS_PATH
+  COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, IDAM_SECRET, INDEX_URL, LOGGING, OAUTH_CALLBACK_URL,
+  SERVICES_IDAM_API_PATH
 } from '../configuration/references'
 import {http} from '../lib/http'
 import * as log4jui from '../lib/log4jui'
-import {propsExist} from '../lib/objectUtilities'
+import {asyncReturnOrError} from '../lib/util'
+import {getUserDetails} from '../services/idam'
+import {serviceTokenGenerator} from './serviceToken'
+import {havePrdAdminRole} from './userRoleAuth'
 
-export const router = Router({mergeParams: true})
-
-const cookieToken = getConfigValue(COOKIE_TOKEN)
-const cookieUserId = getConfigValue(COOKIES_USERID)
-
-const idamUrl = getConfigValue(SERVICES_IDAM_WEB)
-const idamApiUrl = getConfigValue(SERVICES_IDAM_API_PATH)
-
+const idamUrl = getConfigValue(SERVICES_IDAM_API_PATH)
 const secret = getConfigValue(IDAM_SECRET)
-const idamClient = getConfigValue(IDAM_CLIENT)
 const logger = log4jui.getLogger('auth')
 
-export async function configureIssuer(url: string) {
-    let issuer: Issuer<Client>
+export async function attach(req: express.Request, res: express.Response, next: express.NextFunction) {
+  const session = req.session!
+  const accessToken = req.cookies[getConfigValue(COOKIE_TOKEN)]
 
-    logger.info('getting oidc discovery endpoint')
-    issuer = await Issuer.discover(`${url}/o`)
+  let expired
 
-    const metadata = issuer.metadata
-    metadata.issuer = getConfigValue(SERVICES_ISS_PATH)
+  if (accessToken) {
+    const jwtData = jwtDecode(accessToken)
+    const expires = new Date(jwtData.exp).getTime()
+    const now = new Date().getTime() / 1000
+    expired = expires < now
+  }
+  if (!accessToken || expired) {
+    logger.info('Auth Token expired!')
+    doLogout(req, res, 401)
+  } else {
+    const check = await sessionChainCheck(req, res, accessToken)
+    if (check) {
+      logger.info('Attaching auth')
+      // also use these as axios defaults
+      logger.info('Using Idam Token in defaults')
+      axios.defaults.headers.common.Authorization = `Bearer ${session.auth.token}`
+      const token = await asyncReturnOrError(serviceTokenGenerator(), 'Error getting s2s token', res, logger)
+      if (token) {
+        logger.info('Using S2S Token in defaults')
 
-    return new Issuer(metadata)
-}
-
-export async function configure(req: Request, res: Response, next: NextFunction) {
-
-    if (!app.locals.issuer) {
-        try {
-            app.locals.issuer = await configureIssuer(idamUrl)
-            logger._logger.info('Issuer configured:', app.locals.issuer)
-        } catch (error) {
-            return next(error)
-        }
+        axios.defaults.headers.common.ServiceAuthorization = token
+      } else {
+        logger.warn('Cannot attach S2S token ')
+        doLogout(req, res, 401)
+      }
     }
-
-    if (!app.locals.client) {
-        const clientMetadata: ClientMetadata = {
-            client_id: idamClient,
-            client_secret: secret,
-            response_types: ['code'],
-            token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
-        }
-
-        app.locals.client = new app.locals.issuer.Client(clientMetadata)
-        logger._logger.info('Client configured:', app.locals.client)
-    }
-
-    const host = req.get('host')
-    if (host.indexOf(':') > 0 ) {
-        const hostwithoutPort = host.substring(0, host.indexOf(':'))
-        if (net.isIP(hostwithoutPort)) {
-            return next()
-        }
-    }
-
-    console.log('host is', host)
-    const fqdn = getConfigValue(PROTOCOL) + '://' + host
-    const redirectUri = `${fqdn}/${getConfigValue(OAUTH_CALLBACK_URL)}`
-    console.log('redirectUri', redirectUri)
-
-    // logger.info('configuring strategy with redirect_uri:', redirectUri)
-
-    passport.unuse('oidc').use('oidc', new Strategy({
-        client: app.locals.client,
-        params: {
-            prompt: 'login',
-            redirect_uri: redirectUri,
-            scope: 'profile openid roles manage-user create-user',
-        },
-        sessionKey: 'xui_webapp', // being explicit here so we can set manually on logout
-        usePKCE: false, // issuer doesn't support pkce - no code_challenge_methods_supported
-    }, oidcVerify))
 
     next()
+  }
 }
 
-export async function doLogout(req: Request, res: Response, status = 302) {
+export async function getTokenFromCode(req: express.Request, res: express.Response): Promise<AxiosResponse> {
+  logger.info(`IDAM STUFF ===>> ${getConfigValue(IDAM_CLIENT)}:${secret}`)
+  const Authorization = `Basic ${Buffer.from(`${getConfigValue(IDAM_CLIENT)}:${secret}`).toString('base64')}`
+  const options = {
+    headers: {
+      Authorization,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  }
 
-    /*req.query.redirect = app.locals.client.endSessionUrl({
-        id_token_hint: req.session.passport.user.tokenset.id_token,
-        // TODO: we can generate a random state and use that
-        // post_logout_redirect_uri: app.locals.client.authorizationUrl({ state: 'testState' })
-    })*/
+  logger.info('Getting Token from auth code.')
 
-    try {
-      const access_token = req.session.passport.user.tokenset.access_token
-      const refresh_token = req.session.passport.user.tokenset.refresh_token
+  console.log(
+    `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
+      getProtocol()
+    }://${req.headers.host}${getConfigValue(OAUTH_CALLBACK_URL)}`
+  )
+  return http.post(
+    `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
+      getProtocol()
+    }://${req.headers.host}${getConfigValue(OAUTH_CALLBACK_URL)}`,
+    {},
+    options
+  )
+}
 
-      logger._logger.info('deleting tokens')
+async function sessionChainCheck(req: express.Request, res: express.Response, accessToken: string) {
+  if (!req.session.auth) {
+    logger.warn('Session expired. Trying to get user details again')
+    console.log(getUserDetails(accessToken, idamUrl))
+    const userDetails = await asyncReturnOrError(getUserDetails(accessToken, idamUrl), 'Cannot get user details', res, logger, false)
 
-      // we need this to revoke the access/refresh_token, however it is a legacy endpoint for oauth2
-      // endSessionUrl endpoint above would be much more appropriate
-      const auth = `Basic ${Buffer.from(`${idamClient}:${secret}`).toString('base64')}`
-      await http.delete(`${idamApiUrl}/session/${access_token}`, {
-        headers: {
-          Authorization: auth,
+    // if (!propsExist(userDetails, ['data', 'roles'])) {
+    //   logger.warn('User does not have any access roles.')
+    //   doLogout(req, res, 401)
+    //   return false
+    // }
+
+    if (!havePrdAdminRole(userDetails.data.roles)) {
+      logger.warn('User has no application access, as they do not have a Approve Organisations role.')
+      doLogout(req, res, 401)
+      return false
+    }
+
+    if (userDetails) {
+      logger.info('Setting session')
+      const orgIdResponse = {
+        data: {
+          id: '1',
         },
-      })
-      await http.delete(`${idamApiUrl}/session/${refresh_token}`, {
-        headers: {
-          Authorization: auth,
-        },
-      })
-
-      logger._logger.info('deleting auth headers')
-      delete axios.defaults.headers.common.Authorization
-      delete axios.defaults.headers.common['user-roles']
-
-      res.clearCookie('roles')
-      res.clearCookie(cookieToken)
-      res.clearCookie(cookieUserId)
-
-      //passport provides this method on request object
-      req.logout()
-
-      if (!req.query.noredirect && (req.query.redirect || status === 401)) {  // 401 is when no accessToken
-        res.redirect(status, req.query.redirect || '/')
-        logger.info('Logged out by userDetails')
-      } else {
-        const message = JSON.stringify({message: 'You have been logged out!'})
-        res.status(200).send(message)
-        logger.info('Logged out by Session')
       }
-
-    } catch (e) {
-      logger.error('error during logout', e)
-      res.redirect(status, req.query.redirect || '/')
+      req.session.auth = {
+        email: userDetails.data.email,
+        orgId: orgIdResponse.data.id,
+        roles: userDetails.data.roles,
+        token: accessToken,
+        userId: userDetails.data.id,
+      }
     }
+  }
+
+  if (!req.session.auth) {
+    logger.warn('Auth token  expired need to log in again')
+    doLogout(req, res, 401)
+    return false
+  }
+
+  return true
 }
 
-export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse, done: any) {
+export async function oauth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  logger.info('starting oauth callback')
+  const response = await getTokenFromCode(req, res)
+  const accessToken = response.data.access_token
 
-    if (!propsExist(userinfo, ['roles'])) {
-        logger.warn('User does not have any access roles.')
-        return done(null, false, {message: 'User does not have any access roles.'})
+  if (accessToken) {
+    // set browser cookie
+    res.cookie(getConfigValue(COOKIE_TOKEN), accessToken)
+
+    const jwtData: any = jwtDecode(accessToken)
+    const expires = new Date(jwtData.exp).getTime()
+    const now = new Date().getTime() / 1000
+    const expired = expires < now
+
+    if (expired) {
+      logger.warn('Auth token  expired need to log in again')
+      doLogout(req, res, 401)
+    } else {
+      const check = await sessionChainCheck(req, res, accessToken)
+      if (check) {
+        axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
+        axios.defaults.headers.common['user-roles'] = req.session.auth.roles
+
+        if (req.headers.ServiceAuthorization) {
+          axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
+        }
+
+        logger.info('save session', req.session)
+        req.session.save(() => {
+          res.redirect(getConfigValue(INDEX_URL) || '/')
+        })
+      }
     }
-    logger._logger.info('verify okay, user:', userinfo)
-    return done(null, {tokenset, userinfo})
+  } else {
+    logger.error('No user-profile token')
+    res.redirect(getConfigValue(INDEX_URL) || '/')
+  }
 }
 
-export function authCallbackSuccess(req: Request, res: Response) {
-    logger._logger.info('authCallbackSuccess', req.session)
-
-    // we need extra logic before success redirect
-    const userDetails = req.session.passport.user
-    const roles = userDetails.userinfo.roles
-
-    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
-    axios.defaults.headers.common['user-roles'] = roles.join()
-
-    res.cookie(cookieUserId, userDetails.userinfo.uid)
-    res.cookie(cookieToken, userDetails.tokenset.access_token)
-    res.cookie('roles', roles)
-
-    // need this so angular knows which enviroment config to use ...
-    res.cookie('platform', getConfigValue(ENVIRONMENT))
-
-    res.redirect('/')
+export function doLogout(req: express.Request, res: express.Response, status: number = 302) {
+  res.clearCookie(getConfigValue(COOKIE_TOKEN))
+  res.clearCookie(getConfigValue(COOKIES_USERID))
+  req.session.user = null
+  delete req.session.auth // delete so it does not get returned to FE
+  req.session.save(() => {
+    res.redirect(status, req.query.redirect || '/')
+  })
 }
 
-router.get('/logout', async (req: Request, res: Response) => {
-    await doLogout(req, res)
-})
-
-router.get('/login', (req, res, next) => {
-  logger._logger.info('hit /login', req.session)
-  passport.authenticate('oidc')(req, res, next)
-})
-
-router.use('/keepalive', keepAlive)
+export function logout(req, res) {
+  doLogout(req, res, 200)
+}

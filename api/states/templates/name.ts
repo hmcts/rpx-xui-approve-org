@@ -1,22 +1,5 @@
 export default {
-    idPrefix: 'tbc',
-    name: 'name',
-    header: "What's your name?",
     formGroupValidators: [],
-    validationHeaderErrorMessages: [
-        {
-            validationLevel: 'formControl',
-            controlId: 'firstName',
-            text: 'Enter first name',
-            href: '/register/organisation-address',
-        },
-        {
-            validationLevel: 'formControl',
-            controlId: 'lastName',
-            text: 'Enter Last Name',
-            href: '/register/organisation-address',
-        },
-    ],
     groups: [
         {
             hiddenInput: {
@@ -26,36 +9,36 @@ export default {
         },
         {
             input: {
-                label: {
-                    text: 'First name(s)',
-                    classes: 'govuk-label--m',
-                },
+                classes: 'govuk-!-width-two-thirds',
+                control: 'firstName',
                 hint: {
-                    text: 'Include all middle names.',
                     classes: 'govuk-hint',
+                    text: 'Include all middle names.',
+                },
+                label: {
+                    classes: 'govuk-label--m',
+                    text: 'First name(s)',
+                },
+                validationError: {
+                    controlId: 'firstName',
+                    value: 'Enter first name',
                 },
                 validators: ['required'],
-                validationError: {
-                    value: 'Enter first name',
-                    controlId: 'firstName',
-                },
-                control: 'firstName',
-                classes: 'govuk-!-width-two-thirds',
             },
         },
         {
             input: {
+                classes: 'govuk-!-width-two-thirds',
+                control: 'lastName',
                 label: {
-                    text: 'Last name',
                     classes: 'govuk-label--m',
+                    text: 'Last name',
+                },
+                validationError: {
+                    controlId: 'lastName',
+                    value: 'Enter last name',
                 },
                 validators: ['required'],
-                validationError: {
-                    value: 'Enter last name',
-                    controlId: 'lastName',
-                },
-                control: 'lastName',
-                classes: 'govuk-!-width-two-thirds',
             },
         },
         {
@@ -66,12 +49,29 @@ export default {
         },
         {
             button: {
-                control: 'createButton',
-                value: 'Continue',
-                type: 'submit',
                 classes: '',
+                control: 'createButton',
                 onEvent: 'continue',
+                type: 'submit',
+                value: 'Continue',
             },
+        },
+    ],
+    header: "What's your name?",
+    idPrefix: 'tbc',
+    name: 'name',
+    validationHeaderErrorMessages: [
+        {
+            controlId: 'firstName',
+            href: '/register/organisation-address',
+            text: 'Enter first name',
+            validationLevel: 'formControl',
+        },
+        {
+            controlId: 'lastName',
+            href: '/register/organisation-address',
+            text: 'Enter Last Name',
+            validationLevel: 'formControl',
         },
     ],
 }

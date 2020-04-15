@@ -4,7 +4,6 @@
     "token": "__auth__",
     "userId": "__userid__"
   },
-  "userTimeoutInSeconds": 28800,
   "exceptionOptions": {
     "maxLines": 1
   },
@@ -14,7 +13,7 @@
   "idamClient": "xuiaowebapp",
   "microservice": "xui_webapp",
   "now": false,
-  "oauthCallbackUrl": "oauth2/callback",
+  "oauthCallbackUrl": "/oauth2/callback",
   "protocol": "https",
   "services": {
     "ccdDataApi": "https://gateway-ccd.ithc.platform.hmcts.net",
@@ -25,13 +24,13 @@
     "feeAndPayApi": "https://payment-api-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
   },
-  "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts",
   "sessionSecret": "secretSauce",
   "feature": {
     "appInsightsEnabled": true,
     "proxyEnabled": false,
     "secureCookieEnabled": true,
-    "helmetEnabled": false
+    "helmetEnabled": false,
+    "redisEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -81,6 +80,13 @@
     "hidePoweredBy": {
       "setTo": "XUI Server 1.0"
     }
+  },
+  "redis": {
+    "host": "xui-ao-webapp-prod.redis.cache.windows.net",	
+    "port": 6380,	
+    "tls": true,
+    "prefix": "activity:",
+    "ttl": 86400
   }
 }
 
