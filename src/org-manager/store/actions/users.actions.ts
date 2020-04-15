@@ -7,10 +7,7 @@ export const SUBMIT_REINVITE_USER = '[Users] Submit Reinvite User';
 export const SUBMIT_REINVITE_USER_SUCCESS = '[Users] Submit Reinvite User Success';
 export const SUBMIT_REINVITE_USER_ERROR = '[Users] Submit Reinvite User Error';
 export const UPDATE_ERROR_MESSAGES = '[Users] Update Error Messages';
-export const SUBMIT_REINVITE_USER_ERROR_CODE_400 = '[Users] Submit Reinvite User Error With 400';
-export const SUBMIT_REINVITE_USER_ERROR_CODE_404 = '[Users] Submit Reinvite User Error With 404';
 export const SUBMIT_REINVITE_USER_ERROR_CODE_429 = '[Users] Submit Reinvite User Error With 429';
-export const SUBMIT_REINVITE_USER_ERROR_CODE_500 = '[Users] Submit Reinvite User Error With 500';
 
 export class ShowUserDetails implements Action {
   public readonly type = SHOW_USER_DETAILS;
@@ -42,24 +39,8 @@ export class UpdateErrorMessages implements Action {
   constructor(public payload) { }
 }
 
-
-export class SubmitReinviteUserErrorCode400 implements Action {
-  public readonly type = SUBMIT_REINVITE_USER_ERROR_CODE_400;
-  constructor(public payload) { }
-}
-
-export class SubmitReinviteUserErrorCode404 implements Action {
-  public readonly type = SUBMIT_REINVITE_USER_ERROR_CODE_404;
-  constructor(public payload) { }
-}
-
 export class SubmitReinviteUserErrorCode429 implements Action {
   public readonly type = SUBMIT_REINVITE_USER_ERROR_CODE_429;
-  constructor(public payload) { }
-}
-
-export class SubmitReinviteUserErrorCode500 implements Action {
-  public readonly type = SUBMIT_REINVITE_USER_ERROR_CODE_500;
   constructor(public payload) { }
 }
 
@@ -70,8 +51,5 @@ export type UsersAction =
   | SubmitReinviteUserSucces
   | SubmitReinviteUserError
   | UpdateErrorMessages
-  | SubmitReinviteUserErrorCode400
-  | SubmitReinviteUserErrorCode404
-  | SubmitReinviteUserErrorCode429
-  | SubmitReinviteUserErrorCode500;
+  | SubmitReinviteUserErrorCode429;
 

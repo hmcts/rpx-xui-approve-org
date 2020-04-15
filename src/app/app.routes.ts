@@ -1,3 +1,4 @@
+import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/services/auth/auth.guard';
 import { PrivacyPolicyComponent, CookiePolicyComponent, TermsAndConditionsComponent, AccessibilityComponent } from './components';
@@ -28,6 +29,10 @@ export const ROUTES: Routes = [
   {
     path: 'accessibility',
     component: AccessibilityComponent
+  },
+  {
+    path: 'service-down',
+    component: ServiceDownComponent
   },
   {
     path: '**',

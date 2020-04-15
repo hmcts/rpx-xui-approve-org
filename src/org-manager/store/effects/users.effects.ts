@@ -8,6 +8,8 @@ import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
 import { ErrorReport } from 'src/org-manager/models/errorReport.model';
 import { Action } from '@ngrx/store';
+import { GlobalError } from 'src/app/store/reducers/app.reducer';
+import { AppUtils } from 'src/app/utils/app-utils';
 
 @Injectable()
 export class UsersEffects {
@@ -45,7 +47,7 @@ export class UsersEffects {
           tap(() => this.loggerService.info('User Reinvited')),
           catchError(errorReport => {
             this.loggerService.error(errorReport.message);
-            const action = UsersEffects.getErrorAction(errorReport.error);
+            const action = UsersEffects.getErrorAction(errorReport.error, payload.organisationId);
             return of(action);
           })
           );
@@ -60,42 +62,20 @@ export class UsersEffects {
     })
   );
 
-  @Effect()
-  public failUser$ = this.actions$.pipe(
-    ofType(fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_400,
-      fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_404,
-      fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_500),
-    map(() => {
-      console.log('fail user effect1');
-      return new fromRoot.Go({ path: ['/reinvite-user-error'] });
-    })
-  );
-
-  // public failUser404$ = this.actions$.pipe(
-  //   ofType(fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_404),
-  //   map(() => {
-  //     console.log('fail user effect2');
-  //     return new fromRoot.Go({ path: ['/reinvite-user-error'] });
-  //   })
-  // );
-
-
-  public static getErrorAction(error: ErrorReport): Action {
-    console.log('get error action');
+  public static getErrorAction(error: ErrorReport, orgId: string): Action {
     switch (error.apiStatusCode) {
       case 400:
       case 401:
       case 402:
       case 403:
       case 405:
-        return new fromActions.SubmitReinviteUserErrorCode400(error);
+        return new fromRoot.AddGlobalError(AppUtils.get400Error(orgId));
       case 404:
-        console.log('404');
-        return new fromActions.SubmitReinviteUserErrorCode404(error);
+        return new fromRoot.AddGlobalError(AppUtils.get404Error(orgId));
       case 429:
         return new fromActions.SubmitReinviteUserErrorCode429(error);
       case 500:
-        return new fromActions.SubmitReinviteUserErrorCode500(error);
+        return new fromRoot.AddGlobalError(AppUtils.get500Error(orgId));
       default:
           return new fromActions.SubmitReinviteUserError(error);
     }

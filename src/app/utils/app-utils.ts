@@ -1,6 +1,7 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { Organisation, OrganisationUser, OrganisationVM } from 'src/org-manager/models/organisation';
 import { AppConstants } from '../app.constants';
+import { GlobalError } from '../store/reducers/app.reducer';
 
 /**
  * Contains static stateless utility methods for the App
@@ -117,11 +118,63 @@ export class AppUtils {
           }
         });
         newUser.status = AppUtils.capitalizeString(user.idamStatus);
-        // newUser.resendInvite = true; //TODO CHANGE IT TO IDAM STATUS PENDING
         newUser.resendInvite = user.idamStatus === 'PENDING';
         users.push(newUser);
       });
     }
     return users;
+  }
+
+
+  public static get500Error(orgId: string): GlobalError {
+    const errorMessages = [{
+      bodyText: 'Try again later.',
+      urlText: null,
+      url: null
+    },
+    {
+      bodyText: null,
+      urlText: 'Go back to manage users',
+      url: `/organisation-details/${orgId}`
+    }];
+
+    const globalError = {
+      header: 'Sorry, there is a problem with the service',
+      errors: errorMessages
+    };
+    return globalError;
+  }
+
+  public static get400Error(orgId: string): GlobalError {
+    const errorMessage = {
+      bodyText: 'to check the status of the user',
+      urlText: 'Refresh and go back',
+      url: `/organisation-details/${orgId}`
+    };
+    const globalError = {
+      header: 'Sorry, there is a problem',
+      errors: [errorMessage]
+    };
+    return globalError;
+  }
+
+  public static get404Error(orgId: string): GlobalError {
+
+    const errorMessages = [{
+      bodyText: 'to reactivate this account',
+      urlText: 'Get help',
+      url: '/get-help'
+    },
+    {
+      bodyText: null,
+      urlText: 'Go back to manage users',
+      url: `/organisation-details/${orgId}`
+    }];
+
+    const globalError = {
+      header: 'Sorry, there is a problem with this account',
+      errors: errorMessages
+    };
+    return globalError;
   }
 }

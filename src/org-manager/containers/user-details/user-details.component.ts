@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
+import { ofType, Actions } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import {Observable, pipe} from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
@@ -17,7 +18,10 @@ export class UserDetailsComponent implements OnInit {
     public isSuperUser: boolean;
     public orgId: string;
 
-    constructor(private readonly store: Store<fromStore.OrganisationRootState>) { }
+    public showWarningMessage: boolean;
+
+    constructor(private readonly store: Store<fromStore.OrganisationRootState>,
+                private readonly actions$: Actions) { }
 
     public ngOnInit() {
       this.errorsArray$ = this.store.pipe(select(fromStore.getGetInviteUserErrorsArray));
@@ -26,6 +30,10 @@ export class UserDetailsComponent implements OnInit {
 
       this.store.pipe(select(fromStore.getIsSuperUserSelector)).subscribe(value => this.isSuperUser = value);
       this.store.pipe(select(fromStore.getOrganisationIdSelector)).subscribe(value => this.orgId = value);
+
+      this.actions$.pipe(ofType(fromStore.SUBMIT_REINVITE_USER_ERROR_CODE_429)).subscribe(() => {
+        this.showWarningMessage = true;
+      });
     }
 
     public getTitle(user: User) {
@@ -40,6 +48,7 @@ export class UserDetailsComponent implements OnInit {
 
 
   public reinviteUser(user: User) {
+    this.showWarningMessage = false;
     if (this.isSuperUser) {
       const formValue = {
         firstName: user.firstName,
