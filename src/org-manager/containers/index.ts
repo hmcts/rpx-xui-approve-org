@@ -7,7 +7,6 @@ import { ReinviteUserSuccessComponent } from './reinvite-user-success/reinvite-u
 import { ReinviteUserComponent } from './reinvite-user/reinvite-user.component';
 import { SearchOrganisationsFormComponent } from './search-organisations-form/search-organisations-form.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
-import { ReinviteUserErrorComponent } from './reinvite-user-error/reinvite-user-error.component';
 
 export const containers: any[] = [
   ActiveOrganisationsComponent,
@@ -18,8 +17,7 @@ export const containers: any[] = [
   EditDetailsComponent,
   ReinviteUserComponent,
   ReinviteUserSuccessComponent,
-  UserDetailsComponent,
-  ReinviteUserErrorComponent
+  UserDetailsComponent
 ];
 
 export * from './active-organisations/active-organisations.component';

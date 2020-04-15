@@ -11,7 +11,6 @@ import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success
 import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
 import { UserDetailsComponent } from './containers/user-details/user-details.component';
 import { UserApprovalGuard } from './guards/users-approval.guard';
-import { ReinviteUserErrorComponent } from './containers/reinvite-user-error/reinvite-user-error.component';
 
 export const ROUTES: Routes = [
   {
@@ -68,12 +67,7 @@ export const ROUTES: Routes = [
     path: 'reinvite-user-success',
     component: ReinviteUserSuccessComponent,
     canActivate: [AuthGuard, UserApprovalGuard],
-  },
-  {
-    path: 'reinvite-user-error',
-    component: ReinviteUserErrorComponent,
-    canActivate: [AuthGuard, UserApprovalGuard],
-  },
+  }
 ];
 
 export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

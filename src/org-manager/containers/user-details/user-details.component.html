@@ -1,7 +1,8 @@
 <div class="hmcts-width-container" *ngIf="{user: user$ | async} as data">
   <xuilib-hmcts-main-wrapper [summaryErrors]="errorsArray$ | async"
   (backEvent)="onGoBack()"
-  [title]="getTitle(data?.user)">
+  [title]="getTitle(data?.user)"
+  [showWarningMessage]="showWarningMessage">
     <ng-container *ngIf="data.user; else noUser">
       <xuilib-user-details [user]="data.user"
               (reinvite)="reinviteUser($event)"></xuilib-user-details>

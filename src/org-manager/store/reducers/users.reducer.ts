@@ -1,7 +1,6 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { AppConstants } from 'src/app/app.constants';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
-import { ReinviteError } from 'src/org-manager/models/reinvite-error.model';
 import * as fromActions from '../actions/users.actions';
 
 export interface UsersState {
@@ -13,7 +12,6 @@ export interface UsersState {
   errorHeader: string;
   errorMessages: object;
   reinviteSuccessEmail: string;
-  reinviteError: ReinviteError;
 }
 
 export const initialState: UsersState = {
@@ -24,14 +22,7 @@ export const initialState: UsersState = {
   errorHeader: null,
   errorMessages: {},
   isFormValid: false,
-  reinviteSuccessEmail: null,
-  reinviteError: {
-    message: null,
-    hasRefreshGoBack: false,
-    hasGoBackButton: false,
-    hasGoBackManageUsers: false,
-    hasGetHelp: false,
-  }
+  reinviteSuccessEmail: null
 };
 
 export function reducer(
@@ -73,54 +64,21 @@ export function reducer(
       };
     }
 
-    case fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_400: {
-      //refresh and go back to check the status of the user
-      // no back button
-      return {
-        ...state,
-        errorHeader: 'Sorry, there is a problem',
-        reinviteError: {
-          message: null,
-          hasRefreshGoBack: true,
-          hasGoBackButton: false,
-          hasGoBackManageUsers: false,
-          hasGetHelp: false,
+    case fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_429: {
+      const errorMessages = {
+        serverResponse1: {
+          messages: ['This user has already been invited in the last hour']
+        },
+        serverResponse2: {
+          messages: ['The recipient will receive an email from HM Courts and Tribunals Registrations so they can finish setting up their account']
         }
       };
-    }
-
-    case fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_404: {
-      console.log('it is 404');
-      // there is back button
-      // get help to reactivate this account
-      // goback to manage users
       return {
         ...state,
-        errorHeader: 'Sorry, there is a problem with this account',
-        reinviteError: {
-          message: null,
-          hasRefreshGoBack: false,
-          hasGoBackButton: true,
-          hasGoBackManageUsers: true,
-          hasGetHelp: true,
-        }
-      };
-    }
-
-    case fromActions.SUBMIT_REINVITE_USER_ERROR_CODE_500: {
-      // no back button
-      // Try again later
-      // goback to manage users
-      return {
-        ...state,
-        errorHeader: 'Sorry, there is a problem with this service',
-        reinviteError: {
-          message: 'Try again later',
-          hasRefreshGoBack: false,
-          hasGoBackButton: false,
-          hasGoBackManageUsers: true,
-          hasGetHelp: false,
-        }
+        isFormValid: false,
+        errorHeader: '',
+        reinviteSuccessEmail: null,
+        errorMessages,
       };
     }
 
@@ -170,4 +128,3 @@ export const getInviteUserErrorMessage = (state: UsersState) => state.errorMessa
 export const getInviteUserIsFormValid = (state: UsersState) => state.isFormValid;
 export const getInviteUserErrorHeader = (state: UsersState) => state.errorHeader;
 export const getInviteSuccessEmail = (state: UsersState) => state.reinviteSuccessEmail;
-export const getInviteError = (state: UsersState) => state.reinviteError;
