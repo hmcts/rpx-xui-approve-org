@@ -1,42 +1,24 @@
-// import { InviteUserSuccessComponent } from './reinvite-user-success.component';
-// import { TestBed, ComponentFixture } from '@angular/core/testing';
-// import { StoreModule, Store, combineReducers } from '@ngrx/store';
-// import * as fromStore from '../../store';
-// import * as fromRoot from '../../../app/store';
-// import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-// import { RouterTestingModule } from '@angular/router/testing';
+import * as fromRoot from '../../../app/store';
+import { ReinviteUserSuccessComponent } from './reinvite-user-success.component';
 
-// describe('Invite User Success Component', () => {
+describe('ReinviteUserSuccessComponent', () => {
 
-//     let fixture: ComponentFixture<InviteUserSuccessComponent>;
-//     let component: InviteUserSuccessComponent;
-//     let store: Store<fromStore.UserState>;
+    let component: ReinviteUserSuccessComponent;
+    let userStoreSpyObject;
 
-//     beforeEach((() => {
-//         TestBed.configureTestingModule({
-//             imports: [
-//                 RouterTestingModule,
-//                 StoreModule.forRoot({
-//                     ...fromRoot.reducers,
-//                     feature: combineReducers(fromStore.reducers),
-//                 }),
-//             ],
-//             schemas: [
-//               CUSTOM_ELEMENTS_SCHEMA
-//             ],
-//             declarations: [
-//                 InviteUserSuccessComponent
-//             ]
-//         }).compileComponents();
+    beforeEach(() => {
+        userStoreSpyObject = jasmine.createSpyObj('Store', ['pipe', 'select', 'dispatch']);
+        component = new ReinviteUserSuccessComponent(userStoreSpyObject);
+    });
 
-//         store = TestBed.get(Store);
+    it('Is Truthy', () => {
+        expect(component).toBeTruthy();
+    });
 
-//         fixture = TestBed.createComponent(InviteUserSuccessComponent);
-//         component = fixture.componentInstance;
-//         fixture.detectChanges();
-//     }));
-
-//     it('should have a component', () => {
-//         expect(component).toBeTruthy();
-//     });
-// });
+    it('should dispatch fromRoot.Back action on goBack', () => {
+      component.orgId = 'orgId';
+      const expectedAction = new fromRoot.Go({ path: ['/organisation-details', 'orgId'] });
+      component.onGoBack();
+      expect(userStoreSpyObject.dispatch).toHaveBeenCalledWith(expectedAction);
+    });
+});

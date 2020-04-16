@@ -1,42 +1,58 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { User } from '@hmcts/rpx-xui-common-lib';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
-import { UserDetailsComponent } from './user-details.component';
+import {UserDetailsComponent} from './user-details.component';
+import { AppConstants } from 'src/app/app.constants';
 
-describe('UserDetailsComponent Component', () => {
+describe('User Details Component', () => {
 
-    let fixture: ComponentFixture<UserDetailsComponent>;
     let component: UserDetailsComponent;
-    let store: Store<fromStore.OrganisationRootState>;
+    let userStoreSpyObject;
 
-    beforeEach((() => {
-        TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule,
-                StoreModule.forRoot({
-                    ...fromRoot.reducers,
-                    feature: combineReducers(fromStore.reducers),
-                }),
-            ],
-            schemas: [
-              CUSTOM_ELEMENTS_SCHEMA
-            ],
-            declarations: [
-              UserDetailsComponent
-            ]
-        }).compileComponents();
+    beforeEach(() => {
+        userStoreSpyObject = jasmine.createSpyObj('Store', ['pipe', 'select', 'dispatch']);
+        const actionSpy = jasmine.createSpyObj('actionSpy', ['pipe']);
+        component = new UserDetailsComponent(userStoreSpyObject, actionSpy);
+    });
 
-        store = TestBed.get(Store);
+    it('Is Truthy', () => {
+        expect(component).toBeTruthy();
+    });
 
-        fixture = TestBed.createComponent(UserDetailsComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    }));
+    it('Should return a correct title based on condition', () => {
+      component.isSuperUser = true;
+      expect(component.getTitle({firstName: 'first', lastName: 'last', status: 'Pending'} as User)).toEqual('Pending administrator details');
+      expect(component.getTitle({firstName: 'first', lastName: 'last', status: 'active'} as User)).toEqual('User');
+      component.isSuperUser = false;
+      expect(component.getTitle({firstName: 'first', lastName: 'last', status: 'Pending'} as User)).toEqual('Pending user details');
+    });
 
-    // it('should have a component', () => {
-    //     expect(component).toBeTruthy();
-    // });
+    it('reinviteUser should dispatch reinvite pending user when is not super user', () => {
+      component.isSuperUser = false;
+      const expectedAction = new fromStore.ReinvitePendingUser();
+      component.reinviteUser({firstName: 'first', lastName: 'last', status: 'Pending'} as User);
+      expect(userStoreSpyObject.dispatch).toHaveBeenCalledWith(expectedAction);
+    });
+
+    it('reinviteUser should dispatch SubmitReinviteUser pending user when is super user', () => {
+      component.isSuperUser = true;
+      component.orgId = 'orgId';
+      const user = {firstName: 'first', lastName: 'last', status: 'Pending', email: 'test@email.com'} as User;
+      const formValue = {
+        firstName: user.firstName,
+        lastName:  user.lastName,
+        email: user.email,
+        resendInvite: true,
+        roles: [ ...AppConstants.SUPER_USER_ROLES]
+      };
+      const expectedAction = new fromStore.SubmitReinviteUser({organisationId: 'orgId', form: formValue});
+      component.reinviteUser(user);
+      expect(userStoreSpyObject.dispatch).toHaveBeenCalledWith(expectedAction);
+    });
+
+    it('should dispatch fromRoot.Back action on goBack', () => {
+      const expectedAction = new fromRoot.Back();
+      component.onGoBack();
+      expect(userStoreSpyObject.dispatch).toHaveBeenCalledWith(expectedAction);
+    });
 });

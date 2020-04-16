@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
+import { Actions, ofType } from '@ngrx/effects';
 import {select, Store} from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {AppConstants} from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
-import { Actions, ofType } from '@ngrx/effects';
 
 
 /*
@@ -18,7 +18,7 @@ import { Actions, ofType } from '@ngrx/effects';
   selector: 'app-prd-reinvite-user-component',
   templateUrl: './reinvite-user.component.html',
 })
-export class ReinviteUserComponent implements OnInit, OnDestroy {
+export class ReinviteUserComponent implements OnInit {
 
   constructor(private readonly store: Store<fromStore.OrganisationRootState>,
               private readonly actions$: Actions) { }
@@ -122,6 +122,4 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromRoot.Back());
   }
 
-  public ngOnDestroy(): void {
-  }
 }

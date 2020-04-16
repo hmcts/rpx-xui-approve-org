@@ -7,6 +7,7 @@ import { LoggerService } from 'src/app/services/logger.service';
 import { UsersService } from 'src/org-manager/services';
 import * as fromActions from '../actions/users.actions';
 import * as fromEffects from './users.effects';
+import { Go } from 'src/app/store';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -46,6 +47,43 @@ describe('Organisation Effects', () => {
 
     effects = TestBed.get(fromEffects.UsersEffects);
 
+  });
+
+
+  describe('Users Effects$', () => {
+    it('should showUserDetails  action', () => {
+      const action = new fromActions.ShowUserDetails({userDetails: {}, orgId: 'id', isSuperUser: true});
+      const completion = new Go({
+        path: ['/user-details']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.showUserDetails$).toBeObservable(expected);
+    });
+  });
+
+  describe('Users Effects$', () => {
+    it('should reinviteUser  action', () => {
+      const action = new fromActions.ReinvitePendingUser();
+      const completion = new Go({
+        path: ['/reinvite-user']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.reinviteUser$).toBeObservable(expected);
+    });
+  });
+
+  describe('Users Effects$', () => {
+    it('should confirmUser  action', () => {
+      const action = new fromActions.SubmitReinviteUserSucces({success: true, successEmail: 'test@email.com'});
+      const completion = new Go({
+        path: ['/reinvite-user-success']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.confirmUser$).toBeObservable(expected);
+    });
   });
 
   describe('Users Effects ', () => {
