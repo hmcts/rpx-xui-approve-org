@@ -48,6 +48,16 @@ describe('Edit Details selectors', () => {
     });
   });
 
+  describe('getIsSuperUserSelector', () => {
+    it('should return super user', () => {
+      let result;
+      store.pipe(select(fromSelectors.getIsSuperUserSelector)).subscribe(value => {
+        result = value;
+      });
+      expect(result).toEqual(initialState.isSuperUser);
+    });
+  });
+
   describe('getInviteUserErrorMessageSelector', () => {
     it('should return errorMessages', () => {
       let result;

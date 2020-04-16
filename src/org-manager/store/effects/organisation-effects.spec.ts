@@ -123,6 +123,7 @@ describe('Organisation Effects', () => {
     });
   });
 
+
   describe('addReviewOrganisations$', () => {
     it('should addReviewOrganisations  action', () => {
       const action = new fromActons.AddReviewOrganisations({} as OrganisationVM);
@@ -135,6 +136,15 @@ describe('Organisation Effects', () => {
     });
   });
 
+  describe('approvePendingOrgsSuccess$', () => {
+    it('should approvePendingOrgsSuccess  action', () => {
+      const action = new fromActons.ApprovePendingOrganisationsSuccess({} as OrganisationVM);
+      const completion = new Go({
+        path: ['/approve-organisations-success']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.approvePendingOrgsSuccess$).toBeObservable(expected);
+    });
+  });
 });
-
-
