@@ -116,7 +116,7 @@ variable "feature_app_insights_enabled" {
 }
 
 variable "feature_redis_enabled" {
-  default = "false"
+  default = "true"
 }
 variable "feature_proxy_enabled" {
   default = "false"
