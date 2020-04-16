@@ -76,4 +76,14 @@ describe('OrganisationDetailsComponent', () => {
     expect(component.showUsers).toBeTruthy();
   });
 
+  it('should dispatch fromRoot.ShowUserDetails action on goBack when onShowUserDetails is called', () => {
+    component.organisationAdminEmail = 'test@email.com';
+    component.organisationId = 'orgId';
+    const user = {firstName: 'first', lastName: 'last', email: 'test@email.com'} as User;
+    const expectedAction = new fromOrganisationPendingStore.ShowUserDetails({userDetails: user, isSuperUser: true, orgId: 'orgId'});
+    spyOn(store, 'dispatch').and.callThrough();
+    component.onShowUserDetails(user);
+    expect(store.dispatch).toHaveBeenCalledWith(expectedAction);
+  });
+
 });

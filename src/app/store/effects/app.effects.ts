@@ -23,7 +23,6 @@ export class AppEffects {
     public addGlobalErrorEffect$ = this.actions$.pipe(
       ofType(appActions.APP_ADD_GLOBAL_ERROR),
       map(() => {
-        console.log('addGlobalErrorEffect');
         return new fromRoot.Go({ path: ['/service-down'] });
       })
     );
