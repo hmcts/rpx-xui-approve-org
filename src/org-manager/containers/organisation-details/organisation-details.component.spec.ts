@@ -48,8 +48,17 @@ describe('OrganisationDetailsComponent', () => {
       expect(component).toBeTruthy();
   });
 
-  it('should dispatch fromRoot.Back action on goBack when showUserDetails is false', () => {
-    const expectedAction = new fromRoot.Back();
+  it('on go back to active org when the organisation is active', () => {
+    component.isActiveOrg = true;
+    const expectedAction = new fromRoot.Go({ path: ['/active-organisation']});
+    spyOn(store, 'dispatch').and.callThrough();
+    component.onGoBack();
+    expect(store.dispatch).toHaveBeenCalledWith(expectedAction);
+  });
+
+  it('on go back to pending org when the organisation is not active', () => {
+    component.isActiveOrg = false;
+    const expectedAction = new fromRoot.Go({ path: ['/pending-organisations']});
     spyOn(store, 'dispatch').and.callThrough();
     component.onGoBack();
     expect(store.dispatch).toHaveBeenCalledWith(expectedAction);
