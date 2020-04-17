@@ -110,7 +110,7 @@ export const orgStatePending = {
  errorMessage: '',
  orgForReview: null,
  organisationUsersList: { users: null, isError: false },
- showOrganisationDetailsUserTab: false
+ showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false}
 };
 
 export const orgStateActive = {
@@ -145,7 +145,7 @@ export const orgStateActive = {
   errorMessage: '',
   orgForReview: null,
   organisationUsersList: { users: null, isError: false },
-  showOrganisationDetailsUserTab: false
+  showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false}
 };
 
 export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [

@@ -20,7 +20,7 @@ const organisationState = {
   errorMessage: '',
   orgForReview: null,
   organisationUsersList: { users: null, isError: false },
-  showOrganisationDetailsUserTab: false
+  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false}
 };
 
 describe('Organisation selectors', () => {
