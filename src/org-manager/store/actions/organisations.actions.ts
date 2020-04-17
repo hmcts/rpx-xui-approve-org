@@ -146,7 +146,7 @@ export class ResetOrganisationUsers implements Action {
 
 export class ShowOrganisationDetailsUserTab implements Action {
   public readonly type = OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB;
-  constructor(public payload: boolean) { }
+  constructor(public payload: {orgId: string; showUserTab: boolean}) { }
 }
 
 export type OrganisationsActions =

@@ -18,7 +18,7 @@ export interface OrganisationState {
   organisationUsersList: OrganisationUserListModel;
   errorMessage: string;
   orgForReview: OrganisationVM | null;
-  showOrganisationDetailsUserTab: boolean;
+  showOrganisationDetailsUserTab: {orgId: string; showUserTab: boolean};
 }
 
 export const initialState: OrganisationState = {
@@ -27,7 +27,7 @@ export const initialState: OrganisationState = {
   organisationUsersList: {users: null, isError: false},
   errorMessage: '',
   orgForReview: null,
-  showOrganisationDetailsUserTab: false
+  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false}
 };
 
 export function reducer(
@@ -326,9 +326,16 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB: {
+      let isShowUserTab = false;
+      if (state.showOrganisationDetailsUserTab.orgId && state.showOrganisationDetailsUserTab.orgId === action.payload.orgId) {
+        isShowUserTab = action.payload.showUserTab;
+      }
       return {
         ...state,
-        showOrganisationDetailsUserTab: action.payload
+        showOrganisationDetailsUserTab: {
+          orgId: action.payload.orgId,
+          showUserTab: isShowUserTab
+        }
       };
     }
 
@@ -342,4 +349,4 @@ export const getActiveOrgEntities = (state: OrganisationState) => state.activeOr
 export const getPendingOrgEntities = (state: OrganisationState) => state.pendingOrganisations;
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
 export const getOrgUsersList = (state: OrganisationState) => state.organisationUsersList;
-export const getShowOrgDetailsUserTab = (state: OrganisationState) => state.showOrganisationDetailsUserTab;
+export const getShowOrgDetailsUserTab = (state: OrganisationState) => state.showOrganisationDetailsUserTab.showUserTab;

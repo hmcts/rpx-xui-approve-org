@@ -159,11 +159,10 @@ export class AppUtils {
   }
 
   public static get404Error(orgId: string): GlobalError {
-
     const errorMessages = [{
-      bodyText: 'to reactivate this account',
-      urlText: 'Get help',
-      url: '/get-help'
+      bodyText: 'Contact Support teams to reactivate this account',
+      urlText: null,
+      url: null
     },
     {
       bodyText: null,
@@ -177,4 +176,5 @@ export class AppUtils {
     };
     return globalError;
   }
+
 }

@@ -24,6 +24,7 @@ export class OrganisationDetailsComponent implements OnInit {
   public showUserNavigation = false;
   public organisationId: string;
   public organisationAdminEmail: string;
+  public isActiveOrg = false;
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly userApprovalGuard: UserApprovalGuard) {}
@@ -50,11 +51,13 @@ export class OrganisationDetailsComponent implements OnInit {
     ).subscribe(({organisationId, pbaNumber, isAccLoaded, status, adminEmail}) => {
       this.organisationId = organisationId;
       this.organisationAdminEmail = adminEmail;
-      if (status === 'ACTIVE' && this.isXuiApproverUserdata) {
-        this.showUserNavigation = true;
-        this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
-      } else {
-        this.showUserNavigation = false;
+      this.showUserNavigation = false;
+      if (status === 'ACTIVE') {
+        this.isActiveOrg = true;
+        if (this.isXuiApproverUserdata) {
+          this.showUserNavigation = true;
+          this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
+        }
       }
 
       if (!isAccLoaded && pbaNumber.length) {
@@ -70,7 +73,7 @@ export class OrganisationDetailsComponent implements OnInit {
   }
 
   public onGoBack() {
-    this.store.dispatch(new fromRoot.Back());
+    this.store.dispatch(new fromRoot.Go({ path: [this.isActiveOrg ? '/active-organisation' : '/pending-organisations'] }));
   }
 
   public approveOrganisation(data: OrganisationVM) {
@@ -81,7 +84,7 @@ export class OrganisationDetailsComponent implements OnInit {
 
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
-    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab(showUsers));
+    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({orgId: this.organisationId, showUserTab: showUsers}));
   }
 
   public onShowUserDetails(user: User) {
