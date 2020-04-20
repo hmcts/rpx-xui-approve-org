@@ -78,7 +78,7 @@ module "app" {
         RD_PROFESSIONAL_API_SERVICE = "${var.rd_professional_api_service}"
         S2S_SERVICE = "${var.s2s_service}"
         FEE_AND_PAY_API = "${var.fee_and_pay_api}"
-
+        ISS_SERVICE = "${var.iss_service}"
         # PROXY (If required)
         AO_HTTP_PROXY = "${var.ao_http_proxy}"
         AO_NO_PROXY = "${var.ao_no_proxy}"
