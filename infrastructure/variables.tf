@@ -118,6 +118,10 @@ variable "feature_app_insights_enabled" {
 variable "feature_redis_enabled" {
   default = "false"
 }
+variable "feature_oidc_enabled" {
+  default = "false"
+}
+
 variable "feature_proxy_enabled" {
   default = "false"
 }
