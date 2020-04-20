@@ -59,6 +59,7 @@ module "app" {
         FEATURE_PROXY_ENABLED = "${var.feature_proxy_enabled}"
         FEATURE_HELMET_ENABLED = "${var.feature_helmet_enabled}"
         FEATURE_REDIS_ENABLED = "${var.feature_redis_enabled}"
+        FEATURE_OIDC_ENABLED = "${var.feature_oidc_enabled}"
 
         // Redis Cloud
         REDISCLOUD_URL = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"

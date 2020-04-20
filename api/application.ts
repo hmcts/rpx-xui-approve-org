@@ -13,6 +13,7 @@ import {
   COOKIES_USERID,
   FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
+  FEATURE_OIDC_ENABLED,
   FEATURE_PROXY_ENABLED,
   FEATURE_REDIS_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
@@ -96,6 +97,9 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   console.log('Helmet enabled')
   app.use(helmet(getConfigValue(HELMET)))
 }
+
+console.log('OIDC enabled:')
+console.log(showFeature(FEATURE_OIDC_ENABLED))
 
 app.use(
   session({

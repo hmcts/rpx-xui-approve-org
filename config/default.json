@@ -30,7 +30,8 @@
     "proxyEnabled": false,
     "secureCookieEnabled": true,
     "helmetEnabled": false,
-    "redisEnabled": true
+    "redisEnabled": true,
+    "oidcEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {
