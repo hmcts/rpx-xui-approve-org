@@ -10,6 +10,7 @@
  * contain any additional constants. They are grouped as a representation of the .yaml structure.
  */
 export const ENVIRONMENT = 'environment'
+export const SERVICES_ISS_PATH = 'iss'
 
 export const COOKIE_TOKEN = 'cookies.token'
 export const COOKIES_USERID = 'cookies.userId'
