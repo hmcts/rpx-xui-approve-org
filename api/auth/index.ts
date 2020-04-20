@@ -1,21 +1,37 @@
 import axios, {AxiosResponse} from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
-import {getConfigValue, getProtocol} from '../configuration'
+import * as net from 'net'
+import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
+import * as passport from 'passport'
+import {app} from '../application'
+import {getConfigValue, getProtocol, showFeature} from '../configuration'
 import {
-  COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, IDAM_SECRET, INDEX_URL, LOGGING, OAUTH_CALLBACK_URL,
-  SERVICES_IDAM_API_PATH
+  COOKIE_TOKEN, COOKIES_USERID, ENVIRONMENT, FEATURE_OIDC_ENABLED, IDAM_CLIENT, IDAM_SECRET, INDEX_URL,
+  LOGGING,
+  OAUTH_CALLBACK_URL,
+  PROTOCOL,
+  SERVICES_IDAM_API_PATH,
+  SERVICES_ISS_PATH
 } from '../configuration/references'
+import {router as keepAlive} from '../keepalive'
 import {http} from '../lib/http'
 import * as log4jui from '../lib/log4jui'
+import { propsExist } from '../lib/objectUtilities'
 import {asyncReturnOrError} from '../lib/util'
 import {getUserDetails} from '../services/idam'
 import {serviceTokenGenerator} from './serviceToken'
 import {havePrdAdminRole} from './userRoleAuth'
 
+const cookieToken = getConfigValue(COOKIE_TOKEN)
+const cookieUserId = getConfigValue(COOKIES_USERID)
 const idamUrl = getConfigValue(SERVICES_IDAM_API_PATH)
 const secret = getConfigValue(IDAM_SECRET)
+const idamClient = getConfigValue(IDAM_CLIENT)
 const logger = log4jui.getLogger('auth')
+const idamApiUrl = getConfigValue(SERVICES_IDAM_API_PATH)
+
+export const router = express.Router({mergeParams: true})
 
 export async function attach(req: express.Request, res: express.Response, next: express.NextFunction) {
   const session = req.session!
@@ -55,8 +71,8 @@ export async function attach(req: express.Request, res: express.Response, next: 
 }
 
 export async function getTokenFromCode(req: express.Request, res: express.Response): Promise<AxiosResponse> {
-  logger.info(`IDAM STUFF ===>> ${getConfigValue(IDAM_CLIENT)}:${secret}`)
-  const Authorization = `Basic ${Buffer.from(`${getConfigValue(IDAM_CLIENT)}:${secret}`).toString('base64')}`
+  logger.info(`IDAM STUFF ===>> ${idamClient}:${secret}`)
+  const Authorization = `Basic ${Buffer.from(`${idamClient}:${secret}`).toString('base64')}`
   const options = {
     headers: {
       Authorization,
@@ -163,7 +179,7 @@ export async function oauth(req: express.Request, res: express.Response, next: e
   }
 }
 
-export function doLogout(req: express.Request, res: express.Response, status: number = 302) {
+export function doLogoutOAuth2(req: express.Request, res: express.Response, status) {
   res.clearCookie(getConfigValue(COOKIE_TOKEN))
   res.clearCookie(getConfigValue(COOKIES_USERID))
   req.session.user = null
@@ -173,6 +189,186 @@ export function doLogout(req: express.Request, res: express.Response, status: nu
   })
 }
 
-export function logout(req, res) {
-  doLogout(req, res, 200)
+export function doLogout(req: express.Request, res: express.Response, status: number = 302) {
+  return showFeature(FEATURE_OIDC_ENABLED) ? doLogoutOidc(req, res) : doLogoutOAuth2(req, res, status)
+}
+
+export async function configureIssuer(url: string) {
+  let issuer: Issuer<Client>
+
+  logger.info('getting oidc discovery endpoint')
+  issuer = await Issuer.discover(`${url}/o`)
+
+  const metadata = issuer.metadata
+  metadata.issuer = getConfigValue(SERVICES_ISS_PATH)
+
+  return new Issuer(metadata)
+}
+
+export async function configure(req: express.Request, res: express.Response, next: express.NextFunction) {
+
+  if (!app.locals.issuer) {
+      try {
+          app.locals.issuer = await configureIssuer(idamUrl)
+          logger._logger.info('Issuer configured:', app.locals.issuer)
+      } catch (error) {
+          return next(error)
+      }
+  }
+
+  if (!app.locals.client) {
+      const clientMetadata: ClientMetadata = {
+          client_id: idamClient,
+          client_secret: secret,
+          response_types: ['code'],
+          token_endpoint_auth_method: 'client_secret_post', // The default is 'client_secret_basic'.
+      }
+
+      app.locals.client = new app.locals.issuer.Client(clientMetadata)
+      logger._logger.info('Client configured:', app.locals.client)
+  }
+
+  const host = req.get('host')
+  if (host.indexOf(':') > 0 ) {
+      const hostwithoutPort = host.substring(0, host.indexOf(':'))
+      if (net.isIP(hostwithoutPort)) {
+          return next()
+      }
+  }
+
+  console.log('host is', host)
+  const fqdn = getConfigValue(PROTOCOL) + '://' + host
+  const redirectUri = `${fqdn}/${getConfigValue(OAUTH_CALLBACK_URL)}`
+  console.log('redirectUri', redirectUri)
+
+  // logger.info('configuring strategy with redirect_uri:', redirectUri)
+
+  passport.unuse('oidc').use('oidc', new Strategy({
+      client: app.locals.client,
+      params: {
+          prompt: 'login',
+          redirect_uri: redirectUri,
+          scope: 'profile openid roles manage-user create-user',
+      },
+      sessionKey: 'xui_webapp', // being explicit here so we can set manually on logout
+      usePKCE: false, // issuer doesn't support pkce - no code_challenge_methods_supported
+  }, oidcVerify))
+
+  next()
+}
+
+export async function openIdConnectAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+  passport.authenticate('oidc', (error, user, info) => {
+
+    // TODO: give a more meaningful error to user rather than redirect back to idam
+    // return next(error) would pass off to error.handler.ts to show users a proper error page etc
+    if (error) {
+      logger.error(error)
+      // return next(error)
+    }
+    if (info) {
+      logger.info(info)
+      // return next(info)
+    }
+    if (!user) {
+      logger._logger.info('No user found, redirecting')
+      return res.redirect('/auth/login')
+    }
+    req.logIn(user, err => {
+      if (err) {
+        return next(err)
+      }
+      logger._logger.info('logged in user, redirecting to authCallbackSuccess')
+      return openIdAuthCallbackSuccess(req, res)
+    })
+  })(req, res, next)
+}
+
+export function openIdAuthCallbackSuccess(req: express.Request, res: express.Response) {
+  logger._logger.info('authCallbackSuccess', req.session)
+
+  // we need extra logic before success redirect
+  const userDetails = req.session.passport.user
+  const roles = userDetails.userinfo.roles
+
+  axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
+  axios.defaults.headers.common['user-roles'] = roles.join()
+
+  res.cookie(cookieUserId, userDetails.userinfo.uid)
+  res.cookie(cookieToken, userDetails.tokenset.access_token)
+  res.cookie('roles', roles)
+
+  // need this so angular knows which enviroment config to use ...
+  res.cookie('platform', getConfigValue(ENVIRONMENT))
+
+  res.redirect('/')
+}
+
+export async function oidcVerify(tokenset: TokenSet, userinfo: UserinfoResponse, done: any) {
+
+  if (!propsExist(userinfo, ['roles'])) {
+      logger.warn('User does not have any access roles.')
+      return done(null, false, {message: 'User does not have any access roles.'})
+  }
+  logger._logger.info('verify okay, user:', userinfo)
+  return done(null, {tokenset, userinfo})
+}
+
+export async function doLogoutOidc(req: express.Request, res: express.Response, status = 302) {
+
+  try {
+    const access_token = req.session.passport.user.tokenset.access_token
+    const refresh_token = req.session.passport.user.tokenset.refresh_token
+
+    logger._logger.info('deleting tokens')
+
+    // we need this to revoke the access/refresh_token, however it is a legacy endpoint for oauth2
+    // endSessionUrl endpoint above would be much more appropriate
+    const auth = `Basic ${Buffer.from(`${idamClient}:${secret}`).toString('base64')}`
+    await http.delete(`${idamApiUrl}/session/${access_token}`, {
+      headers: {
+        Authorization: auth,
+      },
+    })
+    await http.delete(`${idamApiUrl}/session/${refresh_token}`, {
+      headers: {
+        Authorization: auth,
+      },
+    })
+
+    logger._logger.info('deleting auth headers')
+    delete axios.defaults.headers.common.Authorization
+    delete axios.defaults.headers.common['user-roles']
+
+    res.clearCookie('roles')
+    res.clearCookie(cookieToken)
+    res.clearCookie(cookieUserId)
+
+    //passport provides this method on request object
+    req.logout()
+
+    if (!req.query.noredirect && (req.query.redirect || status === 401)) {  // 401 is when no accessToken
+      res.redirect(status, req.query.redirect || '/')
+      logger.info('Logged out by userDetails')
+    } else {
+      const message = JSON.stringify({message: 'You have been logged out!'})
+      res.status(200).send(message)
+      logger.info('Logged out by Session')
+    }
+
+  } catch (e) {
+    logger.error('error during logout', e)
+    res.redirect(status, req.query.redirect || '/')
+  }
+}
+
+if (showFeature(FEATURE_OIDC_ENABLED)) {
+  router.get('/logout', async (req: express.Request, res: express.Response) => {
+    await doLogoutOidc(req, res)
+  })
+  router.get('/login', (req, res, next) => {
+  logger._logger.info('hit /login', req.session)
+  passport.authenticate('oidc')(req, res, next)
+  })
+  router.use('/keepalive', keepAlive)
 }
