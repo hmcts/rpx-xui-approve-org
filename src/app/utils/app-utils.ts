@@ -28,6 +28,9 @@ export class AppUtils {
       case '/organisations/organisation': {
         return 'Check details - Approve organisations';
       }
+      default: {
+        // do nothing
+      }
     }
     // need to use undex of becaue id the id that is passed on the end.
     if (url.indexOf('/organisations/organisation/') !== -1) {
@@ -70,24 +73,29 @@ export class AppUtils {
     const organisations: Organisation[] = [];
     obj.forEach((org) => {
       const organisation: Organisation = {
-        organisationIdentifier: org.organisationId,
-        sraId: org.sraId,
+        organisationIdentifier: org.organisationId.trim(),
+        sraId: org.sraId.trim(),
         contactInformation: [{
-          addressLine1: org.addressLine1,
-          addressLine2: org.addressLine2,
-          townCity: org.townCity,
-          county: org.county,
-          dxAddress: org.dxNumber,
-          postCode: org.postCode
+          addressLine1: org.addressLine1.trim(),
+          addressLine2: org.addressLine2.trim(),
+          townCity: org.townCity.trim(),
+          county: org.county.trim(),
+          dxAddress: [
+            {
+              dxNumber: org.dxNumber[0].dxNumber.trim(),
+              dxExchange: org.dxNumber[0].dxExchange.trim()
+            }
+          ],
+          postCode: org.postCode.trim()
           }],
         superUser: {
-          userIdentifier: org.admin,
-          firstName: org.admin,
-          lastName: org.admin,
-          email: org.adminEmail
+          userIdentifier: org.admin.trim(),
+          firstName: org.admin.trim(),
+          lastName: org.admin.trim(),
+          email: org.adminEmail.trim()
         },
         status: 'ACTIVE',
-        name: org.name,
+        name: org.name.trim(),
         paymentAccount: org.pbaNumber
       };
       organisations.push(organisation);
