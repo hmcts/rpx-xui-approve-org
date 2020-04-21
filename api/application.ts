@@ -177,6 +177,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     done(null, id)
   })
   app.get('/oauth2/callback', auth.openIdConnectAuth)
+  app.use('/auth', auth.router)
 } else {
   app.get('/oauth2/callback', auth.oauth)
 }

@@ -12,7 +12,7 @@ import {
   LOGGING,
   OAUTH_CALLBACK_URL,
   PROTOCOL,
-  SERVICES_IDAM_API_PATH,
+  SERVICES_IDAM_API_PATH, SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH
 } from '../configuration/references'
 import {router as keepAlive} from '../keepalive'
@@ -26,7 +26,7 @@ import {havePrdAdminRole} from './userRoleAuth'
 
 const cookieToken = getConfigValue(COOKIE_TOKEN)
 const cookieUserId = getConfigValue(COOKIES_USERID)
-const idamUrl = getConfigValue(SERVICES_IDAM_API_PATH)
+const idamUrl = getConfigValue(SERVICES_IDAM_WEB)
 const secret = getConfigValue(IDAM_SECRET)
 const idamClient = getConfigValue(IDAM_CLIENT)
 const logger = log4jui.getLogger('auth')
@@ -338,6 +338,7 @@ export async function doLogoutOidc(req: express.Request, res: express.Response, 
     })
 
     logger._logger.info('deleting auth headers')
+    // Don't forget this has now moved!
     delete axios.defaults.headers.common.Authorization
     delete axios.defaults.headers.common['user-roles']
 
