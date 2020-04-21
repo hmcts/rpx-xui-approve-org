@@ -4,6 +4,7 @@ import * as jwtDecode from 'jwt-decode'
 import * as net from 'net'
 import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
 import * as passport from 'passport'
+import * as path from 'path'
 import {app} from '../application'
 import {getConfigValue, getProtocol, showFeature} from '../configuration'
 import {
@@ -237,8 +238,8 @@ export async function configure(req: express.Request, res: express.Response, nex
   }
 
   console.log('host is', host)
-  const fqdn = getConfigValue(PROTOCOL) + '://' + host
-  const redirectUri = `${fqdn}/${getConfigValue(OAUTH_CALLBACK_URL)}`
+  let redirectUri = path.join(host, getConfigValue(OAUTH_CALLBACK_URL))
+  redirectUri = getConfigValue(PROTOCOL) + '://' + redirectUri
   console.log('redirectUri', redirectUri)
 
   // logger.info('configuring strategy with redirect_uri:', redirectUri)
@@ -363,12 +364,13 @@ export async function doLogoutOidc(req: express.Request, res: express.Response, 
 }
 
 if (showFeature(FEATURE_OIDC_ENABLED)) {
+  console.log('test123')
   router.get('/logout', async (req: express.Request, res: express.Response) => {
     await doLogoutOidc(req, res)
   })
   router.get('/login', (req, res, next) => {
-  logger._logger.info('hit /login', req.session)
-  passport.authenticate('oidc')(req, res, next)
+    logger._logger.info('hit /login', req.session)
+    passport.authenticate('oidc')(req, res, next)
   })
   router.use('/keepalive', keepAlive)
 }
