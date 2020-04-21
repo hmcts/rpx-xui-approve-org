@@ -30,7 +30,8 @@ export class AuthService {
 
   public loginRedirect() {
     this.generateLoginUrl().subscribe( url => {
-      window.location.href = url;
+      // TODO: need feature toggle here and also get this url from config etc
+      window.location.href = 'http://localhost:3000/auth/login';
     });
   }
 
