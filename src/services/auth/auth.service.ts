@@ -29,12 +29,14 @@ export class AuthService {
   }
 
   public loginRedirect() {
-    // TODO: need feature toggle here
-    window.location.href = '/auth/login';
-    /*this.generateLoginUrl().subscribe( url => {
-      // TODO: need feature toggle here
+    const featureEnabled = this.envService.get('oidcEnabled');
+    if (featureEnabled) {
       window.location.href = '/auth/login';
-    });*/
+    } else {
+      this.generateLoginUrl().subscribe( url => {
+        window.location.href = url;
+      });
+    }
   }
 
   public decodeJwt(jwt) {
