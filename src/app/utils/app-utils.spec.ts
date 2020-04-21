@@ -78,7 +78,7 @@ describe('AppUtils', () => {
       name: 'Full Name',
       view: 'View',
       pbaNumber: [{}],
-      dxNumber: [{}],
+      dxNumber: [{dxNumber: '123', dxExchange: '123'}],
       sraId: null,
       postCode: 'postcode'
     }];
