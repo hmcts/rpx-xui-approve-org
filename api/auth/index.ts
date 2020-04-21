@@ -26,7 +26,7 @@ import {havePrdAdminRole} from './userRoleAuth'
 
 const cookieToken = getConfigValue(COOKIE_TOKEN)
 const cookieUserId = getConfigValue(COOKIES_USERID)
-const idamUrl = getConfigValue(SERVICES_IDAM_WEB)
+const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
 const secret = getConfigValue(IDAM_SECRET)
 const idamClient = getConfigValue(IDAM_CLIENT)
 const logger = log4jui.getLogger('auth')
@@ -100,8 +100,8 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
 async function sessionChainCheck(req: express.Request, res: express.Response, accessToken: string) {
   if (!req.session.auth) {
     logger.warn('Session expired. Trying to get user details again')
-    console.log(getUserDetails(accessToken, idamUrl))
-    const userDetails = await asyncReturnOrError(getUserDetails(accessToken, idamUrl), 'Cannot get user details', res, logger, false)
+    console.log(getUserDetails(accessToken, idamApiUrl))
+    const userDetails = await asyncReturnOrError(getUserDetails(accessToken, idamApiUrl), 'Cannot get user details', res, logger, false)
 
     // if (!propsExist(userDetails, ['data', 'roles'])) {
     //   logger.warn('User does not have any access roles.')
@@ -210,7 +210,7 @@ export async function configure(req: express.Request, res: express.Response, nex
 
   if (!app.locals.issuer) {
       try {
-          app.locals.issuer = await configureIssuer(idamUrl)
+          app.locals.issuer = await configureIssuer(idamWebUrl)
           logger._logger.info('Issuer configured:', app.locals.issuer)
       } catch (error) {
           return next(error)
