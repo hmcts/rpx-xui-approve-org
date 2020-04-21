@@ -16,6 +16,7 @@ export interface EnvironmentConfig {
     secureCookie: boolean;
     services: EnvironmentConfigServices;
     sessionSecret: string;
+    oidcEnabled: boolean;
   }
 
 export interface EnvironmentConfigCookies {
