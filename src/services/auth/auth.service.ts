@@ -15,7 +15,7 @@ export class AuthService {
     private readonly envService: EnvironmentService
   ) {
   }
-  // TODO perhaps move this logic to BE
+  // TODO remove/toggle this for oidc
   public generateLoginUrl(): Observable<string> {
     return this.envService.config$.map( config => {
       const port = window.location.port ? `:${window.location.port}` : ``;
@@ -29,10 +29,12 @@ export class AuthService {
   }
 
   public loginRedirect() {
-    this.generateLoginUrl().subscribe( url => {
-      // TODO: need feature toggle here and also get this url from config etc
-      window.location.href = 'http://localhost:3000/auth/login';
-    });
+    // TODO: need feature toggle here
+    window.location.href = '/auth/login';
+    /*this.generateLoginUrl().subscribe( url => {
+      // TODO: need feature toggle here
+      window.location.href = '/auth/login';
+    });*/
   }
 
   public decodeJwt(jwt) {
