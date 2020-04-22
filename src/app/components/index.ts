@@ -4,6 +4,7 @@ import { HmctsGlobalFooterComponent } from './hmcts-global-footer/hmcts-global-f
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header/hmcts-global-header.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
+import { SignedOutComponent } from './signed-out/signed-out.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
 
 export const components: any[] = [
@@ -13,7 +14,8 @@ export const components: any[] = [
   CookiePolicyComponent,
   TermsAndConditionsComponent,
   PrivacyPolicyComponent,
-  AccessibilityComponent
+  AccessibilityComponent,
+  SignedOutComponent
 ];
 
 export * from './hmcts-global-header/hmcts-global-header.component';
@@ -23,3 +25,4 @@ export * from './cookie-policy/cookie-policy.component';
 export * from './terms-and-conditions/terms-and-conditions.component';
 export * from './privacy-policy/privacy-policy.component';
 export * from './accessibility/accessibility.component';
+export * from './signed-out/signed-out.component';
