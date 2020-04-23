@@ -10,6 +10,7 @@ import organisationRouter from './organisation'
 import pbaAccounts from './pbaAccounts'
 import stateRouter from './states'
 import pbaRouter from './updatePba'
+import userDetailsRouter from './user'
 
 const router = express.Router({ mergeParams: true })
 // open routes
@@ -21,6 +22,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     router.use(auth.attach)
 }
 
+router.use('/user', userDetailsRouter)
 router.use('/decisions', stateRouter)
 router.use('/healthCheck', healthCheck)
 router.use('/organisations', organisationRouter)
