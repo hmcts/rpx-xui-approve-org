@@ -2,7 +2,8 @@
   "environment": "NODE_CONFIG_ENV",
   "cookies": {
     "token": "COOKIE_TOKEN",
-    "userId": "COOKIE_USER_ID"
+    "userId": "COOKIE_USER_ID",
+    "roles":  "COOKIE_ROLES"
   },
   "exceptionOptions": {
     "maxLines": "EXCEPTION_OPTIONS_MAX_LINES"
