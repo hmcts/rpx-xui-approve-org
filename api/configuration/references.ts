@@ -55,3 +55,5 @@ export const HELMET = 'helmet'
 export const REDISCLOUD_URL = 'secrets.rpx.ao-webapp-redis-connection-string'
 export const REDIS_TTL = 'redis.ttl'
 export const REDIS_KEY_PREFIX = 'redis.prefix'
+
+export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
