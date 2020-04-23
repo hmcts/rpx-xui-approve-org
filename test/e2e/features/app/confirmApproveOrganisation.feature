@@ -6,6 +6,7 @@ Feature: Confirmation Screen
     Given I am logged into approve organisation with HMCTS admin
     Then I should be redirected to approve organisation dashboard page
     Then I Check the active Organisation banner appear
+    Then I search with organisation name and validate results
 
 @all
   Scenario: Verify the confirmation screen of Approve Organisation
