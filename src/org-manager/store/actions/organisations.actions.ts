@@ -22,7 +22,8 @@ export enum OrgActionTypes {
     UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
     LOAD_PBA_ACCOUNT_NAME = '[Organisations] Load Pba Account Name',
     LOAD_PBA_ACCOUNT_NAME_SUCCESS = '[Organisations] Load Pba Account Name Success',
-    LOAD_PBA_ACCOUNT_NAME_FAIL = '[Organisations] Load Pba Account Name Fail'
+    LOAD_PBA_ACCOUNT_NAME_FAIL = '[Organisations] Load Pba Account Name Fail',
+    SHOW_ORGANISATION_DETAILS_USER_TAB = '[Organisation] Show Organisation Details User Tab'
 }
 
 export class LoadPendingOrganisations implements Action {
@@ -143,6 +144,11 @@ export class ResetOrganisationUsers implements Action {
   constructor() { }
 }
 
+export class ShowOrganisationDetailsUserTab implements Action {
+  public readonly type = OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB;
+  constructor(public payload: {orgId: string; showUserTab: boolean}) { }
+}
+
 export type OrganisationsActions =
     | LoadPendingOrganisations
     | LoadPendingOrganisationsSuccess
@@ -164,4 +170,5 @@ export type OrganisationsActions =
     | LoadOrganisationUsers
     | LoadOrganisationUsersSuccess
     | LoadOrganisationUsersFail
-    | ResetOrganisationUsers;
+    | ResetOrganisationUsers
+    | ShowOrganisationDetailsUserTab;

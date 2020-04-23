@@ -3,7 +3,8 @@ import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
 import {getConfigValue, getProtocol} from '../configuration'
 import {
-  COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, IDAM_SECRET, INDEX_URL, LOGGING, OAUTH_CALLBACK_URL,
+  COOKIE_ROLES, COOKIE_TOKEN, COOKIES_USERID, IDAM_CLIENT, IDAM_SECRET, INDEX_URL, LOGGING,
+  OAUTH_CALLBACK_URL,
   SERVICES_IDAM_API_PATH
 } from '../configuration/references'
 import {http} from '../lib/http'
@@ -146,6 +147,7 @@ export async function oauth(req: express.Request, res: express.Response, next: e
       if (check) {
         axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
         axios.defaults.headers.common['user-roles'] = req.session.auth.roles
+        res.cookie(getConfigValue(COOKIE_ROLES), req.session.auth.roles)
 
         if (req.headers.ServiceAuthorization) {
           axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
@@ -165,6 +167,7 @@ export async function oauth(req: express.Request, res: express.Response, next: e
 
 export function doLogout(req: express.Request, res: express.Response, status: number = 302) {
   res.clearCookie(getConfigValue(COOKIE_TOKEN))
+  res.clearCookie(getConfigValue(COOKIE_ROLES))
   res.clearCookie(getConfigValue(COOKIES_USERID))
   req.session.user = null
   delete req.session.auth // delete so it does not get returned to FE
