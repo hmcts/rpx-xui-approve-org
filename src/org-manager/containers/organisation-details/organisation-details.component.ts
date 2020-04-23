@@ -3,7 +3,8 @@ import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {filter, take, takeWhile} from 'rxjs/operators';
-import { OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
+import { UserApprovalGuard } from 'src/org-manager/guards/users-approval.guard';
+import { OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
 
@@ -19,13 +20,22 @@ export class OrganisationDetailsComponent implements OnInit {
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<OrganisationUserListModel>;
   public showUsers = false;
-  public showUserDetails = false;
-  public userDetails: User = null;
-
+  public isXuiApproverUserdata = false;
+  public showUserNavigation = false;
+  public organisationId: string;
+  public organisationAdminEmail: string;
+  public isActiveOrg = false;
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>) {}
+    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly userApprovalGuard: UserApprovalGuard) {}
 
   public ngOnInit(): void {
+
+    this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
+    if (this.isXuiApproverUserdata) {
+      this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
+    }
+
     this.store.dispatch(new fromStore.ResetOrganisationUsers());
     this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
@@ -38,10 +48,18 @@ export class OrganisationDetailsComponent implements OnInit {
     this.orgs$.pipe(
         filter(value => value !== undefined),
         take(1)
-    ).subscribe(({organisationId, pbaNumber, isAccLoaded, status}) => {
+    ).subscribe(({organisationId, pbaNumber, isAccLoaded, status, adminEmail}) => {
+      this.organisationId = organisationId;
+      this.organisationAdminEmail = adminEmail;
+      this.showUserNavigation = false;
       if (status === 'ACTIVE') {
-        this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
+        this.isActiveOrg = true;
+        if (this.isXuiApproverUserdata) {
+          this.showUserNavigation = true;
+          this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
+        }
       }
+
       if (!isAccLoaded && pbaNumber.length) {
         this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
               orgId: organisationId,
@@ -55,12 +73,7 @@ export class OrganisationDetailsComponent implements OnInit {
   }
 
   public onGoBack() {
-    if (this.showUserDetails) {
-      this.showUserDetails = false;
-      this.userDetails = null;
-    } else {
-      this.store.dispatch(new fromRoot.Back());
-    }
+    this.store.dispatch(new fromRoot.Go({ path: [this.isActiveOrg ? '/active-organisation' : '/pending-organisations'] }));
   }
 
   public approveOrganisation(data: OrganisationVM) {
@@ -71,14 +84,13 @@ export class OrganisationDetailsComponent implements OnInit {
 
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
+    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({orgId: this.organisationId, showUserTab: showUsers}));
   }
 
   public onShowUserDetails(user: User) {
     if (user) {
-      this.showUserDetails = true;
-      this.userDetails = user;
+      this.store.dispatch(new fromStore.ShowUserDetails({userDetails: user, isSuperUser: this.organisationAdminEmail === user.email, orgId: this.organisationId}));
     }
   }
-
 }
 

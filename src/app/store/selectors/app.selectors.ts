@@ -31,4 +31,9 @@ export const getUserTimeOut = createSelector(
 export const getModalSessionData = createSelector(
   getAppState,
   (state) => state.modal.session
+  );
+
+export const getCurrentError = createSelector(
+  getAppState,
+  fromAppFeature.getGlobalError
 );

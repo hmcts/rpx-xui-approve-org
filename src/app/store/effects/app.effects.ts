@@ -61,4 +61,11 @@ export class AppEffects {
                 );
         })
     );
+
+    public addGlobalErrorEffect$ = this.actions$.pipe(
+      ofType(appActions.APP_ADD_GLOBAL_ERROR),
+      map(() => {
+        return new appActions.Go({ path: ['/service-down'] });
+      })
+    );
 }

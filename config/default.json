@@ -2,7 +2,8 @@
   "environment": "production",
   "cookies": {
     "token": "__auth__",
-    "userId": "__userid__"
+    "userId": "__userid__",
+    "roles": "roles"
   },
   "exceptionOptions": {
     "maxLines": 1

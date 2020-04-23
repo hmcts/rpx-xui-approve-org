@@ -92,6 +92,9 @@ variable "cookie_token" {
 variable "cookie_user_id" {
   default = "__userid__"
 }
+variable "cookie_roles" {
+  default = "roles"
+}
 variable "microservice" {
   default = "xui_webapp"
 }
@@ -116,7 +119,7 @@ variable "feature_app_insights_enabled" {
 }
 
 variable "feature_redis_enabled" {
-  default = "false"
+  default = "true"
 }
 variable "feature_oidc_enabled" {
   default = "false"

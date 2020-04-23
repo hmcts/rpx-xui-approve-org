@@ -8,12 +8,10 @@ import * as path from 'path'
 import {app} from '../application'
 import {getConfigValue, getProtocol, showFeature} from '../configuration'
 import {
-  COOKIE_TOKEN, COOKIES_USERID, ENVIRONMENT, FEATURE_OIDC_ENABLED, IDAM_CLIENT, IDAM_SECRET, INDEX_URL,
-  LOGGING,
-  OAUTH_CALLBACK_URL,
-  PROTOCOL,
-  SERVICES_IDAM_API_PATH, SERVICES_IDAM_WEB,
-  SERVICES_ISS_PATH
+  COOKIE_ROLES, COOKIE_TOKEN, COOKIES_USERID, ENVIRONMENT,
+  FEATURE_OIDC_ENABLED, IDAM_CLIENT, IDAM_SECRET, INDEX_URL, OAUTH_CALLBACK_URL,
+  PROTOCOL, SERVICES_IDAM_API_PATH,
+  SERVICES_IDAM_WEB, SERVICES_ISS_PATH
 } from '../configuration/references'
 import {router as keepAlive} from '../keepalive'
 import {http} from '../lib/http'
@@ -163,6 +161,7 @@ export async function oauth(req: express.Request, res: express.Response, next: e
       if (check) {
         axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
         axios.defaults.headers.common['user-roles'] = req.session.auth.roles
+        res.cookie(getConfigValue(COOKIE_ROLES), req.session.auth.roles)
 
         if (req.headers.ServiceAuthorization) {
           axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
@@ -182,6 +181,7 @@ export async function oauth(req: express.Request, res: express.Response, next: e
 
 export function doLogoutOAuth2(req: express.Request, res: express.Response, status) {
   res.clearCookie(getConfigValue(COOKIE_TOKEN))
+  res.clearCookie(getConfigValue(COOKIE_ROLES))
   res.clearCookie(getConfigValue(COOKIES_USERID))
   req.session.user = null
   delete req.session.auth // delete so it does not get returned to FE

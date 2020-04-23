@@ -16,10 +16,12 @@ export const environment = {
     pbaAccUrl: 'api/pbaAccounts',
     orgPendingUrl: 'api/organisations?status=PENDING',
     orgApprovePendingUrl: 'api/organisations/',
+    reinviteUserUrl: 'api/reinviteUser?organisationId=',
     loggingLevel: 'DEBUG',
     cookies: {
       token: '__auth__',
       userId: '__userid__',
+      roles: 'roles'
     },
     urls: {
       idam: {

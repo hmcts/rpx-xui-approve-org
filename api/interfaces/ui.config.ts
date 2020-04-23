@@ -20,6 +20,7 @@ export interface UIConfig {
 export interface UIConfigCookies {
   token: string,
   userId: string,
+  roles: string
 }
 
 export interface UIConfigExceptionOptions {

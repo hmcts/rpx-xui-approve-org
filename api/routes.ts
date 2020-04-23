@@ -8,6 +8,7 @@ import healthCheck from './healthCheck'
 import getappInsightsInstrumentationKey from './monitoring-tools'
 import organisationRouter from './organisation'
 import pbaAccounts from './pbaAccounts'
+import reinviteUserRouter from './reinviteUser'
 import stateRouter from './states'
 import pbaRouter from './updatePba'
 import userDetailsRouter from './user'
@@ -29,4 +30,5 @@ router.use('/organisations', organisationRouter)
 router.use('/updatePba', pbaRouter)
 router.use('/pbaAccounts', pbaAccounts)
 router.use('/monitoring-tools', getappInsightsInstrumentationKey)
+router.use('/reinviteUser', reinviteUserRouter )
 export default router

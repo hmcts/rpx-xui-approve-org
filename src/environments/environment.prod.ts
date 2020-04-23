@@ -7,6 +7,7 @@ export const environment = {
   organisationUsersUrl: 'api/organisations?usersOrgId=',
   orgActiveUrl: 'api/organisations?status=ACTIVE',
   orgPendingUrl: 'api/organisations?status=PENDING',
+  reinviteUserUrl: 'api/reinviteUser?organisationId=',
   updatePbaUrl: 'api/updatePba',
   pbaAccUrl: 'api/pbaAccounts',
   orgApprovePendingUrl: 'api/organisations/',
@@ -14,6 +15,7 @@ export const environment = {
   cookies: {
     token: '__auth__',
     userId: '__userid__',
+    roles: 'roles'
   },
   urls: {
     idam: {

@@ -19,7 +19,8 @@ const organisationState = {
   },
   errorMessage: '',
   orgForReview: null,
-  organisationUsersList: { users: null, isError: false }
+  organisationUsersList: { users: null, isError: false },
+  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false}
 };
 
 describe('Organisation selectors', () => {
