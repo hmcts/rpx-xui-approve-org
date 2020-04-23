@@ -44,6 +44,7 @@ nodejs:
     PROTOCOL: https
     COOKIE_TOKEN: __auth__
     COOKIE_USER_ID: __userid__
+    COOKIE_ROLES: roles
     MICROSERVICE: xui_webapp
     ALLOW_CONFIG_MUTATIONS: 1
     FEATURE_APP_INSIGHTS_ENABLED: true
