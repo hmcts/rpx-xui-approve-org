@@ -22,6 +22,7 @@ export interface EnvironmentConfig {
 export interface EnvironmentConfigCookies {
     token: string;
     userId: string;
+    roles: string;
   }
 
 export interface EnvironmentConfigExceptionOptions {

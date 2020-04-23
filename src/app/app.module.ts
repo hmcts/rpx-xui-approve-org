@@ -63,7 +63,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot({launchDarklyKey: ''}),
+    ExuiCommonLibModule.forRoot(),
     NgIdleKeepaliveModule.forRoot()
   ],
   providers: [

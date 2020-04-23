@@ -68,6 +68,7 @@ module "app" {
         # COOKIE SETTINGS
         COOKIE_TOKEN = "${var.cookie_token}"
         COOKIE_USER_ID = "${var.cookie_user_id}"
+        COOKIE_ROLES = "${var.cookie_roles}"
         MICROSERVICE = "${var.microservice}"
 
         # SERVICE URLS
