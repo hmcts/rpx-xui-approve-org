@@ -1,4 +1,4 @@
-@all
+@fullfunctional
 Feature: Verify access to User tab for prd admin users
 
     Scenario: Verify access to active Organisation User tab for approver user
