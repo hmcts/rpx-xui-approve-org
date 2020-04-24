@@ -48,8 +48,10 @@ function OrganisationPage(){
     }
 
     this.validateUsersDisplayed = async function () {
+        var usersList = element(by.css('xuilib-user-list td'));
+        await browserWaits.waitForElement(usersList);
         expect(await this.h1Header.getText()).to.equal("Users");
-        expect(await element(by.css('xuilib-user-list td')).isPresent()).to.be.true;
+        expect(await usersList.isPresent()).to.be.true;
     }
 }
 
