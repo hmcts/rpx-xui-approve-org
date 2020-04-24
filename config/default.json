@@ -34,7 +34,7 @@
     "secureCookieEnabled": true,
     "helmetEnabled": false,
     "redisEnabled": true,
-    "oidcEnabled": false
+    "oidcEnabled": true
   },
   "helmet": {
     "contentSecurityPolicy": {
