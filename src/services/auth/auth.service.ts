@@ -17,7 +17,7 @@ export class AuthService {
   }
   // TODO remove/toggle this for oidc
   public generateLoginUrl(): Observable<string> {
-    return this.envService.config$.map( config => {
+    return this.envService.getEnv$().map( config => {
       const port = window.location.port ? `:${window.location.port}` : ``;
       const API_BASE_URL = `${config.protocol}://${window.location.hostname}${port}`;
       const base = config.services.idamWeb;
@@ -44,7 +44,7 @@ export class AuthService {
   }
 
  public isAuthenticated(): Observable<boolean> {
-    return this.envService.config$.map( config => {
+    return this.envService.getEnv$().map( config => {
       const jwt = this.cookieService.get(config.cookies.token);
       if (!jwt) {
         return false;
