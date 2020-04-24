@@ -186,7 +186,8 @@ export function doLogoutOAuth2(req: express.Request, res: express.Response, stat
   req.session.user = null
   delete req.session.auth // delete so it does not get returned to FE
   req.session.save(() => {
-    res.redirect(status, req.query.redirect || '/')
+    const redirectUrl = req.query.redirect ? req.query.redirect : '/'
+    res.redirect(status, '/')
   })
 }
 
@@ -350,7 +351,7 @@ export async function doLogoutOidc(req: express.Request, res: express.Response, 
     req.logout()
 
     if (!req.query.noredirect && (req.query.redirect || status === 401)) {  // 401 is when no accessToken
-      res.redirect(status, req.query.redirect || '/')
+      res.redirect(status, '/')
       logger.info('Logged out by userDetails')
     } else {
       const message = JSON.stringify({message: 'You have been logged out!'})
@@ -360,7 +361,7 @@ export async function doLogoutOidc(req: express.Request, res: express.Response, 
 
   } catch (e) {
     logger.error('error during logout', e)
-    res.redirect(status, req.query.redirect || '/')
+    res.redirect(status, '/')
   }
 }
 
