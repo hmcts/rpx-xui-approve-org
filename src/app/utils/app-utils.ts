@@ -98,6 +98,11 @@ export class AppUtils {
           dxNumber: org.dxNumber[0].dxNumber.trim(),
           dxExchange: org.dxNumber[0].dxExchange.trim()
         }];
+      } else {
+        organisation.contactInformation[0].dxAddress = [{
+          dxNumber: '',
+          dxExchange: ''
+        }];
       }
       organisations.push(organisation);
     });
