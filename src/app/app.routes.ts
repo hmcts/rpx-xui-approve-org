@@ -1,7 +1,7 @@
-import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/services/auth/auth.guard';
 import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent } from './components';
+import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
 
 export const ROUTES: Routes = [

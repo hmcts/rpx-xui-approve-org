@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, first, take } from 'rxjs/operators';
+import { EnvironmentService } from 'src/app/services/environment.service';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
 
@@ -21,11 +22,17 @@ export class AppComponent implements OnInit {
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleAnalyticsService: GoogleAnalyticsService,
-    private readonly idleService: ManageSessionServices
+    private readonly idleService: ManageSessionServices,
+    private readonly environmentService: EnvironmentService
   ) {}
 
   public ngOnInit() {
-    this.store.dispatch(new fromRoot.GetUserDetails());
+    this.environmentService.getEnv$().subscribe(env => {
+      if (env.oidcEnabled) {
+        this.store.dispatch(new fromRoot.GetUserDetails());
+      }
+    });
+
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
