@@ -116,10 +116,18 @@ describe('AppUtils', () => {
       ['manageOrganisations']: 'No'
 
     }];
-    console.log('result is : ');
-    console.log(AppUtils.mapUsers(mockUser));
     expect(AppUtils.mapUsers(mockUser)).toEqual(mockUserResult);
   });
 
+  it('should return 500 error org url', () => {
+    expect(AppUtils.get500Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
+  });
 
+  it('should return 400 error org url', () => {
+    expect(AppUtils.get400Error('dummy').errors[0].url).toEqual('/organisation-details/dummy');
+  });
+
+  it('should return 404 error org url', () => {
+    expect(AppUtils.get404Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
+  });
  });
