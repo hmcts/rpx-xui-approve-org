@@ -122,4 +122,12 @@ describe('Organisation Reducer', () => {
       expect(state.activeOrganisations.searchString).toEqual('searchthis');
     });
   });
+
+  describe('SHOW_ORGANISATION_DETAILS_USER_TAB action', () => {
+    it('should not show user tab when orgid does not match', () => {
+      const action = new fromActions.ShowOrganisationDetailsUserTab({orgId: 'dummy', showUserTab: true});
+      const state = reducer(initialState, action);
+      expect(state.showOrganisationDetailsUserTab.showUserTab).toBeFalsy();
+    });
+  });
 });
