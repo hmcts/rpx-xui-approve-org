@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
+
 import { HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { UserInterface } from '../../..//models/user.model';
 import { LogOutKeepAliveService } from '../../services/keep-alive/keep-alive.service';
 import { UserService } from '../../services/user-service/user.service';
+import * as routerAction from '../../store/actions/router.action';
 import * as appActions from '../actions';
 
 @Injectable()
@@ -65,7 +67,7 @@ export class AppEffects {
     public addGlobalErrorEffect$ = this.actions$.pipe(
       ofType(appActions.APP_ADD_GLOBAL_ERROR),
       map(() => {
-        return new appActions.Go({ path: ['/service-down'] });
+        return new routerAction.Go({ path: ['/service-down'] });
       })
     );
 }

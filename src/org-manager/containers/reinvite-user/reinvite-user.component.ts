@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
 import { Actions, ofType } from '@ngrx/effects';
 import {select, Store} from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {AppConstants} from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
@@ -18,7 +18,7 @@ import * as fromStore from '../../store';
   selector: 'app-prd-reinvite-user-component',
   templateUrl: './reinvite-user.component.html',
 })
-export class ReinviteUserComponent implements OnInit {
+export class ReinviteUserComponent implements OnInit, OnDestroy {
 
   constructor(private readonly store: Store<fromStore.OrganisationRootState>,
               private readonly actions$: Actions) { }
@@ -28,6 +28,7 @@ export class ReinviteUserComponent implements OnInit {
   public errors$: Observable<any>;
   public errorsArray$: Observable<{ isFromValid: boolean; items: { id: string; message: any; } []}>;
   public showWarningMessage: boolean;
+  private getSelectedUserSub: Subscription;
 
   public errorMessages = {
     firstName: ['Enter first name'],
@@ -52,7 +53,7 @@ export class ReinviteUserComponent implements OnInit {
       }, checkboxesBeCheckedValidator())
     });
 
-    this.store.pipe(select(fromStore.getSelectedUserSelector)).subscribe(pendingUser => {
+    this.getSelectedUserSub = this.store.pipe(select(fromStore.getSelectedUserSelector)).subscribe(pendingUser => {
       if (pendingUser) {
         this.inviteUserForm.controls.firstName.setValue(pendingUser.firstName);
         this.inviteUserForm.controls.lastName.setValue(pendingUser.lastName);
@@ -122,4 +123,9 @@ export class ReinviteUserComponent implements OnInit {
     this.store.dispatch(new fromRoot.Back());
   }
 
+  public ngOnDestroy() {
+    if (this.getSelectedUserSub) {
+      this.getSelectedUserSub.unsubscribe();
+    }
+  }
 }

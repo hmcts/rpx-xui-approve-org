@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {filter, take, takeWhile} from 'rxjs/operators';
-import { UserApprovalGuard } from 'src/org-manager/guards/users-approval.guard';
-import { OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
+import { UserApprovalGuard } from '../../guards/users-approval.guard';
+import { OrganisationUserListModel, OrganisationVM} from '../../models/organisation';
 import * as fromStore from '../../store';
 
 /**
@@ -15,7 +15,7 @@ import * as fromStore from '../../store';
   selector: 'app-org-details',
   templateUrl: './organisation-details.component.html'
 })
-export class OrganisationDetailsComponent implements OnInit {
+export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<OrganisationUserListModel>;
@@ -28,16 +28,18 @@ export class OrganisationDetailsComponent implements OnInit {
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly userApprovalGuard: UserApprovalGuard) {}
+    private getShowOrgDetailsSubscription: Subscription;
+    private getAllLoadedSubscription: Subscription;
 
   public ngOnInit(): void {
 
     this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
     if (this.isXuiApproverUserdata) {
-      this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
+      this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
     }
 
     this.store.dispatch(new fromStore.ResetOrganisationUsers());
-    this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
+    this.getAllLoadedSubscription = this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
         this.store.dispatch(new fromStore.LoadActiveOrganisation());
         this.store.dispatch(new fromStore.LoadPendingOrganisations());
@@ -90,6 +92,15 @@ export class OrganisationDetailsComponent implements OnInit {
   public onShowUserDetails(user: User) {
     if (user) {
       this.store.dispatch(new fromStore.ShowUserDetails({userDetails: user, isSuperUser: this.organisationAdminEmail === user.email, orgId: this.organisationId}));
+    }
+  }
+
+  public ngOnDestroy() {
+    if (this.getAllLoadedSubscription) {
+      this.getAllLoadedSubscription.unsubscribe();
+    }
+    if (this.getShowOrgDetailsSubscription) {
+      this.getShowOrgDetailsSubscription.unsubscribe();
     }
   }
 }

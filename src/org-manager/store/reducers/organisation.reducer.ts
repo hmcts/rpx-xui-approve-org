@@ -327,7 +327,7 @@ export function reducer(
 
     case fromActions.OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB: {
       let isShowUserTab = false;
-      if (state.showOrganisationDetailsUserTab.orgId && state.showOrganisationDetailsUserTab.orgId === action.payload.orgId) {
+      if (state.showOrganisationDetailsUserTab.orgId === action.payload.orgId) {
         isShowUserTab = action.payload.showUserTab;
       }
       return {
