@@ -92,6 +92,9 @@ variable "cookie_token" {
 variable "cookie_user_id" {
   default = "__userid__"
 }
+variable "cookie_roles" {
+  default = "roles"
+}
 variable "microservice" {
   default = "xui_webapp"
 }

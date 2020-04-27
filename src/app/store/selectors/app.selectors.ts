@@ -12,3 +12,8 @@ export const getAppPageTitle = createSelector(
   getAppState,
   fromAppFeature.getPageTitle
 );
+
+export const getCurrentError = createSelector(
+  getAppState,
+  fromAppFeature.getGlobalError
+);

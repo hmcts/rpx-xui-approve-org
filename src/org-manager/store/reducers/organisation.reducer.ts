@@ -1,5 +1,5 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
-import {OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
+import {OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
 
 export interface OrganisationState {
@@ -18,6 +18,7 @@ export interface OrganisationState {
   organisationUsersList: OrganisationUserListModel;
   errorMessage: string;
   orgForReview: OrganisationVM | null;
+  showOrganisationDetailsUserTab: {orgId: string; showUserTab: boolean};
 }
 
 export const initialState: OrganisationState = {
@@ -25,7 +26,8 @@ export const initialState: OrganisationState = {
   pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   organisationUsersList: {users: null, isError: false},
   errorMessage: '',
-  orgForReview: null
+  orgForReview: null,
+  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false}
 };
 
 export function reducer(
@@ -323,6 +325,20 @@ export function reducer(
       };
     }
 
+    case fromActions.OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB: {
+      let isShowUserTab = false;
+      if (state.showOrganisationDetailsUserTab.orgId === action.payload.orgId) {
+        isShowUserTab = action.payload.showUserTab;
+      }
+      return {
+        ...state,
+        showOrganisationDetailsUserTab: {
+          orgId: action.payload.orgId,
+          showUserTab: isShowUserTab
+        }
+      };
+    }
+
     default:
       return state;
   }
@@ -333,3 +349,4 @@ export const getActiveOrgEntities = (state: OrganisationState) => state.activeOr
 export const getPendingOrgEntities = (state: OrganisationState) => state.pendingOrganisations;
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
 export const getOrgUsersList = (state: OrganisationState) => state.organisationUsersList;
+export const getShowOrgDetailsUserTab = (state: OrganisationState) => state.showOrganisationDetailsUserTab.showUserTab;
