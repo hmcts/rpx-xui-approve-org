@@ -186,7 +186,6 @@ export function doLogoutOAuth2(req: express.Request, res: express.Response, stat
   req.session.user = null
   delete req.session.auth // delete so it does not get returned to FE
   req.session.save(() => {
-    const redirectUrl = req.query.redirect ? req.query.redirect : '/'
     res.redirect(status, '/')
   })
 }
