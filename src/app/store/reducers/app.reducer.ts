@@ -1,12 +1,26 @@
 import * as fromAction from '../actions';
 import {AppUtils} from '../../utils/app-utils';
 
+
+export interface ErrorMessage {
+  bodyText: string;
+  urlText: string;
+  url: string;
+}
+
+export interface GlobalError {
+  header: string;
+  errors: ErrorMessage [];
+}
+
 export interface AppState {
   pageTitle: string;
+  globalError: GlobalError;
 }
 
 export const initialState: AppState = {
-  pageTitle: ''
+  pageTitle: '',
+  globalError: null
 };
 
 export function reducer(
@@ -36,11 +50,28 @@ export function reducer(
         ...initialState
       };
     }
-  }
 
-  return state;
+    case fromAction.APP_ADD_GLOBAL_ERROR: {
+      return {
+        ...state,
+        globalError: action.payload
+      };
+    }
+
+    case fromAction.APP_CLEAR_GLOBAL_ERROR: {
+      return {
+        ...state,
+        globalError: null
+      };
+    }
+
+    default:
+      return state;
+  }
 }
 
 export const getPageTitle = (state: AppState) => state.pageTitle;
+export const getGlobalError = (state: AppState) => state.globalError;
+
 
 

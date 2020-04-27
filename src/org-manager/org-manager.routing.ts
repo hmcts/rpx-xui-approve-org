@@ -7,6 +7,10 @@ import { AuthGuard } from 'src/services/auth/auth.guard';
 import { OrganisationDetailsComponent } from './components';
 import { ActiveOrganisationsComponent } from './containers';
 import { EditDetailsComponent } from './containers/edit-details/edit-details.component';
+import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success/reinvite-user-success.component';
+import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
+import { UserDetailsComponent } from './containers/user-details/user-details.component';
+import { UserApprovalGuard } from './guards/users-approval.guard';
 
 export const ROUTES: Routes = [
   {
@@ -49,6 +53,21 @@ export const ROUTES: Routes = [
     component: EditDetailsComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'user-details',
+    component: UserDetailsComponent,
+    canActivate: [AuthGuard, UserApprovalGuard],
+  },
+  {
+    path: 'reinvite-user',
+    component: ReinviteUserComponent,
+    canActivate: [AuthGuard, UserApprovalGuard],
+  },
+  {
+    path: 'reinvite-user-success',
+    component: ReinviteUserSuccessComponent,
+    canActivate: [AuthGuard, UserApprovalGuard],
+  }
 ];
 
 export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
