@@ -191,7 +191,7 @@ export function doLogoutOAuth2(req: express.Request, res: express.Response, stat
 }
 
 export async function doLogout(req: express.Request, res: express.Response, status: number = 302) {
-  return await showFeature(FEATURE_OIDC_ENABLED) ? doLogoutOidc(req, res) : doLogoutOAuth2(req, res, status)
+  return await showFeature(FEATURE_OIDC_ENABLED) ? doLogoutOidc(req, res, status) : doLogoutOAuth2(req, res, status)
 }
 
 export async function configureIssuer(url: string) {
