@@ -223,6 +223,6 @@ app.get('/external/ping', (req, res) => {
  *
  */
 app.use('/api', routes)
-app.get('/api/logout', (req, res) => {
-  auth.doLogout(req, res)
+app.get('/api/logout', async (req, res) => {
+  await auth.doLogout(req, res)
 })
