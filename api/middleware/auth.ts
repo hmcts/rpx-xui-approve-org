@@ -2,6 +2,7 @@ import axios from 'axios'
 import * as passport from 'passport'
 import * as auth from '../../api/auth'
 import * as serviceTokenMiddleware from '../../api/auth/serviceToken'
+import {havePrdAdminRole} from '../auth/userRoleAuth'
 import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('auth')
@@ -16,10 +17,10 @@ export default async (req, res, next) => {
 
         const userDetails = req.session.passport.user
         const roles = userDetails.userinfo.roles
-
-        if (!validRoles(roles)) {
+        console.log('havePrdAdminRole', havePrdAdminRole(roles))
+        if (!havePrdAdminRole(roles)) {
             logger.warn('User role does not allow login')
-            return await auth.doLogout(req, res, 401)
+            return await auth.doLogoutOidc(req, res, 401)
         }
 
         logger.info('Auth token: ' + `Bearer ${userDetails.tokenset.access_token}`)
