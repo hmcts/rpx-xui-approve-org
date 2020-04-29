@@ -1,17 +1,18 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromAppEffects from './app.effects';
-import { AppEffects } from './app.effects';
-import { AddGlobalError, Go } from '../actions';
 import { StoreModule } from '@ngrx/store';
-
+import { cold, hot } from 'jasmine-marbles';
+import { LogOutKeepAliveService } from '../../services/keep-alive/keep-alive.service';
+import { UserService } from '../../services/user-service/user.service';
+import { AddGlobalError, Go } from '../actions';
+import * as fromAppEffects from './app.effects';
 
 describe('App Effects', () => {
     let actions$;
-    let effects: AppEffects;
-
+    let effects: fromAppEffects.AppEffects;
+    const mockKeepAliveService = jasmine.createSpyObj('mockKeepAliveService', ['heartBeat', 'logOut']);
+    const mockUserService = jasmine.createSpyObj('mockUserService', ['getUserDetails']);
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -20,11 +21,13 @@ describe('App Effects', () => {
             ],
             providers: [
                 fromAppEffects.AppEffects,
-                provideMockActions(() => actions$)
+                provideMockActions(() => actions$),
+                {provide: LogOutKeepAliveService, useValue: mockKeepAliveService},
+                {provide: UserService, useValue: mockUserService}
             ]
         });
 
-        effects = TestBed.get(AppEffects);
+        effects = TestBed.get(fromAppEffects.AppEffects);
 
     });
 
@@ -45,7 +48,4 @@ describe('App Effects', () => {
             expect(effects.addGlobalErrorEffect$).toBeObservable(expected);
         });
     });
-
-
-
 });

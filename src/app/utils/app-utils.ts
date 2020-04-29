@@ -78,8 +78,7 @@ export class AppUtils {
           addressLine2: org.addressLine2,
           townCity: org.townCity,
           county: org.county,
-          dxAddress: org.dxNumber,
-          postCode: org.postCode
+          dxAddress: org.dxNumber
           }],
         superUser: {
           userIdentifier: org.admin,

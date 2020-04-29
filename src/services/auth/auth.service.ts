@@ -15,9 +15,9 @@ export class AuthService {
     private readonly envService: EnvironmentService
   ) {
   }
-  // TODO perhaps move this logic to BE
+  // TODO remove/toggle this for oidc
   public generateLoginUrl(): Observable<string> {
-    return this.envService.config$.map( config => {
+    return this.envService.getEnv$().map( config => {
       const port = window.location.port ? `:${window.location.port}` : ``;
       const API_BASE_URL = `${config.protocol}://${window.location.hostname}${port}`;
       const base = config.services.idamWeb;
@@ -29,9 +29,14 @@ export class AuthService {
   }
 
   public loginRedirect() {
-    this.generateLoginUrl().subscribe( url => {
-      window.location.href = url;
-    });
+    const featureEnabled = this.envService.get('oidcEnabled');
+    if (featureEnabled) {
+      window.location.href = '/auth/login';
+    } else {
+      this.generateLoginUrl().subscribe( url => {
+        window.location.href = url;
+      });
+    }
   }
 
   public decodeJwt(jwt) {
@@ -39,7 +44,7 @@ export class AuthService {
   }
 
  public isAuthenticated(): Observable<boolean> {
-    return this.envService.config$.map( config => {
+    return this.envService.getEnv$().map( config => {
       const jwt = this.cookieService.get(config.cookies.token);
       if (!jwt) {
         return false;
