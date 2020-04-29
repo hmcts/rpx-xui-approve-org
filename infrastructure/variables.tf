@@ -121,6 +121,10 @@ variable "feature_app_insights_enabled" {
 variable "feature_redis_enabled" {
   default = "true"
 }
+variable "feature_oidc_enabled" {
+  default = "false"
+}
+
 variable "feature_proxy_enabled" {
   default = "false"
 }
@@ -140,3 +144,5 @@ variable "ao_http_proxy" {
 variable "ao_no_proxy" {
   default = "localhost"
 }
+
+variable "iss_service" {}

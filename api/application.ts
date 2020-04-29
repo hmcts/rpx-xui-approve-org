@@ -4,6 +4,7 @@ import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as helmet from 'helmet'
+import * as passport from 'passport'
 import * as auth from './auth'
 import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
@@ -13,6 +14,7 @@ import {
   COOKIES_USERID,
   FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
+  FEATURE_OIDC_ENABLED,
   FEATURE_PROXY_ENABLED,
   FEATURE_REDIS_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
@@ -28,6 +30,7 @@ import {
   SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
+  SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
 } from './configuration/references'
@@ -97,6 +100,12 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)))
 }
 
+console.log('OIDC enabled:')
+console.log(showFeature(FEATURE_OIDC_ENABLED))
+
+console.log('SERVICES_ISS_PATH:')
+console.log(getConfigValue(SERVICES_ISS_PATH))
+
 app.use(
   session({
     cookie: {
@@ -155,7 +164,23 @@ app.use(serviceRouter)
  *
  * Any routes here do not have authentication attached and are therefore reachable.
  */
-app.get('/oauth2/callback', auth.oauth)
+if (showFeature(FEATURE_OIDC_ENABLED)) {
+  console.log('OIDC enabled')
+  app.use(passport.initialize())
+  app.use(passport.session())
+  app.use(auth.configure)
+  passport.serializeUser((user, done) => {
+    done(null, user)
+  })
+
+  passport.deserializeUser((id, done) => {
+    done(null, id)
+  })
+  app.get('/oauth2/callback', auth.openIdConnectAuth)
+  app.use('/auth', auth.router)
+} else {
+  app.get('/oauth2/callback', auth.oauth)
+}
 app.get('/external/ping', (req, res) => {
   console.log('Pong')
   res.send({
@@ -198,6 +223,6 @@ app.get('/external/ping', (req, res) => {
  *
  */
 app.use('/api', routes)
-app.get('/api/logout', (req, res) => {
-  auth.doLogout(req, res)
+app.get('/api/logout', async (req, res) => {
+  await auth.doLogout(req, res)
 })

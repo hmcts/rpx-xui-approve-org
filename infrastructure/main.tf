@@ -59,6 +59,7 @@ module "app" {
         FEATURE_PROXY_ENABLED = "${var.feature_proxy_enabled}"
         FEATURE_HELMET_ENABLED = "${var.feature_helmet_enabled}"
         FEATURE_REDIS_ENABLED = "${var.feature_redis_enabled}"
+        FEATURE_OIDC_ENABLED = "${var.feature_oidc_enabled}"
 
         // Redis Cloud
         REDISCLOUD_URL = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
@@ -78,7 +79,7 @@ module "app" {
         RD_PROFESSIONAL_API_SERVICE = "${var.rd_professional_api_service}"
         S2S_SERVICE = "${var.s2s_service}"
         FEE_AND_PAY_API = "${var.fee_and_pay_api}"
-
+        ISS_SERVICE = "${var.iss_service}"
         # PROXY (If required)
         AO_HTTP_PROXY = "${var.ao_http_proxy}"
         AO_NO_PROXY = "${var.ao_no_proxy}"

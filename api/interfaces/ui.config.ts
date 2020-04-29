@@ -14,6 +14,7 @@ export interface UIConfig {
   secureCookie: boolean,
   services: UIConfigServices,
   sessionSecret: string,
+  oidcEnabled: boolean,
 }
 
 export interface UIConfigCookies {
