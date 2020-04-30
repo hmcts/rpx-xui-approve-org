@@ -53,6 +53,8 @@ withPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     installCharts()
     enableAksStagingDeployment()
+    disableLegacyDeployment()
+    
 
 // Disable pact testing on pipeline
 //

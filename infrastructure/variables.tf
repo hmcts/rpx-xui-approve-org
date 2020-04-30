@@ -146,3 +146,7 @@ variable "ao_no_proxy" {
 }
 
 variable "iss_service" {}
+
+variable "enable_ase" {
+    default = false
+}
