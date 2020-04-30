@@ -55,6 +55,7 @@ variable "additional_host_name" {
     default = "null"
 }
 
+
 variable "session_secret" {
   default = "secretSauce"
 }
@@ -146,6 +147,7 @@ variable "ao_no_proxy" {
 }
 
 variable "iss_service" {}
+
 
 variable "enable_ase" {
     default = false

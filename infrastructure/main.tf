@@ -1,6 +1,6 @@
 locals {
     app_full_name = "xui-${var.component}"
-    ase_name = "core-compute-${var.env}"
+    //ase_name = "core-compute-${var.env}"
     local_env = "${(var.env == "preview" || var.env == "spreview") ? (var.env == "preview" ) ? "aat" : "saat" : var.env}"
     shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
@@ -23,7 +23,7 @@ module "app" {
 
 }
 
-
+/*
 data "azurerm_key_vault" "key_vault" {
     name = "${local.shared_vault_name}"
     resource_group_name = "${local.shared_vault_name}"
@@ -38,7 +38,7 @@ data "azurerm_key_vault_secret" "oauth2_secret" {
     name = "ao-idam-client-secret"
     vault_uri = "${data.azurerm_key_vault.key_vault.vault_uri}"
 }
-
+*/
 provider "azurerm" {
     version = "1.22.1"
 }
