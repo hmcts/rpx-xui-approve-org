@@ -140,3 +140,7 @@ variable "ao_http_proxy" {
 variable "ao_no_proxy" {
   default = "localhost"
 }
+
+variable "enable_ase" {
+    default = false
+}
