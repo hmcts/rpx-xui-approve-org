@@ -8,7 +8,7 @@
         <h3 class="govuk-heading-s">Loading active organisations...</h3>
       </ng-container>
     </app-notification-banner-component>
-    <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation v1</h1>
+    <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation v2</h1>
     <ng-container *ngIf="{pendingSearchString: pendingSearchString$ | async, pendingOrgs: pendingOrgs$ | async } as data">
      <ng-container *ngIf="(loaded$ | async); else loading">
       <app-search-organisations-form [searchString]="data.pendingSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
