@@ -34,6 +34,7 @@ module "app" {
         PUI_ENV = "${var.env}"
         NODE_ENV = "${var.env}"
         NODE_CONFIG_ENV = "${var.env}"
+        NODE_CONFIG_DIR = "${var.node_config_dir}"
         WEBSITE_NODE_DEFAULT_VERSION  = "12.13.0"
 
         S2S_SECRET = "${data.azurerm_key_vault_secret.s2s_secret.value}"
@@ -51,12 +52,23 @@ module "app" {
         LOGGING = "${var.logging}"
         PROTOCOL = "${var.protocol}"
         ALLOW_CONFIG_MUTATIONS = "${var.allow_config_mutations}"
-        APP_INSIGHTS_ENABLED = "${var.app_insights_enabled}"
+
+        # FEATURE TOGGLES
+        FEATURE_APP_INSIGHTS_ENABLED = "${var.feature_app_insights_enabled}"
+        FEATURE_SECURE_COOKIE_ENABLED = "${var.feature_secure_cookie_enabled}"
+        FEATURE_PROXY_ENABLED = "${var.feature_proxy_enabled}"
+        FEATURE_HELMET_ENABLED = "${var.feature_helmet_enabled}"
+        FEATURE_REDIS_ENABLED = "${var.feature_redis_enabled}"
+        FEATURE_OIDC_ENABLED = "${var.feature_oidc_enabled}"
+
+        // Redis Cloud
+        REDISCLOUD_URL = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
+        REDIS_KEY_PREFIX = "activity:"
 
         # COOKIE SETTINGS
-        SECURE_COOKIE = "${var.secure_cookie}"
         COOKIE_TOKEN = "${var.cookie_token}"
         COOKIE_USER_ID = "${var.cookie_user_id}"
+        COOKIE_ROLES = "${var.cookie_roles}"
         MICROSERVICE = "${var.microservice}"
 
         # SERVICE URLS
@@ -67,7 +79,7 @@ module "app" {
         RD_PROFESSIONAL_API_SERVICE = "${var.rd_professional_api_service}"
         S2S_SERVICE = "${var.s2s_service}"
         FEE_AND_PAY_API = "${var.fee_and_pay_api}"
-
+        ISS_SERVICE = "${var.iss_service}"
         # PROXY (If required)
         AO_HTTP_PROXY = "${var.ao_http_proxy}"
         AO_NO_PROXY = "${var.ao_no_proxy}"
@@ -92,4 +104,25 @@ data "azurerm_key_vault_secret" "oauth2_secret" {
 
 provider "azurerm" {
     version = "1.22.1"
+}
+
+data "azurerm_subnet" "core_infra_redis_subnet" {
+  name                 = "core-infra-subnet-1-${var.env}"
+  virtual_network_name = "core-infra-vnet-${var.env}"
+  resource_group_name  = "core-infra-${var.env}"
+}
+
+resource "azurerm_key_vault_secret" "redis_connection_string" {
+  name = "${var.component}-redis-connection-string"
+  value = "redis://ignore:${urlencode(module.redis-cache.access_key)}@${module.redis-cache.host_name}:${module.redis-cache.redis_port}?tls=true"
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+}
+
+module "redis-cache" {
+  source      = "git@github.com:hmcts/cnp-module-redis?ref=master"
+  product     = "${var.shared_product_name}-ao-redis"
+  location    = "${var.location}"
+  env         = "${var.env}"
+  subnetid    = "${data.azurerm_subnet.core_infra_redis_subnet.id}"
+  common_tags = "${var.common_tags}"
 }

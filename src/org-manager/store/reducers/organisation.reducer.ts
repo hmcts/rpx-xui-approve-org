@@ -1,4 +1,5 @@
-import {OrganisationVM} from 'src/org-manager/models/organisation';
+import { User } from '@hmcts/rpx-xui-common-lib';
+import {OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
 
 export interface OrganisationState {
@@ -14,15 +15,19 @@ export interface OrganisationState {
     loading: boolean;
     searchString: string;
   };
+  organisationUsersList: OrganisationUserListModel;
   errorMessage: string;
   orgForReview: OrganisationVM | null;
+  showOrganisationDetailsUserTab: {orgId: string; showUserTab: boolean};
 }
 
 export const initialState: OrganisationState = {
   activeOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
+  organisationUsersList: {users: null, isError: false},
   errorMessage: '',
-  orgForReview: null
+  orgForReview: null,
+  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false}
 };
 
 export function reducer(
@@ -59,6 +64,28 @@ export function reducer(
       return {
         ...state,
         activeOrganisations
+      };
+    }
+
+    case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS: {
+      return {
+        ...state,
+        organisationUsersList: {users: action.payload, isError: false}
+      };
+    }
+
+    case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_FAIL: {
+      return {
+        ...state,
+        organisationUsersList: {users: null, isError: true}
+      };
+    }
+
+
+    case fromActions.OrgActionTypes.RESET_ORGANISATION_USERS: {
+      return {
+        ...state,
+        organisationUsersList: {users: null, isError: false}
       };
     }
 
@@ -298,6 +325,20 @@ export function reducer(
       };
     }
 
+    case fromActions.OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB: {
+      let isShowUserTab = false;
+      if (state.showOrganisationDetailsUserTab.orgId === action.payload.orgId) {
+        isShowUserTab = action.payload.showUserTab;
+      }
+      return {
+        ...state,
+        showOrganisationDetailsUserTab: {
+          orgId: action.payload.orgId,
+          showUserTab: isShowUserTab
+        }
+      };
+    }
+
     default:
       return state;
   }
@@ -307,3 +348,5 @@ export const getPendingOrganis = (state: OrganisationState) => state.pendingOrga
 export const getActiveOrgEntities = (state: OrganisationState) => state.activeOrganisations;
 export const getPendingOrgEntities = (state: OrganisationState) => state.pendingOrganisations;
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
+export const getOrgUsersList = (state: OrganisationState) => state.organisationUsersList;
+export const getShowOrgDetailsUserTab = (state: OrganisationState) => state.showOrganisationDetailsUserTab.showUserTab;

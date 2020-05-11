@@ -86,14 +86,14 @@ variable "logging" {
 variable "protocol" {
   default = "https"
 }
-variable "secure_cookie" {
-  default = "false"
-}
 variable "cookie_token" {
   default = "__auth__"
 }
 variable "cookie_user_id" {
   default = "__userid__"
+}
+variable "cookie_roles" {
+  default = "roles"
 }
 variable "microservice" {
   default = "xui_webapp"
@@ -110,6 +110,33 @@ variable "allow_config_mutations" {
   default = "1"
 }
 
+// FEATURE TOGGLE VARS
+variable "feature_secure_cookie_enabled" {
+  default = "true"
+}
+variable "feature_app_insights_enabled" {
+  default = "true"
+}
+
+variable "feature_redis_enabled" {
+  default = "true"
+}
+variable "feature_oidc_enabled" {
+  default = "false"
+}
+
+variable "feature_proxy_enabled" {
+  default = "false"
+}
+variable "feature_helmet_enabled" {
+  default = "false"
+}
+
+variable "node_config_dir" {
+  // for Windows
+  default = "D:\\home\\site\\wwwroot\\config"
+}
+
 variable "ao_http_proxy" {
   default = "http://172.16.0.7:8080"
 }
@@ -118,6 +145,4 @@ variable "ao_no_proxy" {
   default = "localhost"
 }
 
-variable "app_insights_enabled" {
-  default = "1"
-}
+variable "iss_service" {}

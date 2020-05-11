@@ -7,7 +7,6 @@ import { forwardStack, pushStack, shiftStack, stackEmpty } from '../lib/stack'
 
 const logger = log4jui.getLogger('state engine')
 
-
 // does not handle OR yet
 export function handleCondition(conditionNode, variables) {
     // index 0 hardcoded, not interating through for OR
@@ -131,8 +130,8 @@ export async function process(req, res, mapping, payload, templates, store) {
             return
         }
 
-        meta = templates[caseTypeId][stateId]
-        result = true
+         meta = templates[caseTypeId][stateId]
+         result = true
     }
 
     if (result) {

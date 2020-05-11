@@ -10,15 +10,18 @@ export const environment = {
     serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
     serviceDeskTel: '0300 3030686',
     singleOrgUrl: 'api/organisations?organisationId=',
+    organisationUsersUrl: 'api/organisations?usersOrgId=',
     orgActiveUrl: 'api/organisations?status=ACTIVE',
     updatePbaUrl: 'api/updatePba',
     pbaAccUrl: 'api/pbaAccounts',
     orgPendingUrl: 'api/organisations?status=PENDING',
     orgApprovePendingUrl: 'api/organisations/',
+    reinviteUserUrl: 'api/reinviteUser?organisationId=',
     loggingLevel: 'DEBUG',
     cookies: {
       token: '__auth__',
       userId: '__userid__',
+      roles: 'roles'
     },
     urls: {
       idam: {

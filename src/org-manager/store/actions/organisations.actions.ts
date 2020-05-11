@@ -8,6 +8,10 @@ export enum OrgActionTypes {
     LOAD_PENDING_ORGANISATIONS = '[Pending Organisations] Load Pending Organisations',
     LOAD_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Load Pending Organisations Success',
     LOAD_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Load Fail',
+    LOAD_ORGANISATION_USERS = '[Organisations] Load Organisation Users',
+    RESET_ORGANISATION_USERS = '[Organisations] Reset Organisation Users',
+    LOAD_ORGANISATION_USERS_SUCCESS = '[Organisations] Load Single Organisation Success',
+    LOAD_ORGANISATION_USERS_FAIL = '[Organisations] Load Single Organisation Fail',
     ADD_REVIEW_ORGANISATIONS = '[Pending Organisations] Add to Review Organisations',
     DISPLAY_ERROR_MESSAGE_ORGANISATIONS = '[Pending Organisations] Display Error message Organisations',
     APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
@@ -18,50 +22,51 @@ export enum OrgActionTypes {
     UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
     LOAD_PBA_ACCOUNT_NAME = '[Organisations] Load Pba Account Name',
     LOAD_PBA_ACCOUNT_NAME_SUCCESS = '[Organisations] Load Pba Account Name Success',
-    LOAD_PBA_ACCOUNT_NAME_FAIL = '[Organisations] Load Pba Account Name Fail'
+    LOAD_PBA_ACCOUNT_NAME_FAIL = '[Organisations] Load Pba Account Name Fail',
+    SHOW_ORGANISATION_DETAILS_USER_TAB = '[Organisation] Show Organisation Details User Tab'
 }
 
 export class LoadPendingOrganisations implements Action {
-    readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS;
+  public readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS;
     constructor() { }
 }
 
 export class ClearErrors implements Action {
-  readonly type = OrgActionTypes.CLEAR_ERRORS;
+  public readonly type = OrgActionTypes.CLEAR_ERRORS;
   constructor() { }
 }
 
 export class LoadPendingOrganisationsSuccess implements Action {
-    readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS;
+  public readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS;
 
     constructor(public payload: OrganisationVM[]) { }
 }
 
 export class LoadPendingOrganisationsFail implements Action {
-    readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
+  public readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
     constructor(public payload: any) { } // TODO change type it needs to change in the service used
 }
 
 export class AddReviewOrganisations implements Action {
-    readonly type = OrgActionTypes.ADD_REVIEW_ORGANISATIONS;
+  public readonly type = OrgActionTypes.ADD_REVIEW_ORGANISATIONS;
 
     constructor(public payload: OrganisationVM) { }
 }
 
 export class DisplayErrorMessageOrganisations implements Action {
-    readonly type = OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
+  public readonly type = OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
 
     constructor(public payload: any) { } // TODO change type it needs to change in the service used
 }
 
 export class ApprovePendingOrganisations implements Action {
-    readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS;
+  public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS;
     constructor(public payload: OrganisationVM) { }
 }
 
 export class ApprovePendingOrganisationsSuccess implements Action {
-    readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
+  public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
     constructor(public payload: OrganisationVM) { }
 }
 
@@ -76,12 +81,12 @@ export class LoadActiveOrganisation {
 }
 
 export class LoadActiveOrganisationSuccess  implements Action {
-  readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS;
+  public readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS;
   constructor(public payload: OrganisationVM[]) {}
 }
 
 export class LoadActiveOrganisationFail implements Action {
-  readonly type = OrgActionTypes.LOAD_ORGANISATIONS_FAIL;
+  public readonly type = OrgActionTypes.LOAD_ORGANISATIONS_FAIL;
   constructor(public payload: Error) {
   }
 }
@@ -99,23 +104,50 @@ export class UpdatePendingOrganisationsSearchString implements Action {
 }
 
 export class LoadPbaAccountsDetails implements Action {
-  readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME;
+  public readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME;
   constructor(public payload: {pbas: string; orgId: string}) {
   }
 }
 
 export class LoadPbaAccountDetailsSuccess implements Action {
-  readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS;
+  public readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS;
   constructor(public payload: {orgId: string; data: any[]}) {
   }
 }
 
 export class LoadPbaAccountDetailsFail implements Action {
-  readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL;
+  public readonly type = OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL;
   constructor(public payload: {orgId: string; data: any[]}) {
   }
 }
 
+export class LoadOrganisationUsers implements Action {
+  public readonly type = OrgActionTypes.LOAD_ORGANISATION_USERS;
+  constructor(public payload: string) {
+  }
+}
+
+export class LoadOrganisationUsersSuccess implements Action {
+  public readonly type = OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS;
+  constructor(public payload: any) {
+  }
+}
+
+export class LoadOrganisationUsersFail implements Action {
+  public readonly type = OrgActionTypes.LOAD_ORGANISATION_USERS_FAIL;
+  constructor(public payload: Error) {
+  }
+}
+
+export class ResetOrganisationUsers implements Action {
+  public readonly type = OrgActionTypes.RESET_ORGANISATION_USERS;
+  constructor() { }
+}
+
+export class ShowOrganisationDetailsUserTab implements Action {
+  public readonly type = OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB;
+  constructor(public payload: {orgId: string; showUserTab: boolean}) { }
+}
 
 export type OrganisationsActions =
     | LoadPendingOrganisations
@@ -134,4 +166,9 @@ export type OrganisationsActions =
     | UpdatePendingOrganisationsSearchString
     | LoadPbaAccountsDetails
     | LoadPbaAccountDetailsSuccess
-    | LoadPbaAccountDetailsFail;
+    | LoadPbaAccountDetailsFail
+    | LoadOrganisationUsers
+    | LoadOrganisationUsersSuccess
+    | LoadOrganisationUsersFail
+    | ResetOrganisationUsers
+    | ShowOrganisationDetailsUserTab;

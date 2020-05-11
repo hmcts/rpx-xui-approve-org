@@ -1,11 +1,11 @@
 import * as applicationinsights from 'applicationinsights'
 import * as express from 'express'
-import {getConfigValue, getEnvironment} from '../configuration'
-import {APP_INSIGHTS_ENABLED, APP_INSIGHTS_KEY} from '../configuration/references'
+import {getConfigValue, showFeature} from '../configuration'
+import {APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED} from '../configuration/references'
 
 export let client
 
-if (getConfigValue(APP_INSIGHTS_ENABLED)) {
+if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     applicationinsights
         .setup(getConfigValue(APP_INSIGHTS_KEY))
         .setAutoDependencyCorrelation(true)
@@ -20,6 +20,7 @@ if (getConfigValue(APP_INSIGHTS_ENABLED)) {
         .start()
 
     client = applicationinsights.defaultClient
+    client.context.tags[client.context.keys.cloudRole] = 'xui-ao'
     client.trackTrace({ message: 'App Insight Activated' })
 
 } else {
