@@ -1,6 +1,7 @@
 import * as propertiesVolume from '@hmcts/properties-volume'
 import * as config from 'config'
-import {ENVIRONMENT} from './references'
+import { DEVELOPMENT, HTTP } from './constants'
+import {ENVIRONMENT, PROTOCOL} from './references'
 
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
@@ -31,9 +32,25 @@ export const getEnvironment = () => process.env.NODE_CONFIG_ENV
 export const getConfigValue = reference => config.get(reference)
 
 /**
+ * helper method for config feature toggling
+ * @param feature
+ * @return boolean
+ */
+export const showFeature = feature => config.get(`feature.${feature}`)
+
+/**
  * Generate Environment Check Text
  *
  * We generate text to be used for debugging purposes, so as the person attempting to initialise the application knows
  * what the NODE_CONFIG_ENV is set as and what config file is being used.
  */
 export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore we are using the ${config.get(ENVIRONMENT)} config.`
+
+/**
+ * Get Protocol
+ *
+ * If running locally we return 'http'
+ *
+ * @returns {string | string}
+ */
+export const getProtocol = () => getEnvironment() === DEVELOPMENT ? HTTP : getConfigValue(PROTOCOL)

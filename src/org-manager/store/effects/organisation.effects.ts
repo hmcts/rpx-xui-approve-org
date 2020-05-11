@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { PendingOrganisationService } from 'src/org-manager/services/pending-organisation.service';
 import { LoggerService } from '../../../app/services/logger.service';
 import * as fromRoot from '../../../app/store';
@@ -30,6 +30,21 @@ export class OrganisationEffects {
           this.loggerService.error(error.message);
           return of(new fromActions.LoadActiveOrganisationFail(error));
         })
+      );
+    })
+  );
+
+  @Effect()
+  public loadOrganisationUsers$ = this.actions$.pipe(
+    ofType(fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS),
+    map((action: fromActions.LoadOrganisationUsers) => action.payload),
+    switchMap((payload) => {
+      return this.organisationService.getOrganisationUsers(payload).pipe(
+          map(data => new fromActions.LoadOrganisationUsersSuccess(AppUtils.mapUsers(data.users))),
+          catchError((error: Error) => {
+            this.loggerService.error(error);
+            return of(new fromActions.LoadOrganisationUsersFail(error));
+          })
       );
     })
   );

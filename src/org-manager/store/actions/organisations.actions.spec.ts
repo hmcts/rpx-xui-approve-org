@@ -92,10 +92,56 @@ describe('PendingOrganisationActions actions', () => {
   describe('LoadPbaAccountDetailsFail', () => {
     it('should create an action', () => {
       const payload2 = {data: [{account_name: 'PBA1234567'}], orgId: '12345'};
-      const action = new fromPendingOrganisation.LoadPbaAccountDetailsSuccess(payload2);
+      const action = new fromPendingOrganisation.LoadPbaAccountDetailsFail(payload2);
       expect({ ...action }).toEqual({
-        type: fromPendingOrganisation.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS,
+        type: fromPendingOrganisation.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL,
         payload: payload2
+      });
+    });
+  });
+
+   // Load
+  describe('LoadOrganisationUsers', () => {
+    it('should create an action', () => {
+      const payload0 = 'orgId';
+      const action = new fromPendingOrganisation.LoadOrganisationUsers(payload0);
+      expect({ ...action }).toEqual({
+        type: fromPendingOrganisation.OrgActionTypes.LOAD_ORGANISATION_USERS,
+        payload: payload0
+      });
+    });
+  });
+
+  // Success
+  describe('LoadOrganisationUsersSuccess', () => {
+    it('should create an action', () => {
+      const payload2 = {};
+      const action = new fromPendingOrganisation.LoadOrganisationUsersSuccess(payload2);
+      expect({ ...action }).toEqual({
+        type: fromPendingOrganisation.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS,
+        payload: payload2
+      });
+    });
+  });
+
+  // Fail
+  describe('LoadOrganisationUsersFail', () => {
+    it('should create an action', () => {
+      const payload2 = new Error('test error');
+      const action = new fromPendingOrganisation.LoadOrganisationUsersFail(payload2);
+      expect({ ...action }).toEqual({
+        type: fromPendingOrganisation.OrgActionTypes.LOAD_ORGANISATION_USERS_FAIL,
+        payload: payload2
+      });
+    });
+  });
+
+   // RESET
+  describe('ResetOrganisationUsers', () => {
+    it('should create an action', () => {
+      const action = new fromPendingOrganisation.ResetOrganisationUsers();
+      expect({ ...action }).toEqual({
+        type: fromPendingOrganisation.OrgActionTypes.RESET_ORGANISATION_USERS
       });
     });
   });

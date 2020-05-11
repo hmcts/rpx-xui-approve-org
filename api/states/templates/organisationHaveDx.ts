@@ -1,44 +1,27 @@
 export default {
-  idPrefix: 'tbc',
-  name: 'name',
-  header: "Do you have a DX reference for your main office?",
   formGroupValidators: [],
-  validationHeaderErrorMessages: [
-    {
-      validationLevel: 'formControl',
-      controlId: 'firstName',
-      text: 'Enter first name',
-      href: '/register/organisation-address',
-    },
-    {
-      validationLevel: 'formControl',
-      controlId: 'lastName',
-      text: 'Enter Last Name',
-      href: '/register/organisation-address',
-    },
-  ],
   groups: [
     {
       fieldset: [
         {
           radios: {
-            control: 'haveDXNumber',
             classes: 'govuk-radios--inline',
+            control: 'haveDXNumber',
             radioGroup: [
               {
-                value: 'nextUrl',
-                text: 'Yes',
                 hiddenAccessibilityText: 'some hidden text',
+                text: 'Yes',
+                value: 'nextUrl',
               },
               {
-                value: 'dontHaveDX',
+                hiddenAccessibilityText: 'some hidden text',
                 text: 'No',
-                hiddenAccessibilityText: 'some hidden text'
-              }
-            ]
-          }
-        }
-      ]
+                value: 'dontHaveDX',
+              },
+            ],
+          },
+        },
+      ],
     },
     {
       hiddenInput: {
@@ -54,12 +37,29 @@ export default {
     },
     {
       button: {
-        control: 'createButton',
-        value: 'Continue',
-        type: 'submit',
         classes: '',
-        onEvent: 'continue'
-      }
-    }
-  ]
+        control: 'createButton',
+        onEvent: 'continue',
+        type: 'submit',
+        value: 'Continue',
+      },
+    },
+  ],
+  header: "Do you have a DX reference for your main office?",
+  idPrefix: 'tbc',
+  name: 'name',
+  validationHeaderErrorMessages: [
+    {
+      controlId: 'firstName',
+      href: '/register/organisation-address',
+      text: 'Enter first name',
+      validationLevel: 'formControl',
+    },
+    {
+      controlId: 'lastName',
+      href: '/register/organisation-address',
+      text: 'Enter Last Name',
+      validationLevel: 'formControl',
+    },
+  ],
 }

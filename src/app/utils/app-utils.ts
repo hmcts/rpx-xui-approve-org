@@ -1,5 +1,7 @@
-import { Organisation, OrganisationVM } from 'src/org-manager/models/organisation';
+import { User } from '@hmcts/rpx-xui-common-lib';
+import { Organisation, OrganisationUser, OrganisationVM } from 'src/org-manager/models/organisation';
 import { AppConstants } from '../app.constants';
+import { GlobalError } from '../store/reducers/app.reducer';
 
 /**
  * Contains static stateless utility methods for the App
@@ -7,7 +9,7 @@ import { AppConstants } from '../app.constants';
  */
 export class AppUtils {
 
-  static setPageTitle(url): string {
+  public static setPageTitle(url): string {
     /**
      * it sets correct page titles
      */
@@ -37,7 +39,7 @@ export class AppUtils {
 
   }
 
-  static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
+  public static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
     const organisationModel: OrganisationVM[] = [];
     obj.forEach((apiOrg) => {
       organisationModel.push(this.mapOrganisation(apiOrg));
@@ -46,7 +48,7 @@ export class AppUtils {
     return organisationModel;
   }
 
-  static mapOrganisation(apiOrg: Organisation): OrganisationVM {
+  public static mapOrganisation(apiOrg: Organisation): OrganisationVM {
     const organisationVm = new OrganisationVM();
     organisationVm.name = apiOrg.name;
     organisationVm.adminEmail = apiOrg.superUser.email;
@@ -61,12 +63,11 @@ export class AppUtils {
     organisationVm.postCode = apiOrg.contactInformation[0].postCode;
     organisationVm.townCity = apiOrg.contactInformation[0].townCity;
     organisationVm.county = apiOrg.contactInformation[0].county;
-    organisationVm.postCode = apiOrg.contactInformation[0].postCode;
     organisationVm.sraId = apiOrg.sraId;
     return organisationVm;
   }
 
-  static mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
+  public static mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
     const organisations: Organisation[] = [];
     obj.forEach((org) => {
       const organisation: Organisation = {
@@ -77,8 +78,7 @@ export class AppUtils {
           addressLine2: org.addressLine2,
           townCity: org.townCity,
           county: org.county,
-          dxAddress: org.dxNumber,
-          postCode: org.postCode
+          dxAddress: org.dxNumber
           }],
         superUser: {
           userIdentifier: org.admin,
@@ -95,4 +95,85 @@ export class AppUtils {
 
     return organisations;
   }
+
+  public static capitalizeString(stringToCapitalize: string) {
+    const stringLowercase = stringToCapitalize.toLowerCase();
+    const stringCapitalised = stringLowercase.charAt(0).toUpperCase() + stringLowercase.slice(1);
+    return stringCapitalised;
+  }
+
+  public static mapUsers(obj: OrganisationUser[]): User[] {
+    const users: User[] = [];
+    if (obj) {
+      obj.forEach((user) => {
+        const newUser: User = {};
+        newUser.firstName = user.firstName;
+        newUser.lastName = user.lastName;
+        newUser.fullName = `${user.firstName} ${user.lastName}`;
+        newUser.email = user.email;
+        AppConstants.USER_ROLES.forEach((userRoles) => {
+          if (user.roles) {
+            newUser[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
+          }
+        });
+        newUser.status = AppUtils.capitalizeString(user.idamStatus);
+        newUser.resendInvite = user.idamStatus === 'PENDING';
+        users.push(newUser);
+      });
+    }
+    return users;
+  }
+
+
+  public static get500Error(orgId: string): GlobalError {
+    const errorMessages = [{
+      bodyText: 'Try again later.',
+      urlText: null,
+      url: null
+    },
+    {
+      bodyText: null,
+      urlText: 'Go back to manage users',
+      url: `/organisation-details/${orgId}`
+    }];
+
+    const globalError = {
+      header: 'Sorry, there is a problem with the service',
+      errors: errorMessages
+    };
+    return globalError;
+  }
+
+  public static get400Error(orgId: string): GlobalError {
+    const errorMessage = {
+      bodyText: 'to check the status of the user',
+      urlText: 'Refresh and go back',
+      url: `/organisation-details/${orgId}`
+    };
+    const globalError = {
+      header: 'Sorry, there is a problem',
+      errors: [errorMessage]
+    };
+    return globalError;
+  }
+
+  public static get404Error(orgId: string): GlobalError {
+    const errorMessages = [{
+      bodyText: 'Contact Support teams to reactivate this account',
+      urlText: null,
+      url: null
+    },
+    {
+      bodyText: null,
+      urlText: 'Go back to manage users',
+      url: `/organisation-details/${orgId}`
+    }];
+
+    const globalError = {
+      header: 'Sorry, there is a problem with this account',
+      errors: errorMessages
+    };
+    return globalError;
+  }
+
 }

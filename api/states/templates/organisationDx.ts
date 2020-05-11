@@ -1,22 +1,5 @@
 export default {
-    idPrefix: 'tbc',
-    name: 'organisation-dx',
-    header: "What's the DX reference for your main office? (optional)",
     formGroupValidators: [],
-    'validationHeaderErrorMessages': [
-      {
-        validationLevel: 'formControl',
-        controlId: 'DXnumber',
-        text: 'Enter DX number',
-        href: '/register/organisation-name'
-      },
-      {
-        validationLevel: 'formControl',
-        controlId: 'DXexchange',
-        text: 'EnterDX exchange',
-        href: '/register/organisation-name'
-      }
-    ],
     groups: [
         {
             hiddenInput: {
@@ -26,32 +9,32 @@ export default {
         },
         {
             input: {
-                label: {
-                    text: 'DX number',
-                    classes: 'govuk-label--m',
-                },
-                control: 'DXnumber',
-                validators: ['required'],
-                validationError: {
-                  value: 'Enter DX number',
-                  controlId: 'DXnumber',
-                },
                 classes: 'govuk-!-width-two-thirds',
+                control: 'DXnumber',
+                label: {
+                    classes: 'govuk-label--m',
+                    text: 'DX number',
+                },
+                validationError: {
+                  controlId: 'DXnumber',
+                  value: 'Enter DX number',
+                },
+                validators: ['required'],
             },
         },
         {
             input: {
-                label: {
-                    text: 'DX exchange',
-                    classes: 'govuk-label--m',
-                },
-                control: 'DXexchange',
-                validators: ['required'],
-                validationError: {
-                  value: 'Enter DX exchange',
-                  controlId: 'DXexchange',
-                },
                 classes: 'govuk-!-width-two-thirds',
+                control: 'DXexchange',
+                label: {
+                    classes: 'govuk-label--m',
+                    text: 'DX exchange',
+                },
+                validationError: {
+                    controlId: 'DXexchange',
+                    value: 'Enter DX exchange',
+                  },
+                validators: ['required'],
             },
         },
         {
@@ -62,12 +45,29 @@ export default {
         },
         {
             button: {
-                control: 'createButton',
-                value: 'Continue',
-                type: 'submit',
                 classes: '',
+                control: 'createButton',
                 onEvent: 'continue',
+                type: 'submit',
+                value: 'Continue',
             },
         },
+    ],
+    header: "What's the DX reference for your main office? (optional)",
+    idPrefix: 'tbc',
+    name: 'organisation-dx',
+    'validationHeaderErrorMessages': [
+      {
+        controlId: 'DXnumber',
+        href: '/register/organisation-name',
+        text: 'Enter DX number',
+        validationLevel: 'formControl',
+      },
+      {
+        controlId: 'DXexchange',
+        href: '/register/organisation-name',
+        text: 'EnterDX exchange',
+        validationLevel: 'formControl',
+      },
     ],
 }

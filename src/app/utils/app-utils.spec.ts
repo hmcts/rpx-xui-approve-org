@@ -1,5 +1,6 @@
 import {AppUtils} from './app-utils';
-import { Organisation, OrganisationVM, OrganisationAddress } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationVM, OrganisationAddress, OrganisationUser } from 'src/org-manager/models/organisation';
+import { User } from '@hmcts/rpx-xui-common-lib';
 
 describe('AppUtils', () => {
 
@@ -84,5 +85,49 @@ describe('AppUtils', () => {
     const organisations = AppUtils.mapOrganisationsVm(organisationVM);
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId);
     expect(organisations[0].name).toEqual(organisationVM[0].name);
+  });
+
+  it('should string capitalised', () => {
+    const randomString = 'RANDOMSTRING';
+    expect(AppUtils.capitalizeString(randomString)).toEqual('Randomstring');
+  });
+
+  it('should string mapUser', () => {
+    const mockUser: OrganisationUser[] = [{
+      userIdentifier: 'id',
+      firstName: 'hello',
+      lastName: 'world',
+      email: 'test@test.com',
+      idamStatus: 'PENDING',
+      idamStatusCode: 'code',
+      idamMessage: 'message',
+      roles: ['pui-case-manager', 'pui-user-manager']
+    }];
+
+    const mockUserResult: User[] = [{
+      fullName: 'hello world',
+      firstName: 'hello',
+      lastName: 'world',
+      email: 'test@test.com',
+      status: 'Pending',
+      resendInvite: true,
+      ['manageCases']: 'Yes',
+      ['manageUsers']: 'Yes',
+      ['manageOrganisations']: 'No'
+
+    }];
+    expect(AppUtils.mapUsers(mockUser)).toEqual(mockUserResult);
+  });
+
+  it('should return 500 error org url', () => {
+    expect(AppUtils.get500Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
+  });
+
+  it('should return 400 error org url', () => {
+    expect(AppUtils.get400Error('dummy').errors[0].url).toEqual('/organisation-details/dummy');
+  });
+
+  it('should return 404 error org url', () => {
+    expect(AppUtils.get404Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
   });
  });

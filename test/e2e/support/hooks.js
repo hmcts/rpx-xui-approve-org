@@ -93,7 +93,7 @@ const { Given, When, Then } = require('cucumber');
 
 
 defineSupportCode(({ After }) => {
-    After(function(scenario, done) {
+    After(function (scenario, done) {
         const world = this;
         if (scenario.result.status === 'failed') {
             browser.takeScreenshot().then(stream => {
@@ -101,10 +101,25 @@ defineSupportCode(({ After }) => {
                 world.attach(decodedImage, 'image/png');
             })
                 .then(() => {
-                    done();
+                    Promise.all(getCookieCleanupPromises())
+                        .then(() => {
+                            done();
+                        });
                 });
         } else {
-            done();
+            Promise.all(getCookieCleanupPromises())
+                .then(() => {
+                    done();
+                });
         }
     });
-});
+}); 
+
+function getCookieCleanupPromises(){
+
+    var cookiesStorageDeletionPromises = [];
+    cookiesStorageDeletionPromises.push(browser.executeScript('window.localStorage.clear()'));
+    cookiesStorageDeletionPromises.push(browser.executeScript('window.sessionStorage.clear()'));
+    cookiesStorageDeletionPromises.push(browser.driver.manage().deleteAllCookies());
+    return cookiesStorageDeletionPromises;
+}

@@ -1,46 +1,46 @@
 export default {
+    formGroupValidators: [],
+    groups: [
+      {
+          hiddenInput: {
+              control: 'nextUrl',
+              value: 'organisation-address',
+          },
+      },
+    {
+      input: {
+        classes: '',
+        control: 'orgName',
+        label: {
+          classes: 'govuk-label--m',
+          text: '',
+        },
+        validationError: {
+          controlId: 'orgName',
+          value: 'Enter Organisation Name',
+        },
+        validators: ['required'],
+      },
+    },
+      {
+          button: {
+              classes: '',
+              control: 'createButton',
+              onEvent: 'continue',
+              type: 'submit',
+              value: 'Continue',
+          },
+      },
+  ],
+    header: "What's the name of your organisation?",
     idPrefix: 'tbc',
     name: 'organisation-name',
-    header: "What's the name of your organisation?",
-    formGroupValidators: [],
     'validationHeaderErrorMessages': [
       {
-        validationLevel: 'formControl',
         controlId: 'orgName',
+        href: '/register/organisation-name',
         text: 'Enter organisation name',
-        href: '/register/organisation-name'
-      }
-    ],
-    groups: [
-        {
-            hiddenInput: {
-                control: 'nextUrl',
-                value: 'organisation-address',
-            },
-        },
-      {
-        input: {
-          label: {
-            text: '',
-            classes: 'govuk-label--m'
-          },
-          validators: ['required'],
-          validationError: {
-            value: 'Enter Organisation Name',
-            controlId: 'orgName'
-          },
-          control: 'orgName',
-          classes: ''
-        },
+        validationLevel: 'formControl',
       },
-        {
-            button: {
-                control: 'createButton',
-                value: 'Continue',
-                type: 'submit',
-                classes: '',
-                onEvent: 'continue',
-            },
-        },
     ],
 }

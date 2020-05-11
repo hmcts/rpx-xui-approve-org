@@ -2,7 +2,8 @@
   "environment": "production",
   "cookies": {
     "token": "__auth__",
-    "userId": "__userid__"
+    "userId": "__userid__",
+    "roles": "roles"
   },
   "exceptionOptions": {
     "maxLines": 1
@@ -15,18 +16,81 @@
   "now": false,
   "oauthCallbackUrl": "/oauth2/callback",
   "protocol": "https",
-  "secureCookie": true,
   "services": {
-    "ccdDataApi": "http://ccd-data-store-api-demo.service.core-compute-demo.internal",
-    "ccdDefApi": "http://ccd-definition-store-api-demo.service.core-compute-demo.internal",
+    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
+    "ccdDefApi": "http://ccd-definition-store-api-prod.service.core-compute-prod.internal",
     "idamApi": "https://idam-api.platform.hmcts.net",
     "idamWeb": "https://hmcts-access.service.gov.uk",
     "rdProfessionalApi": "http://rd-professional-api-prod.service.core-compute-prod.internal",
     "feeAndPayApi": "https://payment-api-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
   },
+  "userTimeoutInSeconds": 28800,
+  "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts",
   "sessionSecret": "secretSauce",
-  "useProxy": false,
-  "appInsightsEnabled": true
+  "feature": {
+    "appInsightsEnabled": true,
+    "proxyEnabled": false,
+    "secureCookieEnabled": true,
+    "helmetEnabled": false,
+    "redisEnabled": true,
+    "oidcEnabled": false
+  },
+  "helmet": {
+    "contentSecurityPolicy": {
+      "directives": {
+        "defaultSrc": ["'self'"],
+        "fontSrc": ["'self'", "https://fonts.gstatic.com", "data:"],
+        "styleSrc": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://fonts.googleapis.com",
+          "https://fonts.gstatic.com"
+        ],
+        "scriptSrc": [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "www.google-analytics.com",
+          "www.googletagmanager.com",
+          "az416426.vo.msecnd.net"
+        ],
+        "connectSrc": [
+          "'self'",
+          "*.gov.uk",
+          "dc.services.visualstudio.com"
+        ],
+        "mediaSrc": ["'self'"],
+        "objectSrc": ["'self'"],
+        "frameAncestors": ["'none'"],
+        "imgSrc": [
+          "'self'",
+          "data:",
+          "https://www.google-analytics.com",
+          "https://www.googletagmanager.com",
+          "https://raw.githubusercontent.com/hmcts/"
+        ]
+      }
+    },
+    "referrerPolicy": {
+      "policy": "origin"
+    },
+    "noCache": {
+      "enable": true
+    },
+    "frameguard": {
+      "action":"deny"
+    },
+    "hidePoweredBy": {
+      "setTo": "XUI Server 1.0"
+    }
+  },
+  "redis": {
+    "host": "xui-ao-webapp-prod.redis.cache.windows.net",	
+    "port": 6380,	
+    "tls": true,
+    "prefix": "activity:",
+    "ttl": 86400
+  }
 }
 

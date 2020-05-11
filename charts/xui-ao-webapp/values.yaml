@@ -1,18 +1,28 @@
+redis:
+  enabled: false
+  cluster:
+    enabled: false
+    slaveCount: 0
+  password: fake-password
+  master:
+    persistence:
+      enabled: false
+
 nodejs:
   aadIdentityName: xui
   applicationPort: 3000
   memoryLimits: 1024Mi
   cpuLimits: 1000m
   environment:
-    IDAM_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     S2S_URL: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CCD_DATA_API_SERVICE: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     CCD_DEFINITION_API_SERVICE: http://ccd-definition-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
-    IDAM_API_SERVICE: https://idam-api.platform.hmcts.net
-    IDAM_WEB_SERVICE: https://hmcts-access.service.gov.uk
+    IDAM_API_SERVICE: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+    IDAM_WEB_SERVICE: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
     RD_PROFESSIONAL_API_SERVICE: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     FEE_AND_PAY_API: http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    ISS_SERVICE: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}2.internal:8443/openam/oauth2/hmcts
     REFORM_TEAM: rpx
     REFORM_SERVICE_NAME: xui-ao-webapp
     NODE_ENV: production
@@ -32,19 +42,30 @@ nodejs:
     INDEX_URL: /
     LOGGING: debug
     PROTOCOL: https
-    SECURE_COOKIE: true
     COOKIE_TOKEN: __auth__
     COOKIE_USER_ID: __userid__
+    COOKIE_ROLES: roles
     MICROSERVICE: xui_webapp
     ALLOW_CONFIG_MUTATIONS: 1
-    APP_INSIGHTS_ENABLED: true
+    FEATURE_APP_INSIGHTS_ENABLED: true
+    FEATURE_SECURE_COOKIE_ENABLED: true
+    FEATURE_PROXY_ENABLED: false
+    FEATURE_HELMET_ENABLED: true
+    FEATURE_REDIS_ENABLED: true
+    FEATURE_OIDC_ENABLED: false
+
+    # Redis
+    REDIS_KEY_PREFIX: 'activity:'
+    REDIS_TTL: 6000
+
   keyVaults:
     rpx:
       resourceGroup: rpx
       secrets:
         - ao-s2s-client-secret
         - ao-idam-client-secret
-        - AppInsightsInstrumentationKey
+        - appinsights-instrumentationkey-ao
+        - ao-webapp-redis-connection-string
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
