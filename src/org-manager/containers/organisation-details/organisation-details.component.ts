@@ -1,11 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {filter, take, takeWhile} from 'rxjs/operators';
-import { OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromRoot from '../../../app/store';
+import { UserApprovalGuard } from '../../guards/users-approval.guard';
+import { OrganisationUserListModel, OrganisationVM} from '../../models/organisation';
 import * as fromStore from '../../store';
-import * as fromOrganisation from '../../store/';
 
 /**
  * Bootstraps Organisation Details
@@ -14,18 +15,34 @@ import * as fromOrganisation from '../../store/';
   selector: 'app-org-details',
   templateUrl: './organisation-details.component.html'
 })
-export class OrganisationDetailsComponent implements OnInit {
+export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
   public orgs$: Observable<OrganisationVM>;
-
+  public userLists$: Observable<OrganisationUserListModel>;
+  public showUsers = false;
+  public isXuiApproverUserdata = false;
+  public showUserNavigation = false;
+  public organisationId: string;
+  public organisationAdminEmail: string;
+  public isActiveOrg = false;
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>) {}
+    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly userApprovalGuard: UserApprovalGuard) {}
+    private getShowOrgDetailsSubscription: Subscription;
+    private getAllLoadedSubscription: Subscription;
 
   public ngOnInit(): void {
-    this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
+
+    this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
+    if (this.isXuiApproverUserdata) {
+      this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
+    }
+
+    this.store.dispatch(new fromStore.ResetOrganisationUsers());
+    this.getAllLoadedSubscription = this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
-        this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
-        this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
+        this.store.dispatch(new fromStore.LoadActiveOrganisation());
+        this.store.dispatch(new fromStore.LoadPendingOrganisations());
       }
     });
 
@@ -33,9 +50,20 @@ export class OrganisationDetailsComponent implements OnInit {
     this.orgs$.pipe(
         filter(value => value !== undefined),
         take(1)
-    ).subscribe(({organisationId, pbaNumber, isAccLoaded}) => {
+    ).subscribe(({organisationId, pbaNumber, isAccLoaded, status, adminEmail}) => {
+      this.organisationId = organisationId;
+      this.organisationAdminEmail = adminEmail;
+      this.showUserNavigation = false;
+      if (status === 'ACTIVE') {
+        this.isActiveOrg = true;
+        if (this.isXuiApproverUserdata) {
+          this.showUserNavigation = true;
+          this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
+        }
+      }
+
       if (!isAccLoaded && pbaNumber.length) {
-        this.store.dispatch(new fromOrganisation.LoadPbaAccountsDetails({
+        this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
               orgId: organisationId,
               pbas: pbaNumber.toString()
             }
@@ -43,10 +71,11 @@ export class OrganisationDetailsComponent implements OnInit {
         );
       }
     });
+    this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
 
   public onGoBack() {
-    this.store.dispatch(new fromRoot.Back());
+    this.store.dispatch(new fromRoot.Go({ path: [this.isActiveOrg ? '/active-organisation' : '/pending-organisations'] }));
   }
 
   public approveOrganisation(data: OrganisationVM) {
@@ -55,5 +84,24 @@ export class OrganisationDetailsComponent implements OnInit {
     }
   }
 
+  public showUsersTab(showUsers: boolean) {
+    this.showUsers = showUsers;
+    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({orgId: this.organisationId, showUserTab: showUsers}));
+  }
+
+  public onShowUserDetails(user: User) {
+    if (user) {
+      this.store.dispatch(new fromStore.ShowUserDetails({userDetails: user, isSuperUser: this.organisationAdminEmail === user.email, orgId: this.organisationId}));
+    }
+  }
+
+  public ngOnDestroy() {
+    if (this.getAllLoadedSubscription) {
+      this.getAllLoadedSubscription.unsubscribe();
+    }
+    if (this.getShowOrgDetailsSubscription) {
+      this.getShowOrgDetailsSubscription.unsubscribe();
+    }
+  }
 }
 
