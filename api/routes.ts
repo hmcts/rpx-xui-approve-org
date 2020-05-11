@@ -1,3 +1,4 @@
+import oidc from '@hmcts/rpx-xui-node-lib/dist/auth/oidc'
 import * as express from 'express'
 import authInterceptor from '../api/middleware/auth'
 import * as auth from './auth'
@@ -18,7 +19,8 @@ const router = express.Router({ mergeParams: true })
 router.use('/environment', environment)
 
 if (showFeature(FEATURE_OIDC_ENABLED)) {
-  router.use(authInterceptor)
+  // router.use(authInterceptor)
+  router.use(oidc.authenticate)
 } else {
     router.use(auth.attach)
 }

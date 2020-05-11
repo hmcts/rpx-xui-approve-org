@@ -1,4 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
+import oidc from '@hmcts/rpx-xui-node-lib/dist/auth/oidc'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -32,7 +33,8 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET
+  SESSION_SECRET,
+  IDAM_SECRET
 } from './configuration/references'
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
@@ -166,18 +168,34 @@ app.use(serviceRouter)
  */
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
-  app.use(passport.initialize())
-  app.use(passport.session())
-  app.use(auth.configure)
-  passport.serializeUser((user, done) => {
-    done(null, user)
-  })
+  // app.use(passport.initialize())
+  // app.use(passport.session())
+  // app.use(auth.configure)
+  // passport.serializeUser((user, done) => {
+  //   done(null, user)
+  // })
 
-  passport.deserializeUser((id, done) => {
-    done(null, id)
+  // passport.deserializeUser((id, done) => {
+  //   done(null, id)
+  // })
+  // app.get('/oauth2/callback', auth.openIdConnectAuth)
+  // app.use('/auth', auth.router)
+  const secret = getConfigValue(IDAM_SECRET)
+  const idamClient = getConfigValue(IDAM_CLIENT)
+  const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
+  const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
+  const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
+  oidc.setOptions({
+    client_id: idamClient,
+    client_secret: secret,
+    discovery_endpoint: `${idamWebUrl}/o`,
+    issuer_url: issuerUrl,
+    redirect_uri: oauthCallbackUrl,
+    response_types: ['code'],
+    scope: 'profile openid roles manage-user create-user',
+    token_endpoint_auth_method: 'client_secret_post',
   })
-  app.get('/oauth2/callback', auth.openIdConnectAuth)
-  app.use('/auth', auth.router)
+  // app.use(oidc.authenticate)
 } else {
   app.get('/oauth2/callback', auth.oauth)
 }

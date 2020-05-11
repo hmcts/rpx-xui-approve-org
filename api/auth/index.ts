@@ -364,14 +364,14 @@ export async function doLogoutOidc(req: express.Request, res: express.Response, 
   }
 }
 
-if (showFeature(FEATURE_OIDC_ENABLED)) {
-  console.log('test123')
-  router.get('/logout', async (req: express.Request, res: express.Response) => {
-    await doLogoutOidc(req, res)
-  })
-  router.get('/login', (req, res, next) => {
-    logger._logger.info('hit /login', req.session)
-    passport.authenticate('oidc')(req, res, next)
-  })
-  router.use('/keepalive', keepAlive)
-}
+// if (showFeature(FEATURE_OIDC_ENABLED)) {
+//   console.log('test123')
+//   router.get('/logout', async (req: express.Request, res: express.Response) => {
+//     await doLogoutOidc(req, res)
+//   })
+//   router.get('/login', (req, res, next) => {
+//     logger._logger.info('hit /login', req.session)
+//     passport.authenticate('oidc')(req, res, next)
+//   })
+//   router.use('/keepalive', keepAlive)
+// }
