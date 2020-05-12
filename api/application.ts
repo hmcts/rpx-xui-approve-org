@@ -116,7 +116,7 @@ app.use(
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     },
     name: 'jui-webapp',
-    resave: true,
+    resave: false,
     saveUninitialized: true,
     secret: getConfigValue(SESSION_SECRET),
     store: getStore(),
@@ -168,16 +168,17 @@ app.use(serviceRouter)
  */
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
-  // app.use(passport.initialize())
-  // app.use(passport.session())
+  app.use(passport.initialize())
+  app.use(passport.session())
   // app.use(auth.configure)
-  // passport.serializeUser((user, done) => {
-  //   done(null, user)
-  // })
+  passport.serializeUser((user, done) => {
+    done(null, user)
+  })
 
-  // passport.deserializeUser((id, done) => {
-  //   done(null, id)
-  // })
+  passport.deserializeUser((id, done) => {
+    done(null, id)
+  })
+  console.log('testd')
   // app.get('/oauth2/callback', auth.openIdConnectAuth)
   // app.use('/auth', auth.router)
   const secret = getConfigValue(IDAM_SECRET)
@@ -190,12 +191,13 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     client_secret: secret,
     discovery_endpoint: `${idamWebUrl}/o`,
     issuer_url: issuerUrl,
-    redirect_uri: oauthCallbackUrl,
+    redirect_uri: 'http://localhost:3000',
     response_types: ['code'],
     scope: 'profile openid roles manage-user create-user',
     token_endpoint_auth_method: 'client_secret_post',
   }))
   app.get('/api/isAuthenticated', (req, res) => {
+    console.log('req.isAuthenticated() =>', req.isAuthenticated())
     return res.send(req.isAuthenticated())
   })
 } else {
