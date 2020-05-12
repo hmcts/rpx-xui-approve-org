@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import * as jwtDecode from 'jwt-decode';
 import {CookieService} from 'ngx-cookie';
 
+import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
@@ -12,7 +13,8 @@ import {EnvironmentService} from '../../app/services/environment.service';
 export class AuthService {
   constructor(
     private readonly cookieService: CookieService,
-    private readonly envService: EnvironmentService
+    private readonly envService: EnvironmentService,
+    private readonly httpService: HttpClient
   ) {
   }
   // TODO remove/toggle this for oidc
@@ -44,15 +46,17 @@ export class AuthService {
   }
 
  public isAuthenticated(): Observable<boolean> {
-    return this.envService.getEnv$().map( config => {
-      const jwt = this.cookieService.get(config.cookies.token);
-      if (!jwt) {
-        return false;
-      }
-      const jwtData = this.decodeJwt(jwt);
-      // do stuff!!
-      return jwtData.exp > Math.round(new Date().getTime() / 1000);
-    });
 
+    return this.httpService.get<boolean>('/api/isAuthenticated');
+    // return this.envService.getEnv$().map( config => {
+    //   debugger
+    //   const jwt = this.cookieService.get(config.cookies.token);
+    //   if (!jwt) {
+    //     return false;
+    //   }
+    //   const jwtData = this.decodeJwt(jwt);
+    //   // do stuff!!
+    //   return jwtData.exp > Math.round(new Date().getTime() / 1000);
+    // });
   }
 }

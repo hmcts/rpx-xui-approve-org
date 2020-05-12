@@ -195,6 +195,9 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     scope: 'profile openid roles manage-user create-user',
     token_endpoint_auth_method: 'client_secret_post',
   }))
+  app.get('/api/isAuthenticated', (req, res) => {
+    return res.send(req.isAuthenticated())
+  })
 } else {
   app.get('/oauth2/callback', auth.oauth)
 }
