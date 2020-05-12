@@ -185,7 +185,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
   const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
   const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
-  oidc.setOptions({
+  app.use(oidc.configure({
     client_id: idamClient,
     client_secret: secret,
     discovery_endpoint: `${idamWebUrl}/o`,
@@ -194,8 +194,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     response_types: ['code'],
     scope: 'profile openid roles manage-user create-user',
     token_endpoint_auth_method: 'client_secret_post',
-  })
-  // app.use(oidc.authenticate)
+  }))
 } else {
   app.get('/oauth2/callback', auth.oauth)
 }
