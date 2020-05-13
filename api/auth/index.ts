@@ -53,7 +53,8 @@ export async function attach(req: express.Request, res: express.Response, next: 
       logger.info('Attaching auth')
       // also use these as axios defaults
       logger.info('Using Idam Token in defaults')
-      axios.defaults.headers.common.Authorization = req.headers.Authorization
+     // axios.defaults.headers.common.Authorization = req.headers.Authorization
+     req.http=http(req)
       const token = await asyncReturnOrError(serviceTokenGenerator(), 'Error getting s2s token', res, logger)
       if (token) {
         logger.info('Using S2S Token in defaults')
