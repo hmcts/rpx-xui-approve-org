@@ -171,6 +171,10 @@ app.use(serviceRouter)
  * Any routes here do not have authentication attached and are therefore reachable.
  */
 if (showFeature(FEATURE_OIDC_ENABLED)) {
+  console.log('OIDC enabled')
+  // app.use(auth.configure)
+  // app.get('/oauth2/callback', auth.openIdConnectAuth)
+  // app.use('/auth', auth.router)
   const secret = getConfigValue(IDAM_SECRET)
   const idamClient = getConfigValue(IDAM_CLIENT)
   const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
@@ -203,15 +207,15 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     sessionKey: 'xui-webapp',
     token_endpoint_auth_method: 'client_secret_post',
   }))
-
 } else {
   app.get('/oauth2/callback', auth.oauth)
+  app.get('/api/logout', async (req, res) => {
+    await auth.doLogoutOAuth2(req, res)
+  })
 }
-
 app.get('/api/isAuthenticated', (req, res) => {
   return res.send(req.isAuthenticated())
 })
-
 app.get('/external/ping', (req, res) => {
   console.log('Pong')
   res.send({
@@ -254,6 +258,3 @@ app.get('/external/ping', (req, res) => {
  *
  */
 app.use('/api', routes)
-app.get('/api/logout', async (req, res) => {
-  await auth.doLogout(req, res)
-})
