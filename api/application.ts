@@ -43,6 +43,8 @@ import {getStore} from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
 import serviceRouter from './services/serviceAuth'
+import * as serviceTokenMiddleware from "./auth/serviceToken";
+import axios from 'axios'
 
 export const app = express()
 
@@ -167,18 +169,18 @@ app.use(serviceRouter)
  * Any routes here do not have authentication attached and are therefore reachable.
  */
 if (showFeature(FEATURE_OIDC_ENABLED)) {
-  console.log('OIDC enabled')
-  app.use(passport.initialize())
-  app.use(passport.session())
-  // app.use(auth.configure)
-  passport.serializeUser((user, done) => {
-    done(null, user)
-  })
+    app.use(passport.initialize())
+    app.use(passport.session())
+    console.log('OIDC enabled')
+    // app.use(auth.configure)
+    passport.serializeUser((user, done) => {
+      done(null, user)
+    })
 
-  passport.deserializeUser((id, done) => {
-    done(null, id)
-  })
-  console.log('testd')
+    passport.deserializeUser((id, done) => {
+      done(null, id)
+    })
+    console.log('testd')
   // app.get('/oauth2/callback', auth.openIdConnectAuth)
   // app.use('/auth', auth.router)
   const secret = getConfigValue(IDAM_SECRET)
@@ -186,6 +188,24 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
   const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
   const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
+
+  oidc.on('oidc.authenticate.success', async (req, res, next) => {
+    // console.log('AO auth success =>', req.isAuthenticated())
+    console.log('oidc.authenticate.success: req.headers.paddyAuth', req.headers.paddyAuth)
+    const userDetails = req.session.passport.user
+    const roles = userDetails.userinfo.roles
+
+    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
+    axios.defaults.headers.common['user-roles'] = roles.join()
+
+    await serviceTokenMiddleware.default(req, res, () => {
+      logger.info('Attached auth headers to request')
+      // res.redirect('/')
+      next()
+    })
+  })
+
+
   app.use(oidc.configure({
     client_id: idamClient,
     client_secret: secret,
@@ -197,7 +217,8 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     token_endpoint_auth_method: 'client_secret_post',
   }))
   app.get('/api/isAuthenticated', (req, res) => {
-    console.log('req.isAuthenticated() =>', req.isAuthenticated())
+    // console.log('req.isAuthenticated() => ', req.isAuthenticated())
+    console.log('/api/isAuthenticated: req.headers.paddyAuth', req.headers.paddyAuth)
     return res.send(req.isAuthenticated())
   })
 } else {
