@@ -181,29 +181,29 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
       done(null, id)
     })
     console.log('testd')
-  // app.get('/oauth2/callback', auth.openIdConnectAuth)
-  // app.use('/auth', auth.router)
-  const secret = getConfigValue(IDAM_SECRET)
-  const idamClient = getConfigValue(IDAM_CLIENT)
-  const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
-  const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
-  const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
+    // app.get('/oauth2/callback', auth.openIdConnectAuth)
+    // app.use('/auth', auth.router)
+    const secret = getConfigValue(IDAM_SECRET)
+    const idamClient = getConfigValue(IDAM_CLIENT)
+    const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
+    const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
+    const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
 
-  oidc.on('oidc.authenticate.success', async (req, res, next) => {
-    // console.log('AO auth success =>', req.isAuthenticated())
-    console.log('oidc.authenticate.success: req.headers.paddyAuth', req.headers.paddyAuth)
-    const userDetails = req.session.passport.user
-    const roles = userDetails.userinfo.roles
+    oidc.on('oidc.authenticate.success', async (req, res, next) => {
+      // console.log('AO auth success =>', req.isAuthenticated())
+      console.log('oidc.authenticate.success: req.headers.paddyAuth', req.headers.paddyAuth)
+      const userDetails = req.session.passport.user
+      const roles = userDetails.userinfo.roles
 
-    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
-    axios.defaults.headers.common['user-roles'] = roles.join()
+      axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
+      axios.defaults.headers.common['user-roles'] = roles.join()
 
-    await serviceTokenMiddleware.default(req, res, () => {
-      logger.info('Attached auth headers to request')
-      // res.redirect('/')
-      next()
+      await serviceTokenMiddleware.default(req, res, () => {
+        logger.info('Attached auth headers to request')
+        // res.redirect('/')
+        next()
+      })
     })
-  })
 
 
   app.use(oidc.configure({
