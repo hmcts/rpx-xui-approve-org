@@ -171,20 +171,6 @@ app.use(serviceRouter)
  * Any routes here do not have authentication attached and are therefore reachable.
  */
 if (showFeature(FEATURE_OIDC_ENABLED)) {
-  app.use(passport.initialize())
-  app.use(passport.session())
-  console.log('OIDC enabled')
-  // app.use(auth.configure)
-  passport.serializeUser((user, done) => {
-    done(null, user)
-  })
-
-  passport.deserializeUser((id, done) => {
-    done(null, id)
-  })
-  console.log('testd')
-  // app.get('/oauth2/callback', auth.openIdConnectAuth)
-  // app.use('/auth', auth.router)
   const secret = getConfigValue(IDAM_SECRET)
   const idamClient = getConfigValue(IDAM_CLIENT)
   const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
@@ -193,7 +179,6 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
 
   oidc.on('oidc.authenticate.success', async (req, res, next) => {
     // console.log('AO auth success =>', req.isAuthenticated())
-    console.log('oidc.authenticate.success: req.headers.paddyAuth', req.headers.paddyAuth)
     const userDetails = req.session.passport.user
     const roles = userDetails.userinfo.roles
 
@@ -202,7 +187,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
 
     await serviceTokenMiddleware.default(req, res, () => {
       logger.info('Attached auth headers to request')
-      // res.redirect('/')
+      res.redirect('/')
       next()
     })
   })
@@ -215,16 +200,18 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     redirect_uri: 'http://localhost:3000',
     response_types: ['code'],
     scope: 'profile openid roles manage-user create-user',
+    sessionKey: 'xui-webapp',
     token_endpoint_auth_method: 'client_secret_post',
   }))
-  app.get('/api/isAuthenticated', (req, res) => {
-    // console.log('req.isAuthenticated() => ', req.isAuthenticated())
-    console.log('/api/isAuthenticated: req.headers.paddyAuth', req.headers.paddyAuth)
-    return res.send(req.isAuthenticated())
-  })
+
 } else {
   app.get('/oauth2/callback', auth.oauth)
 }
+
+app.get('/api/isAuthenticated', (req, res) => {
+  return res.send(req.isAuthenticated())
+})
+
 app.get('/external/ping', (req, res) => {
   console.log('Pong')
   res.send({
