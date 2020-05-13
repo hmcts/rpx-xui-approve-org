@@ -171,18 +171,8 @@ app.use(serviceRouter)
  * Any routes here do not have authentication attached and are therefore reachable.
  */
 if (showFeature(FEATURE_OIDC_ENABLED)) {
-  app.use(passport.initialize())
-  app.use(passport.session())
   console.log('OIDC enabled')
   // app.use(auth.configure)
-  passport.serializeUser((user, done) => {
-    done(null, user)
-  })
-
-  passport.deserializeUser((id, done) => {
-    done(null, id)
-  })
-  console.log('testd')
   // app.get('/oauth2/callback', auth.openIdConnectAuth)
   // app.use('/auth', auth.router)
   const secret = getConfigValue(IDAM_SECRET)
