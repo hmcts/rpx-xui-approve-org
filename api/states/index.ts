@@ -19,7 +19,7 @@ async function registerOrganisation(req, res) {
     const organisationPayload = makeOrganisationPayload(req.body.fromValues)
 
     return await asyncReturnOrError(
-        rdProfessional.postOrganisation(organisationPayload),
+        rdProfessional.postOrganisation(organisationPayload,req),
         'Error registering organisation',
         res,
         logger,

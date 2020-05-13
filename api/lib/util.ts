@@ -1,5 +1,4 @@
 import * as express from 'express'
-import { http } from './http'
 
 export function asyncReturnOrError(
     promise: any,
@@ -72,14 +71,14 @@ export function isObject(o) {
     return o !== null && typeof o === 'object' && Array.isArray(o) === false
 }
 
-export async function getHealth(url: string) {
-    const response = await http.get(`${url}/health`)
+export async function getHealth(url: string, req: express.Request) {
+    const response = await req.http.get(`${url}/health`)
 
     return response.data
 }
 
-export async function getInfo(url: string) {
-    const response = await http.get(`${url}/info`)
+export async function getInfo(url: string, req: express.Request) {
+    const response = await req.http.get(`${url}/info`)
 
     return response.data
 }
