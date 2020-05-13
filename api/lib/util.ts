@@ -1,9 +1,10 @@
-import * as express from 'express'
+import {Request} from 'express'
+import {Response} from 'express'
 
 export function asyncReturnOrError(
     promise: any,
     message: string,
-    res: express.Response | null,
+    res: Response | null,
     logger,
     setResponse: boolean = true
 ): any {
@@ -71,13 +72,13 @@ export function isObject(o) {
     return o !== null && typeof o === 'object' && Array.isArray(o) === false
 }
 
-export async function getHealth(url: string, req: express.Request) {
+export async function getHealth(url: string, req: Request) {
     const response = await req.http.get(`${url}/health`)
 
     return response.data
 }
 
-export async function getInfo(url: string, req: express.Request) {
+export async function getInfo(url: string, req: Request) {
     const response = await req.http.get(`${url}/info`)
 
     return response.data
