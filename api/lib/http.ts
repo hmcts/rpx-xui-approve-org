@@ -12,8 +12,7 @@ export const http = (req: Request) => {
   if (exists(req, 'session.auth.token')) {
     headers['Authorization'] = `Bearer ${req.session.auth.token}`
     //headers['Authorization'] = req.headers.Authorization 
-   
-  }
+   }
 
   if (exists(req, 'session.auth.roles')) {
     headers['user-roles'] = req.session.auth.roles
