@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from 'axios'
 import * as express from 'express'
+import { http } from '../lib/http'
 import * as jwtDecode from 'jwt-decode'
 import * as net from 'net'
 import {Client, ClientMetadata, Issuer, Strategy, TokenSet, UserinfoResponse} from 'openid-client'
@@ -14,7 +15,6 @@ import {
   SERVICES_IDAM_WEB, SERVICES_ISS_PATH
 } from '../configuration/references'
 import {router as keepAlive} from '../keepalive'
-import {http} from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { propsExist } from '../lib/objectUtilities'
 import {asyncReturnOrError} from '../lib/util'
@@ -53,7 +53,7 @@ export async function attach(req: express.Request, res: express.Response, next: 
       logger.info('Attaching auth')
       // also use these as axios defaults
       logger.info('Using Idam Token in defaults')
-      axios.defaults.headers.common.Authorization = `Bearer ${session.auth.token}`
+      axios.defaults.headers.common.Authorization = req.headers.Authorization
       const token = await asyncReturnOrError(serviceTokenGenerator(), 'Error getting s2s token', res, logger)
       if (token) {
         logger.info('Using S2S Token in defaults')
@@ -61,7 +61,7 @@ export async function attach(req: express.Request, res: express.Response, next: 
         axios.defaults.headers.common.ServiceAuthorization = token
       } else {
         logger.warn('Cannot attach S2S token ')
-        doLogout(req, res, 401)
+        await doLogout(req, res, 401)
       }
     }
 
@@ -69,7 +69,7 @@ export async function attach(req: express.Request, res: express.Response, next: 
   }
 }
 
-export async function getTokenFromCode(req: express.Request, res: express.Response): Promise<AxiosResponse> {
+export async function getTokenFromCode(req: express.Request): Promise<AxiosResponse> {
   logger.info(`IDAM STUFF ===>> ${idamClient}:${secret}`)
   const Authorization = `Basic ${Buffer.from(`${idamClient}:${secret}`).toString('base64')}`
   const options = {
@@ -79,6 +79,8 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
     },
   }
 
+  const axiosInstance = http({} as unknown as express.Request)
+
   logger.info('Getting Token from auth code.')
 
   console.log(
@@ -86,7 +88,7 @@ export async function getTokenFromCode(req: express.Request, res: express.Respon
       getProtocol()
     }://${req.headers.host}${getConfigValue(OAUTH_CALLBACK_URL)}`
   )
-  return http.post(
+  return axiosInstance.post(
     `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token?grant_type=authorization_code&code=${req.query.code}&redirect_uri=${
       getProtocol()
     }://${req.headers.host}${getConfigValue(OAUTH_CALLBACK_URL)}`,
@@ -109,7 +111,7 @@ async function sessionChainCheck(req: express.Request, res: express.Response, ac
 
     if (!havePrdAdminRole(userDetails.data.roles)) {
       logger.warn('User has no application access, as they do not have a Approve Organisations role.')
-      doLogout(req, res, 401)
+      await doLogout(req, res, 401)
       return false
     }
 
@@ -132,7 +134,7 @@ async function sessionChainCheck(req: express.Request, res: express.Response, ac
 
   if (!req.session.auth) {
     logger.warn('Auth token  expired need to log in again')
-    doLogout(req, res, 401)
+    await doLogout(req, res, 401)
     return false
   }
 
@@ -141,7 +143,7 @@ async function sessionChainCheck(req: express.Request, res: express.Response, ac
 
 export async function oauth(req: express.Request, res: express.Response, next: express.NextFunction) {
   logger.info('starting oauth callback')
-  const response = await getTokenFromCode(req, res)
+  const response = await getTokenFromCode(req)
   const accessToken = response.data.access_token
 
   if (accessToken) {
@@ -159,9 +161,8 @@ export async function oauth(req: express.Request, res: express.Response, next: e
     } else {
       const check = await sessionChainCheck(req, res, accessToken)
       if (check) {
-        axios.defaults.headers.common.Authorization = `Bearer ${req.session.auth.token}`
-        axios.defaults.headers.common['user-roles'] = req.session.auth.roles
         res.cookie(getConfigValue(COOKIE_ROLES), req.session.auth.roles)
+        //req.headers.Authorization =`Bearer ${req.session.auth.token}`
 
         if (req.headers.ServiceAuthorization) {
           axios.defaults.headers.common.ServiceAuthorization = req.headers.ServiceAuthorization
@@ -326,12 +327,12 @@ export async function doLogoutOidc(req: express.Request, res: express.Response, 
     // we need this to revoke the access/refresh_token, however it is a legacy endpoint for oauth2
     // endSessionUrl endpoint above would be much more appropriate
     const auth = `Basic ${Buffer.from(`${idamClient}:${secret}`).toString('base64')}`
-    await http.delete(`${idamApiUrl}/session/${access_token}`, {
+    await req.http.delete(`${idamApiUrl}/session/${access_token}`, {
       headers: {
         Authorization: auth,
       },
     })
-    await http.delete(`${idamApiUrl}/session/${refresh_token}`, {
+    await req.http.delete(`${idamApiUrl}/session/${refresh_token}`, {
       headers: {
         Authorization: auth,
       },
