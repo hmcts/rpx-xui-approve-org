@@ -1,6 +1,5 @@
 import {Request} from 'express'
 import {Response} from 'express'
-
 export function asyncReturnOrError(
     promise: any,
     message: string,
