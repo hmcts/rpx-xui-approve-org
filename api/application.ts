@@ -202,7 +202,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
 
     await serviceTokenMiddleware.default(req, res, () => {
       logger.info('Attached auth headers to request')
-      // res.redirect('/')
+      res.redirect('/')
       next()
     })
   })
@@ -217,14 +217,15 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     scope: 'profile openid roles manage-user create-user',
     token_endpoint_auth_method: 'client_secret_post',
   }))
-  app.get('/api/isAuthenticated', (req, res) => {
-    // console.log('req.isAuthenticated() => ', req.isAuthenticated())
-    console.log('/api/isAuthenticated: req.headers.paddyAuth', req.headers.paddyAuth)
-    return res.send(req.isAuthenticated())
-  })
 } else {
   app.get('/oauth2/callback', auth.oauth)
+  app.get('/api/logout', async (req, res) => {
+    await auth.doLogoutOAuth2(req, res)
+  })
 }
+app.get('/api/isAuthenticated', (req, res) => {
+  return res.send(req.isAuthenticated())
+})
 app.get('/external/ping', (req, res) => {
   console.log('Pong')
   res.send({
@@ -267,6 +268,3 @@ app.get('/external/ping', (req, res) => {
  *
  */
 app.use('/api', routes)
-app.get('/api/logout', async (req, res) => {
-  await auth.doLogout(req, res)
-})

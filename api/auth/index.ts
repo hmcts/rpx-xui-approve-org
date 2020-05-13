@@ -179,7 +179,7 @@ export async function oauth(req: express.Request, res: express.Response, next: e
   }
 }
 
-export function doLogoutOAuth2(req: express.Request, res: express.Response, status) {
+export function doLogoutOAuth2(req: express.Request, res: express.Response, status: number = 302) {
   res.clearCookie(getConfigValue(COOKIE_TOKEN))
   res.clearCookie(getConfigValue(COOKIE_ROLES))
   res.clearCookie(getConfigValue(COOKIES_USERID))
