@@ -47,7 +47,7 @@ export class AuthService {
 
  public isAuthenticated(): Observable<boolean> {
 
-    return this.httpService.get<boolean>('/api/isAuthenticated');
+    return this.httpService.get<boolean>('/auth/isAuthenticated');
     // return this.envService.getEnv$().map( config => {
     //   debugger
     //   const jwt = this.cookieService.get(config.cookies.token);
