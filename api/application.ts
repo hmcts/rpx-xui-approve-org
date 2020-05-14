@@ -180,6 +180,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
   const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
   const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
+  const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
 
   oidc.on('oidc.authenticate.success', async (req, res, next) => {
     // console.log('AO auth success =>', req.isAuthenticated())
@@ -207,6 +208,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     client_secret: secret,
     discovery_endpoint: `${idamWebUrl}/o`,
     issuer_url: issuerUrl,
+    logout_url: idamApiPath,
     redirect_uri: 'http://localhost:3000',
     response_types: ['code'],
     scope: 'profile openid roles manage-user create-user',
