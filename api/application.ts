@@ -220,9 +220,9 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     await auth.doLogoutOAuth2(req, res)
   })
 }
-app.get('/api/isAuthenticated', (req, res) => {
-  return res.send(req.isAuthenticated())
-})
+// app.get('/api/isAuthenticated', (req, res) => {
+//   return res.send(req.isAuthenticated())
+// })
 app.get('/external/ping', (req, res) => {
   console.log('Pong')
   res.send({
