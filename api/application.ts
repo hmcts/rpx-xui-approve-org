@@ -1,12 +1,14 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import oidc from '@hmcts/rpx-xui-node-lib/dist/auth/oidc'
+import axios from 'axios'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as helmet from 'helmet'
-import * as passport from 'passport'
 import * as auth from './auth'
+import * as serviceTokenMiddleware from './auth/serviceToken'
+import {havePrdAdminRole} from './auth/userRoleAuth'
 import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
@@ -21,6 +23,7 @@ import {
   FEATURE_SECURE_COOKIE_ENABLED,
   HELMET,
   IDAM_CLIENT,
+  IDAM_SECRET,
   MAX_LINES,
   MAX_LOG_LINE,
   MICROSERVICE,
@@ -33,8 +36,7 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET,
-  IDAM_SECRET
+  SESSION_SECRET
 } from './configuration/references'
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
@@ -43,8 +45,6 @@ import {getStore} from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
 import serviceRouter from './services/serviceAuth'
-import * as serviceTokenMiddleware from "./auth/serviceToken";
-import axios from 'axios'
 
 export const app = express()
 
@@ -185,6 +185,12 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     // console.log('AO auth success =>', req.isAuthenticated())
     const userDetails = req.session.passport.user
     const roles = userDetails.userinfo.roles
+    console.log('req.session.user =>', req.session.user)
+    console.log('havePrdAdminRole', havePrdAdminRole(roles))
+    if (!havePrdAdminRole(roles)) {
+      logger.warn('User role does not allow login')
+      return await oidc.logout(req, res)
+    }
 
     axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
     axios.defaults.headers.common['user-roles'] = roles.join()
@@ -207,6 +213,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     sessionKey: 'xui-webapp',
     token_endpoint_auth_method: 'client_secret_post',
   }))
+
 } else {
   app.get('/oauth2/callback', auth.oauth)
   app.get('/api/logout', async (req, res) => {
