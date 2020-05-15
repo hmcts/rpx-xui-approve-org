@@ -87,7 +87,6 @@ describe('App Effects', () => {
             expect(effects.keepAlive$).toBeTruthy();
         });
       });
-    
     describe('get users$', () => {
         const payload = {
             email: 'puisuperuser@mailnesia.com',
