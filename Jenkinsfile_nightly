@@ -4,7 +4,7 @@ properties([
     [
        $class       : 'GithubProjectProperty',
         displayName  : 'Approve Organisations app',
-        projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org' 
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org'
     ],
     pipelineTriggers([
     cron('H 05 * * *')
@@ -22,8 +22,8 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
 
     enableFullFunctionalTest(30)
-
-    env.TEST_URL = 'https://xui-ao-webapp-aat.service.core-compute-aat.internal/'
+    enableCrossBrowserTest()
+    env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     after('checkout') {sh 'yarn cache clean'}
     after('build') {
         sh 'npm run build'
