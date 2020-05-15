@@ -68,9 +68,9 @@ describe('App Effects', () => {
             const completion = new Go({
                 path: ['/signed-out']
             });
-          actions$ = hot('-a', { a: action });
-          const expected = cold('-b', { b: completion });
-          expect(effects.signedOutSuccess$).toBeObservable(expected);
+            actions$ = hot('-a', { a: action });
+            const expected = cold('-b', { b: completion });
+            expect(effects.signedOutSuccess$).toBeObservable(expected);
         });
       });
 
