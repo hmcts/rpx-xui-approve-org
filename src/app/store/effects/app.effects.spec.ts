@@ -58,8 +58,8 @@ describe('App Effects', () => {
         it('should sign out', () => {
             const action = new SignedOut();
             const completion = new Go({
-            path: ['/signed-out']
-          });
+                path: ['/signed-out']
+            });
           actions$ = hot('-a', { a: action });
           const expected = cold('-b', { b: completion });
           expect(effects.sigout$).toBeTruthy();
@@ -70,8 +70,8 @@ describe('App Effects', () => {
         it('should sign out successfully', () => {
             const action = new SignedOutSuccess();
             const completion = new Go({
-            path: ['/signed-out']
-          });
+                path: ['/signed-out']
+            });
           actions$ = hot('-a', { a: action });
           const expected = cold('-b', { b: completion });
           expect(effects.signedOutSuccess$).toBeObservable(expected);
@@ -82,7 +82,7 @@ describe('App Effects', () => {
         it('should keep alive', () => {
             const action = new KeepAlive();
             const completion = new Go({
-            path: ['auth/keepalive']
+                path: ['auth/keepalive']
             });
             actions$ = hot('-a', { a: action });
             const expected = cold('-b', { b: completion });
