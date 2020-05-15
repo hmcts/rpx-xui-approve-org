@@ -214,6 +214,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     scope: 'profile openid roles manage-user create-user',
     sessionKey: 'xui-webapp',
     token_endpoint_auth_method: 'client_secret_post',
+    useRoutes: true,
   }))
 
 } else {
