@@ -67,3 +67,112 @@ describe('AppComponent', () => {
   }));
 
 });
+
+describe('AppComponent', () => {
+  let store: Store<fromRoot.State>;
+  beforeEach(async(() => {
+    environmentMockService.getEnv$.and.returnValue(of({}));
+    idleMockService.appStateChanges.and.returnValue(of({type: 'signout'}));
+    TestBed.configureTestingModule({
+      declarations: [
+        AppComponent,
+        HeaderComponent
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        RouterTestingModule,
+        StoreModule.forRoot(
+          {
+            ...reducers,
+            userProfile: combineReducers(fromRoot.reducers)
+          })
+      ],
+      providers: [
+        {
+          provide: windowToken,
+          useValue: windowMock
+        },
+        { provide: ManageSessionServices, useValue: idleMockService},
+        { provide: EnvironmentService, useValue: environmentMockService}
+      ],
+    }).compileComponents();
+    store = TestBed.get(Store);
+
+    spyOn(store, 'dispatch').and.callThrough();
+  }));
+
+  it('should create the app', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+
+    const app = fixture.debugElement.componentInstance;
+    fixture.detectChanges();
+    expect(app).toBeTruthy();
+  }));
+
+  it('should dispatch a logout action', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.onNavigate('sign-out');
+    fixture.detectChanges();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new Logout());
+
+  }));
+
+});
+
+describe('AppComponent', () => {
+  let store: Store<fromRoot.State>;
+  beforeEach(async(() => {
+    environmentMockService.getEnv$.and.returnValue(of({}));
+    idleMockService.appStateChanges.and.returnValue(of({type: 'keepalive'}));
+    TestBed.configureTestingModule({
+      declarations: [
+        AppComponent,
+        HeaderComponent
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        RouterTestingModule,
+        StoreModule.forRoot(
+          {
+            ...reducers,
+            userProfile: combineReducers(fromRoot.reducers)
+          })
+      ],
+      providers: [
+        {
+          provide: windowToken,
+          useValue: windowMock
+        },
+        { provide: ManageSessionServices, useValue: idleMockService},
+        { provide: EnvironmentService, useValue: environmentMockService}
+      ],
+    }).compileComponents();
+    store = TestBed.get(Store);
+
+    spyOn(store, 'dispatch').and.callThrough();
+  }));
+
+  it('should create the app', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+
+    const app = fixture.debugElement.componentInstance;
+    fixture.detectChanges();
+    expect(app).toBeTruthy();
+  }));
+
+  it('should dispatch a logout action', async(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.onNavigate('sign-out');
+    fixture.detectChanges();
+
+    expect(store.dispatch).toHaveBeenCalledWith(new Logout());
+
+  }));
+
+});
+
+
+
