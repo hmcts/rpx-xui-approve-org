@@ -5,7 +5,7 @@ import { StoreModule } from '@ngrx/store';
 import { cold, hot } from 'jasmine-marbles';
 import { LogOutKeepAliveService } from '../../services/keep-alive/keep-alive.service';
 import { UserService } from '../../services/user-service/user.service';
-import { AddGlobalError, Go, SignedOutSuccess,KeepAlive, SignedOut, Logout } from '../actions';
+import { AddGlobalError,Go,SignedOutSuccess,KeepAlive,SignedOut,Logout } from '../actions';
 
 import * as fromAppEffects from './app.effects';
 
@@ -61,7 +61,7 @@ describe('App Effects', () => {
     describe('signout$', () => {
         it('should sign out', () => {
             const action = new SignedOut();
-          const completion = new Go({
+            const completion = new Go({
             path: ['/signed-out']
           });
           actions$ = hot('-a', { a: action });
@@ -73,7 +73,7 @@ describe('App Effects', () => {
     describe('signedOutSuccess$', () => {
         it('should sign out successfully', () => {
             const action = new SignedOutSuccess();
-          const completion = new Go({
+            const completion = new Go({
             path: ['/signed-out']
           });
           actions$ = hot('-a', { a: action });
@@ -85,7 +85,7 @@ describe('App Effects', () => {
       describe('Keep Alive$', () => {
         it('should keep alive', () => {
             const action = new KeepAlive();
-          const completion = new Go({
+            const completion = new Go({
             path: ['auth/keepalive']
           });
           actions$ = hot('-a', { a: action });
