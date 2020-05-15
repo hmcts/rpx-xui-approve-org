@@ -56,12 +56,8 @@ describe('App Effects', () => {
 
     describe('signout$', () => {
         it('should sign out', () => {
-            const action = new SignedOut();
-            const completion = new Go({
-                path: ['/signed-out']
-            });
+          const action = new SignedOut();
           actions$ = hot('-a', { a: action });
-          const expected = cold('-b', { b: completion });
           expect(effects.sigout$).toBeTruthy();
         });
       });
