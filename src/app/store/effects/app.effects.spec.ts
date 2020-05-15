@@ -1,11 +1,13 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
+import { of, throwError } from 'rxjs';
 import { StoreModule } from '@ngrx/store';
 import { cold, hot } from 'jasmine-marbles';
 import { LogOutKeepAliveService } from '../../services/keep-alive/keep-alive.service';
 import { UserService } from '../../services/user-service/user.service';
-import { AddGlobalError, Go, SignedOutSuccess, KeepAlive, SignedOut, Logout } from '../actions';
+import { AddGlobalError, Go, SignedOutSuccess, KeepAlive, SignedOut, Logout, GetUserDetails, GetUserDetailsSuccess, GetUserDetailsFailure } from '../actions';
 import * as fromAppEffects from './app.effects';
 
 describe('App Effects', () => {
@@ -85,4 +87,34 @@ describe('App Effects', () => {
             expect(effects.keepAlive$).toBeTruthy();
         });
       });
+    
+    describe('get users$', () => {
+        const payload = {
+            email: 'puisuperuser@mailnesia.com',
+              orgId: '1',
+              roles: [
+              'pui-case-manager',
+              'pui-user-manager',
+              'pui-finance-manager',
+              'pui-organisation-manager'
+            ],
+              userId: '5b9639a7-49a5-4c85-9e17-bf55186c8afa'
+          };
+        it('should give success', () => {
+            mockUserService.getUserDetails.and.returnValue(of(payload));
+            const action = new GetUserDetails;
+            const completion = new GetUserDetailsSuccess(payload);
+            actions$ = hot('-a', { a: action });
+            const expected = cold('-b', { b: completion });
+            expect(effects.getUser$).toBeObservable(expected);
+        });
+        it('should give error', () => {
+            mockUserService.getUserDetails.and.returnValue(throwError(new HttpErrorResponse({})));
+            const action = new GetUserDetails;
+            const completion = new GetUserDetailsFailure(new HttpErrorResponse({}));
+            actions$ = hot('-a', { a: action });
+            const expected = cold('-b', { b: completion });
+            expect(effects.getUser$).toBeObservable(expected);
+        });
+     });
 });
