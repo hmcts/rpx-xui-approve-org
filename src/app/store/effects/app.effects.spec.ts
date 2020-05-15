@@ -61,7 +61,7 @@ describe('App Effects', () => {
             path: ['/signed-out']
           });
           actions$ = hot('-a', { a: action });
-            const expected = cold('-b', { b: completion });
+          const expected = cold('-b', { b: completion });
           expect(effects.sigout$).toBeTruthy();
         });
       });
@@ -73,7 +73,7 @@ describe('App Effects', () => {
             path: ['/signed-out']
           });
           actions$ = hot('-a', { a: action });
-            const expected = cold('-b', { b: completion });
+          const expected = cold('-b', { b: completion });
           expect(effects.signedOutSuccess$).toBeObservable(expected);
         });
       });
