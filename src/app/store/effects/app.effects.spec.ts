@@ -102,7 +102,7 @@ describe('App Effects', () => {
           };
         it('should give success', () => {
             mockUserService.getUserDetails.and.returnValue(of(payload));
-            const action = new GetUserDetails;
+            const action = new GetUserDetails();
             const completion = new GetUserDetailsSuccess(payload);
             actions$ = hot('-a', { a: action });
             const expected = cold('-b', { b: completion });
@@ -110,7 +110,7 @@ describe('App Effects', () => {
         });
         it('should give error', () => {
             mockUserService.getUserDetails.and.returnValue(throwError(new HttpErrorResponse({})));
-            const action = new GetUserDetails;
+            const action = new GetUserDetails();
             const completion = new GetUserDetailsFailure(new HttpErrorResponse({}));
             actions$ = hot('-a', { a: action });
             const expected = cold('-b', { b: completion });
