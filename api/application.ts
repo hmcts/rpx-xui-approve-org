@@ -117,7 +117,7 @@ app.use(
       maxAge: 1800000,
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     },
-    name: 'jui-webapp',
+    name: 'ao-webapp',
     resave: false,
     saveUninitialized: true,
     secret: getConfigValue(SESSION_SECRET),
