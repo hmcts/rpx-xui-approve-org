@@ -1,4 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
+import oAuth2 from '@hmcts/rpx-xui-node-lib/dist/auth/oauth2'
 import oidc from '@hmcts/rpx-xui-node-lib/dist/auth/oidc'
 import axios from 'axios'
 import * as bodyParser from 'body-parser'
@@ -38,7 +39,7 @@ import {
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
 } from './configuration/references'
-import {appInsights} from './lib/appInsights'
+import {appInsights, client} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import {getStore} from './lib/sessionStore'
@@ -165,6 +166,13 @@ healthcheck.addTo(app, healthChecks)
 
 app.use(serviceRouter)
 
+const secret = getConfigValue(IDAM_SECRET)
+const idamClient = getConfigValue(IDAM_CLIENT)
+const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
+const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
+const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
+const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
+
 /**
  * Open Routes
  *
@@ -175,12 +183,6 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   // app.use(auth.configure)
   // app.get('/oauth2/callback', auth.openIdConnectAuth)
   // app.use('/auth', auth.router)
-  const secret = getConfigValue(IDAM_SECRET)
-  const idamClient = getConfigValue(IDAM_CLIENT)
-  const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
-  const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
-  const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
-  const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
 
   oidc.on('oidc.authenticate.success', async (req, res, next) => {
     // console.log('AO auth success =>', req.isAuthenticated())
@@ -218,10 +220,25 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   }))
 
 } else {
-  app.get('/oauth2/callback', auth.oauth)
-  app.get('/api/logout', async (req, res) => {
-    await auth.doLogoutOAuth2(req, res)
-  })
+  // app.get('/oauth2/callback', auth.oauth)
+  // app.get('/api/logout', async (req, res) => {
+  //   await auth.doLogoutOAuth2(req, res)
+  // })
+  const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token?grant_type=authorization_code`
+  app.use(oAuth2.configure({
+    authorizationURL: '',
+    tokenURL: tokenUrl,
+    clientID: client,
+    clientSecret: secret,
+    issuer_url: '',
+    redirect_uri: '',
+    scope: '',
+    logout_url: idamApiPath,
+    prompt: 'login',
+    sessionKey: '',
+    useRoutes: true,
+}))
+  console.log('OAuth2')
 }
 
 app.get('/external/ping', (req, res) => {
