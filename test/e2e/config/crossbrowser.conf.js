@@ -33,8 +33,6 @@ const config = {
     // sauceProxy: 'https://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
     //  sauceUser: process.env.SAUCE_USERNAME,
     //   sauceKey: process.env.SAUCE_ACCESS_KEY,
-    sauceUser: 'vmuniganti',
-    sauceKey: 'b88acf59-6ec8-43cb-bbfb-3c0ddc7fd781',
     SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/',
     allScriptsTimeout: 111000,
 
