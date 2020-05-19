@@ -39,7 +39,7 @@ import {
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
 } from './configuration/references'
-import {appInsights, client} from './lib/appInsights'
+import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import {getStore} from './lib/sessionStore'
@@ -180,9 +180,6 @@ const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
  */
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
-  // app.use(auth.configure)
-  // app.get('/oauth2/callback', auth.openIdConnectAuth)
-  // app.use('/auth', auth.router)
 
   oidc.on('oidc.authenticate.success', async (req, res, next) => {
     // console.log('AO auth success =>', req.isAuthenticated())
@@ -220,25 +217,20 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   }))
 
 } else {
-  // app.get('/oauth2/callback', auth.oauth)
-  // app.get('/api/logout', async (req, res) => {
-  //   await auth.doLogoutOAuth2(req, res)
-  // })
-  const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token?grant_type=authorization_code`
+  const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`
+  const authorizationUrl = `${idamWebUrl}/login`
+  console.log('tokenUrl', tokenUrl)
   app.use(oAuth2.configure({
-    authorizationURL: '',
-    tokenURL: tokenUrl,
-    clientID: client,
+    authorizationURL: authorizationUrl,
+    callbackURL: 'http://localhost:3000/oauth2/callback',
+    clientID: idamClient,
     clientSecret: secret,
-    issuer_url: '',
-    redirect_uri: '',
-    scope: '',
-    logout_url: idamApiPath,
-    prompt: 'login',
-    sessionKey: '',
+    logoutUrl: idamApiPath,
+    scope: 'profile openid roles manage-user create-user',
+    sessionKey: 'xui-webapp',
+    tokenURL: tokenUrl,
     useRoutes: true,
 }))
-  console.log('OAuth2')
 }
 
 app.get('/external/ping', (req, res) => {
