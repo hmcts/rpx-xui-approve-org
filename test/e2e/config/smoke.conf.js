@@ -1,10 +1,21 @@
-const chai            = require('chai');
-const chaiAsPromised  = require('chai-as-promised');
-const minimist        = require('minimist');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const minimist = require('minimist');
 
 chai.use(chaiAsPromised);
 
 const argv = minimist(process.argv.slice(2));
+
+//const specFilesFilter = ['../features/**/*.feature'];
+
+// module.exports = {
+//   chai: chai,
+//   chaiAsPromised: chaiAsPromised,
+//   minimist: minimist,
+//   argv: argv,
+//   specFilesFilter: specFilesFilter
+// }
+//
 
 const jenkinsConfig = [
 
@@ -20,7 +31,7 @@ const localConfig = [
   {
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--headless', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote ']} ,
+    chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -36,14 +47,24 @@ const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
   specs: ['../features/**/*.feature'],
-  baseUrl: process.env.TEST_URL || 'http://localhost:2500/',
+  // specs: [
+  //   '../features/**/caseFile.feature',
+  //   '../features/**/login.feature',
+  //   '../features/**/makeDecision.feature',
+  //   '../features/**/parties.feature',
+  //   '../features/**/questions.feature',
+  //   '../features/**/recentEvents.feature',
+  // ],
+  baseUrl: process.env.TEST_URL || 'http://localhost:3000',
   params: {
-    serverUrls: process.env.TEST_URL || 'http://localhost:2500/',
+    serverUrls: process.env.TEST_URL || 'http://localhost:3000',
     targetEnv: argv.env || 'local',
     // username: process.env.TEST_EMAIL,
     // password: process.env.TEST_PASSWORD,
-    username: 'sscs4jui@mailnesia.com ',
+    username: 'vmuniganti@mailnesia.com',
     password: 'Monday01',
+    approver_username: 'vamshiadminuser@mailnesia.com',
+    approver_password: 'Testing123',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
@@ -67,12 +88,12 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
-    tags: ['@ignore'],
+    tags: ['@smoke'],
     require: [
       '../support/timeout.js',
       '../support/world.js',
       '../support/*.js',
-      '../features/step_definitions/**/*.steps.js'
+      '../features/step_definitions/steps/*.steps.js'
     ]
   },
 
@@ -82,10 +103,10 @@ const config = {
       options: {
         automaticallyGenerateReport: true,
         removeExistingJsonReportFile: true,
-        reportName: 'Approve Organisation Functional Tests',
+        reportName: 'EXUI AO UI Smoke Tests',
         // openReportInBrowser: true,
-        jsonDir: 'reports/smoke_tests/functional',
-        reportPath: 'reports/smoke_tests/functional'
+        jsonDir: 'reports/tests/functional',
+        reportPath: 'reports/tests/functional'
       }
     }
   ]
@@ -95,4 +116,3 @@ const config = {
 
 
 exports.config = config;
-

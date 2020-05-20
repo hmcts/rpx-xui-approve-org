@@ -2,7 +2,7 @@
 
 properties([
     [
-       $class       : 'GithubProjectProperty',
+        $class       : 'GithubProjectProperty',
         displayName  : 'Approve Organisations app',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org' 
     ],
