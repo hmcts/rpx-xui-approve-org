@@ -174,6 +174,14 @@ const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
 const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
 const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
 
+// TODO: have moved this here temporarily so we don't have to worry about invoking
+app.use(async (req, res, next) => {
+  await serviceTokenMiddleware.default(req, res, () => {
+    logger.info('Attached auth headers to request')
+    next()
+  })
+})
+
 /**
  * Open Routes
  *
@@ -182,25 +190,23 @@ const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
 
-  oidc.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (req, res, next) => {
-    // console.log('AO auth success =>', req.isAuthenticated())
-    const userDetails = req.session.passport.user
-    const roles = userDetails.userinfo.roles
-    console.log('req.session.user =>', req.session.user)
-    console.log('havePrdAdminRole', havePrdAdminRole(roles))
+  oidc.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (isRefresh: boolean, req, res, next) => {
+    console.log('req.headers =>', req.headers)
+    /*console.log('havePrdAdminRole', havePrdAdminRole(roles))
     if (!havePrdAdminRole(roles)) {
       logger.warn('User role does not allow login')
       return await oidc.logout(req, res)
+    }*/
+
+    axios.defaults.headers.common.Authorization = req.headers.Authorization
+    axios.defaults.headers.common['user-roles'] = req.headers['user-roles']
+
+    console.log('isRefresh =>', isRefresh)
+
+    if (!isRefresh) {
+        return res.redirect('/')
     }
-
-    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
-    axios.defaults.headers.common['user-roles'] = roles.join()
-
-    await serviceTokenMiddleware.default(req, res, () => {
-      logger.info('Attached auth headers to request')
-      res.redirect('/')
-      next()
-    })
+    next()
   })
 
   app.use(oidc.configure({
