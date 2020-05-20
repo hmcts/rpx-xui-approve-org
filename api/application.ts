@@ -1,4 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
+import {AUTH} from '@hmcts/rpx-xui-node-lib/dist/auth/auth.constants'
 import oAuth2 from '@hmcts/rpx-xui-node-lib/dist/auth/oauth2'
 import oidc from '@hmcts/rpx-xui-node-lib/dist/auth/oidc'
 import axios from 'axios'
@@ -181,7 +182,7 @@ const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
 
-  oidc.on('oidc.authenticate.success', async (req, res, next) => {
+  oidc.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (req, res, next) => {
     // console.log('AO auth success =>', req.isAuthenticated())
     const userDetails = req.session.passport.user
     const roles = userDetails.userinfo.roles
@@ -220,13 +221,36 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`
   const authorizationUrl = `${idamWebUrl}/login`
   console.log('tokenUrl', tokenUrl)
+
+  oAuth2.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (req, res, next) => {
+    console.log('AUTH2 auth success =>', req.isAuthenticated())
+    const userDetails = req.session.passport.user
+    console.log('passport', req.session.passport)
+    const roles = userDetails.userinfo.roles
+    console.log('req.session.user =>', req.session.user)
+    console.log('havePrdAdminRole', havePrdAdminRole(roles))
+    if (!havePrdAdminRole(roles)) {
+      logger.warn('User role does not allow login')
+      return await oAuth2.logout(req, res)
+    }
+
+    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
+    axios.defaults.headers.common['user-roles'] = roles.join()
+
+    await serviceTokenMiddleware.default(req, res, () => {
+      logger.info('Attached auth headers to request')
+      res.redirect('/')
+      next()
+    })
+  })
+
   app.use(oAuth2.configure({
     authorizationURL: authorizationUrl,
     callbackURL: 'http://localhost:3000/oauth2/callback',
     clientID: idamClient,
     clientSecret: secret,
     logoutUrl: idamApiPath,
-    scope: 'profile openid roles manage-user create-user',
+    scope: 'profile openid roles manage-user create-user manage-roles',
     sessionKey: 'xui-webapp',
     tokenURL: tokenUrl,
     useRoutes: true,
