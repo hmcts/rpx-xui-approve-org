@@ -28,7 +28,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   router.use('/monitoring-tools', oidc.authenticate, getappInsightsInstrumentationKey)
   router.use('/reinviteUser', oidc.authenticate, reinviteUserRouter )
 } else {
-    router.use(auth.attach)
+    // router.use(auth.attach)
     router.use('/user', userDetailsRouter)
     router.use('/decisions', stateRouter)
     router.use('/healthCheck', healthCheck)

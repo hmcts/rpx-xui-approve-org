@@ -225,16 +225,17 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   oAuth2.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (req, res, next) => {
     console.log('AUTH2 auth success =>', req.isAuthenticated())
     const userDetails = req.session.passport.user
-    console.log('passport', req.session.passport)
-    const roles = userDetails.userinfo.roles
-    console.log('req.session.user =>', req.session.user)
+    console.log('passport is ', req.session.passport)
+    console.log('userDetails is ', userDetails)
+    const roles = userDetails.user.roles
+    console.log('req.session.user =>', req.session.passport.user)
     console.log('havePrdAdminRole', havePrdAdminRole(roles))
     if (!havePrdAdminRole(roles)) {
       logger.warn('User role does not allow login')
       return await oAuth2.logout(req, res)
     }
 
-    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
+    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.token}`
     axios.defaults.headers.common['user-roles'] = roles.join()
 
     await serviceTokenMiddleware.default(req, res, () => {
@@ -250,7 +251,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     clientID: idamClient,
     clientSecret: secret,
     logoutUrl: idamApiPath,
-    scope: 'profile openid roles manage-user create-user manage-roles',
+    scope: ['profile', 'openid', 'roles', 'manage-user', 'create-user', 'manage-roles'],
     sessionKey: 'xui-webapp',
     tokenURL: tokenUrl,
     useRoutes: true,
