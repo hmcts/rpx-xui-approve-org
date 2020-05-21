@@ -103,7 +103,7 @@ const config = {
       options: {
         automaticallyGenerateReport: true,
         removeExistingJsonReportFile: true,
-        reportName: 'JUI Functional Tests',
+        reportName: 'EXUI AO Functional Tests',
         // openReportInBrowser: true,
         jsonDir: 'reports/tests/functional',
         reportPath: 'reports/tests/functional'
