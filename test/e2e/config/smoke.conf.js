@@ -105,8 +105,8 @@ const config = {
         removeExistingJsonReportFile: true,
         reportName: 'EXUI AO UI Smoke Tests',
         // openReportInBrowser: true,
-        jsonDir: 'reports/tests/functional',
-        reportPath: 'reports/tests/functional'
+        jsonDir: 'reports/tests/smoke',
+        reportPath: 'reports/tests/smoke'
       }
     }
   ]
