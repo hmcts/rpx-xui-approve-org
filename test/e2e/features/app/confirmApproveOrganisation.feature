@@ -1,4 +1,4 @@
-
+@fullfunctional
 Feature: Confirmation Screen
 
   Background:
