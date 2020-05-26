@@ -1,7 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import {AUTH} from '@hmcts/rpx-xui-node-lib/dist/auth/auth.constants'
-import oAuth2 from '@hmcts/rpx-xui-node-lib/dist/auth/oauth2'
-import oidc from '@hmcts/rpx-xui-node-lib/dist/auth/oidc'
+import {AUTH, oauth2, oidc } from '@hmcts/rpx-xui-node-lib/dist/auth'
 import axios from 'axios'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
@@ -197,7 +195,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
       logger.warn('User role does not allow login')
       return await oidc.logout(req, res)
     }*/
-
+    console.log('req.headers', req.headers)
     axios.defaults.headers.common.Authorization = req.headers.Authorization
     axios.defaults.headers.common['user-roles'] = req.headers['user-roles']
 
@@ -228,20 +226,20 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const authorizationUrl = `${idamWebUrl}/login`
   console.log('tokenUrl', tokenUrl)
 
-  oAuth2.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (req, res, next) => {
+  oauth2.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (isRefresh, req, res, next) => {
     console.log('AUTH2 auth success =>', req.isAuthenticated())
     const userDetails = req.session.passport.user
     console.log('passport is ', req.session.passport)
     console.log('userDetails is ', userDetails)
-    const roles = userDetails.user.roles
+    const roles = userDetails.userinfo.roles
     console.log('req.session.user =>', req.session.passport.user)
     console.log('havePrdAdminRole', havePrdAdminRole(roles))
     if (!havePrdAdminRole(roles)) {
       logger.warn('User role does not allow login')
-      return await oAuth2.logout(req, res)
+      return await oauth2.logout(req, res)
     }
 
-    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.token}`
+    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
     axios.defaults.headers.common['user-roles'] = roles.join()
 
     await serviceTokenMiddleware.default(req, res, () => {
@@ -251,7 +249,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
     })
   })
 
-  app.use(oAuth2.configure({
+  app.use(oauth2.configure({
     authorizationURL: authorizationUrl,
     callbackURL: 'http://localhost:3000/oauth2/callback',
     clientID: idamClient,
