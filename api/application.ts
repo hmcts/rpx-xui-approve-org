@@ -185,27 +185,44 @@ app.use(async (req, res, next) => {
  *
  * Any routes here do not have authentication attached and are therefore reachable.
  */
+
+const successCallback = async (isRefresh, req, res, next) => {
+  console.log('AUTH2 auth success =>', req.isAuthenticated())
+  const userDetails = req.session.passport.user
+  console.log('passport is ', req.session.passport)
+  console.log('userDetails is ', userDetails)
+  const roles = userDetails.userinfo.roles
+  console.log('req.session.user =>', req.session.passport.user)
+  console.log('havePrdAdminRole', havePrdAdminRole(roles))
+  if (!havePrdAdminRole(roles)) {
+    logger.warn('User role does not allow login')
+    return await oauth2.logout(req, res)
+  }
+
+  if (showFeature(FEATURE_OIDC_ENABLED)) {
+    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
+  } else {
+    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
+  }
+  axios.defaults.headers.common['user-roles'] = roles.join()
+
+
+  if (!isRefresh) {
+    return res.redirect('/')
+  }
+  next()
+
+  /*await serviceTokenMiddleware.default(req, res, () => {
+    logger.info('Attached auth headers to request')
+    res.redirect('/')
+    next()
+  })*/
+}
+
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
 
-  oidc.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (isRefresh: boolean, req, res, next) => {
-    console.log('req.headers =>', req.headers)
-    /*console.log('havePrdAdminRole', havePrdAdminRole(roles))
-    if (!havePrdAdminRole(roles)) {
-      logger.warn('User role does not allow login')
-      return await oidc.logout(req, res)
-    }*/
-    console.log('req.headers', req.headers)
-    axios.defaults.headers.common.Authorization = req.headers.Authorization
-    axios.defaults.headers.common['user-roles'] = req.headers['user-roles']
-
-    console.log('isRefresh =>', isRefresh)
-
-    if (!isRefresh) {
-        return res.redirect('/')
-    }
-    next()
-  })
+  oidc.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
   app.use(oidc.configure({
     client_id: idamClient,
@@ -226,28 +243,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const authorizationUrl = `${idamWebUrl}/login`
   console.log('tokenUrl', tokenUrl)
 
-  oauth2.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, async (isRefresh, req, res, next) => {
-    console.log('AUTH2 auth success =>', req.isAuthenticated())
-    const userDetails = req.session.passport.user
-    console.log('passport is ', req.session.passport)
-    console.log('userDetails is ', userDetails)
-    const roles = userDetails.userinfo.roles
-    console.log('req.session.user =>', req.session.passport.user)
-    console.log('havePrdAdminRole', havePrdAdminRole(roles))
-    if (!havePrdAdminRole(roles)) {
-      logger.warn('User role does not allow login')
-      return await oauth2.logout(req, res)
-    }
-
-    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
-    axios.defaults.headers.common['user-roles'] = roles.join()
-
-    await serviceTokenMiddleware.default(req, res, () => {
-      logger.info('Attached auth headers to request')
-      res.redirect('/')
-      next()
-    })
-  })
+  oauth2.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
   app.use(oauth2.configure({
     authorizationURL: authorizationUrl,
