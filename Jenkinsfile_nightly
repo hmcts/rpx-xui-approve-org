@@ -3,7 +3,7 @@
 properties([
     [
         $class       : 'GithubProjectProperty',
-        displayName  : 'Approve Organisations app',
+        displayName  : 'Expert UI Approve Organisations',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org'
     ],
     pipelineTriggers([
@@ -15,13 +15,14 @@ properties([
 
 def type      = "nodejs"
 def product   = "xui"
-def component = "ao"
+def component = "webapp"
 def channel   = '#xui-pipeline'
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     enableSecurityScan()
     enableFullFunctionalTest(30)
+    enableMutationTest()
 
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     after('checkout') {sh 'yarn cache clean'}
@@ -52,7 +53,18 @@ withNightlyPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "reports/tests/fullfunctional/",
             reportFiles          : 'index.html',
-            reportName           : 'XUI Manage Organisation Full functional Tests'
+            reportName           : 'XUI Approve Organisation Full functional Tests'
+        ])
+    }
+
+    after('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Mutation tests'
         ])
     }
 }
