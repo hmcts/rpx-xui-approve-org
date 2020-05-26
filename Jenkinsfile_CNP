@@ -108,6 +108,14 @@ withPipeline(type, product, component) {
             reportFiles          : "index.html",
             reportName           : "ng coverage tests"
         ])
+         publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Mutation tests'
+        ])
 
     }
 

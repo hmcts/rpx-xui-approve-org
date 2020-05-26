@@ -38,7 +38,8 @@
     "test:functional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/conf.js --local",
     "test-pact": "NODE_PATH=. LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/*.ts",
     "publish-pact": "NODE_PATH=. LOG_LEVEL=error mocha 'api/test/pact/publish/*.js' --timeout 15000 --reporter spec",
-    "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact"
+    "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
+    "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js "
   },
   "private": true,
   "dependencies": {
@@ -157,6 +158,12 @@
     "typescript": "3.2.2",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "@stryker-mutator/api": "^3.0.1",
+    "@stryker-mutator/core": "^3.0.1",
+    "@stryker-mutator/html-reporter": "^3.0.1",
+    "@stryker-mutator/karma-runner": "^3.0.1",
+    "@stryker-mutator/mocha-runner": "^3.0.1",
+    "@stryker-mutator/typescript": "^3.0.1"
   }
 }
