@@ -1,5 +1,7 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import {AUTH, oauth2, oidc } from '@hmcts/rpx-xui-node-lib/dist/auth'
+import {AUTH } from '@hmcts/rpx-xui-node-lib/dist/auth'
+import { authAdapter } from '@hmcts/rpx-xui-node-lib/dist/auth'
+import { Strategy } from '@hmcts/rpx-xui-node-lib/dist/auth/models/strategy.class'
 import axios from 'axios'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
@@ -186,7 +188,7 @@ app.use(async (req, res, next) => {
  * Any routes here do not have authentication attached and are therefore reachable.
  */
 
-const successCallback = async (isRefresh, req, res, next) => {
+const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res, next) => {
   console.log('AUTH2 auth success =>', req.isAuthenticated())
   const userDetails = req.session.passport.user
   console.log('passport is ', req.session.passport)
@@ -196,7 +198,7 @@ const successCallback = async (isRefresh, req, res, next) => {
   console.log('havePrdAdminRole', havePrdAdminRole(roles))
   if (!havePrdAdminRole(roles)) {
     logger.warn('User role does not allow login')
-    return await oauth2.logout(req, res)
+    return await strategy.logout(req, res)
   }
 
   if (showFeature(FEATURE_OIDC_ENABLED)) {
@@ -205,7 +207,6 @@ const successCallback = async (isRefresh, req, res, next) => {
     axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
   }
   axios.defaults.headers.common['user-roles'] = roles.join()
-
 
   if (!isRefresh) {
     return res.redirect('/')
@@ -222,9 +223,10 @@ const successCallback = async (isRefresh, req, res, next) => {
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
 
-  oidc.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
+  const oidcStrategy = authAdapter.getStrategy('openId')
+  oidcStrategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
-  app.use(oidc.configure({
+  app.use(oidcStrategy.configure({
     client_id: idamClient,
     client_secret: secret,
     discovery_endpoint: `${idamWebUrl}/o`,
@@ -243,15 +245,16 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const authorizationUrl = `${idamWebUrl}/login`
   console.log('tokenUrl', tokenUrl)
 
-  oauth2.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
+  const oAuth2Strategy = authAdapter.getStrategy('oAuth2')
+  oAuth2Strategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
-  app.use(oauth2.configure({
+  app.use(oAuth2Strategy.configure({
     authorizationURL: authorizationUrl,
     callbackURL: 'http://localhost:3000/oauth2/callback',
     clientID: idamClient,
     clientSecret: secret,
     logoutUrl: idamApiPath,
-    scope: ['profile', 'openid', 'roles', 'manage-user', 'create-user', 'manage-roles'],
+    scope: 'profile openid roles manage-user create-user',
     sessionKey: 'xui-webapp',
     tokenURL: tokenUrl,
     useRoutes: true,
