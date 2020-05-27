@@ -80,7 +80,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            //reportDir            : "reports/lint/node/",
+            reportDir            : "reports/lint/node/",
             reportFiles          : 'index.html',
             reportName           : 'node lint Report'
         ])
@@ -89,7 +89,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            //reportDir            : "reports/lint/ng/",
+            reportDir            : "reports/lint/ng/",
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
