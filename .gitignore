@@ -6,7 +6,8 @@
 /out-tsc
 
 # dependencies
-/node_modules
+node_modules
+api/node_modules/   
 
 # environments - stop accidental commit of a local.yaml file. See Readme.
 /config/local*.*
@@ -52,7 +53,11 @@ reports/
 .sessions/*
 reports_json/
 .nyc_output/
-cb_reports/
+@@ -56,3 +57,7 @@ cb_reports/
 report.json
 
 api/\.sessions/
+
+# stryker temp files
+.stryker-tmp/
+stryker.log 
