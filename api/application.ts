@@ -1,6 +1,6 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import {AUTH } from '@hmcts/rpx-xui-node-lib/dist/auth'
-import { authAdapter } from '@hmcts/rpx-xui-node-lib/dist/auth'
+import { strategyFactory } from '@hmcts/rpx-xui-node-lib/dist/auth'
 import { Strategy } from '@hmcts/rpx-xui-node-lib/dist/auth/models/strategy.class'
 import axios from 'axios'
 import * as bodyParser from 'body-parser'
@@ -8,7 +8,6 @@ import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as session from 'express-session'
 import * as helmet from 'helmet'
-import * as auth from './auth'
 import * as serviceTokenMiddleware from './auth/serviceToken'
 import {havePrdAdminRole} from './auth/userRoleAuth'
 import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
@@ -171,7 +170,6 @@ const secret = getConfigValue(IDAM_SECRET)
 const idamClient = getConfigValue(IDAM_CLIENT)
 const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
 const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
-const oauthCallbackUrl = getConfigValue(OAUTH_CALLBACK_URL)
 const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
 
 // TODO: have moved this here temporarily so we don't have to worry about invoking
@@ -223,7 +221,7 @@ const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res,
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
 
-  const oidcStrategy = authAdapter.getStrategy('openId')
+  const oidcStrategy = strategyFactory.getStrategy('openId')
   oidcStrategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
   app.use(oidcStrategy.configure({
@@ -245,7 +243,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const authorizationUrl = `${idamWebUrl}/login`
   console.log('tokenUrl', tokenUrl)
 
-  const oAuth2Strategy = authAdapter.getStrategy('oAuth2')
+  const oAuth2Strategy = strategyFactory.getStrategy('oAuth2')
   oAuth2Strategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
   app.use(oAuth2Strategy.configure({
