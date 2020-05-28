@@ -17,7 +17,7 @@ const router = express.Router({ mergeParams: true })
 router.use('/environment', environment)
 
 if (showFeature(FEATURE_OIDC_ENABLED)) {
-  const oidc = strategyFactory.getStrategy('openId')
+  const oidc = strategyFactory.getStrategy('oidc')
   router.use('/user', oidc.authenticate, userDetailsRouter)
   router.use('/decisions', oidc.authenticate, stateRouter)
   router.use('/healthCheck', oidc.authenticate, healthCheck)
@@ -27,7 +27,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   router.use('/monitoring-tools', oidc.authenticate, getappInsightsInstrumentationKey)
   router.use('/reinviteUser', oidc.authenticate, reinviteUserRouter )
 } else {
-    const oauth2 = strategyFactory.getStrategy('oAuth2')
+    const oauth2 = strategyFactory.getStrategy('oauth2')
     router.use(oauth2.authenticate)
     router.use('/user', userDetailsRouter)
     router.use('/decisions', stateRouter)

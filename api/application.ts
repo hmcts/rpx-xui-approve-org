@@ -2,11 +2,11 @@ import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import {AUTH } from '@hmcts/rpx-xui-node-lib/dist/auth'
 import { strategyFactory } from '@hmcts/rpx-xui-node-lib/dist/auth'
 import { Strategy } from '@hmcts/rpx-xui-node-lib/dist/auth/models/strategy.class'
+import { FileSessionMetadata } from '@hmcts/rpx-xui-node-lib/dist/auth/session/models/sessionMetadata.interface'
 import axios from 'axios'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
-import * as session from 'express-session'
 import * as helmet from 'helmet'
 import * as serviceTokenMiddleware from './auth/serviceToken'
 import {havePrdAdminRole} from './auth/userRoleAuth'
@@ -42,7 +42,6 @@ import {
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
-import {getStore} from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
 import serviceRouter from './services/serviceAuth'
@@ -111,8 +110,10 @@ console.log(showFeature(FEATURE_OIDC_ENABLED))
 console.log('SERVICES_ISS_PATH:')
 console.log(getConfigValue(SERVICES_ISS_PATH))
 
+const session = strategyFactory.getStrategy('filesession')
+
 app.use(
-  session({
+  session.configure({
     cookie: {
       httpOnly: true,
       maxAge: 1800000,
@@ -122,8 +123,10 @@ app.use(
     resave: false,
     saveUninitialized: true,
     secret: getConfigValue(SESSION_SECRET),
-    store: getStore(),
-  }) as express.RequestHandler
+    fileStoreOptions: {
+      filePath:  getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
+    },
+  } as FileSessionMetadata)
 )
 
 app.use(errorStack)
@@ -221,7 +224,7 @@ const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res,
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
 
-  const oidcStrategy = strategyFactory.getStrategy('openId')
+  const oidcStrategy = strategyFactory.getStrategy('oidc')
   oidcStrategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
   app.use(oidcStrategy.configure({
@@ -243,7 +246,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   const authorizationUrl = `${idamWebUrl}/login`
   console.log('tokenUrl', tokenUrl)
 
-  const oAuth2Strategy = strategyFactory.getStrategy('oAuth2')
+  const oAuth2Strategy = strategyFactory.getStrategy('oauth2')
   oAuth2Strategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
   app.use(oAuth2Strategy.configure({
