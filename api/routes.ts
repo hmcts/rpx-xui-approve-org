@@ -1,4 +1,4 @@
-import { oauth2, oidc } from '@hmcts/rpx-xui-node-lib/dist/auth'
+import { strategyFactory } from '@hmcts/rpx-xui-node-lib/dist/auth'
 import * as express from 'express'
 import { showFeature } from './configuration'
 import { FEATURE_OIDC_ENABLED } from './configuration/references'
@@ -17,6 +17,7 @@ const router = express.Router({ mergeParams: true })
 router.use('/environment', environment)
 
 if (showFeature(FEATURE_OIDC_ENABLED)) {
+  const oidc = strategyFactory.getStrategy('openId')
   router.use('/user', oidc.authenticate, userDetailsRouter)
   router.use('/decisions', oidc.authenticate, stateRouter)
   router.use('/healthCheck', oidc.authenticate, healthCheck)
@@ -26,6 +27,7 @@ if (showFeature(FEATURE_OIDC_ENABLED)) {
   router.use('/monitoring-tools', oidc.authenticate, getappInsightsInstrumentationKey)
   router.use('/reinviteUser', oidc.authenticate, reinviteUserRouter )
 } else {
+    const oauth2 = strategyFactory.getStrategy('oAuth2')
     router.use(oauth2.authenticate)
     router.use('/user', userDetailsRouter)
     router.use('/decisions', stateRouter)
