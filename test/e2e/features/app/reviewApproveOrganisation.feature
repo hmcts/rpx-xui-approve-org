@@ -1,4 +1,4 @@
-
+@fullfunctional
 Feature: Verify Organisation Details Screen
 
   Background:

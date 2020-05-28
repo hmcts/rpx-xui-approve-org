@@ -1,4 +1,4 @@
-
+@fullfunctional
 Feature: Banner
 
   Background:

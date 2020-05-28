@@ -13,7 +13,6 @@ const config = {
 
     sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
 
-    // sauceSeleniumAddress: 'https://vmuniganti:b88acf59-6ec8-43cb-bbfb-3c0ddc7fd781@ondemand.eu-central-1.saucelabs.com:443/wd/hub',
 
     host: 'ondemand.eu-central-1.saucelabs.com',
     sauceregion: 'eu',
@@ -30,9 +29,9 @@ const config = {
     },
 
 
-    // sauceProxy: 'https://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
-    //  sauceUser: process.env.SAUCE_USERNAME,
-    //   sauceKey: process.env.SAUCE_ACCESS_KEY,
+    sauceProxy: 'https://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
+    sauceUser: process.env.SAUCE_USERNAME,
+    sauceKey: process.env.SAUCE_ACCESS_KEY,
     SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/',
     allScriptsTimeout: 111000,
 
@@ -43,7 +42,6 @@ const config = {
         version: 'latest',
         platform: 'Windows 10',
         name: 'chrome-tests',
-        'tunnel-identifier': 'reformtunnel',
         tunnelIdentifier: 'reformtunnel',
         extendedDebugging: true,
         shardTestFiles: true,
@@ -132,7 +130,7 @@ plugins: [
     options: {
       automaticallyGenerateReport: true,
       removeExistingJsonReportFile: true,
-      reportName: 'XUI MC CrossBrowser Tests',
+      reportName: 'XUI AO CrossBrowser Tests',
       jsonDir: 'reports/tests/crossbrowser',
       reportPath: 'reports/tests/crossbrowser'
 
@@ -148,6 +146,9 @@ plugins: [
   global.expect = chai.expect;
   global.assert = chai.assert;
   global.should = chai.should;
+    global.screenShotUtils = new screenShotUtils({
+      browserInstance: browser
+    })
 }
 
 
