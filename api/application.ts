@@ -128,7 +128,12 @@ app.use(
     },
   } as FileSessionMetadata)
 )
-
+session.on('redisSession.ClientReady', (redisClient: any) => {
+  app.locals.redisClient = redisClient
+})
+session.on('redisSession.ClientError', (error: any) => {
+  logger.error('redis Client error is', error)
+})
 app.use(errorStack)
 app.use(appInsights)
 app.use(bodyParser.json())
