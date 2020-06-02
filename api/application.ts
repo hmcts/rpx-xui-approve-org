@@ -2,7 +2,7 @@ import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import {AUTH } from '@hmcts/rpx-xui-node-lib/dist/auth'
 import { strategyFactory } from '@hmcts/rpx-xui-node-lib/dist/auth'
 import { Strategy } from '@hmcts/rpx-xui-node-lib/dist/auth/models/strategy.class'
-import { FileSessionMetadata } from '@hmcts/rpx-xui-node-lib/dist/auth/session/models/sessionMetadata.interface'
+import { FileSessionMetadata, RedisSessionMetadata } from '@hmcts/rpx-xui-node-lib/dist/auth/session/models/sessionMetadata.interface'
 import axios from 'axios'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
@@ -37,7 +37,10 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET
+  SESSION_SECRET,
+  REDIS_KEY_PREFIX,
+  REDISCLOUD_URL,
+  REDIS_TTL
 } from './configuration/references'
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
@@ -110,7 +113,7 @@ console.log(showFeature(FEATURE_OIDC_ENABLED))
 console.log('SERVICES_ISS_PATH:')
 console.log(getConfigValue(SERVICES_ISS_PATH))
 
-const session = strategyFactory.getStrategy('filesession')
+const session = strategyFactory.getStrategy('redissession')
 
 app.use(
   session.configure({
@@ -123,15 +126,28 @@ app.use(
     resave: false,
     saveUninitialized: true,
     secret: getConfigValue(SESSION_SECRET),
-    fileStoreOptions: {
-      filePath:  getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
+    redisStoreOptions: {
+      redisCloudUrl: getConfigValue(REDISCLOUD_URL),
+      redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
+      redisTtl: getConfigValue(REDIS_TTL),
     },
-  } as FileSessionMetadata)
+  } as RedisSessionMetadata)
 )
+if (showFeature(FEATURE_REDIS_ENABLED)) {
 session.on('redisSession.ClientReady', (redisClient: any) => {
+  console.log('redisSession.ClientReady')
   app.locals.redisClient = redisClient
+  healthChecks.checks = {
+    ...healthChecks.checks, ...{
+      redis: healthcheck.raw(() => {
+        return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+      }),
+    },
+  }
 })
+}
 session.on('redisSession.ClientError', (error: any) => {
+  console.log('redisSession.ClientError')
   logger.error('redis Client error is', error)
 })
 app.use(errorStack)
@@ -160,15 +176,6 @@ const healthChecks = {
   },
 }
 
-if (showFeature(FEATURE_REDIS_ENABLED)) {
-  healthChecks.checks = {
-    ...healthChecks.checks, ...{
-      redis: healthcheck.raw(() => {
-        return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
-      }),
-    }
-  }
-}
 
 healthcheck.addTo(app, healthChecks)
 
