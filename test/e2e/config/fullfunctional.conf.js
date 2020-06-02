@@ -88,7 +88,7 @@ const config = {
         strict: true,
         // format: ['node_modules/cucumber-pretty'],
         format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
-        tags: ['@fullfunctional'],
+        tags: ['@fullfunctional','@test'],
         require: [
             '../support/timeout.js',
             '../support/world.js',
@@ -105,8 +105,8 @@ const config = {
                 removeExistingJsonReportFile: true,
                 reportName: 'EXUI AO Full Functional Tests',
                 // openReportInBrowser: true,
-                jsonDir: 'reports/tests/fullfunctional',
-                reportPath: 'reports/tests/fullfunctional'
+                jsonDir: 'reports/tests/functional',
+                reportPath: 'reports/tests/functional'
             }
         }
     ]
