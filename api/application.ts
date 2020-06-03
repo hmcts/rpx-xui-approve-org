@@ -113,7 +113,8 @@ console.log(showFeature(FEATURE_OIDC_ENABLED))
 console.log('SERVICES_ISS_PATH:')
 console.log(getConfigValue(SERVICES_ISS_PATH))
 
-const session = strategyFactory.getStrategy('redissession')
+const session = showFeature(FEATURE_REDIS_ENABLED) ? strategyFactory.getStrategy('redissession') :
+strategyFactory.getStrategy('filesession')
 
 app.use(
   session.configure({
@@ -122,34 +123,39 @@ app.use(
       maxAge: 1800000,
       secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     },
+    fileStoreOptions: {
+      filePath:  getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
+    },
     name: 'ao-webapp',
-    resave: false,
-    saveUninitialized: true,
-    secret: getConfigValue(SESSION_SECRET),
     redisStoreOptions: {
       redisCloudUrl: getConfigValue(REDISCLOUD_URL),
       redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
       redisTtl: getConfigValue(REDIS_TTL),
     },
-  } as RedisSessionMetadata)
+    resave: false,
+    saveUninitialized: true,
+    secret: getConfigValue(SESSION_SECRET),
+  })
 )
+
 if (showFeature(FEATURE_REDIS_ENABLED)) {
-session.on('redisSession.ClientReady', (redisClient: any) => {
-  console.log('redisSession.ClientReady')
-  app.locals.redisClient = redisClient
-  healthChecks.checks = {
-    ...healthChecks.checks, ...{
-      redis: healthcheck.raw(() => {
-        return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
-      }),
-    },
-  }
-})
+  session.on('redisSession.ClientReady', (redisClient: any) => {
+    console.log('redisSession.ClientReady')
+    app.locals.redisClient = redisClient
+    healthChecks.checks = {
+      ...healthChecks.checks, ...{
+        redis: healthcheck.raw(() => {
+          return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+        }),
+      },
+    }
+  })
+  session.on('redisSession.ClientError', (error: any) => {
+    console.log('redisSession.ClientError')
+    logger.error('redis Client error is', error)
+  })
 }
-session.on('redisSession.ClientError', (error: any) => {
-  console.log('redisSession.ClientError')
-  logger.error('redis Client error is', error)
-})
+
 app.use(errorStack)
 app.use(appInsights)
 app.use(bodyParser.json())
