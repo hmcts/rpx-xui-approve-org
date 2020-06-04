@@ -7,7 +7,7 @@
 
 # dependencies
 node_modules
-api/node_modules/   
+api/node_modules/
 
 # environments - stop accidental commit of a local.yaml file. See Readme.
 /config/local*.*
@@ -52,6 +52,7 @@ reports/
 !.sessions/
 .sessions/*
 reports_json/
+cb_reports/
 .nyc_output/
 @@ -56,3 +57,7 @@ cb_reports/
 report.json
@@ -60,4 +61,4 @@ api/\.sessions/
 
 # stryker temp files
 .stryker-tmp/
-stryker.log 
+stryker.log
