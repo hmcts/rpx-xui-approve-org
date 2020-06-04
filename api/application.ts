@@ -1,15 +1,13 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import {AUTH } from '@hmcts/rpx-xui-node-lib/dist/auth'
-import { strategyFactory } from '@hmcts/rpx-xui-node-lib/dist/auth'
-import { Strategy } from '@hmcts/rpx-xui-node-lib/dist/auth/models/strategy.class'
-import { FileSessionMetadata, RedisSessionMetadata } from '@hmcts/rpx-xui-node-lib/dist/auth/session/models/sessionMetadata.interface'
-import axios from 'axios'
+import { s2s, strategyFactory } from '@hmcts/rpx-xui-node-lib/dist'
+// import axios from 'axios'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as helmet from 'helmet'
+import {authStrategy} from './auth'
 import * as serviceTokenMiddleware from './auth/serviceToken'
-import {havePrdAdminRole} from './auth/userRoleAuth'
+// import {havePrdAdminRole} from './auth/userRoleAuth'
 import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
 import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
 import {
@@ -31,16 +29,16 @@ import {
   NOW,
   OAUTH_CALLBACK_URL,
   PROTOCOL,
+  REDIS_KEY_PREFIX,
+  REDIS_TTL,
+  REDISCLOUD_URL, S2S_SECRET,
   SERVICE_S2S_PATH,
   SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET,
-  REDIS_KEY_PREFIX,
-  REDISCLOUD_URL,
-  REDIS_TTL
+  SESSION_SECRET
 } from './configuration/references'
 import {appInsights} from './lib/appInsights'
 import {errorStack} from './lib/errorStack'
@@ -113,8 +111,8 @@ console.log(showFeature(FEATURE_OIDC_ENABLED))
 console.log('SERVICES_ISS_PATH:')
 console.log(getConfigValue(SERVICES_ISS_PATH))
 
-const session = showFeature(FEATURE_REDIS_ENABLED) ? strategyFactory.getStrategy('redissession') :
-strategyFactory.getStrategy('filesession')
+const session = showFeature(FEATURE_REDIS_ENABLED) ? strategyFactory.getStrategy('redisStore') :
+strategyFactory.getStrategy('fileStore')
 
 app.use(
   session.configure({
@@ -201,84 +199,45 @@ app.use(async (req, res, next) => {
   })
 })
 
+/*const s2sSecret = getConfigValue(S2S_SECRET)
+
+app.use(s2s.configure({
+  microservice: getConfigValue(MICROSERVICE),
+  s2sEndpointUrl: getConfigValue(SERVICE_S2S_PATH),
+  s2sSecret: s2sSecret.trim()
+}))*/
+
 /**
  * Open Routes
  *
  * Any routes here do not have authentication attached and are therefore reachable.
  */
 
-const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res, next) => {
-  console.log('AUTH2 auth success =>', req.isAuthenticated())
-  const userDetails = req.session.passport.user
-  console.log('passport is ', req.session.passport)
-  console.log('userDetails is ', userDetails)
-  const roles = userDetails.userinfo.roles
-  console.log('req.session.user =>', req.session.passport.user)
-  console.log('havePrdAdminRole', havePrdAdminRole(roles))
-  if (!havePrdAdminRole(roles)) {
-    logger.warn('User role does not allow login')
-    return await strategy.logout(req, res)
-  }
-
-  if (showFeature(FEATURE_OIDC_ENABLED)) {
-    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.access_token}`
-  } else {
-    axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
-  }
-  axios.defaults.headers.common['user-roles'] = roles.join()
-
-  if (!isRefresh) {
-    return res.redirect('/')
-  }
-  next()
-
-  /*await serviceTokenMiddleware.default(req, res, () => {
-    logger.info('Attached auth headers to request')
-    res.redirect('/')
-    next()
-  })*/
-}
-
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
-
-  const oidcStrategy = strategyFactory.getStrategy('oidc')
-  oidcStrategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
-
-  app.use(oidcStrategy.configure({
-    client_id: idamClient,
-    client_secret: secret,
-    discovery_endpoint: `${idamWebUrl}/o`,
-    issuer_url: issuerUrl,
-    logout_url: idamApiPath,
-    redirect_uri: 'http://localhost:3000',
-    response_types: ['code'],
-    scope: 'profile openid roles manage-user create-user',
-    sessionKey: 'xui-webapp',
-    token_endpoint_auth_method: 'client_secret_post',
-    useRoutes: true,
-  }))
-
-} else {
-  const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`
-  const authorizationUrl = `${idamWebUrl}/login`
-  console.log('tokenUrl', tokenUrl)
-
-  const oAuth2Strategy = strategyFactory.getStrategy('oauth2')
-  oAuth2Strategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
-
-  app.use(oAuth2Strategy.configure({
-    authorizationURL: authorizationUrl,
-    callbackURL: 'http://localhost:3000/oauth2/callback',
-    clientID: idamClient,
-    clientSecret: secret,
-    logoutUrl: idamApiPath,
-    scope: 'profile openid roles manage-user create-user',
-    sessionKey: 'xui-webapp',
-    tokenURL: tokenUrl,
-    useRoutes: true,
-}))
 }
+
+const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`
+const authorizationUrl = `${idamWebUrl}/login`
+console.log('tokenUrl', tokenUrl)
+
+const options = {
+  authorizationURL: authorizationUrl,
+  callbackURL: 'http://localhost:3000/oauth2/callback',
+  clientID: idamClient,
+  clientSecret: secret,
+  discoveryEndpoint: `${idamWebUrl}/o`,
+  issuerURL: issuerUrl,
+  logoutURL: idamApiPath,
+  responseTypes: ['code'],
+  scope: 'profile openid roles manage-user create-user',
+  sessionKey: 'xui-webapp',
+  tokenEndpointAuthMethod: 'client_secret_post',
+  tokenURL: tokenUrl,
+  useRoutes: true,
+}
+
+app.use(authStrategy.configure(options))
 
 app.get('/external/ping', (req, res) => {
   console.log('Pong')

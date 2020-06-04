@@ -1,3 +1,44 @@
+import { AUTH, Strategy, strategyFactory } from '@hmcts/rpx-xui-node-lib/dist'
+import axios from 'axios'
+import {logger} from '../application'
+import {showFeature} from '../configuration'
+import {FEATURE_OIDC_ENABLED} from '../configuration/references'
+import {havePrdAdminRole} from './userRoleAuth'
+
+const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res, next) => {
+  console.log('AUTH2 auth success =>', req.isAuthenticated())
+  const userDetails = req.session.passport.user
+  console.log('passport is ', req.session.passport)
+  console.log('userDetails is ', userDetails)
+  const roles = userDetails.userinfo.roles
+  console.log('req.session.user =>', req.session.passport.user)
+  console.log('havePrdAdminRole', havePrdAdminRole(roles))
+  if (!havePrdAdminRole(roles)) {
+    logger.warn('User role does not allow login')
+    return await strategy.logout(req, res)
+  }
+
+  axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
+  axios.defaults.headers.common['user-roles'] = roles.join()
+
+  if (!isRefresh) {
+    return res.redirect('/')
+  }
+  next()
+
+  /*await serviceTokenMiddleware.default(req, res, () => {
+    logger.info('Attached auth headers to request')
+    res.redirect('/')
+    next()
+  })*/
+}
+
+export const authStrategy = showFeature(FEATURE_OIDC_ENABLED) ?
+  strategyFactory.getStrategy('oidc') : strategyFactory.getStrategy('oauth2')
+
+authStrategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
+
+/*
 import axios, {AxiosResponse} from 'axios'
 import * as express from 'express'
 import * as jwtDecode from 'jwt-decode'
@@ -375,3 +416,4 @@ export async function doLogoutOidc(req: express.Request, res: express.Response, 
 //   })
 //   router.use('/keepalive', keepAlive)
 // }
+*/
