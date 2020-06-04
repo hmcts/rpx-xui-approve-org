@@ -77,4 +77,15 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
     }
+
+    after('crossBrowserTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/crossbrowser/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Cross Browser Tests'
+      ])
+    }
 }
