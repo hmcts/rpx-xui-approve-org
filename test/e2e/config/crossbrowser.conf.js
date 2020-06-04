@@ -1,4 +1,4 @@
-var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
+// var screenShotUtils = require("protractor-screenshot-utils").ProtractorScreenShotUtils;
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
@@ -10,13 +10,12 @@ const config = {
     framework: 'custom',
     frameworkPath: require.resolve('protractor-cucumber-framework'),
 
-
     sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
 
-
     host: 'ondemand.eu-central-1.saucelabs.com',
-    sauceregion: 'eu',
+    sauceRegion: 'eu',
     port: 80,
+    sauceConnect: true,
     specs: ['../features/**/*.feature'],
 
     baseUrl: (process.env.TEST_URL || 'http://localhost:3000/').replace('https', 'http'),
@@ -29,10 +28,10 @@ const config = {
     },
 
 
-    sauceProxy: 'https://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
+    sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
     sauceUser: process.env.SAUCE_USERNAME,
     sauceKey: process.env.SAUCE_ACCESS_KEY,
-    SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/',
+    SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
     allScriptsTimeout: 111000,
 
     useAllAngular2AppRoots: true,
@@ -44,63 +43,10 @@ const config = {
         name: 'chrome-tests',
         tunnelIdentifier: 'reformtunnel',
         extendedDebugging: true,
-        shardTestFiles: true,
         sharedTestFiles: false,
         maxInstances: 1
       },
-
-  // },
-
-  // {
-  //     browserName: 'chrome',
-  //     name: 'MAC_CHROME_LATEST',
-  //     platform: 'macOS 10.13',
-  //     version: 'latest',
-  //     'tunnel-identifier': 'reformtunnel'
-  //         // shardTestFiles: true,
-  //         // maxInstances: 1
-  //
-  // },
-
-  //
-  // {
-  //     browserName: 'firefox',
-  //     name: 'WIN_FIREFOX_LATEST',
-  //     platform: 'Windows 10',
-  //     version: 'latest',
-  //     'tunnel-identifier': 'reformtunnel',
-  //     shardTestFiles: false,
-  //     maxInstances: 1
-  //
-  //  }
-  //
-  // {
-  //     browserName: 'firefox',
-  //     name: 'MAC_FIREFOX_LATEST',
-  //     platform: 'macOS 10.13',
-  //     version: 'latest',
-  //     'tunnel-identifier': 'reformtunne',
-  //     shardTestFiles: true,
-  //     maxInstances: 1
-  // }
-  //
-
-  //
-  // {
-  //     'browserName': 'internet explorer',
-  //     'platform': 'Windows 10',
-  //     'version': '11.103',
-  //     'name': 'XUI-MO-IE11-TEST',
-  //     'tunnelIdentifier': 'reformtunnel',
-  //     'extendedDebugging': true,
-  //     'shardTestFiles': true,
-  //     'maxInstances': 1
-  //
-  // }
-  //
-
-  ],
-
+    ],
 
   exclude: [],
 
@@ -110,18 +56,6 @@ const config = {
     require: ['../support/world.js', '../support/*.js', '../features/step_definitions/**/*.steps.js'],
     tags: ['@crossbrowser']
 },
-
-
-//
-// onComplete() {
-//     const printSessionId = function(jobName) {
-//         browser.getSession()
-//             .then(session => {
-//             });
-//     };
-//     printSessionId('JUI CB Tests');
-// },
-
 
 
 plugins: [
@@ -146,12 +80,10 @@ plugins: [
   global.expect = chai.expect;
   global.assert = chai.assert;
   global.should = chai.should;
-    global.screenShotUtils = new screenShotUtils({
-      browserInstance: browser
-    })
-}
-
-
+    // global.screenShotUtils = new screenShotUtils({
+    //   browserInstance: browser
+    // })
+  }
 };
 
 
