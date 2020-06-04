@@ -23,7 +23,7 @@ withNightlyPipeline(type, product, component) {
 
     enableFullFunctionalTest(30)
     enableMutationTest()
-
+    enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     after('checkout') {sh 'yarn cache clean'}
     after('build') {
