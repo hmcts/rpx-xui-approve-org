@@ -1,5 +1,6 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import { s2s, strategyFactory } from '@hmcts/rpx-xui-node-lib/dist'
+import axios from 'axios'
 // import axios from 'axios'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
@@ -193,20 +194,25 @@ const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
 const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
 
 // TODO: have moved this here temporarily so we don't have to worry about invoking
-app.use(async (req, res, next) => {
+/*app.use(async (req, res, next) => {
   await serviceTokenMiddleware.default(req, res, () => {
     logger.info('Attached auth headers to request')
     next()
   })
-})
+})*/
+const s2sSecret = getConfigValue(S2S_SECRET)
 
-/*const s2sSecret = getConfigValue(S2S_SECRET)
+s2s.on('s2s.authenticate.success', (token, req, res, next) => {
+  axios.defaults.headers.common.ServiceAuthorization = token
+  logger.info('Attached auth headers to request', 'token => ', token)
+  next()
+})
 
 app.use(s2s.configure({
   microservice: getConfigValue(MICROSERVICE),
-  s2sEndpointUrl: getConfigValue(SERVICE_S2S_PATH),
+  s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
   s2sSecret: s2sSecret.trim()
-}))*/
+}, {}, console))
 
 /**
  * Open Routes
