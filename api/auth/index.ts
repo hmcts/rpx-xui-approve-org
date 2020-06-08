@@ -1,8 +1,10 @@
 import { AUTH, Strategy, strategyFactory } from '@hmcts/rpx-xui-node-lib/dist'
 import axios from 'axios'
+import * as express from 'express'
 import {logger} from '../application'
 import {showFeature} from '../configuration'
 import {FEATURE_OIDC_ENABLED} from '../configuration/references'
+import { http } from '../lib/http'
 import {havePrdAdminRole} from './userRoleAuth'
 
 const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res, next) => {
@@ -37,6 +39,13 @@ export const authStrategy = showFeature(FEATURE_OIDC_ENABLED) ?
   strategyFactory.getStrategy('oidc') : strategyFactory.getStrategy('oauth2')
 
 authStrategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
+
+export async function attach(req: express.Request, res: express.Response, next: express.NextFunction) {
+  if (!req.http) {
+    req.http = http(req)
+  }
+  next()
+}
 
 /*
 import axios, {AxiosResponse} from 'axios'
