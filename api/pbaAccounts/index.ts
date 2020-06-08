@@ -2,7 +2,7 @@ import { AxiosPromise } from 'axios'
 import * as express from 'express'
 import {getConfigValue} from '../configuration'
 import {SERVICES_FEE_AND_PAY_PATH} from '../configuration/references'
-import { http } from '../lib/http'
+
 
 async function handleAddressRoute(req, res) {
   let errReport: any
@@ -17,7 +17,7 @@ async function handleAddressRoute(req, res) {
   const accountNames = req.query.accountNames.split(',')
   const accounts = []
   const accountPromises = new Array<AxiosPromise<any>>()
-  accountNames.forEach((accountName: string) => accountPromises.push(getAccount(accountName)))
+  accountNames.forEach((accountName: string) => accountPromises.push(getAccount(accountName,req)))
 
   try {
     await Promise.all(accountPromises).catch(err => err).then(allAccounts => {
@@ -39,9 +39,9 @@ async function handleAddressRoute(req, res) {
   res.send(accounts)
 }
 
-function getAccount(accountName: string): AxiosPromise<any> {
+function getAccount(accountName: string, req:express.Request): AxiosPromise<any> {
   const url = `${getConfigValue(SERVICES_FEE_AND_PAY_PATH)}/accounts/${accountName}`
-  const promise = http.get(url).catch(err => err)
+  const promise = req.http.get(url).catch(err => err)
   return promise
 }
 

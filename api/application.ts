@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
 import * as helmet from 'helmet'
+import {attach} from '../api/auth/index'
 import {authStrategy} from './auth'
 import * as serviceTokenMiddleware from './auth/serviceToken'
 // import {havePrdAdminRole} from './auth/userRoleAuth'
@@ -274,7 +275,7 @@ app.get('/external/ping', (req, res) => {
 /**
  * We are attaching authentication to all subsequent routes.
  */
-// app.use(auth.attach) // its called in routes.ts - no need to call it here
+app.use(attach) // its called in routes.ts - no need to call it here
 
 /**
  * Secure Routes
