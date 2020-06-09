@@ -1,4 +1,4 @@
-import { AUTH, Strategy, strategyFactory } from '@hmcts/rpx-xui-node-lib/dist'
+import { AUTH, Strategy, strategyFactory } from '@hmcts/rpx-xui-node-lib'
 import axios from 'axios'
 import * as express from 'express'
 import {logger} from '../application'
