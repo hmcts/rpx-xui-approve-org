@@ -176,9 +176,8 @@ const fileStoreOptions = {
   }
 }
 
-app.use(xuiNode.configure({
+const nodeLibOptions = {
   auth: {
-    oidc: options,
     s2s: {
       microservice: getConfigValue(MICROSERVICE),
       s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
@@ -186,7 +185,11 @@ app.use(xuiNode.configure({
     }
   },
   session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
-}))
+}
+const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2'
+nodeLibOptions.auth[type] = options
+
+app.use(xuiNode.configure(nodeLibOptions))
 
 
 if (showFeature(FEATURE_REDIS_ENABLED)) {
