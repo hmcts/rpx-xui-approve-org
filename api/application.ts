@@ -230,7 +230,7 @@ console.log('tokenUrl', tokenUrl)
 
 const options = {
   authorizationURL: authorizationUrl,
-  callbackURL: 'http://localhost:3000/oauth2/callback',
+  callbackURL: 'http://xui-ao-webapp-pr-338.service.core-compute-preview.internal/oauth2/callback',
   clientID: idamClient,
   clientSecret: secret,
   discoveryEndpoint: `${idamWebUrl}/o`,
