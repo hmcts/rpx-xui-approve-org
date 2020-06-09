@@ -1,5 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import { s2s, strategyFactory } from '@hmcts/rpx-xui-node-lib/dist'
+import { s2s, strategyFactory } from '@hmcts/rpx-xui-node-lib'
 import axios from 'axios'
 // import axios from 'axios'
 import * as bodyParser from 'body-parser'
