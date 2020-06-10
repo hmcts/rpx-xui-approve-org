@@ -1,13 +1,14 @@
 import { AUTH, Strategy, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import axios from 'axios'
 import * as express from 'express'
+import { NextFunction, Request, Response } from 'express'
 import {logger} from '../application'
 import {getConfigValue} from '../configuration'
 import {COOKIE_ROLES} from '../configuration/references'
 import { http } from '../lib/http'
 import {havePrdAdminRole} from './userRoleAuth'
 
-const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res, next) => {
+const successCallback = async (strategy: Strategy, isRefresh: boolean, req: Request, res: Response, next: NextFunction) => {
   console.log('AUTH2 auth success =>', req.isAuthenticated())
   const userDetails = req.session.passport.user
   console.log('passport is ', req.session.passport)
