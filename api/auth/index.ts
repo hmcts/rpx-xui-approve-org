@@ -2,6 +2,8 @@ import { AUTH, Strategy, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import axios from 'axios'
 import * as express from 'express'
 import {logger} from '../application'
+import {getConfigValue} from '../configuration'
+import {COOKIE_ROLES} from '../configuration/references'
 import { http } from '../lib/http'
 import {havePrdAdminRole} from './userRoleAuth'
 
@@ -20,6 +22,7 @@ const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res,
 
   axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
   axios.defaults.headers.common['user-roles'] = roles.join()
+  res.cookie(getConfigValue(COOKIE_ROLES), roles)
 
   if (!isRefresh) {
     return res.redirect('/')
