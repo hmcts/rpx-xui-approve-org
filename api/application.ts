@@ -1,5 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import { s2s, strategyFactory, xuiNode } from '@hmcts/rpx-xui-node-lib'
+import { S2S, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import axios from 'axios'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
@@ -108,9 +108,6 @@ console.log(showFeature(FEATURE_OIDC_ENABLED))
 console.log('SERVICES_ISS_PATH:')
 console.log(getConfigValue(SERVICES_ISS_PATH))
 
-const session = showFeature(FEATURE_REDIS_ENABLED) ? strategyFactory.getStrategy('redisStore') :
-strategyFactory.getStrategy('fileStore')
-
 if (showFeature(FEATURE_OIDC_ENABLED)) {
   console.log('OIDC enabled')
 }
@@ -193,8 +190,7 @@ app.use(xuiNode.configure(nodeLibOptions))
 
 
 if (showFeature(FEATURE_REDIS_ENABLED)) {
-  session.on('redisSession.ClientReady', (redisClient: any) => {
-    console.log('redisSession.ClientReady')
+  xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
     app.locals.redisClient = redisClient
     healthChecks.checks = {
       ...healthChecks.checks, ...{
@@ -204,8 +200,7 @@ if (showFeature(FEATURE_REDIS_ENABLED)) {
       },
     }
   })
-  session.on('redisSession.ClientError', (error: any) => {
-    console.log('redisSession.ClientError')
+  xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {
     logger.error('redis Client error is', error)
   })
 }
@@ -240,7 +235,7 @@ const healthChecks = {
 healthcheck.addTo(app, healthChecks)
 
 
-s2s.on('s2s.authenticate.success', (token, req, res, next) => {
+xuiNode.on(S2S.EVENT.AUTHENTICATE_SUCCESS, (token, req, res, next) => {
   axios.defaults.headers.common.ServiceAuthorization = token
   logger.info('Attached auth headers to request', 'token => ', token)
   next()

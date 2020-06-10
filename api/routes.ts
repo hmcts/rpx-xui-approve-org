@@ -1,5 +1,5 @@
+import { xuiNode } from '@hmcts/rpx-xui-node-lib'
 import * as express from 'express'
-import { authStrategy } from './auth'
 import environment from './environment'
 import healthCheck from './healthCheck'
 import getappInsightsInstrumentationKey from './monitoring-tools'
@@ -14,7 +14,7 @@ const router = express.Router({ mergeParams: true })
 // open routes
 router.use('/environment', environment)
 
-router.use(authStrategy.authenticate)
+router.use(xuiNode.authenticate)
 router.use('/user', userDetailsRouter)
 router.use('/decisions', stateRouter)
 router.use('/healthCheck', healthCheck)
