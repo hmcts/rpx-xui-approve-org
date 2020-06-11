@@ -1,13 +1,14 @@
-import { AUTH, Strategy, strategyFactory } from '@hmcts/rpx-xui-node-lib'
+import { AUTH, Strategy, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import axios from 'axios'
 import * as express from 'express'
+import { NextFunction, Request, Response } from 'express'
 import {logger} from '../application'
-import {showFeature} from '../configuration'
-import {FEATURE_OIDC_ENABLED} from '../configuration/references'
+import {getConfigValue} from '../configuration'
+import {COOKIE_ROLES} from '../configuration/references'
 import { http } from '../lib/http'
 import {havePrdAdminRole} from './userRoleAuth'
 
-const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res, next) => {
+const successCallback = async (strategy: Strategy, isRefresh: boolean, req: Request, res: Response, next: NextFunction) => {
   console.log('AUTH2 auth success =>', req.isAuthenticated())
   const userDetails = req.session.passport.user
   console.log('passport is ', req.session.passport)
@@ -22,23 +23,15 @@ const successCallback = async (strategy: Strategy, isRefresh: boolean, req, res,
 
   axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
   axios.defaults.headers.common['user-roles'] = roles.join()
+  res.cookie(getConfigValue(COOKIE_ROLES), roles)
 
   if (!isRefresh) {
     return res.redirect('/')
   }
   next()
-
-  /*await serviceTokenMiddleware.default(req, res, () => {
-    logger.info('Attached auth headers to request')
-    res.redirect('/')
-    next()
-  })*/
 }
 
-export const authStrategy = showFeature(FEATURE_OIDC_ENABLED) ?
-  strategyFactory.getStrategy('oidc') : strategyFactory.getStrategy('oauth2')
-
-authStrategy.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
+xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback)
 
 export async function attach(req: express.Request, res: express.Response, next: express.NextFunction) {
   if (!req.http) {

@@ -410,10 +410,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@2.16.0":
-  version "2.16.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.16.0.tgz#343847fe111d4dee05f955a687e5421552f678b4"
-  integrity sha512-PO9xjuuO7xWFioNvvMMeJkV/IxeoO2JZijhwql8rEi5jHcKtBljCGWiXDobFxYz4zxI2MkexYEUYp2oZx1d/uQ==
+"@hmcts/rpx-xui-node-lib@2.18.0":
+  version "2.18.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.18.0.tgz#dfc1a93a232b6c65f2bdea0aeb8eb6f89609b5ba"
+  integrity sha512-f+RbnWJqo2bInocTjxGhycKZ05OTksgeqURpSQ8Eeu/pd9gh7vvY7i8/mUt4YLySwhZUXnliJXnv238TxVgLdg==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.18.0"
@@ -789,9 +789,9 @@
   integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
 
 "@types/node@*":
-  version "14.0.12"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.12.tgz#9c1d8ffb8084e8936603a6122a7649e40e68e04b"
-  integrity sha512-/sjzehvjkkpvLpYtN6/2dv5kg41otMGuHQUt9T2aiAuIfleCQRQHXXzF1eAw/qkZTj5Kcf4JSTf7EIizHocy6Q==
+  version "14.0.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.0.13.tgz#ee1128e881b874c371374c1f72201893616417c9"
+  integrity sha512-rouEWBImiRaSJsVA+ITTFM6ZxibuAlTuNOCyxVbwreu6k6+ujs7DfnU9o+PShFhET78pMBl3eH+AGSI5eOTkPA==
 
 "@types/node@~8.9.4":
   version "8.9.5"
@@ -2293,9 +2293,9 @@ camelize@1.0.0:
   integrity sha1-FkpUg+Yw+kMh5a8HAg5TGDGyYJs=
 
 caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000864, caniuse-lite@^1.0.30000929, caniuse-lite@^1.0.30001043:
-  version "1.0.30001079"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001079.tgz#ed3e5225cd9a6850984fdd88bf24ce45d69b9c22"
-  integrity sha512-2KaYheg0iOY+CMmDuAB3DHehrXhhb4OZU4KBVGDr/YKyYAcpudaiUQ9PJ9rxrPlKEoJ3ATasQ5AN48MqpwS43Q==
+  version "1.0.30001081"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001081.tgz#40615a3c416a047c5a4d45673e5257bf128eb3b5"
+  integrity sha512-iZdh3lu09jsUtLE6Bp8NAbJskco4Y3UDtkR3GTCJGsbMowBU5IWDFF79sV2ws7lSqTzWyKazxam2thasHymENQ==
 
 canonical-path@1.0.0:
   version "1.0.0"
@@ -3701,9 +3701,9 @@ ejs@^2.6.1:
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
 electron-to-chromium@^1.3.413, electron-to-chromium@^1.3.47:
-  version "1.3.465"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.465.tgz#d692e5c383317570c2bd82092a24a0308c6ccf29"
-  integrity sha512-K/lUeT3NLAsJ5SHRDhK3/zd0tw7OUllYD8w+fTOXm6ljCPsp2qq+vMzxpLo8u1M27ZjZAjRbsA6rirvne2nAMQ==
+  version "1.3.467"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.467.tgz#84eeb332134d49f0e49b88588824e56b20af9e27"
+  integrity sha512-U+QgsL8TZDU/n+rDnYDa3hY5uy3C4iry9mrJS0PNBBGwnocuQ+aHSfgY44mdlaK9744X5YqrrGUvD9PxCLY1HA==
 
 elliptic@^6.0.0, elliptic@^6.5.2:
   version "6.5.2"
@@ -5189,9 +5189,9 @@ helmet-csp@2.10.0:
     dasherize "2.0.0"
 
 helmet@^3.21.3:
-  version "3.22.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.22.0.tgz#3a6f11d931799145f0aff15dbc563cff9e13131f"
-  integrity sha512-Xrqicn2nm1ZIUxP3YGuTBmbDL04neKsIT583Sjh0FkiwKDXYCMUqGqC88w3NUvVXtA75JyR2Jn6jw6ZEMOD+ZA==
+  version "3.22.1"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.22.1.tgz#6e1023f4f60b25ee729f535813407d4d37a623e2"
+  integrity sha512-6/mBacEbbskpmZiNg6rqfC8obo4n8+w7cofaJkQjqQevq+Hlz9ocIUupFLNLnCCtVkThDS8ov+StHMQ8mM/Jjw==
   dependencies:
     depd "2.0.0"
     dns-prefetch-control "0.2.0"
@@ -10474,9 +10474,9 @@ triple-beam@^1.2.0, triple-beam@^1.3.0:
     glob "^7.1.2"
 
 ts-auto-mock@^2.2.5:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/ts-auto-mock/-/ts-auto-mock-2.2.6.tgz#b718d43962c6a48ba941011bec1cca9db8e191ec"
-  integrity sha512-7w7g3GHpUUtDbg4XSUfxoQ2AxIe/bSZQ9QY8Cwrymk2BwkKkF1gcu7yuAePbnbE2C2TrU9m1LVFPr4TrnuEpgA==
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/ts-auto-mock/-/ts-auto-mock-2.2.7.tgz#74aad8f3fd45029ae9e65ac56a8e862dfd1fe98b"
+  integrity sha512-HqjO/CtkZzWTUqg/8PHXEWfmcW6y41vgbwvzUZEj2++Px7fs4xa72RRb6Js48EYDSaUBQyPkhSl03O3DCzPaVA==
   dependencies:
     lodash-es "^4.17.15"
     winston "^3.2.1"
