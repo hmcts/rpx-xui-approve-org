@@ -205,7 +205,7 @@ if (showFeature(FEATURE_REDIS_ENABLED)) {
   })
 }
 
-app.use(errorStack)
+// app.use(errorStack)
 app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
