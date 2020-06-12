@@ -186,7 +186,11 @@ const nodeLibOptions = {
 const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2'
 nodeLibOptions.auth[type] = options
 
-app.use(xuiNode.configure(nodeLibOptions))
+xuiNode.on(S2S.EVENT.AUTHENTICATE_SUCCESS, (token, req, res, next) => {
+  axios.defaults.headers.common.ServiceAuthorization = token
+  logger.info('Attached auth headers to request', 'token => ', token)
+  next()
+})
 
 
 if (showFeature(FEATURE_REDIS_ENABLED)) {
@@ -210,6 +214,7 @@ app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(cookieParser())
+app.use(xuiNode.configure(nodeLibOptions))
 
 tunnel.init()
 
@@ -233,13 +238,6 @@ const healthChecks = {
 
 
 healthcheck.addTo(app, healthChecks)
-
-
-xuiNode.on(S2S.EVENT.AUTHENTICATE_SUCCESS, (token, req, res, next) => {
-  axios.defaults.headers.common.ServiceAuthorization = token
-  logger.info('Attached auth headers to request', 'token => ', token)
-  next()
-})
 
 /**
  * Open Routes
