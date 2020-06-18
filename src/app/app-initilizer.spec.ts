@@ -5,7 +5,9 @@ describe('initApplication', () => {
     const serviceSpy = jasmine.createSpyObj('envservice', ['getEnv$']);
     it('initApplication', () => {
         serviceSpy.getEnv$.and.returnValue(of(true));
-        const returnValue = initApplication(serviceSpy);
+        const returnValue: VoidFunction = initApplication(serviceSpy);
         expect(returnValue).toEqual(jasmine.any(Function));
+        returnValue();
+        expect(serviceSpy.getEnv$).toHaveBeenCalled();
     });
 });
