@@ -149,7 +149,7 @@ const baseStoreOptions = {
   },
   name: 'ao-webapp',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
   secret: getConfigValue(SESSION_SECRET),
 }
 
@@ -213,7 +213,7 @@ if (showFeature(FEATURE_REDIS_ENABLED)) {
 app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(cookieParser())
+app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 app.use(xuiNode.configure(nodeLibOptions))
 
 tunnel.init()
