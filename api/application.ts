@@ -1,6 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import { S2S, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
-import axios from 'axios'
+import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -39,7 +38,6 @@ import {
   SESSION_SECRET
 } from './configuration/references'
 import {appInsights} from './lib/appInsights'
-import {errorStack} from './lib/errorStack'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
@@ -127,7 +125,8 @@ console.log('tokenUrl', tokenUrl)
 //TODO: we can move these out into proper config at some point to tidy up even further
 const options = {
   authorizationURL: authorizationUrl,
-  callbackURL: 'https://xui-ao-webapp-pr-338.service.core-compute-preview.internal/oauth2/callback',
+  // callbackURL: 'https://xui-ao-webapp-pr-338.service.core-compute-preview.internal/oauth2/callback',
+  callbackURL: 'http://localhost:3000/oauth2/callback',
   clientID: idamClient,
   clientSecret: secret,
   discoveryEndpoint: `${idamWebUrl}/o`,
@@ -186,13 +185,6 @@ const nodeLibOptions = {
 const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2'
 nodeLibOptions.auth[type] = options
 
-xuiNode.on(S2S.EVENT.AUTHENTICATE_SUCCESS, (token, req, res, next) => {
-  axios.defaults.headers.common.ServiceAuthorization = token
-  logger.info('Attached auth headers to request', 'token => ', token)
-  next()
-})
-
-
 if (showFeature(FEATURE_REDIS_ENABLED)) {
   xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
     app.locals.redisClient = redisClient
@@ -209,7 +201,6 @@ if (showFeature(FEATURE_REDIS_ENABLED)) {
   })
 }
 
-// app.use(errorStack)
 app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))

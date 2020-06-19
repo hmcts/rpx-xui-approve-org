@@ -7,19 +7,8 @@ axios.defaults.headers.common['Content-Type'] = 'application/json'
 
 export const http = (req: Request) => {
 
-  const headers = {}
-
-  if (exists(req, 'session.auth.token')) {
-    headers['Authorization'] = `Bearer ${req.session.auth.token}`
-    //headers['Authorization'] = req.headers.Authorization 
-   }
-
-  if (exists(req, 'session.auth.roles')) {
-    headers['user-roles'] = req.session.auth.roles
-  }
-
   const axiosInstance: AxiosInstance = axios.create({
-    headers
+    headers: req.headers
   })
   axiosInstance.interceptors.request.use(requestInterceptor)
   axiosInstance.interceptors.response.use(successInterceptor, errorInterceptor)
