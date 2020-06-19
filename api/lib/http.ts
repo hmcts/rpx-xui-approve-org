@@ -1,7 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import { Request } from 'express'
 import { errorInterceptor, requestInterceptor, successInterceptor } from './interceptors'
-import {exists} from './util'
 
 axios.defaults.headers.common['Content-Type'] = 'application/json'
 

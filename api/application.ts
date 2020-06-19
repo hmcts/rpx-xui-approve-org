@@ -125,8 +125,8 @@ console.log('tokenUrl', tokenUrl)
 //TODO: we can move these out into proper config at some point to tidy up even further
 const options = {
   authorizationURL: authorizationUrl,
-  // callbackURL: 'https://xui-ao-webapp-pr-338.service.core-compute-preview.internal/oauth2/callback',
-  callbackURL: 'http://localhost:3000/oauth2/callback',
+  callbackURL: 'https://xui-ao-webapp-pr-338.service.core-compute-preview.internal/oauth2/callback',
+  // callbackURL: 'http://localhost:3000/oauth2/callback',
   clientID: idamClient,
   clientSecret: secret,
   discoveryEndpoint: `${idamWebUrl}/o`,
@@ -182,24 +182,9 @@ const nodeLibOptions = {
   },
   session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
 }
+
 const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2'
 nodeLibOptions.auth[type] = options
-
-if (showFeature(FEATURE_REDIS_ENABLED)) {
-  xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
-    app.locals.redisClient = redisClient
-    healthChecks.checks = {
-      ...healthChecks.checks, ...{
-        redis: healthcheck.raw(() => {
-          return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
-        }),
-      },
-    }
-  })
-  xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {
-    logger.error('redis Client error is', error)
-  })
-}
 
 app.use(appInsights)
 app.use(bodyParser.json())
@@ -227,6 +212,22 @@ const healthChecks = {
   },
 }
 
+if (showFeature(FEATURE_REDIS_ENABLED)) {
+  xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
+    console.log('REDIS EVENT FIRED!!')
+    app.locals.redisClient = redisClient
+    healthChecks.checks = {
+      ...healthChecks.checks, ...{
+        redis: healthcheck.raw(() => {
+          return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+        }),
+      },
+    }
+  })
+  xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {
+    logger.error('redis Client error is', error)
+  })
+}
 
 healthcheck.addTo(app, healthChecks)
 
