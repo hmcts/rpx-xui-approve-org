@@ -410,10 +410,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@^2.19.0":
-  version "2.19.0"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.19.0.tgz#c184606cd09c544d11590173a8087453a4f079b6"
-  integrity sha512-eSEo4YOqCLjBJX+ZEDco9+dWhw8jXzn0Aj/fc2tFC35iaMyjAq7/z9EAyoexSWN7MqEijYOWHPNL+AAg5t/fVQ==
+"@hmcts/rpx-xui-node-lib@^2.20.0":
+  version "2.20.0"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.20.0.tgz#d1945800e9f3329c82b39edb9ffdac34b2430c41"
+  integrity sha512-h9gw7hvU5yp/ljWtOnPyJKN/kLL+ZWJ0guqucuNVBPhkWKyxGtoQsh8gHBg/GHgMnlvh44SKlQR/g36fLmhq1Q==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.18.0"
