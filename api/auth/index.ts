@@ -1,5 +1,4 @@
 import { AUTH, Strategy, xuiNode } from '@hmcts/rpx-xui-node-lib'
-import axios from 'axios'
 import * as express from 'express'
 import { NextFunction, Request, Response } from 'express'
 import {logger} from '../application'
@@ -16,8 +15,6 @@ const successCallback = async (strategy: Strategy, isRefresh: boolean, req: Requ
     return await strategy.logout(req, res)
   }
 
-  axios.defaults.headers.common.Authorization = `Bearer ${userDetails.tokenset.accessToken}`
-  axios.defaults.headers.common['user-roles'] = roles.join()
   res.cookie(getConfigValue(COOKIE_ROLES), roles)
 
   if (!isRefresh) {
