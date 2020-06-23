@@ -22,7 +22,7 @@ describe('HeaderComponent', () => {
         app = fixture.debugElement.componentInstance;
     }));
 
-    it('should create the app', () => {
+    it('should create the HeaderComponent', () => {
         expect(app).toBeTruthy();
     });
 
@@ -30,6 +30,11 @@ describe('HeaderComponent', () => {
         spyOn(app.navigate, 'emit');
         app.onNavigate('dummy');
         expect(app.navigate.emit).toHaveBeenCalledWith('dummy');
+    });
+
+    it('Service name should be "Approve organisation"', () => {
+        app.ngOnInit();
+        expect(app.serviceName.name).toBe('Approve organisation');
     });
 
 });
