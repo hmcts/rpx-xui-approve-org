@@ -33,8 +33,8 @@ class BrowserWaits {
         await browser.wait(EC.presenceOf($(selector)), this.waitTime, "Error find element with selector: " + selector);
     }
 
-    async waitForstalenessOf(element) {
-        await browser.wait(EC.stalenessOf(element), this.waitTime);
+    async waitForstalenessOf(element, customWaitInSec) {
+        await browser.wait(EC.stalenessOf(element), customWaitInSec ? customWaitInSec * 1000 : this.waitTime, "Element still present : " + element.locator().toString());
     }
 
     async waitForPageNavigation(currentPageUrl) {

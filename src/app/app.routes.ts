@@ -36,13 +36,13 @@ export const ROUTES: Routes = [
     component: ServiceDownComponent
   },
   {
+    path: 'signed-out',
+    component: SignedOutComponent
+  },
+  {
     path: '**',
     redirectTo: 'organisation',
     pathMatch: 'full'
-  },
-  {
-    path: 'signed-out',
-    component: SignedOutComponent
   },
 ];
 

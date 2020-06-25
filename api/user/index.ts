@@ -13,7 +13,7 @@ function handleUserRoute(req, res) {
   const UserDetails = {
     ...req.session.user,
     idleTime: getConfigValue(USER_TIMEOUT_IN_SECONDS) * 1000,
-    timeout: 60,
+    timeout: 600,
   }
 
   try {

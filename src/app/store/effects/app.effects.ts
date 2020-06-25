@@ -5,7 +5,7 @@ import { Actions, Effect, ofType } from '@ngrx/effects';
 import { HttpErrorResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { UserInterface } from '../../..//models/user.model';
+import { UserInterface } from '../../../models/user.model';
 import { LogOutKeepAliveService } from '../../services/keep-alive/keep-alive.service';
 import { UserService } from '../../services/user-service/user.service';
 import * as routerAction from '../../store/actions/router.action';
@@ -23,7 +23,7 @@ export class AppEffects {
     public logout$ = this.actions$.pipe(
         ofType(appActions.LOGOUT),
         map(() => {
-            window.location.href = '/api/logout';
+            window.location.href = '/auth/logout';
         })
     );
 

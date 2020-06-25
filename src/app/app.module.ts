@@ -1,4 +1,4 @@
-import { ErrorHandler, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
@@ -24,7 +24,7 @@ import { ROUTES } from './app.routes';
 
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
-import { ExuiCommonLibModule, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import config from 'config';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
@@ -36,6 +36,8 @@ import { LoggerService } from './services/logger.service';
 import { MonitoringService } from './services/monitoring.service';
 
 import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
+import { initApplication } from './app-initilizer';
+import { EnvironmentService } from './services/environment.service';
 import {LogOutKeepAliveService} from './services/keep-alive/keep-alive.service';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
@@ -72,7 +74,14 @@ export const metaReducers: MetaReducer<any>[] = !config.production
     AuthService,
     { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
     CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
-    {provide: ErrorHandler, useClass: DefaultErrorHandler}],
+    {provide: ErrorHandler, useClass: DefaultErrorHandler},
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initApplication,
+      deps: [EnvironmentService],
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
