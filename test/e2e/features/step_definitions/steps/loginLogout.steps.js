@@ -90,14 +90,23 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.dashboard_header.getText())
       .to
       .eventually
-      .equal('Approve organisations');
+      .equal('Approve organisation');
 
   });
 
   Given(/^I am logged into approve organisation with HMCTS admin$/, async function () {
     await loginPage.loginWithCredentials(this.config.username, this.config.password);
-    browser.sleep(LONG_DELAY);
-    // await browserWaits.waitForElement(headerPage.signOut);
+    browser.sleep(SHORT_DELAY);
+    try{
+      await browserWaits.waitForstalenessOf(loginPage.emailAddress,5);
+    }catch(err){ 
+      let emailFieldValue = await loginPage.getEmailFieldValue();
+      if (!emailFieldValue.includes(this.config.username)){
+        console.log(err+" email field is still present with empty value indicating  Login page reloaded due to EUI-1856 ");
+        this.attach(err +" email field is still present with empty value indicating Login page reloaded due to EUI-1856 ");
+        await loginPage.loginWithCredentials(this.config.username, this.config.password);
+      }
+    }
   });
 
   Given(/^I am logged into approve organisation with approver prd admin$/, async function () {
