@@ -46,17 +46,6 @@ export class AuthService {
   }
 
  public isAuthenticated(): Observable<boolean> {
-
     return this.httpService.get<boolean>('/auth/isAuthenticated');
-    // return this.envService.getEnv$().map( config => {
-    //   debugger
-    //   const jwt = this.cookieService.get(config.cookies.token);
-    //   if (!jwt) {
-    //     return false;
-    //   }
-    //   const jwtData = this.decodeJwt(jwt);
-    //   // do stuff!!
-    //   return jwtData.exp > Math.round(new Date().getTime() / 1000);
-    // });
   }
 }
