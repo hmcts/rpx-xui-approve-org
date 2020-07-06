@@ -1,7 +1,6 @@
 import * as express from 'express'
 import { getConfigValue } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
-import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('return')
@@ -20,7 +19,7 @@ const logger = log4jui.getLogger('return')
 async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
     try {
         const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
-        const response = await http.get(organisationsUri)
+        const response = await req.http.get(organisationsUri)
         logger.info('Organisations response' + response.data)
 
         if (response.data.organisations) {
@@ -66,7 +65,7 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
     } else {
         try {
             const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
-            await http.put(putOrganisationsUrl, req.body)
+            await req.http.put(putOrganisationsUrl, req.body)
             res.status(200).send()
         } catch (error) {
             console.error(error)

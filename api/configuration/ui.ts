@@ -10,6 +10,7 @@ import {
   COOKIE_ROLES,
   COOKIE_TOKEN,
   COOKIES_USERID,
+  FEATURE_OIDC_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
   IDAM_CLIENT,
   INDEX_URL,
@@ -52,6 +53,7 @@ export const uiConfig = (): UIConfig => {
     microservice: getConfigValue(MICROSERVICE),
     now: getConfigValue(NOW),
     oauthCallbackUrl: getConfigValue(OAUTH_CALLBACK_URL),
+    oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
     secureCookie: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     services: {
