@@ -1,5 +1,5 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
+import { AuthOptions, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as express from 'express'
@@ -123,7 +123,9 @@ const authorizationUrl = `${idamWebUrl}/login`
 console.log('tokenUrl', tokenUrl)
 
 //TODO: we can move these out into proper config at some point to tidy up even further
-const options = {
+const options: AuthOptions = {
+  // we only want to allow prd-admin roles
+  allowRolesRegex: 'prd-admin',
   authorizationURL: authorizationUrl,
   callbackURL: getConfigValue(OAUTH_CALLBACK_URL),
   clientID: idamClient,
