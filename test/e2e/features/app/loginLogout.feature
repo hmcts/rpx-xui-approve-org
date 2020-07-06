@@ -1,4 +1,4 @@
-
+@fullfunctional
 Feature: Login
 
   Background:
@@ -10,7 +10,7 @@ Feature: Login
     Then I should be redirected to the Idam login page
     Then I should see failure error summary
 
-@all
+@all @crossbrowser
   Scenario: login and log out from approve organisation as HMCTS Admin user
     Given I am logged into approve organisation with HMCTS admin
     Then I should be redirected to approve organisation dashboard page

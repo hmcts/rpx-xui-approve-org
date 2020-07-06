@@ -2,9 +2,9 @@
 
 properties([
     [
-       $class       : 'GithubProjectProperty',
-        displayName  : 'Approve Organisations app',
-        projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org' 
+        $class       : 'GithubProjectProperty',
+        displayName  : 'Expert UI Approve Organisations',
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org'
     ],
     pipelineTriggers([
     cron('H 05 * * *')
@@ -15,15 +15,16 @@ properties([
 
 def type      = "nodejs"
 def product   = "xui"
-def component = "ao"
+def component = "webapp"
 def channel   = '#xui-pipeline'
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
-
+    enableSecurityScan()
     enableFullFunctionalTest(30)
-
-    env.TEST_URL = 'https://xui-ao-webapp-aat.service.core-compute-aat.internal/'
+    enableMutationTest()
+    enableCrossBrowserTest()
+    env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     after('checkout') {sh 'yarn cache clean'}
     after('build') {
         sh 'npm run build'
@@ -43,6 +44,16 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
+
+        sh 'yarn test:a11y'
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/a11y/",
+            reportFiles          : 'Report.html',
+            reportName           : 'Approve Org a11y Test Report'
+        ])
     }
 
     after('fullFunctionalTest') {
@@ -52,7 +63,29 @@ withNightlyPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "reports/tests/functional/",
             reportFiles          : 'index.html',
-            reportName           : 'XUI Manage Organisation Full functional Tests'
+            reportName           : 'XUI Approve Organisation Full functional Tests'
         ])
+    }
+
+    after('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Mutation tests'
+        ])
+    }
+
+    after('crossBrowserTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/crossbrowser/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Cross Browser Tests'
+      ])
     }
 }
