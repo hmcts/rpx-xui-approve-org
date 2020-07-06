@@ -102,6 +102,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     if (this.getShowOrgDetailsSubscription) {
       this.getShowOrgDetailsSubscription.unsubscribe();
     }
+    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({orgId: this.organisationId, showUserTab: false}));
   }
 }
 
