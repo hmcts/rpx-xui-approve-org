@@ -55,7 +55,7 @@ export class HeaderComponent implements OnInit {
                 href: '/profile'
             }, {
                 text: 'Sign out',
-                href: '/api/logout',
+                href: '/auth/logout',
                 emit: 'sign-out'
             }]
         };
