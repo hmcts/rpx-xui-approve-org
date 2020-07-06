@@ -410,18 +410,20 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@^2.20.1":
-  version "2.20.1"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.20.1.tgz#75693410e303baceccd018d19f5c5a200cafc691"
-  integrity sha512-VTQ79Kv+ZHvUAjYGDDRlCyMFWI2ZwklLKuGgSOVczeSww09vnNvQ/NBcqe9QKfex7FPmorbqJ9C10MMPZhwBrQ==
+"@hmcts/rpx-xui-node-lib@^2.22.1":
+  version "2.22.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.22.1.tgz#012afbbe57fa9f9b260f3ed90f49a34891180a99"
+  integrity sha512-9gyEauFWYNF65fHxnWRO/c6SvCV2neTATr2GfEvfgoS475AfPoxFeUHHH9JrOe5ydf7cX0QBGO29jb9vow8/ZA==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.18.0"
+    caller-path "^3.0.0"
     connect-redis "^4.0.4"
     debug "^4.1.1"
     deepmerge "^4.2.2"
     express "^4.17.1"
     express-session "^1.17.0"
+    jest-mock-axios "^4.2.0"
     jest-ts-auto-mock "^1.0.11"
     jwt-decode "^2.2.0"
     openid-client "^3.10.0"
@@ -2243,12 +2245,26 @@ caller-callsite@^2.0.0:
   dependencies:
     callsites "^2.0.0"
 
+caller-callsite@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/caller-callsite/-/caller-callsite-4.1.0.tgz#3e33cb1d910e7b09332d59a3503b9af7462f7295"
+  integrity sha512-99nnnGlJexTc41xwQTr+mWl15OI5PPczUJzM4YRE7QjkefMKCXGa5gfQjCOuVrD+1TjI/fevIDHg2nz3iYN5Ig==
+  dependencies:
+    callsites "^3.1.0"
+
 caller-path@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/caller-path/-/caller-path-2.0.0.tgz#468f83044e369ab2010fac5f06ceee15bb2cb1f4"
   integrity sha1-Ro+DBE42mrIBD6xfBs7uFbsssfQ=
   dependencies:
     caller-callsite "^2.0.0"
+
+caller-path@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/caller-path/-/caller-path-3.0.0.tgz#a13cbec75eea1b355e3f92dc0df4288b7eebdc5f"
+  integrity sha512-8nvMBmBgTmEfAXywJf27jbPZlURi5xUWLwkTXa3hZFcEZa5iRnMP4sF0p00CstWNHKBENVyYWDRSByNRdshdgQ==
+  dependencies:
+    caller-callsite "^4.1.0"
 
 callsite@1.0.0:
   version "1.0.0"
@@ -2259,6 +2275,11 @@ callsites@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/callsites/-/callsites-2.0.0.tgz#06eb84f00eea413da86affefacbffb36093b3c50"
   integrity sha1-BuuE8A7qQT2oav/vrL/7Ngk7PFA=
+
+callsites@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/callsites/-/callsites-3.1.0.tgz#b3630abd8943432f54b3f0519238e33cd7df2f73"
+  integrity sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==
 
 camelcase-keys@^2.0.0:
   version "2.1.0"
@@ -6065,6 +6086,13 @@ jasminewd2@^2.1.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/jasminewd2/-/jasminewd2-2.2.0.tgz#e37cf0b17f199cce23bea71b2039395246b4ec4e"
   integrity sha1-43zwsX8ZnM4jvqcbIDk5Uka07E4=
+
+jest-mock-axios@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/jest-mock-axios/-/jest-mock-axios-4.2.0.tgz#65d487b66157c1cadd39b71b3102eaea691c7f2e"
+  integrity sha512-tGvXQLfC0xmRo+EUpmAapsbWXh/83y82sPsZbePj2SsCIMvAsN0okARTOjbuYYffddF7YoQwaJ8++wGsslh3Xw==
+  dependencies:
+    synchronous-promise "^2.0.10"
 
 jest-ts-auto-mock@^1.0.11:
   version "1.0.11"
@@ -10172,6 +10200,11 @@ symbol-observable@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.2.0.tgz#c22688aed4eab3cdc2dfeacbb561660560a00804"
   integrity sha512-e900nM8RRtGhlV36KGEU9k65K3mPb1WV70OdjfxlG2EAuM1noi/E/BaW/uMhL7bPEssK8QV57vN3esixjUvcXQ==
+
+synchronous-promise@^2.0.10:
+  version "2.0.13"
+  resolved "https://registry.yarnpkg.com/synchronous-promise/-/synchronous-promise-2.0.13.tgz#9d8c165ddee69c5a6542862b405bc50095926702"
+  integrity sha512-R9N6uDkVsghHePKh1TEqbnLddO2IY25OcsksyFp/qBe7XYd0PVbKEWxhcdMhpLzE1I6skj5l4aEZ3CRxcbArlA==
 
 tapable@^1.0.0, tapable@^1.1.0, tapable@^1.1.3:
   version "1.1.3"

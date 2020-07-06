@@ -36,6 +36,7 @@
 npm-debug.log
 yarn-error.log
 testem.log
+stryker.log
 /typings
 db.json
 /api/test/pact/logs
