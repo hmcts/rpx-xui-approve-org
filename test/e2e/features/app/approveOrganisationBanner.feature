@@ -1,4 +1,4 @@
-
+@fullfunctional
 Feature: Banner
 
   Background:
@@ -7,7 +7,7 @@ Feature: Banner
     Then I should be redirected to approve organisation dashboard page
     Then I Check the active Organisation banner appear
 
-@all
+@all @crossbrowser
   Scenario: Verify the Banner on Approve Organisation
     Then I Verify the Text on Banner
 

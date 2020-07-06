@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs';
   selector: 'app-back-link',
   templateUrl: './back-link.component.html'
 })
-
 export class BackLinkComponent implements OnInit, OnDestroy {
   @Input() public store: Store<fromOrganisationPendingStore.OrganisationRootState>;
 

@@ -42,7 +42,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
   enableDockerBuild()
   loadVaultSecrets(secrets)
   setVaultName(vault)
-  installCharts()
+ // installCharts()
 
 
     after('checkout') {sh 'yarn cache clean'}

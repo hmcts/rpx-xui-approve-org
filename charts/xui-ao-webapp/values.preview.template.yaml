@@ -9,5 +9,10 @@ nodejs:
     FEATURE_SECURE_COOKIE_ENABLED: false
     FEATURE_OIDC_ENABLED: true
     REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
+  keyVaults:
+    rpx:
+      secrets:
+        - ao-s2s-client-secret
+        - ao-idam-client-secret
 redis:
   enabled: true

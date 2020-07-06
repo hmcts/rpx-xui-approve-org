@@ -48,6 +48,7 @@ withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     enableAksStagingDeployment()
+    disableLegacyDeployment()
 
 // Disable pact testing on pipeline
 //
@@ -109,6 +110,25 @@ withPipeline(type, product, component) {
             reportName           : "ng coverage tests"
         ])
 
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Mutation tests'
+        ])
+
+        sh 'yarn test:a11y'
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/a11y/",
+            reportFiles          : 'Report.html',
+            reportName           : 'Approve Org a11y Test Report'
+        ])
+
     }
 
     after('smoketest:demo') {
@@ -127,7 +147,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/smoke_tests/functional/",
+            reportDir            : "reports/tests/smoke/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
@@ -150,7 +170,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/smoke_tests/functional/",
+            reportDir            : "reports/tests/smoke/",
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])
