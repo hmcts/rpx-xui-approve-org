@@ -19,11 +19,18 @@ const logger = log4jui.getLogger('service auth')
 // TODO: process.env should all be located in configuration
 export async function postS2SLease() {
   let response: AxiosResponse<any>
+  const axiosInstance = http({
+    session: {
+      auth: {
+        token: '',
+      },
+    },
+  } as unknown as express.Request)
 
   try {
     const oneTimePassword = otp({secret: s2sSecret}).totp()
     logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)
-    response = await http.post(`${url}/lease`, {
+    response = await axiosInstance.post(`${url}/lease`, {
       microservice,
       oneTimePassword,
     })
@@ -48,10 +55,10 @@ export async function postS2SLease() {
 export const router = express.Router({ mergeParams: true })
 
 router.get('/health', (req, res, next) => {
-    res.status(200).send('Approve Org is up.')
+    res.status(200).send(getHealth(url, req))
 })
 
 router.get('/info', (req, res, next) => {
-    res.status(200).send(getInfo(url))
+    res.status(200).send(getInfo(url, req))
 })
 export default router

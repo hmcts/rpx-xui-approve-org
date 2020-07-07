@@ -10,9 +10,11 @@
  * contain any additional constants. They are grouped as a representation of the .yaml structure.
  */
 export const ENVIRONMENT = 'environment'
+export const SERVICES_ISS_PATH = 'iss'
 
 export const COOKIE_TOKEN = 'cookies.token'
 export const COOKIES_USERID = 'cookies.userId'
+export const COOKIE_ROLES = 'cookies.roles'
 
 export const MAX_LINES = 'exceptionOptions.maxLines'
 
@@ -46,6 +48,7 @@ export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled'
 export const FEATURE_PROXY_ENABLED = 'proxyEnabled'
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled'
 export const FEATURE_REDIS_ENABLED = 'redisEnabled'
+export const FEATURE_OIDC_ENABLED = 'oidcEnabled'
 
 export const HELMET = 'helmet'
 
@@ -53,3 +56,5 @@ export const HELMET = 'helmet'
 export const REDISCLOUD_URL = 'secrets.rpx.ao-webapp-redis-connection-string'
 export const REDIS_TTL = 'redis.ttl'
 export const REDIS_KEY_PREFIX = 'redis.prefix'
+
+export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'

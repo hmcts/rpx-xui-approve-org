@@ -1,4 +1,4 @@
-
+@fullfunctional
 Feature: Search Organisation
 
     Background:

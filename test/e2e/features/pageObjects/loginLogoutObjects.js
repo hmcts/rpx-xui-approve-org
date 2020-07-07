@@ -1,6 +1,7 @@
 'use strict';
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
+const BrowserWaits = require('../../support/customWaits');
 
 function loginLogoutObjects() {
 
@@ -11,6 +12,18 @@ function loginLogoutObjects() {
   this.signOutlink = element(by.xpath("//a[@class='hmcts-header__navigation-link']"));
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
   this.dashboard_header= element(by.css("[class='hmcts-header__link']"));
+
+
+  this.getEmailFieldValue = async function(){
+    return await this.emailAddress.getAttribute('value'); 
+  }
+
+  this.loginWithCredentials = async function (username,password) {
+    await BrowserWaits.waitForElement(this.emailAddress);
+    await this.enterUrEmail(username);
+    await this.enterPassword(password);
+    await this.clickSignIn();
+  };
 
 
   this.givenIAmLoggedIn = async function () {

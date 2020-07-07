@@ -98,7 +98,7 @@ describe('AppUtils', () => {
       firstName: 'hello',
       lastName: 'world',
       email: 'test@test.com',
-      idamStatus: 'ACTIVE',
+      idamStatus: 'PENDING',
       idamStatusCode: 'code',
       idamMessage: 'message',
       roles: ['pui-case-manager', 'pui-user-manager']
@@ -106,9 +106,11 @@ describe('AppUtils', () => {
 
     const mockUserResult: User[] = [{
       fullName: 'hello world',
+      firstName: 'hello',
+      lastName: 'world',
       email: 'test@test.com',
-      resendInvite: false,
-      status: 'Active',
+      status: 'Pending',
+      resendInvite: true,
       ['manageCases']: 'Yes',
       ['manageUsers']: 'Yes',
       ['manageOrganisations']: 'No'
@@ -117,5 +119,15 @@ describe('AppUtils', () => {
     expect(AppUtils.mapUsers(mockUser)).toEqual(mockUserResult);
   });
 
+  it('should return 500 error org url', () => {
+    expect(AppUtils.get500Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
+  });
 
+  it('should return 400 error org url', () => {
+    expect(AppUtils.get400Error('dummy').errors[0].url).toEqual('/organisation-details/dummy');
+  });
+
+  it('should return 404 error org url', () => {
+    expect(AppUtils.get404Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
+  });
  });

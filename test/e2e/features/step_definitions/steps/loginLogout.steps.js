@@ -95,10 +95,28 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given(/^I am logged into approve organisation with HMCTS admin$/, async function () {
-    await browserWaits.waitForElement(loginPage.emailAddress);
-    await loginPage.emailAddress.sendKeys(this.config.username);
-    await loginPage.password.sendKeys(this.config.password);
-    await loginPage.clickSignIn();
+    await loginPage.loginWithCredentials(this.config.username, this.config.password);
+    browser.sleep(SHORT_DELAY);
+    try{
+      await browserWaits.waitForstalenessOf(loginPage.emailAddress,5);
+    }catch(err){ 
+      let emailFieldValue = await loginPage.getEmailFieldValue();
+      if (!emailFieldValue.includes(this.config.username)){
+        console.log(err+" email field is still present with empty value indicating  Login page reloaded due to EUI-1856 ");
+        this.attach(err +" email field is still present with empty value indicating Login page reloaded due to EUI-1856 ");
+        await loginPage.loginWithCredentials(this.config.username, this.config.password);
+      }
+    }
+  });
+
+  Given(/^I am logged into approve organisation with approver prd admin$/, async function () {
+    await loginPage.loginWithCredentials(config.config.params.approver_username, config.config.params.approver_password);
+    browser.sleep(LONG_DELAY);
+    // await browserWaits.waitForElement(headerPage.signOut);
+  });
+
+  Given(/^I am logged into approve organisation with non approver prd admin$/, async function () {
+    await loginPage.loginWithCredentials(this.config.username, this.config.password);
     browser.sleep(LONG_DELAY);
     // await browserWaits.waitForElement(headerPage.signOut);
   });

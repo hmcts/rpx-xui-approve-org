@@ -2,7 +2,8 @@
   "environment": "NODE_CONFIG_ENV",
   "cookies": {
     "token": "COOKIE_TOKEN",
-    "userId": "COOKIE_USER_ID"
+    "userId": "COOKIE_USER_ID",
+    "roles":  "COOKIE_ROLES"
   },
   "exceptionOptions": {
     "maxLines": "EXCEPTION_OPTIONS_MAX_LINES"
@@ -27,6 +28,8 @@
     "feeAndPayApi": "FEE_AND_PAY_API",
     "s2s": "S2S_SERVICE"
   },
+  "userTimeoutInSeconds": "USER_TIMEOUT_IN_SECONDS",
+  "iss": "ISS_SERVICE",
   "sessionSecret": "SESSION_SECRET",
   "secrets": {
     "rpx": {
@@ -56,6 +59,10 @@
     "redisEnabled": {
       "__name": "FEATURE_REDIS_ENABLED",
       "__format": "json"
+    },
+    "oidcEnabled": {
+      "__name": "FEATURE_OIDC_ENABLED",
+      "__format":"json"
     }
   },
   "helmet": {
