@@ -279,4 +279,5 @@ app.use(attach) // its called in routes.ts - no need to call it here
  * Secure Routes
  *
  */
+console.log('force PR')
 app.use('/api', routes)
