@@ -1,0 +1,3 @@
+nodejs:
+    environment:
+      FEATURE_OIDC_ENABLED: true
