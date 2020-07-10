@@ -14,6 +14,7 @@ router.get('/config', environmentRoute)
  */
 function environmentRoute(req, res) {
 
+  logger.info('Calling environmentRoute function...')
   if (!req.session.env) {
     req.session.env = true
     return req.session.save(() => {
