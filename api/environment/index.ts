@@ -16,6 +16,7 @@ function environmentRoute(req, res) {
 
   logger.info('Calling environmentRoute function...')
   if (!req.session.env) {
+    logger.info('Set req.session.env to true...')
     req.session.env = true
     return req.session.save(() => {
       logger.info('new session saved! ', req.session.id)
