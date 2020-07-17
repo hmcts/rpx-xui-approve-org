@@ -1649,11 +1649,6 @@ assertion-error-formatter@^2.0.1:
     pad-right "^0.2.2"
     repeat-string "^1.6.1"
 
-assertion-error@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.0.0.tgz#c7f85438fdd466bc7ca16ab90c81513797a5d23b"
-  integrity sha1-x/hUOP3UZrx8oWq5DIFRN5el0js=
-
 assertion-error@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/assertion-error/-/assertion-error-1.1.0.tgz#e60b6b0e8f301bd97e5375215bda406c85118c0b"
@@ -7192,11 +7187,6 @@ merge-descriptors@1.0.1:
   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
   integrity sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E=
 
-merge-recursive@0.0.3:
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/merge-recursive/-/merge-recursive-0.0.3.tgz#de7901efcaecc906d8cab2ad1e9c470f5a3dae84"
-  integrity sha1-3nkB78rsyQbYyrKtHpxHD1o9roQ=
-
 method-override@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/method-override/-/method-override-3.0.0.tgz#6ab0d5d574e3208f15b0c9cf45ab52000468d7a2"
@@ -7924,13 +7914,6 @@ number-is-nan@^1.0.0:
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
   integrity sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=
 
-oath@latest:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/oath/-/oath-1.0.0.tgz#2f4e1f7797b903a78b243527dc68245b0aeb0d58"
-  integrity sha1-L04fd5e5A6eLJDUn3GgkWwrrDVg=
-  dependencies:
-    simple-assert "~1.0.0"
-
 oauth-sign@~0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.8.2.tgz#46a6ab7f0aead8deae9ec0565780b7d4efeb9d43"
@@ -8071,9 +8054,9 @@ open@^7.0.2:
     is-wsl "^2.1.1"
 
 openid-client@^3.10.0, openid-client@^3.14.2:
-  version "3.15.7"
-  resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-3.15.7.tgz#bd16bfc83c573b06287e2fcbc145cd4800cb1805"
-  integrity sha512-oLmeqR3Z0hiCIsyD0ByzrSH34rfR4+XTlknzgfT4EoWFS5arjiu/5IE2UUOOuV2tg58HjU31/zLtlizw0vKyog==
+  version "3.15.8"
+  resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-3.15.8.tgz#dda61db1946e2fa35be9c633c88e59c16a76aabb"
+  integrity sha512-3GZWg9vO1vrdz60anD1LTuUyyhwpA3eqwf3Ax1Gj3AjPl+cG8aD/6Y4eyDpOlQN7iWQcGLsqMU2xBxlH4r+xEQ==
   dependencies:
     "@types/got" "^9.6.9"
     base64url "^3.0.1"
@@ -9611,13 +9594,6 @@ scss-tokenizer@^0.2.3:
     js-base64 "^2.1.8"
     source-map "^0.4.2"
 
-sechash@~0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/sechash/-/sechash-0.2.1.tgz#8b71fe47d68272f47a35f1640e4cc921325b133b"
-  integrity sha1-i3H+R9aCcvR6NfFkDkzJITJbEzs=
-  dependencies:
-    oath latest
-
 seed-random@~2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/seed-random/-/seed-random-2.2.0.tgz#2a9b19e250a817099231a5b99a4daf80b7fbed54"
@@ -9876,14 +9852,6 @@ shimmer@^1.1.0, shimmer@^1.2.0:
   resolved "https://registry.yarnpkg.com/shimmer/-/shimmer-1.2.1.tgz#610859f7de327b587efebf501fb43117f9aff337"
   integrity sha512-sQTKC1Re/rM6XyFM6fIAGHRPVGvyXfgzIDvzoq608vM+jeyVD0Tu1E6Np0Kc2zAIFWIj963V2800iF/9LPieQw==
 
-short-id@0.1.0-1:
-  version "0.1.0-1"
-  resolved "https://registry.yarnpkg.com/short-id/-/short-id-0.1.0-1.tgz#a4c0f3537fff4623ff84964882b5d43019a24095"
-  integrity sha1-pMDzU3//RiP/hJZIgrXUMBmiQJU=
-  dependencies:
-    merge-recursive "0.0.3"
-    sechash "~0.2.1"
-
 shortid@^2.2.14:
   version "2.2.15"
   resolved "https://registry.yarnpkg.com/shortid/-/shortid-2.2.15.tgz#2b902eaa93a69b11120373cd42a1f1fe4437c122"
@@ -9902,13 +9870,6 @@ silent-error@^1.0.0:
   integrity sha512-n4iEKyNcg4v6/jpb3c0/iyH2G1nzUNl7Gpqtn/mHIJK9S/q/7MCfoO4rwVOoO59qPFIc0hVHvMbiOJ0NdtxKKw==
   dependencies:
     debug "^2.2.0"
-
-simple-assert@~1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/simple-assert/-/simple-assert-1.0.0.tgz#53f1790000d714424124290780bc2a3e511cf0ef"
-  integrity sha1-U/F5AADXFEJBJCkHgLwqPlEc8O8=
-  dependencies:
-    assertion-error "1.0.0"
 
 simple-swizzle@^0.2.2:
   version "0.2.2"
