@@ -94,7 +94,10 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   });
 
+  let loginAttempts = 0;
+  let firstAttemptFailedLogins = 0;
   Given(/^I am logged into approve organisation with HMCTS admin$/, async function () {
+    loginAttempts ++;
     await loginPage.loginWithCredentials(this.config.username, this.config.password);
     browser.sleep(SHORT_DELAY);
     try{
@@ -102,11 +105,14 @@ defineSupportCode(function ({ Given, When, Then }) {
     }catch(err){ 
       let emailFieldValue = await loginPage.getEmailFieldValue();
       if (!emailFieldValue.includes(this.config.username)){
+        firstAttemptFailedLogins++;
         console.log(err+" email field is still present with empty value indicating  Login page reloaded due to EUI-1856 ");
         this.attach(err +" email field is still present with empty value indicating Login page reloaded due to EUI-1856 ");
         await loginPage.loginWithCredentials(this.config.username, this.config.password);
       }
     }
+
+    console.log("failed Fitst attempt / total logins: " + firstAttemptFailedLogins + "/" + loginAttempts);
   });
 
   Given(/^I am logged into approve organisation with approver prd admin$/, async function () {
