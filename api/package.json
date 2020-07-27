@@ -38,8 +38,5 @@
   },
   "devDependencies": {
     "webpack-cli": "^3.3.11"
-  },
-  "dependencies": {
-    "csurf": "^1.11.0"
   }
 }
