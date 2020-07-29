@@ -138,6 +138,16 @@ export function reducer(
       };
     }
 
+    // TODO: Unit test
+    case fromActions.OrgActionTypes.DELETE_ORGANISATION: {
+      const orgForReview = action.payload;
+      return {
+        ...state,
+        orgForReview,
+        errorMessage: ''
+      };
+    }
+
     case fromActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS: {
       const approvedOrg =  {
         ...action.payload,

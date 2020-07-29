@@ -114,4 +114,20 @@ export class OrganisationEffects {
       return new fromRoot.Go({ path: ['/approve-organisations'] });
     })
   );
+
+  /**
+   * Navigate to Delete Organisation page.
+   *
+   * The User should be able to delete a pending organisations where there are duplicate requests for the same organisation
+   * or, errors with the organisations details and so a new request needs to be submitted.
+   *
+   * TODO: Unit test
+   */
+  @Effect()
+  public navToDeleteOrganisation$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.DELETE_ORGANISATION),
+    map(() => {
+      return new fromRoot.Go({ path: ['/delete-organisation'] });
+    })
+  );
 }
