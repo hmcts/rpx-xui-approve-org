@@ -84,6 +84,31 @@ export class OrganisationEffects {
   );
 
   @Effect()
+  public deletePendingOrg$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.DELETE_PENDING_ORGANISATION),
+    map((action: pendingOrgActions.DeletePendingOrganisation) => action.payload),
+    switchMap(organisation => {
+
+      console.log(organisation);
+
+      const pendingOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
+
+      return this.pendingOrgService.deletePendingOrganisations(pendingOrganisation).pipe(
+        map(response => {
+          this.loggerService.log('Deleted Organisation successfully');
+          debugger;
+          // return new pendingOrgActions.ApprovePendingOrganisationsSuccess(organisation);
+        }),
+        catchError((error: Error) => {
+         this.loggerService.error(error.message);
+          debugger;
+         // return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
   public approvePendingOrgsSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS),
     map(() => {
@@ -117,6 +142,8 @@ export class OrganisationEffects {
 
   /**
    * Navigate to Delete Organisation page.
+   *
+   * Navigates the User to Delete Organisation, and stores the Organisation in the Store, to be worked on.
    *
    * The User should be able to delete a pending organisations where there are duplicate requests for the same organisation
    * or, errors with the organisations details and so a new request needs to be submitted.

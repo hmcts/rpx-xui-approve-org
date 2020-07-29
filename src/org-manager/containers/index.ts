@@ -7,6 +7,7 @@ import { ReinviteUserSuccessComponent } from './reinvite-user-success/reinvite-u
 import { ReinviteUserComponent } from './reinvite-user/reinvite-user.component';
 import { SearchOrganisationsFormComponent } from './search-organisations-form/search-organisations-form.component';
 import { UserDetailsComponent } from './user-details/user-details.component';
+import { DeleteOrganisationComponent } from './delete-organisation/delete-organisation.component';
 
 export const containers: any[] = [
   ActiveOrganisationsComponent,
@@ -17,7 +18,8 @@ export const containers: any[] = [
   EditDetailsComponent,
   ReinviteUserComponent,
   ReinviteUserSuccessComponent,
-  UserDetailsComponent
+  UserDetailsComponent,
+  DeleteOrganisationComponent,
 ];
 
 export * from './active-organisations/active-organisations.component';
