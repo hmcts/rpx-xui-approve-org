@@ -11,6 +11,7 @@ import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success
 import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
 import { UserDetailsComponent } from './containers/user-details/user-details.component';
 import { UserApprovalGuard } from './guards/users-approval.guard';
+import { DeleteOrganisationComponent } from './containers/delete-organisation/delete-organisation.component';
 
 export const ROUTES: Routes = [
   {
@@ -36,6 +37,11 @@ export const ROUTES: Routes = [
   {
     path: 'approve-organisations-success',
     component: ApproveOrganisationSuccessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'delete-organisation',
+    component: DeleteOrganisationComponent,
     canActivate: [AuthGuard],
   },
   {

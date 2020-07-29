@@ -25,5 +25,8 @@ export class PendingOrganisationService {
     return this.http.put<Response>(this.orgApprovePendingUrl + payload.organisationIdentifier, payload);
   }
 
+  public deletePendingOrganisations(payload: Organisation): Observable<Response> {
+    return this.http.delete<Response>(this.orgApprovePendingUrl + payload.organisationIdentifier, payload);
+  }
 }
 
