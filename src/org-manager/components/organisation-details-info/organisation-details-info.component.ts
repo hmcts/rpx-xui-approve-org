@@ -12,6 +12,7 @@ export class OrganisationDetailsInfoComponent {
 
   @Input() public org: OrganisationVM;
   @Output() public approveEvent: EventEmitter<OrganisationVM> = new EventEmitter();
+  @Output() public deleteEvent: EventEmitter<OrganisationVM> = new EventEmitter();
 
   constructor() {}
 
@@ -21,5 +22,16 @@ export class OrganisationDetailsInfoComponent {
     }
   }
 
+  /**
+   * TODO: Requires unit test.
+   * TODO: Should take the User to a 'Delete this registration request' page.
+   *
+   * @param { OrganisationVM } data
+   */
+  public deleteOrganisation(data: OrganisationVM) {
+    if (data) {
+      this.deleteEvent.emit(data);
+    }
+  }
 }
 

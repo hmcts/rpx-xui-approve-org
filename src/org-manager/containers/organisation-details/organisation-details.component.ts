@@ -84,6 +84,13 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  public deleteOrganisation(data: OrganisationVM) {
+    if (data) {
+      console.log('orgnisation-details.component.ts deleteOrganisation()');
+      this.store.dispatch(new fromStore.DeleteOrganisation(data));
+    }
+  }
+
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
     this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({orgId: this.organisationId, showUserTab: showUsers}));

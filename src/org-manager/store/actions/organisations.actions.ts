@@ -13,6 +13,7 @@ export enum OrgActionTypes {
     LOAD_ORGANISATION_USERS_SUCCESS = '[Organisations] Load Single Organisation Success',
     LOAD_ORGANISATION_USERS_FAIL = '[Organisations] Load Single Organisation Fail',
     ADD_REVIEW_ORGANISATIONS = '[Pending Organisations] Add to Review Organisations',
+    DELETE_ORGANISATION = '[Pending Organisations] Delete an Organisation',
     DISPLAY_ERROR_MESSAGE_ORGANISATIONS = '[Pending Organisations] Display Error message Organisations',
     APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
     APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
@@ -52,6 +53,13 @@ export class AddReviewOrganisations implements Action {
   public readonly type = OrgActionTypes.ADD_REVIEW_ORGANISATIONS;
 
     constructor(public payload: OrganisationVM) { }
+}
+
+// TODO: Unit test
+export class DeleteOrganisation implements Action {
+  public readonly type = OrgActionTypes.DELETE_ORGANISATION;
+
+  constructor(public payload: OrganisationVM) { }
 }
 
 export class DisplayErrorMessageOrganisations implements Action {
@@ -154,6 +162,7 @@ export type OrganisationsActions =
     | LoadPendingOrganisationsSuccess
     | LoadPendingOrganisationsFail
     | AddReviewOrganisations
+    | DeleteOrganisation
     | DisplayErrorMessageOrganisations
     | ApprovePendingOrganisations
     | ApprovePendingOrganisationsSuccess
