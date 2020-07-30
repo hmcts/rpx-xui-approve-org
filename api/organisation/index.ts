@@ -78,23 +78,25 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
 
 // TODO: Should we be sending back a 500 for every error from this API, probably not.
 // TODO: When this returns, only then should we send a 200 back to the frontend. resource deleted successfully.
+// TODO: Should send back a proper error message to the UI.
 async function handleDeleteOrganisationRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
-  console.log('handleDeleteOrganisationRoute');
+  console.log('handleDeleteOrganisationRoute')
+  console.log(req.params.id)
   res.status(200).send({value: 'handleDeleteOrganisationRoute hit'})
-  // if (!req.params.id) {
-  //   res.status(400).send('Organisation id is missing')
-  // } else {
-  //   try {
-  //     const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
-  //     await req.http.delete(putOrganisationsUrl, req.body)
-  //     res.status(200).send()
-  //   } catch (error) {
-  //     console.error(error)
-  //     const errReport = { apiError: error.data.message, apiStatusCode: error.status,
-  //       message: 'handlePutOrganisationRoute error' }
-  //     res.status(500).send(errReport)
-  //   }
-  // }
+  if (!req.params.id) {
+    res.status(400).send('Organisation id is missing')
+  } else {
+    try {
+      const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
+      await req.http.delete(putOrganisationsUrl, req.body)
+      res.status(200).send()
+    } catch (error) {
+      console.error(error)
+      const errReport = { apiError: error.data.message, apiStatusCode: error.status,
+        message: 'handlePutOrganisationRoute error' }
+      res.status(500).send(errReport)
+    }
+  }
 }
 
 export const router = express.Router({ mergeParams: true })
