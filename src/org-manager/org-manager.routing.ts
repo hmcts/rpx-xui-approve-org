@@ -12,6 +12,7 @@ import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.
 import { UserDetailsComponent } from './containers/user-details/user-details.component';
 import { UserApprovalGuard } from './guards/users-approval.guard';
 import { DeleteOrganisationComponent } from './containers/delete-organisation/delete-organisation.component';
+import {DeleteOrganisationSuccessComponent} from './containers/delete-organisation-success/delete-organisation-success.component';
 
 export const ROUTES: Routes = [
   {
@@ -42,6 +43,11 @@ export const ROUTES: Routes = [
   {
     path: 'delete-organisation',
     component: DeleteOrganisationComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'delete-organisation-success',
+    component: DeleteOrganisationSuccessComponent,
     canActivate: [AuthGuard],
   },
   {
