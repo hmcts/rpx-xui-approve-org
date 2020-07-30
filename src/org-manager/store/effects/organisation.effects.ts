@@ -9,6 +9,7 @@ import { AppUtils } from '../../../app/utils/app-utils';
 import {OrganisationService, PbaAccountDetails} from '../../services';
 import * as fromActions from '../actions';
 import * as pendingOrgActions from '../actions/organisations.actions';
+import {DeletePendingOrganisationSuccess} from '../actions/organisations.actions';
 
 @Injectable()
 export class OrganisationEffects {
@@ -96,13 +97,15 @@ export class OrganisationEffects {
       return this.pendingOrgService.deletePendingOrganisations(pendingOrganisation).pipe(
         map(response => {
           this.loggerService.log('Deleted Organisation successfully');
+          console.log('Deleted Organisation successfully');
           debugger;
-          // return new pendingOrgActions.ApprovePendingOrganisationsSuccess(organisation);
+          return new pendingOrgActions.DeletePendingOrganisationSuccess(organisation);
         }),
         catchError((error: Error) => {
          this.loggerService.error(error.message);
+         console.log(error);
           debugger;
-         // return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
+         return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
         })
       );
     })
@@ -155,6 +158,14 @@ export class OrganisationEffects {
     ofType(pendingOrgActions.OrgActionTypes.DELETE_ORGANISATION),
     map(() => {
       return new fromRoot.Go({ path: ['/delete-organisation'] });
+    })
+  );
+
+  @Effect()
+  public deletePendingOrgSuccess$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS),
+    map(() => {
+      return new fromRoot.Go({ path: ['/delete-organisations-success'] });
     })
   );
 }

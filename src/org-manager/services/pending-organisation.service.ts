@@ -10,6 +10,7 @@ export class PendingOrganisationService {
   public singleOrgUrl = environment.singleOrgUrl;
   public orgPendingUrl = environment.orgPendingUrl;
   public orgApprovePendingUrl = environment.orgApprovePendingUrl;
+
   constructor(private readonly http: HttpClient) {
   }
 
@@ -26,7 +27,7 @@ export class PendingOrganisationService {
   }
 
   public deletePendingOrganisations(payload: Organisation): Observable<Response> {
-    return this.http.delete<Response>(this.orgApprovePendingUrl + payload.organisationIdentifier, payload);
+    return this.http.delete<Response>(this.orgApprovePendingUrl + payload.organisationIdentifier);
   }
 }
 

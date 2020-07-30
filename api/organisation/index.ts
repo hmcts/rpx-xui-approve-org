@@ -77,8 +77,10 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
 }
 
 // TODO: Should we be sending back a 500 for every error from this API, probably not.
+// TODO: When this returns, only then should we send a 200 back to the frontend. resource deleted successfully.
 async function handleDeleteOrganisationRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
-  res.status(200).send('handleDeleteOrganisationRoute hit')
+  console.log('handleDeleteOrganisationRoute');
+  res.status(200).send({value: 'handleDeleteOrganisationRoute hit'})
   // if (!req.params.id) {
   //   res.status(400).send('Organisation id is missing')
   // } else {
