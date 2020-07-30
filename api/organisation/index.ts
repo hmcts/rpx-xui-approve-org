@@ -76,27 +76,43 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
     }
 }
 
-// TODO: Should we be sending back a 500 for every error from this API, probably not.
-// TODO: When this returns, only then should we send a 200 back to the frontend. resource deleted successfully.
-// TODO: Should send back a proper error message to the UI.
+/**
+ * Handle Delete Organisation Route
+ *
+ * Request to PRD Api to delete an organisation.
+ *
+ * Note that currently the DELETE method on the PRD api is not available. Please see the JIRA ticket EUI-1340 - we're asking
+ * PRD the status of the DELETE method. [30 Jul 2020]
+ *
+ * Therefore we're going to mock the PRD Api return status codes in this function, so that we can code against them in the UI layer.
+ *
+ * TODO: Error codes: We should send back proper error codes to the UI, not just a 500.
+ * TODO: Hook into the PRD Api DELETE method once it's available.
+ *
+ * @ref https://tools.hmcts.net/jira/browse/EUI-1340
+ *
+ * @return {Promise<void>}
+ */
 async function handleDeleteOrganisationRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
-  console.log('handleDeleteOrganisationRoute')
-  console.log(req.params.id)
-  res.status(200).send({value: 'handleDeleteOrganisationRoute hit'})
-  if (!req.params.id) {
-    res.status(400).send('Organisation id is missing')
-  } else {
-    try {
-      const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
-      await req.http.delete(putOrganisationsUrl, req.body)
-      res.status(200).send()
-    } catch (error) {
-      console.error(error)
-      const errReport = { apiError: error.data.message, apiStatusCode: error.status,
-        message: 'handlePutOrganisationRoute error' }
-      res.status(500).send(errReport)
-    }
-  }
+
+  // Hard coded response for now.
+  res.status(200).send({value: 'Mock success message, soon to be supplied by PRD. [30th July 2020]'})
+
+  // TODO: To hook into PRD DELETE Method
+  // if (!req.params.id) {
+  //   res.status(400).send('Organisation id is missing')
+  // } else {
+  //   try {
+  //     const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
+  //     await req.http.delete(putOrganisationsUrl, req.body)
+  //     res.status(200).send('Resource deleted successfully')
+  //   } catch (error) {
+  //     console.error(error)
+  //     const errReport = { apiError: error.data.message, apiStatusCode: error.status,
+  //       message: 'handlePutOrganisationRoute error' }
+  //     res.status(500).send(errReport)
+  //   }
+  // }
 }
 
 export const router = express.Router({ mergeParams: true })

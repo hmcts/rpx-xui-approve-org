@@ -98,7 +98,6 @@ export class OrganisationEffects {
         map(response => {
           this.loggerService.log('Deleted Organisation successfully');
           console.log('Deleted Organisation successfully');
-          debugger;
           return new pendingOrgActions.DeletePendingOrganisationSuccess(organisation);
         }),
         catchError((error: Error) => {
@@ -161,11 +160,17 @@ export class OrganisationEffects {
     })
   );
 
+  /**
+   * Navigate to the Delete Organisation Success page, on successfully deletion of an organisation
+   * from PRD.
+   */
   @Effect()
   public deletePendingOrgSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS),
     map(() => {
-      return new fromRoot.Go({ path: ['/delete-organisations-success'] });
+      return new fromRoot.Go({ path: ['/delete-organisation-success'] });
     })
   );
+
+  // TODO: Add Error Handling path for Delete Organisation Error Page.
 }
