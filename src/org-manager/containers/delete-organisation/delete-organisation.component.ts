@@ -15,7 +15,8 @@ import { DeletePendingOrganisation } from '../../store/actions/organisations.act
 export class DeleteOrganisationComponent implements OnInit {
     orgForReview: OrganisationVM | null;
     // serverResponseMessages$: Observable<any>;
-    disabled = true;
+    public confirmButtonDisabled = false;
+
     constructor(
         public store: Store<fromOrganisationPendingStore.OrganisationRootState>
     ) { }
@@ -40,7 +41,7 @@ export class DeleteOrganisationComponent implements OnInit {
         console.log('orgForReview');
         console.log(orgForReview);
         this.store.dispatch(new fromOrganisationPendingStore.DeletePendingOrganisation(orgForReview));
-        this.disabled = false;
+        // this.disabled = false;
     }
 
 }

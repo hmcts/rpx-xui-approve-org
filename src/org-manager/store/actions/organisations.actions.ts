@@ -19,6 +19,7 @@ export enum OrgActionTypes {
     APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
     APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
     DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
+    DELETE_PENDING_ORGANISATION_SUCCESS = '[Pending Organisations] Delete Pending Organisation Success',
     CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
     UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Active Organisations Search String',
     UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
@@ -86,6 +87,11 @@ export class ApprovePendingOrganisationsFail implements Action {
 
 export class DeletePendingOrganisation implements Action {
   public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION;
+  constructor(public payload: OrganisationVM) { }
+}
+
+export class DeletePendingOrganisationSuccess implements Action {
+  public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS;
   constructor(public payload: OrganisationVM) { }
 }
 
