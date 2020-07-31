@@ -42,4 +42,11 @@ describe('PrivacyPolicyComponent', () => {
     await fixture.whenStable();
     expect(documenentQuery).toHaveBeenCalledWith('#overview');
   });
+
+  it('should resubscribe on clickout', async () => {
+    const documentQuery = spyOn(document, 'querySelector').and.callThrough();
+    component.clickout(null);
+    await fixture.whenStable();
+    expect(documentQuery).toHaveBeenCalledWith('#overview');
+  });
 });

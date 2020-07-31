@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
@@ -8,26 +8,26 @@ import { Subscription } from 'rxjs';
 })
 export class PrivacyPolicyComponent implements OnInit {
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private readonly route: ActivatedRoute) { }
 
   private subscription: Subscription;
 
-  ngOnInit() {
+  public ngOnInit() {
     this.subscription = this.route.fragment.subscribe(fragment => {
       try {
-        document.querySelector('#' + fragment).scrollIntoView();
+        document.querySelector(`#${fragment}`).scrollIntoView();
       } catch (e) { }
     });
   }
 
   @HostListener('document:click', ['$event'])
-  clickout(event) {
+  public clickout(event) {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
     this.subscription = this.route.fragment.subscribe(fragment => {
       try {
-        document.querySelector('#' + fragment).scrollIntoView();
+        document.querySelector(`#${fragment}`).scrollIntoView();
       } catch (e) { }
     });
   }
