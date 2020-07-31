@@ -8,11 +8,6 @@ export const getAppState = createSelector(
   (state: fromAppFeature.AppState) => state
 );
 
-export const getAppPageTitle = createSelector(
-  getAppState,
-  fromAppFeature.getPageTitle
-);
-
 export const getUser = createSelector(
   getAppState,
   fromAppFeature.getUserDetails

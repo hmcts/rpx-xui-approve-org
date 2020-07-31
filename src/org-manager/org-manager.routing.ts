@@ -22,51 +22,81 @@ export const ROUTES: Routes = [
     path: 'active-organisation',
     component: ActiveOrganisationsComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Active Organisations'
+    }
   },
   {
     path: 'pending-organisations',
     component: PendingOrganisationsComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Pending Organisations'
+    }
   },
   {
     path: 'approve-organisations',
     component: ApproveOrganisationComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Approve Organisations'
+    }
   },
   {
     path: 'approve-organisations-success',
     component: ApproveOrganisationSuccessComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Organisation Approved'
+    }
   },
   {
     path: 'organisation-details/:orgId',
     component: OrganisationDetailsComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Organisation Details'
+    }
   },
   {
     path: 'change/:fields/:orgId',
     component: EditDetailsComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Edit Organisation Details'
+    }
   },
   {
     path: 'change/:fields/:orgId/:id',
     component: EditDetailsComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Edit Organisation Details'
+    }
   },
   {
     path: 'user-details',
     component: UserDetailsComponent,
     canActivate: [AuthGuard, UserApprovalGuard],
+    data: {
+      title: 'User Details'
+    }
   },
   {
     path: 'reinvite-user',
     component: ReinviteUserComponent,
     canActivate: [AuthGuard, UserApprovalGuard],
+    data: {
+      title: 'Reinvite User'
+    }
   },
   {
     path: 'reinvite-user-success',
     component: ReinviteUserSuccessComponent,
     canActivate: [AuthGuard, UserApprovalGuard],
+    data: {
+      title: 'User Reinvited'
+    }
   }
 ];
 

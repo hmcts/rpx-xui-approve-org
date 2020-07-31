@@ -1,5 +1,4 @@
 import { UserModel } from '../../../models/user.model';
-import {AppUtils} from '../../utils/app-utils';
 import * as fromAction from '../actions';
 
 
@@ -15,7 +14,6 @@ export interface GlobalError {
 }
 
 export interface AppState {
-  pageTitle: string;
   userDetails: UserModel | null;
   modal: {[id: string]: {isVisible?: boolean; countdown?: string}};
   loaded: boolean;
@@ -24,7 +22,6 @@ export interface AppState {
 }
 
 export const initialState: AppState = {
-  pageTitle: '',
   userDetails: null,
   modal: {
     session: {
@@ -42,20 +39,6 @@ export function reducer(
   action: fromAction.appActions
 ): AppState {
   switch (action.type) {
-    case fromAction.SET_PAGE_TITLE: {
-      const pageTitle = AppUtils.setPageTitle(action.payload);
-      return {
-        ...state,
-        pageTitle
-      };
-    }
-    case fromAction.SET_PAGE_TITLE_ERRORS: {
-      const pageTitle = `Error: ${state.pageTitle}`;
-      return {
-        ...state,
-        pageTitle
-      };
-    }
     case fromAction.LOGOUT: {
       return {
         ...state,
@@ -97,7 +80,6 @@ export function reducer(
   }
 }
 
-export const getPageTitle = (state: AppState) => state.pageTitle;
 export const getUserDetails = (state: AppState) => state.userDetails;
 export const getModal = (state: AppState) => state.modal;
 export const getGlobalError = (state: AppState) => state.globalError;

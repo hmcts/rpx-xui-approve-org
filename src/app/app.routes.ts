@@ -17,27 +17,45 @@ export const ROUTES: Routes = [
   },
   {
     path: 'cookies',
-    component: CookiePolicyComponent
+    component: CookiePolicyComponent,
+    data: {
+      title: 'Cookie Policy'
+    }
   },
   {
     path: 'privacy-policy',
-    component: PrivacyPolicyComponent
+    component: PrivacyPolicyComponent,
+    data: {
+      title: 'Privacy Policy'
+    }
   },
   {
     path: 'terms-and-conditions',
-    component: TermsAndConditionsComponent
+    component: TermsAndConditionsComponent,
+    data: {
+      title: 'Terms and Conditions'
+    }
   },
   {
     path: 'accessibility',
-    component: AccessibilityComponent
+    component: AccessibilityComponent,
+    data: {
+      title: 'Accessibility Statement'
+    }
   },
   {
     path: 'service-down',
-    component: ServiceDownComponent
+    component: ServiceDownComponent,
+    data: {
+      title: 'Service Unavailable'
+    }
   },
   {
     path: 'signed-out',
-    component: SignedOutComponent
+    component: SignedOutComponent,
+    data: {
+      title: 'Signed Out'
+    }
   },
   {
     path: '**',

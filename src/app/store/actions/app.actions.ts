@@ -3,8 +3,6 @@ import { Action } from '@ngrx/store';
 
 import { UserInterface } from '../../../models/user.model';
 
-export const SET_PAGE_TITLE = '[APP] Set Page Title';
-export const SET_PAGE_TITLE_ERRORS = '[APP] Set Page Title Errors';
 export const GET_USER_DETAILS = '[User] Get User Details';
 export const GET_USER_DETAILS_SUCCESS = '[User] Get User Details Success';
 export const GET_USER_DETAILS_FAIL = '[User]Get User Details Fail';
@@ -15,18 +13,6 @@ export const APP_CLEAR_GLOBAL_ERROR = '[APP] Clear Global Error';
 
 
 export const LOGOUT = '[App] Logout';
-
-export class SetPageTitle implements Action {
-  public readonly type = SET_PAGE_TITLE;
-  constructor(public payload: string) {}
-}
-/**
- * This is not used anywhere yet
- * it should be used when error displayed on the page.
- */
-export class SetPageTitleErrors implements Action {
-  public readonly type = SET_PAGE_TITLE_ERRORS;
-}
 
 export class Logout implements Action {
   public readonly type = LOGOUT;
@@ -92,8 +78,6 @@ export type appActions =
   | SignedOutSuccess
   | KeepAlive
   | SetModal
-  | SetPageTitle
-  | SetPageTitleErrors
   | Logout
   | AddGlobalError
   | ClearGlobalError

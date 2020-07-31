@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-
+import { Title } from '@angular/platform-browser';
+import { Router, RoutesRecognized } from '@angular/router';
 import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
+import { select, Store } from '@ngrx/store';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, first, take } from 'rxjs/operators';
 import { EnvironmentService } from 'src/app/services/environment.service';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
+
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,6 @@ import * as fromRoot from '../../store';
 })
 export class AppComponent implements OnInit {
 
-  public title$: Observable<string>;
   public identityBar$: Observable<string[]>;
   public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
 
@@ -23,10 +24,22 @@ export class AppComponent implements OnInit {
     private readonly store: Store<fromRoot.State>,
     private readonly googleAnalyticsService: GoogleAnalyticsService,
     private readonly idleService: ManageSessionServices,
-    private readonly environmentService: EnvironmentService
-  ) {}
+    private readonly environmentService: EnvironmentService,
+    private readonly router: Router,
+    private readonly titleService: Title
+  ) {
+  }
 
   public ngOnInit() {
+    this.router.events.subscribe((data) => {
+      if (data instanceof RoutesRecognized) {
+        const d = data.state.root.firstChild.data;
+        if (d.title) {
+          this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
+        }
+      }
+    });
+
     this.environmentService.getEnv$().subscribe(env => {
       if (env.oidcEnabled) {
         this.store.dispatch(new fromRoot.GetUserDetails());
@@ -36,12 +49,6 @@ export class AppComponent implements OnInit {
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
-    this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
-    this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
-      if (rootState) {
-        this.store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
-      }
-    });
 
     this.idleStart();
     this.idleService.appStateChanges().subscribe(value => {
