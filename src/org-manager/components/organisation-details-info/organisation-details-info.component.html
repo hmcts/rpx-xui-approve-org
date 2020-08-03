@@ -100,10 +100,10 @@
        </dd>
     </div>
   </dl>
-
-  <!-- TODO: Should use govuk-button--secondary -->
-  <button *ngIf="org.status=='PENDING'" (click)="approveOrganisation(org)" type="submit" class=govuk-button>Approve organisation</button>
-  <button *ngIf="org.status=='PENDING'" (click)="deleteOrganisation(org)" type="submit" class=govuk-button>Delete organisation</button>
+  <ng-container *ngIf="org.status=='PENDING'">
+    <button (click)="approveOrganisation(org)" type="submit" class="govuk-button">Approve organisation</button>
+    <button (click)="deleteOrganisation(org)" type="submit" class="govuk-button govuk-button--secondary delete-org-button">Delete organisation</button>
+  </ng-container>
 </ng-container>
 <ng-template #noOrg>
   <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
