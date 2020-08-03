@@ -16,6 +16,15 @@ export class OrganisationDetailsInfoComponent {
 
   constructor() {}
 
+  /**
+   * Approve Organisation
+   *
+   * Send an event to the parent to approve the organisation.
+   *
+   * TODO: Requires unit test.
+   *
+   * @param { OrganisationVM } data
+   */
   public approveOrganisation(data: OrganisationVM) {
     if (data) {
       this.approveEvent.emit(data);
@@ -23,8 +32,11 @@ export class OrganisationDetailsInfoComponent {
   }
 
   /**
+   * Delete Organisation
+   *
+   * Send an event to the parent to delete the organisation.
+   *
    * TODO: Requires unit test.
-   * TODO: Should take the User to a 'Delete this registration request' page.
    *
    * @param { OrganisationVM } data
    */
