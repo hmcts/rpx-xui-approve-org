@@ -20,10 +20,6 @@ export class OrganisationDetailsInfoComponent {
    * Approve Organisation
    *
    * Send an event to the parent to approve the organisation.
-   *
-   * TODO: Requires unit test.
-   *
-   * @param { OrganisationVM } data
    */
   public approveOrganisation(data: OrganisationVM) {
     if (data) {
@@ -35,10 +31,6 @@ export class OrganisationDetailsInfoComponent {
    * Delete Organisation
    *
    * Send an event to the parent to delete the organisation.
-   *
-   * TODO: Requires unit test.
-   *
-   * @param { OrganisationVM } data
    */
   public deleteOrganisation(data: OrganisationVM) {
     if (data) {
