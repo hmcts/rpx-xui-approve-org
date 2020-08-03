@@ -90,20 +90,15 @@ export class OrganisationEffects {
     map((action: pendingOrgActions.DeletePendingOrganisation) => action.payload),
     switchMap(organisation => {
 
-      console.log(organisation);
-
       const pendingOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
 
       return this.pendingOrgService.deletePendingOrganisations(pendingOrganisation).pipe(
         map(response => {
           this.loggerService.log('Deleted Organisation successfully');
-          console.log('Deleted Organisation successfully');
           return new pendingOrgActions.DeletePendingOrganisationSuccess(organisation);
         }),
         catchError((error: Error) => {
          this.loggerService.error(error.message);
-         console.log(error);
-          debugger;
          return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
         })
       );
