@@ -4,7 +4,7 @@
             <div class="govuk-grid-column-two-thirds">
                 <div class="govuk-panel govuk-panel--confirmation">
                     <h1 class="govuk-panel__title">
-                      This organisation has been deleted
+                      {{orgForReview.name}} has been deleted
                     </h1>
                 </div>
                 <h2 class="govuk-heading-m">What happens next</h2>
@@ -15,7 +15,7 @@
                   They’ve also been removed from your list of pending organisations.
                 </p>
                 <p class="govuk-body">
-                    <span text><a [routerLink]="['/']"> Back to organisations</a></span>
+                    <span text><a [routerLink]="['/']"> Go back to pending organisations</a></span>
                 </p>
             </div>
         </div>

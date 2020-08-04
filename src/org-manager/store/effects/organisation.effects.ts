@@ -95,6 +95,7 @@ export class OrganisationEffects {
       return this.pendingOrgService.deletePendingOrganisations(pendingOrganisation).pipe(
         map(response => {
           this.loggerService.log('Deleted Organisation successfully');
+          this.loggerService.log(response);
           return new pendingOrgActions.DeletePendingOrganisationSuccess(organisation);
         }),
         catchError((error: Error) => {
