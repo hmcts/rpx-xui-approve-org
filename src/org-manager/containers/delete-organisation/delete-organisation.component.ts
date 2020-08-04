@@ -1,7 +1,6 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import {Store, select} from '@ngrx/store';
-import {Observable, Subscription} from 'rxjs';
+import {select, Store} from '@ngrx/store';
 import {OrganisationVM} from 'src/org-manager/models/organisation';
 import {take, tap} from 'rxjs/operators';
 import {DeletePendingOrganisation} from '../../store/actions/organisations.actions';
@@ -16,9 +15,6 @@ export class DeleteOrganisationComponent implements OnInit {
 
   public orgForReview: OrganisationVM | null;
 
-  // TODO: Error message hook. Leave this in for Error messages.
-  // serverResponseMessages$: Observable<any>;
-
   public confirmButtonDisabled = false;
 
   constructor(public store: Store<fromOrganisationPendingStore.OrganisationRootState>) {
@@ -27,22 +23,6 @@ export class DeleteOrganisationComponent implements OnInit {
   public ngOnInit() {
 
     this.addOrganisationForReviewSubscribe();
-    this.addErrorMessageSelect();
-  }
-
-  /**
-   * Add Error Message Select
-   *
-   * TODO: Error message hook. Leave this in for when Error Message development
-   * is being worked on.
-   */
-  public addErrorMessageSelect() {
-
-    // this.serverResponseMessages$ = this.store.pipe(select(fromStore.getErrorMessage), tap(message => {
-    //   if (message) {
-    //     this.disabled = true;
-    //   }
-    // }));
   }
 
   /**
