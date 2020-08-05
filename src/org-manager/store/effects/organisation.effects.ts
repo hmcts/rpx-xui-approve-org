@@ -94,8 +94,6 @@ export class OrganisationEffects {
 
       return this.pendingOrgService.deletePendingOrganisations(pendingOrganisation).pipe(
         map(response => {
-          this.loggerService.log('Deleted Organisation successfully');
-          this.loggerService.log(response);
           return new pendingOrgActions.DeletePendingOrganisationSuccess(organisation);
         }),
         catchError((error: Error) => {
@@ -141,12 +139,10 @@ export class OrganisationEffects {
   /**
    * Navigate to Delete Organisation page.
    *
-   * Navigates the User to Delete Organisation, and stores the Organisation in the Store, to be worked on.
+   * Navigates the User to Delete Organisation, and stores the Organisation in the Store.
    *
    * The User should be able to delete a pending organisations where there are duplicate requests for the same organisation
    * or, errors with the organisations details and so a new request needs to be submitted.
-   *
-   * TODO: Unit test
    */
   @Effect()
   public navToDeleteOrganisation$ = this.actions$.pipe(
