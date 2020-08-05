@@ -57,7 +57,6 @@ export class AddReviewOrganisations implements Action {
     constructor(public payload: OrganisationVM) { }
 }
 
-// TODO: Unit test
 export class DeleteOrganisation implements Action {
   public readonly type = OrgActionTypes.DELETE_ORGANISATION;
 

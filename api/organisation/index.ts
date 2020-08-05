@@ -81,14 +81,12 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
  *
  * Request to PRD Api to delete an organisation.
  *
- * Note that currently the DELETE method on the PRD api is not available. Please see the JIRA ticket EUI-1340 - we're asking
- * PRD the status of the DELETE method. [30 Jul 2020]
+ * Note that currently the DELETE method on the PRD api is only available in a PR branch, therefore
+ * PRD API URL needs to point to: http://rd-professional-api-pr-682.service.core-compute-preview.internal
  *
- * Therefore we're going to mock the PRD Api return status codes in this function, so that we can code against them in the UI layer.
+ * TODO: Error codes: We should send back proper error codes to the UI. Covered in [EUI-1810]
+ * TODO: Error codes: Recreate a 404 Error by trying to delete the same registration request twice.
  *
- * TODO: Error codes: We should send back proper error codes to the UI, not just a 500.
- * TODO: Hook into the PRD Api DELETE method once it's available.
- * TODO: Recreate a 404 Error by trying to delete the same registration request twice.
  * @ref https://tools.hmcts.net/jira/browse/EUI-1340
  *
  * @return {Promise<void>}
@@ -106,8 +104,6 @@ async function handleDeleteOrganisationRoute(req: express.Request, res: express.
       res.status(200).send({value: 'Resource deleted successfully'})
     } catch (error) {
 
-      console.log('handleDeleteOrganisationRoute() error')
-      console.error(error)
       const errReport = { apiError: error.data.message, apiStatusCode: error.status,
         message: 'handlePutOrganisationRoute error' }
       res.status(error.status).send(errReport)
