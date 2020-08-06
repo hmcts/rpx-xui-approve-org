@@ -159,18 +159,18 @@ const redisStoreOptions = {
         redisCloudUrl: getConfigValue(REDISCLOUD_URL),
         redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
         redisTtl: getConfigValue(REDIS_TTL),
-      }
-    }
-  }
+      },
+    },
+  },
 }
 
 const fileStoreOptions = {
   fileStore: { ...baseStoreOptions, ...{
       fileStoreOptions: {
         filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
-      }
-    }
-  }
+      },
+    },
+  },
 }
 
 const nodeLibOptions = {
@@ -178,10 +178,10 @@ const nodeLibOptions = {
     s2s: {
       microservice: getConfigValue(MICROSERVICE),
       s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
-      s2sSecret: s2sSecret.trim()
-    }
+      s2sSecret: s2sSecret.trim(),
+    },
   },
-  session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
+  session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions,
 }
 
 const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2'

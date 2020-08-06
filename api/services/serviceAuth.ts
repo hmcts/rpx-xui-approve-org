@@ -19,7 +19,7 @@ const logger = log4jui.getLogger('service auth')
 // TODO: process.env should all be located in configuration
 export async function postS2SLease() {
   let response: AxiosResponse<any>
-  
+
   const axiosInstance = http({
     session: {
       auth: {
