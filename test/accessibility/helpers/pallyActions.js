@@ -12,6 +12,15 @@ class Actions{
 
     }
 
+    checkField(cssLocator){
+        return ['wait for element ' + cssLocator + ' to be visible', 'check field ' + cssLocator]
+    }
+
+    uncheckField(cssLocator) {
+        return ['wait for element ' + cssLocator + ' to be visible' , 'uncheck field ' + cssLocator]
+    }
+
+
     waitForPageWithCssLocator(cssLocator) {
         return ['wait for element ' + cssLocator+' to be visible'];
 
