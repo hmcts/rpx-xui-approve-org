@@ -5,6 +5,9 @@ import {OrganisationVM} from 'src/org-manager/models/organisation';
 import {take} from 'rxjs/operators';
 import {DeletePendingOrganisation} from '../../store/actions/organisations.actions';
 import {Go} from '../../../app/store/actions';
+import {OrganisationVM} from '../../../org-manager/models/organisation';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import {DeletePendingOrganisation} from '../../store/actions/organisations.actions';
 import {getOrganisationForReview} from '../../store/selectors';
 
 @Component({

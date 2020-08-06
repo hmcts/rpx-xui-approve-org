@@ -64,6 +64,7 @@ export class AppEffects {
         })
     );
 
+    @Effect()
     public addGlobalErrorEffect$ = this.actions$.pipe(
       ofType(appActions.APP_ADD_GLOBAL_ERROR),
       map(() => {
