@@ -13,11 +13,11 @@ export enum OrgActionTypes {
     LOAD_ORGANISATION_USERS_SUCCESS = '[Organisations] Load Single Organisation Success',
     LOAD_ORGANISATION_USERS_FAIL = '[Organisations] Load Single Organisation Fail',
     ADD_REVIEW_ORGANISATIONS = '[Pending Organisations] Add to Review Organisations',
-    DELETE_ORGANISATION = '[Pending Organisations] Delete an Organisation',
     DISPLAY_ERROR_MESSAGE_ORGANISATIONS = '[Pending Organisations] Display Error message Organisations',
     APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
     APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
     APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
+    NAV_TO_DELETE_ORGANISATION = '[Pending Organisations] Navigate to Delete an Organisation',
     DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
     DELETE_PENDING_ORGANISATION_SUCCESS = '[Pending Organisations] Delete Pending Organisation Success',
     CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
@@ -57,12 +57,6 @@ export class AddReviewOrganisations implements Action {
     constructor(public payload: OrganisationVM) { }
 }
 
-export class DeleteOrganisation implements Action {
-  public readonly type = OrgActionTypes.DELETE_ORGANISATION;
-
-  constructor(public payload: OrganisationVM) { }
-}
-
 export class DisplayErrorMessageOrganisations implements Action {
   public readonly type = OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
 
@@ -82,6 +76,12 @@ export class ApprovePendingOrganisationsSuccess implements Action {
 export class ApprovePendingOrganisationsFail implements Action {
     readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
     constructor(public payload: any) { } // TODO change type it needs to change in the service used
+}
+
+export class NavigateToDeleteOrganisation implements Action {
+  public readonly type = OrgActionTypes.NAV_TO_DELETE_ORGANISATION;
+
+  constructor(public payload: OrganisationVM) { }
 }
 
 export class DeletePendingOrganisation implements Action {
@@ -173,7 +173,8 @@ export type OrganisationsActions =
     | LoadPendingOrganisationsSuccess
     | LoadPendingOrganisationsFail
     | AddReviewOrganisations
-    | DeleteOrganisation
+    | NavigateToDeleteOrganisation
+    | DeletePendingOrganisationSuccess
     | DisplayErrorMessageOrganisations
     | ApprovePendingOrganisations
     | ApprovePendingOrganisationsSuccess

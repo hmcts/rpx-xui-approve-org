@@ -146,7 +146,7 @@ export class OrganisationEffects {
    */
   @Effect()
   public navToDeleteOrganisation$ = this.actions$.pipe(
-    ofType(pendingOrgActions.OrgActionTypes.DELETE_ORGANISATION),
+    ofType(pendingOrgActions.OrgActionTypes.NAV_TO_DELETE_ORGANISATION),
     map(() => {
       return new fromRoot.Go({ path: ['/delete-organisation'] });
     })
