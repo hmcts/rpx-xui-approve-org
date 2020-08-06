@@ -100,8 +100,19 @@ async function handleDeleteOrganisationRoute(req: express.Request, res: express.
     try {
 
       const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
-      await req.http.delete(putOrganisationsUrl, req.body)
-      res.status(200).send({value: 'Resource deleted successfully'})
+      // await req.http.delete(putOrganisationsUrl, req.body)
+      // res.status(200).send({value: 'Resource deleted successfully'})
+
+      // Temporary manipulation of API to purposely return an error
+      const error = {
+        data: {
+          message: 'Something went wrong',
+        },
+        status: 404,
+      }
+      const errReport = { apiError: error.data.message, apiStatusCode: error.status,
+        message: 'handlePutOrganisationRoute error' }
+      res.status(error.status).send(errReport)
     } catch (error) {
 
       const errReport = { apiError: error.data.message, apiStatusCode: error.status,

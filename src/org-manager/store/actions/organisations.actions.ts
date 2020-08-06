@@ -20,6 +20,7 @@ export enum OrgActionTypes {
     NAV_TO_DELETE_ORGANISATION = '[Pending Organisations] Navigate to Delete an Organisation',
     DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
     DELETE_PENDING_ORGANISATION_SUCCESS = '[Pending Organisations] Delete Pending Organisation Success',
+    DELETE_PENDING_ORGANISATION_FAIL = '[Pending Organisations] Delete Pending Organisation Fail',
     CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
     UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Active Organisations Search String',
     UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
@@ -92,6 +93,11 @@ export class DeletePendingOrganisation implements Action {
 export class DeletePendingOrganisationSuccess implements Action {
   public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS;
   constructor(public payload: OrganisationVM) { }
+}
+
+export class DeletePendingOrganisationFail implements Action {
+  public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION_FAIL;
+  constructor() { }
 }
 
 // Load Active Organisation Action

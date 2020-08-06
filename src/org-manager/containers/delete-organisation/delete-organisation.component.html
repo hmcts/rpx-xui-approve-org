@@ -1,23 +1,26 @@
 <div class="hmcts-width-container">
-  <app-back-link [store]="store"></app-back-link>
-  <main class="govuk-main-wrapper" id="main-content" role="main">
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <h1 class="govuk-heading-xl">Delete this registration request?</h1>
-
-          <ng-container *ngIf="orgForReview">
-            <dl class="govuk-summary-list">
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Name
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <div>{{orgForReview.name}}</div>
-                  <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.organisationId}}</div>
-                </dd>
-              </div>
+    <app-back-link [store]="store"></app-back-link>
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-row">
+                <!-- Errors are to be displayed on a separate page, making use of the existing "Service Down" page -->
+                <!--
+                <div *ngIf="serverResponseMessages$ | async" id="errorSummary" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+                      data-module="error-summary">
+                  <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    Sorry, there is a problem with the service
+                  </h2>
+                  <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                      <li>
+                        <a href="#">Try again later</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                -->
+                <div class="govuk-grid-column-two-thirds">
+                    <h1 class="govuk-heading-xl">Delete this registration request?</h1>
 
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -37,24 +40,52 @@
                   </div>
                 </dd>
 
-              </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Name
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <div>{{orgForReview.name}}</div>
+                                <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.organisationId}}</div>
+                            </dd>
+                        </div>
 
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Administrator
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <div>{{orgForReview.admin}}</div>
-                  <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.adminEmail}}</div>
-                </dd>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Address
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                {{orgForReview.addressLine1}}<br>
+                                <div *ngIf='orgForReview.addressLine2'>
+                                    {{orgForReview.addressLine2}}<br>
+                                </div>
+                                {{orgForReview.townCity}}<br>
+                                <div *ngIf='orgForReview.county'>
+                                    {{orgForReview.county}}<br>
+                                </div>
+                                <div *ngIf='orgForReview.postCode'>
+                                  {{orgForReview?.postCode}}<br>
+                              </div>
+                            </dd>
+                        </div>
 
-              </div>
-            </dl>
-          </ng-container>
-          <button type="button" class="govuk-button" [disabled]="confirmButtonDisabled"
-                  (click)="onDeleteOrganisationHandler(orgForReview)">
-            Confirm
-          </button>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Administrator
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <div>{{orgForReview.admin}}</div>
+                                <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.adminEmail}}</div>
+                            </dd>
+                        </div>
+                      </dl>
+                    </ng-container>
+
+                    <button type="button" class="govuk-button" [disabled]="confirmButtonDisabled" (click)="onDeleteOrganisationHandler(orgForReview)">
+                        Confirm
+                    </button>
+                </div>
+            </div>
         </div>
       </div>
     </div>
