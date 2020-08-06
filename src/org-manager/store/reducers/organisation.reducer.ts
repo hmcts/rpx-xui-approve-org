@@ -139,12 +139,36 @@ export function reducer(
     }
 
     // TODO: Unit test
-    case fromActions.OrgActionTypes.DELETE_ORGANISATION: {
+    case fromActions.OrgActionTypes.NAV_TO_DELETE_ORGANISATION: {
       const orgForReview = action.payload;
       return {
         ...state,
         orgForReview,
         errorMessage: ''
+      };
+    }
+
+    case fromActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS: {
+
+      const deletedOrganisation = action.payload;
+
+      const pendingEntities = {
+        ...state.pendingOrganisations.orgEntities,
+      };
+
+      if (pendingEntities.hasOwnProperty(deletedOrganisation.organisationId)) {
+        delete pendingEntities[deletedOrganisation.organisationId];
+      }
+
+      const pendingOrganisations = {
+        ...state.pendingOrganisations,
+        orgEntities: pendingEntities
+      };
+
+      return {
+        ...state,
+        pendingOrganisations,
+        errorMessage: '',
       };
     }
 

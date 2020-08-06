@@ -3,6 +3,7 @@ import {OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromMock from '../../mock/pending-organisation.mock';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
+import {DeletePendingOrganisationSuccess} from '../actions/organisations.actions';
 
 
 describe('Organisation Reducer', () => {

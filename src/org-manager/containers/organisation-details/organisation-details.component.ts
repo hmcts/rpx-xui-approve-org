@@ -7,6 +7,7 @@ import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM} from '../../models/organisation';
 import * as fromStore from '../../store';
+import {NavigateToDeleteOrganisation} from '../../store/actions/organisations.actions';
 
 /**
  * Bootstraps Organisation Details
@@ -86,7 +87,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
   public deleteOrganisation(data: OrganisationVM) {
     if (data) {
-      this.store.dispatch(new fromStore.DeleteOrganisation(data));
+      this.store.dispatch(new fromStore.NavigateToDeleteOrganisation(data));
     }
   }
 
