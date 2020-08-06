@@ -23,8 +23,6 @@ const config = {
     targetEnv: argv.env || 'local',
     //username: process.env.TEST_EMAIL,
     //password: process.env.TEST_PASSWORD,
-    username: 'vmuniganti@mailnesia.com',
-    password: 'Monday01',
   },
 
 
@@ -82,6 +80,5 @@ const config = {
     global.should = chai.should;
   }
 };
-
 
 exports.config = config;
