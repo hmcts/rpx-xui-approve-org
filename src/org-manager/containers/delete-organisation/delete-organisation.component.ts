@@ -1,9 +1,6 @@
-import {Component, OnInit} from '@angular/core';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
-import {OrganisationVM} from 'src/org-manager/models/organisation';
-import {take} from 'rxjs/operators';
-import {DeletePendingOrganisation} from '../../store/actions/organisations.actions';
+import {take, tap} from 'rxjs/operators';
 import {Go} from '../../../app/store/actions';
 import {OrganisationVM} from '../../../org-manager/models/organisation';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
@@ -51,6 +48,5 @@ export class DeleteOrganisationComponent implements OnInit {
   public onDeleteOrganisationHandler(orgForReview) {
 
     this.store.dispatch(new DeletePendingOrganisation(orgForReview));
-    this.confirmButtonDisabled = true;
   }
 }
