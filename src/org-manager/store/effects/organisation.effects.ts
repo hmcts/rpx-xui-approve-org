@@ -169,7 +169,8 @@ export class OrganisationEffects {
 
   /**
    * Navigate to the Service Down page (used for displaying any errors), on an error occurring on deletion of an
-   * organisation from PRD.
+   * organisation from PRD. Not strictly required because the "Add Global Error" action triggers an @Effect to
+   * navigate to the Service Down page itself.
    */
   @Effect()
   public deletePendingOrgFail$ = this.actions$.pipe(
