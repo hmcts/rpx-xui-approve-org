@@ -1,4 +1,6 @@
-import { generateToken } from '../../../../api/auth/serviceToken';
+import { s2s } from '@hmcts/rpx-xui-node-lib';
+import {getConfigValue} from '../../../../api/configuration';
+import {MICROSERVICE, S2S_SECRET, SERVICE_S2S_PATH} from '../../../../api/configuration/references';
 import { getauthToken } from './getToken';
 const fetch = require('node-fetch');
 
@@ -6,6 +8,9 @@ const fetch = require('node-fetch');
 // const mainURL = process.env.TEST_URL || 'https://localhost:3000';
 const mainURL = 'http://rd-professional-api-aat.service.core-compute-aat.internal'
 const LOG_REQUEST_ERROR_DETAILS = false;
+const s2sSecret = getConfigValue(S2S_SECRET).trim();
+const microservice = getConfigValue(MICROSERVICE);
+const s2sEndpointUrl = `${getConfigValue(SERVICE_S2S_PATH)}/lease`;
 
 export async function generatePOSTAPIRequest(method, subURL, payload) {
 
@@ -13,7 +18,14 @@ export async function generatePOSTAPIRequest(method, subURL, payload) {
   let authToken;
 
   try {
-    s2sToken = await generateToken();
+
+    s2s.configure({
+      microservice,
+      s2sEndpointUrl,
+      s2sSecret
+    });
+
+    s2sToken = await s2s.serviceTokenGenerator();
     authToken = await getauthToken();
 
     const options = {

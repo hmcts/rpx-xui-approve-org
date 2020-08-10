@@ -1,7 +1,6 @@
 import {getConfigValue} from '../../../../api/configuration';
 import {IDAM_CLIENT} from '../../../../api/configuration/references';
 
-const base64 = require('base-64')
 const fetch = require('node-fetch');
 const url = 'https://idam-api.aat.platform.hmcts.net/oauth2/authorize'
 const tokenUrl = 'https://idam-api.aat.platform.hmcts.net'
@@ -16,7 +15,7 @@ export async function getOauth2Token() {
 
   // let encode = base64.encode((process.env.TEST_EMAIL + ':' + process.env.TEST_PASSWORD))
   // const encode = base64.encode(('autotest_superuser@mailinator.com:Monday01'));
-  const encode = base64.encode(('xuiapitestuser@mailnesia.com:Monday01'));
+  const encode = Buffer.from('xuiapitestuser@mailnesia.com:Monday01').toString('base64');
   console.log (`THIS IS MY FIRST TEST:${encode}`)
   const otherParam = {
     headers: {
@@ -45,7 +44,8 @@ export async function getauthToken() {
   console.log(tokenUrlPost)
 
   // let encode = base64.encode((process.env.TEST_EMAIL + ':' + process.env.TEST_PASSWORD))
-  const encode = base64.encode(('xuiapitestuser@mailnesia.com:Monday01'));
+  // const encode = Buffer.from('xuiapitestuser@mailnesia.com:Monday01').toString('base64');
+
 
   const otherParam = {
     headers: {
@@ -56,6 +56,8 @@ export async function getauthToken() {
     body: '',
     method: 'POST'
   };
+
+  console.log('HERREE => ', tokenUrlPost, otherParam);
 
   const response = await fetch(tokenUrlPost, otherParam);
   const accessToken = await response.json();

@@ -1,4 +1,5 @@
-import { generateToken } from '../../../../api/auth/serviceToken';
+// import { generateToken } from '../../../../api/auth/serviceToken';
+import { s2s } from '@hmcts/rpx-xui-node-lib';
 import { getauthToken } from './getToken';
 
 const fetch = require('node-fetch');
@@ -16,7 +17,7 @@ export async function generateAPIRequest(method, subURL) {
   let authToken;
 
   try {
-    s2sToken = await generateToken();
+    s2sToken = await s2s.serviceTokenGenerator();
     authToken = await getauthToken();
 
     // console.log(authToken)
@@ -42,7 +43,7 @@ export async function generateAPIRequest(method, subURL) {
     //   options.body = params.body;
     // }
 
-   // console.log('OPTIONS: ', method, mainURL + subURL, options);
+   console.log('OPTIONS: ', method, mainURL + subURL, options);
     const response = await fetch(url, options);
     const data = await response.json();
     const headers = response.headers;

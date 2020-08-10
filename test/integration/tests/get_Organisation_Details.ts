@@ -7,6 +7,7 @@ suite('API/CASES -> Get Organisation details', function() {
   test('GET Manage Organisation details', () => generateAPIRequest ('GET', '/refdata/external/v1/organisations')
      // console.log('response', response.headers.get('cache-control'))
         .then(response => {
+          console.log('response => ', response);
           response.status.should.be.eql(200);
           console.log(response.data.organisationIdentifier);
           response.data.organisationIdentifier.should.be.eql('2GIHJH9');
