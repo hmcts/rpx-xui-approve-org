@@ -135,7 +135,7 @@ const options: AuthOptions = {
   logoutURL: idamApiPath,
   responseTypes: ['code'],
   scope: 'profile openid roles manage-user create-user',
-  sessionKey: 'xui-webapp',
+  sessionKey: 'xui-approve-org',
   tokenEndpointAuthMethod: 'client_secret_post',
   tokenURL: tokenUrl,
   useRoutes: true,
