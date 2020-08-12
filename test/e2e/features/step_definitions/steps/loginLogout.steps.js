@@ -25,7 +25,7 @@ async function loginattemptCheckAndRelogin(username,password,world){
     try{
         await browserWaits.waitForstalenessOf(loginPage.emailAddress,5);
         break;
-      }catch(err){ 
+      }catch(err){
         let emailFieldValue = await loginPage.getEmailFieldValue();
         if (!emailFieldValue.includes(username)){
           if(loginAttemptRetryCounter === 1){
@@ -44,7 +44,7 @@ async function loginattemptCheckAndRelogin(username,password,world){
   }
   console.log("ONE ATTEMPT:  EUI-1856 issue occured / total logins => "+firstAttemptFailedLogins+" / "+loginAttempts);
   world.attach("ONE ATTEMPT:  EUI-1856 issue occured / total logins => "+firstAttemptFailedLogins+" / "+loginAttempts);
-  
+
   console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => "+secondAttemptFailedLogins+" / "+loginAttempts);
   world.attach("TWO ATTEMPT: EUI-1856 issue occured / total logins => "+secondAttemptFailedLogins+" / "+loginAttempts);
 
@@ -127,7 +127,8 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Then(/^I should be redirected to approve organisation dashboard page$/, async function () {
-    await browserWaits.waitForElement(loginPage.dashboard_header);
+    browser.sleep(MID_DELAY);
+    // await browserWaits.waitForElement(loginPage.dashboard_header);
     await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.dashboard_header.getText())
       .to
