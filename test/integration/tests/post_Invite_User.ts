@@ -1,8 +1,8 @@
-import { generatePOSTAPIRequest } from './utils';
-const should = require('chai').should()
+import {mocha} from './test';
+import {http} from './utils';
 
-suite('API/CASES3 -> POST Invite User', function() {
-  this.timeout(50000);
+suite('API/CASES3 -> POST Invite User', () => {
+  mocha.timeout(50000);
   const payload = {
     firstName: 'Vamshi',
     lastName: 'Muniganti',
@@ -17,10 +17,13 @@ suite('API/CASES3 -> POST Invite User', function() {
   ],
     resendInvite: false
   };
-  test('POST Invite User', () => generatePOSTAPIRequest ('POST', '/refdata/external/v1/organisations/users/', payload)
-     // console.log('response', response.headers.get('cache-control'))
-        .then(response => {
-           response.status.should.be.eql(201);
-           console.log(response);
-        }));
+  test('POST Invite User', async () => {
+    try {
+      const response = await http.post('/refdata/external/v1/organisations/users/', payload);
+      // @ts-ignore
+      response.status.should.be.eql(201);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 });

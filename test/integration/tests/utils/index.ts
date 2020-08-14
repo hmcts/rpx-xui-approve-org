@@ -1,3 +1,2 @@
-export { generateAPIRequest } from './generateAPI';
-export { getOauth2Token } from './getToken';
-export { generatePOSTAPIRequest } from './generatePOSTAPI';
+export {getAuthCode} from './getToken';
+export {http} from './http';

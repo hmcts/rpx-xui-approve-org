@@ -1,67 +1,45 @@
 import {getConfigValue} from '../../../../api/configuration';
-import {IDAM_CLIENT} from '../../../../api/configuration/references';
+import {IDAM_CLIENT, IDAM_SECRET, SERVICES_IDAM_API_PATH} from '../../../../api/configuration/references';
 
-const fetch = require('node-fetch');
-const url = 'https://idam-api.aat.platform.hmcts.net/oauth2/authorize'
-const tokenUrl = 'https://idam-api.aat.platform.hmcts.net'
-const idamApi = 'https://idam-api.aat.platform.hmcts.net'
-const idamSecret = process.env.IDAM_SECRET || 'AAAAAAAAAAAAAAAA'
-const baseUrl = 'https://manage-org.aat.platform.hmcts.net'
-const idamClient = 'xuimowebapp';
+import axios, {AxiosInstance} from 'axios';
 
-export async function getOauth2Token() {
-  const redirectUri = `${baseUrl}/oauth2/callback`
-  const urlPost = `${url}?response_type=code&client_id=${idamClient}&redirect_uri=${redirectUri}&scope=openid profile roles manage-user create-user`;
+const axiosInstance: AxiosInstance = axios.create();
+const idamApi = getConfigValue(SERVICES_IDAM_API_PATH);
+const idamSecret = getConfigValue(IDAM_SECRET) || 'AAAAAAAAAAAAAAAA';
+const baseUrl = 'http://localhost:3000';
+const idamClient = getConfigValue(IDAM_CLIENT);
+
+export async function getAuthCode() {
+  const redirectUri = `${baseUrl}/oauth2/callback`;
+  const urlPost = `${idamApi}/oauth2/authorize?response_type=code&client_id=${idamClient}&redirect_uri=${redirectUri}&scope=openid profile roles manage-user create-user`;
 
   // let encode = base64.encode((process.env.TEST_EMAIL + ':' + process.env.TEST_PASSWORD))
   // const encode = base64.encode(('autotest_superuser@mailinator.com:Monday01'));
   const encode = Buffer.from('xuiapitestuser@mailnesia.com:Monday01').toString('base64');
-  console.log (`THIS IS MY FIRST TEST:${encode}`)
   const otherParam = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: `Basic ${encode}`
-
     },
     body: '',
-    method: 'POST'
   };
-  console.log (`THIS IS MY url post:${urlPost}`)
-  const response = await fetch(urlPost, otherParam);
-  const code = await response.json();
+  const response = await axiosInstance.post(urlPost, {}, otherParam);
+  const code = await response.data;
   return code.code;
 }
 
-
-export async function getauthToken() {
-  const codeValue = await getOauth2Token();
+export async function getAuthToken() {
+  const codeValue = await getAuthCode();
   const redirectUri = `${baseUrl}/oauth2/callback`;
-  // const tokenUrlPost = `${tokenUrl}/oauth2/token?code=${codeValue}&client_id=${idamClient}
-  // &redirect_uri=${redirectUri}&client_secret=${idamSecret}&grant_type=authorization_code`;
-  const tokenUrlPost = `${tokenUrl}/oauth2/token?grant_type=authorization_code&code=${codeValue}
-  &redirect_uri=${redirectUri}`;
+  const tokenUrlPost = `${idamApi}/oauth2/token?grant_type=authorization_code&code=${codeValue}&redirect_uri=${redirectUri}`;
 
-  console.log(tokenUrlPost)
-
-  // let encode = base64.encode((process.env.TEST_EMAIL + ':' + process.env.TEST_PASSWORD))
-  // const encode = Buffer.from('xuiapitestuser@mailnesia.com:Monday01').toString('base64');
-
-
-  const otherParam = {
+  const options = {
     headers: {
+      Authorization: `Basic ${Buffer.from(`${idamClient}:${idamSecret}`).toString('base64')}`,
       'Content-Type': 'application/x-www-form-urlencoded',
-       Authorization: `Basic ${Buffer.from(`${getConfigValue(IDAM_CLIENT)}:${idamSecret}`).toString('base64')}`
-
     },
-    body: '',
-    method: 'POST'
   };
 
-  console.log('HERREE => ', tokenUrlPost, otherParam);
-
-  const response = await fetch(tokenUrlPost, otherParam);
-  const accessToken = await response.json();
-  // console.log(accessToken)
-  console.log(accessToken.access_token)
-  return accessToken.access_token;
+  const response = await axiosInstance.post(tokenUrlPost, {}, options);
+  return response.data.access_token;
 }
