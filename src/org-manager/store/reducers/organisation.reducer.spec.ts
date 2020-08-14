@@ -67,9 +67,9 @@ describe('Organisation Reducer', () => {
 
   describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
     it('should update the state with account details', () => {
-      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: fromMock.LoadPbaAccuntsObj});
+      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: fromMock.LoadPbaAccountsObj});
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: fromMock.LoadPbaAccuntsObj }} as any);
+      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: fromMock.LoadPbaAccountsObj }} as any);
     });
 
   });

@@ -4,7 +4,7 @@ import {take, tap} from 'rxjs/operators';
 import {Go} from '../../../app/store/actions';
 import {OrganisationVM} from '../../../org-manager/models/organisation';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import {DeletePendingOrganisation} from '../../store/actions/organisations.actions';
+import {DeleteOrganisation, DeletePendingOrganisation} from '../../store/actions/organisations.actions';
 import {getOrganisationForReview} from '../../store/selectors';
 
 @Component({
@@ -45,8 +45,12 @@ export class DeleteOrganisationComponent implements OnInit {
    *
    * @param orgForReview
    */
-  public onDeleteOrganisationHandler(orgForReview) {
-
-    this.store.dispatch(new DeletePendingOrganisation(orgForReview));
+  public onDeleteOrganisationHandler(orgForReview: OrganisationVM) {
+    if (orgForReview.status === 'PENDING') {
+      this.store.dispatch(new DeletePendingOrganisation(orgForReview));
+    } else {
+      this.store.dispatch(new DeleteOrganisation(orgForReview));
+    }
+    // TODO: What should happen if the organisation status is neither "PENDING" nor "ACTIVE"? Is that even possible?
   }
 }

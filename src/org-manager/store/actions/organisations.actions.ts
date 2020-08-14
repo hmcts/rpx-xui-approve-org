@@ -21,6 +21,8 @@ export enum OrgActionTypes {
     DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
     DELETE_PENDING_ORGANISATION_SUCCESS = '[Pending Organisations] Delete Pending Organisation Success',
     DELETE_PENDING_ORGANISATION_FAIL = '[Pending Organisations] Delete Pending Organisation Fail',
+    DELETE_ORGANISATION = '[Organisations] Delete Organisation',
+    DELETE_ORGANISATION_SUCCESS = '[Organisations] Delete Organisation Success',
     CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
     UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Active Organisations Search String',
     UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
@@ -75,7 +77,7 @@ export class ApprovePendingOrganisationsSuccess implements Action {
 }
 
 export class ApprovePendingOrganisationsFail implements Action {
-    readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
+    public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
     constructor(public payload: any) { } // TODO change type it needs to change in the service used
 }
 
@@ -100,12 +102,22 @@ export class DeletePendingOrganisationFail implements Action {
   constructor() { }
 }
 
-// Load Active Organisation Action
-export class LoadActiveOrganisation {
-  readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS;
+export class DeleteOrganisation implements Action {
+  public readonly type = OrgActionTypes.DELETE_ORGANISATION;
+  constructor(public payload: OrganisationVM) { }
 }
 
-export class LoadActiveOrganisationSuccess  implements Action {
+export class DeleteOrganisationSuccess implements Action {
+  public readonly type = OrgActionTypes.DELETE_ORGANISATION_SUCCESS;
+  constructor(public payload: OrganisationVM) { }
+}
+
+// Load Active Organisation Action
+export class LoadActiveOrganisation {
+  public readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS;
+}
+
+export class LoadActiveOrganisationSuccess implements Action {
   public readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS;
   constructor(public payload: OrganisationVM[]) {}
 }

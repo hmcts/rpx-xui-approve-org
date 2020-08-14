@@ -69,7 +69,7 @@ export const PendingOrganisationsMockCollectionObj: OrganisationVM = {
 
   };
 
-export const LoadPbaAccuntsObj = [{
+export const LoadPbaAccountsObj = [{
     account_number: 'PBA0088487',
     account_name: 'RAY NIXON BROWN',
     credit_limit: 5000,

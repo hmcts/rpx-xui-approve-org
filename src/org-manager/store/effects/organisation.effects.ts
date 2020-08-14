@@ -100,7 +100,7 @@ export class OrganisationEffects {
         catchError(errorReport => {
           this.loggerService.error(errorReport.error.message);
           // Return an Action that adds an appropriate error message to the store, depending on the HTTP status code
-          const action = OrganisationEffects.getErrorAction(errorReport.error);
+          const action = OrganisationEffects.getErrorActionForPending(errorReport.error);
           return of(action);
         })
       );
@@ -132,6 +132,28 @@ export class OrganisationEffects {
   );
 
   @Effect()
+  public deleteOrganisation$ = this.actions$.pipe(
+    ofType(fromActions.OrgActionTypes.DELETE_ORGANISATION),
+    map((action: fromActions.DeleteOrganisation) => action.payload),
+    switchMap(organisation => {
+
+      const activeOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
+
+      return this.organisationService.deleteOrganisation(activeOrganisation).pipe(
+        map(response => {
+          return new fromActions.DeleteOrganisationSuccess(organisation);
+        }),
+        catchError(errorReport => {
+          this.loggerService.error(errorReport.error.message);
+          // Return an Action that adds an appropriate error message to the store, depending on the HTTP status code
+          const action = OrganisationEffects.getErrorAction(errorReport.error);
+          return of(action);
+        })
+      );
+    })
+  );
+
+  @Effect()
   public addReviewOrganisations$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS),
     map(() => {
@@ -156,8 +178,7 @@ export class OrganisationEffects {
   );
 
   /**
-   * Navigate to the Delete Organisation Success page, on successfully deletion of an organisation
-   * from PRD.
+   * Navigate to the Delete Organisation Success page, on successful deletion of a pending organisation from PRD.
    */
   @Effect()
   public deletePendingOrgSuccess$ = this.actions$.pipe(
@@ -180,6 +201,31 @@ export class OrganisationEffects {
     })
   );
 
+  /**
+   * Navigate to the Delete Organisation Success page, on successful deletion of an organisation from PRD.
+   */
+  @Effect()
+  public deleteOrganisationSuccess$ = this.actions$.pipe(
+    ofType(fromActions.OrgActionTypes.DELETE_ORGANISATION_SUCCESS),
+    map(() => {
+      return new fromRoot.Go({ path: ['/delete-organisation-success'] });
+    })
+  );
+
+  public static getErrorActionForPending(error: ErrorReport): Action {
+    switch (error.apiStatusCode) {
+      case 400:
+      case 404:
+        return new fromRoot.AddGlobalError(this.get400GenericErrorForPending());
+      case 403:
+        return new fromRoot.AddGlobalError(this.get403Error());
+      case 500:
+        return new fromRoot.AddGlobalError(this.get500Error());
+      default:
+        return new fromRoot.AddGlobalError(this.get500Error());
+    }
+  }
+
   public static getErrorAction(error: ErrorReport): Action {
     switch (error.apiStatusCode) {
       case 400:
@@ -194,9 +240,22 @@ export class OrganisationEffects {
     }
   }
 
-  public static get400GenericError(): GlobalError {
+  public static get400GenericErrorForPending(): GlobalError {
     const errorMessage = {
       bodyText: 'Contact your support teams to delete this pending organisation.',
+      urlText: null,
+      url: null
+    };
+    const globalError = {
+      header: 'Sorry, there is a problem with the organisation',
+      errors: [errorMessage]
+    };
+    return globalError;
+  }
+
+  public static get400GenericError(): GlobalError {
+    const errorMessage = {
+      bodyText: 'Contact your support teams to delete this active organisation.',
       urlText: null,
       url: null
     };
