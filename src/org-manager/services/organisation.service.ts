@@ -10,6 +10,8 @@ export class OrganisationService {
   public singleOrgUrl = environment.singleOrgUrl;
   public orgActiveUrl = environment.orgActiveUrl;
   public orgUsersUrl = environment.organisationUsersUrl;
+  public organisationsUrl = environment.organisationsUrl;
+
   constructor(private readonly http: HttpClient) {
   }
 
@@ -26,4 +28,7 @@ export class OrganisationService {
     return this.http.get<any>(this.orgUsersUrl + payload);
   }
 
+  public deleteOrganisation(payload: Organisation): Observable<Response> {
+    return this.http.delete<Response>(this.organisationsUrl + payload.organisationIdentifier);
+  }
 }

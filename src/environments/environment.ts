@@ -15,7 +15,7 @@ export const environment = {
     updatePbaUrl: 'api/updatePba',
     pbaAccUrl: 'api/pbaAccounts',
     orgPendingUrl: 'api/organisations?status=PENDING',
-    orgApprovePendingUrl: 'api/organisations/',
+    organisationsUrl: 'api/organisations/',
     reinviteUserUrl: 'api/reinviteUser?organisationId=',
     loggingLevel: 'DEBUG',
     cookies: {
