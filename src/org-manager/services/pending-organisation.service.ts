@@ -19,15 +19,15 @@ export class PendingOrganisationService {
   }
 
   public getSingleOrganisation(payload): Observable<SingleOrgSummary> {
-    return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
+    return this.http.get<SingleOrgSummary>(`${this.singleOrgUrl}${payload.id}`);
   }
 
   public approvePendingOrganisations(payload: Organisation): Observable<Response> {
-    return this.http.put<Response>(this.organisationsUrl + payload.organisationIdentifier, payload);
+    return this.http.put<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`, payload);
   }
 
   public deletePendingOrganisations(payload: Organisation): Observable<Response> {
-    return this.http.delete<Response>(this.organisationsUrl + payload.organisationIdentifier);
+    return this.http.delete<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`);
   }
 }
 

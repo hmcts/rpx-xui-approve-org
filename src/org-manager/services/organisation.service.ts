@@ -21,14 +21,14 @@ export class OrganisationService {
   }
 
   public getSingleOrganisation(payload): Observable<Organisation> {
-    return this.http.get<Organisation>(this.singleOrgUrl + payload.id);
+    return this.http.get<Organisation>(`${this.singleOrgUrl}${payload.id}`);
   }
 
   public getOrganisationUsers(payload): Observable<any> {
-    return this.http.get<any>(this.orgUsersUrl + payload);
+    return this.http.get<any>(`${this.orgUsersUrl}${payload}`);
   }
 
   public deleteOrganisation(payload: Organisation): Observable<Response> {
-    return this.http.delete<Response>(this.organisationsUrl + payload.organisationIdentifier);
+    return this.http.delete<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`);
   }
 }
