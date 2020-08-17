@@ -2,7 +2,7 @@
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <app-notification-banner-component>
       <ng-container *ngIf="(activeOrgsCount$ | async) as activeOrgCount; ">
-        <span>{{activeOrgCount}} organisations are active. <a [routerLink]="['/active-organisation']"> Check now.</a></span>
+        <span>{{activeOrgCount}} organisations are active. <a [routerLink]="['/active-organisation']" aria-label="View list of active organisations"> Check now.</a></span>
       </ng-container>
       <ng-container *ngIf="!(activeLoaded$ | async)">
         <h3 class="govuk-heading-s">Loading active organisations...</h3>
@@ -41,7 +41,7 @@
               <td class="govuk-table__cell"><span class="hmcts-badge">{{org.status}}</span>
               </td>
               <td class="govuk-table__cell">
-                  <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
+                  <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]" aria-label="View Organisation Details">View</a>
               </td>
             </tr>
           </thead>

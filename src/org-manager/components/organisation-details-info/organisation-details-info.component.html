@@ -53,7 +53,7 @@
            </div>
        </dd>
        <dd class="govuk-check-your-answers__change">
-             <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
+             <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]" [attr.aria-label]="org.pbaNumber.length ? 'Change PBA Number' : 'Add PBA Number'">
              {{org.pbaNumber.length ? 'Change' : 'Add'}}
              </a>
        </dd>
