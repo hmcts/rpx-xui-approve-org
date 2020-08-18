@@ -17,7 +17,7 @@ async function waitForElement(el) {
 
 defineSupportCode(function ({ Given, When, Then,And }) {
 
-  Then('I click first organization view link', async function(){
+  Then('I click first organization view link',{ timeout: 600 * 1000 }, async function(){
     browser.sleep(LONG_DELAY);
     // await organisationList.waitForOrgListToDisplay();
     await organisationList.clickViewOnFirstOrganisation();

@@ -46,7 +46,7 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Then(/^I Verify the Check Now Link$/, { timeout: 600 * 1000 }, async function () {
     browser.sleep(LONG_DELAY);
-    // await browserWaits.waitForElement(bannerPage.checkNow);
+    await browserWaits.waitForElement(bannerPage.checkNow);
     await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
     await expect(bannerPage.checkNow.getText())
       .to

@@ -1,5 +1,5 @@
 module.exports = {
-    LONG_DELAY: 20000,
+    LONG_DELAY: 25000,
     AMAZING_DELAY: 20000,
     MID_DELAY: 15000,
     SHORT_DELAY: 6000
