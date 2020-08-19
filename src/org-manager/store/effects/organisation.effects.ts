@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { PendingOrganisationService } from 'src/org-manager/services/pending-organisation.service';
 import { LoggerService } from '../../../app/services/logger.service';
 import * as fromRoot from '../../../app/store';
+import { GlobalError } from '../../../app/store/reducers/app.reducer';
 import { AppUtils } from '../../../app/utils/app-utils';
-import {OrganisationService, PbaAccountDetails} from '../../services';
+import { ErrorReport } from '../../models/errorReport.model';
+import { OrganisationService, PbaAccountDetails, PendingOrganisationService } from '../../services';
 import * as fromActions from '../actions';
 import * as pendingOrgActions from '../actions/organisations.actions';
-import {DeletePendingOrganisationSuccess} from '../actions/organisations.actions';
 
 @Injectable()
 export class OrganisationEffects {
@@ -58,8 +59,8 @@ export class OrganisationEffects {
         map(pendingOrganisations => new pendingOrgActions.LoadPendingOrganisationsSuccess(
         AppUtils.mapOrganisations(pendingOrganisations)),
         catchError((error: Error) => {
-         this.loggerService.error(error.message);
-         return of(new pendingOrgActions.LoadPendingOrganisationsFail(error));
+          this.loggerService.error(error.message);
+          return of(new pendingOrgActions.LoadPendingOrganisationsFail(error));
         })
       ));
     }));
@@ -77,8 +78,8 @@ export class OrganisationEffects {
           return new pendingOrgActions.ApprovePendingOrganisationsSuccess(organisation);
         }),
         catchError((error: Error) => {
-         this.loggerService.error(error.message);
-         return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
+          this.loggerService.error(error.message);
+          return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
         })
       );
     })
@@ -96,9 +97,11 @@ export class OrganisationEffects {
         map(response => {
           return new pendingOrgActions.DeletePendingOrganisationSuccess(organisation);
         }),
-        catchError((error: Error) => {
-         this.loggerService.error(error.message);
-         return of(new pendingOrgActions.DisplayErrorMessageOrganisations(error));
+        catchError(errorReport => {
+          this.loggerService.error(errorReport.error.message);
+          // Return an Action that adds an appropriate error message to the store, depending on the HTTP status code
+          const action = OrganisationEffects.getErrorAction(errorReport.error);
+          return of(action);
         })
       );
     })
@@ -164,5 +167,64 @@ export class OrganisationEffects {
     })
   );
 
-  // TODO: Add Error Handling path for Delete Organisation Error Page.
+  /**
+   * Navigate to the Service Down page (used for displaying any errors), on an error occurring on deletion of an
+   * organisation from PRD. Not strictly required because the "Add Global Error" action triggers an @Effect to
+   * navigate to the Service Down page itself.
+   */
+  @Effect()
+  public deletePendingOrgFail$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_FAIL),
+    map(() => {
+      return new fromRoot.Go({ path: ['/service-down'] });
+    })
+  );
+
+  public static getErrorAction(error: ErrorReport): Action {
+    switch (error.apiStatusCode) {
+      case 400:
+      case 404:
+        return new fromRoot.AddGlobalError(this.get400GenericError());
+      case 403:
+        return new fromRoot.AddGlobalError(this.get403Error());
+      case 500:
+        return new fromRoot.AddGlobalError(this.get500Error());
+      default:
+        return new fromRoot.AddGlobalError(this.get500Error());
+    }
+  }
+
+  public static get400GenericError(): GlobalError {
+    const errorMessage = {
+      bodyText: 'Contact your support teams to delete this pending organisation.',
+      urlText: null,
+      url: null
+    };
+    const globalError = {
+      header: 'Sorry, there is a problem with the organisation',
+      errors: [errorMessage]
+    };
+    return globalError;
+  }
+
+  public static get403Error(): GlobalError {
+    const globalError = {
+      header: 'Sorry, you\'re not authorised to perform this action',
+      errors: null
+    };
+    return globalError;
+  }
+
+  public static get500Error(): GlobalError {
+    const errorMessage = {
+      bodyText: 'Try again later.',
+      urlText: null,
+      url: null
+    };
+    const globalError = {
+      header: 'Sorry, there is a problem with the service',
+      errors: [errorMessage]
+    };
+    return globalError;
+  }
 }
