@@ -9,10 +9,10 @@ export async function getUserDetails(jwt: string, url: string): Promise<AxiosRes
     const axiosInstance = http(({
       session: {
         auth: {
-          token: jwt
-        }
-      }
-    } as unknown) as express.Request) 
-  
+          token: jwt,
+        },
+      },
+    } as unknown) as express.Request)
+
     return await axiosInstance.get(`${url}/details`, options)
 }

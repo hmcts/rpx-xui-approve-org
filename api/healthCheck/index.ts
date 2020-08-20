@@ -55,7 +55,7 @@ async function healthCheckRoute(req, res) {
         let response = { healthState: true }
 
         if (path !== '') {
-            PromiseArr = getPromises(path,req)
+            PromiseArr = getPromises(path, req)
         }
 
         // comment out following block to bypass actual check
