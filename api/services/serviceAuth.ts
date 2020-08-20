@@ -19,21 +19,13 @@ const logger = log4jui.getLogger('service auth')
 // TODO: process.env should all be located in configuration
 export async function postS2SLease() {
   let response: AxiosResponse<any>
-  
-  const axiosInstance = http({
-    session: {
-      auth: {
-        token: ''
-      }
-    }
-  } as unknown as express.Request)
 
   const axiosInstance = http({
     session: {
       auth: {
-        token: ''
-      }
-    }
+        token: '',
+      },
+    },
   } as unknown as express.Request)
 
   try {
@@ -64,10 +56,10 @@ export async function postS2SLease() {
 export const router = express.Router({ mergeParams: true })
 
 router.get('/health', (req, res, next) => {
-    res.status(200).send(getHealth(url,req))
+    res.status(200).send(getHealth(url, req))
 })
 
 router.get('/info', (req, res, next) => {
-    res.status(200).send(getInfo(url,req))
+    res.status(200).send(getInfo(url, req))
 })
 export default router
