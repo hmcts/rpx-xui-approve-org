@@ -29,6 +29,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^I Check the active Organisation banner appear$/, async function () {
+        browser.sleep(LONG_DELAY);
         // await waitForElement(bannerPage.approveorgBanner);
         await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
     });
