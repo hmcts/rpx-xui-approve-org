@@ -15,7 +15,7 @@ properties([
 
 // Disable pact testing on pipeline
 //
-// import uk.gov.hmcts.contino.AppPipelineDsl
+import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
 import uk.gov.hmcts.contino.Environment
 
@@ -51,10 +51,10 @@ withPipeline(type, product, component) {
     disableLegacyDeployment()
 
 // Disable pact testing on pipeline
-//
-//    enablePactAs([
-//      AppPipelineDsl.PactRoles.CONSUMER
-//    ])
+
+    enablePactAs([
+      AppPipelineDsl.PactRoles.CONSUMER
+    ])
 
     after('checkout') {
       yarnBuilder.yarn('cache clean')
@@ -119,7 +119,6 @@ withPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
 
-        sh 'yarn test:a11y'
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
