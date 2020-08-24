@@ -20,18 +20,29 @@ describe('Delete Organisation', function () {
         done();
     });
 
+    function getOrgDeleteButtonCss(orgStatus){
+        return orgStatus === 'ACTIVE' ? 'app-org-details-info .govuk-button' : 'app-org-details-info .delete-org-button';
+    }
+
     ['PENDING','ACTIVE'].forEach(state => {
-        it(state+' Org Delete registration request Page', async function () {
+        it.only(state+' Org Delete registration request Page', async function () {
             await MockApp.startServer();
             const actions = [];
 
            if(state === 'ACTIVE'){
-               actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
+               actions.push(...PallyActions.waitForPageWithCssLocator('.hmcts-banner'));
+               actions.push(...PallyActions.clickElement('.hmcts-banner a'));
+               actions.push(...PallyActions.waitForPageWithCssLocatorNotPresent('.hmcts-banner'));
+               actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
+
+
+            //    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
             } 
             actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
             actions.push(...PallyActions.clickElement('td>a'));
             actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
-            actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
+
+            actions.push(...PallyActions.clickElement(getOrgDeleteButtonCss(state)));
             actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
             await pa11ytest(this, actions);
 
@@ -42,12 +53,17 @@ describe('Delete Organisation', function () {
             const actions = [];
             // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
             if (state === 'ACTIVE') {
-                actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
+                actions.push(...PallyActions.waitForPageWithCssLocator('.hmcts-banner'));
+                actions.push(...PallyActions.clickElement('.hmcts-banner a'));
+                actions.push(...PallyActions.waitForPageWithCssLocatorNotPresent('.hmcts-banner'));
+                actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
+
+                // actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
             } 
             actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
             actions.push(...PallyActions.clickElement('td>a'));
             actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
-            actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
+            actions.push(...PallyActions.clickElement(getOrgDeleteButtonCss(state)));
             actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
             actions.push(...PallyActions.clickElement('app-org-pending-delete .govuk-button'));
             actions.push(...PallyActions.waitForPageWithCssLocator('app-delete-success h1'));
@@ -62,13 +78,18 @@ describe('Delete Organisation', function () {
     ['PENDING', 'ACTIVE'].forEach(state => {
         const actions = [];
         if (state === 'ACTIVE') {
+
+            actions.push(...PallyActions.waitForPageWithCssLocator('.hmcts-banner'));
+            actions.push(...PallyActions.clickElement('.hmcts-banner a'));
+            actions.push(...PallyActions.waitForPageWithCssLocatorNotPresent('.hmcts-banner'));
             actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
-            actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
+
+            // actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
         }
         actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
         actions.push(...PallyActions.clickElement('td>a'));
         actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
-        actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
+        actions.push(...PallyActions.clickElement(getOrgDeleteButtonCss(state)));
         actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
         actions.push(...PallyActions.clickElement('app-org-pending-delete .govuk-button'));
         actions.push(...PallyActions.waitForPageWithCssLocator('app-service-down h1'));

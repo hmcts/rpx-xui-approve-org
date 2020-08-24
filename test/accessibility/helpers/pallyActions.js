@@ -26,6 +26,12 @@ class Actions{
 
     }
 
+    waitForPageWithCssLocatorNotPresent(cssLocator) {
+        return ['wait for element ' + cssLocator + ' to be hidden'];
+
+    }
+
+
     inputField(cssLocator,inputText) {
         return ['set field ' + cssLocator+' to ' + inputText];
 
