@@ -57,7 +57,7 @@ const requestMapping = {
     },
     delete:{
         '/api/organisations/:orgId': (req,res) => {
-            res.send('');
+            res.send({ value: 'Resource deleted successfully' });
         }
     }
 

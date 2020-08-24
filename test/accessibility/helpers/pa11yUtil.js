@@ -57,11 +57,11 @@ async function pa11ytest(test,actions,timeoutVal) {
                 page: page,
             timeout: 60000,
             screenCapture: screenshotPath,
-            // log: {
-            //     debug: console.log,
-            //     error: console.error,
-            //     info: console.info
-            // },
+            log: {
+                debug: console.log,
+                error: console.error,
+                info: console.info
+            },
             actions: actions
         })
     }catch(err){

@@ -20,72 +20,92 @@ describe('Delete Organisation', function () {
         done();
     });
 
+    ['PENDING','ACTIVE'].forEach(state => {
+        it(state+' Org Delete registration request Page', async function () {
+            await MockApp.startServer();
+            const actions = [];
 
-    it('Pending Org Delete registration request Page', async function () {
-        await MockApp.startServer();
-        const actions = [];
-        // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
-        actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
-        actions.push(...PallyActions.clickElement('td>a'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
-        actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
-        await pa11ytest(this, actions);
+           if(state === 'ACTIVE'){
+               actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
+            } 
+            actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
+            actions.push(...PallyActions.clickElement('td>a'));
+            actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
+            actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
+            actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
+            await pa11ytest(this, actions);
 
+        });
+
+        it.only(state+' Org Delete success page', async function () {
+            await MockApp.startServer();
+            const actions = [];
+            // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
+            if (state === 'ACTIVE') {
+                actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
+            } 
+            actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
+            actions.push(...PallyActions.clickElement('td>a'));
+            actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
+            actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
+            actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
+            actions.push(...PallyActions.clickElement('app-org-pending-delete .govuk-button'));
+            actions.push(...PallyActions.waitForPageWithCssLocator('app-delete-success h1'));
+            await pa11ytest(this, actions);
+
+        });
     });
 
-    it('Pending Org Delete success page', async function () {
-        await MockApp.startServer();
+   
+    
+
+    ['PENDING', 'ACTIVE'].forEach(state => {
         const actions = [];
-        // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
+        if (state === 'ACTIVE') {
+            actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
+            actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'approve-organisations'));
+        }
         actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
         actions.push(...PallyActions.clickElement('td>a'));
         actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
         actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
         actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
         actions.push(...PallyActions.clickElement('app-org-pending-delete .govuk-button'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('app-delete-success h1'));
-        await pa11ytest(this, actions);
+        actions.push(...PallyActions.waitForPageWithCssLocator('app-service-down h1'));
 
-    });
+        it.only(state + ' Org Delete error 400 404 page', async function () {
+            MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
+                res.status(400).send('Organisation id is missing')
+            });
+            await MockApp.startServer(); 
+            await pa11ytest(this, actions);
 
-    it.skip('Pending Org Delete error 400 page', async function () {
-        MockApp.onDelete('/api/organisations/:orgId', (req,res) => {
-            res.status(400).send('Organisation id is missing')
         });
-        await MockApp.startServer();
-        const actions = [];
-        // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
-        actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
-        actions.push(...PallyActions.clickElement('td>a'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
-        actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
-        actions.push(...PallyActions.clickElement('app-org-pending-delete .govuk-button'));
 
-        await pa11ytest(this, actions);
+        it.only(state + ' Org Delete error 403 page', async function () {
+            MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
+                res.status(403).send({
+                    apiError: "Mock error message", apiStatusCode: 403,
+                    message: 'handlePutOrganisationRoute error'
+                })
+            });
+            await MockApp.startServer();
+            await pa11ytest(this, actions);
 
-    });
-
-    it.skip('Pending Org Delete error page', async function () {
-        MockApp.onDelete('/api/organisations/:orgId', (req, res) => {  
-            res.status(500).send({
-                apiError: "Mock error message", apiStatusCode: 500,
-                message: 'handlePutOrganisationRoute error'
-            })
         });
-        await MockApp.startServer();
-        const actions = [];
-        // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
-        actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
-        actions.push(...PallyActions.clickElement('td>a'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
-        actions.push(...PallyActions.clickElement('app-org-details-info .delete-org-button'));
-        actions.push(...PallyActions.waitForPageWithCssLocator('app-org-pending-delete h1'));
-        await pa11ytest(this, actions);
 
+        it.only(state + ' Org Delete error page', async function () {
+            MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
+                res.status(500).send({
+                    apiError: "Mock error message", apiStatusCode: 500,
+                    message: 'handlePutOrganisationRoute error'
+                })
+            });
+            await MockApp.startServer();
+            await pa11ytest(this, actions);
+
+        });
     });
-
 
 
 

@@ -32,7 +32,7 @@ class Actions{
     }
 
     clickElement(cssLocator) {
-        return ['click element ' + cssLocator ];
+        return ['wait for element ' + cssLocator + ' to be visible', 'click element ' + cssLocator ];
 
     }
 
