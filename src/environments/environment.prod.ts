@@ -10,7 +10,7 @@ export const environment = {
   reinviteUserUrl: 'api/reinviteUser?organisationId=',
   updatePbaUrl: 'api/updatePba',
   pbaAccUrl: 'api/pbaAccounts',
-  orgApprovePendingUrl: 'api/organisations/',
+  organisationsUrl: 'api/organisations/',
   loggingLevel: 'DEBUG',
   cookies: {
     token: '__auth__',

@@ -10,6 +10,8 @@ export class OrganisationService {
   public singleOrgUrl = environment.singleOrgUrl;
   public orgActiveUrl = environment.orgActiveUrl;
   public orgUsersUrl = environment.organisationUsersUrl;
+  public organisationsUrl = environment.organisationsUrl;
+
   constructor(private readonly http: HttpClient) {
   }
 
@@ -19,11 +21,14 @@ export class OrganisationService {
   }
 
   public getSingleOrganisation(payload): Observable<Organisation> {
-    return this.http.get<Organisation>(this.singleOrgUrl + payload.id);
+    return this.http.get<Organisation>(`${this.singleOrgUrl}${payload.id}`);
   }
 
   public getOrganisationUsers(payload): Observable<any> {
-    return this.http.get<any>(this.orgUsersUrl + payload);
+    return this.http.get<any>(`${this.orgUsersUrl}${payload}`);
   }
 
+  public deleteOrganisation(payload: Organisation): Observable<Response> {
+    return this.http.delete<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`);
+  }
 }

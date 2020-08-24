@@ -9,7 +9,7 @@ import { Organisation } from '../models/organisation';
 export class PendingOrganisationService {
   public singleOrgUrl = environment.singleOrgUrl;
   public orgPendingUrl = environment.orgPendingUrl;
-  public orgApprovePendingUrl = environment.orgApprovePendingUrl;
+  public organisationsUrl = environment.organisationsUrl;
 
   constructor(private readonly http: HttpClient) {
   }
@@ -19,15 +19,15 @@ export class PendingOrganisationService {
   }
 
   public getSingleOrganisation(payload): Observable<SingleOrgSummary> {
-    return this.http.get<SingleOrgSummary>(this.singleOrgUrl + payload.id);
+    return this.http.get<SingleOrgSummary>(`${this.singleOrgUrl}${payload.id}`);
   }
 
   public approvePendingOrganisations(payload: Organisation): Observable<Response> {
-    return this.http.put<Response>(this.orgApprovePendingUrl + payload.organisationIdentifier, payload);
+    return this.http.put<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`, payload);
   }
 
   public deletePendingOrganisations(payload: Organisation): Observable<Response> {
-    return this.http.delete<Response>(this.orgApprovePendingUrl + payload.organisationIdentifier);
+    return this.http.delete<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`);
   }
 }
 

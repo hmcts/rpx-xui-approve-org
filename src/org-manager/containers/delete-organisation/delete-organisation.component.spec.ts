@@ -1,14 +1,19 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {DeleteOrganisationComponent} from './delete-organisation.component';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store/reducers';
 import {combineReducers, Store, StoreModule} from '@ngrx/store';
 import {of} from 'rxjs';
-import {ActiveOrganisationMockCollection, ReviewedOrganisationMockCollection} from '../../mock/pending-organisation.mock';
-import {BackLinkComponent} from 'src/org-manager/components';
-import {DeletePendingOrganisation} from '../../store/actions';
 import {Go} from '../../../app/store/actions';
+import * as fromRoot from '../../../app/store/reducers';
+import {BackLinkComponent} from '../../../org-manager/components';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import {
+  ActiveOrganisationMockCollection,
+  PendingOrganisationsMockCollection2,
+  PendingOrganisationsMockCollectionObj,
+  ReviewedOrganisationMockCollection
+} from '../../mock/pending-organisation.mock';
+import {DeleteOrganisation, DeletePendingOrganisation} from '../../store/actions';
+import {DeleteOrganisationComponent} from './delete-organisation.component';
 
 describe('DeleteOrganisationComponent', () => {
   let component: DeleteOrganisationComponent;
@@ -63,9 +68,15 @@ describe('DeleteOrganisationComponent', () => {
   describe('onDeleteOrganisation()', () => {
 
     it('should dispatch a pending organisation "delete" action', () => {
-      const orgForReview = activeOrganisationsDummy[0];
+      const orgForReview = PendingOrganisationsMockCollection2[0];
       component.onDeleteOrganisationHandler(orgForReview);
       expect(storeDispatchMock).toHaveBeenCalledWith(new DeletePendingOrganisation(orgForReview));
+    });
+
+    it('should dispatch an (active) organisation "delete" action', () => {
+      const orgForReview = PendingOrganisationsMockCollectionObj;
+      component.onDeleteOrganisationHandler(orgForReview);
+      expect(storeDispatchMock).toHaveBeenCalledWith(new DeleteOrganisation(orgForReview));
     });
   });
 });

@@ -92,20 +92,16 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
  * @return {Promise<void>}
  */
 async function handleDeleteOrganisationRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
-
   if (!req.params.id) {
-
     res.status(400).send('Organisation id is missing')
   } else {
     try {
-
-      const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
-      await req.http.delete(putOrganisationsUrl, req.body)
+      const delOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
+      await req.http.delete(delOrganisationsUrl, req.body)
       res.status(200).send({value: 'Resource deleted successfully'})
     } catch (error) {
-
       const errReport = { apiError: error.data.message, apiStatusCode: error.status,
-        message: 'handlePutOrganisationRoute error' }
+        message: 'handleDeleteOrganisationRoute error' }
       res.status(error.status).send(errReport)
     }
   }
