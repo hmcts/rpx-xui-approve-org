@@ -25,7 +25,7 @@ describe('Delete Organisation', function () {
     }
 
     ['PENDING','ACTIVE'].forEach(state => {
-        it.only(state+' Org Delete registration request Page', async function () {
+        it(state+' Org Delete registration request Page', async function () {
             await MockApp.startServer();
             const actions = [];
 
@@ -48,7 +48,7 @@ describe('Delete Organisation', function () {
 
         });
 
-        it.only(state+' Org Delete success page', async function () {
+        it(state+' Org Delete success page', async function () {
             await MockApp.startServer();
             const actions = [];
             // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
@@ -94,7 +94,7 @@ describe('Delete Organisation', function () {
         actions.push(...PallyActions.clickElement('app-org-pending-delete .govuk-button'));
         actions.push(...PallyActions.waitForPageWithCssLocator('app-service-down h1'));
 
-        it.only(state + ' Org Delete error 400 404 page', async function () {
+        it(state + ' Org Delete error 400 404 page', async function () {
             MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
                 res.status(400).send('Organisation id is missing')
             });
@@ -103,7 +103,7 @@ describe('Delete Organisation', function () {
 
         });
 
-        it.only(state + ' Org Delete error 403 page', async function () {
+        it(state + ' Org Delete error 403 page', async function () {
             MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
                 res.status(403).send({
                     apiError: "Mock error message", apiStatusCode: 403,
@@ -115,7 +115,7 @@ describe('Delete Organisation', function () {
 
         });
 
-        it.only(state + ' Org Delete error page', async function () {
+        it(state + ' Org Delete error page', async function () {
             MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
                 res.status(500).send({
                     apiError: "Mock error message", apiStatusCode: 500,
