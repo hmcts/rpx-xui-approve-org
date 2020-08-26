@@ -6,7 +6,7 @@ describe('PendingOrganisationActions actions', () => {
 
   describe('LoadPendingOrganisations actions GROUP', () => {
     // Init state
-    describe('LoadPendingOrganisation', () => {
+    describe('LoadPendingOrganisations', () => {
       it('should create an action', () => {
         const action = new fromOrganisation.LoadPendingOrganisations();
         expect({ ...action }).toEqual({
@@ -16,7 +16,7 @@ describe('PendingOrganisationActions actions', () => {
     });
 
     // Success
-    describe('LoadPendingOrganisationSuccess', () => {
+    describe('LoadPendingOrganisationsSuccess', () => {
       it('should create an action', () => {
         const action = new fromOrganisation.LoadPendingOrganisationsSuccess(payload);
         expect({ ...action }).toEqual({
@@ -27,7 +27,7 @@ describe('PendingOrganisationActions actions', () => {
     });
 
     // Fail
-    describe('LoadPendingOrganisationFail', () => {
+    describe('LoadPendingOrganisationsFail', () => {
       it('should create an action', () => {
         const action = new fromOrganisation.LoadPendingOrganisationsFail('error');
         const errorPayload = 'error';
@@ -43,7 +43,6 @@ describe('PendingOrganisationActions actions', () => {
     // Success
     describe('ApprovePendingOrganisationsSuccess', () => {
       it('should create an action', () => {
-
         const action = new fromOrganisation.ApprovePendingOrganisationsSuccess(PendingOrganisationsMockCollectionObj);
         expect({ ...action }).toEqual({
           type: fromOrganisation.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS,
@@ -65,7 +64,7 @@ describe('PendingOrganisationActions actions', () => {
     });
   });
 
-  describe('DeletePendingOrganisations actions GROUP', () => {
+  describe('DeletePendingOrganisation actions GROUP', () => {
     // Initial action
     describe('DeletePendingOrganisation', () => {
       it('should create an action', () => {
@@ -100,7 +99,7 @@ describe('PendingOrganisationActions actions', () => {
     });
   });
 
-  describe('DeleteOrganisations actions GROUP', () => {
+  describe('DeleteOrganisation actions GROUP', () => {
     // Initial action
     describe('DeleteOrganisation', () => {
       it('should create an action', () => {
@@ -211,5 +210,32 @@ describe('PendingOrganisationActions actions', () => {
         type: fromOrganisation.OrgActionTypes.RESET_ORGANISATION_USERS
       });
     });
+  });
+
+  describe('GetOrganisationDeletableStatus actions GROUP', () => {
+    // Initial action
+    describe('GetOrganisationDeletableStatus', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.GetOrganisationDeletableStatus('abc123');
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS,
+          payload: 'abc123'
+        });
+      });
+    });
+
+    // Success
+    describe('GetOrganisationDeletableStatusSuccess', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.GetOrganisationDeletableStatusSuccess(true);
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS_SUCCESS,
+          payload: true
+        });
+      });
+    });
+
+    // Fail
+    // No failure case because errors are handled using an "Add Global Error" action
   });
 });

@@ -101,11 +101,10 @@
     </div>
   </dl>
   <button *ngIf="org.status=='PENDING'" (click)="approveOrganisation(org)" type="submit" class="govuk-button">Approve organisation</button>
-  <!-- TODO: *ngIf for button below has to allow only pending organisations, and active organisations with a pending superuser to be deleted -->
   <!-- Note: The delete-org-button CSS class (which adds a left margin) is applied only when the organisation status
-    is "PENDING" and there are two buttons (approve and delete).
+    is "PENDING" and there are two buttons (Approve and Delete).
   -->
-  <button (click)="deleteOrganisation(org)" type="submit" class="govuk-button govuk-button--secondary"
+  <button *ngIf="org.status==='PENDING' || orgDeletable" (click)="deleteOrganisation(org)" type="submit" class="govuk-button govuk-button--secondary"
           [class.delete-org-button]="org.status==='PENDING'">Delete organisation</button>
 </ng-container>
 <ng-template #noOrg>

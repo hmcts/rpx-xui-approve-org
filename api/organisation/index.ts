@@ -1,4 +1,4 @@
-import * as express from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import { getConfigValue } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
@@ -16,7 +16,7 @@ const logger = log4jui.getLogger('return')
  * @param res - {organisations: [{org1}, {org2}]} OR {org1}
  * @param next
  */
-async function handleGetOrganisationsRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function handleGetOrganisationsRoute(req: Request, res: Response, next: NextFunction) {
     try {
         const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
         const response = await req.http.get(organisationsUri)
@@ -59,7 +59,7 @@ function getOrganisationUri(status, organisationId, usersOrgId): string {
     return url
 }
 
-async function handlePutOrganisationRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function handlePutOrganisationRoute(req: Request, res: Response, next: NextFunction) {
     if (!req.params.id) {
         res.status(400).send('Organisation id is missing')
     } else {
@@ -79,19 +79,11 @@ async function handlePutOrganisationRoute(req: express.Request, res: express.Res
 /**
  * Handle Delete Organisation Route
  *
- * Request to PRD Api to delete an organisation.
- *
- * Note that currently the DELETE method on the PRD api is only available in a PR branch, therefore
- * PRD API URL needs to point to: http://rd-professional-api-pr-682.service.core-compute-preview.internal
- *
- * TODO: Error codes: We should send back proper error codes to the UI. Covered in [EUI-1810]
- * TODO: Error codes: Recreate a 404 Error by trying to delete the same registration request twice.
- *
- * @ref https://tools.hmcts.net/jira/browse/EUI-1340
+ * Request to PRD API to delete an organisation.
  *
  * @return {Promise<void>}
  */
-async function handleDeleteOrganisationRoute(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function handleDeleteOrganisationRoute(req: Request, res: Response, next: NextFunction) {
   if (!req.params.id) {
     res.status(400).send('Organisation id is missing')
   } else {
@@ -107,10 +99,44 @@ async function handleDeleteOrganisationRoute(req: express.Request, res: express.
   }
 }
 
-export const router = express.Router({ mergeParams: true })
+/**
+ * Handle Get Organisation Deletable Status Route
+ *
+ * Request to PRD API to get the users of an active organisation. This returns an object containing an array of
+ * users, with the idamStatus property for each user either ACTIVE or PENDING.
+ *
+ * If there is one and only one user then this is presumed to be the superuser, and if this user's status is
+ * PENDING then the organisation can be deleted. In ALL other scenarios, the organisation *cannot* be deleted.
+ */
+async function handleGetOrganisationDeletableStatusRoute(req: Request, res: Response, next: NextFunction) {
+  if (!req.params.id) {
+    res.status(400).send('Organisation id is missing')
+  } else {
+    try {
+      const getOrganisationUsersUrl =
+      `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}/users?returnRoles=false`
+      const response = await req.http.get(getOrganisationUsersUrl)
+      let organisationDeletable = false
+      // Check that the response contains a non-zero list of users
+      if (response.data.users && response.data.users.length) {
+        organisationDeletable = response.data.users.length === 1 && response.data.users[0].idamStatus === 'PENDING'
+      }
+      res.send({
+        organisationDeletable,
+      })
+    } catch (error) {
+      const errReport = { apiError: error.data.message, apiStatusCode: error.status,
+        message: 'handleGetOrganisationDeletableStatusRoute error' }
+      res.status(error.status).send(errReport)
+    }
+  }
+}
+
+export const router = Router({ mergeParams: true })
 
 router.get('/', handleGetOrganisationsRoute)
 router.put('/:id', handlePutOrganisationRoute)
 router.delete('/:id', handleDeleteOrganisationRoute)
+router.get('/:id/users', handleGetOrganisationDeletableStatusRoute)
 
 export default router

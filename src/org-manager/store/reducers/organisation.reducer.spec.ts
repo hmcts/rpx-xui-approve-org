@@ -3,8 +3,6 @@ import {OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromMock from '../../mock/pending-organisation.mock';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
-import {DeletePendingOrganisationSuccess} from '../actions/organisations.actions';
-
 
 describe('Organisation Reducer', () => {
 
@@ -129,6 +127,14 @@ describe('Organisation Reducer', () => {
       const action = new fromActions.ShowOrganisationDetailsUserTab({orgId: 'dummy', showUserTab: true});
       const state = reducer(initialState, action);
       expect(state.showOrganisationDetailsUserTab.showUserTab).toBeFalsy();
+    });
+  });
+
+  describe('GET_ORGANISATION_DELETABLE_STATUS_SUCCESS action', () => {
+    it('should update state.organisationDeletable with the payload value', () => {
+      const action = new fromActions.GetOrganisationDeletableStatusSuccess(true);
+      const state = reducer(initialState, action);
+      expect(state.organisationDeletable).toEqual(true);
     });
   });
 });

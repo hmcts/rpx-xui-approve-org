@@ -76,4 +76,9 @@ describe('OrganisationService', () => {
     organisationService.deleteOrganisation(organisation);
     expect(httpClient.delete).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc`);
   });
+
+  it('should get organisation deletable status', () => {
+    organisationService.getOrganisationDeletableStatus('abc123');
+    expect(httpClient.get).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc123/users`);
+  });
 });
