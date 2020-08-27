@@ -1,4 +1,3 @@
-import { User } from '@hmcts/rpx-xui-common-lib';
 import {OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
 
@@ -151,9 +150,7 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS: {
-
       const deletedOrganisation = action.payload;
-
       const pendingEntities = {
         ...state.pendingOrganisations.orgEntities,
       };
@@ -170,11 +167,31 @@ export function reducer(
       return {
         ...state,
         pendingOrganisations,
-        errorMessage: '',
+        errorMessage: ''
       };
     }
 
-    // TODO: EUI-2526 - Replay the fix above for the "active" case (means the user does not need to refresh to see the update)
+    case fromActions.OrgActionTypes.DELETE_ORGANISATION_SUCCESS: {
+      const deletedOrganisation = action.payload;
+      const activeEntities = {
+        ...state.activeOrganisations.orgEntities,
+      };
+
+      if (activeEntities.hasOwnProperty(deletedOrganisation.organisationId)) {
+        delete activeEntities[deletedOrganisation.organisationId];
+      }
+
+      const activeOrganisations = {
+        ...state.activeOrganisations,
+        orgEntities: activeEntities
+      };
+
+      return {
+        ...state,
+        activeOrganisations,
+        errorMessage: ''
+      };
+    }
 
     case fromActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS: {
       const approvedOrg =  {

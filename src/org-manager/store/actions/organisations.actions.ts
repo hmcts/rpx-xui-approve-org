@@ -205,6 +205,7 @@ export type OrganisationsActions =
     | AddReviewOrganisations
     | NavigateToDeleteOrganisation
     | DeletePendingOrganisationSuccess
+    | DeleteOrganisationSuccess
     | DisplayErrorMessageOrganisations
     | ApprovePendingOrganisations
     | ApprovePendingOrganisationsSuccess
