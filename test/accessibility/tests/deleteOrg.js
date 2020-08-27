@@ -26,7 +26,7 @@ describe('Delete Organisation', function () {
 
     ['PENDING','ACTIVE'].forEach(state => {
         it(state+' Org Delete registration request Page', async function () {
-            MockApp.onGet('/api/organisations/:OrgId/users', (req,res) => {
+            MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req,res) => {
                 res.send({ "organisationDeletable": true });
             }); 
             await MockApp.startServer();
@@ -52,7 +52,7 @@ describe('Delete Organisation', function () {
         });
 
         it(state+' Org Delete success page', async function () {
-            MockApp.onGet('/api/organisations/:OrgId/users', (req, res) => {
+            MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
                 res.send({ "organisationDeletable": true });
             }); 
             await MockApp.startServer();
@@ -104,7 +104,7 @@ describe('Delete Organisation', function () {
             MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
                 res.status(400).send('Organisation id is missing')
             });
-            MockApp.onGet('/api/organisations/:OrgId/users', (req, res) => {
+            MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
                 res.send({ "organisationDeletable": true });
             }); 
             await MockApp.startServer(); 
@@ -119,7 +119,7 @@ describe('Delete Organisation', function () {
                     message: 'handlePutOrganisationRoute error'
                 })
             });
-            MockApp.onGet('/api/organisations/:OrgId/users', (req, res) => {
+            MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
                 res.send({ "organisationDeletable": true });
             }); 
             await MockApp.startServer();
@@ -134,7 +134,7 @@ describe('Delete Organisation', function () {
                     message: 'handlePutOrganisationRoute error'
                 })
             });
-            MockApp.onGet('/api/organisations/:OrgId/users', (req, res) => {
+            MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
                 res.send({ "organisationDeletable": true });
             }); 
             await MockApp.startServer();
