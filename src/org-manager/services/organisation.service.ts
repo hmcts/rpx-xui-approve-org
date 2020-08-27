@@ -33,10 +33,8 @@ export class OrganisationService {
   }
 
   public getOrganisationDeletableStatus(payload: string): Observable<any> {
-    // There is no direct PRD API call that AO users can use to check the status of a user, so the alternative is to
-    // call the endpoint for getting all users of an active organisation, check there is one and only one user
-    // (presumed to be the superuser), and check this user's status. An active organisation is deletable if the sole
-    // user's status is "Pending". In all other scenarios, the organisation is not deletable.
-    return this.http.get<any>(`${this.organisationsUrl}${payload}/users`);
+    // An active organisation is deletable if the sole user's status is "Pending". In all other scenarios, the
+    // organisation is not deletable.
+    return this.http.get<any>(`${this.organisationsUrl}${payload}/isDeletable`);
   }
 }

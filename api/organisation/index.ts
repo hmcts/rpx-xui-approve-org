@@ -107,6 +107,9 @@ async function handleDeleteOrganisationRoute(req: Request, res: Response, next: 
  *
  * If there is one and only one user then this is presumed to be the superuser, and if this user's status is
  * PENDING then the organisation can be deleted. In ALL other scenarios, the organisation *cannot* be deleted.
+ *
+ * (There is no direct PRD API call that AO users can use to check the status of a (super)user, so this is the
+ * alternative.)
  */
 async function handleGetOrganisationDeletableStatusRoute(req: Request, res: Response, next: NextFunction) {
   if (!req.params.id) {
@@ -137,6 +140,6 @@ export const router = Router({ mergeParams: true })
 router.get('/', handleGetOrganisationsRoute)
 router.put('/:id', handlePutOrganisationRoute)
 router.delete('/:id', handleDeleteOrganisationRoute)
-router.get('/:id/users', handleGetOrganisationDeletableStatusRoute)
+router.get('/:id/isDeletable', handleGetOrganisationDeletableStatusRoute)
 
 export default router
