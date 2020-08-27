@@ -26,11 +26,13 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationId: string;
   public organisationAdminEmail: string;
   public isActiveOrg = false;
+  public organisationDeletable = false;
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly userApprovalGuard: UserApprovalGuard) {}
     private getShowOrgDetailsSubscription: Subscription;
     private getAllLoadedSubscription: Subscription;
+    private getOrganisationDeletableSubscription: Subscription;
 
   public ngOnInit(): void {
 
@@ -57,6 +59,9 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       this.showUserNavigation = false;
       if (status === 'ACTIVE') {
         this.isActiveOrg = true;
+        // Check the deletable status of the organisation (required to control visibility of the "Delete" button)
+        this.store.dispatch(new fromStore.GetOrganisationDeletableStatus(this.organisationId));
+        this.getOrganisationDeletableSubscription = this.store.pipe(select(fromStore.getOrganisationDeletable)).subscribe(value => this.organisationDeletable = value);
         if (this.isXuiApproverUserdata) {
           this.showUserNavigation = true;
           this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
@@ -110,6 +115,13 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       this.getShowOrgDetailsSubscription.unsubscribe();
     }
     this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({orgId: this.organisationId, showUserTab: false}));
+
+    if (this.getOrganisationDeletableSubscription) {
+      this.getOrganisationDeletableSubscription.unsubscribe();
+    }
+
+    // Update the "organisation deletable" status in the store manually to false (to avoid the "Delete" button being
+    // displayed when it shouldn't)
+    this.store.dispatch(new fromStore.GetOrganisationDeletableStatusSuccess(false));
   }
 }
-

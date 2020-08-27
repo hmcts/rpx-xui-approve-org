@@ -45,7 +45,7 @@
             </ng-template>
           </ng-container>
           <ng-template #showOrgDetails>
-            <app-org-details-info [org]="data.org" (approveEvent)="approveOrganisation($event)" (deleteEvent)="deleteOrganisation($event)">
+            <app-org-details-info [org]="data.org" [orgDeletable]="organisationDeletable" (approveEvent)="approveOrganisation($event)" (deleteEvent)="deleteOrganisation($event)">
           </app-org-details-info>
           </ng-template>
       </ng-template>

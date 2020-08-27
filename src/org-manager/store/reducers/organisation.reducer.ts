@@ -19,6 +19,7 @@ export interface OrganisationState {
   errorMessage: string;
   orgForReview: OrganisationVM | null;
   showOrganisationDetailsUserTab: {orgId: string; showUserTab: boolean};
+  organisationDeletable: boolean;
 }
 
 export const initialState: OrganisationState = {
@@ -27,7 +28,8 @@ export const initialState: OrganisationState = {
   organisationUsersList: {users: null, isError: false},
   errorMessage: '',
   orgForReview: null,
-  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false}
+  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false},
+  organisationDeletable: false
 };
 
 export function reducer(
@@ -171,6 +173,8 @@ export function reducer(
         errorMessage: '',
       };
     }
+
+    // TODO: EUI-2526 - Replay the fix above for the "active" case (means the user does not need to refresh to see the update)
 
     case fromActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS: {
       const approvedOrg =  {
@@ -373,6 +377,14 @@ export function reducer(
       };
     }
 
+    case fromActions.OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS_SUCCESS: {
+      const organisationDeletable = action.payload;
+      return {
+        ...state,
+        organisationDeletable
+      };
+    }
+
     default:
       return state;
   }
@@ -384,3 +396,4 @@ export const getPendingOrgEntities = (state: OrganisationState) => state.pending
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
 export const getOrgUsersList = (state: OrganisationState) => state.organisationUsersList;
 export const getShowOrgDetailsUserTab = (state: OrganisationState) => state.showOrganisationDetailsUserTab.showUserTab;
+export const getOrgDeletable = (state: OrganisationState) => state.organisationDeletable;

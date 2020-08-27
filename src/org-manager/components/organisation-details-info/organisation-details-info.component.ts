@@ -11,6 +11,7 @@ import { OrganisationVM} from 'src/org-manager/models/organisation';
 export class OrganisationDetailsInfoComponent {
 
   @Input() public org: OrganisationVM;
+  @Input() public orgDeletable: boolean;
   @Output() public approveEvent: EventEmitter<OrganisationVM> = new EventEmitter();
   @Output() public deleteEvent: EventEmitter<OrganisationVM> = new EventEmitter();
 

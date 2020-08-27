@@ -154,6 +154,23 @@ export class OrganisationEffects {
   );
 
   @Effect()
+  public getOrganisationDeletableStatus$ = this.actions$.pipe(
+    ofType(fromActions.OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS),
+    map((action: fromActions.GetOrganisationDeletableStatus) => action.payload),
+    switchMap(payload => {
+      return this.organisationService.getOrganisationDeletableStatus(payload).pipe(
+        map(response => new fromActions.GetOrganisationDeletableStatusSuccess(response.organisationDeletable)),
+        catchError(errorReport => {
+          this.loggerService.error(errorReport.error.message);
+          // Return an Action that adds an appropriate error message to the store, depending on the HTTP status code
+          const action = OrganisationEffects.getErrorAction(errorReport.error);
+          return of(action);
+        })
+      );
+    })
+  );
+
+  @Effect()
   public addReviewOrganisations$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.ADD_REVIEW_ORGANISATIONS),
     map(() => {

@@ -29,7 +29,9 @@ export enum OrgActionTypes {
     LOAD_PBA_ACCOUNT_NAME = '[Organisations] Load Pba Account Name',
     LOAD_PBA_ACCOUNT_NAME_SUCCESS = '[Organisations] Load Pba Account Name Success',
     LOAD_PBA_ACCOUNT_NAME_FAIL = '[Organisations] Load Pba Account Name Fail',
-    SHOW_ORGANISATION_DETAILS_USER_TAB = '[Organisation] Show Organisation Details User Tab'
+    SHOW_ORGANISATION_DETAILS_USER_TAB = '[Organisation] Show Organisation Details User Tab',
+    GET_ORGANISATION_DELETABLE_STATUS = '[Organisation] Get Organisation Deletable Status',
+    GET_ORGANISATION_DELETABLE_STATUS_SUCCESS = '[Organisation] Get Organisation Deletable Status Success',
 }
 
 export class LoadPendingOrganisations implements Action {
@@ -186,6 +188,16 @@ export class ShowOrganisationDetailsUserTab implements Action {
   constructor(public payload: {orgId: string; showUserTab: boolean}) { }
 }
 
+export class GetOrganisationDeletableStatus implements Action {
+  public readonly type = OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS;
+  constructor(public payload: string) { }
+}
+
+export class GetOrganisationDeletableStatusSuccess implements Action {
+  public readonly type = OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS_SUCCESS;
+  constructor(public payload: boolean) { }
+}
+
 export type OrganisationsActions =
     | LoadPendingOrganisations
     | LoadPendingOrganisationsSuccess
@@ -210,4 +222,5 @@ export type OrganisationsActions =
     | LoadOrganisationUsersSuccess
     | LoadOrganisationUsersFail
     | ResetOrganisationUsers
-    | ShowOrganisationDetailsUserTab;
+    | ShowOrganisationDetailsUserTab
+    | GetOrganisationDeletableStatusSuccess;

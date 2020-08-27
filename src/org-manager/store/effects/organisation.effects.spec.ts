@@ -33,7 +33,8 @@ describe('Organisation Effects', () => {
   const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
     'fetchOrganisations',
     'getOrganisationUsers',
-    'deleteOrganisation'
+    'deleteOrganisation',
+    'getOrganisationDeletableStatus'
   ]);
 
   const getAccountDetailsServiceMock = jasmine.createSpyObj('PbaAccountDetails', [
@@ -357,6 +358,40 @@ describe('Organisation Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.deleteOrganisationSuccess$).toBeObservable(expected);
+    });
+  });
+
+  describe('getOrganisationDeletableStatus$', () => {
+    it('should return a success action', () => {
+      const orgDeletableResponse = {
+        organisationDeletable: false
+      };
+      organisationServiceMock.getOrganisationDeletableStatus.and.returnValue(of(orgDeletableResponse));
+      const action = new fromActions.GetOrganisationDeletableStatus('abc123');
+      const completion = new fromActions.GetOrganisationDeletableStatusSuccess(false);
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.getOrganisationDeletableStatus$).toBeObservable(expected);
+    });
+
+    it('should return a failure action when there is an error', () => {
+      organisationServiceMock.getOrganisationDeletableStatus.and.returnValue(throwError({
+        error: {
+          apiStatusCode: 500,
+        } as ErrorReport
+      }));
+      const action = new fromActions.GetOrganisationDeletableStatus('abc123');
+      const completion = new AddGlobalError({
+        header: 'Sorry, there is a problem with the service',
+        errors: [{
+          bodyText: 'Try again later.',
+          urlText: null,
+          url: null
+        }]
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.getOrganisationDeletableStatus$).toBeObservable(expected);
     });
   });
 });
