@@ -22,7 +22,7 @@
     "build:ng": "ng build",
     "test:ng": "ng test",
     "test:coverage": "echo 'not implemented'",
-    "test:a11y": "ng e2e --protractorConfig=./test/accessibility/config/protractor.conf.js",
+    "test:a11y": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/protractor.conf.js",
     "lint": "yarn lint:ng",
     "lint:node": "cd api && yarn lint",
     "lint:ng": "ng lint",
