@@ -86,11 +86,17 @@
     }
   },
   "redis": {
-    "host": "xui-ao-webapp-prod.redis.cache.windows.net",	
-    "port": 6380,	
+    "host": "xui-ao-webapp-prod.redis.cache.windows.net",
+    "port": 6380,
     "tls": true,
     "prefix": "activity:",
     "ttl": 86400
+  },
+  "pact": {
+    "brokerUrl": "https://pact-broker.platform.hmcts.net",
+    "consumerVersion": "",
+    "brokerUsername": "",
+    "brokerPassword": ""
   }
 }
 

@@ -1,16 +1,15 @@
-@fullfunctional
 Feature: Login
 
   Background:
     When I navigate to EUI Approve Organisation Url
-@all
+  @fullfunctional
   Scenario: un-authenticated user login
     Then I am on Idam login page
     When I enter an Invalid email-address and password to login
     Then I should be redirected to the Idam login page
     Then I should see failure error summary
 
-@all @crossbrowser
+  @fullfunctional @crossbrowser
   Scenario: login and log out from approve organisation as HMCTS Admin user
     Given I am logged into approve organisation with HMCTS admin
     Then I should be redirected to approve organisation dashboard page
@@ -25,7 +24,7 @@ Feature: Login
     Then I should be redirected to the Idam login page
 
 
-  @all
+  @fullfunctional
   Scenario: Verify the direct link navigate to login page
     Given I navigate to approve organisation Url direct link
     Then I should be redirected back to Login page after direct link
