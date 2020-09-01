@@ -4,9 +4,10 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-          <h1 class="govuk-heading-xl">Delete this registration request?</h1>
-
           <ng-container *ngIf="orgForReview">
+            <h1 class="govuk-heading-xl">
+              Delete this {{ orgForReview.status==='PENDING' ? 'registration request' : 'organisation' }}?
+            </h1>
             <dl class="govuk-summary-list">
 
               <div class="govuk-summary-list__row">
@@ -50,10 +51,18 @@
 
               </div>
             </dl>
+            <div class="govuk-warning-text" *ngIf="orgForReview.status==='ACTIVE'">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                Make sure you have the organisation's permission before deleting them.
+              </strong>
+            </div>
           </ng-container>
-          <button type="button" class="govuk-button" [disabled]="confirmButtonDisabled"
+          <button type="button" class="govuk-button" [class.govuk-button--warning]="orgForReview.status==='ACTIVE'"
+                  [disabled]="confirmButtonDisabled"
                   (click)="onDeleteOrganisationHandler(orgForReview)">
-            Confirm
+            {{ orgForReview.status==='PENDING' ? 'Confirm' : 'Delete organisation' }}
           </button>
         </div>
       </div>
