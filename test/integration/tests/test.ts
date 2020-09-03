@@ -12,7 +12,8 @@ export const mocha = new Mocha({
     reporterOptions: {
         reportDir: 'reports/tests/api_functional/',
         reportName: 'XUI_AO_Integration_tests'
-    }
+    },
+    enableTimeouts: false
 });
 
 mocha.addFile('test/integration/tests/utils/setup_axios.ts');
