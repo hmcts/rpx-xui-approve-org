@@ -2,11 +2,12 @@ import * as healthcheck from '@hmcts/nodejs-healthcheck'
 import { AuthOptions, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
+import * as csurf from 'csurf'
 import * as express from 'express'
 import * as helmet from 'helmet'
-import {attach} from './auth'
-import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
-import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
+import { attach } from './auth'
+import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration'
+import { ERROR_NODE_CONFIG_ENV } from './configuration/constants'
 import {
   APP_INSIGHTS_KEY,
   COOKIE_TOKEN,
@@ -28,7 +29,8 @@ import {
   PROTOCOL,
   REDIS_KEY_PREFIX,
   REDIS_TTL,
-  REDISCLOUD_URL, S2S_SECRET,
+  REDISCLOUD_URL,
+  S2S_SECRET,
   SERVICE_S2S_PATH,
   SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
@@ -37,7 +39,7 @@ import {
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
 } from './configuration/references'
-import {appInsights} from './lib/appInsights'
+import { appInsights } from './lib/appInsights'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
@@ -45,6 +47,8 @@ import routes from './routes'
 export const app = express()
 
 export const logger = log4jui.getLogger('server')
+
+export const csrfProtection = csurf()
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -279,4 +283,4 @@ app.use(attach) // its called in routes.ts - no need to call it here
  * Secure Routes
  *
  */
-app.use('/api', routes)
+app.use('/api', csrfProtection, routes)
