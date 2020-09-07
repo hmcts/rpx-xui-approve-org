@@ -18,6 +18,9 @@ function environmentRoute(req, res) {
     req.session.env = true
     return req.session.save(() => {
       logger.info('new session saved! ', req.session.id)
+      const csrfToken = req.csrfToken()
+      logger.info('token for new session: ', csrfToken)
+      res.cookie('XSRF-TOKEN', csrfToken)
       res.status(200).send(uiConfig())
       res.end()
     })
