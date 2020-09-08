@@ -7,7 +7,7 @@ nodejs:
     IDAM_API_SERVICE: https://idam-api.aat.platform.hmcts.net
     IDAM_WEB_SERVICE: https://idam-web-public.aat.platform.hmcts.net
     FEATURE_SECURE_COOKIE_ENABLED: false
-    FEATURE_OIDC_ENABLED: true
+    FEATURE_OIDC_ENABLED: false
     REDISCLOUD_URL: redis://ignore:fake-password@${SERVICE_NAME}-redis-master:6379
     RD_PROFESSIONAL_API_SERVICE: http://rd-professional-api-pr-685.service.core-compute-preview.internal
   keyVaults:
