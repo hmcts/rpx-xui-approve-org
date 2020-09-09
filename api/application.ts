@@ -206,6 +206,15 @@ function healthcheckConfig(msUrl) {
   })
 }
 
+const healthChecks = {	
+  checks: {	
+    feeAndPayApi: healthcheckConfig(getConfigValue(SERVICES_FEE_AND_PAY_PATH)),	
+    rdProfessionalApi: healthcheckConfig(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)),	
+    redis: () => ({status: 'UP'}),
+  },	
+}
+
+
 if (showFeature(FEATURE_REDIS_ENABLED)) {
   xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
     console.log('REDIS EVENT FIRED!!')
