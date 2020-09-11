@@ -8,6 +8,7 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../
 const config = require('../../../config/conf.js');
 const EC = protractor.ExpectedConditions;
 const browserWaits = require('../../../support/customWaits');
+const { browser } = require('protractor');
 
 
 async function waitForElement(el) {
@@ -24,6 +25,8 @@ async function loginattemptCheckAndRelogin(username,password,world){
 
     try{
         await browserWaits.waitForstalenessOf(loginPage.emailAddress,5);
+        await browser.sleep(5000);
+        await browserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
         break;
       }catch(err){
         let emailFieldValue = await loginPage.getEmailFieldValue();
