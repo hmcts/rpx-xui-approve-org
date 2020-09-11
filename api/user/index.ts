@@ -1,6 +1,6 @@
 import * as express from 'express'
 import { getConfigValue } from '../configuration'
-import { ENVIRONMENT, USER_TIMEOUT_IN_SECONDS } from '../configuration/references'
+import { USER_TIMEOUT_IN_SECONDS } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 const logger = log4jui.getLogger('auth')
 
