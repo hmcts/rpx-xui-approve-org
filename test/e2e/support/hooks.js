@@ -93,25 +93,15 @@ const { Given, When, Then } = require('cucumber');
 
 
 defineSupportCode(({ After }) => {
-    After(function (scenario, done) {
+    After(async function (scenario) {
         const world = this;
         if (scenario.result.status === 'failed') {
-            browser.takeScreenshot().then(stream => {
-                const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-                world.attach(decodedImage, 'image/png');
-            })
-                .then(() => {
-                    Promise.all(getCookieCleanupPromises())
-                        .then(() => {
-                            done();
-                        });
-                });
-        } else {
-            Promise.all(getCookieCleanupPromises())
-                .then(() => {
-                    done();
-                });
-        }
+            const stream = await browser.takeScreenshot();
+            const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+            world.attach(decodedImage, 'image/png'); 
+        } 
+        await Promise.all(getCookieCleanupPromises());
+
     });
 }); 
 
