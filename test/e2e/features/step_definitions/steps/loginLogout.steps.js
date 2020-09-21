@@ -142,7 +142,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     browser.sleep(SHORT_DELAY);
     loginAttempts++;
     await loginattemptCheckAndRelogin(this.config.username,this.config.password,this);
-
+    browser.sleep(MID_DELAY);
   });
 
   Given(/^I am logged into approve organisation with approver prd admin$/, async function () {

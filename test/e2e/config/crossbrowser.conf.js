@@ -71,6 +71,20 @@ const config = {
       }
     }
   ],
+
+  onPrepare() {
+    const caps = browser.getCapabilities();
+    browser.manage()
+      .window()
+      .maximize();
+    browser.waitForAngularEnabled(false);
+    global.expect = chai.expect;
+    global.assert = chai.assert;
+    global.should = chai.should;
+    global.screenShotUtils = new screenShotUtils({
+      browserInstance: browser
+    })
+  }
 };
 
 
