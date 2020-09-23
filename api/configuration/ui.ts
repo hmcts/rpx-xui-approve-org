@@ -27,6 +27,7 @@ import {
   SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
+  SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
 } from './references'
@@ -62,6 +63,7 @@ export const uiConfig = (): UIConfig => {
       feeAndPayApi: getConfigValue(SERVICES_FEE_AND_PAY_PATH),
       idamApi: getConfigValue(SERVICES_IDAM_API_PATH),
       idamWeb: getConfigValue(SERVICES_IDAM_WEB),
+      iss: getConfigValue(SERVICES_ISS_PATH),
       rdProfessionalApi: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH),
       s2s: getConfigValue(SERVICE_S2S_PATH),
     } as UIConfigServices,
