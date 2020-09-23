@@ -8,6 +8,8 @@ const EC = protractor.ExpectedConditions;
 const browserWaits = require('../../../support/customWaits');
 const loginPage = require('../../pageObjects/loginLogoutObjects');
 
+const CucumberReporter = require('../../../support/CucumberReporter');
+
 async function waitForElement(el) {
     await browser.wait(result => {
         return element(by.className(el)).isPresent();
@@ -29,9 +31,14 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^I Check the active Organisation banner appear$/, async function () {
-        browser.sleep(LONG_DELAY);
-         await browserWaits.waitForElement(bannerPage.approveorgBanner);
-        await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
+   
+      CucumberReporter.AddMessage("Started step");
+      await browserWaits.waitForBrowserReadyState(120); 
+      await browser.sleep(LONG_DELAY);
+      CucumberReporter.AddMessage("Completed LONG DALAY"); 
+
+      await browserWaits.waitForElement(bannerPage.approveorgBanner);
+      await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
     });
 
     Then(/^I Verify the Text on Banner$/, async function () {
