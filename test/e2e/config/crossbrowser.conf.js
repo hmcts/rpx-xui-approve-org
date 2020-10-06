@@ -72,7 +72,6 @@ const config = {
     }
   ],
 
-
   onPrepare() {
     const caps = browser.getCapabilities();
     browser.manage()

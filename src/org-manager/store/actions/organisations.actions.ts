@@ -17,13 +17,21 @@ export enum OrgActionTypes {
     APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
     APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
     APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
+    NAV_TO_DELETE_ORGANISATION = '[Pending Organisations] Navigate to Delete an Organisation',
+    DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
+    DELETE_PENDING_ORGANISATION_SUCCESS = '[Pending Organisations] Delete Pending Organisation Success',
+    DELETE_PENDING_ORGANISATION_FAIL = '[Pending Organisations] Delete Pending Organisation Fail',
+    DELETE_ORGANISATION = '[Organisations] Delete Organisation',
+    DELETE_ORGANISATION_SUCCESS = '[Organisations] Delete Organisation Success',
     CLEAR_ERRORS = '[Pending Organisations] Clear Errors',
     UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Active Organisations Search String',
     UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING = '[Pending Organisations] Update Pending Organisations Search String',
     LOAD_PBA_ACCOUNT_NAME = '[Organisations] Load Pba Account Name',
     LOAD_PBA_ACCOUNT_NAME_SUCCESS = '[Organisations] Load Pba Account Name Success',
     LOAD_PBA_ACCOUNT_NAME_FAIL = '[Organisations] Load Pba Account Name Fail',
-    SHOW_ORGANISATION_DETAILS_USER_TAB = '[Organisation] Show Organisation Details User Tab'
+    SHOW_ORGANISATION_DETAILS_USER_TAB = '[Organisation] Show Organisation Details User Tab',
+    GET_ORGANISATION_DELETABLE_STATUS = '[Organisation] Get Organisation Deletable Status',
+    GET_ORGANISATION_DELETABLE_STATUS_SUCCESS = '[Organisation] Get Organisation Deletable Status Success',
 }
 
 export class LoadPendingOrganisations implements Action {
@@ -71,16 +79,47 @@ export class ApprovePendingOrganisationsSuccess implements Action {
 }
 
 export class ApprovePendingOrganisationsFail implements Action {
-    readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
+    public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
     constructor(public payload: any) { } // TODO change type it needs to change in the service used
+}
+
+export class NavigateToDeleteOrganisation implements Action {
+  public readonly type = OrgActionTypes.NAV_TO_DELETE_ORGANISATION;
+
+  constructor(public payload: OrganisationVM) { }
+}
+
+export class DeletePendingOrganisation implements Action {
+  public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION;
+  constructor(public payload: OrganisationVM) { }
+}
+
+export class DeletePendingOrganisationSuccess implements Action {
+  public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS;
+  constructor(public payload: OrganisationVM) { }
+}
+
+export class DeletePendingOrganisationFail implements Action {
+  public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION_FAIL;
+  constructor() { }
+}
+
+export class DeleteOrganisation implements Action {
+  public readonly type = OrgActionTypes.DELETE_ORGANISATION;
+  constructor(public payload: OrganisationVM) { }
+}
+
+export class DeleteOrganisationSuccess implements Action {
+  public readonly type = OrgActionTypes.DELETE_ORGANISATION_SUCCESS;
+  constructor(public payload: OrganisationVM) { }
 }
 
 // Load Active Organisation Action
 export class LoadActiveOrganisation {
-  readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS;
+  public readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS;
 }
 
-export class LoadActiveOrganisationSuccess  implements Action {
+export class LoadActiveOrganisationSuccess implements Action {
   public readonly type = OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS;
   constructor(public payload: OrganisationVM[]) {}
 }
@@ -149,11 +188,24 @@ export class ShowOrganisationDetailsUserTab implements Action {
   constructor(public payload: {orgId: string; showUserTab: boolean}) { }
 }
 
+export class GetOrganisationDeletableStatus implements Action {
+  public readonly type = OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS;
+  constructor(public payload: string) { }
+}
+
+export class GetOrganisationDeletableStatusSuccess implements Action {
+  public readonly type = OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS_SUCCESS;
+  constructor(public payload: boolean) { }
+}
+
 export type OrganisationsActions =
     | LoadPendingOrganisations
     | LoadPendingOrganisationsSuccess
     | LoadPendingOrganisationsFail
     | AddReviewOrganisations
+    | NavigateToDeleteOrganisation
+    | DeletePendingOrganisationSuccess
+    | DeleteOrganisationSuccess
     | DisplayErrorMessageOrganisations
     | ApprovePendingOrganisations
     | ApprovePendingOrganisationsSuccess
@@ -171,4 +223,5 @@ export type OrganisationsActions =
     | LoadOrganisationUsersSuccess
     | LoadOrganisationUsersFail
     | ResetOrganisationUsers
-    | ShowOrganisationDetailsUserTab;
+    | ShowOrganisationDetailsUserTab
+    | GetOrganisationDeletableStatusSuccess;

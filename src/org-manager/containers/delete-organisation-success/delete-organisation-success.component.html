@@ -1,0 +1,27 @@
+<div class="hmcts-width-container">
+  <main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+          <h1 class="govuk-panel__title">
+            {{orgForReview.name}} has been deleted
+          </h1>
+        </div>
+        <h2 class="govuk-heading-m">What happens next</h2>
+        <p class="govuk-body">
+          You should tell the {{ orgForReview.status==='PENDING' ? 'pending ' : '' }}organisation they've been deleted.
+        </p>
+        <p class="govuk-body">
+          They've also been removed from your list of {{ orgForReview.status==='PENDING' ? 'pending' : 'active' }} organisations.
+        </p>
+        <p class="govuk-body">
+          <span text>
+            <a [routerLink]="[orgForReview.status==='PENDING' ? '/' : '/active-organisation']">
+              Go back to {{ orgForReview.status==='PENDING' ? 'pending' : 'active' }} organisations
+            </a>
+          </span>
+        </p>
+      </div>
+    </div>
+  </main>
+</div>
