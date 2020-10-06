@@ -29,8 +29,7 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET,
-  SERVICES_ISS_PATH
+  SESSION_SECRET
 } from './references'
 
 export const uiConfig = (): UIConfig => {
