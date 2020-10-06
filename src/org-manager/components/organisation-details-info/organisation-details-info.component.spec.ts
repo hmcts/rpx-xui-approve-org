@@ -1,8 +1,8 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterModule } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
-import { OrganisationDetailsInfoComponent } from './organisation-details-info.component';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {RouterModule} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
+import {OrganisationVM} from 'src/org-manager/models/organisation';
+import {OrganisationDetailsInfoComponent} from './organisation-details-info.component';
 
 describe('OrganisationDetailsInfoComponent', () => {
   let component: OrganisationDetailsInfoComponent;
@@ -23,21 +23,21 @@ describe('OrganisationDetailsInfoComponent', () => {
     dxNumber: [{}],
     postCode: '',
     accountDetails: [{
-          account_number: 'PBA0088487',
-          account_name: 'RAY NIXON BROWN',
-          credit_limit: 5000,
-          available_balance: 5000,
-          status: 'Deleted',
-          effective_date: '2019-12-22T19:30:55.000Z'
-      }]
-    }
+      account_number: 'PBA0088487',
+      account_name: 'RAY NIXON BROWN',
+      credit_limit: 5000,
+      available_balance: 5000,
+      status: 'Deleted',
+      effective_date: '2019-12-22T19:30:55.000Z'
+    }]
+  }
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterModule, RouterTestingModule.withRoutes([]) ],
-      declarations: [ OrganisationDetailsInfoComponent ]
+      imports: [RouterModule, RouterTestingModule.withRoutes([])],
+      declarations: [OrganisationDetailsInfoComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -51,16 +51,37 @@ describe('OrganisationDetailsInfoComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call the approveOrganisation only when there is data', () => {
-    spyOn(component.approveEvent, 'emit').and.callThrough();
-    component.approveOrganisation(mockOrgData);
-    expect(component.approveEvent.emit).toHaveBeenCalledWith(mockOrgData);
+  describe('approveOrganisation', () => {
+
+    it('should call approveEvent.emit if there is organisation data.', () => {
+
+      spyOn(component.approveEvent, 'emit').and.callThrough();
+      component.approveOrganisation(mockOrgData);
+      expect(component.approveEvent.emit).toHaveBeenCalledWith(mockOrgData);
+    });
+
+    it('should NOT call approveEvent.emit if there is no organisation data.', () => {
+
+      spyOn(component.approveEvent, 'emit').and.callThrough();
+      component.approveOrganisation(null);
+      expect(component.approveEvent.emit).toHaveBeenCalledTimes(0);
+    });
   });
 
-  it('should call the approveOrganisation only when there is data', () => {
-    spyOn(component.approveEvent, 'emit').and.callThrough();
-    component.approveOrganisation(null);
-    expect(component.approveEvent.emit).toHaveBeenCalledTimes(0);
-  });
+  describe('deleteOrganisation', () => {
 
+    it('should call deleteEvent.emit if there is organisation data.', () => {
+
+      spyOn(component.deleteEvent, 'emit').and.callThrough();
+      component.deleteOrganisation(mockOrgData);
+      expect(component.deleteEvent.emit).toHaveBeenCalledWith(mockOrgData);
+    });
+
+    it('should NOT call deleteEvent.emit if there is no orgnisation data.', () => {
+
+      spyOn(component.deleteEvent, 'emit').and.callThrough();
+      component.deleteOrganisation(null);
+      expect(component.deleteEvent.emit).toHaveBeenCalledTimes(0);
+    });
+  });
 });

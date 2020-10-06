@@ -292,11 +292,11 @@
   "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/active-organisations/active-organisations.component.spec.ts",
   "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/active-organisations/active-organisations.component.ts",
   "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation-success/approve-organisation-success.component.html",
-  "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation-success/approve-organisation-success.component.spec.ts",
-  "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation-success/approve-organisation-success.component.ts",
+  "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation-success/delete-organisation-success.component.spec.ts",
+  "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation-success/delete-organisation-success.component.ts",
   "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation/approve-organisation.component.html",
-  "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation/approve-organisation.component.spec.ts",
-  "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation/approve-organisation.component.ts",
+  "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation/delete-organisation.component.spec.ts",
+  "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/approve-organisation/delete-organisation.component.ts",
   "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/edit-details/edit-details.component.html",
   "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/edit-details/edit-details.component.spec.ts",
   "/Users/sreekanth/work/moj/ex-ui/rpx-xui-approve-org/src/org-manager/containers/edit-details/edit-details.component.ts",
@@ -4782,7 +4782,7 @@
 14:54:20 (35303) DEBUG ClearTextReporter [31m-       }[39m
 14:54:20 (35303) DEBUG ClearTextReporter [31m-   }[39m
 14:54:20 (35303) DEBUG ClearTextReporter [32m+   export function makeOrganisationPayload(stateValues): OrganisationPayload {}[39m
-14:54:20 (35303) DEBUG ClearTextReporter 
+14:54:20 (35303) DEBUG ClearTextReporter
 14:54:20 (35303) DEBUG ClearTextReporter Ran all tests for this mutant.
 14:54:20 (35303) DEBUG ClearTextReporter [1m[32mMutant killed![39m[22m
 14:54:20 (35303) DEBUG ClearTextReporter 467. [Killed] ObjectLiteral
@@ -4812,7 +4812,7 @@
 14:54:20 (35303) DEBUG ClearTextReporter [31m-           },[39m
 14:54:20 (35303) DEBUG ClearTextReporter [31m-       }[39m
 14:54:20 (35303) DEBUG ClearTextReporter [32m+       return {}[39m
-14:54:20 (35303) DEBUG ClearTextReporter 
+14:54:20 (35303) DEBUG ClearTextReporter
 14:54:20 (35303) DEBUG ClearTextReporter Ran all tests for this mutant.
 14:54:20 (35303) DEBUG ClearTextReporter [1m[32mMutant killed![39m[22m
 14:54:20 (35303) DEBUG ClearTextReporter 469. [Killed] ObjectLiteral
@@ -4826,7 +4826,7 @@
 14:54:20 (35303) DEBUG ClearTextReporter [31m-               townCity: stateValues.townOrCity,[39m
 14:54:20 (35303) DEBUG ClearTextReporter [31m-           },[39m
 14:54:20 (35303) DEBUG ClearTextReporter [32m+           address: {},[39m
-14:54:20 (35303) DEBUG ClearTextReporter 
+14:54:20 (35303) DEBUG ClearTextReporter
 14:54:20 (35303) DEBUG ClearTextReporter Ran all tests for this mutant.
 14:54:20 (35303) DEBUG ClearTextReporter [1m[32mMutant killed![39m[22m
 14:54:20 (35303) DEBUG ClearTextReporter 470. [Killed] ArrayDeclaration
@@ -4840,7 +4840,7 @@
 14:54:20 (35303) DEBUG ClearTextReporter [31m-               },[39m
 14:54:20 (35303) DEBUG ClearTextReporter [31m-           ],[39m
 14:54:20 (35303) DEBUG ClearTextReporter [32m+           pbaAccounts: [],[39m
-14:54:20 (35303) DEBUG ClearTextReporter 
+14:54:20 (35303) DEBUG ClearTextReporter
 14:54:20 (35303) DEBUG ClearTextReporter Ran all tests for this mutant.
 14:54:20 (35303) DEBUG ClearTextReporter [1m[32mMutant killed![39m[22m
 14:54:20 (35303) DEBUG ClearTextReporter 471. [Killed] ObjectLiteral
@@ -4849,7 +4849,7 @@
 14:54:20 (35303) DEBUG ClearTextReporter [31m-                   pbaNumber: stateValues.PBAnumber1,[39m
 14:54:20 (35303) DEBUG ClearTextReporter [31m-               },[39m
 14:54:20 (35303) DEBUG ClearTextReporter [32m+               {},[39m
-14:54:20 (35303) DEBUG ClearTextReporter 
+14:54:20 (35303) DEBUG ClearTextReporter
 14:54:20 (35303) DEBUG ClearTextReporter Ran all tests for this mutant.
 14:54:20 (35303) DEBUG ClearTextReporter [1m[32mMutant killed![39m[22m
 14:54:20 (35303) DEBUG ClearTextReporter 472. [Killed] ObjectLiteral
@@ -4860,7 +4860,7 @@
 14:54:20 (35303) DEBUG ClearTextReporter [31m-               lastName: stateValues.lastName,[39m
 14:54:20 (35303) DEBUG ClearTextReporter [31m-           },[39m
 14:54:20 (35303) DEBUG ClearTextReporter [32m+           superUser: {},[39m
-14:54:20 (35303) DEBUG ClearTextReporter 
+14:54:20 (35303) DEBUG ClearTextReporter
 14:54:20 (35303) DEBUG ClearTextReporter Ran all tests for this mutant.
 14:54:20 (35303) DEBUG ClearTextReporter [1m[32mMutant killed![39m[22m
 14:54:20 (35303) DEBUG ClearTextReporter 475. [Killed] ObjectLiteral
@@ -4869,7 +4869,7 @@
 14:54:20 (35303) DEBUG ClearTextReporter [31m-                   pbaNumber: stateValues.PBAnumber2,[39m
 14:54:20 (35303) DEBUG ClearTextReporter [31m-               },[39m
 14:54:20 (35303) DEBUG ClearTextReporter [32m+               {},[39m
-14:54:20 (35303) DEBUG ClearTextReporter 
+14:54:20 (35303) DEBUG ClearTextReporter
 14:54:20 (35303) DEBUG ClearTextReporter Ran all tests for this mutant.
 14:54:20 (35303) DEBUG HtmlReporter Using configured output folder reports/tests/mutation/node/
 14:54:20 (35303) DEBUG MutationTestReportCalculator No breaking threshold configured. Won't fail the build no matter how low your mutation score is. Set `thresholds.break` to change this behavior.

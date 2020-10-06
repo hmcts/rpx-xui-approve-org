@@ -4,7 +4,6 @@ import * as fromMock from '../../mock/pending-organisation.mock';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
 
-
 describe('Organisation Reducer', () => {
 
   const pendingOrganisationsMock: OrganisationVM[] = fromMock.PendingOrganisationsMockCollection1;
@@ -19,22 +18,18 @@ describe('Organisation Reducer', () => {
 
   describe('LOAD_PENDING_ORGANISATION action', () => {
     it('should return the initial state.pendingOrganisations', () => {
-
       const action = new fromActions.LoadPendingOrganisations();
       const state = reducer(initialState, action);
       expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: true, searchString: ''});
     });
-
   });
 
   describe('LOAD_ACTIVE_ORGANISATION action', () => {
-    it('should return the initial state.pendingOrganisations', () => {
-
+    it('should return the initial state.activeOrganisations', () => {
       const action = new fromActions.LoadActiveOrganisation();
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: false, searchString: ''});
+      expect(state.activeOrganisations).toEqual({orgEntities: {}, loaded: false, loading: true, searchString: ''});
     });
-
   });
 
   describe('LOAD_PENDING_ORGANISATION_SUCCESS action', () => {
@@ -43,21 +38,18 @@ describe('Organisation Reducer', () => {
       const state = reducer(initialState, action);
       expect(state).toEqual(fromMock.orgStatePending as any);
     });
-
   });
 
   describe('LOAD_ACTIVE_ORGANISATION_SUCCESS action', () => {
-    it('should update the state.pendingOrganisations', () => {
+    it('should update the state.activeOrganisations', () => {
       const action = new fromActions.LoadActiveOrganisationSuccess(pendingOrganisationsMock);
       const state = reducer(initialState, action);
       expect(state).toEqual(fromMock.orgStateActive as any);
     });
-
   });
 
   describe('ADD_REVIEW_ORGANISATIONS action', () => {
     it('should update the state.orgForReview', () => {
-
       const action = new fromActions.AddReviewOrganisations(pendingOrganisationsMock[0]);
       const state = reducer(initialState, action);
       expect(state.orgForReview).toEqual(pendingOrganisationsMock[0]);
@@ -66,16 +58,14 @@ describe('Organisation Reducer', () => {
 
   describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
     it('should update the state with account details', () => {
-      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: fromMock.LoadPbaAccuntsObj});
+      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: fromMock.LoadPbaAccountsObj});
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: fromMock.LoadPbaAccuntsObj }} as any);
+      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: fromMock.LoadPbaAccountsObj }} as any);
     });
-
   });
 
   describe('LOAD_ORGANISATION_USERS action', () => {
     it('should return the initial state.organisationUsersList', () => {
-
       const action = new fromActions.LoadOrganisationUsers('orgId');
       const state = reducer(initialState, action);
       expect(state.organisationUsersList).toEqual({users: null, isError: false});
@@ -128,6 +118,44 @@ describe('Organisation Reducer', () => {
       const action = new fromActions.ShowOrganisationDetailsUserTab({orgId: 'dummy', showUserTab: true});
       const state = reducer(initialState, action);
       expect(state.showOrganisationDetailsUserTab.showUserTab).toBeFalsy();
+    });
+  });
+
+  describe('GET_ORGANISATION_DELETABLE_STATUS_SUCCESS action', () => {
+    it('should update state.organisationDeletable with the payload value', () => {
+      const action = new fromActions.GetOrganisationDeletableStatusSuccess(true);
+      const state = reducer(initialState, action);
+      expect(state.organisationDeletable).toEqual(true);
+    });
+  });
+
+  describe('DELETE_PENDING_ORGANISATION_SUCCESS action', () => {
+    it('should remove the deleted organisation from state.pendingOrganisations.orgEntities', () => {
+      // Load a pending organisation and check it is contained in the state
+      const preAction = new fromActions.LoadPendingOrganisationsSuccess(pendingOrganisationsMock);
+      const preState = reducer(initialState, preAction);
+      expect(preState.pendingOrganisations.orgEntities).toEqual({
+        [pendingOrganisationsMock[0].organisationId]: pendingOrganisationsMock[0]
+      });
+      // Delete the organisation and check it is removed from the state
+      const action = new fromActions.DeletePendingOrganisationSuccess(pendingOrganisationsMock[0]);
+      const state = reducer(preState, action);
+      expect(state.pendingOrganisations.orgEntities).toEqual({});
+    });
+  });
+
+  describe('DELETE_ORGANISATION_SUCCESS action', () => {
+    it('should remove the deleted organisation from state.activeOrganisations.orgEntities', () => {
+      // Load an active organisation and check it is contained in the state
+      const preAction = new fromActions.LoadActiveOrganisationSuccess(pendingOrganisationsMock);
+      const preState = reducer(initialState, preAction);
+      expect(preState.activeOrganisations.orgEntities).toEqual({
+        [pendingOrganisationsMock[0].organisationId]: pendingOrganisationsMock[0]
+      });
+      // Delete the organisation and check it is removed from the state
+      const action = new fromActions.DeleteOrganisationSuccess(pendingOrganisationsMock[0]);
+      const state = reducer(preState, action);
+      expect(state.activeOrganisations.orgEntities).toEqual({});
     });
   });
 });
