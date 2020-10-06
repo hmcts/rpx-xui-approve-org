@@ -49,6 +49,7 @@ export const uiConfig = (): UIConfig => {
     health: healthEndpoints() as UIConfigServices,
     idamClient: getConfigValue(IDAM_CLIENT),
     indexUrl: getConfigValue(INDEX_URL),
+    iss: getConfigValue(SERVICES_ISS_PATH),
     logging: getConfigValue(LOGGING),
     maxLogLine: getConfigValue(MAX_LOG_LINE),
     microservice: getConfigValue(MICROSERVICE),

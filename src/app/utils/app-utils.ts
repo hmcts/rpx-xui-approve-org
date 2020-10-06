@@ -57,12 +57,14 @@ export class AppUtils {
     organisationVm.view = 'View';
     organisationVm.status = apiOrg.status;
     organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
-    organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
-    organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
-    organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
-    organisationVm.postCode = apiOrg.contactInformation[0].postCode;
-    organisationVm.townCity = apiOrg.contactInformation[0].townCity;
-    organisationVm.county = apiOrg.contactInformation[0].county;
+    if (apiOrg.contactInformation && apiOrg.contactInformation[0]) {
+      organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
+      organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
+      organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
+      organisationVm.postCode = apiOrg.contactInformation[0].postCode;
+      organisationVm.townCity = apiOrg.contactInformation[0].townCity;
+      organisationVm.county = apiOrg.contactInformation[0].county;
+    }
     organisationVm.sraId = apiOrg.sraId;
     return organisationVm;
   }
