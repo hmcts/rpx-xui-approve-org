@@ -78,4 +78,15 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
       ])
     }
+
+    after('securityScan') {
+            publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/",
+            reportFiles          : 'activescan.html',
+            reportName           : 'XUIAO ZAP Security Scan Report'
+        ])
+    }
 }

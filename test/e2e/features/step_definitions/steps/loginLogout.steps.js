@@ -127,8 +127,9 @@ defineSupportCode(function ({ Given, When, Then }) {
 
 
   Then(/^I should be redirected to approve organisation dashboard page$/, async function () {
-    browser.sleep(LONG_DELAY);
-     await browserWaits.waitForElement(loginPage.dashboard_header);
+    browser.sleep(SHORT_DELAY);
+    await browserWaits.waitForBrowserReadyState(120);
+    await browserWaits.waitForElement(loginPage.dashboard_header);
     await expect(loginPage.dashboard_header.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.dashboard_header.getText())
       .to
@@ -142,7 +143,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     browser.sleep(SHORT_DELAY);
     loginAttempts++;
     await loginattemptCheckAndRelogin(this.config.username,this.config.password,this);
-    browser.sleep(MID_DELAY);
   });
 
   Given(/^I am logged into approve organisation with approver prd admin$/, async function () {
