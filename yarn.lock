@@ -434,15 +434,16 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@^2.23.4":
-  version "2.23.4"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.23.4.tgz#98cf269d286663b718351388a7bd004d236b41c8"
-  integrity sha512-X81MoykZIOVdiNYJJ09g9VGv534f6QVw5949Hi9HR7/QMlB329ALlLtvwDVVLzGIxl2GeyqzqTmaLg1oTXHkoA==
+"@hmcts/rpx-xui-node-lib@^2.24.0":
+  version "2.24.2"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.24.2.tgz#da0d4b7c5e0c5e9b8b6532587a4bedadb0ae559a"
+  integrity sha512-eIUasb0ezBl1oPIPyHdI9I4Be2yc2n2y17c4LIri5JDtK0mlzFbZYvhqWvlsoibAeS6Qi7UpqOmvPTVjpyIazg==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.18.0"
     caller-path "^3.0.0"
     connect-redis "^4.0.4"
+    csurf "^1.11.0"
     debug "^4.1.1"
     deepmerge "^4.2.2"
     express "^4.17.1"
