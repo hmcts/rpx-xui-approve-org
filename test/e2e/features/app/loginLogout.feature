@@ -28,3 +28,73 @@ Feature: Login
   Scenario: Verify the direct link navigate to login page
     Given I navigate to approve organisation Url direct link
     Then I should be redirected back to Login page after direct link
+
+
+
+@FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+
+
+
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+
+
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+ 
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+
+
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+  
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page
+    
+  @FirstAttemptLogin
+  Scenario: login and log out from approve organisation as HMCTS Admin user
+    Given I am logged into approve organisation with HMCTS admin
+    Then I should be redirected to approve organisation dashboard page

@@ -22,11 +22,7 @@
     "build:ng": "ng build",
     "test:ng": "ng test",
     "test:coverage": "echo 'not implemented'",
-<<<<<<< HEAD
-    "test:a11y": "mocha --reporter test/accessibility/reporter/customReporter.js  ./test/accessibility/tests/*.js",
-=======
     "test:a11y": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/protractor.conf.js",
->>>>>>> master
     "lint": "yarn lint:ng",
     "lint:node": "cd api && yarn lint",
     "lint:ng": "ng lint",
@@ -179,11 +175,8 @@
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2"
-<<<<<<< HEAD
-=======
   },
   "resolutions": {
     "lodash": "^4.17.19"
->>>>>>> master
   }
 }

@@ -12,8 +12,6 @@ class Actions{
 
     }
 
-<<<<<<< HEAD
-=======
     checkField(cssLocator){
         return ['wait for element ' + cssLocator + ' to be visible', 'check field ' + cssLocator]
     }
@@ -23,32 +21,24 @@ class Actions{
     }
 
 
->>>>>>> master
     waitForPageWithCssLocator(cssLocator) {
         return ['wait for element ' + cssLocator+' to be visible'];
 
     }
 
-<<<<<<< HEAD
-=======
     waitForPageWithCssLocatorNotPresent(cssLocator) {
         return ['wait for element ' + cssLocator + ' to be hidden'];
 
     }
 
 
->>>>>>> master
     inputField(cssLocator,inputText) {
         return ['set field ' + cssLocator+' to ' + inputText];
 
     }
 
     clickElement(cssLocator) {
-<<<<<<< HEAD
-        return ['click element ' + cssLocator ];
-=======
         return ['wait for element ' + cssLocator + ' to be visible', 'click element ' + cssLocator ];
->>>>>>> master
 
     }
 

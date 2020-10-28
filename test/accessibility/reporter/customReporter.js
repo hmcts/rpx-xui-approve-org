@@ -1,11 +1,7 @@
 var mocha = require('mocha');
 const fs = require('fs');
 
-<<<<<<< HEAD
-const {conf} = require('../config/config');
-=======
 const { conf } = require('../config/config');
->>>>>>> master
 
 module.exports = report;
 
@@ -15,16 +11,6 @@ function report(runner) {
     let passCounter = 0;
     let failCounter = 0;
     runner.on('pass', function (test) {
-<<<<<<< HEAD
-        console.log('[pass]%s', test.title);
-        tests.push(getTestDetails(test))
-        passCounter++;
-
-    });
-
-    runner.on('fail', function (test, err) {
-        console.log('[fail]%s(%s)', test.title, err.message);
-=======
         if (test.ctx.a11yResult.issues.length === 0) {
             onPass(test);
         } else {
@@ -50,23 +36,10 @@ function report(runner) {
         console.log('\t[ FAIL ] ' + test.title);
         console.log('\t\t' + err.message);
         console.log('\n');
->>>>>>> master
         // console.log(test);
         tests.push(getTestDetails(test))
         failCounter++;
 
-<<<<<<< HEAD
-    });
-
-    runner.on('end', function () {
-        // console.log(tests);
-        generateReport(passCounter,failCounter,tests);
-        process.exit(0);
-    });
-}
-
-function generateReport(passCount,failCount, tests){
-=======
     }
 
 
@@ -79,84 +52,43 @@ function generateReport(passCount,failCount, tests){
 
 
 function generateReport(passCount, failCount, tests) {
->>>>>>> master
     let reportJson = {
         appName: conf.appName,
         passed: passCount,
         failed: failCount,
-<<<<<<< HEAD
-        tests:tests
-    };
-=======
         tests: tests
     };
     consoleReport(reportJson);
->>>>>>> master
 
     let sourceReport = __dirname + '/Report.html';
     let destDir = process.env.PWD + "/" + conf.reportPath;
     if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir);
-<<<<<<< HEAD
-    } 
-    let destReport = destDir+"Report.html"
-=======
     }
     let destReport = destDir + "Report.html"
->>>>>>> master
     let destJson = destDir + "report_output.js"
 
     fs.copyFileSync(sourceReport, destReport);
 
     let htmlData = fs.readFileSync(sourceReport, 'utf8');
-<<<<<<< HEAD
-    var result = 'var replacejsoncontent = ' +JSON.stringify(reportJson);
-=======
     var result = 'var replacejsoncontent = ' + JSON.stringify(reportJson);
->>>>>>> master
     fs.writeFileSync(destJson, result);
     copyResources();
 
 
 }
 
-<<<<<<< HEAD
-function getTestDetails(test){
-    return {
-        name: test.title,
-        status: test.state,
-        error: test.err.message,
-=======
 function getTestDetails(test) {
     return {
         name: test.title,
         status: test.state,
         error: test.err ? test.err.message : "",
->>>>>>> master
         a11yResult: test.ctx.a11yResult
     };
 
 }
 
 
-<<<<<<< HEAD
-function copyResources(){
-    let resourceDir = process.env.PWD + "/" + conf.reportPath + 'resources/'; 
-    let cssDir = resourceDir+ 'css/';
-    if (!fs.existsSync(cssDir)) {
-        fs.mkdirSync(cssDir, { recursive: true });
-    } 
-    
-    let webfontsDir = resourceDir+'webfonts/';
-    if (!fs.existsSync(webfontsDir)) {
-        fs.mkdirSync(webfontsDir, { recursive: true });
-    }  
-
-    fs.copyFileSync(__dirname + '/resources/angular.min.js', resourceDir+'angular.min.js'); 
-    fs.copyFileSync(__dirname + '/resources/css/all.css', cssDir + 'all.css');
-    fs.copyFileSync(__dirname + '/resources/webfonts/fa-solid-900.woff2', webfontsDir + 'fa-solid-900.woff2'); 
- 
-=======
 function copyResources() {
     let resourceDir = process.env.PWD + "/" + conf.reportPath + 'resources/';
     let cssDir = resourceDir + 'css/';
@@ -205,6 +137,5 @@ function consoleReport(reportjson) {
         }
         console.log("\t");
     }
->>>>>>> master
 
 }
