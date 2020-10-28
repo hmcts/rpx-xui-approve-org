@@ -3,7 +3,6 @@ import {getConfigValue} from '../configuration'
 import {
 SERVICES_RD_PROFESSIONAL_API_PATH,
 } from '../configuration/references'
-import { http } from '../lib/http'
 
 /**
  * Handle Update PBA Number
@@ -20,7 +19,7 @@ async function handleUpdatePBARoute(req: express.Request, res: express.Response,
       try {
           const {paymentAccounts, orgId} = req.body
           const updatePbaUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${orgId}/pbas`
-          await http.put(updatePbaUrl, {paymentAccounts})
+          await req.http.put(updatePbaUrl, {paymentAccounts})
           res.status(200).send()
       } catch (error) {
           console.error(error)

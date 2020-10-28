@@ -24,12 +24,11 @@ export class BackLinkComponent implements OnInit, OnDestroy {
   }
 
   public onGoBack() {
-    this.store.dispatch(new fromRoot.Back());
-    if (this.currentUrl === 'active-organisation') {
-      this.store.dispatch(new fromRoot.Go({path: ['/pending-organisations']}));
-    } else {
-      this.store.dispatch(new fromRoot.Back());
-    }
+      if ( this.currentUrl === 'active-organisation') {
+        this.store.dispatch(new fromRoot.Go({path: ['/pending-organisations']}));
+      } else {
+        this.store.dispatch(new fromRoot.Back());
+      }
   }
 
   public ngOnDestroy(): void {

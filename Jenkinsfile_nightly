@@ -20,10 +20,10 @@ def channel   = '#xui-pipeline'
 
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
-
+    enableSecurityScan()
     enableFullFunctionalTest(30)
     enableMutationTest()
-
+    enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     after('checkout') {sh 'yarn cache clean'}
     after('build') {
@@ -75,6 +75,28 @@ withNightlyPipeline(type, product, component) {
             reportDir            : "reports/tests/mutation/node/",
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Mutation tests'
+        ])
+    }
+
+    after('crossBrowserTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/crossbrowser/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Cross Browser Tests'
+      ])
+    }
+
+    after('securityScan') {
+            publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/",
+            reportFiles          : 'activescan.html',
+            reportName           : 'XUIAO ZAP Security Scan Report'
         ])
     }
 }
