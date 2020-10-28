@@ -119,10 +119,6 @@ withPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
 
-<<<<<<< HEAD
-        sh 'yarn test:a11y'
-=======
->>>>>>> master
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

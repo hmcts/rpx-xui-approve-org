@@ -4,12 +4,9 @@ const pa11y = require('pa11y');
 const assert = require('assert');
 const {conf} = require('../config/config');
 
-<<<<<<< HEAD
-=======
 const jwt = require('jsonwebtoken');
 const puppeteer = require('puppeteer');
 
->>>>>>> master
 
 const fs = require('fs');
 
@@ -28,28 +25,6 @@ async function pa11ytest(test,actions,timeoutVal) {
 
     const startTime = Date.now();
 
-<<<<<<< HEAD
-    let result;
-    try{
-        result = await pa11y(conf.baseUrl, {
-            "chromeLaunchConfig": { "ignoreHTTPSErrors": false , headless:true } ,
-            timeout: 60000,
-            screenCapture: screenshotPath,
-            // log: {
-            //     debug: console.log,
-            //     error: console.error,
-            //     info: console.info
-            // },
-            actions: actions
-        })
-    }catch(err){
-        const elapsedTime = Date.now() - startTime;
-        console.log("Test Execution time : " + elapsedTime);
-        console.log(err);
-        throw err;
-    }
-   
-=======
     let token = jwt.sign({
     data: 'foobar'
     }, 'secret', { expiresIn: 60 * 60 });
@@ -106,26 +81,18 @@ async function pa11ytest(test,actions,timeoutVal) {
   
     await page.close();
     await browser.close();
->>>>>>> master
     const elapsedTime = Date.now() - startTime;
     result.executionTime = elapsedTime;
     result.screenshot = screenshotReportRef;
     test.a11yResult = result;
     console.log("Test Execution time : "+elapsedTime);
-<<<<<<< HEAD
-    assert(result.issues.length === 0, "accessibility issues reported") 
-=======
     if (conf.failTestOna11yIssues){
         assert(result.issues.length === 0, "a11y issues reported") 
     }
->>>>>>> master
     return result;
 
 }
 
-<<<<<<< HEAD
-=======
  
 
->>>>>>> master
 module.exports = { pa11ytest}
