@@ -1,0 +1,71 @@
+<div class="hmcts-width-container">
+  <app-back-link [store]="store"></app-back-link>
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <ng-container *ngIf="orgForReview">
+            <h1 class="govuk-heading-xl">
+              Delete this {{ orgForReview.status==='PENDING' ? 'registration request' : 'organisation' }}?
+            </h1>
+            <dl class="govuk-summary-list">
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <div>{{orgForReview.name}}</div>
+                  <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.organisationId}}</div>
+                </dd>
+              </div>
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {{orgForReview.addressLine1}}<br>
+                  <div *ngIf='orgForReview.addressLine2'>
+                    {{orgForReview.addressLine2}}<br>
+                  </div>
+                  {{orgForReview.townCity}}<br>
+                  <div *ngIf='orgForReview.county'>
+                    {{orgForReview.county}}<br>
+                  </div>
+                  <div *ngIf='orgForReview.postCode'>
+                    {{orgForReview?.postCode}}<br>
+                  </div>
+                </dd>
+
+              </div>
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Administrator
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <div>{{orgForReview.admin}}</div>
+                  <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.adminEmail}}</div>
+                </dd>
+
+              </div>
+            </dl>
+            <div class="govuk-warning-text" *ngIf="orgForReview.status==='ACTIVE'">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                Make sure you have the organisation's permission before deleting them.
+              </strong>
+            </div>
+          </ng-container>
+          <button type="button" class="govuk-button" [class.govuk-button--warning]="orgForReview.status==='ACTIVE'"
+                  [disabled]="confirmButtonDisabled"
+                  (click)="onDeleteOrganisationHandler(orgForReview)">
+            {{ orgForReview.status==='PENDING' ? 'Confirm' : 'Delete organisation' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

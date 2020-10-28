@@ -17,8 +17,9 @@ async function waitForElement(el) {
 
 defineSupportCode(function ({ Given, When, Then,And }) {
 
-  Then('I click first organization view link', async function(){
-    await organisationList.waitForOrgListToDisplay();
+  Then('I click first organization view link',{ timeout: 600 * 1000 }, async function(){
+    browser.sleep(LONG_DELAY);
+    // await organisationList.waitForOrgListToDisplay();
     await organisationList.clickViewOnFirstOrganisation();
 
   });
@@ -30,7 +31,7 @@ defineSupportCode(function ({ Given, When, Then,And }) {
       // await browserWaits.waitForElement(bannerPage.selectCheckBox);
       // await bannerPage.selectCheckBox.click();
       // browser.sleep(MID_DELAY);
-      await browserWaits.waitForElement(bannerPage.activate_button,60); 
+      await browserWaits.waitForElement(bannerPage.activate_button,60);
       await expect(bannerPage.activate_button.isDisplayed()).to.eventually.be.true;
       await bannerPage.activate_button.click();
       browser.sleep(MID_DELAY);

@@ -50,8 +50,11 @@ function OrganisationListPage() {
     }
 
     this.clickViewOnFirstOrganisation = async function () {
+        browser.sleep(MID_DELAY);
         const rowText = await this.rows.get(1).getText();
-        await this.rows.get(1).element(by.xpath("//a[contains(text(),'View')]")).click();
+        const viewLink = await this.rows.get(1).element(by.xpath("//a[contains(text(),'View')]"));
+        await browser.executeScript('arguments[0].scrollIntoView()',viewLink);
+        await viewLink.click();
         await browserWaits.waitForElement(element(by.xpath('//h1[contains(text(),"Organisation details")]')));
     };
 

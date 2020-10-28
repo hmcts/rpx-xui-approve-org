@@ -1,18 +1,18 @@
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AppComponent } from './containers/app/app.component';
-import { SharedModule } from '../shared/shared.module';
-import { CookieModule } from 'ngx-cookie';
-import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
+import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
 import { MetaReducer, StoreModule } from '@ngrx/store';
-import { storeFreeze } from 'ngrx-store-freeze';
-import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
-import { effects } from './store/effects';
+import { storeFreeze } from 'ngrx-store-freeze';
+import { CookieModule } from 'ngx-cookie';
+import { environment } from '../environments/environment';
+import { SharedModule } from '../shared/shared.module';
+import { AppComponent } from './containers/app/app.component';
 import { CustomSerializer, reducers } from './store/';
+import { effects } from './store/effects';
 
 // from Containers
 import * as fromContainers from './containers/';
@@ -24,17 +24,21 @@ import { ROUTES } from './app.routes';
 
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import config from 'config';
-import {AuthService} from '../services/auth/auth.service';
-import { MonitoringService } from './services/monitoring.service';
-import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
-import { LoggerService } from './services/logger.service';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
+import {AuthService} from '../services/auth/auth.service';
+import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
 import { CryptoWrapper } from './services/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { LoggerService } from './services/logger.service';
+import { MonitoringService } from './services/monitoring.service';
 
+import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
+import { initApplication } from './app-initilizer';
+import { EnvironmentService } from './services/environment.service';
+import {LogOutKeepAliveService} from './services/keep-alive/keep-alive.service';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -61,14 +65,23 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot()
+    ExuiCommonLibModule.forRoot(),
+    NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
+    LogOutKeepAliveService,
     { provide: RouterStateSerializer, useClass: CustomSerializer },
     AuthService,
     { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
     CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
-    {provide: ErrorHandler, useClass: DefaultErrorHandler}],
+    {provide: ErrorHandler, useClass: DefaultErrorHandler},
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initApplication,
+      deps: [EnvironmentService],
+      multi: true
+    },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

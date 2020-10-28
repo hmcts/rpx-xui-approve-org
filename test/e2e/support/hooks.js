@@ -15,6 +15,9 @@ const targetJson = `${jsonReports}/cucumber_report.json`;
 // var targetXML = xmlReports + "/cucumber_report.xml";
 const { Given, When, Then } = require('cucumber');
 
+const CucumberReportLog = require("./CucumberReporter");
+
+
 
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
@@ -92,26 +95,22 @@ const { Given, When, Then } = require('cucumber');
 // });
 
 
-defineSupportCode(({ After }) => {
-    After(function (scenario, done) {
+defineSupportCode(({ Before,After }) => {
+    Before(function (scenario, done) {
+        const world = this;
+        CucumberReportLog.setScenarioWorld(this);
+        done();
+    });
+
+    After(async function (scenario) {
         const world = this;
         if (scenario.result.status === 'failed') {
-            browser.takeScreenshot().then(stream => {
-                const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-                world.attach(decodedImage, 'image/png');
-            })
-                .then(() => {
-                    Promise.all(getCookieCleanupPromises())
-                        .then(() => {
-                            done();
-                        });
-                });
-        } else {
-            Promise.all(getCookieCleanupPromises())
-                .then(() => {
-                    done();
-                });
-        }
+            const stream = await browser.takeScreenshot();
+            const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+            world.attach(decodedImage, 'image/png'); 
+        } 
+        await Promise.all(getCookieCleanupPromises());
+
     });
 }); 
 

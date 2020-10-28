@@ -1,47 +1,54 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck'
+import { AuthOptions, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
+import * as csurf from 'csurf'
 import * as express from 'express'
-import * as session from 'express-session'
 import * as helmet from 'helmet'
-import * as auth from './auth'
-import {environmentCheckText, getConfigValue, getEnvironment, showFeature} from './configuration'
-import {ERROR_NODE_CONFIG_ENV} from './configuration/constants'
+import { attach } from './auth'
+import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration'
+import { ERROR_NODE_CONFIG_ENV } from './configuration/constants'
 import {
   APP_INSIGHTS_KEY,
   COOKIE_TOKEN,
   COOKIES_USERID,
   FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
+  FEATURE_OIDC_ENABLED,
   FEATURE_PROXY_ENABLED,
   FEATURE_REDIS_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
   HELMET,
   IDAM_CLIENT,
+  IDAM_SECRET,
   MAX_LINES,
   MAX_LOG_LINE,
   MICROSERVICE,
   NOW,
   OAUTH_CALLBACK_URL,
   PROTOCOL,
+  REDIS_KEY_PREFIX,
+  REDIS_TTL,
+  REDISCLOUD_URL,
+  S2S_SECRET,
   SERVICE_S2S_PATH,
   SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
+  SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
 } from './configuration/references'
-import {appInsights} from './lib/appInsights'
-import {errorStack} from './lib/errorStack'
+import { appInsights } from './lib/appInsights'
 import * as log4jui from './lib/log4jui'
-import {getStore} from './lib/sessionStore'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
-import serviceRouter from './services/serviceAuth'
 
 export const app = express()
 
 export const logger = log4jui.getLogger('server')
+
+export const csrfProtection = csurf()
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -97,26 +104,98 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet(getConfigValue(HELMET)))
 }
 
-app.use(
-  session({
-    cookie: {
-      httpOnly: true,
-      maxAge: 28800000,
-      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
-    },
-    name: 'jui-webapp',
-    resave: true,
-    saveUninitialized: true,
-    secret: getConfigValue(SESSION_SECRET),
-    store: getStore(),
-  }) as express.RequestHandler
-)
+console.log('OIDC enabled:')
+console.log(showFeature(FEATURE_OIDC_ENABLED))
 
-app.use(errorStack)
+console.log('SERVICES_ISS_PATH:')
+console.log(getConfigValue(SERVICES_ISS_PATH))
+
+if (showFeature(FEATURE_OIDC_ENABLED)) {
+  console.log('OIDC enabled')
+}
+
+const secret = getConfigValue(IDAM_SECRET)
+const idamClient = getConfigValue(IDAM_CLIENT)
+const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
+const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
+const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
+
+const s2sSecret = getConfigValue(S2S_SECRET)
+
+const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`
+const authorizationUrl = `${idamWebUrl}/login`
+console.log('tokenUrl', tokenUrl)
+
+//TODO: we can move these out into proper config at some point to tidy up even further
+const options: AuthOptions = {
+  // we only want to allow prd-admin roles
+  allowRolesRegex: 'prd-admin',
+  authorizationURL: authorizationUrl,
+  callbackURL: getConfigValue(OAUTH_CALLBACK_URL),
+  clientID: idamClient,
+  clientSecret: secret,
+  discoveryEndpoint: `${idamWebUrl}/o`,
+  issuerURL: issuerUrl,
+  logoutURL: idamApiPath,
+  responseTypes: ['code'],
+  scope: 'profile openid roles manage-user create-user',
+  sessionKey: 'xui-approve-org',
+  tokenEndpointAuthMethod: 'client_secret_post',
+  tokenURL: tokenUrl,
+  useRoutes: true,
+}
+
+const baseStoreOptions = {
+  cookie: {
+    httpOnly: true,
+    maxAge: 1800000,
+    secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
+  },
+  name: 'ao-webapp',
+  resave: false,
+  saveUninitialized: false,
+  secret: getConfigValue(SESSION_SECRET),
+}
+
+const redisStoreOptions = {
+  redisStore: { ...baseStoreOptions, ...{
+      redisStoreOptions: {
+        redisCloudUrl: getConfigValue(REDISCLOUD_URL),
+        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
+        redisTtl: getConfigValue(REDIS_TTL),
+      },
+    },
+  },
+}
+
+const fileStoreOptions = {
+  fileStore: { ...baseStoreOptions, ...{
+      fileStoreOptions: {
+        filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
+      },
+    },
+  },
+}
+
+const nodeLibOptions = {
+  auth: {
+    s2s: {
+      microservice: getConfigValue(MICROSERVICE),
+      s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
+      s2sSecret: s2sSecret.trim(),
+    },
+  },
+  session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions,
+}
+
+const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2'
+nodeLibOptions.auth[type] = options
+
 app.use(appInsights)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(cookieParser())
+app.use(cookieParser(getConfigValue(SESSION_SECRET)))
+app.use(xuiNode.configure(nodeLibOptions))
 
 tunnel.init()
 
@@ -139,23 +218,30 @@ const healthChecks = {
 }
 
 if (showFeature(FEATURE_REDIS_ENABLED)) {
-  healthChecks.checks = {...healthChecks.checks, ...{
-    redis: healthcheck.raw(() => {
-      return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
-    }),
-  }}
+  xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
+    console.log('REDIS EVENT FIRED!!')
+    app.locals.redisClient = redisClient
+    healthChecks.checks = {
+      ...healthChecks.checks, ...{
+        redis: healthcheck.raw(() => {
+          return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
+        }),
+      },
+    }
+  })
+  xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {
+    logger.error('redis Client error is', error)
+  })
 }
 
 healthcheck.addTo(app, healthChecks)
-
-app.use(serviceRouter)
 
 /**
  * Open Routes
  *
  * Any routes here do not have authentication attached and are therefore reachable.
  */
-app.get('/oauth2/callback', auth.oauth)
+
 app.get('/external/ping', (req, res) => {
   console.log('Pong')
   res.send({
@@ -191,13 +277,10 @@ app.get('/external/ping', (req, res) => {
 /**
  * We are attaching authentication to all subsequent routes.
  */
-// app.use(auth.attach) // its called in routes.ts - no need to call it here
+app.use(attach) // its called in routes.ts - no need to call it here
 
 /**
  * Secure Routes
  *
  */
-app.use('/api', routes)
-app.get('/api/logout', (req, res) => {
-  auth.doLogout(req, res)
-})
+app.use('/api', csrfProtection, routes)

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import * as jwtDecode from 'jwt-decode';
 import {CookieService} from 'ngx-cookie';
 
+import { HttpClient } from '@angular/common/http';
 import {Observable} from 'rxjs';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
@@ -12,12 +13,13 @@ import {EnvironmentService} from '../../app/services/environment.service';
 export class AuthService {
   constructor(
     private readonly cookieService: CookieService,
-    private readonly envService: EnvironmentService
+    private readonly envService: EnvironmentService,
+    private readonly httpService: HttpClient
   ) {
   }
-  // TODO perhaps move this logic to BE
+  // TODO remove/toggle this for oidc
   public generateLoginUrl(): Observable<string> {
-    return this.envService.config$.map( config => {
+    return this.envService.getEnv$().map( config => {
       const port = window.location.port ? `:${window.location.port}` : ``;
       const API_BASE_URL = `${config.protocol}://${window.location.hostname}${port}`;
       const base = config.services.idamWeb;
@@ -29,9 +31,14 @@ export class AuthService {
   }
 
   public loginRedirect() {
-    this.generateLoginUrl().subscribe( url => {
-      window.location.href = url;
-    });
+    const featureEnabled = this.envService.get('oidcEnabled');
+    if (featureEnabled) {
+      window.location.href = '/auth/login';
+    } else {
+      this.generateLoginUrl().subscribe( url => {
+        window.location.href = url;
+      });
+    }
   }
 
   public decodeJwt(jwt) {
@@ -39,15 +46,6 @@ export class AuthService {
   }
 
  public isAuthenticated(): Observable<boolean> {
-    return this.envService.config$.map( config => {
-      const jwt = this.cookieService.get(config.cookies.token);
-      if (!jwt) {
-        return false;
-      }
-      const jwtData = this.decodeJwt(jwt);
-      // do stuff!!
-      return jwtData.exp > Math.round(new Date().getTime() / 1000);
-    });
-
+    return this.httpService.get<boolean>('/auth/isAuthenticated');
   }
 }

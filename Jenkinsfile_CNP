@@ -15,7 +15,7 @@ properties([
 
 // Disable pact testing on pipeline
 //
-// import uk.gov.hmcts.contino.AppPipelineDsl
+import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
 import uk.gov.hmcts.contino.Environment
 
@@ -24,18 +24,14 @@ def product   = "xui"
 def component = "ao-webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = true  // set to true if only deploy upto AAT, set to false will deploy all the way to production
+def deployToAatOnly = false  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def secrets = [
   'rpx-${env}': [
-    secret('ao-s2s-client-secret', 'S2S_SECRET'),
-    secret('ao-idam-client-secret', 'IDAM_SECRET'),
-    secret('ao-webapp-redis-connection-string', 'REDISCLOUD_URL'),
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
-    secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY')
   ]
 ]
 
@@ -51,15 +47,14 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    //installCharts()
     enableAksStagingDeployment()
     disableLegacyDeployment()
 
 // Disable pact testing on pipeline
-//
-//    enablePactAs([
-//      AppPipelineDsl.PactRoles.CONSUMER
-//    ])
+
+    enablePactAs([
+      AppPipelineDsl.PactRoles.CONSUMER
+    ])
 
     after('checkout') {
       yarnBuilder.yarn('cache clean')
@@ -124,7 +119,10 @@ withPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
 
+<<<<<<< HEAD
         sh 'yarn test:a11y'
+=======
+>>>>>>> master
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

@@ -11,7 +11,12 @@ function loginLogoutObjects() {
   this.signinBtn = element(by.css("input.button"));
   this.signOutlink = element(by.xpath("//a[@class='hmcts-header__navigation-link']"));
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
-  this.dashboard_header= element(by.css("[class='hmcts-header__link']"));
+  this.dashboard_header= element(by.xpath("//a[@class='hmcts-header__link']"));
+
+
+  this.getEmailFieldValue = async function(){
+    return await this.emailAddress.getAttribute('value');
+  }
 
   this.loginWithCredentials = async function (username,password) {
     await BrowserWaits.waitForElement(this.emailAddress);

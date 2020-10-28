@@ -1,15 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
+import { Action } from '@ngrx/store';
 import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { LoggerService } from 'src/app/services/logger.service';
+import { AppUtils } from 'src/app/utils/app-utils';
+import { ErrorReport } from 'src/org-manager/models/errorReport.model';
 import { UsersService } from 'src/org-manager/services';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
-import { ErrorReport } from 'src/org-manager/models/errorReport.model';
-import { Action } from '@ngrx/store';
-import { GlobalError } from 'src/app/store/reducers/app.reducer';
-import { AppUtils } from 'src/app/utils/app-utils';
 
 @Injectable()
 export class UsersEffects {

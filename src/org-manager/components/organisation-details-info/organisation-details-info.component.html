@@ -100,8 +100,12 @@
        </dd>
     </div>
   </dl>
-  
-  <button *ngIf="org.status=='PENDING'" (click)="approveOrganisation(org)" type="submit" class=govuk-button>Approve organisation</button>  
+  <button *ngIf="org.status=='PENDING'" (click)="approveOrganisation(org)" type="submit" class="govuk-button">Approve organisation</button>
+  <!-- Note: The delete-org-button CSS class (which adds a left margin) is applied only when the organisation status
+    is "PENDING" and there are two buttons (Approve and Delete).
+  -->
+  <button *ngIf="org.status==='PENDING' || orgDeletable" (click)="deleteOrganisation(org)" type="submit" class="govuk-button govuk-button--secondary"
+          [class.delete-org-button]="org.status==='PENDING'">Delete organisation</button>
 </ng-container>
 <ng-template #noOrg>
   <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
