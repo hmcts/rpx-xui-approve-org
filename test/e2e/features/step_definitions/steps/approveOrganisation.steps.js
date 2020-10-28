@@ -8,6 +8,8 @@ const EC = protractor.ExpectedConditions;
 const browserWaits = require('../../../support/customWaits');
 const loginPage = require('../../pageObjects/loginLogoutObjects');
 
+const CucumberReporter = require('../../../support/CucumberReporter');
+
 async function waitForElement(el) {
     await browser.wait(result => {
         return element(by.className(el)).isPresent();
@@ -29,11 +31,17 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^I Check the active Organisation banner appear$/, async function () {
-        // await waitForElement(bannerPage.approveorgBanner);
-        await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
+   
+      CucumberReporter.AddMessage("Started step");
+      await browserWaits.waitForBrowserReadyState(120); 
+      await browser.sleep(LONG_DELAY);
+      CucumberReporter.AddMessage("Completed LONG DALAY"); 
+
+      await browserWaits.waitForElement(bannerPage.approveorgBanner);
+      await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
     });
 
-    Then(/^I Verify the Text on Banner$/, { timeout: 600 * 1000 }, async function () {
+    Then(/^I Verify the Text on Banner$/, async function () {
       browser.sleep(AMAZING_DELAY);
       await browserWaits.waitForElement(bannerPage.activeOrganisationTextBanner);
       await expect(bannerPage.bannerText.isDisplayed()).to.eventually.be.true;
@@ -43,8 +51,8 @@ defineSupportCode(function ({ Given, When, Then }) {
         .contains('organisations are active');
     });
 
-  Then(/^I Verify the Check Now Link$/, { timeout: 600 * 1000 }, async function () {
-    browser.sleep(LONG_DELAY);
+  Then(/^I Verify the Check Now Link$/, async function () {
+    browser.sleep(AMAZING_DELAY);
     await browserWaits.waitForElement(bannerPage.checkNow);
     await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
     await expect(bannerPage.checkNow.getText())
@@ -53,7 +61,7 @@ defineSupportCode(function ({ Given, When, Then }) {
       .contains('Check now.');
   });
 
-  Then(/^I click on Check Now Link to redirect to Active Organisations page$/, { timeout: 600 * 1000 }, async function () {
+  Then(/^I click on Check Now Link to redirect to Active Organisations page$/, async function () {
     browser.sleep(LONG_DELAY);
     await browserWaits.waitForElement(bannerPage.checkNow);
     await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;

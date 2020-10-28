@@ -1,7 +1,8 @@
-import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/services/auth/auth.guard';
-import { PrivacyPolicyComponent, CookiePolicyComponent, TermsAndConditionsComponent, AccessibilityComponent } from './components';
+import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent } from './components';
+import {ServiceDownComponent} from './components/service-down/service-down.component';
+import { SignedOutComponent } from './components/signed-out/signed-out.component';
 
 export const ROUTES: Routes = [
   {
@@ -35,9 +36,13 @@ export const ROUTES: Routes = [
     component: ServiceDownComponent
   },
   {
+    path: 'signed-out',
+    component: SignedOutComponent
+  },
+  {
     path: '**',
     redirectTo: 'organisation',
     pathMatch: 'full'
-  }
+  },
 ];
 
