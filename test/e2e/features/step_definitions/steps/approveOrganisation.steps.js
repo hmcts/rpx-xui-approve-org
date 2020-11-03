@@ -20,12 +20,13 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     When(/^I navigate to EUI Approve Organisation Url$/, { timeout: 600 * 1000 }, async function () {
         await browser.get(config.config.baseUrl) ;
-        await browser.driver.manage()
-            .deleteAllCookies();
-        await browser.refresh();
+        // await browser.driver.manage()
+        //     .deleteAllCookies();
+        // await browser.refresh();
         const world = this;
-      await browserWaits.retryForPageLoad(loginPage.emailAddress,async (message) => {
+      await browserWaits.retryWithAction(loginPage.emailAddress,async (message) => {
         world.attach('Retry reloading page. '+message);
+        await browser.get(config.config.baseUrl);
       });
       await browserWaits.waitForElement(loginPage.emailAddress);
     });
