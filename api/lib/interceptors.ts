@@ -1,8 +1,6 @@
 import * as exceptionFormatter from 'exception-formatter'
-import * as stringify from 'json-stringify-safe'
 import { getConfigValue } from '../configuration'
 import { MAX_LOG_LINE } from '../configuration/references'
-import * as errorStack from '../lib/errorStack'
 import * as log4jui from './log4jui'
 import {exists, getTrackRequestObj, shorten, valueOrNull} from './util'
 
@@ -78,7 +76,5 @@ export function errorInterceptor(error) {
     error.response = {url, 'message': 'No api response'}
   }
 
-  errorStack.push(['request', JSON.parse(stringify(error.request))])
-  errorStack.push(['response', JSON.parse(stringify(error.response))])
   return Promise.reject(error.response)
 }

@@ -1,5 +1,4 @@
-import { User } from '@hmcts/rpx-xui-common-lib';
-import {OrganisationVM, OrganisationUserListModel} from 'src/org-manager/models/organisation';
+import {OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
 
 export interface OrganisationState {
@@ -18,6 +17,8 @@ export interface OrganisationState {
   organisationUsersList: OrganisationUserListModel;
   errorMessage: string;
   orgForReview: OrganisationVM | null;
+  showOrganisationDetailsUserTab: {orgId: string; showUserTab: boolean};
+  organisationDeletable: boolean;
 }
 
 export const initialState: OrganisationState = {
@@ -25,7 +26,9 @@ export const initialState: OrganisationState = {
   pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
   organisationUsersList: {users: null, isError: false},
   errorMessage: '',
-  orgForReview: null
+  orgForReview: null,
+  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false},
+  organisationDeletable: false
 };
 
 export function reducer(
@@ -132,6 +135,60 @@ export function reducer(
       return {
         ...state,
         orgForReview,
+        errorMessage: ''
+      };
+    }
+
+    // TODO: Unit test
+    case fromActions.OrgActionTypes.NAV_TO_DELETE_ORGANISATION: {
+      const orgForReview = action.payload;
+      return {
+        ...state,
+        orgForReview,
+        errorMessage: ''
+      };
+    }
+
+    case fromActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS: {
+      const deletedOrganisation = action.payload;
+      const pendingEntities = {
+        ...state.pendingOrganisations.orgEntities,
+      };
+
+      if (pendingEntities.hasOwnProperty(deletedOrganisation.organisationId)) {
+        delete pendingEntities[deletedOrganisation.organisationId];
+      }
+
+      const pendingOrganisations = {
+        ...state.pendingOrganisations,
+        orgEntities: pendingEntities
+      };
+
+      return {
+        ...state,
+        pendingOrganisations,
+        errorMessage: ''
+      };
+    }
+
+    case fromActions.OrgActionTypes.DELETE_ORGANISATION_SUCCESS: {
+      const deletedOrganisation = action.payload;
+      const activeEntities = {
+        ...state.activeOrganisations.orgEntities,
+      };
+
+      if (activeEntities.hasOwnProperty(deletedOrganisation.organisationId)) {
+        delete activeEntities[deletedOrganisation.organisationId];
+      }
+
+      const activeOrganisations = {
+        ...state.activeOrganisations,
+        orgEntities: activeEntities
+      };
+
+      return {
+        ...state,
+        activeOrganisations,
         errorMessage: ''
       };
     }
@@ -323,6 +380,28 @@ export function reducer(
       };
     }
 
+    case fromActions.OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB: {
+      let isShowUserTab = false;
+      if (state.showOrganisationDetailsUserTab.orgId === action.payload.orgId) {
+        isShowUserTab = action.payload.showUserTab;
+      }
+      return {
+        ...state,
+        showOrganisationDetailsUserTab: {
+          orgId: action.payload.orgId,
+          showUserTab: isShowUserTab
+        }
+      };
+    }
+
+    case fromActions.OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS_SUCCESS: {
+      const organisationDeletable = action.payload;
+      return {
+        ...state,
+        organisationDeletable
+      };
+    }
+
     default:
       return state;
   }
@@ -333,3 +412,5 @@ export const getActiveOrgEntities = (state: OrganisationState) => state.activeOr
 export const getPendingOrgEntities = (state: OrganisationState) => state.pendingOrganisations;
 export const getOrgForReview = (state: OrganisationState) => state.orgForReview;
 export const getOrgUsersList = (state: OrganisationState) => state.organisationUsersList;
+export const getShowOrgDetailsUserTab = (state: OrganisationState) => state.showOrganisationDetailsUserTab.showUserTab;
+export const getOrgDeletable = (state: OrganisationState) => state.organisationDeletable;

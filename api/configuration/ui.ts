@@ -7,8 +7,10 @@ import {
 import {healthEndpoints} from './health'
 import {getConfigValue, getEnvironment, showFeature} from './index'
 import {
+  COOKIE_ROLES,
   COOKIE_TOKEN,
   COOKIES_USERID,
+  FEATURE_OIDC_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
   IDAM_CLIENT,
   INDEX_URL,
@@ -25,6 +27,7 @@ import {
   SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
+  SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
 } from './references'
@@ -36,6 +39,7 @@ export const uiConfig = (): UIConfig => {
   return {
     configEnv,
     cookies: {
+      roles: getConfigValue(COOKIE_ROLES),
       token: getConfigValue(COOKIE_TOKEN),
       userId: getConfigValue(COOKIES_USERID),
     } as UIConfigCookies,
@@ -45,11 +49,13 @@ export const uiConfig = (): UIConfig => {
     health: healthEndpoints() as UIConfigServices,
     idamClient: getConfigValue(IDAM_CLIENT),
     indexUrl: getConfigValue(INDEX_URL),
+    iss: getConfigValue(SERVICES_ISS_PATH),
     logging: getConfigValue(LOGGING),
     maxLogLine: getConfigValue(MAX_LOG_LINE),
     microservice: getConfigValue(MICROSERVICE),
     now: getConfigValue(NOW),
     oauthCallbackUrl: getConfigValue(OAUTH_CALLBACK_URL),
+    oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
     protocol: getConfigValue(PROTOCOL),
     secureCookie: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     services: {
@@ -58,6 +64,7 @@ export const uiConfig = (): UIConfig => {
       feeAndPayApi: getConfigValue(SERVICES_FEE_AND_PAY_PATH),
       idamApi: getConfigValue(SERVICES_IDAM_API_PATH),
       idamWeb: getConfigValue(SERVICES_IDAM_WEB),
+      iss: getConfigValue(SERVICES_ISS_PATH),
       rdProfessionalApi: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH),
       s2s: getConfigValue(SERVICE_S2S_PATH),
     } as UIConfigServices,

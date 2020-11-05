@@ -2,7 +2,8 @@
   "environment": "production",
   "cookies": {
     "token": "__auth__",
-    "userId": "__userid__"
+    "userId": "__userid__",
+    "roles": "roles"
   },
   "exceptionOptions": {
     "maxLines": 1
@@ -24,13 +25,16 @@
     "feeAndPayApi": "https://payment-api-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
   },
+  "userTimeoutInSeconds": 28800,
+  "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts",
   "sessionSecret": "secretSauce",
   "feature": {
     "appInsightsEnabled": true,
     "proxyEnabled": false,
     "secureCookieEnabled": true,
     "helmetEnabled": false,
-    "redisEnabled": true
+    "redisEnabled": true,
+    "oidcEnabled": false
   },
   "helmet": {
     "contentSecurityPolicy": {
@@ -82,11 +86,17 @@
     }
   },
   "redis": {
-    "host": "xui-ao-webapp-prod.redis.cache.windows.net",	
-    "port": 6380,	
+    "host": "xui-ao-webapp-prod.redis.cache.windows.net",
+    "port": 6380,
     "tls": true,
     "prefix": "activity:",
     "ttl": 86400
+  },
+  "pact": {
+    "brokerUrl": "https://pact-broker.platform.hmcts.net",
+    "consumerVersion": "",
+    "brokerUsername": "",
+    "brokerPassword": ""
   }
 }
 

@@ -1,4 +1,4 @@
-import * as applicationinsights from 'applicationinsights'
+import * as applicationInsights from 'applicationinsights'
 import * as express from 'express'
 import {getConfigValue, showFeature} from '../configuration'
 import {APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED} from '../configuration/references'
@@ -6,7 +6,7 @@ import {APP_INSIGHTS_KEY, FEATURE_APP_INSIGHTS_ENABLED} from '../configuration/r
 export let client
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
-    applicationinsights
+    applicationInsights
         .setup(getConfigValue(APP_INSIGHTS_KEY))
         .setAutoDependencyCorrelation(true)
         .setAutoCollectRequests(true)
@@ -19,7 +19,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
         .setSendLiveMetrics(true)
         .start()
 
-    client = applicationinsights.defaultClient
+    client = applicationInsights.defaultClient
     client.context.tags[client.context.keys.cloudRole] = 'xui-ao'
     client.trackTrace({ message: 'App Insight Activated' })
 

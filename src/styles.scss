@@ -11,4 +11,6 @@ $govuk-global-styles: true;
 @import "~@hmcts/frontend/all";
 @import "./assets/sass/application";
 
-
+.stay-signed-in-button {
+  margin-right: 15px;
+}

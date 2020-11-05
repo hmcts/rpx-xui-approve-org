@@ -185,3 +185,7 @@ html {
 .jui-prose-scope ol {
   @extend %govuk-list--number;
 }
+
+.delete-org-button {
+  margin-left: 10px;
+}
