@@ -76,25 +76,25 @@ export class AppUtils {
     const organisations: Organisation[] = [];
     obj.forEach((org) => {
       const organisation: Organisation = {
-        organisationIdentifier: ((org.organisationId || '') as string).trim(),
-        sraId: ((org.sraId || '') as string).trim(),
+        organisationIdentifier: (org.organisationId || '').trim(),
+        sraId: (org.sraId || '').trim(),
         contactInformation: [{
-          addressLine1: ((org.addressLine1 || '') as string).trim(),
-          addressLine2: ((org.addressLine2 || '') as string).trim(),
-          townCity: ((org.townCity || '') as string).trim(),
-          county: ((org.county || '') as string).trim(),
+          addressLine1: (org.addressLine1 || '').trim(),
+          addressLine2: (org.addressLine2 || '').trim(),
+          townCity: (org.townCity || '').trim(),
+          county: (org.county || '').trim(),
           dxAddress: null,
-          postCode: ((org.postCode || '') as string).trim()
+          postCode: (org.postCode || '').trim()
           }],
         superUser: {
-          userIdentifier: ((org.admin || '') as string).trim(),
-          firstName: ((org.admin || '') as string).trim(),
-          lastName: ((org.admin || '') as string).trim(),
-          email: ((org.adminEmail || '') as string).trim()
+          userIdentifier: (org.admin || '').trim(),
+          firstName: (org.admin || '').trim(),
+          lastName: (org.admin || '').trim(),
+          email: (org.adminEmail || '').trim()
         },
         status: 'ACTIVE',
-        name: ((org.name || '') as string).trim(),
-        paymentAccount: ((org.pbaNumber || '') as string).trim()
+        name: (org.name || '').trim(),
+        paymentAccount: [(org.pbaNumber[0] || '').trim()]
       };
       if (org.dxNumber.length && org.dxNumber[0].dxNumber) {
         organisation.contactInformation[0].dxAddress = [{
