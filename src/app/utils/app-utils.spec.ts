@@ -86,6 +86,27 @@ describe('AppUtils', () => {
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId);
     expect(organisations[0].name).toEqual(organisationVM[0].name);
   });
+  it('should trim organisation VM', () => {
+    const organisationVM: [OrganisationVM] = [{
+      organisationId: 'Id  ',
+      status: 'ACTIVE',
+      admin: 'ADMIN',
+      adminEmail: 'aa@eemail.com',
+      addressLine1: 'some address',
+      addressLine2: '',
+      townCity: 'Lon',
+      county: '',
+      name: 'Full Name  ',
+      view: 'View',
+      pbaNumber: [{}],
+      dxNumber: [{dxNumber: '123', dxExchange: '123'}],
+      sraId: null,
+      postCode: 'postcode'
+    }];
+    const organisations = AppUtils.mapOrganisationsVm(organisationVM);
+    expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId.trim());
+    expect(organisations[0].name).toEqual(organisationVM[0].name.trim());
+  });
 
   it('should string capitalised', () => {
     const randomString = 'RANDOMSTRING';
