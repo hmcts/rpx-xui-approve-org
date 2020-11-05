@@ -63,6 +63,8 @@ const config = {
     // password: process.env.TEST_PASSWORD,
     username: 'vmuniganti@mailnesia.com',
     password: 'Monday01',
+    approver_username: 'vamshiadminuser@mailnesia.com',
+    approver_password: 'Testing123',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
@@ -101,7 +103,7 @@ const config = {
       options: {
         automaticallyGenerateReport: true,
         removeExistingJsonReportFile: true,
-        reportName: 'JUI Functional Tests',
+        reportName: 'EXUI AO Functional Tests',
         // openReportInBrowser: true,
         jsonDir: 'reports/tests/functional',
         reportPath: 'reports/tests/functional'

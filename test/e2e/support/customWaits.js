@@ -1,4 +1,5 @@
 var EC = protractor.ExpectedConditions;
+const CucumberReporter = require('./CucumberReporter');
 
 class BrowserWaits {
 
@@ -8,7 +9,11 @@ class BrowserWaits {
     }
 
     async waitForElement(waitelement,customWaitInSec) {
-        await browser.wait(EC.visibilityOf(waitelement), customWaitInSec ? customWaitInSec*1000 : this.waitTime, "Error : " + waitelement.locator().toString());
+        let waitTime = customWaitInSec ? customWaitInSec * 1000 : this.waitTime;
+        CucumberReporter.AddMessage("Before starting wait for element " + waitTime / 1000 + " : " + waitelement.locator().toString()); 
+        await browser.wait(EC.visibilityOf(waitelement), waitTime , "Error : " + waitelement.locator().toString());
+        CucumberReporter.AddMessage("wait done for sec" + waitTime / 1000); 
+
     }
 
     async waitForElementNotVisible(element) {
@@ -23,9 +28,21 @@ class BrowserWaits {
         await browser.wait(EC.elementToBeClickable(element), this.waitTime, "Error : " + element.locator().toString());
     }
 
-    async waitForCondition(condition) {
-        await browser.wait(condition(), this.waitTime);
+    async waitForCondition(condition, customWaitInSec) {
+        let resolvedWaitTime = customWaitInSec ? customWaitInSec * 1000 : this.waitTime;
+        await browser.wait(condition(), resolvedWaitTime);
     }
+
+    async waitForBrowserReadyState(waitInSec){
+        let resolvedWaitTime = waitInSec ? waitInSec * 1000 : this.waitTime;
+ 
+        CucumberReporter.AddMessage("Started step");
+        await this.waitForCondition(async () => {
+            let browserState = await browser.executeScript('return document.readyState;');
+            CucumberReporter.AddMessage('browser readyState value  "' + browserState+'"');
+            return browserState === 'complete';
+        }, resolvedWaitTime); 
+    } 
 
 
     async waitForSelector(selector) {
@@ -33,8 +50,8 @@ class BrowserWaits {
         await browser.wait(EC.presenceOf($(selector)), this.waitTime, "Error find element with selector: " + selector);
     }
 
-    async waitForstalenessOf(element) {
-        await browser.wait(EC.stalenessOf(element), this.waitTime);
+    async waitForstalenessOf(element, customWaitInSec) {
+        await browser.wait(EC.stalenessOf(element), customWaitInSec ? customWaitInSec * 1000 : this.waitTime, "Element still present : " + element.locator().toString());
     }
 
     async waitForPageNavigation(currentPageUrl) {

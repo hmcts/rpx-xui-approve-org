@@ -1,6 +1,7 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { Organisation, OrganisationUser, OrganisationVM } from 'src/org-manager/models/organisation';
 import { AppConstants } from '../app.constants';
+import { GlobalError } from '../store/reducers/app.reducer';
 
 /**
  * Contains static stateless utility methods for the App
@@ -59,12 +60,14 @@ export class AppUtils {
     organisationVm.view = 'View';
     organisationVm.status = apiOrg.status;
     organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
-    organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
-    organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
-    organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
-    organisationVm.postCode = apiOrg.contactInformation[0].postCode;
-    organisationVm.townCity = apiOrg.contactInformation[0].townCity;
-    organisationVm.county = apiOrg.contactInformation[0].county;
+    if (apiOrg.contactInformation && apiOrg.contactInformation[0]) {
+      organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
+      organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
+      organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
+      organisationVm.postCode = apiOrg.contactInformation[0].postCode;
+      organisationVm.townCity = apiOrg.contactInformation[0].townCity;
+      organisationVm.county = apiOrg.contactInformation[0].county;
+    }
     organisationVm.sraId = apiOrg.sraId;
     return organisationVm;
   }
@@ -91,7 +94,7 @@ export class AppUtils {
         },
         status: 'ACTIVE',
         name: (org.name || '').trim(),
-        paymentAccount: org.pbaNumber
+        paymentAccount: (org.pbaNumber || '').trim()
       };
       if (org.dxNumber.length && org.dxNumber[0].dxNumber) {
         organisation.contactInformation[0].dxAddress = [{
@@ -120,20 +123,74 @@ export class AppUtils {
     const users: User[] = [];
     if (obj) {
       obj.forEach((user) => {
-        const newUser: User = {
-          fullName: `${user.firstName} ${user.lastName}`,
-          email: user.email,
-          resendInvite: false
-        };
+        const newUser: User = {};
+        newUser.firstName = user.firstName;
+        newUser.lastName = user.lastName;
+        newUser.fullName = `${user.firstName} ${user.lastName}`;
+        newUser.email = user.email;
         AppConstants.USER_ROLES.forEach((userRoles) => {
           if (user.roles) {
             newUser[userRoles.roleType] = user.roles.includes(userRoles.role) ? 'Yes' : 'No';
           }
         });
         newUser.status = AppUtils.capitalizeString(user.idamStatus);
+        newUser.resendInvite = user.idamStatus === 'PENDING';
         users.push(newUser);
       });
     }
     return users;
   }
+
+
+  public static get500Error(orgId: string): GlobalError {
+    const errorMessages = [{
+      bodyText: 'Try again later.',
+      urlText: null,
+      url: null
+    },
+    {
+      bodyText: null,
+      urlText: 'Go back to manage users',
+      url: `/organisation-details/${orgId}`
+    }];
+
+    const globalError = {
+      header: 'Sorry, there is a problem with the service',
+      errors: errorMessages
+    };
+    return globalError;
+  }
+
+  public static get400Error(orgId: string): GlobalError {
+    const errorMessage = {
+      bodyText: 'to check the status of the user',
+      urlText: 'Refresh and go back',
+      url: `/organisation-details/${orgId}`
+    };
+    const globalError = {
+      header: 'Sorry, there is a problem',
+      errors: [errorMessage]
+    };
+    return globalError;
+  }
+
+  public static get404Error(orgId: string): GlobalError {
+    const errorMessages = [{
+      bodyText: 'Contact Support teams to reactivate this account',
+      urlText: null,
+      url: null
+    },
+    {
+      bodyText: null,
+      urlText: 'Go back to manage users',
+      url: `/organisation-details/${orgId}`
+    }];
+
+    const globalError = {
+      header: 'Sorry, there is a problem with this account',
+      errors: errorMessages
+    };
+    return globalError;
+  }
+
 }

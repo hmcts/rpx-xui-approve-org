@@ -69,7 +69,7 @@ export const PendingOrganisationsMockCollectionObj: OrganisationVM = {
 
   };
 
-export const LoadPbaAccuntsObj = [{
+export const LoadPbaAccountsObj = [{
     account_number: 'PBA0088487',
     account_name: 'RAY NIXON BROWN',
     credit_limit: 5000,
@@ -109,7 +109,9 @@ export const orgStatePending = {
  },
  errorMessage: '',
  orgForReview: null,
- organisationUsersList: { users: null, isError: false }
+ organisationUsersList: { users: null, isError: false },
+ showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false},
+ organisationDeletable: false
 };
 
 export const orgStateActive = {
@@ -143,7 +145,9 @@ export const orgStateActive = {
   },
   errorMessage: '',
   orgForReview: null,
-  organisationUsersList: { users: null, isError: false }
+  organisationUsersList: { users: null, isError: false },
+  showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false},
+  organisationDeletable: false
 };
 
 export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [
