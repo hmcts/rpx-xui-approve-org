@@ -7,6 +7,12 @@ import { AuthGuard } from 'src/services/auth/auth.guard';
 import { OrganisationDetailsComponent } from './components';
 import { ActiveOrganisationsComponent } from './containers';
 import { EditDetailsComponent } from './containers/edit-details/edit-details.component';
+import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success/reinvite-user-success.component';
+import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
+import { UserDetailsComponent } from './containers/user-details/user-details.component';
+import { UserApprovalGuard } from './guards/users-approval.guard';
+import { DeleteOrganisationComponent } from './containers/delete-organisation/delete-organisation.component';
+import {DeleteOrganisationSuccessComponent} from './containers/delete-organisation-success/delete-organisation-success.component';
 
 export const ROUTES: Routes = [
   {
@@ -35,6 +41,16 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
   },
   {
+    path: 'delete-organisation',
+    component: DeleteOrganisationComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'delete-organisation-success',
+    component: DeleteOrganisationSuccessComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: 'organisation-details/:orgId',
     component: OrganisationDetailsComponent,
     canActivate: [AuthGuard],
@@ -49,6 +65,21 @@ export const ROUTES: Routes = [
     component: EditDetailsComponent,
     canActivate: [AuthGuard],
   },
+  {
+    path: 'user-details',
+    component: UserDetailsComponent,
+    canActivate: [AuthGuard, UserApprovalGuard],
+  },
+  {
+    path: 'reinvite-user',
+    component: ReinviteUserComponent,
+    canActivate: [AuthGuard, UserApprovalGuard],
+  },
+  {
+    path: 'reinvite-user-success',
+    component: ReinviteUserSuccessComponent,
+    canActivate: [AuthGuard, UserApprovalGuard],
+  }
 ];
 
 export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

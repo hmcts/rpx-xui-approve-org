@@ -18,17 +18,18 @@ function OrganisationListPage() {
 
     this.searchAndValidateByName = async function(){
         await this.waitForOrgListToDisplay();
-        const searchWithName = await this.getOrgNameFromRow(1);
+        // const searchWithName = await this.getOrgNameFromRow(1);
+        const searchWithName = 'Auto';
         await this.searchInput.sendKeys(searchWithName);
         await this.searchBtn .click();
         browser.sleep(2000);
-        await this.validateSearchResultsByName(searchWithName); 
+        // await this.validateSearchResultsByName(searchWithName);
 
     };
 
     this.getOrgNameFromRow = async function(rowNum){
         const NameFieldText = await this.rows.get(rowNum).element(by.css('td')).getText();
-        const orgUniqueId = await this.rows.get(rowNum).element(by.css('td span')).getText(); 
+        const orgUniqueId = await this.rows.get(rowNum).element(by.css('td span')).getText();
         return NameFieldText.replace(orgUniqueId,'');
     }
 
@@ -39,24 +40,27 @@ function OrganisationListPage() {
             assert(orgName === name, "Search result with name does not match. Expected: "+name+" Found: "+orgName);
             if (rowsCount > 20){
                 break;
-           } 
+           }
         }
     };
 
     this.waitForOrgListToDisplay = async function()
     {
-        await browserWaits.waitForElement(this.rows.get(0)); 
+        await browserWaits.waitForElement(this.rows.get(0));
     }
 
     this.clickViewOnFirstOrganisation = async function () {
+        browser.sleep(MID_DELAY);
         const rowText = await this.rows.get(1).getText();
-        await this.rows.get(1).element(by.xpath("//a[contains(text(),'View')]")).click(); 
-        await browserWaits.waitForElement(element(by.xpath('//h1[contains(text(),"Organisation details")]'))); 
+        const viewLink = await this.rows.get(1).element(by.xpath("//a[contains(text(),'View')]"));
+        await browser.executeScript('arguments[0].scrollIntoView()',viewLink);
+        await viewLink.click();
+        await browserWaits.waitForElement(element(by.xpath('//h1[contains(text(),"Organisation details")]')));
     };
 
 
 
-   
+
 }
 
 module.exports = new OrganisationListPage;
