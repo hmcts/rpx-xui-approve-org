@@ -94,7 +94,7 @@ export class AppUtils {
         },
         status: 'ACTIVE',
         name: (org.name || '').trim(),
-        paymentAccount: [(org.pbaNumber[0] || '').trim()]
+        paymentAccount: org.pbaNumber
       };
       if (org.dxNumber.length && org.dxNumber[0].dxNumber) {
         organisation.contactInformation[0].dxAddress = [{
