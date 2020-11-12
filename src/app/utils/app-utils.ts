@@ -30,9 +30,8 @@ export class AppUtils {
         return 'Check details - Approve organisations';
       }
       default: {
-        return;
+        // do nothing
       }
-
     }
     // need to use undex of becaue id the id that is passed on the end.
     if (url.indexOf('/organisations/organisation/') !== -1) {

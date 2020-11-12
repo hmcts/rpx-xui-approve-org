@@ -161,11 +161,8 @@ describe('AppUtils', () => {
       ['manageOrganisations']: 'No'
 
     }];
-
     expect(AppUtils.mapUsers(mockUser)).toEqual(mockUserResult);
   });
-
-
 
   it('should return 500 error org url', () => {
     expect(AppUtils.get500Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
