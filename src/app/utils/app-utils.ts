@@ -30,8 +30,7 @@ export class AppUtils {
         return 'Check details - Approve organisations';
       }
       default: {
-        // do nothing
-        return 'do nothing';
+        return;
       }
 
     }
