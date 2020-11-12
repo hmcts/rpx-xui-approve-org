@@ -132,7 +132,6 @@ describe('AppUtils', () => {
     expect(organisations[0].name).toEqual(organisationVM[0].name.trim());
   });
 
-  
   it('should string capitalised', () => {
     const randomString = 'RANDOMSTRING';
     expect(AppUtils.capitalizeString(randomString)).toEqual('Randomstring');
