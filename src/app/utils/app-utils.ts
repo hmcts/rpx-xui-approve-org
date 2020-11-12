@@ -31,7 +31,7 @@ export class AppUtils {
       }
       default: {
         // do nothing
-        'do nothing';
+        return 'do nothing';
       }
 
     }
