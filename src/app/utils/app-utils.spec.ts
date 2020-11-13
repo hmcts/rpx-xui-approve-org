@@ -3,7 +3,6 @@ import { Organisation, OrganisationVM, OrganisationAddress, OrganisationUser } f
 import { User } from '@hmcts/rpx-xui-common-lib';
 
 describe('AppUtils', () => {
-
   it('should set correct page titles pending details', () => {
     const array = AppUtils.setPageTitle('/pending-organisations/organisation/');
     expect(array).toEqual('Pending organisation details - Approve organisation');
@@ -32,6 +31,7 @@ describe('AppUtils', () => {
     const array = AppUtils.setPageTitle('');
     expect(array).toEqual('Active organisations - Approve organisations');
   });
+
   it('should map organisation', () => {
     const orgAddress: [OrganisationAddress] = [{
       addressLine1: 'Line1',
@@ -65,6 +65,7 @@ describe('AppUtils', () => {
     expect(organisationVM[0].organisationId).toEqual(organisations[0].organisationIdentifier);
     expect(organisationVM[0].name).toEqual(organisations[0].name);
   });
+
   it('should map organisation VM', () => {
     const organisationVM: [OrganisationVM] = [{
       organisationId: 'Id',
@@ -103,6 +104,29 @@ describe('AppUtils', () => {
       sraId: null,
       postCode: 'postcode'
     }];
+    const organisations = AppUtils.mapOrganisationsVm(organisationVM);
+    expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId.trim());
+    expect(organisations[0].name).toEqual(organisationVM[0].name.trim());
+  });
+
+  it('should trim organisation VM', () => {
+    const organisationVM: [OrganisationVM] = [{
+      organisationId: '',
+      status: 'ACTIVE',
+      admin: 'ADMIN',
+      adminEmail: 'aa@eemail.com',
+      addressLine1: '',
+      addressLine2: '',
+      townCity: 'Lon',
+      county: '',
+      name: '',
+      view: 'View',
+      pbaNumber: [{}],
+      dxNumber: [{dxNumber: '123', dxExchange: '123'}],
+      sraId: null,
+      postCode: 'postcode',
+    }];
+
     const organisations = AppUtils.mapOrganisationsVm(organisationVM);
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId.trim());
     expect(organisations[0].name).toEqual(organisationVM[0].name.trim());
