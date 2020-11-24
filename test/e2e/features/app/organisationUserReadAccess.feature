@@ -7,6 +7,7 @@ Feature: Verify access to User tab for prd admin users
         Then I Check the active Organisation banner appear
         Then I Verify the Check Now Link
         Then I click on Check Now Link to redirect to Active Organisations page
+        Then I search with organisation name and validate results
         Then I click first organization view link
         Then I am on organisation page
         Then I see organisation status is "ACTIVE"
@@ -21,6 +22,7 @@ Feature: Verify access to User tab for prd admin users
         Then I Check the active Organisation banner appear
         Then I Verify the Check Now Link
         Then I click on Check Now Link to redirect to Active Organisations page
+        Then I search with organisation name and validate results
         Then I click first organization view link
         Then I am on organisation page
         Then I see organisation status is "ACTIVE"
@@ -50,6 +52,7 @@ Feature: Verify access to User tab for prd admin users
         Then I Check the active Organisation banner appear
         Then I Verify the Check Now Link
         Then I click on Check Now Link to redirect to Active Organisations page
+        Then I search with organisation name and validate results
         Then I click first organization view link
         Then I am on organisation page
         Then I see organisation status is "ACTIVE"
