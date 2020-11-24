@@ -16,12 +16,12 @@ describe("OpenId Connect API", () => {
     MOCK_SERVER_PORT = await getPort()
     idamTestUrl = `http://localhost:${MOCK_SERVER_PORT}`
     provider = new Pact({
-      consumer: 'xui_approve_org',
+      consumer: 'xui_approve_org_oidc',
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'oidc-integration.log'),
       logLevel: 'info',
       port: MOCK_SERVER_PORT,
-      provider: 'Idam_oidc_api',
+      provider: 'Idam_api',
       spec: 2,
     })
     return provider.setup()
@@ -60,8 +60,12 @@ describe("OpenId Connect API", () => {
         clientID: 'rpx-ao',
         clientSecret: 'secret',
         discoveryEndpoint: `${oidcUrl}/.well-known/openid-configuration`,
+        issuerURL: oidcUrl,
         logoutURL: `${oidcUrl}/logout`,
-        scope: 'openid email',
+        responseTypes: ['code'],
+        scope: 'profile openid roles manage-user create-user',
+        sessionKey: 'xui-approve-org',
+        tokenEndpointAuthMethod: 'client_secret_post',
         tokenURL: `${oidcUrl}/token`,
         useRoutes: false,
       })
