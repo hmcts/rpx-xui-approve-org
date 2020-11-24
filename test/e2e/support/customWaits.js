@@ -4,7 +4,7 @@ const CucumberReporter = require('./CucumberReporter');
 class BrowserWaits {
 
     constructor() {
-        this.waitTime = 30000;
+        this.waitTime = 40000;
         this.pageErrors = $$(".error-summary");
     }
 
