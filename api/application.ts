@@ -208,10 +208,6 @@ function healthcheckConfig(msUrl) {
 
 const healthChecks = {
   checks: {
-    feeAndPayApi: healthcheckConfig(getConfigValue(SERVICES_FEE_AND_PAY_PATH)),
-    idamApi: healthcheckConfig(getConfigValue(SERVICES_IDAM_API_PATH)),
-    idamWeb: healthcheckConfig(getConfigValue(SERVICES_IDAM_WEB)),
-    rdProfessionalApi: healthcheckConfig(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)),
     redis: () => ({status: 'UP'}),
     s2s: healthcheckConfig(getConfigValue(SERVICE_S2S_PATH)),
   },
