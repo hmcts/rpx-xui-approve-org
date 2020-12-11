@@ -134,7 +134,7 @@ const options: AuthOptions = {
   callbackURL: getConfigValue(OAUTH_CALLBACK_URL),
   clientID: idamClient,
   clientSecret: secret,
-  discoveryEndpoint: `${idamWebUrl}/o`,
+  discoveryEndpoint: `${idamWebUrl}/o/.well-known/openid-configuration`,
   issuerURL: issuerUrl,
   logoutURL: idamApiPath,
   responseTypes: ['code'],
