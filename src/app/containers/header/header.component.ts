@@ -28,20 +28,15 @@ export class HeaderComponent implements OnInit {
         });
 
         this.navItems = [{
-            text: 'Organisation',
-            href: '/organisation',
+            text: 'Organisations',
+            href: '/pending-organisations',
             active: true
         },
         {
-            text: 'Users',
-            href: '/users',
+            text: 'Caseworker details',
+            href: '/caseworker-details',
             active: false
-        },
-        {
-            text: 'Fee Accounts',
-            href: '/fee-accounts',
-            active: false
-        },
+        }
 
         ];
         this.serviceName = {
