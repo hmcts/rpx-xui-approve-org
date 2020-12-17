@@ -3,6 +3,7 @@ import { AuthGuard } from 'src/services/auth/auth.guard';
 import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent } from './components';
 import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
+import { RoleGuard } from '@hmcts/rpx-xui-common-lib';
 
 export const ROUTES: Routes = [
   {
@@ -12,8 +13,9 @@ export const ROUTES: Routes = [
   },
   {
     path: 'organisation',
-    canActivate: [AuthGuard],
-    loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
+    canActivate: [AuthGuard, RoleGuard],
+    loadChildren: '../org-manager/org-manager.module#OrgManagerModule',
+    data: ['prd-admin']
   },
   {
     path: 'cookies',
