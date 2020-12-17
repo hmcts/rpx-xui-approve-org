@@ -7,6 +7,8 @@ import { filter, first, take } from 'rxjs/operators';
 import { EnvironmentService } from 'src/app/services/environment.service';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
+import { RoleService } from '@hmcts/rpx-xui-common-lib';
+import { CookieService } from 'ngx-cookie';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +25,9 @@ export class AppComponent implements OnInit {
     private readonly store: Store<fromRoot.State>,
     private readonly googleAnalyticsService: GoogleAnalyticsService,
     private readonly idleService: ManageSessionServices,
-    private readonly environmentService: EnvironmentService
+    private readonly environmentService: EnvironmentService,
+    private readonly roleService: RoleService,
+    private readonly cookieService: CookieService
   ) {}
 
   public ngOnInit() {
@@ -31,6 +35,9 @@ export class AppComponent implements OnInit {
       if (env.oidcEnabled) {
         this.store.dispatch(new fromRoot.GetUserDetails());
       }
+      const roles = this.cookieService.getObject('roles');
+      // roles - Need to get the value from the cookie and set the values
+      this.roleService.roles = ['prd-admin'];
     });
 
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
