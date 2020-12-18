@@ -91,6 +91,27 @@ export const apiErrors = {
   11: 'PBA_NUMBER Invalid or already exists',
 };
 
+export const navItemsArray = [{
+  text: 'Organisations',
+  href: '/pending-organisations',
+  active: true
+},
+{
+  text: 'Caseworker details',
+  href: '/caseworker-details',
+  active: false
+}
+];
+
+const roleBasedNav = {
+  'prd-admin': navItemsArray[0],
+  'pui-caa': navItemsArray[1]
+};
+
+const featureNames = {
+  caseworkerDetails: 'case-worker-details'
+};
+
 export class AppConstants {
   public static FOOTER_DATA = FooterData;
   public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
@@ -101,4 +122,7 @@ export class AppConstants {
   public static ERROR_MESSAGE_MAPPINGS = errorMessageMappings;
   public static API_ERRORS = apiErrors;
   public static SUPER_USER_ROLES = superUserRoles;
+  public static NAVITEMS = navItemsArray;
+  public static ROLES_BASED_NAV = roleBasedNav;
+  public static FEATURE_NAMES = featureNames;
 }

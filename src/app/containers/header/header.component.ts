@@ -1,6 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Store, select } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
 import { Observable } from 'rxjs';
+import { AppUtils } from 'src/app/utils/app-utils';
 import * as fromRoot from '../../store';
 
 @Component({
@@ -17,7 +19,8 @@ export class HeaderComponent implements OnInit {
 
     isUserLoggedIn$: Observable<boolean>;
 
-    constructor(public store: Store<fromRoot.State>) {}
+    constructor(public store: Store<fromRoot.State>,
+      private readonly cookieService: CookieService) {}
 
 
     ngOnInit(): void {
@@ -27,18 +30,12 @@ export class HeaderComponent implements OnInit {
           }
         });
 
-        this.navItems = [{
-            text: 'Organisations',
-            href: '/pending-organisations',
-            active: true
-        },
-        {
-            text: 'Caseworker details',
-            href: '/caseworker-details',
-            active: false
+        const encodedRoles = this.cookieService.getObject('roles');
+        if(encodedRoles) {
+          const userRoles = AppUtils.getRoles(encodedRoles);
+          this.navItems = AppUtils.getNavItemsBasedOnRole(userRoles, ['prd-admin']);
         }
 
-        ];
         this.serviceName = {
             name: 'Approve organisation',
             url: '/'
