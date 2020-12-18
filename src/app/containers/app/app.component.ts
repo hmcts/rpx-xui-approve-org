@@ -9,6 +9,7 @@ import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
 import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { CookieService } from 'ngx-cookie';
+import { AppUtils } from 'src/app/utils/app-utils';
 
 @Component({
   selector: 'app-root',
@@ -35,9 +36,10 @@ export class AppComponent implements OnInit {
       if (env.oidcEnabled) {
         this.store.dispatch(new fromRoot.GetUserDetails());
       }
-      const roles = this.cookieService.getObject('roles');
-      // roles - Need to get the value from the cookie and set the values
-      this.roleService.roles = ['prd-admin'];
+      const encodedRoles = this.cookieService.getObject('roles');
+      if(encodedRoles) {
+        this.roleService.roles = AppUtils.getRoles(encodedRoles);
+      }
     });
 
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
