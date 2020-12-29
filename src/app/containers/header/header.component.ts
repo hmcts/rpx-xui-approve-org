@@ -1,9 +1,12 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { AppConstants } from 'src/app/app.constants';
 import { AppUtils } from 'src/app/utils/app-utils';
 import * as fromRoot from '../../store';
+import { NavItem } from '../../store';
 
 @Component({
     selector: 'app-header',
@@ -19,9 +22,9 @@ export class HeaderComponent implements OnInit {
 
     isUserLoggedIn$: Observable<boolean>;
 
-    constructor(public store: Store<fromRoot.State>,
-      private readonly cookieService: CookieService) {}
-
+    constructor(public readonly store: Store<fromRoot.State>,
+      private readonly cookieService: CookieService,
+      private readonly featureToggleService: FeatureToggleService) {}
 
     ngOnInit(): void {
         this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
@@ -33,7 +36,8 @@ export class HeaderComponent implements OnInit {
         const encodedRoles = this.cookieService.getObject('roles');
         if(encodedRoles) {
           const userRoles = AppUtils.getRoles(encodedRoles);
-          this.navItems = AppUtils.getNavItemsBasedOnRole(userRoles, ['prd-admin']);
+          const navItems = AppUtils.getNavItemsBasedOnRole(AppConstants.ROLES_BASED_NAV, userRoles);
+          this.navItems = navItems.filter(navItem => this.applyFeatureToggleFilter(navItem));
         }
 
         this.serviceName = {
@@ -53,6 +57,10 @@ export class HeaderComponent implements OnInit {
         };
 
     }
+
+  public applyFeatureToggleFilter(navItem: NavItem): Observable<boolean> {
+    return navItem.feature.isfeatureToggleable ? this.featureToggleService.isEnabled(navItem.feature.featureName) : of(true);
+  }
 
   updateNavItems(url): void {
     this.navItems = this.navItems.map(item => {

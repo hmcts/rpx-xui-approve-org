@@ -1,6 +1,7 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { Organisation, OrganisationUser, OrganisationVM } from 'src/org-manager/models/organisation';
 import { AppConstants } from '../app.constants';
+import { NavItem, UserRoleNav } from '../store';
 import { GlobalError } from '../store/reducers/app.reducer';
 
 /**
@@ -180,14 +181,14 @@ export class AppUtils {
 
   // Util methos to return Navitems 
   // based on user's role
-  public static getNavItemsBasedOnRole(roleBasedNav: any, userRoles: string[]): [] {
-    let roleNavItems: any = [];
+  public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
+    let roleNavItems: NavItem [] = new Array<NavItem>();
     userRoles.forEach(role => {
       if(roleBasedNav.hasOwnProperty(role)) {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
       }
     });
-    return roleNavItems;
+    return roleNavItems.sort((a, b) => (a.orderId > b.orderId) ? 1 : -1)
   }
 
   // Helper method to take the roles 
@@ -199,7 +200,8 @@ export class AppUtils {
       // we get the roles in this format before decoding 'j%3A%5B%22prd-admin%22%5D'
       // after deconding we get it in format 'j:["prd-admin"]'
       if (roles.length === 2) {
-         return roles[1].split(';');
+         let returnVal = JSON.parse(roles[1]);
+         return returnVal;
       }
     }
     return [];

@@ -16,6 +16,7 @@ export interface UIConfig {
   sessionSecret: string,
   oidcEnabled: boolean,
   iss: string,
+  launchDarklyClientId: string
 }
 
 export interface UIConfigCookies {

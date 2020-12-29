@@ -14,6 +14,21 @@ export interface RouterStateUrl {
   params: Params;
 }
 
+export interface NavItem { 
+  text: string; 
+  href: string; 
+  active: boolean; 
+  feature: { 
+    isfeatureToggleable: boolean; 
+    featureName: string; 
+  },
+  orderId: number 
+};
+
+export interface UserRoleNav {
+  [key: string]: NavItem
+}
+
 export interface State {
   routerReducer: fromRouter.RouterReducerState<RouterStateUrl>;
   appState: fromApp.AppState;
