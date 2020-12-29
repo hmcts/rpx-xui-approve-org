@@ -18,8 +18,8 @@ const mocha = new Mocha({
     }
 });
 
-// mocha.addFile('test/integration/tests/get_Pending_Organisations.ts');
-// mocha.addFile('test/integration/tests/get_Active_Organisations.ts');
+mocha.addFile('test/integration/tests/get_Pending_Organisations.ts');
+mocha.addFile('test/integration/tests/get_Active_Organisations.ts');
 mocha.addFile('test/integration/tests/get_PBA_Account_names.ts');
 // mocha.addFile('test/integration/tests/post_Update_PBA.ts');
 // mocha.addFile('test/integration/tests/get_Organisation_User_Details.ts');
