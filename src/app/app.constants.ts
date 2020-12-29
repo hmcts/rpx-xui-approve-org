@@ -91,25 +91,35 @@ export const apiErrors = {
   11: 'PBA_NUMBER Invalid or already exists',
 };
 
+const featureNames = {
+  caseworkerDetails: 'ao-case-worker-details'
+};
+
 export const navItemsArray = [{
   text: 'Organisations',
   href: '/pending-organisations',
-  active: true
+  active: true,
+  feature: {
+    isfeatureToggleable: false,
+    featureName: null
+  },
+  orderId: 0
 },
 {
   text: 'Caseworker details',
   href: '/caseworker-details',
-  active: false
+  active: false,
+  feature: {
+    isfeatureToggleable: true,
+    featureName: featureNames.caseworkerDetails
+  },
+  orderId: 1
 }
 ];
 
 const roleBasedNav = {
   'prd-admin': navItemsArray[0],
   'pui-caa': navItemsArray[1]
-};
-
-const featureNames = {
-  caseworkerDetails: 'case-worker-details'
 };
 
 export class AppConstants {

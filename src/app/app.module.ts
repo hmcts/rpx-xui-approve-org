@@ -24,7 +24,7 @@ import { ROUTES } from './app.routes';
 
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
 import config from 'config';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
@@ -39,11 +39,15 @@ import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
 import { initApplication } from './app-initilizer';
 import { EnvironmentService } from './services/environment.service';
 import {LogOutKeepAliveService} from './services/keep-alive/keep-alive.service';
+import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../models/environmentConfig.model'
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
   : [];
 
+  export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
+    return envConfig.launchDarklyClientId || '';
+  }
 
 @NgModule({
   declarations: [
@@ -81,6 +85,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
       deps: [EnvironmentService],
       multi: true
     },
+    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
   ],
   bootstrap: [AppComponent]
 })
