@@ -1,7 +1,11 @@
 import * as puppeteer from 'puppeteer';
 
-const username = 'vmuniganti@mailnesia.com';
+const username = 'elvianixui@mailnesia.com';
 const password = 'Monday01';
+
+const authCookiesForUsers = {
+
+};
 
 export async function  authenticateAndGetcookies(url)  {
   console.log( 'Getting Cookie details...');
@@ -23,6 +27,7 @@ export async function  authenticateAndGetcookies(url)  {
     await browser.close();
     throw error;
   }
+
   const cookies = await page.cookies();
  // console.log(cookies);
 
