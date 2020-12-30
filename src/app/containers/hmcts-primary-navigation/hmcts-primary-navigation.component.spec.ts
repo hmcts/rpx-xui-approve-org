@@ -37,7 +37,7 @@ describe('HmctsPrimaryNavigationComponent', () => {
 
   it('isFeatureNavEnabled$ isfeatureToggleable false', () => {
     const navItem = {
-      text:'',
+      text: '',
       href: '',
       active: false,
       feature: {
@@ -53,7 +53,7 @@ describe('HmctsPrimaryNavigationComponent', () => {
 
   it('isFeatureNavEnabled$ isfeatureToggleable true but feature is not enabled', () => {
     const navItem = {
-      text:'',
+      text: '',
       href: '',
       active: false,
       feature: {
