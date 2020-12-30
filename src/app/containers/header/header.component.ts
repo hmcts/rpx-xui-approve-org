@@ -23,8 +23,8 @@ export class HeaderComponent implements OnInit {
     isUserLoggedIn$: Observable<boolean>;
 
     constructor(public readonly store: Store<fromRoot.State>,
-      private readonly cookieService: CookieService,
-      private readonly featureToggleService: FeatureToggleService) {}
+                private readonly cookieService: CookieService,
+                private readonly featureToggleService: FeatureToggleService) {}
 
     ngOnInit(): void {
         this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
@@ -34,7 +34,7 @@ export class HeaderComponent implements OnInit {
         });
 
         const encodedRoles = this.cookieService.getObject('roles');
-        if(encodedRoles) {
+        if (encodedRoles) {
           const userRoles = AppUtils.getRoles(encodedRoles);
           this.navItems = AppUtils.getNavItemsBasedOnRole(AppConstants.ROLES_BASED_NAV, userRoles);
         }
