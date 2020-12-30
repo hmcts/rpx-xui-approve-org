@@ -33,4 +33,4 @@ export default {
       {id: 'EMPLOYMENT'},
       {id: 'CMC'}
         ],
-}
+};
