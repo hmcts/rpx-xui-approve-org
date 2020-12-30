@@ -179,28 +179,28 @@ export class AppUtils {
     return globalError;
   }
 
-  // Util methos to return Navitems 
+  // Util methos to return Navitems
   // based on user's role
   public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
     let roleNavItems: NavItem [] = new Array<NavItem>();
     userRoles.forEach(role => {
-      if(roleBasedNav.hasOwnProperty(role)) {
+      if (roleBasedNav.hasOwnProperty(role)) {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
       }
     });
     return roleNavItems.sort((a, b) => (a.orderId > b.orderId) ? 1 : -1)
   }
 
-  // Helper method to take the roles 
-  // in the object format and returns 
+  // Helper method to take the roles
+  // in the object format and returns
   // an array of roles
-  public static getRoles(encodedRoles: Object): string[] {
+  public static getRoles(encodedRoles: any): string[] {
     if (encodedRoles) {
       const roles = decodeURIComponent(encodedRoles.toString()).split(':');
       // we get the roles in this format before decoding 'j%3A%5B%22prd-admin%22%5D'
       // after deconding we get it in format 'j:["prd-admin"]'
       if (roles.length === 2) {
-         let returnVal = JSON.parse(roles[1]);
+         const returnVal = JSON.parse(roles[1]);
          return returnVal;
       }
     }
