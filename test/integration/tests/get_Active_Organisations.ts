@@ -4,7 +4,7 @@ const should = require('chai').should();
 suite('\'Approve Org -> Get Active Organisation details\'', function() {
   this.timeout(50000);
  // test('GET Manage Organisation details', () => generateAPIRequest ('GET', 'refdata/external/v1/organisations')
-  test('GET Active Organisation details', () => generateAPIRequest ('GET', 'api/organisations?status=ACTIVE')
+  test('GET Active Organisation details', () => generateAPIRequest ('GET', '/api/organisations?status=ACTIVE')
      // console.log('response', response.headers.get('cache-control'))
         .then(response => {
           response.status.should.be.eql(200);

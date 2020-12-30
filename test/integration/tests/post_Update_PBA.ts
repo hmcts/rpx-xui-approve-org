@@ -7,7 +7,7 @@ suite('Approve Org -> PUT Update PBA numbers', function() {
   paymentAccounts: ['PBA8435341', 'PBA8235141'],
     orgId: 'SKA5D2Q'
   };
-  test('PUT Update PBA numbers', () => generatePOSTAPIRequest ('PUT', 'api/updatePba', payload)
+  test('PUT Update PBA numbers', () => generatePOSTAPIRequest ('PUT', '/api/updatePba', payload)
      // console.log('response', response.headers.get('cache-control'))
         .then(response => {
            response.status.should.be.eql(200);

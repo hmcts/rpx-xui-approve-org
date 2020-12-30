@@ -3,7 +3,7 @@ const should = require('chai').should();
 
 suite('\'Approve Org -> Get PBA Account names\'', function() {
   this.timeout(50000);
-  test('GET PBA Account names', () => generateAPIRequest ('GET', 'api/pbaAccounts/?accountNames=PBA1088483,PBA0088344')
+  test('GET PBA Account names', () => generateAPIRequest ('GET', '/api/pbaAccounts/?accountNames=PBA1088483,PBA0088344')
      // console.log('response', response.headers.get('cache-control'))
         .then(response => {
           response.status.should.be.eql(200);

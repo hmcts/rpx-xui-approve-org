@@ -28,17 +28,25 @@ export async function  authenticateAndGetcookies(url)  {
     throw error;
   }
 
-  const cookies = await page.cookies();
+  const cookies: [] = await page.cookies();
  // console.log(cookies);
 
-  const xsrfCookie =  `XSRF-TOKEN= ${cookies[0].value}`;
+  let xsrfCookie = '';
+  let roles = '';
+  let webappCookie = '';
 
-  const roles =  `roles= ${cookies[1].value}`;
-
-  const webappCookie =  `ao-webapp= ${cookies[2].value}`;
-
-  const finalCookie = `${roles};${webappCookie};${xsrfCookie}`
-
+  cookies.forEach((cookie: any) => {
+    if (cookie.name === 'XSRF-TOKEN') {
+      xsrfCookie = `XSRF-TOKEN= ${cookie.value}`;
+    }
+    if (cookie.name === 'roles') {
+      roles = `roles= ${cookie.value}`;
+    }
+    if (cookie.name === 'ao-webapp') {
+      webappCookie = `ao-webapp= ${cookie.value}`;
+    }
+  });
+  const finalCookie = `${roles};${webappCookie};${xsrfCookie}`;
   await browser.close();
   return finalCookie;
 }

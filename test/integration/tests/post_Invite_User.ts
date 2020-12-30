@@ -10,7 +10,7 @@ suite('API/CASES3 -> POST Invite User', function() {
     roles: ['pui-organisation-manager'],
     resendInvite: true
   };
-  test('POST Invite User', () => generatePOSTAPIRequest ('POST', 'api/reinviteUser?organisationId=2GIHJH9', payload)
+  test('POST Invite User', () => generatePOSTAPIRequest ('POST', '/api/reinviteUser?organisationId=2GIHJH9', payload)
      // console.log('response', response.headers.get('cache-control'))
         .then(response => {
            response.status.should.be.eql(200);
