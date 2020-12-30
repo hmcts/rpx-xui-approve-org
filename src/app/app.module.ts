@@ -45,7 +45,7 @@ export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
   : [];
 
-  export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
+export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
     return envConfig.launchDarklyClientId || '';
   }
 

@@ -14,15 +14,15 @@ export interface RouterStateUrl {
   params: Params;
 }
 
-export interface NavItem { 
-  text: string; 
-  href: string; 
-  active: boolean; 
-  feature: { 
-    isfeatureToggleable: boolean; 
-    featureName: string; 
+export interface NavItem {
+  text: string;
+  href: string;
+  active: boolean;
+  feature: {
+    isfeatureToggleable: boolean;
+    featureName: string;
   },
-  orderId: number 
+  orderId: number
 };
 
 export interface UserRoleNav {
