@@ -21,10 +21,10 @@ export class HeaderComponent implements OnInit {
     @Output() navigate = new EventEmitter<string>();
 
     isUserLoggedIn$: Observable<boolean>;
+    public isBrandedHeader = false;
 
     constructor(public readonly store: Store<fromRoot.State>,
-                private readonly cookieService: CookieService,
-                private readonly featureToggleService: FeatureToggleService) {}
+                private readonly cookieService: CookieService) {}
 
     ngOnInit(): void {
         this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
