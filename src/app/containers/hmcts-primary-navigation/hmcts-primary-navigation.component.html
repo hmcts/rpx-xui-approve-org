@@ -3,7 +3,9 @@
     <div class="govuk-header__logo" *ngIf="isBrandedHeader"></div>
     <ul class="hmcts-primary-navigation__list">
       <li class="hmcts-primary-navigation__item"  *ngFor="let item of items">
+        <ng-container *ngIf="(isFeatureNavEnabled$(item) | async)">
           <a class="hmcts-primary-navigation__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+        </ng-container>
       </li>
     </ul>
   </div>
