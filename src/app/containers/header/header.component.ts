@@ -36,8 +36,7 @@ export class HeaderComponent implements OnInit {
         const encodedRoles = this.cookieService.getObject('roles');
         if(encodedRoles) {
           const userRoles = AppUtils.getRoles(encodedRoles);
-          const navItems = AppUtils.getNavItemsBasedOnRole(AppConstants.ROLES_BASED_NAV, userRoles);
-          this.navItems = navItems.filter(navItem => this.applyFeatureToggleFilter(navItem));
+          this.navItems = AppUtils.getNavItemsBasedOnRole(AppConstants.ROLES_BASED_NAV, userRoles);
         }
 
         this.serviceName = {
@@ -57,10 +56,6 @@ export class HeaderComponent implements OnInit {
         };
 
     }
-
-  public applyFeatureToggleFilter(navItem: NavItem): Observable<boolean> {
-    return navItem.feature.isfeatureToggleable ? this.featureToggleService.isEnabled(navItem.feature.featureName) : of(true);
-  }
 
   updateNavItems(url): void {
     this.navItems = this.navItems.map(item => {

@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { Observable, of } from 'rxjs';
+import { NavItem } from '../../store';
 
 @Component({
     selector: 'app-hmcts-primary-navigation',
@@ -17,8 +19,10 @@ export class HmctsPrimaryNavigationComponent {
     @Input() isBrandedHeader: boolean;
 
     isUserLoggedIn: boolean;
-    constructor(private route: ActivatedRoute) {
-
+    constructor(private featureToggleService: FeatureToggleService) {
     }
 
+    public isFeatureNavEnabled$(navItem: NavItem): Observable<boolean> {
+        return navItem.feature.isfeatureToggleable ? this.featureToggleService.isEnabled(navItem.feature.featureName) : of(true);
+    }
 }
