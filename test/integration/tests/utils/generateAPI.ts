@@ -1,4 +1,3 @@
-import { generateToken } from '../../../../api/auth/serviceToken';
 import { authenticateAndGetcookies } from './getCookie';
 
 const fetch = require('node-fetch');
