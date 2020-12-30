@@ -3,10 +3,12 @@ import { HeaderComponent } from './header.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
 import { reducers } from 'src/app/store/reducers';
+import { CookieService } from 'ngx-cookie';
 
 describe('HeaderComponent', () => {
     let fixture;
     let app;
+    const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -17,6 +19,8 @@ describe('HeaderComponent', () => {
                 HeaderComponent
             ],
             schemas: [CUSTOM_ELEMENTS_SCHEMA],
+            providers: [{ provide: CookieService, useValue: cookieService }
+            ]
         }).compileComponents();
         fixture = TestBed.createComponent(HeaderComponent);
         app = fixture.debugElement.componentInstance;
