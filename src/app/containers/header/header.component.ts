@@ -58,12 +58,14 @@ export class HeaderComponent implements OnInit {
     }
 
   updateNavItems(url): void {
-    this.navItems = this.navItems.map(item => {
-      return {
-        ...item,
-        active: item['href'] === url
-      };
-    });
+    if(this.navItems) {
+      this.navItems = this.navItems.map(item => {
+        return {
+          ...item,
+          active: item['href'] === url
+        };
+      });
+    }
   }
 
   onNavigate(event) {
