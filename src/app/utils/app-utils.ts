@@ -179,7 +179,7 @@ export class AppUtils {
     return globalError;
   }
 
-  // Util methos to return Navitems
+  // Util method to return Navitems
   // based on user's role
   public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
     let roleNavItems: NavItem [] = new Array<NavItem>();

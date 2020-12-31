@@ -131,3 +131,60 @@ describe('AppUtils', () => {
     expect(AppUtils.get404Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
   });
  });
+
+ describe('getNavItemsBasedOnRole', () => {
+   it('user with role1', () => {
+    const navItem = {
+        text: 'text1',
+        href: 'href1',
+        active: false,
+        feature: {
+          isfeatureToggleable: true,
+          featureName: 'feature1'
+        },
+        orderId: 0
+    };
+    const roleBasedNav = {
+          role1: navItem,
+          
+    };
+    const userRoles = ['role1', 'role2', 'role3'];
+    const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
+    expect(navItems).toEqual([navItem]);
+   });
+
+   it('user with no roles', () => {
+    const navItem = {
+        text: 'text1',
+        href: 'href1',
+        active: false,
+        feature: {
+          isfeatureToggleable: true,
+          featureName: 'feature1'
+        },
+        orderId: 0
+    };
+    const roleBasedNav = {
+          role4: navItem,
+          
+    };
+    const userRoles = ['role1', 'role2', 'role3'];
+    const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
+    expect(navItems).toEqual([]);
+   });
+
+   describe('getRoles', () => {
+    it('user with roles', () => {
+      const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22pui-caa%22%5D');
+      expect(roles).toEqual(["prd-admin","prd-aac-system","xui-approver-userdata","pui-caa"]);
+    });
+    it('user with no roles', () => {
+      const roles = AppUtils.getRoles('j%3A%5B%5D');
+      expect(roles).toEqual([]);
+    });
+    it('user with just one role', () => {
+      const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%5D');
+      expect(roles).toEqual(["prd-admin"]);
+    });
+   });
+ });
