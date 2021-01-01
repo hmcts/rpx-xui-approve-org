@@ -58,7 +58,7 @@ export class HeaderComponent implements OnInit {
     }
 
   updateNavItems(url): void {
-    if(this.navItems) {
+    if (this.navItems) {
       this.navItems = this.navItems.map(item => {
         return {
           ...item,
