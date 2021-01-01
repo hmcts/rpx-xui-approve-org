@@ -41,7 +41,8 @@
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/**/*.spec.ts",
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error node -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
-    "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js "
+    "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
+    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor.conf.js"
   },
   "private": true,
   "dependencies": {
@@ -94,6 +95,9 @@
     "jwt-decode": "^2.2.0",
     "launchdarkly-js-client-sdk": "^2.15.2",
     "log4js": "^3.0.6",
+    "mochawesome": "^4.1.0",
+    "mochawesome-merge": "^4.1.0",
+    "mochawesome-report-generator": "^5.1.0",
     "ngx-cookie": "4.0.2",
     "ngx-cookie-service": "^2.1.0",
     "ngx-logger": "^4.0.3",
@@ -103,6 +107,7 @@
     "p-iteration": "^1.1.7",
     "passport": "^0.4.1",
     "path": "^0.12.7",
+    "protractor-screenshot-utils": "^1.0.6",
     "redis": "^3.0.2",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.4.0",

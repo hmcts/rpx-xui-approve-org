@@ -4,7 +4,7 @@ const AppActions = require('../helpers/applicationActions');
 const PallyActions = require('../helpers/pallyActions');
 
 const assert = require('assert');
-const { pa11ytest, getResults } = require('../helpers/pa11yUtil');
+const { pa11ytest, getResults, pa11yTestUserRoles} = require('../helpers/pa11yUtil');
 const { conf } = require('../config/config');
 
 const MockApp = require('../../nodeMock/app');
@@ -12,6 +12,7 @@ const MockApp = require('../../nodeMock/app');
 describe('Pa11y Accessibility tests', function () {
 
     beforeEach(function () {
+        pa11yTestUserRoles(["prd-admin"]);
         MockApp.init();
 
     });
