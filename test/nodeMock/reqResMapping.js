@@ -1,12 +1,21 @@
 const pendingOrganisation = require('./pendingOrganisations');
 const activeOrganisation = require('./activeOrganisations');
+const AppConfigMock = require('./mockdata/appConfig');
 
 
 const requestMapping = {
    get:{
+        '/auth/login': (req, res) => {
+           res.set("location", "https://idam-web-public.aat.platform.hmcts.net/login?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Foauth2%2Fcallback&scope=profile%20openid%20roles%20manage-user%20create-user&state=q5GPi2LJ_2sXXDS4eCkPO5hbc3gybg1cl6U4V1ehdXk&client_id=xuiaowebapp")
+            res.status(302).send();
+        },
+       '/auth/logout': (req,res) =>{
+           res.set("location", "/auth/login")
+           res.status(302).send();
+       },
        '/api/environment/config': (req,res) => {
 
-           res.send(getEnviornmentConfig());
+           res.send(AppConfigMock.getEnvConfig());
        },
        '/auth/isAuthenticated': (req,res) => {
             res.send(true);
@@ -144,54 +153,6 @@ function getOrganisationsUsers(orgId){
             }
         ]
     };
-}
-
-
-function getEnviornmentConfig(){
-    return {
-        "configEnv": "development",
-        "cookies": {
-            "roles": "roles",
-            "token": "__auth__",
-            "userId": "__userid__"
-        },
-        "exceptionOptions": {
-            "maxLines": 1
-        },
-        "health": {
-            "ccdDataApi": "https://gateway-ccd.aat.platform.hmcts.net/health",
-            "ccdDefApi": "http://ccd-definition-store-api-aat.service.core-compute-aat.internal/health",
-            "feeAndPayApi": "http://payment-api-aat.service.core-compute-aat.internal/health",
-            "idamApi": "https://idam-api.aat.platform.hmcts.net/health",
-            "idamWeb": "https://idam-web-public.aat.platform.hmcts.net/health",
-            "rdProfessionalApi": "http://rd-professional-api-aat.service.core-compute-aat.internal/health",
-            "s2s": "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health"
-        },
-        "idamClient": "xuiaowebapp",
-        "indexUrl": "/",
-        "iss": "https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts",
-        "logging": "debug",
-        "maxLogLine": 80,
-        "microservice": "xui_webapp",
-        "now": false,
-        "oauthCallbackUrl": "/oauth2/callback",
-        "oidcEnabled": false,
-        "protocol": "http",
-        "secureCookie": false,
-        "services": {
-            "ccdDataApi": "https://gateway-ccd.aat.platform.hmcts.net",
-            "ccdDefApi": "http://ccd-definition-store-api-aat.service.core-compute-aat.internal",
-            "feeAndPayApi": "http://payment-api-aat.service.core-compute-aat.internal",
-            "idamApi": "https://idam-api.aat.platform.hmcts.net",
-            "idamWeb": "https://idam-web-public.aat.platform.hmcts.net",
-            "iss": "https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts",
-            "rdProfessionalApi": "http://rd-professional-api-aat.service.core-compute-aat.internal",
-            "s2s": "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-        },
-        "sessionSecret": "secretSauce",
-        "launchDarklyClientId": "5de6610b23ce5408280f2268"
-    };
-
 }
 
 

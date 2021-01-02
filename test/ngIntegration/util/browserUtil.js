@@ -1,5 +1,6 @@
-const { browser } = require("protractor");
+const { browser, promise } = require("protractor");
 const jwt = require('jsonwebtoken');
+const axios = require('axios'); 
 
 class BrowserUtil{
 
@@ -46,17 +47,22 @@ class BrowserUtil{
         let startTime = new Date();
         let elapsedTime = 0;
         let ldDone = false;
+        let ldUrl = "";
         while (!ldDone && elapsedTime < 15) {
             let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
             perf.forEach(async ( perfitem) => {
                 if (perfitem.name.includes('app.launchdarkly.com/sdk/evalx')) {
+                    ldUrl = perfitem.name; 
                     ldDone = true;
                     // await browser.sleep(2000);
                 } 
             }); 
             elapsedTime = (new Date() - startTime)/1000;
         }
+
+        return (await axios.get(ldUrl)).data; 
     }
+
 
 }
 
