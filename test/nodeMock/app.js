@@ -3,7 +3,7 @@
 const express = require('express');
 let { requestMapping,configurations} = require('./reqResMapping');
 const { browser } = require('protractor');
-const port = 3001;
+const port = 3001
 
 
 class MockApp{
