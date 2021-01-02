@@ -13,6 +13,15 @@ function loginLogoutObjects() {
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
   this.dashboard_header= element(by.xpath("//a[@class='hmcts-header__link']"));
 
+  this.isLoginPageDisplayed = async function(){
+    try{
+      await await BrowserWaits.waitForElement(this.emailAddress);
+      return true;
+    }catch(err){
+      console.log("Login page not displayed. error "+err);
+      return false;
+    }
+  }
 
   this.getEmailFieldValue = async function(){
     return await this.emailAddress.getAttribute('value');
