@@ -152,6 +152,47 @@ describe('getNavItemsBasedOnRole', () => {
     expect(navItems).toEqual([navItem]);
    });
 
+  it('user with roles in order', () => {
+    const navItem1 = {
+        text: 'text1',
+        href: 'href1',
+        active: false,
+        feature: {
+          isfeatureToggleable: true,
+          featureName: 'feature1'
+        },
+        orderId: 1
+    };
+    const navItem2 = {
+        text: 'text2',
+        href: 'href2',
+        active: false,
+        feature: {
+          isfeatureToggleable: true,
+          featureName: 'feature2'
+        },
+        orderId: 2
+    };
+    const navItem3 = {
+        text: 'text3',
+        href: 'href3',
+        active: false,
+        feature: {
+          isfeatureToggleable: true,
+          featureName: 'feature3'
+        },
+        orderId: 3
+    };
+    const roleBasedNav = {
+          role1: navItem1,
+          role2: navItem2,
+          role3: navItem3
+    };
+    const userRoles = ['role1', 'role2', 'role3'];
+    const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
+    expect(navItems).toEqual([navItem1, navItem2, navItem3]);
+   });
+
   it('user with no roles', () => {
     const navItem = {
         text: 'text1',
@@ -185,4 +226,12 @@ describe('getRoles', () => {
     const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%5D');
     expect(roles).toEqual(['prd-admin']);
   });
+  it('user with no roles', () => {
+    const roles = AppUtils.getRoles('');
+    expect(roles).toEqual([]);
+  })
+  it('incorrect format roles', () => {
+    const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%5D%3A%5B%22test%22%5D');
+    expect(roles).toEqual([]);
+  })
 });
