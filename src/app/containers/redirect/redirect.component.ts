@@ -10,15 +10,22 @@ import { AppUtils } from 'src/app/utils/app-utils';
 
 export class RedirectComponent implements OnInit {
     constructor(private readonly cookieService: CookieService, private router: Router) {}
-    ngOnInit() {
-        const encodedRoles = this.cookieService.getObject('roles');
-        if (encodedRoles) {
-          const roles = AppUtils.getRoles(encodedRoles);
-          if (roles.includes('prd-admin')) {
-            this.router.navigate(['pending-organisations'])
-          } else if (roles.includes('')) {
-            // EUI-2987
-          }
-        }
+    public ngOnInit() {
+      const encodedRoles = this.cookieService.getObject('roles');
+      const url = this.getRedirectUrl(encodedRoles);
+      if (url) {
+        this.router.navigate([url]);
+      }
     }
+
+  public getRedirectUrl(encodedRoles: any): string {
+    if (encodedRoles) {
+      const roles = AppUtils.getRoles(encodedRoles);
+      if (roles.includes('prd-admin')) {
+        return 'pending-organisations';
+      }
+      // EUI-2987 will come later
+      return null;
+    }
+  }
 }
