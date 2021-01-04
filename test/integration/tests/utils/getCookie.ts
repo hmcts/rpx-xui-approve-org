@@ -2,6 +2,8 @@ import * as puppeteer from 'puppeteer';
 
 const username = 'elvianixui@mailnesia.com';
 const password = 'Monday01';
+let xsrfCookie = '';
+let xxsrfCookie = '';
 
 const authCookiesForUsers = {
 
@@ -31,12 +33,13 @@ export async function  authenticateAndGetcookies(url)  {
   const cookies: [] = await page.cookies();
  // console.log(cookies);
 
-  let xsrfCookie = '';
+ // let xsrfCookie = '';
   let roles = '';
   let webappCookie = '';
 
   cookies.forEach((cookie: any) => {
     if (cookie.name === 'XSRF-TOKEN') {
+      xxsrfCookie = cookie.value;
       xsrfCookie = `XSRF-TOKEN= ${cookie.value}`;
     }
     if (cookie.name === 'roles') {
@@ -50,6 +53,12 @@ export async function  authenticateAndGetcookies(url)  {
   await browser.close();
   return finalCookie;
 }
+
+export async function xxsrftoken()  {
+  return xxsrfCookie;
+}
+
+
 
 function getPuppeteerLaunchOptions(url) {
   const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: [] };
