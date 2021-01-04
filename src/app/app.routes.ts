@@ -4,12 +4,19 @@ import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, 
 import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
 import { RoleGuard } from '@hmcts/rpx-xui-common-lib';
+import { RedirectComponent } from './containers';
 
 export const ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'organisation',
+    component: RedirectComponent,
+    canActivate: [AuthGuard],
     pathMatch: 'full',
+  },
+  {
+    canActivate: [AuthGuard],
+    path: 'home',
+    component: RedirectComponent
   },
   {
     path: 'organisation',
@@ -43,7 +50,7 @@ export const ROUTES: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'organisation',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
 ];

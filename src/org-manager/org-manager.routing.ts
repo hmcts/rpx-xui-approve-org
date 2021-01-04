@@ -17,11 +17,6 @@ import { RoleGuard, RoleMatching, RoleService } from '@hmcts/rpx-xui-common-lib'
 
 export const ROUTES: Routes = [
   {
-    path: '',
-    redirectTo: 'pending-organisations',
-    pathMatch: 'full',
-  },
-  {
     path: 'active-organisation',
     component: ActiveOrganisationsComponent,
     canActivate: [AuthGuard],
