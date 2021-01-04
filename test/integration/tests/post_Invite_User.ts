@@ -3,12 +3,13 @@ const should = require('chai').should();
 
 suite('API/CASES3 -> POST Invite User', function() {
   this.timeout(50000);
+
   const payload = {
-    firstName: 'Vamshi',
-    lastName: 'Muniganti',
-    email: 'vam.mun7362@mailnesia.com',
+    firstName: 'Jason',
+    lastName: 'David1',
+    email: 'jason.david1@mailnesia.com',
     roles: ['pui-organisation-manager'],
-    resendInvite: true
+    resendInvite: true,
   };
   test('POST Invite User', () => generatePOSTAPIRequest ('POST', '/api/reinviteUser?organisationId=2GIHJH9', payload)
      // console.log('response', response.headers.get('cache-control'))
