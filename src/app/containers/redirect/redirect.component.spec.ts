@@ -11,7 +11,7 @@ describe('RedirectComponent', () => {
         expect(component).toBeTruthy();
     });
     it('getRedirectUrl', () => {
-        const url = component.getRedirectUrl('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22pui-caa%22%5D');
+        const url = component.getRedirectUrl('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
         expect(url).toEqual('pending-organisations');
     });
     it('incorrect  roles', () => {
@@ -19,7 +19,7 @@ describe('RedirectComponent', () => {
         expect(url).toBeNull();
     });
     it('ngOnInit', () => {
-        cookieService.getObject.and.returnValue('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22pui-caa%22%5D');
+        cookieService.getObject.and.returnValue('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
         component.ngOnInit();
         expect(router.navigate).toHaveBeenCalledWith(['pending-organisations']);
     })
