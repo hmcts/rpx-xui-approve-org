@@ -15,5 +15,6 @@ nodejs:
       secrets:
         - ao-s2s-client-secret
         - ao-idam-client-secret
+        - launch-darkly-client-id
 redis:
   enabled: true
