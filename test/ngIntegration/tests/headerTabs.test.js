@@ -46,7 +46,7 @@ const AppConfigMock = require('../../nodeMock/mockdata/appConfig');
         });
 
 
-        it('Organisation tab present for prd-admin and Casewrker manager role', async function () {
+        it('Organisation tabs and Caseworker details present for prd-admin and Casewrker manager role', async function () {
             await MockApp.startServer();
             await BrowserUtil.browserInitWithAuth(["prd-admin", "cwd-admin"]);
 
@@ -66,6 +66,8 @@ const AppConfigMock = require('../../nodeMock/mockdata/appConfig');
             await headerPage.waitForPrimaryNavDisplay()
             const features = await BrowserUtil.waitForLD();
             const tabs = await headerPage.getTabsDisplayed();
+
+            expect(tabs.includes("Organisations"), 'Organisation tab displayed ' + tabs).to.equal(false);
 
             if (features["ao-case-worker-details"].value) {
                 expect(tabs.includes("Caseworker details"), 'Caseworker details not displayed with feature enabled' + tabs).to.equal(true);
