@@ -13,7 +13,6 @@ import { UserDetailsComponent } from './containers/user-details/user-details.com
 import { UserApprovalGuard } from './guards/users-approval.guard';
 import { DeleteOrganisationComponent } from './containers/delete-organisation/delete-organisation.component';
 import {DeleteOrganisationSuccessComponent} from './containers/delete-organisation-success/delete-organisation-success.component';
-import { RoleGuard, RoleMatching, RoleService } from '@hmcts/rpx-xui-common-lib';
 
 export const ROUTES: Routes = [
   {
@@ -25,7 +24,6 @@ export const ROUTES: Routes = [
     path: 'pending-organisations',
     component: PendingOrganisationsComponent,
     canActivate: [AuthGuard],
-    // data: {needsRole: ['prd-admin'], roleMatching: RoleMatching.ANY, }
   },
   {
     path: 'approve-organisations',
