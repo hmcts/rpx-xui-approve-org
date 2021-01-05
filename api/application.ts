@@ -129,7 +129,7 @@ console.log('tokenUrl', tokenUrl)
 //TODO: we can move these out into proper config at some point to tidy up even further
 const options: AuthOptions = {
   // we only want to allow prd-admin roles
-  allowRolesRegex: 'prd-admin|pui-caa',
+  allowRolesRegex: 'prd-admin|cwd-admin',
   authorizationURL: authorizationUrl,
   callbackURL: getConfigValue(OAUTH_CALLBACK_URL),
   clientID: idamClient,
