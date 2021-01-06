@@ -15,7 +15,7 @@ import { NavItem } from '../../store';
 })
 export class HeaderComponent implements OnInit {
 
-    navItems: Array<{}>;
+    navItems: Array<NavItem>;
     navigations;
     serviceName;
     @Output() navigate = new EventEmitter<string>();
@@ -62,7 +62,7 @@ export class HeaderComponent implements OnInit {
       this.navItems = this.navItems.map(item => {
         return {
           ...item,
-          active: item['href'] === url
+          active: item.href === url
         };
       });
     }
