@@ -14,7 +14,6 @@ const idamPage = require('../../e2e/features/pageObjects/loginLogoutObjects');
 const AppConfigMock = require('../../nodeMock/mockdata/appConfig');
 
 [
-    { env: "Prod", ldDlientId: "5de6610b23ce5408280f2268"},
     { env: "Test", ldDlientId: "5de6610b23ce5408280f2268" } 
 ].forEach(feature => {
     describe('Header  Tabs for env ' + feature.env, function () {
@@ -58,7 +57,7 @@ const AppConfigMock = require('../../nodeMock/mockdata/appConfig');
 
         });
 
-        it('Case worker tab present for pui-xxx user (caseworker manager role)', async function () {
+        it('Case worker tab present for user (caseworker admin) role cwd-admin', async function () {
 
             await MockApp.startServer();
             await BrowserUtil.browserInitWithAuth(["cwd-admin"]);
