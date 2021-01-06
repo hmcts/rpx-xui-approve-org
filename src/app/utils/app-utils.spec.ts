@@ -215,8 +215,8 @@ describe('getNavItemsBasedOnRole', () => {
 
 describe('getRoles', () => {
   it('user with roles', () => {
-      const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22pui-caa%22%5D');
-      expect(roles).toEqual(['prd-admin', 'prd-aac-system', 'xui-approver-userdata', 'pui-caa']);
+      const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
+      expect(roles).toEqual(['prd-admin', 'prd-aac-system', 'xui-approver-userdata', 'cwd-admin']);
     });
   it('user with no roles', () => {
     const roles = AppUtils.getRoles('j%3A%5B%5D');
