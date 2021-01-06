@@ -48,7 +48,7 @@ const AppConfigMock = require('../../nodeMock/mockdata/appConfig');
 
         it('Organisation tabs and Caseworker details present for prd-admin and Casewrker manager role', async function () {
             await MockApp.startServer();
-            await BrowserUtil.browserInitWithAuth(["prd-admin", "pui-caa"]);
+            await BrowserUtil.browserInitWithAuth(["prd-admin", "cwd-admin"]);
 
             await headerPage.waitForPrimaryNavDisplay()
             const features = await BrowserUtil.waitForLD();
@@ -61,7 +61,7 @@ const AppConfigMock = require('../../nodeMock/mockdata/appConfig');
         it('Case worker tab present for pui-xxx user (caseworker manager role)', async function () {
 
             await MockApp.startServer();
-            await BrowserUtil.browserInitWithAuth(["pui-caa"]);
+            await BrowserUtil.browserInitWithAuth(["cwd-admin"]);
 
             await headerPage.waitForPrimaryNavDisplay()
             const features = await BrowserUtil.waitForLD();

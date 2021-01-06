@@ -66,6 +66,7 @@ nodejs:
         - ao-idam-client-secret
         - appinsights-instrumentationkey-ao
         - ao-webapp-redis-connection-string
+        - launch-darkly-client-id
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
