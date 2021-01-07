@@ -23,8 +23,9 @@ export class RedirectComponent implements OnInit {
       const roles = AppUtils.getRoles(encodedRoles);
       if (roles.includes('prd-admin')) {
         return 'pending-organisations';
+      } else if (roles.includes('cwd-admin')) {
+        return 'caseworker-details';
       }
-      // EUI-2987 will come later
       return null;
     }
   }

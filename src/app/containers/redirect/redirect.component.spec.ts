@@ -10,7 +10,7 @@ describe('RedirectComponent', () => {
     it('should create the HeaderComponent', () => {
         expect(component).toBeTruthy();
     });
-    it('getRedirectUrl', () => {
+    it('getRedirectUrl pending-org', () => {
         const url = component.getRedirectUrl('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
         expect(url).toEqual('pending-organisations');
     });
@@ -22,5 +22,9 @@ describe('RedirectComponent', () => {
         cookieService.getObject.and.returnValue('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
         component.ngOnInit();
         expect(router.navigate).toHaveBeenCalledWith(['pending-organisations']);
-    })
+    });
+    it('getRedirectUrl cwd-admin', () => {
+        const url = component.getRedirectUrl('j%3A%5B%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
+        expect(url).toEqual('caseworker-details');
+    });
 });

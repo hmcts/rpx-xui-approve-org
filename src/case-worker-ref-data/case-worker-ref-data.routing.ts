@@ -5,7 +5,7 @@ import { ModuleWithProviders } from '@angular/core';
 
 export const ROUTES: Routes = [
     {
-      path: 'case-worker-details',
+      path: '',
       component: CaseWorkerRefDataHomeComponent,
       canActivate: [AuthGuard],
     }
