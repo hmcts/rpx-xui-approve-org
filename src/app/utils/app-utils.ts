@@ -188,7 +188,7 @@ export class AppUtils {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
       }
     });
-    return roleNavItems.sort((a, b) => (a.orderId > b.orderId) ? 1 : -1)
+    return roleNavItems.sort((a, b) => (a.orderId > b.orderId) ? 1 : (a.orderId < b.orderId) ? -1 : 0)
   }
 
   // Helper method to take the roles
