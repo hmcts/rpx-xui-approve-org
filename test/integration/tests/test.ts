@@ -26,8 +26,11 @@ mocha.addFile('test/integration/tests/get_Active_Organisations.ts');
 mocha.addFile('test/integration/tests/get_PBA_Account_names.ts');
 mocha.addFile('test/integration/tests/get_Organisation_User_Details.ts');
 mocha.addFile('test/integration/tests/post_Invite_User.ts');
+mocha.addFile('test/integration/tests/Delete_Pending_Organisations.ts');
 mocha.addFile('test/integration/tests/Approve_Pending_Organisations.ts');
-// mocha.addFile('test/integration/tests/post_Update_PBA.ts');
+mocha.addFile('test/integration/tests/post_Update_PBA.ts');
+// mocha.addFile('test/integration/tests/Delete_Active_Organisations.ts');
+
 
 mocha.run( (failures) => {
     process.exitCode = failures ? 1 : 0; // exit with non-zero status if there were failures

@@ -1,8 +1,6 @@
-import { generateToken } from '../../../../api/auth/serviceToken';
-import { getauthToken } from './getToken';
-const fetch = require('node-fetch');
-import { authenticateAndGetcookies } from './getCookie';
 import { xxsrftoken } from './getCookie';
+import { authenticateAndGetcookies } from './getCookie';
+const fetch = require('node-fetch');
 
 const mainURL = process.env.TEST_URL || 'https://localhost:3000';
 const LOG_REQUEST_ERROR_DETAILS = false;

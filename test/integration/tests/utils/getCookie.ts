@@ -48,6 +48,14 @@ export async function  authenticateAndGetcookies(url)  {
     if (cookie.name === 'ao-webapp') {
       webappCookie = `ao-webapp= ${cookie.value}`;
     }
+
+    // if (cookie.name === 'ao-webapp') {
+    //   webappCookie = `ao-webapp= ${cookie.value}`;
+    // }
+    //
+    // if (cookie.name === 'ao-webapp') {
+    //   webappCookie = `ao-webapp= ${cookie.value}`;
+    // }
   });
   const finalCookie = `${roles};${webappCookie};${xsrfCookie}`;
   await browser.close();

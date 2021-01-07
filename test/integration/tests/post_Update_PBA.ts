@@ -4,13 +4,9 @@ const should = require('chai').should();
 suite('Approve Org -> PUT Update PBA numbers', function() {
   this.timeout(50000);
   const payload = {
-  paymentAccounts: ['PBA8434341', 'PBA8535141'],
-    orgId: 'SKA5D2Q'
+  paymentAccounts: [`PBA1${Math.floor(100000 + Math.random() * 900000)}`, `PBA2${Math.floor(100000 + Math.random() * 900000)}`],
+  orgId: 'BOHOBFK',
   };
-  test('PUT Update PBA numbers', () => generatePOSTAPIRequest ('PUT', '/api/updatePba', payload)
-     // console.log('response', response.headers.get('cache-control'))
-        .then(response => {
-           response.status.should.be.eql(200);
-           console.log(response);
-        }));
+  test('PUT Update PBA numbers', () => generatePOSTAPIRequest ('PUT', '/api/updatePba', payload));
+  console.log('PBAs updated');
 });
