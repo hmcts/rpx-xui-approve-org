@@ -1,8 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
 import { AppUtils } from 'src/app/utils/app-utils';
 import * as fromRoot from '../../store';
