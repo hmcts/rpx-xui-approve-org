@@ -25,6 +25,11 @@ export const ROUTES: Routes = [
     data: ['prd-admin']
   },
   {
+    path: 'caseworker-details',
+    canActivate: [AuthGuard],
+    loadChildren: '../case-worker-ref-data/case-worker-ref-data.module#CaseWorkerRefDataModule'
+  },
+  {
     path: 'cookies',
     component: CookiePolicyComponent
   },
