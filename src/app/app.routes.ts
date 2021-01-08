@@ -14,6 +14,11 @@ export const ROUTES: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'caseworker-details',
+    canActivate: [AuthGuard],
+    loadChildren: '../case-worker-ref-data/case-worker-ref-data.module#CaseWorkerRefDataModule'
+  },
+  {
     canActivate: [AuthGuard],
     path: 'home',
     component: RedirectComponent
@@ -23,11 +28,6 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard, RoleGuard],
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule',
     data: ['prd-admin']
-  },
-  {
-    path: 'caseworker-details',
-    canActivate: [AuthGuard],
-    loadChildren: '../case-worker-ref-data/case-worker-ref-data.module#CaseWorkerRefDataModule'
   },
   {
     path: 'cookies',
