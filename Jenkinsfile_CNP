@@ -32,7 +32,10 @@ def secrets = [
   'rpx-${env}': [
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
-    secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY')
+    secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
+    secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
+    secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
   ]
 ]
 
@@ -172,6 +175,15 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
         ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'PREVIEW NG Integration Test'
+        ])
     }
 
 
@@ -205,6 +217,15 @@ withPipeline(type, product, component) {
             reportDir            : "reports/tests/functional/",
             reportFiles          : 'index.html',
             reportName           : 'AAT Functional Test'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/ngIntegration/",
+            reportFiles          : 'index.html',
+            reportName           : 'AAt NG Integration Test'
         ])
     }
 }

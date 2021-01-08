@@ -1,13 +1,9 @@
 import * as puppeteer from 'puppeteer';
 
-const username = 'elvianixui@mailnesia.com';
-const password = 'Monday01';
+const username = process.env.TEST_API_EMAIL_ADMIN;
+const password = process.env.TEST_API_PASSWORD_ADMIN;
 let xsrfCookie = '';
 let xxsrfCookie = '';
-
-const authCookiesForUsers = {
-
-};
 
 export async function  authenticateAndGetcookies(url)  {
   console.log( 'Getting Cookie details...');
@@ -31,9 +27,7 @@ export async function  authenticateAndGetcookies(url)  {
   }
 
   const cookies: [] = await page.cookies();
- // console.log(cookies);
 
- // let xsrfCookie = '';
   let roles = '';
   let webappCookie = '';
 
@@ -49,13 +43,6 @@ export async function  authenticateAndGetcookies(url)  {
       webappCookie = `ao-webapp= ${cookie.value}`;
     }
 
-    // if (cookie.name === 'ao-webapp') {
-    //   webappCookie = `ao-webapp= ${cookie.value}`;
-    // }
-    //
-    // if (cookie.name === 'ao-webapp') {
-    //   webappCookie = `ao-webapp= ${cookie.value}`;
-    // }
   });
   const finalCookie = `${roles};${webappCookie};${xsrfCookie}`;
   await browser.close();

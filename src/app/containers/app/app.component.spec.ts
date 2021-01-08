@@ -3,6 +3,7 @@ import { async, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ManageSessionServices, windowToken } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { EnvironmentService } from 'src/app/services/environment.service';
 import {Logout, reducers} from 'src/app/store';
@@ -14,6 +15,7 @@ import { AppComponent } from './app.component';
 const windowMock: Window = { gtag: () => {}} as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
+const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
 
 describe('AppComponent', () => {
   let store: Store<fromRoot.State>;
@@ -40,7 +42,8 @@ describe('AppComponent', () => {
           useValue: windowMock
         },
         { provide: ManageSessionServices, useValue: idleMockService},
-        { provide: EnvironmentService, useValue: environmentMockService}
+        { provide: EnvironmentService, useValue: environmentMockService},
+        { provide: CookieService, useValue: cookieService }
       ],
     }).compileComponents();
     store = TestBed.get(Store);
@@ -93,7 +96,8 @@ describe('AppComponent', () => {
           useValue: windowMock
         },
         { provide: ManageSessionServices, useValue: idleMockService},
-        { provide: EnvironmentService, useValue: environmentMockService}
+        { provide: EnvironmentService, useValue: environmentMockService},
+        { provide: CookieService, useValue: cookieService }
       ],
     }).compileComponents();
     store = TestBed.get(Store);
@@ -146,7 +150,8 @@ describe('AppComponent', () => {
           useValue: windowMock
         },
         { provide: ManageSessionServices, useValue: idleMockService},
-        { provide: EnvironmentService, useValue: environmentMockService}
+        { provide: EnvironmentService, useValue: environmentMockService},
+        { provide: CookieService, useValue: cookieService }
       ],
     }).compileComponents();
     store = TestBed.get(Store);

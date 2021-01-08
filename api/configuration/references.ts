@@ -41,6 +41,7 @@ export const LOGGING = 'logging'
 export const S2S_SECRET = 'secrets.rpx.ao-s2s-client-secret'
 export const IDAM_SECRET = 'secrets.rpx.ao-idam-client-secret'
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-ao'
+export const LAUNCH_DARKLY_CLIENT_ID = 'secrets.rpx.launch-darkly-client-id'
 
 // FEATURE TOGGLES
 export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled'
