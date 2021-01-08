@@ -3,17 +3,26 @@ import { AuthGuard } from 'src/services/auth/auth.guard';
 import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent } from './components';
 import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
+import { RoleGuard } from '@hmcts/rpx-xui-common-lib';
+import { RedirectComponent } from './containers';
 
 export const ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'organisation',
+    component: RedirectComponent,
+    canActivate: [AuthGuard],
     pathMatch: 'full',
   },
   {
-    path: 'organisation',
     canActivate: [AuthGuard],
-    loadChildren: '../org-manager/org-manager.module#OrgManagerModule'
+    path: 'home',
+    component: RedirectComponent
+  },
+  {
+    path: 'organisation',
+    canActivate: [AuthGuard, RoleGuard],
+    loadChildren: '../org-manager/org-manager.module#OrgManagerModule',
+    data: ['prd-admin']
   },
   {
     path: 'cookies',
@@ -41,7 +50,7 @@ export const ROUTES: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'organisation',
+    redirectTo: 'home',
     pathMatch: 'full'
   },
 ];
