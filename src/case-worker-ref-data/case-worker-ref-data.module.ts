@@ -9,6 +9,7 @@ import * as fromComponents from './components';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import {caseWorkerRefDataRouting} from './case-worker-ref-data.routing';
 import * as fromServices from './services';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import * as fromServices from './services';
     HttpClientModule,
     caseWorkerRefDataRouting,
     SharedModule,
-    ExuiCommonLibModule.forChild()
+    ExuiCommonLibModule.forChild(),
+    FormsModule
   ],
   exports: [...fromContainers.containers],
   declarations: [...fromContainers.containers, ...fromComponents.components],
