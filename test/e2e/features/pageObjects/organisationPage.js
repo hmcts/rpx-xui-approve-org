@@ -8,9 +8,11 @@ function OrganisationPage(){
 
     this.statusBadge = element(by.css('.hmcts-badge'));
     this.subNavigations = element(by.css('.hmcts-sub-navigation'));
-    this.organisationDetailsTab = this.subNavigations.element(by.xpath('//a[contains(text(),"Organisation")]'));
-    this.usersTab = this.subNavigations.element(by.xpath('//a[contains(text(),"Users")]'));
+    this.organisationDetailsTab = this.subNavigations.element(by.xpath('//app-org-details//a[contains(text(),"Organisation details")]'));
+    this.usersTab = this.subNavigations.element(by.xpath('//app-org-details//a[contains(text(),"Users")]'));
     this.h1Header = element(by.css('#content h1'));
+
+    this.organisationDetailsContainer = $('.govuk-check-your-answers');
 
     this.organisationDetailsFields = ["Name","Address"];
 
@@ -40,6 +42,7 @@ function OrganisationPage(){
 
     this.validateOrganisationDetailsDisplayed = async function(){
         expect(await this.h1Header.getText()).to.equal("Organisation details");
+        await browserWaits.waitForElement(this.organisationDetailsContainer);
         for(var fieldCtr = 0; fieldCtr < this.organisationDetailsFields.length; fieldCtr++){
             var fieldPresentStatus = await element(by.xpath("//dt[contains(@class,'govuk-check-your-answers__question') and contains(text()," + this.organisationDetailsFields[fieldCtr]+")]"))
             .isPresent();

@@ -15,7 +15,7 @@ function loginLogoutObjects() {
 
   this.isLoginPageDisplayed = async function(){
     try{
-      await await BrowserWaits.waitForElement(this.emailAddress);
+      await BrowserWaits.waitForElement(this.emailAddress);
       return true;
     }catch(err){
       console.log("Login page not displayed. error "+err);
