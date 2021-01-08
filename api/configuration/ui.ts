@@ -29,7 +29,8 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET
+  SESSION_SECRET,
+  LAUNCH_DARKLY_CLIENT_ID
 } from './references'
 
 export const uiConfig = (): UIConfig => {
@@ -69,5 +70,6 @@ export const uiConfig = (): UIConfig => {
       s2s: getConfigValue(SERVICE_S2S_PATH),
     } as UIConfigServices,
     sessionSecret: getConfigValue(SESSION_SECRET),
+    launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID)
   }
 }

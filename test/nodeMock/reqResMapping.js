@@ -1,14 +1,23 @@
 const pendingOrganisation = require('./pendingOrganisations');
 const activeOrganisation = require('./activeOrganisations');
+const AppConfigMock = require('./mockdata/appConfig');
 
 
 const requestMapping = {
    get:{
+        '/auth/login': (req, res) => {
+           res.set("location", "https://idam-web-public.aat.platform.hmcts.net/login?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Foauth2%2Fcallback&scope=profile%20openid%20roles%20manage-user%20create-user&state=q5GPi2LJ_2sXXDS4eCkPO5hbc3gybg1cl6U4V1ehdXk&client_id=xuiaowebapp")
+            res.status(302).send();
+        },
+       '/auth/logout': (req,res) =>{
+           res.set("location", "/auth/login")
+           res.status(302).send();
+       },
        '/api/environment/config': (req,res) => {
-           res.send(getEnviornmentConfig());
+
+           res.send(AppConfigMock.getEnvConfig());
        },
        '/auth/isAuthenticated': (req,res) => {
-           res.cookie('roles', 'j:["prd-admin"]')
             res.send(true);
        },
        '/api/organisations': (req,res) => {
@@ -39,7 +48,7 @@ const requestMapping = {
             res.send(getUsersList());
        },
        '/api/user/details': (req,res) => {
-           res.send({ "email": "sreekanth_su1@mailinator.com", "orgId": "VRSFNPV", "roles": ["caseworker", "caseworker-divorce", "caseworker-divorce-financialremedy", "caseworker-divorce-financialremedy-solicitor", "caseworker-divorce-solicitor", "caseworker-ia", "caseworker-ia-legalrep-solicitor", "caseworker-probate", "caseworker-probate-solicitor", "caseworker-publiclaw", "caseworker-publiclaw-solicitor", "pui-caa", "pui-case-manager", "pui-finance-manager", "pui-organisation-manager", "pui-user-manager"], "sessionTimeout": { "idleModalDisplayTime": 10, "pattern": ".", "totalIdleTime": 20 }, "userId": "4510b778-6a9d-4c53-918a-c3f80bd7aadd" }); 
+           res.send({ "email": "sreekanth_su1@mailinator.com", "orgId": "VRSFNPV", "roles": ["caseworker", "caseworker-divorce", "caseworker-divorce-financialremedy", "caseworker-divorce-financialremedy-solicitor", "caseworker-divorce-solicitor", "caseworker-ia", "caseworker-ia-legalrep-solicitor", "caseworker-probate", "caseworker-probate-solicitor", "caseworker-publiclaw", "caseworker-publiclaw-solicitor", "cwd-admin", "pui-case-manager", "pui-finance-manager", "pui-organisation-manager", "pui-user-manager"], "sessionTimeout": { "idleModalDisplayTime": 10, "pattern": ".", "totalIdleTime": 20 }, "userId": "4510b778-6a9d-4c53-918a-c3f80bd7aadd" }); 
        },
        '/api/organisations/:OrgId/isDeletable' : (req,res) => {
            res.send({ "organisationDeletable": false }); 
@@ -143,50 +152,6 @@ function getOrganisationsUsers(orgId){
                 "idamMessage": "11 OK"
             }
         ]
-    };
-}
-
-
-function getEnviornmentConfig(){
-    return {
-        "configEnv": "production",
-        "cookies": {
-            "roles": "roles",
-            "token": "__auth__",
-            "userId": "__userid__"
-        },
-        "exceptionOptions": {
-            "maxLines": "1"
-        },
-        "health": {
-            "ccdDataApi": "http://ccd-data-store-api-aat.service.core-compute-aat.internal/health",
-            "ccdDefApi": "http://ccd-definition-store-api-aat.service.core-compute-aat.internal/health",
-            "feeAndPayApi": "http://payment-api-aat.service.core-compute-aat.internal/health",
-            "idamApi": "https://idam-api.aat.platform.hmcts.net/health",
-            "idamWeb": "https://idam-web-public.aat.platform.hmcts.net/health",
-            "rdProfessionalApi": "http://rd-professional-api-aat.service.core-compute-aat.internal/health",
-            "s2s": "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health"
-        },
-        "idamClient": "xuiaowebapp",
-        "indexUrl": "/",
-        "logging": "debug",
-        "maxLogLine": "80",
-        "microservice": "xui_webapp",
-        "now": false,
-        "oauthCallbackUrl": "/oauth2/callback",
-        "oidcEnabled": false,
-        "protocol": "https",
-        "secureCookie": true,
-        "services": {
-            "ccdDataApi": "http://ccd-data-store-api-aat.service.core-compute-aat.internal",
-            "ccdDefApi": "http://ccd-definition-store-api-aat.service.core-compute-aat.internal",
-            "feeAndPayApi": "http://payment-api-aat.service.core-compute-aat.internal",
-            "idamApi": "https://idam-api.aat.platform.hmcts.net",
-            "idamWeb": "https://idam-web-public.aat.platform.hmcts.net",
-            "rdProfessionalApi": "http://rd-professional-api-aat.service.core-compute-aat.internal",
-            "s2s": "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
-        },
-        "sessionSecret": "secretSauce"
     };
 }
 
