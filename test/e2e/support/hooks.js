@@ -105,6 +105,7 @@ defineSupportCode(({ Before,After }) => {
     After(async function (scenario) {
         const world = this;
         if (scenario.result.status === 'failed') {
+            await prinrBrowserLogs();
             const stream = await browser.takeScreenshot();
             const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
             world.attach(decodedImage, 'image/png'); 
@@ -113,6 +114,17 @@ defineSupportCode(({ Before,After }) => {
 
     });
 }); 
+
+async function prinrBrowserLogs(){
+    let browserLog = await browser.manage().logs().get('browser');
+    let browserErrorLogs = []
+    for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
+        if (browserLog[browserLogCounter].level.value > 900) {
+            browserErrorLogs.push(browserLog[browserLogCounter]);
+        }
+    }
+    CucumberReportLog.AddJson(browserErrorLogs); 
+}
 
 function getCookieCleanupPromises(){
 
