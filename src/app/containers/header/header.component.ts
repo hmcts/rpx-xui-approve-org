@@ -1,7 +1,11 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Store, select } from '@ngrx/store';
+import { CookieService } from 'ngx-cookie';
 import { Observable } from 'rxjs';
+import { AppConstants } from 'src/app/app.constants';
+import { AppUtils } from 'src/app/utils/app-utils';
 import * as fromRoot from '../../store';
+import { NavItem } from '../../store';
 
 @Component({
     selector: 'app-header',
@@ -10,15 +14,16 @@ import * as fromRoot from '../../store';
 })
 export class HeaderComponent implements OnInit {
 
-    navItems: Array<{}>;
+    navItems: Array<NavItem>;
     navigations;
     serviceName;
     @Output() navigate = new EventEmitter<string>();
 
     isUserLoggedIn$: Observable<boolean>;
+    public isBrandedHeader = false;
 
-    constructor(public store: Store<fromRoot.State>) {}
-
+    constructor(public readonly store: Store<fromRoot.State>,
+                private readonly cookieService: CookieService) {}
 
     ngOnInit(): void {
         this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
@@ -27,23 +32,12 @@ export class HeaderComponent implements OnInit {
           }
         });
 
-        this.navItems = [{
-            text: 'Organisation',
-            href: '/organisation',
-            active: true
-        },
-        {
-            text: 'Users',
-            href: '/users',
-            active: false
-        },
-        {
-            text: 'Fee Accounts',
-            href: '/fee-accounts',
-            active: false
-        },
+        const encodedRoles = this.cookieService.getObject('roles');
+        if (encodedRoles) {
+          const userRoles = AppUtils.getRoles(encodedRoles);
+          this.navItems = AppUtils.getNavItemsBasedOnRole(AppConstants.ROLES_BASED_NAV, userRoles);
+        }
 
-        ];
         this.serviceName = {
             name: 'Approve organisation',
             url: '/'
@@ -63,12 +57,14 @@ export class HeaderComponent implements OnInit {
     }
 
   updateNavItems(url): void {
-    this.navItems = this.navItems.map(item => {
-      return {
-        ...item,
-        active: item['href'] === url
-      };
-    });
+    if (this.navItems) {
+      this.navItems = this.navItems.map(item => {
+        return {
+          ...item,
+          active: item.href === url
+        };
+      });
+    }
   }
 
   onNavigate(event) {

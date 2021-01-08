@@ -10,6 +10,10 @@ const puppeteer = require('puppeteer');
 
 const fs = require('fs');
 
+let userRoles = [];
+function pa11yTestUserRoles(roles){
+    userRoles = roles;
+}
 
 async function pa11ytest(test,actions,timeoutVal) {
     console.log("pally test with actions : " + test.test.title);
@@ -29,6 +33,8 @@ async function pa11ytest(test,actions,timeoutVal) {
     data: 'foobar'
     }, 'secret', { expiresIn: 60 * 60 });
 
+    const encodedRoles = encodeURIComponent(userRoles.length > 0 ? 'j:' + JSON.stringify(userRoles) : 'j:["prd-admin"]')
+
     const cookies = [
         {
         name: '__auth__',
@@ -38,6 +44,15 @@ async function pa11ytest(test,actions,timeoutVal) {
         httpOnly: false,
         secure: false,
         session: true,
+        },
+        {
+            name: 'roles',
+            value: encodedRoles,
+            domain: 'localhost:4200',
+            path: '/',
+            httpOnly: false,
+            secure: false,
+            session: true,
         }
     ];
     const browser = await puppeteer.launch({
@@ -65,6 +80,7 @@ async function pa11ytest(test,actions,timeoutVal) {
             actions: actions
         })
     }catch(err){
+        userRoles = [];
         await page.screenshot({ path: screenshotPath});
         const elapsedTime = Date.now() - startTime;
         result = {}; 
@@ -78,7 +94,7 @@ async function pa11ytest(test,actions,timeoutVal) {
         throw err;
 
     }
-  
+    userRoles = []; 
     await page.close();
     await browser.close();
     const elapsedTime = Date.now() - startTime;
@@ -95,4 +111,4 @@ async function pa11ytest(test,actions,timeoutVal) {
 
  
 
-module.exports = { pa11ytest}
+module.exports = { pa11ytest, pa11yTestUserRoles}
