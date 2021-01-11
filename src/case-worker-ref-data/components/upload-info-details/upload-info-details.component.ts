@@ -9,8 +9,8 @@ import { CaseWorkerRefDataUploadResponse } from '../../models/case-worker-ref-da
 
 export class UploadInfoDetailsComponent implements OnInit {
   private readonly uploadResponse: CaseWorkerRefDataUploadResponse;
-  private createdOrAmendedRecords: number;
-  private suspendedRecords: number;
+  public createdOrAmendedRecords: number;
+  public suspendedRecords: number;
   constructor(private readonly router: Router) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
