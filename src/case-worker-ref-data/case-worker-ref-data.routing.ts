@@ -1,5 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from 'src/services/auth/auth.guard';
+import { AuthGuard } from '../services/auth/auth.guard';
 import { CaseWorkerRefDataHomeComponent } from './containers/case-worker-ref-home/case-worker-ref-home.component';
 import { ModuleWithProviders } from '@angular/core';
 import { UploadInfoDetailsComponent } from './components/upload-info-details/upload-info-details.component';

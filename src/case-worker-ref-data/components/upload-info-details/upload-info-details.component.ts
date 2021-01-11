@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { CaseWorkerRefDataUploadResponse } from '../../models/case-worker-ref-data.model';
 
 @Component({
-    selector: 'app-prd-upload-info-detail',
-    templateUrl: './upload-info-details.component.html',
-  })
+  selector: 'app-prd-upload-info-detail',
+  templateUrl: './upload-info-details.component.html',
+})
 
 export class UploadInfoDetailsComponent implements OnInit {
   private readonly uploadResponse: CaseWorkerRefDataUploadResponse;
