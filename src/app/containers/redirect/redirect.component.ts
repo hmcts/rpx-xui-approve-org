@@ -22,7 +22,7 @@ export class RedirectComponent implements OnInit {
     if (encodedRoles) {
       const roles = AppUtils.getRoles(encodedRoles);
       if (roles.includes('prd-admin')) {
-        return 'pending-organisations';
+        return 'organisation';
       } else if (roles.includes('cwd-admin')) {
         return 'caseworker-details';
       }

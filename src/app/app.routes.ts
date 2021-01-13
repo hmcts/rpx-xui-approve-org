@@ -15,8 +15,9 @@ export const ROUTES: Routes = [
   },
   {
     path: 'caseworker-details',
-    canActivate: [AuthGuard],
-    loadChildren: '../case-worker-ref-data/case-worker-ref-data.module#CaseWorkerRefDataModule'
+    canActivate: [AuthGuard, RoleGuard],
+    loadChildren: '../case-worker-ref-data/case-worker-ref-data.module#CaseWorkerRefDataModule',
+    data: {needsRole: ['cwd-admin'], roleMatching: 0 }
   },
   {
     canActivate: [AuthGuard],
@@ -27,7 +28,7 @@ export const ROUTES: Routes = [
     path: 'organisation',
     canActivate: [AuthGuard, RoleGuard],
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule',
-    data: ['prd-admin']
+    data: {needsRole: ['prd-admin'], roleMatching: 0 }
   },
   {
     path: 'cookies',
