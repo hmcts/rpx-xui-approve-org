@@ -98,6 +98,7 @@
     "mochawesome": "^4.1.0",
     "mochawesome-merge": "^4.1.0",
     "mochawesome-report-generator": "^5.1.0",
+    "multer": "^1.4.2",
     "ngx-cookie": "4.0.2",
     "ngx-cookie-service": "^2.1.0",
     "ngx-logger": "^4.0.3",
