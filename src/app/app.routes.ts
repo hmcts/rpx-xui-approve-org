@@ -1,10 +1,12 @@
-import { Routes } from '@angular/router';
-import { AuthGuard } from 'src/services/auth/auth.guard';
 import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent } from './components';
+
+import { AuthGuard } from 'src/services/auth/auth.guard';
+import { NotAuthorisedComponent } from './components/not-authorised/not-authorised.component';
+import { RedirectComponent } from './containers';
+import { RoleGuard } from '@hmcts/rpx-xui-common-lib';
+import { Routes } from '@angular/router';
 import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
-import { RoleGuard } from '@hmcts/rpx-xui-common-lib';
-import { RedirectComponent } from './containers';
 
 export const ROUTES: Routes = [
   {
@@ -49,6 +51,10 @@ export const ROUTES: Routes = [
     path: 'service-down',
     component: ServiceDownComponent
   },
+   {
+    path: 'not-authorised',
+    component: NotAuthorisedComponent
+  }, 
   {
     path: 'signed-out',
     component: SignedOutComponent
