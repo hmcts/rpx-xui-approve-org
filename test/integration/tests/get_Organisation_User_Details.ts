@@ -1,8 +1,8 @@
-import { generateAPIRequest } from './utils';
+import {generateAPIRequest, timeout} from './utils';
 const should = require('chai').should()
 
 suite('Approve Org -> Get Organisation Users details', function() {
-  this.timeout(50000);
+  this.timeout(timeout);
   test('GET Organisation User details', () => generateAPIRequest ('GET', '/api/organisations?usersOrgId=2GIHJH9')
      // console.log('response', response.headers.get('cache-control'))
         .then(response => {
