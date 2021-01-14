@@ -1,8 +1,8 @@
-import { generatePOSTAPIRequest } from './utils';
+import {generatePOSTAPIRequest, timeout} from './utils';
 const should = require('chai').should();
 
 suite('Approve Org -> PUT Update PBA numbers', function() {
-  this.timeout(50000);
+  this.timeout(timeout);
   const payload = {
   paymentAccounts: [`PBA1${Math.floor(100000 + Math.random() * 900000)}`, `PBA2${Math.floor(100000 + Math.random() * 900000)}`],
   orgId: 'BOHOBFK',
