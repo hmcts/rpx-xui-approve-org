@@ -13,20 +13,20 @@ import { UserDetailsComponent } from './containers/user-details/user-details.com
 import { UserApprovalGuard } from './guards/users-approval.guard';
 import { DeleteOrganisationComponent } from './containers/delete-organisation/delete-organisation.component';
 import {DeleteOrganisationSuccessComponent} from './containers/delete-organisation-success/delete-organisation-success.component';
-import { RoleGuard } from '@hmcts/rpx-xui-common-lib';
+import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
 
 export const ROUTES: Routes = [
   {
     path: 'organisation',
     component: PendingOrganisationsComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: {needsRole: ['prd-admin'], roleMatching: 0 }
+    data: {needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
   },
   {
     path: 'pending-organisations',
     component: PendingOrganisationsComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: {needsRole: ['prd-admin'], roleMatching: 0 }
+    data: {needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
   },
   {
     path: 'active-organisation',
