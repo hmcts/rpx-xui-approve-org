@@ -1,9 +1,9 @@
 import {Error} from 'tslint/lib/error';
-import { generatePOSTAPIRequest } from './utils';
+import {generatePOSTAPIRequest, timeout} from './utils';
 const should = require('chai').should();
 
-suite('API/CASES3 -> POST Invite User', function() {
-  this.timeout(50000);
+suite('Approve org -> POST Invite User', function() {
+  this.timeout(timeout);
 
   const payload = {
     firstName: 'Vamshi',
@@ -22,7 +22,7 @@ suite('API/CASES3 -> POST Invite User', function() {
             console.log(`User Re Invited: ${response.status}`);
           }
           if (response.status === 404 ) {
-           throw new Error(console.log(`User doesn't exist: ${response.status}`));
+           throw new Error(`User doesn't exist: ${response.status}`);
           }
         }));
 });
