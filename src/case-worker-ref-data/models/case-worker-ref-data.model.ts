@@ -7,5 +7,5 @@ export interface CaseWorkerRefDataUploadResponse {
 export interface CaseWorkerRefUploadErrorDetail {
     error_description: string,
     field_in_error: string,
-    row_id: string
+    row_id: number
 }
