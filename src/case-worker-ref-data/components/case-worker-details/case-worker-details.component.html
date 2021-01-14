@@ -1,6 +1,20 @@
 <form #excelForm=ngForm (ngSubmit)="onSubmit(Excel)">
     <div class="hmcts-width-container">
         <main class="govuk-main-wrapper " id="main-content" role="main">
+            <div class="govuk-error-summary" *ngIf="errorDesc" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li>
+                            
+                                <a href="#uploadarea">{{errorDesc}}</a>
+                            
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <h1 class="govuk-heading-l">Caseworker details</h1>
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-three-quarters">
@@ -12,11 +26,16 @@
                         <li>Selecting and uploading the updated template.</li>
                     </ol>
                     <p class="govuk-body">You’ll then be able to assign tasks to your colleagues using the Manage cases application.</p>        
-                    <div class="govuk-form-group">
+                    <div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': errorDesc }" id="uploadarea">
                         <label class="govuk-label" for="file-upload-1"><strong>
                             Upload file</strong>
                         </label>
-                        <input class="govuk-file-upload" #Excel id="file-upload-1" name="file-upload-1" type="file" accept=" .xls, .xlsx" />
+
+                        
+                            <span id="" *ngIf="errorDesc" class="govuk-error-message">
+                              <span class="govuk-visually-hidden">Error:</span> {{errorDesc}}
+                            </span>
+                    <input class="govuk-file-upload" #Excel id="file-upload-1" name="file-upload-1" type="file" accept=" .xls, .xlsx">
                     </div>
                     <br>
                     <!-- <a href="/v1b/cwa-confirmation?partialsuccess=false&amp;" role="button" draggable="false" class="govuk-button">
