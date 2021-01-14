@@ -12,3 +12,21 @@ export function getErrorResponse(req, res) {
     }
     return null
 }
+
+export function getPartialSuccess(req, res) {
+    if(req.files[0].originalname === 'fileName-200-partial.xlsx') {
+      const partialResponse =  {
+            message: "Request completed with partial success. Some records failed during validation and were ignored.",
+            message_details : "<count> record(s) failed validation, <count> record(s) uploaded, and <count> record(s) suspended",
+            error_details: [
+                {
+                row_id: "excel row id #2",
+                field_in_error: "primary_location",
+                error_description: "Primary base location must not be empty"
+            }
+            ]
+        }
+        return partialResponse
+    }
+    return null
+}
