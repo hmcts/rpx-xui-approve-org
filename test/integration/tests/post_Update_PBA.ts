@@ -8,5 +8,5 @@ suite('Approve Org -> PUT Update PBA numbers', function() {
   orgId: 'BOHOBFK',
   };
   test('PUT Update PBA numbers', () => generatePOSTAPIRequest ('PUT', '/api/updatePba', payload));
- // console.log('PBAs updated');
+  console.log('PBAs updated');
 });

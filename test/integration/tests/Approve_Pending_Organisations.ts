@@ -17,5 +17,5 @@ suite('Approve Org -> Get Pending Organisation details', function() {
           console.log(body);
         }));
   test('Approve Org -> Approve Pending Organisation', () => generatePOSTAPIRequest ('PUT', `/api/organisations/${org}`, body));
-  // console.log(`Org is approved ${org}`);
+  console.log(`Org is approved ${org}`);
 });

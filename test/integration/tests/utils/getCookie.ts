@@ -62,6 +62,7 @@ export async function  authenticateAndGetcookies(url)  {
   if (!isLoginSuccess) {
     throw new Error('Login not successful...');
   }
+
   const cookies: [] = await page.cookies();
 
   let roles = '';
@@ -89,7 +90,6 @@ export async function  authenticateAndGetcookies(url)  {
 export async function xxsrftoken()  {
   return xxsrfCookie;
 }
-
 
 function getPuppeteerLaunchOptions(url) {
   const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: [] };
