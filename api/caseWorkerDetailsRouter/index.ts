@@ -1,18 +1,24 @@
 import * as express from 'express'
 import * as multer from 'multer'
-import { getErrorResponse, getPartialSuccess } from './mock-error-scenarios'
+import { getErrorResponse, getPartialSuccess, getSuccess } from './mock-error-scenarios'
 
 const upload = multer({ dest: 'uploads/' })
 
 async function caseWorkerDetailsRoute(req: express.Request, res: express.Response) {
     const mockErrorRes = getErrorResponse(req, res)
-    const partialSuccess = getPartialSuccess(req, res)
+    
     if(mockErrorRes) {
         res.status(mockErrorRes.status).json(mockErrorRes.json)
-    } else if(partialSuccess) {
-        res.send(partialSuccess)
+        return
+    }
+
+    const partialSuccessRes = getPartialSuccess(req, res)
+    if(partialSuccessRes) {
+        res.send(partialSuccessRes)
+        return
     } else {
-        res.send({recordsCreated: 1, recordsAmended: 1, recordsDeleted: 0, recordsFailed: 0}).status(200)
+        const successRes = getSuccess()
+        res.send(successRes).status(200)
     }
 }
 

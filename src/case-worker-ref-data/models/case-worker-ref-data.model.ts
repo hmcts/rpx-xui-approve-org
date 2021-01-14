@@ -1,6 +1,11 @@
 export interface CaseWorkerRefDataUploadResponse {
-    recordsCreated: number,
-    recordsAmended: number,
-    recordsDeleted: number,
-    recordsFailed: number
+    message: string,
+    message_details: string,
+    error_details: CaseWorkerRefUploadErrorDetail []
+}
+
+export interface CaseWorkerRefUploadErrorDetail {
+    error_description: string,
+    field_in_error: string,
+    row_id: string
 }

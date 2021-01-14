@@ -30,3 +30,7 @@ export function getPartialSuccess(req, res) {
     }
     return null
 }
+
+export function getSuccess() {
+    return { message: "Request Completed Successfully", message_details : "2 record(s) uploaded and 0 record(s) marked as suspended" }
+}

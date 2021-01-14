@@ -17,7 +17,7 @@ export class CaseWorkerDetailsComponent {
     formData.append('excel', inputElement.files.item(0));
     this.caseWorkerRefDataService.postFile(formData).subscribe((response: CaseWorkerRefDataUploadResponse) => {
       console.log(response);
-      if (response.recordsFailed) {
+      if (response.error_details && response.error_details.length > 0) {
         // partial success path - Another JIRA
       } else {
         // route to success Page
