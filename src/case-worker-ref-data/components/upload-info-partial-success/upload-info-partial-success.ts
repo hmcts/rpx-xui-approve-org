@@ -8,7 +8,7 @@ import { CaseWorkerRefDataUploadResponse } from '../../models/case-worker-ref-da
 })
 
 export class UploadInfoPartialSuccessComponent {
-  private readonly partialErrorResp: CaseWorkerRefDataUploadResponse;
+  public readonly partialErrorResp: CaseWorkerRefDataUploadResponse;
   constructor(private readonly router: Router) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
