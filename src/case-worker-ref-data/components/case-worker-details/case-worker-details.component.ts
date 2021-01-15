@@ -11,50 +11,45 @@ import { handleFatalErrors } from '../../utils/case-worker-utils';
 export class CaseWorkerDetailsComponent {
 
   public errorDesc: string;
-  
+
   public constructor(private readonly caseWorkerRefDataService: CaseWorkerRefDataService,
                      private readonly router: Router) {}
 
   public onSubmit(inputElement: any) {
     const formData = new FormData();
+    if (!inputElement.files.item(0)) {
+      // if there is no file attached
+      this.errorDesc = "You need to select a file to upload. Please try again.";
+      return;
+    }
     formData.append('excel', inputElement.files.item(0));
-    console.log(inputElement.files.item(0));
     this.caseWorkerRefDataService.postFile(formData).subscribe((response: CaseWorkerRefDataUploadResponse) => {
-      console.log(response)
       if (response.recordsFailed) {
         // partial success path - Another JIRA
       } else {
         // route to success Page
-        this.router.navigate(['/caseworker-details/upload-success'], {state: response})
+        this.router.navigate(['/caseworker-details/upload-success'], {state: response});
       }
     },
     errorResponse => {
       // Upload errors - EUI-3014
-      console.log(errorResponse);
-      this.showUploadErrors(errorResponse.status);
+      this.showUploadErrors(errorResponse);
     });
   }
 
   /**
    * Sort out the actual errors returned via the API
    */
-  public showUploadErrors(status: number): void {
+  public showUploadErrors(errorResponse: any): void {
 
-    const handledStatus = handleFatalErrors(status, this.router);
+    // redirect to the correct page as is necessary
+    const handledStatus = handleFatalErrors(errorResponse.status, this.router);
+
+    // if the error is a 400 then use the error description as the display message
     if (handledStatus === 400) {
-      this.errorDesc = "400";
-    } 
-    /* if (handledStatus > 0) {
-      this.infoMessageCommService.nextMessage({
-        type: InfoMessageType.WARNING,
-        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
-      });
-      if (handledStatus === 400) {
-        this.refreshTasks();
-      }
-    } */
+      this.errorDesc = errorResponse.error.error_description;
+    }
   }
-  
 }
 
 
