@@ -13,7 +13,12 @@ async function caseWorkerDetailsRoute(req: express.Request, res: express.Respons
     } else if(partialSuccess) {
         res.send(partialSuccess)
     } else {
-        res.send({recordsCreated: 1, recordsAmended: 1, recordsDeleted: 0, recordsFailed: 0}).status(200)
+        if (req.files[0].originalname === 'fileName-200-no-details.xlsx') {
+            res.send({recordsCreated: 0, recordsAmended: 0, recordsDeleted: 0, recordsFailed: 0}).status(200)
+        }
+        else {
+            res.send({recordsCreated: 1, recordsAmended: 1, recordsDeleted: 0, recordsFailed: 0}).status(200)
+        }
     }
 }
 
