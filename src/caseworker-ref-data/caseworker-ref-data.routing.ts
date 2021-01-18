@@ -6,21 +6,21 @@ import { UploadInfoDetailsComponent } from './components/upload-info-details/upl
 import { UploadInfoPartialSuccessComponent } from './components/upload-info-partial-success/upload-info-partial-success';
 
 export const ROUTES: Routes = [
-    {
-      path: '',
-      component: CaseWorkerRefDataHomeComponent,
-      canActivate: [AuthGuard],
-    },
-    {
-      path: 'upload-success',
-      component: UploadInfoDetailsComponent,
-      canActivate: [AuthGuard],
-    },
-    {
-      path: 'partial-success',
-      component: UploadInfoPartialSuccessComponent,
-      canActivate: [AuthGuard]
-    }
+  {
+    path: '',
+    component: CaseWorkerRefDataHomeComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'upload-success',
+    component: UploadInfoDetailsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'partial-success',
+    component: UploadInfoPartialSuccessComponent,
+    canActivate: [AuthGuard]
+  }
 ];
 
 export const caseWorkerRefDataRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);

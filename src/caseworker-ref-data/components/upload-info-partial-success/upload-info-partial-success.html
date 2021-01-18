@@ -1,33 +1,34 @@
 <div class="hmcts-width-container">
-    <main class="govuk-main-wrapper " id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-three-quarters">
-                <h1 class="govuk-heading-l">Some of the records weren’t updated </h1>
-                <p class="govuk-body">
-                    {{partialErrorResp.message_details}}
-                </p>
-                <h3 class="govuk-heading-m">What went wrong </h3>
-                <p class="govuk-body">The file uploaded with the following errors:</p>
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">Row</th>
-                            <th scope="col" class="govuk-table__header">Field</th>
-                            <th scope="col" class="govuk-table__header">Error description</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        <tr *ngFor="let error of partialErrorResp.error_details" class="govuk-table__row">
-                            <td scope="row" class="govuk-table__cell">{{error.row_id}}</td>
-                            <td class="govuk-table__cell">{{error.field_in_error}}</td>
-                            <td class="govuk-table__cell">{{error.error_description}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h3 class="govuk-heading-m">What you need to do</h3>
-                <p class="govuk-body">You’ll need to update the missing information.</p>
-                <p class="govuk-body">Once all the details in the template are correct, you’ll need to <a routerLink="/caseworker-details">upload it again</a>.</p>
-            </div>
-        </div>
-    </main>
+  <main class="govuk-main-wrapper " id="main-content" role="main">
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-three-quarters">
+        <h1 class="govuk-heading-l">Some of the records weren’t updated </h1>
+        <p class="govuk-body">
+          {{partialErrorResp.message_details}}
+        </p>
+        <h3 class="govuk-heading-m">What went wrong </h3>
+        <p class="govuk-body">The file uploaded with the following errors:</p>
+        <table class="govuk-table">
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Row</th>
+              <th scope="col" class="govuk-table__header">Field</th>
+              <th scope="col" class="govuk-table__header">Error description</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr *ngFor="let error of partialErrorResp.error_details" class="govuk-table__row">
+              <td scope="row" class="govuk-table__cell">{{error.row_id}}</td>
+              <td class="govuk-table__cell">{{error.field_in_error}}</td>
+              <td class="govuk-table__cell">{{error.error_description}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3 class="govuk-heading-m">What you need to do</h3>
+        <p class="govuk-body">You’ll need to update the missing information.</p>
+        <p class="govuk-body">Once all the details in the template are correct, you’ll need to <a
+            routerLink="/caseworker-details">upload it again</a>.</p>
+      </div>
+    </div>
+  </main>
 </div>

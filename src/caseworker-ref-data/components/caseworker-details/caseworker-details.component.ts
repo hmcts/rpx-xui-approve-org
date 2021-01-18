@@ -5,15 +5,15 @@ import { Router } from '@angular/router';
 import { handleFatalErrors } from '../../utils/caseworker-utils';
 
 @Component({
-    selector: 'app-prd-caseworker-details',
-    templateUrl: './caseworker-details.component.html',
-  })
+  selector: 'app-prd-caseworker-details',
+  templateUrl: './caseworker-details.component.html',
+})
 export class CaseWorkerDetailsComponent {
 
   public errorDesc: string;
 
   public constructor(private readonly caseWorkerRefDataService: CaseWorkerRefDataService,
-                     private readonly router: Router) {}
+    private readonly router: Router) { }
 
   public onSubmit(inputElement: any) {
     const formData = new FormData();
@@ -25,15 +25,15 @@ export class CaseWorkerDetailsComponent {
     formData.append('excel', inputElement.files.item(0));
     this.caseWorkerRefDataService.postFile(formData).subscribe((response: CaseWorkerRefDataUploadResponse) => {
       if (response.error_details && response.error_details.length > 0) {
-        this.router.navigate(['/caseworker-details/partial-success'], {state: response});
+        this.router.navigate(['/caseworker-details/partial-success'], { state: response });
       } else {
-        this.router.navigate(['/caseworker-details/upload-success'], {state: response})
+        this.router.navigate(['/caseworker-details/upload-success'], { state: response })
       }
     },
-    errorResponse => {
-      // Upload errors - EUI-3014
-      this.showUploadErrors(errorResponse);
-    });
+      errorResponse => {
+        // Upload errors - EUI-3014
+        this.showUploadErrors(errorResponse);
+      });
   }
 
   /**
