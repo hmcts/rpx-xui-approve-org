@@ -4,19 +4,19 @@ import { CookieService } from 'ngx-cookie';
 import { AppUtils } from 'src/app/utils/app-utils';
 
 @Component({
-    selector: 'app-redirect',
-    template: ``
-  })
+  selector: 'app-redirect',
+  template: ``
+})
 
 export class RedirectComponent implements OnInit {
-  constructor(private readonly cookieService: CookieService, private router: Router) {}
+  constructor(private readonly cookieService: CookieService, private router: Router) { }
   public ngOnInit() {
-      const encodedRoles = this.cookieService.getObject('roles');
-      const url = this.getRedirectUrl(encodedRoles);
-      if (url) {
-        this.router.navigate([url]);
-      }
+    const encodedRoles = this.cookieService.getObject('roles');
+    const url = this.getRedirectUrl(encodedRoles);
+    if (url) {
+      this.router.navigate([url]);
     }
+  }
 
   public getRedirectUrl(encodedRoles: any): string {
     if (encodedRoles) {
