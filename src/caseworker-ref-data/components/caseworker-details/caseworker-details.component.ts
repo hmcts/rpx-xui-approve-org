@@ -12,7 +12,8 @@ export class CaseWorkerDetailsComponent {
 
   public errorDesc: string;
 
-  public constructor(private readonly caseWorkerRefDataService: CaseWorkerRefDataService,
+  public constructor(
+    private readonly caseWorkerRefDataService: CaseWorkerRefDataService,
     private readonly router: Router) { }
 
   public onSubmit(inputElement: any) {
