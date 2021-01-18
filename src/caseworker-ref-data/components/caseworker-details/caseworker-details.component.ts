@@ -1,12 +1,12 @@
-import { CaseWorkerRefDataService } from '../../services/case-worker-ref-data.service';
-import { CaseWorkerRefDataUploadResponse } from '../../models/case-worker-ref-data.model';
+import { CaseWorkerRefDataService } from '../../services/caseworker-ref-data.service';
+import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { handleFatalErrors } from '../../utils/case-worker-utils';
+import { handleFatalErrors } from '../../utils/caseworker-utils';
 
 @Component({
-    selector: 'app-prd-case-worker-details',
-    templateUrl: './case-worker-details.component.html',
+    selector: 'app-prd-caseworker-details',
+    templateUrl: './caseworker-details.component.html',
   })
 export class CaseWorkerDetailsComponent {
 

@@ -7,7 +7,7 @@ import * as fromComponents from './components';
 
 // services
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import {caseWorkerRefDataRouting} from './case-worker-ref-data.routing';
+import {caseWorkerRefDataRouting} from './caseworker-ref-data.routing';
 import * as fromServices from './services';
 import { FormsModule } from '@angular/forms';
 

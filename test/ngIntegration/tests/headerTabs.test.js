@@ -53,7 +53,7 @@ const AppConfigMock = require('../../nodeMock/mockdata/appConfig');
             const features = await BrowserUtil.waitForLD();
             const tabs = await headerPage.getTabsDisplayed();
             expect(tabs.includes("Organisations"), 'Organisation tab not displayed ' + tabs).to.equal(true);
-            expect(tabs.includes("Caseworker details"), 'Caseworker tab not displayed ' + tabs).to.equal(features["ao-case-worker-details"].value);
+            expect(tabs.includes("Caseworker details"), 'Caseworker tab not displayed ' + tabs).to.equal(features["ao-caseworker-details"].value);
 
         });
 
@@ -68,7 +68,7 @@ const AppConfigMock = require('../../nodeMock/mockdata/appConfig');
 
             expect(tabs.includes("Organisations"), 'Organisation tab displayed ' + tabs).to.equal(false);
 
-            if (features["ao-case-worker-details"].value) {
+            if (features["ao-caseworker-details"].value) {
                 expect(tabs.includes("Caseworker details"), 'Caseworker details not displayed with feature enabled' + tabs).to.equal(true);
             } else {
                 expect(await idamPage.isLoginPageDisplayed(), "Idamn login page not displayed with caseworker details feature disabled").to.be.true;

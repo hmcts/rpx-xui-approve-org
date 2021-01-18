@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { CaseWorkerDetailsComponent } from './case-worker-details.component';
+import { CaseWorkerDetailsComponent } from './caseworker-details.component';
 
 describe('CaseWorkerDetailsComponent', () => {
     let component: CaseWorkerDetailsComponent;

@@ -18,7 +18,7 @@ export const ROUTES: Routes = [
   {
     path: 'caseworker-details',
     canActivate: [AuthGuard, RoleGuard],
-    loadChildren: '../case-worker-ref-data/case-worker-ref-data.module#CaseWorkerRefDataModule',
+    loadChildren: '../caseworker-ref-data/caseworker-ref-data.module#CaseWorkerRefDataModule',
     data: {needsRole: ['cwd-admin'], roleMatching: RoleMatching.ALL }
   },
   {

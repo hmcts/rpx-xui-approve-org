@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CaseWorkerRefDataUploadResponse } from '../models/case-worker-ref-data.model';
+import { CaseWorkerRefDataUploadResponse } from '../models/caseworker-ref-data.model';
 
 @Injectable()
 export class CaseWorkerRefDataService {

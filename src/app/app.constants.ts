@@ -92,7 +92,7 @@ export const apiErrors = {
 };
 
 const featureNames = {
-  caseworkerDetails: 'ao-case-worker-details'
+  caseworkerDetails: 'ao-caseworker-details'
 };
 
 export const navItemsArray = [{
