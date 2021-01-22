@@ -1,4 +1,3 @@
-@fullfunctional
 Feature: Confirmation Screen
 
   Background:
@@ -8,7 +7,7 @@ Feature: Confirmation Screen
     Then I Check the active Organisation banner appear
     Then I search with organisation name and validate results
 
-@all
+
   Scenario: Verify the confirmation screen of Approve Organisation
     Then I click first organization view link
     Then I Select the Organisation and click Activate
