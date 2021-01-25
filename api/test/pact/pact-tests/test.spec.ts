@@ -5,7 +5,7 @@ import * as path from 'path'
 import { getUserDetails } from '../../../services/idam'
 
 
-xdescribe("Reference Data API", () => {
+describe("Reference Data API", () => {
 
   let MOCK_SERVER_PORT
   let idamTestUrl
