@@ -76,3 +76,44 @@ export interface OrganisationDeletedMessage{
   message:string,
   statusCode:number;
 }
+
+// TODO Remove if Not used ....
+export interface UpdateOrganisationRequest{
+  name: string,
+  status: string,
+  sraId: string,
+  sraRegulated?: string,
+  companyNumber?: string,
+  companyUrl?: string,
+  superUser: {
+    firstName: string,
+    lastName: string,
+    email: string
+  },
+  paymentAccount: [
+    string
+  ],
+  contactInformation: [
+    {
+      addressLine1: string,
+      addressLine2: string,
+      addressLine3: string,
+      townCity: string,
+      county: string,
+      country: string,
+      postCode: string,
+      dxAddress: [
+        {
+          dxNumber: string,
+          dxExchange: string
+        }
+      ]
+    }
+  ]
+
+}
+
+export interface UserAddedResponse{
+  idamStatus: string,
+  userIdentifier:string
+}
