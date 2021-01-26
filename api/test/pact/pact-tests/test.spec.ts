@@ -4,8 +4,7 @@ import * as getPort from 'get-port'
 import * as path from 'path'
 import { getUserDetails } from '../../../services/idam'
 
-
-describe("Reference Data API", () => {
+describe("/GET Idam details", () => {
 
   let MOCK_SERVER_PORT
   let idamTestUrl

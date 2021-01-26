@@ -1,7 +1,6 @@
 import axios, {AxiosResponse} from 'axios'
-import {UpdateOrganisationRequest} from './pactFixtures';
 
-export async function getOrganisationDeleteStatusRoute(taskUrl: string) {
+export async function getAccountDetailsByAccountNumber(taskUrl: string) {
 
   const axiosConfig = {
     headers: {
@@ -62,13 +61,8 @@ export async function updateOrganisation(taskUrl: string, payload:any){
       "Authorization": "Bearer some-access-token"
     }
   }
-
-  console.log( `.....+++++++++ Inside the updateOrganisation Payload is .... ` + JSON.stringify(payload));
-
   let response: AxiosResponse
-
   response = await axios.put(taskUrl, payload as object, axiosConfig)
-  console.log(`~~~~~~~~~~~~~~~ Response Obtained...~~~~~~~~~~~~~`,response);
   return response
 }
 
@@ -81,17 +75,12 @@ export async function updatePbaForOrganisation(taskUrl: string, payload:any){
       "Authorization": "Bearer some-access-token"
     }
   }
-
-  console.log( `.....+++++++++ Inside the updateOrganisation Payload is .... ` + JSON.stringify(payload));
-
   let response: AxiosResponse
-
   response = await axios.put(taskUrl, payload as object, axiosConfig)
-  console.log(`~~~~~~~~~~~~~~~ Response Obtained...~~~~~~~~~~~~~`,response);
   return response
 }
 
-export async function reinviteUser(taskUrl: string, payload:any){
+export async function postReinviteUser(taskUrl: string, payload:any){
 
   const axiosConfig = {
     headers: {
@@ -107,4 +96,28 @@ export async function reinviteUser(taskUrl: string, payload:any){
   console.log(`~~~~~~~~~~~~~~~ Response Obtained...~~~~~~~~~~~~~`,response);
   return response
 }
+
+export async function postLease(taskUrl: string, payload:any){
+
+  const axiosConfig = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }
+  let response: AxiosResponse
+  response = await axios.post(taskUrl, payload , axiosConfig)
+  return response
+}
+
+export async function getOrganisationDetailsByOrgIdAndReturnRoles(taskUrl: string) {
+  const axiosConfig = {
+    headers: {
+      'Authorization': 'Bearer some-access-token',
+      'Content-Type': 'application/json',
+      'ServiceAuthorization': 'ServiceAuthToken'
+    }
+  }
+  return await axios.get(taskUrl, axiosConfig)
+}
+
 

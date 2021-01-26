@@ -3,7 +3,7 @@ import {expect} from 'chai';
 import * as getPort from 'get-port';
 import {isDone} from 'ng-packagr/lib/brocc/select';
 import * as path from 'path';
-import {reinviteUser} from "../../pactUtil";
+import {postReinviteUser} from "../../pactUtil";
 import {UserAddedResponse} from "../../pactFixtures"
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
@@ -12,20 +12,18 @@ describe('/POST  Reinvite User', () => {
 
   const orgnId = "orgn1500";
 
-  // /refdata/internal/v1/organisations/${orgId}/users/`, payload
-
   let mockServerPort: number;
   let provider: Pact;
 
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIWebApp',
+      consumer: 'XUIApproveOrg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'RDProfessional_API',
+      provider: 'rd_professional_api',
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -48,13 +46,12 @@ describe('/POST  Reinvite User', () => {
     "resendInvite": true
   }
 
-
   let mockResponse = {
      "idamStatus": somethingLike("User Added Successfully"),
      "userIdentifier": somethingLike("User123456")
   }
 
-  describe('Reinvite User by adding  them to an organisation ', () => {
+  describe('Reinvite User by adding the user to an organisation ', () => {
     before(done =>{
       const interaction = {
         state: 'Then a status message is returned',
@@ -80,10 +77,10 @@ describe('/POST  Reinvite User', () => {
       })
     })
 
-    it('Update an organisation and returns success', async () => {
+    it('Reinvite a user for an organisation and returns success', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/`+orgnId;
 
-      const resp =  reinviteUser(taskUrl, mockRequest )
+      const resp =  postReinviteUser(taskUrl, mockRequest )
 
       resp.then((response) => {
         try{
@@ -93,7 +90,7 @@ describe('/POST  Reinvite User', () => {
         }catch(e){
           e.message(`error occurred in asserting response...`)
         }
-      }).catch(() => 'exception encourntered...')
+      })
     })
   })
 })

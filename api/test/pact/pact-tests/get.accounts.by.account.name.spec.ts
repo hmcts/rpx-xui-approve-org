@@ -2,12 +2,12 @@ import { Pact } from '@pact-foundation/pact';
 import {expect} from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import {AssignAccessWithinOrganisationDto, CaseAssignmentResponseDto,OrganisationUsers} from "../../pactFixtures";
-import {getOrganisationDeleteStatusRoute} from "../../pactUtil";
+import {UserDetailsResponse} from '../../pactFixtures';
+import {getAccountDetailsByAccountNumber} from "../../pactUtil";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
-describe('/GET Get Account Status for a Account Name', () => {
+describe('Get Account Status for a Account Name', () => {
 
   let mockServerPort: number;
   let provider: Pact;
@@ -16,12 +16,12 @@ describe('/GET Get Account Status for a Account Name', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIWebApp',
+      consumer: 'XUIApproveOrg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'FeeAndPayApi', //TODO Check Provider.
+      provider: 'feeRegister_lookUp',
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -34,13 +34,11 @@ describe('/GET Get Account Status for a Account Name', () => {
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
 
-
   let mockResponse={
-      "account_name": somethingLike("bill.roberts@greatbrsolicitors.co.uk"),
-      "account_number": somethingLike("bill"),
+      "account_name": somethingLike("solicitoraccount"),
+      "account_number": somethingLike("123456"),
       "available_balance": somethingLike(122),
       "credit_limit": somethingLike(1000),
-      "effective_date": somethingLike("2009-05-02"), //TODO change to matcher of format "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
       "status": somethingLike("ACTIVE")
  }
 
@@ -49,7 +47,7 @@ describe('/GET Get Account Status for a Account Name', () => {
     before(done =>{
       const interaction = {
         state: 'Then a status message is returned',
-        uponReceiving: 'When Deleteable Status Route d to Users',
+        uponReceiving: 'A request to get Accounts based on account number',
         withRequest: {
           method: "GET",
           path:"/accounts/Account13254",
@@ -63,7 +61,8 @@ describe('/GET Get Account Status for a Account Name', () => {
           status: 200,
           headers: {
             "Content-Type": "application/json"
-          }
+          },
+          body:mockResponse
         }
       }
       // @ts-ignore
@@ -74,11 +73,20 @@ describe('/GET Get Account Status for a Account Name', () => {
 
     it('Returns the Account details retrieved for an Account by number', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/accounts/Account13254`;
-      const resp =  getOrganisationDeleteStatusRoute(taskUrl)
-
+      const resp =  getAccountDetailsByAccountNumber(taskUrl)
       resp.then((axResponse) => {
         expect(axResponse.status).to.be.equal(200);
+        const responseDto:UserDetailsResponse  = <UserDetailsResponse> axResponse.data
+        assertResponses(responseDto);
       })
     })
   })
 })
+
+function assertResponses(dto:UserDetailsResponse){
+  expect(dto.account_name).to.be.equal('solicitoraccount');
+  expect(dto.account_number).to.be.equal('123456');
+  expect(dto.available_balance).to.be.equal(122);
+  expect(dto.credit_limit).to.be.equal(1000);
+  expect(dto.status).to.be.equal('ACTIVE');
+}
