@@ -2,12 +2,13 @@ import { Pact } from '@pact-foundation/pact';
 import {expect} from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import {AssignAccessWithinOrganisationDto, CaseAssignmentResponseDto,OrganisationUsers} from "../../pactFixtures";
-import {getOrganisationDeleteStatusRoute} from "../../pactUtil";
+import {getOrganisationDetailsByOrgIdAndReturnRoles} from "../../pactUtil";
+import {OrganisationUsers} from '../../pactFixtures';
+
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
-describe('Delete from Organisation Deletable Status Api', () => {
+describe('/GET Retrieve list of users  of an organisation based on delete status ', () => {
 
   const orgnId = "orgn1500";
   let mockServerPort: number;
@@ -16,12 +17,12 @@ describe('Delete from Organisation Deletable Status Api', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIWebApp',
+      consumer: 'XUIApproveOrg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'RDProfessional_API', //TODO TBD
+      provider: 'rd_professional_api',
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -40,9 +41,7 @@ describe('Delete from Organisation Deletable Status Api', () => {
     "assignee_id":somethingLike("PROBATE")
   }
 
-  let mockResponse:string ="Success";
-
-  let mockResponse2 = [
+  let mockResponse = [
     {
       "email": somethingLike("bill.roberts@greatbrsolicitors.co.uk"),
       "firstName": somethingLike("bill"),
@@ -50,17 +49,15 @@ describe('Delete from Organisation Deletable Status Api', () => {
       "idamStatusCode": somethingLike("success"),
       "lastName": somethingLike("roberts"),
       "roles": somethingLike(["Claimant", "Attorney"]),
-      "userIdentifier": "userIdentifier"
+      "userIdentifier": somethingLike("userIdentifier")
     }
   ]
 
-
-
-  describe('Retrieve list of users  of an organisation based on Flag', () => {
+  describe('Retrieve list of users  of an organisation based on delete status flag', () => {
     before(done =>{
       const interaction = {
         state: 'Then a status message is returned',
-        uponReceiving: 'When Deleteable Status Route d to Users',
+        uponReceiving: 'A request for  Users of an Active Organisation based on Deleteable Status',
         withRequest: {
           method: "GET",
           path:"/refdata/internal/v1/organisations/"+orgnId,
@@ -76,7 +73,7 @@ describe('Delete from Organisation Deletable Status Api', () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: {mockResponse2},
+          body: {mockResponse2: mockResponse},
         }
       }
       // @ts-ignore
@@ -87,7 +84,7 @@ describe('Delete from Organisation Deletable Status Api', () => {
 
     it('Returns Users of an Active Organisation based on the showDelete flag ', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/orgn1500?returnRoles=false`;
-      const resp =  getOrganisationDeleteStatusRoute(taskUrl)
+      const resp =  getOrganisationDetailsByOrgIdAndReturnRoles(taskUrl)
 
       resp.then((axResponse) => {
         expect(axResponse.status).to.be.equal(200);

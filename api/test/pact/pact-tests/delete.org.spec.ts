@@ -4,7 +4,6 @@ import { expect } from 'chai'
 import * as path from 'path'
 import {deleteOrganisation} from '../../pactUtil';
 import {OrganisationUsers} from '../../pactFixtures';
-
 import * as getPort from "get-port";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
@@ -12,7 +11,7 @@ const {somethingLike} = Matchers;
 let mockServerPort: number;
 let provider: Pact;
 
-describe("Retrieves the Users of an Active Organisation based on the showDeleted Flag ", async() => {
+describe("DELETE active Users of organistaion based on the showDeleted Flag ", async() => {
   mockServerPort = await getPort()
   const userId:string  = "userId1500";
 
@@ -20,12 +19,12 @@ describe("Retrieves the Users of an Active Organisation based on the showDeleted
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIWebapp',
+      consumer: 'XUIApproveOrg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'RDProfessional_API', //
+      provider: 'rd_professional_api', //
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -37,7 +36,6 @@ describe("Retrieves the Users of an Active Organisation based on the showDeleted
   after(() => provider.finalize())
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
-  // /refdata/internal/v1/organisations/${req.params.id}/users?returnRoles=false`
 
   let mockResponse:OrganisationUsers ={
     email:somethingLike("joe.bloggs@hmcts.net"),
@@ -47,10 +45,10 @@ describe("Retrieves the Users of an Active Organisation based on the showDeleted
     idamStatus: somethingLike("updated"),
     idamStatusCode:somethingLike("200"),
     roles: somethingLike(["solcitor","attorney"]),
-    userIdentifier:"userIdentifier"
+    userIdentifier:somethingLike("userIdentifier")
   }
 
-  describe("DELETE active Users of organistaion given Deletable Status", () => {
+  describe("DELETE active Users of organistaion given status", () => {
 
     before(done => {
       const interaction = {
@@ -71,7 +69,7 @@ describe("Retrieves the Users of an Active Organisation based on the showDeleted
           headers: {
             "Content-Type": "application/json",
           },
-          body: { } // delete response should be empty body :// https://stackoverflow.com/questions/25970523/restful-what-should-a-delete-response-body-contain
+          body: { }
         }
       }
       // @ts-ignore
