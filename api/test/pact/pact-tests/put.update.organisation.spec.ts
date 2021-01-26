@@ -3,7 +3,6 @@ import {expect} from 'chai';
 import * as getPort from 'get-port';
 import {isDone} from 'ng-packagr/lib/brocc/select';
 import * as path from 'path';
-//import {UpdateOrganisationRequest} from "../../pactFixtures";
 import {updateOrganisation} from "../../pactUtil";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
@@ -18,12 +17,12 @@ describe('/PUT Update an organisation', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIWebApp',
+      consumer: 'XUIApproveOrg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'RDProfessional_API',
+      provider: 'rd_professional_api',
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -36,37 +35,7 @@ describe('/PUT Update an organisation', () => {
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
 
-  // TODO check , this request fails as it uses patternMatching in the Request.
-  // TODO Do we use patternMatching at Request level or is it only for Responses ?
   let mockRequest = {
-    "name": somethingLike("name"),
-    "status":somethingLike("Processing"),
-    "sraId":somethingLike("SRA12345"),
-    "superUser":somethingLike({
-      "firstName":'Bill',
-      "lastName":'Roberts',
-      "email":'bill.roberts@hmcts.net'
-    }),
-    "paymentAccount": somethingLike(['pbaPayment','payment']),
-    "contactInformation":somethingLike([
-      {
-        "addressLine1": somethingLike("AddressLine1"),
-        "addressLine2": somethingLike("AddressLine2"),
-        "addressLine3": somethingLike("AddressLine3"),
-        "townCity": somethingLike("Sutton"),
-        "county": somethingLike("Surrey"),
-        "country": somethingLike("UK"),
-        "postCode":somethingLike("SM12SX"),
-        "dxAddress": somethingLike([
-          {
-            "dxNumber": somethingLike("DX2313"),
-            "dxExchange": somethingLike("EXCHANGE")
-          }
-        ])}])
-  }
-
-  // TODO check , this request PASSED  but it is hardcoded
-  let mockRequest2 = {
     "name": "updateOrganisation",
     "status":"Processing",
     "sraId":"SRA12345",
@@ -105,7 +74,7 @@ describe('/PUT Update an organisation', () => {
         withRequest: {
           method: "PUT",
           path:"/refdata/internal/v1/organisations/"+orgnId,
-          body:mockRequest2 ,
+          body:mockRequest ,
           headers: {
             "Content-Type": "application/json",
             "ServiceAuthorization": "ServiceAuthToken",
@@ -126,7 +95,7 @@ describe('/PUT Update an organisation', () => {
     it('Update an organisation and returns success', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/`+orgnId;
 
-      const resp =  updateOrganisation(taskUrl, mockRequest2 )
+      const resp =  updateOrganisation(taskUrl, mockRequest )
 
       resp.then((response) => {
         try{
@@ -135,9 +104,7 @@ describe('/PUT Update an organisation', () => {
         }catch(e){
           e.message(`error occurred in asserting response.`)
         }
-      }).catch(() => 'exception encourntered...')
+      })
     })
-
-
   })
 })

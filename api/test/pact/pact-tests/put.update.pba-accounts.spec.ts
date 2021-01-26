@@ -6,7 +6,7 @@ import {updatePbaForOrganisation} from "../../pactUtil";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
-describe('/PUT Edit the PBA an organisation given organisationId', () => {
+describe('/PUT Update the PBA for an organisation given organisationId', () => {
 
   const orgnId = "orgn1500";
 
@@ -16,12 +16,12 @@ describe('/PUT Edit the PBA an organisation given organisationId', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIWebApp',
+      consumer: 'XUIApproveOrg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'RDProfessional_API',
+      provider: 'rd_professional_api',
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -40,11 +40,11 @@ describe('/PUT Edit the PBA an organisation given organisationId', () => {
 
   let mockResponse:string ="Success";
 
-  describe('Edit the PBA an organisation given organisationId ', () => {
+  describe('Update the PBA an organisation given organisationId ', () => {
     before(done =>{
       const interaction = {
         state: 'Then a status message is returned',
-        uponReceiving: 'A Request to the PBA of an Organisation is received',
+        uponReceiving: 'A Request to update the PBA of an Organisation is received',
         withRequest: {
           method: "PUT",
           path:"/refdata/internal/v1/organisations/"+orgnId +"/pbas",
@@ -66,7 +66,7 @@ describe('/PUT Edit the PBA an organisation given organisationId', () => {
       })
     })
 
-    it('Update an organisation and returns success', async () => {
+    it('Update an organisation`s PBA  and returns success', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/`+orgnId+"/pbas";
 
       const resp =  updatePbaForOrganisation(taskUrl, mockRequest )
