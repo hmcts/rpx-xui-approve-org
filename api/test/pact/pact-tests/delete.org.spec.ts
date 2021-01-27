@@ -2,7 +2,7 @@ import { Pact } from '@pact-foundation/pact'
 import {eachLike} from '@pact-foundation/pact/dsl/matchers';
 import { expect } from 'chai'
 import * as path from 'path'
-import {deleteOrganisation} from '../../pactUtil';
+import {deleteOperation} from '../../pactUtil';
 import {OrganisationUsers} from '../../pactFixtures';
 import * as getPort from "get-port";
 const {Matchers} = require('@pact-foundation/pact');
@@ -19,7 +19,7 @@ describe("DELETE active Users of organistaion based on the showDeleted Flag ", a
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIApproveOrg',
+      consumer: 'xui_approveorg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
@@ -82,7 +82,7 @@ describe("DELETE active Users of organistaion based on the showDeleted Flag ", a
     it("Returns the correct response", (done) => {
       const taskUrl = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/${userId}/users?returnRoles=false`;
 
-      const response  = deleteOrganisation(taskUrl);
+      const response  = deleteOperation(taskUrl);
 
       response.then((axiosResponse) => {
         expect(axiosResponse.status).to.be.equal(204);

@@ -2,13 +2,13 @@ import { Pact } from '@pact-foundation/pact';
 import {expect} from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import {getOrganisationDetailsByOrgIdAndReturnRoles} from "../../pactUtil";
+import {getOperation} from "../../pactUtil";
 import {OrganisationUsers} from '../../pactFixtures';
 
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
-describe('/GET Retrieve list of users  of an organisation based on delete status ', () => {
+xdescribe('/GET Retrieve list of users  of an organisation based on delete status ', () => {
 
   const orgnId = "orgn1500";
   let mockServerPort: number;
@@ -17,7 +17,7 @@ describe('/GET Retrieve list of users  of an organisation based on delete status
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIApproveOrg',
+      consumer: 'xui_approveorg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
@@ -84,7 +84,7 @@ describe('/GET Retrieve list of users  of an organisation based on delete status
 
     it('Returns Users of an Active Organisation based on the showDelete flag ', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/orgn1500?returnRoles=false`;
-      const resp =  getOrganisationDetailsByOrgIdAndReturnRoles(taskUrl)
+      const resp =  getOperation(taskUrl)
 
       resp.then((axResponse) => {
         expect(axResponse.status).to.be.equal(200);

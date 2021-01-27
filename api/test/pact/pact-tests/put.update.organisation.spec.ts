@@ -3,7 +3,7 @@ import {expect} from 'chai';
 import * as getPort from 'get-port';
 import {isDone} from 'ng-packagr/lib/brocc/select';
 import * as path from 'path';
-import {updateOrganisation} from "../../pactUtil";
+import {putOperation} from "../../pactUtil";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
@@ -17,7 +17,7 @@ describe('/PUT Update an organisation', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIApproveOrg',
+      consumer: 'xui_approveorg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
@@ -95,7 +95,7 @@ describe('/PUT Update an organisation', () => {
     it('Update an organisation and returns success', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/`+orgnId;
 
-      const resp =  updateOrganisation(taskUrl, mockRequest )
+      const resp =  putOperation(taskUrl, mockRequest )
 
       resp.then((response) => {
         try{

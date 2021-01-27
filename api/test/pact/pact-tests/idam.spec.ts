@@ -3,8 +3,8 @@ import { expect } from 'chai'
 import * as path from 'path'
 import * as getPort from "get-port";
 import {eachLike} from "@pact-foundation/pact/dsl/matchers";
-import arrayContaining = jasmine.arrayContaining;
 import {getUserDetails} from '../../../services/idam';
+import {providerSetUp,providerFinalize,addInteraction,idamGetUserDetails} from '../../pactUtil';
 
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
@@ -12,17 +12,28 @@ const {somethingLike} = Matchers;
 let mockServerPort: number;
 let provider: Pact;
 
-describe("/GET Idam API user details", async() => {
-    mockServerPort = await getPort()
-    provider = new Pact({
-    port: mockServerPort,
-    log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-    dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-    spec: 2,
-    consumer: "XUIApproveOrg",
-    provider: "Idam_api",
-    pactfileWriteMode: "merge",
-  })
+xdescribe("Idam API user details", async() => {
+  //   mockServerPort = await getPort()
+  //   provider = new Pact({
+  //   port: mockServerPort,
+  //   log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
+  //   dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
+  //   spec: 2,
+  //   consumer: "xui_approveorg",
+  //   provider: "Idam_api",
+  //   pactfileWriteMode: "merge",
+  // })
+
+  providerSetUp("Idam_api")
+  providerFinalize()
+
+  // Setup the provider
+  // before(() => provider.setup())
+  // // Write Pact when all tests done
+  // after(() => provider.finalize())
+  // // verify with Pact, and reset expectations
+  // afterEach(() => provider.verify())
+
 
   const RESPONSE_BODY = {
     "id": somethingLike("abc123"),
@@ -34,12 +45,7 @@ describe("/GET Idam API user details", async() => {
       somethingLike("solicitor"),somethingLike("caseworker")
     ])
   }
-  // Setup the provider
-  before(() => provider.setup())
-  // Write Pact when all tests done
-  after(() => provider.finalize())
-  // verify with Pact, and reset expectations
-  afterEach(() => provider.verify())
+
   describe("get /details", () => {
 
     const jwt = 'some-access-token';
@@ -64,13 +70,17 @@ describe("/GET Idam API user details", async() => {
         },
       }
       // @ts-ignore
-      provider.addInteraction(interaction).then(() => {
-        done()
-      })
+      // provider.addInteraction(interaction).then(() => {
+      //   done()
+      // })
+
+      addInteraction(done, interaction);
+
     })
+
     it("returns the correct response", (done) => {
-      const taskUrl = `${provider.mockService.baseUrl}`;
-      const response = getUserDetails(jwt,taskUrl);
+      const taskUrl = `${provider.mockService.baseUrl}/details`;
+      const response = idamGetUserDetails(taskUrl);
 
       response.then((axiosResponse) => {
         const dto:IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto> axiosResponse.data;
