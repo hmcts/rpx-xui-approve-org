@@ -29,7 +29,7 @@ describe("/POST  Idam API lease", async() => {
     log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
     dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
     spec: 2,
-    consumer: "XUIApproveOrg",
+    consumer: "xui_approveorg",
     provider: "Idam_api",
     pactfileWriteMode: "merge",
   })
