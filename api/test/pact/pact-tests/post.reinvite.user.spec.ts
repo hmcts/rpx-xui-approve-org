@@ -3,7 +3,7 @@ import {expect} from 'chai';
 import * as getPort from 'get-port';
 import {isDone} from 'ng-packagr/lib/brocc/select';
 import * as path from 'path';
-import {postReinviteUser} from "../../pactUtil";
+import {postOperation} from "../../pactUtil";
 import {UserAddedResponse} from "../../pactFixtures"
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
@@ -18,7 +18,7 @@ describe('/POST  Reinvite User', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIApproveOrg',
+      consumer: 'xui_approve_org_oidc',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
@@ -80,7 +80,7 @@ describe('/POST  Reinvite User', () => {
     it('Reinvite a user for an organisation and returns success', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/`+orgnId;
 
-      const resp =  postReinviteUser(taskUrl, mockRequest )
+      const resp =  postOperation(taskUrl, mockRequest )
 
       resp.then((response) => {
         try{

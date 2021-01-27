@@ -3,7 +3,7 @@ import {expect} from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
 import {UserDetailsResponse} from '../../pactFixtures';
-import {getAccountDetailsByAccountNumber} from "../../pactUtil";
+import {getOperation} from "../../pactUtil";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
@@ -16,7 +16,7 @@ describe('Get Account Status for a Account Name', () => {
   before(async () => {
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'XUIApproveOrg',
+      consumer: 'xui_approveorg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
@@ -73,7 +73,7 @@ describe('Get Account Status for a Account Name', () => {
 
     it('Returns the Account details retrieved for an Account by number', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/accounts/Account13254`;
-      const resp =  getAccountDetailsByAccountNumber(taskUrl)
+      const resp =  getOperation(taskUrl)
       resp.then((axResponse) => {
         expect(axResponse.status).to.be.equal(200);
         const responseDto:UserDetailsResponse  = <UserDetailsResponse> axResponse.data
