@@ -11,6 +11,8 @@ let mockServerPort: number;
 let provider: Pact;
 
 describe("Idam API user details", async () => {
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
   mockServerPort = await getPort()
   provider = new Pact({
     port: mockServerPort,
@@ -22,16 +24,12 @@ describe("Idam API user details", async () => {
     pactfileWriteMode: "merge",
   })
 
-  // providerSetUp("Idam_api")
-  // providerFinalize()
-
   //Setup the provider
   before(() => provider.setup())
   // Write Pact when all tests done
   after(() => provider.finalize())
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
-
 
   const RESPONSE_BODY = {
     "id": somethingLike("abc123"),
@@ -44,7 +42,7 @@ describe("Idam API user details", async () => {
     ])
   }
 
-  describe("get /details", () => {
+  describe("Get user details from Idam", () => {
 
     const jwt = 'some-access-token';
 
@@ -72,11 +70,9 @@ describe("Idam API user details", async () => {
         done()
       })
 
-      //addInteraction(done, interaction);
-
     })
 
-    it("returns the correct response", (done) => {
+    it("Returns the user details from IDAM", (done) => {
       const taskUrl = `${provider.mockService.baseUrl}/details`;
       const response = idamGetUserDetails(taskUrl);
 
