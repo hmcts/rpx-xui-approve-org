@@ -1,9 +1,7 @@
-import {Provider} from '@angular/core';
-import {InteractionObject, Pact} from '@pact-foundation/pact';
-import axios, {AxiosResponse} from 'axios'
+import { InteractionObject, Pact } from '@pact-foundation/pact';
+import axios, { AxiosResponse } from 'axios';
 import * as getPort from 'get-port';
-import {isDone} from 'ng-packagr/lib/brocc/select';
-import * as path from 'path'
+import * as path from 'path';
 
 let mockServerPort: number;
 let provider: Pact;
@@ -69,12 +67,9 @@ export async function deleteOperation(taskUrl: string) {
     }
   }
 
-  console.log( `.....+++++++++ the url is ` + taskUrl);
 
   let response: AxiosResponse
   response = await axios.delete(taskUrl, axiosConfig)
-
-  console.log(`~~~~~~~~~~~~~~~ Response Obtained...~~~~~~~~~~~~~`,response);
   return response
 
 }
@@ -106,7 +101,6 @@ export async function postOperation(taskUrl: string, payload:any){
   let response: AxiosResponse
 
   response = await axios.post(taskUrl, payload as object, axiosConfig)
-  console.log(`~~~~~~~~~~~~~~~ Response Obtained...~~~~~~~~~~~~~`,response);
   return response
 }
 

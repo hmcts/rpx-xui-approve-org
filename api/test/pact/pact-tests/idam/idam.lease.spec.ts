@@ -4,8 +4,8 @@ import * as path from 'path'
 import * as getPort from "get-port";
 import {eachLike} from "@pact-foundation/pact/dsl/matchers";
 import arrayContaining = jasmine.arrayContaining;
-import {getUserDetails} from '../../../services/idam';
-import {postLease} from '../../pactUtil';
+import {getUserDetails} from '../../../../services/idam';
+import {postLease} from '../../../pactUtil';
 
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
