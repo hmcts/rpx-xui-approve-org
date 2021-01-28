@@ -1,10 +1,10 @@
 import { Pact } from '@pact-foundation/pact';
-import {expect} from 'chai';
+import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import {putOperation} from "../../pactUtil";
-const {Matchers} = require('@pact-foundation/pact');
-const {somethingLike} = Matchers;
+import { putOperation } from "../../../pactUtil";
+const { Matchers } = require('@pact-foundation/pact');
+const { somethingLike } = Matchers;
 
 describe('/PUT Update the PBA for an organisation given organisationId', () => {
 
@@ -35,20 +35,20 @@ describe('/PUT Update the PBA for an organisation given organisationId', () => {
   afterEach(() => provider.verify())
 
   let mockRequest = {
-    "paymentAccounts": ["pba","nonPba"]
-   }
+    "paymentAccounts": ["pba", "nonPba"]
+  }
 
-  let mockResponse:string ="Success";
+  let mockResponse: string = "Success";
 
   describe('Update the PBA an organisation given organisationId ', () => {
-    before(done =>{
+    before(done => {
       const interaction = {
         state: 'Then a status message is returned',
         uponReceiving: 'A Request to update the PBA of an Organisation is received',
         withRequest: {
           method: "PUT",
-          path:"/refdata/internal/v1/organisations/"+orgnId +"/pbas",
-          body:mockRequest,
+          path: "/refdata/internal/v1/organisations/" + orgnId + "/pbas",
+          body: mockRequest,
           headers: {
             "Content-Type": "application/json",
             "ServiceAuthorization": "ServiceAuthToken",
@@ -57,7 +57,7 @@ describe('/PUT Update the PBA for an organisation given organisationId', () => {
         },
         willRespondWith: {
           status: 200,
-          body:mockResponse
+          body: mockResponse
         }
       }
       // @ts-ignore
@@ -67,15 +67,15 @@ describe('/PUT Update the PBA for an organisation given organisationId', () => {
     })
 
     it('Update an organisation`s PBA  and returns success', async () => {
-      const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/`+orgnId+"/pbas";
+      const taskUrl: string = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId + "/pbas";
 
-      const resp =  putOperation(taskUrl, mockRequest )
+      const resp = putOperation(taskUrl, mockRequest)
 
       resp.then((response) => {
-        try{
-          const responseDto:string  =  response.data
+        try {
+          const responseDto: string = response.data
           expect(response.status).to.be.equal(200);
-        }catch(e){
+        } catch (e) {
           e.message(`error occurred in asserting response.`)
         }
       })

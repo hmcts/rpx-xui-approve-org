@@ -1,17 +1,17 @@
 import { Pact } from '@pact-foundation/pact';
-import {expect} from 'chai';
+import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import {UserDetailsResponse} from '../../pactFixtures';
-import {getOperation} from "../../pactUtil";
-const {Matchers} = require('@pact-foundation/pact');
-const {somethingLike} = Matchers;
+import { UserDetailsResponse } from '../../../pactFixtures';
+import { getOperation } from "../../../pactUtil";
+const { Matchers } = require('@pact-foundation/pact');
+const { somethingLike } = Matchers;
 
 describe('Get Account Status for a Account Name', () => {
 
   let mockServerPort: number;
   let provider: Pact;
-  const accountname:string = 'Account13254';
+  const accountname: string = 'Account13254';
 
   before(async () => {
     mockServerPort = await getPort()
@@ -19,7 +19,7 @@ describe('Get Account Status for a Account Name', () => {
       consumer: 'xui_approveorg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-      logLevel: 'info',
+      logLevel: 'error',
       port: mockServerPort,
       provider: 'feeRegister_lookUp',
       spec: 2,
@@ -34,23 +34,23 @@ describe('Get Account Status for a Account Name', () => {
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
 
-  let mockResponse={
-      "account_name": somethingLike("solicitoraccount"),
-      "account_number": somethingLike("123456"),
-      "available_balance": somethingLike(122),
-      "credit_limit": somethingLike(1000),
-      "status": somethingLike("ACTIVE")
- }
+  let mockResponse = {
+    "account_name": somethingLike("solicitoraccount"),
+    "account_number": somethingLike("123456"),
+    "available_balance": somethingLike(122),
+    "credit_limit": somethingLike(1000),
+    "status": somethingLike("ACTIVE")
+  }
 
 
   describe('Get Account Status for a Account Name', () => {
-    before(done =>{
+    before(done => {
       const interaction = {
         state: 'Then a status message is returned',
         uponReceiving: 'A request to get Accounts based on account number',
         withRequest: {
           method: "GET",
-          path:"/accounts/Account13254",
+          path: "/accounts/Account13254",
           headers: {
             "Content-Type": "application/json",
             "ServiceAuthorization": "ServiceAuthToken",
@@ -62,7 +62,7 @@ describe('Get Account Status for a Account Name', () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body:mockResponse
+          body: mockResponse
         }
       }
       // @ts-ignore
@@ -72,18 +72,18 @@ describe('Get Account Status for a Account Name', () => {
     })
 
     it('Returns the Account details retrieved for an Account by number', async () => {
-      const taskUrl:string  = `${provider.mockService.baseUrl}/accounts/Account13254`;
-      const resp =  getOperation(taskUrl)
+      const taskUrl: string = `${provider.mockService.baseUrl}/accounts/Account13254`;
+      const resp = getOperation(taskUrl)
       resp.then((axResponse) => {
         expect(axResponse.status).to.be.equal(200);
-        const responseDto:UserDetailsResponse  = <UserDetailsResponse> axResponse.data
+        const responseDto: UserDetailsResponse = <UserDetailsResponse>axResponse.data
         assertResponses(responseDto);
       })
     })
   })
 })
 
-function assertResponses(dto:UserDetailsResponse){
+function assertResponses(dto: UserDetailsResponse) {
   expect(dto.account_name).to.be.equal('solicitoraccount');
   expect(dto.account_number).to.be.equal('123456');
   expect(dto.available_balance).to.be.equal(122);
