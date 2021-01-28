@@ -6,7 +6,7 @@ import { putOperation } from "../../../pactUtil";
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-describe('/PUT Update the PBA for an organisation given organisationId', () => {
+describe('Update an organisation', () => {
 
   const orgnId = "orgn1500";
 
@@ -14,6 +14,8 @@ describe('/PUT Update the PBA for an organisation given organisationId', () => {
   let provider: Pact;
 
   before(async () => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: 'xui_approveorg',
@@ -35,19 +37,43 @@ describe('/PUT Update the PBA for an organisation given organisationId', () => {
   afterEach(() => provider.verify())
 
   let mockRequest = {
-    "paymentAccounts": ["pba", "nonPba"]
+    "name": "updateOrganisation",
+    "status": "Processing",
+    "sraId": "SRA12345",
+    "superUser": {
+      "firstName": 'Bill',
+      "lastName": 'Roberts',
+      "email": 'bill.roberts@hmcts.net'
+    },
+    "paymentAccount": ['pbaPayment', 'payment'],
+    "contactInformation": [
+      {
+        "addressLine1": "AddressLine1",
+        "addressLine2": "AddressLine2",
+        "addressLine3": "AddressLine3",
+        "townCity": "Sutton",
+        "county": "Surrey",
+        "country": "UK",
+        "postCode": "SM12SX",
+        "dxAddress": [
+          {
+            "dxNumber": "DX2313",
+            "dxExchange": "EXCHANGE"
+          }
+        ]
+      }]
   }
 
   let mockResponse: string = "Success";
 
-  describe('Update the PBA an organisation given organisationId ', () => {
+  describe('Update an organisation ', () => {
     before(done => {
       const interaction = {
         state: 'Then a status message is returned',
-        uponReceiving: 'A Request to update the PBA of an Organisation is received',
+        uponReceiving: 'A Request to update organisation is received',
         withRequest: {
           method: "PUT",
-          path: "/refdata/internal/v1/organisations/" + orgnId + "/pbas",
+          path: "/refdata/internal/v1/organisations/" + orgnId,
           body: mockRequest,
           headers: {
             "Content-Type": "application/json",
@@ -66,18 +92,17 @@ describe('/PUT Update the PBA for an organisation given organisationId', () => {
       })
     })
 
-    it('Update an organisation`s PBA  and returns success', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId + "/pbas";
+    it('Update an organisation and returns response', async () => {
+      const taskUrl: string = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId;
 
       const resp = putOperation(taskUrl, mockRequest)
 
       resp.then((response) => {
         try {
           const responseDto: string = response.data
-          expect(response.status).to.be.equal(200);
+          expect(response.status).to.be.equal(201);
         } catch (e) {
-          e.message(`error occurred in asserting response.`)
-        }
+          console.log(`error occurred in asserting response...`+e)        }
       })
     })
   })

@@ -2,11 +2,12 @@ import { Pact } from '@pact-foundation/pact';
 import { expect } from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
+import {delay} from 'rxjs/operators';
 import { putOperation } from "../../../pactUtil";
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-describe('/PUT Update an organisation', () => {
+describe('Update the PBA for an organisation', () => {
 
   const orgnId = "orgn1500";
 
@@ -14,6 +15,8 @@ describe('/PUT Update an organisation', () => {
   let provider: Pact;
 
   before(async () => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: 'xui_approveorg',
@@ -29,51 +32,27 @@ describe('/PUT Update an organisation', () => {
   })
 
   // Write Pact when all tests done
-  after(() => provider.finalize())
+  after(() => {
+    provider.finalize();
+  })
 
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
 
   let mockRequest = {
-    "name": "updateOrganisation",
-    "status": "Processing",
-    "sraId": "SRA12345",
-    "superUser": {
-      "firstName": 'Bill',
-      "lastName": 'Roberts',
-      "email": 'bill.roberts@hmcts.net'
-    },
-    "paymentAccount": ['pbaPayment', 'payment'],
-    "contactInformation": [
-      {
-        "addressLine1": "AddressLine1",
-        "addressLine2": "AddressLine2",
-        "addressLine3": "AddressLine3",
-        "townCity": "Sutton",
-        "county": "Surrey",
-        "country": "UK",
-        "postCode": "SM12SX",
-        "dxAddress": [
-          {
-            "dxNumber": "DX2313",
-            "dxExchange": "EXCHANGE"
-          }
-        ]
-      }]
+    "paymentAccounts": ["pba", "nonPba"]
   }
-
 
   let mockResponse: string = "Success";
 
-  describe('Update an organisation ', () => {
-    console.log(`......MockRequest within the  DESCRIBE .......` + JSON.stringify(mockRequest))
+  describe('Update the PBA an organisation given organisationId ', () => {
     before(done => {
       const interaction = {
         state: 'Then a status message is returned',
-        uponReceiving: 'A Request to update organisation is received',
+        uponReceiving: 'A Request to update the PBA of an Organisation is received',
         withRequest: {
           method: "PUT",
-          path: "/refdata/internal/v1/organisations/" + orgnId,
+          path: "/refdata/internal/v1/organisations/" + orgnId + "/pbas",
           body: mockRequest,
           headers: {
             "Content-Type": "application/json",
@@ -92,18 +71,16 @@ describe('/PUT Update an organisation', () => {
       })
     })
 
-    it('Update an organisation and returns success', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId;
+    it('Update an organisation`s PBA  and returns response', async () => {
+      const taskUrl: string = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId + "/pbas";
 
       const resp = putOperation(taskUrl, mockRequest)
-
       resp.then((response) => {
         try {
           const responseDto: string = response.data
-          expect(response.status).to.be.equal(201);
+          expect(response.status).to.be.equal(200);
         } catch (e) {
-          e.message(`error occurred in asserting response.`)
-        }
+          console.log(`error occurred in asserting response...`+e)        }
       })
     })
   })
