@@ -1,10 +1,9 @@
-import { Pact } from '@pact-foundation/pact'
-import {eachLike} from '@pact-foundation/pact/dsl/matchers';
-import { expect } from 'chai'
-import * as path from 'path'
-import {deleteOperation} from '../../pactUtil';
-import {OrganisationUsers} from '../../pactFixtures';
+import { Pact } from '@pact-foundation/pact';
+import { expect } from 'chai';
 import * as getPort from "get-port";
+import * as path from 'path';
+import { OrganisationUsers } from '../../../pactFixtures';
+import { deleteOperation } from '../../../pactUtil';
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 

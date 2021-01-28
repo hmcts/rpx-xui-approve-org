@@ -2,8 +2,8 @@ import { Pact } from '@pact-foundation/pact';
 import {expect} from 'chai';
 import * as getPort from 'get-port';
 import * as path from 'path';
-import {getOperation} from "../../pactUtil";
-import {OrganisationUsers} from '../../pactFixtures';
+import {getOperation} from "../../../pactUtil";
+import {OrganisationUsers} from '../../../pactFixtures';
 
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;

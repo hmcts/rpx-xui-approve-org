@@ -3,8 +3,8 @@ import {expect} from 'chai';
 import * as getPort from 'get-port';
 import {isDone} from 'ng-packagr/lib/brocc/select';
 import * as path from 'path';
-import {postOperation} from "../../pactUtil";
-import {UserAddedResponse} from "../../pactFixtures"
+import {postOperation} from "../../../pactUtil";
+import {UserAddedResponse} from "../../../pactFixtures"
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 

@@ -1,11 +1,10 @@
 import { Pact } from '@pact-foundation/pact';
-import {expect} from 'chai';
+import { expect } from 'chai';
 import * as getPort from 'get-port';
-import {isDone} from 'ng-packagr/lib/brocc/select';
 import * as path from 'path';
-import {putOperation} from "../../pactUtil";
-const {Matchers} = require('@pact-foundation/pact');
-const {somethingLike} = Matchers;
+import { putOperation } from "../../../pactUtil";
+const { Matchers } = require('@pact-foundation/pact');
+const { somethingLike } = Matchers;
 
 describe('/PUT Update an organisation', () => {
 
@@ -37,15 +36,15 @@ describe('/PUT Update an organisation', () => {
 
   let mockRequest = {
     "name": "updateOrganisation",
-    "status":"Processing",
-    "sraId":"SRA12345",
-    "superUser":{
-      "firstName":'Bill',
-      "lastName":'Roberts',
-      "email":'bill.roberts@hmcts.net'
+    "status": "Processing",
+    "sraId": "SRA12345",
+    "superUser": {
+      "firstName": 'Bill',
+      "lastName": 'Roberts',
+      "email": 'bill.roberts@hmcts.net'
     },
-    "paymentAccount": ['pbaPayment','payment'],
-    "contactInformation":[
+    "paymentAccount": ['pbaPayment', 'payment'],
+    "contactInformation": [
       {
         "addressLine1": "AddressLine1",
         "addressLine2": "AddressLine2",
@@ -53,28 +52,29 @@ describe('/PUT Update an organisation', () => {
         "townCity": "Sutton",
         "county": "Surrey",
         "country": "UK",
-        "postCode":"SM12SX",
+        "postCode": "SM12SX",
         "dxAddress": [
           {
             "dxNumber": "DX2313",
             "dxExchange": "EXCHANGE"
           }
-        ]}]
+        ]
+      }]
   }
 
 
-  let mockResponse:string ="Success";
+  let mockResponse: string = "Success";
 
   describe('Update an organisation ', () => {
-    console.log( `......MockRequest within the  DESCRIBE .......` + JSON.stringify(mockRequest))
-    before(done =>{
+    console.log(`......MockRequest within the  DESCRIBE .......` + JSON.stringify(mockRequest))
+    before(done => {
       const interaction = {
         state: 'Then a status message is returned',
         uponReceiving: 'A Request to update organisation is received',
         withRequest: {
           method: "PUT",
-          path:"/refdata/internal/v1/organisations/"+orgnId,
-          body:mockRequest ,
+          path: "/refdata/internal/v1/organisations/" + orgnId,
+          body: mockRequest,
           headers: {
             "Content-Type": "application/json",
             "ServiceAuthorization": "ServiceAuthToken",
@@ -83,7 +83,7 @@ describe('/PUT Update an organisation', () => {
         },
         willRespondWith: {
           status: 200,
-          body:mockResponse
+          body: mockResponse
         }
       }
       // @ts-ignore
@@ -93,15 +93,15 @@ describe('/PUT Update an organisation', () => {
     })
 
     it('Update an organisation and returns success', async () => {
-      const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/`+orgnId;
+      const taskUrl: string = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId;
 
-      const resp =  putOperation(taskUrl, mockRequest )
+      const resp = putOperation(taskUrl, mockRequest)
 
       resp.then((response) => {
-        try{
-          const responseDto:string  =  response.data
+        try {
+          const responseDto: string = response.data
           expect(response.status).to.be.equal(201);
-        }catch(e){
+        } catch (e) {
           e.message(`error occurred in asserting response.`)
         }
       })
