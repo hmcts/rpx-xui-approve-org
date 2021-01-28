@@ -13,6 +13,8 @@ describe("OpenId Connect API", () => {
 
   // Setup the provider
   before(async () => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     MOCK_SERVER_PORT = await getPort()
     idamTestUrl = `http://localhost:${MOCK_SERVER_PORT}`
     provider = new Pact({

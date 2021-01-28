@@ -8,12 +8,14 @@ import { getOperation } from "../../../pactUtil";
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike, like, eachLike} = Matchers;
 
-describe("RD Professional API call for get organisations", () => {
+describe("Get a list of organisations based on status", () => {
   let mockServerPort: number
   let provider: Pact
 
   // Setup the provider
   before(async() => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: "xui_approveorg",
@@ -66,7 +68,7 @@ describe("RD Professional API call for get organisations", () => {
       })
     })
 
-    it("returns the correct response", done => {
+    it("Returns a list of organisations based on status", done => {
       const path: string = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations?status=Active`;
       const resp =  getOperation(path);
       resp.then((response) => {

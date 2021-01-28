@@ -3,19 +3,26 @@ import {expect} from 'chai';
 import * as getPort from 'get-port';
 import {isDone} from 'ng-packagr/lib/brocc/select';
 import * as path from 'path';
+import {delay} from 'rxjs/operators';
 import {postOperation} from "../../../pactUtil";
 import {UserAddedResponse} from "../../../pactFixtures"
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
-describe('/POST  Reinvite User', () => {
+describe('Reinvite an User', () => {
 
   const orgnId = "orgn1500";
 
   let mockServerPort: number;
   let provider: Pact;
 
-  before(async () => {
+  // @ts-ignore
+
+  before(async  ()=> {
+    // @ts-ignore
+    //delay(3000);
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: 'xui_approve_org_oidc',
@@ -31,7 +38,10 @@ describe('/POST  Reinvite User', () => {
   })
 
   // Write Pact when all tests done
-  after(() => provider.finalize())
+  after(() => {
+    provider.finalize()
+    delay(3000)
+  })
 
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
@@ -77,7 +87,7 @@ describe('/POST  Reinvite User', () => {
       })
     })
 
-    it('Reinvite a user for an organisation and returns success', async () => {
+    it('Reinvite a user for an organisation', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/`+orgnId;
 
       const resp =  postOperation(taskUrl, mockRequest )
@@ -88,7 +98,7 @@ describe('/POST  Reinvite User', () => {
           expect(response.status).to.be.equal(201);
           assertResponses(responseDto);
         }catch(e){
-          e.message(`error occurred in asserting response...`)
+         console.log(`error occurred in asserting response...`+e)
         }
       })
     })
