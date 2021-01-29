@@ -14,6 +14,8 @@ describe('Get Account Status for a Account Name', () => {
   const accountname: string = 'Account13254';
 
   before(async () => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: 'xui_approveorg',
