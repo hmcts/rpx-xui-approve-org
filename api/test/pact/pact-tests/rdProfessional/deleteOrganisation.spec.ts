@@ -10,7 +10,7 @@ const {somethingLike} = Matchers;
 let mockServerPort: number;
 let provider: Pact;
 
-describe("DELETE active Users of organistaion based on the showDeleted Flag ", async() => {
+describe("Delete active Users of organistaion based on the showDeleted Flag ", async() => {
   mockServerPort = await getPort()
   const userId:string  = "userId1500";
 
