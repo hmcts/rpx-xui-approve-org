@@ -3,7 +3,6 @@ import { expect } from 'chai'
 import * as path from 'path'
 import * as getPort from "get-port";
 import {eachLike} from "@pact-foundation/pact/dsl/matchers";
-import arrayContaining = jasmine.arrayContaining;
 import {getUserDetails} from '../../../../services/idam';
 import {postLease} from '../../../pactUtil';
 
@@ -22,15 +21,17 @@ const payload = {
   "oneTimePassword": "784467"
 }
 
-describe("/POST  Idam API lease", async() => {
-    mockServerPort = await getPort()
+describe("Idam API lease", async() => {
+  await new Promise(resolve => setTimeout(resolve, 3000));
+
+  mockServerPort = await getPort()
     provider = new Pact({
     port: mockServerPort,
     log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
     dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
     spec: 2,
     consumer: "xui_approveorg",
-    provider: "Idam_api",
+    provider: "s2s_api", //TODO , yet to be confirmed.
     pactfileWriteMode: "merge",
   })
 
@@ -72,7 +73,7 @@ describe("/POST  Idam API lease", async() => {
         done()
       })
     })
-    it("returns the correct response", (done) => {
+    it("Returns the token from S2S Service", (done) => {
 
       const taskUrl = `${provider.mockService.baseUrl}/lease  `;
       const response = postLease(taskUrl,payload);

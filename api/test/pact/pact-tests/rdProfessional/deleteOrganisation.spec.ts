@@ -16,6 +16,8 @@ describe("DELETE active Users of organistaion based on the showDeleted Flag ", a
 
   // Setup the provider
   before(async () => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: 'xui_approveorg',
@@ -29,7 +31,6 @@ describe("DELETE active Users of organistaion based on the showDeleted Flag ", a
     })
     return provider.setup()
  })
-
 
   // Write Pact when all tests done
   after(() => provider.finalize())
@@ -47,7 +48,7 @@ describe("DELETE active Users of organistaion based on the showDeleted Flag ", a
     userIdentifier:somethingLike("userIdentifier")
   }
 
-  describe("DELETE active Users of organistaion given status", () => {
+  describe("Delete active Users of organistaion given status", () => {
 
     before(done => {
       const interaction = {
@@ -68,7 +69,6 @@ describe("DELETE active Users of organistaion based on the showDeleted Flag ", a
           headers: {
             "Content-Type": "application/json",
           },
-          body: { }
         }
       }
       // @ts-ignore
@@ -78,19 +78,11 @@ describe("DELETE active Users of organistaion based on the showDeleted Flag ", a
     })
 
 
-    it("Returns the correct response", (done) => {
+    it("Delete users from organisation and return the correct response code", (done) => {
       const taskUrl = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/${userId}/users?returnRoles=false`;
-
       const response  = deleteOperation(taskUrl);
-
       response.then((axiosResponse) => {
         expect(axiosResponse.status).to.be.equal(204);
-        const responseDto = axiosResponse.data;
-        try{
-          expect(responseDto).to.be.null
-        }catch(e){
-          console.log (`~~~~~ Error when trying to assert the response from the call to the ${taskUrl}` +e);
-        }
       }).then(done,done)
     })
   })

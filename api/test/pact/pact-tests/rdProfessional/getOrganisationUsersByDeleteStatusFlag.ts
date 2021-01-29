@@ -8,13 +8,15 @@ import {OrganisationUsers} from '../../../pactFixtures';
 const {Matchers} = require('@pact-foundation/pact');
 const {somethingLike} = Matchers;
 
-xdescribe('/GET Retrieve list of users  of an organisation based on delete status ', () => {
+describe('Retrieve list of users  of an organisation based on delete status ', () => {
 
   const orgnId = "orgn1500";
   let mockServerPort: number;
   let provider: Pact;
 
   before(async () => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     mockServerPort = await getPort()
     provider = new Pact({
       consumer: 'xui_approveorg',
@@ -82,7 +84,7 @@ xdescribe('/GET Retrieve list of users  of an organisation based on delete statu
       })
     })
 
-    it('Returns Users of an Active Organisation based on the showDelete flag ', async () => {
+    it('Returns a list of users of an active organisation based on the showDelete flag ', async () => {
       const taskUrl:string  = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/orgn1500?returnRoles=false`;
       const resp =  getOperation(taskUrl)
 
