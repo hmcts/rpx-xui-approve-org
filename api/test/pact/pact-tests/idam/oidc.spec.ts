@@ -3,7 +3,7 @@ import { Pact } from '@pact-foundation/pact'
 import { assert } from 'chai'
 import * as getPort from 'get-port'
 import * as path from 'path'
-import mockResponse from '../mocks/openid-well-known-configuration.mock'
+import mockResponse from '../../mocks/openid-well-known-configuration.mock'
 
 describe("OpenId Connect API", () => {
 
@@ -13,10 +13,12 @@ describe("OpenId Connect API", () => {
 
   // Setup the provider
   before(async () => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     MOCK_SERVER_PORT = await getPort()
     idamTestUrl = `http://localhost:${MOCK_SERVER_PORT}`
     provider = new Pact({
-      consumer: 'xui_approve_org_oidc',
+      consumer: 'xui_approveorg',
       dir: path.resolve(__dirname, '../pacts'),
       log: path.resolve(__dirname, '../logs', 'oidc-integration.log'),
       logLevel: 'info',
