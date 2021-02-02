@@ -225,5 +225,12 @@ withPipeline(type, product, component) {
             reportName           : 'AAt NG Integration Test'
         ])
     }
+
+    onMaster() {
+        env.PACT_BRANCH_NAME = 'master'
+        enablePactAs([
+                AppPipelineDsl.PactRoles.CONSUMER
+        ])
+    }
 }
 
