@@ -8,7 +8,7 @@ const { somethingLike } = Matchers;
 
 describe('Update an organisation', () => {
 
-  const orgnId = "orgn1500";
+  const orgnId = "UTVC86X";
 
   let mockServerPort: number;
   let provider: Pact;
@@ -18,12 +18,12 @@ describe('Update an organisation', () => {
 
     mockServerPort = await getPort()
     provider = new Pact({
-      consumer: 'xui_approveorg',
+      consumer: 'xui_approveOrg',
       log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
       dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
       logLevel: 'info',
       port: mockServerPort,
-      provider: 'rd_professional_api',
+      provider: 'referenceData_organisationalInternal',
       spec: 2,
       pactfileWriteMode: "merge"
     })
@@ -37,8 +37,8 @@ describe('Update an organisation', () => {
   afterEach(() => provider.verify())
 
   let mockRequest = {
-    "name": "updateOrganisation",
-    "status": "Processing",
+    "name": "Organisation name",
+    "status": "PENDING",
     "sraId": "SRA12345",
     "superUser": {
       "firstName": 'Bill',
@@ -69,8 +69,8 @@ describe('Update an organisation', () => {
   describe('Update an organisation ', () => {
     before(done => {
       const interaction = {
-        state: 'Then a status message is returned',
-        uponReceiving: 'A Request to update organisation is received',
+        state: 'An Organisation exists for update',
+        uponReceiving: 'A Request to update an organisation',
         withRequest: {
           method: "PUT",
           path: "/refdata/internal/v1/organisations/" + orgnId,
@@ -82,8 +82,7 @@ describe('Update an organisation', () => {
           }
         },
         willRespondWith: {
-          status: 200,
-          body: mockResponse
+          status: 200
         }
       }
       // @ts-ignore
