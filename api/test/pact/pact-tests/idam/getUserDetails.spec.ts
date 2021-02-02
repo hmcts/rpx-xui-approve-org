@@ -7,27 +7,30 @@ import { idamGetUserDetails } from '../../../pactUtil';
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
-let mockServerPort: number;
-let provider: Pact;
-
 describe("Idam API user details", async () => {
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  let mockServerPort: number;
+  let provider: Pact;
 
-  mockServerPort = await getPort()
-  provider = new Pact({
-    port: mockServerPort,
-    log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-    dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-    spec: 2,
-    consumer: "xui_approveorg",
-    provider: "Idam_api",
-    pactfileWriteMode: "merge",
+  before(async () => {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
+    mockServerPort = await getPort()
+    provider = new Pact({
+      consumer: 'xui_approveOrg',
+      log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
+      dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
+      logLevel: 'error',
+      port: mockServerPort,
+      provider: 'idamApi_users',
+      spec: 2,
+      pactfileWriteMode: "merge"
+    })
+    return provider.setup()
   })
 
-  //Setup the provider
-  before(() => provider.setup())
   // Write Pact when all tests done
   after(() => provider.finalize())
+
   // verify with Pact, and reset expectations
   afterEach(() => provider.verify())
 
@@ -48,8 +51,8 @@ describe("Idam API user details", async () => {
 
     before(done => {
       const interaction = {
-        state: "a user exists",
-        uponReceiving: "sidam_user_details will respond with:",
+        state: "a valid user exists",
+        uponReceiving: "a request for that user",
         withRequest: {
           method: "GET",
           path: "/details",

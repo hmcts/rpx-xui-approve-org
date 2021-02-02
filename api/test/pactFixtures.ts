@@ -83,7 +83,7 @@ export interface UserAddedResponse{
   userIdentifier:string
 }
 
-export interface UserDetailsResponse{
+export interface AccountDetailsResponse{
   account_name: string,
   account_number: string,
   available_balance: number,
