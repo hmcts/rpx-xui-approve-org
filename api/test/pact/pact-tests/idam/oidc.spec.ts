@@ -5,7 +5,7 @@ import { PactTestSetup } from '../settings/provider.mock';
 
 const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
 
-xdescribe("OpenId Connect API", async() => {
+describe("OpenId Connect API", async() => {
 
 
   // Setup the provider

@@ -1,8 +1,8 @@
 import pact from '@pact-foundation/pact-node'
 import * as git from 'git-rev-sync'
 import * as path from 'path'
-import {getConfigValue} from '../../../configuration'
-import {PACT_BROKER_PASSWORD, PACT_BROKER_USERNAME, PACT_CONSUMER_VERSION, PACT_BROKER_URL, PACT_BRANCH_NAME} from '../../../configuration/references'
+import { getConfigValue } from '../../../configuration'
+import { PACT_BRANCH_NAME, PACT_BROKER_PASSWORD, PACT_BROKER_URL, PACT_BROKER_USERNAME, PACT_CONSUMER_VERSION } from '../../../configuration/references'
 
 const publish = async (): Promise<void> => {
     try {
@@ -16,6 +16,9 @@ const publish = async (): Promise<void> => {
         const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ?
             // @ts-ignore
             getConfigValue(PACT_CONSUMER_VERSION) : git.short()
+
+        const certPath = path.resolve(__dirname, "../cer/ca-bundle.crt")
+        process.env.SSL_CERT_FILE = certPath
 
         const opts = {
             consumerVersion,
