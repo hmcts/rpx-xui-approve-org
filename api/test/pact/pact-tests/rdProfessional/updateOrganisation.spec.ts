@@ -1,40 +1,18 @@
-import { Pact } from '@pact-foundation/pact';
 import { expect } from 'chai';
-import * as getPort from 'get-port';
-import * as path from 'path';
 import { putOperation } from "../../../pactUtil";
+import { PactTestSetup } from '../settings/provider.mock';
+
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
+const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalInternal', port: 8000 });
+
 
 describe('Update an organisation', () => {
-
-  const orgnId = "UTVC86X";
-
-  let mockServerPort: number;
-  let provider: Pact;
-
   before(async () => {
     await new Promise(resolve => setTimeout(resolve, 3000));
+   })
 
-    mockServerPort = await getPort()
-    provider = new Pact({
-      consumer: 'xui_approveOrg',
-      log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-      dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-      logLevel: 'info',
-      port: mockServerPort,
-      provider: 'referenceData_organisationalInternal',
-      spec: 2,
-      pactfileWriteMode: "merge"
-    })
-    return provider.setup()
-  })
-
-  // Write Pact when all tests done
-  after(() => provider.finalize())
-
-  // verify with Pact, and reset expectations
-  afterEach(() => provider.verify())
+  const orgnId = "UTVC86X";
 
   let mockRequest = {
     "name": "Organisation name",
@@ -67,7 +45,8 @@ describe('Update an organisation', () => {
   let mockResponse: string = "Success";
 
   describe('Update an organisation ', () => {
-    before(done => {
+    before(async () => {
+      await pactSetUp.provider.setup();
       const interaction = {
         state: 'An Organisation exists for update',
         uponReceiving: 'A Request to update an organisation',
@@ -86,13 +65,12 @@ describe('Update an organisation', () => {
         }
       }
       // @ts-ignore
-      provider.addInteraction(interaction).then(() => {
-        done()
-      })
+      pactSetUp.provider.addInteraction(interaction)
+
     })
 
     it('Update an organisation and returns response', async () => {
-      const taskUrl: string = `${provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId;
+      const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId;
 
       const resp = putOperation(taskUrl, mockRequest)
 
@@ -101,7 +79,11 @@ describe('Update an organisation', () => {
           const responseDto: string = response.data
           expect(response.status).to.be.equal(201);
         } catch (e) {
-          console.log(`error occurred in asserting response...`+e)        }
+          console.log(`error occurred in asserting response...` + e)
+        }
+      }).then(() => {
+        pactSetUp.provider.verify(),
+        pactSetUp.provider.finalize()
       })
     })
   })

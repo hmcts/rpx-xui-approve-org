@@ -1,43 +1,26 @@
-import { oidc } from '@hmcts/rpx-xui-node-lib'
-import { Pact } from '@pact-foundation/pact'
-import { assert } from 'chai'
-import * as getPort from 'get-port'
-import * as path from 'path'
-import mockResponse from '../../mocks/openid-well-known-configuration.mock'
+import { oidc } from '@hmcts/rpx-xui-node-lib';
+import { assert } from 'chai';
+import mockResponse from '../../mocks/openid-well-known-configuration.mock';
+import { PactTestSetup } from '../settings/provider.mock';
 
-describe("OpenId Connect API", () => {
+const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
 
-  let MOCK_SERVER_PORT
-  let idamTestUrl
-  let provider
+xdescribe("OpenId Connect API", async() => {
+
 
   // Setup the provider
   before(async () => {
     await new Promise(resolve => setTimeout(resolve, 3000));
+   })
 
-    MOCK_SERVER_PORT = await getPort()
-    idamTestUrl = `http://localhost:${MOCK_SERVER_PORT}`
-    provider = new Pact({
-      consumer: 'xui_approveorg',
-      dir: path.resolve(__dirname, '../pacts'),
-      log: path.resolve(__dirname, '../logs', 'oidc-integration.log'),
-      logLevel: 'info',
-      port: MOCK_SERVER_PORT,
-      provider: 'Idam_api',
-      spec: 2,
-    })
-    return provider.setup()
-  })
+   // Write Pact when all tests done
+   after(() => pactSetUp.provider.finalize())
 
-  // Write Pact when all tests done
-  after(() => provider.finalize())
-
-  // verify with Pact, and reset expectations
-  afterEach(() => provider.verify())
 
   describe('when a request to .well-known endpoint is made', () => {
-    before(() =>
-      provider.addInteraction({
+    before(async() => {
+    await pactSetUp.provider.setup()
+    pactSetUp.provider.addInteraction({
         state: '.well-known endpoint',
         uponReceiving: 'a request for configuration',
         withRequest: {
@@ -50,15 +33,16 @@ describe("OpenId Connect API", () => {
           body: mockResponse,
         }
       })
-    )
+    })
+    afterEach(() => pactSetUp.provider.verify())
 
     it('returns a json configuration', async () => {
-      const oidcUrl = `${provider.mockService.baseUrl}/o`
+      const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`
 
       // @ts-ignore
       const issuer = await oidc.configure({
         authorizationURL: `${oidcUrl}/authorize`,
-        callbackURL: `${provider.mockService.baseUrl}/oauth2/callback`,
+        callbackURL: `${pactSetUp.provider.mockService.baseUrl}/oauth2/callback`,
         clientID: 'rpx-ao',
         clientSecret: 'secret',
         discoveryEndpoint: `${oidcUrl}/.well-known/openid-configuration`,

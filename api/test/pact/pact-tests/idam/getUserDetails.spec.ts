@@ -1,38 +1,16 @@
-import { Pact } from '@pact-foundation/pact';
 import { expect } from 'chai';
-import * as getPort from "get-port";
-import * as path from 'path';
 import { idamGetUserDetails } from '../../../pactUtil';
+import { PactTestSetup } from '../settings/provider.mock';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
+const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
+
 
 describe("Idam API user details", async () => {
-  let mockServerPort: number;
-  let provider: Pact;
-
   before(async () => {
     await new Promise(resolve => setTimeout(resolve, 3000));
-
-    mockServerPort = await getPort()
-    provider = new Pact({
-      consumer: 'xui_approveOrg',
-      log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-      dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-      logLevel: 'error',
-      port: mockServerPort,
-      provider: 'idamApi_users',
-      spec: 2,
-      pactfileWriteMode: "merge"
-    })
-    return provider.setup()
-  })
-
-  // Write Pact when all tests done
-  after(() => provider.finalize())
-
-  // verify with Pact, and reset expectations
-  afterEach(() => provider.verify())
+   })
 
   const RESPONSE_BODY = {
     "id": somethingLike("abc123"),
@@ -49,7 +27,8 @@ describe("Idam API user details", async () => {
 
     const jwt = 'some-access-token';
 
-    before(done => {
+    before(async () => {
+      await pactSetUp.provider.setup();
       const interaction = {
         state: "a valid user exists",
         uponReceiving: "a request for that user",
@@ -69,21 +48,23 @@ describe("Idam API user details", async () => {
         },
       }
       // @ts-ignore
-      provider.addInteraction(interaction).then(() => {
-        done()
-      })
+      pactSetUp.provider.addInteraction(interaction)
 
     })
 
-    it("Returns the user details from IDAM", (done) => {
-      const taskUrl = `${provider.mockService.baseUrl}/details`;
+    it("Returns the user details from IDAM", async () => {
+      const taskUrl = `${pactSetUp.provider.mockService.baseUrl}/details`;
       const response = idamGetUserDetails(taskUrl);
 
       response.then((axiosResponse) => {
         const dto: IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto>axiosResponse.data;
         assertResponses(dto);
-      }).then(done, done)
+      }).then(() => {
+        pactSetUp.provider.verify(),
+        pactSetUp.provider.finalize()
+      })
     })
+
   })
 })
 
