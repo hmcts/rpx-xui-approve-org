@@ -107,7 +107,7 @@ export const navItemsArray = [{
   orderId: 0
 },
 {
-  text: 'Caseworker details',
+  text: 'Staff details',
   href: '/caseworker-details',
   active: false,
   feature: {
