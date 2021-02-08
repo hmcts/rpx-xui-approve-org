@@ -1,24 +1,33 @@
+import { SERVICE_CASE_WORKER_PATH } from '../configuration/references'
 import * as express from 'express'
 import * as multer from 'multer'
-import { getErrorResponse, getPartialSuccess, getSuccess } from './mock-error-scenarios'
+import { getConfigValue } from '../configuration'
+import * as FormData from 'form-data'
 
-const upload = multer({ dest: 'uploads/' })
+const storage = multer.memoryStorage()
+const upload = multer({ storage: storage })
+const multipartFormData = 'multipart/form-data'
 
-async function caseWorkerDetailsRoute(req: express.Request, res: express.Response) {
-  const mockErrorRes = getErrorResponse(req, res)
-
-  if (mockErrorRes) {
-    res.status(mockErrorRes.status).json(mockErrorRes.json)
-    return
+async function caseWorkerDetailsRoute(req: multer.Request, res: express.Response, next: express.NextFunction) {
+  const file = req.files[0]
+  const url = getConfigValue(SERVICE_CASE_WORKER_PATH)
+  const uploadUrl = `${url}/refdata/case-worker/upload-file`
+  try {
+    let formData = new FormData();
+    formData.append('file', file.buffer, file.originalname);
+    const headers = {
+                      headers:  {'Content-Type': getContentType(multipartFormData, formData)}
+                    }
+    const {status, data} = await req.http.post(uploadUrl, formData, headers)
+    res.status(status)
+    res.send(data)
+  } catch(error) {
+    next(error)
   }
+}
 
-  const partialSuccessRes = getPartialSuccess(req, res)
-  if (partialSuccessRes) {
-    res.send(partialSuccessRes)
-  } else {
-    const successRes = getSuccess()
-    res.send(successRes).status(200)
-  }
+export function getContentType(contentType: string, formData: FormData) {
+  return `${contentType}; boundary=${formData.getBoundary()}`
 }
 
 export const router = express.Router({ mergeParams: true })

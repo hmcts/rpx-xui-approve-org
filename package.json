@@ -85,6 +85,7 @@
     "exception-formatter": "^1.0.7",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
+    "form-data": "^3.0.0",
     "get-port": "^5.1.1",
     "git-rev-sync": "^2.0.0",
     "global-agent": "^2.1.8",
