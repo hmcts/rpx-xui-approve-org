@@ -2,12 +2,12 @@ import * as express from 'express'
 import * as multer from 'multer'
 import { getConfigValue } from '../configuration'
 import { SERVICE_CASE_WORKER_PATH } from '../configuration/references'
-import { getFormData, getHeaders, getUploadFileUrl, MulterRequest } from './util'
+import { getFormData, getHeaders, getUploadFileUrl } from './util'
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
-async function caseWorkerDetailsRoute(req: express.Response & Request, res: express.Response, next: express.NextFunction) {
+async function caseWorkerDetailsRoute(req:any, res: express.Response, next: express.NextFunction) {
   if(!req.file) {
     res.status(400)
     res.send('You need to select a file to upload. Please try again.')
