@@ -2,7 +2,7 @@ import * as express from 'express'
 import * as multer from 'multer'
 import { getConfigValue } from '../configuration'
 import { SERVICE_CASE_WORKER_PATH } from '../configuration/references'
-import { getFormData, getHeaders, getUploadFileUrl } from './util'
+import { fieldName, getFormData, getHeaders, getUploadFileUrl } from './util'
 
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
@@ -27,6 +27,6 @@ async function caseWorkerDetailsRoute(req:any, res: express.Response, next: expr
 
 export const router = express.Router({ mergeParams: true })
 
-router.post('/', upload.single('file'), caseWorkerDetailsRoute)
+router.post('/', upload.single(fieldName), caseWorkerDetailsRoute)
 
 export default router

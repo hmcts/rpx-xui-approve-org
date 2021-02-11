@@ -1,6 +1,8 @@
 import * as FormData from 'form-data'
 import { Readable } from 'form-data';
 
+export const fieldName = 'file'
+
 export interface MulterRequest {
     /** `Multer.File` object populated by `single()` middleware. */
     file: File;
@@ -50,7 +52,7 @@ export function getContentType(contentType: string, formData: FormData) {
 
 export function getFormData(file: File): FormData {
     let formData = new FormData();
-    formData.append('file', file.buffer, file.originalname);
+    formData.append(fieldName, file.buffer, file.originalname);
     return formData
 }
 
