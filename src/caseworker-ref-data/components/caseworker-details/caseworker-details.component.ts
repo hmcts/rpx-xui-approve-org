@@ -47,7 +47,7 @@ export class CaseWorkerDetailsComponent {
 
     // if the error is a 400 then use the error description as the display message
     if (handledStatus === 400) {
-      this.errorDesc = errorResponse.error.error_description;
+      this.errorDesc = errorResponse.error.errorDescription;
     }
   }
 }

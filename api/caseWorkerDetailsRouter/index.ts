@@ -7,10 +7,11 @@ import { fieldName, getFormData, getHeaders, getUploadFileUrl } from './util'
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
-async function caseWorkerDetailsRoute(req:any, res: express.Response, next: express.NextFunction) {
+async function caseWorkerDetailsRoute(req:any, res: express.Response) {
   if(!req.file) {
     res.status(400)
     res.send('You need to select a file to upload. Please try again.')
+    return
   }
   const formData = getFormData(req.file)
   const headers = getHeaders(formData)
@@ -21,7 +22,12 @@ async function caseWorkerDetailsRoute(req:any, res: express.Response, next: expr
     res.status(status)
     res.send(data)
   } catch(error) {
-    next(error)
+    if(error.status) {
+      res.status(error.status)
+    }
+    if(error.data) {
+      res.send(error.data)
+    }
   }
 }
 
