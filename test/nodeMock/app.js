@@ -1,6 +1,8 @@
 
 
 const express = require('express');
+const minimist = require('minimist');
+
 let { requestMapping,configurations} = require('./reqResMapping');
 const { browser } = require('protractor');
 const port = 3001
@@ -73,13 +75,12 @@ class MockApp{
 }
 
 const mockInstance = new MockApp();
-//    mockInstance.onPost('/api/inviteUser', (req,res) => {
-//             res.status(500).send({error:'server error occured'});
-//         })
-
-// mockInstance.setConfig("feature.termsAndConditionsEnabled",true);
-
-// mockInstance.init();
-// mockInstance.startServer();
-
 module.exports = mockInstance;
+
+const args = minimist(process.argv);
+if (args.standalone) {
+    mockInstance.init();
+    // createCustomCCDCaseConfig();
+    mockInstance.startServer();
+}
+
