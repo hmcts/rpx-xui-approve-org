@@ -120,16 +120,7 @@ describe('Staff details' , function () {
         expect(await staffDetailsPage.isErrorMessageBannerDisplayed(), "Error message banner not displayed on 400 invald or missing headers").to.be.true;
 
     });
-
-
-    it('Upload fail with 400 invalid file ', async function () {
-        MockApp.onPost('/api/caseworkerdetails', (req, res) => {
-            res.status(400).send(mockData.getErrorResponse('400-2'));
-        });
-
-        await uploadScenarioSteps();
-        expect(await staffDetailsPage.isErrorMessageBannerDisplayed(), "Error message banner not displayed on 400 invalid file format").to.be.true;
-    });
+screenTop
 
 });
 

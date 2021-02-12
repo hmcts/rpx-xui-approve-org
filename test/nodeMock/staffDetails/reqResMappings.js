@@ -6,7 +6,7 @@ const reqResMappings = {
     },
     post: {
         '/api/caseworkerdetails' : (req,res) => {
-            res.status(200).send(Mockdata.getPartialSuccess());
+            res.status(200).send(Mockdata.getSuccess());
         }
     }
 }

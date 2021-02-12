@@ -13,6 +13,6 @@ Feature: Staff details upload
     Scenario: Verify search with Organisation name, Pending organisation
         When I select file to upload Staff details
         When I click upload button in Staff details upload page
-        Then I see Staff details upload success page
+        Then I see Staff details upload success process page
 
 

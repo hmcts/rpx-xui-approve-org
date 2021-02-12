@@ -47,8 +47,8 @@ class MockApp{
 
     async stopServer(){
         await this.server.close();
-        this.conf = {  };
-        this.configurations = { };
+        // this.conf = {  };
+        // this.configurations = { };
     }
 
     onGet(path, callback){

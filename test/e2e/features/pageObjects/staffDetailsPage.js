@@ -96,7 +96,8 @@ function StaffDetailsPage(){
     }
 
     this.getInputFileErrorMessage = async function(){
-        return await this.uploadInputErrorMessage.getText();
+        const errorMessage = await this.uploadInputErrorMessage.getText()
+        return errorMessage.split("\n");
     }
 
     this.getInputFileErrorMessageDisplayed = async function () {
