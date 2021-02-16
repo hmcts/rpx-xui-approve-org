@@ -83,7 +83,7 @@ for all operating system, but I have yet to try this.
 
 ####MAC OS - Pre Catalina
 
-1. Create a Mount point on your local machine<br/>
+1. Create a Mount point on your local machine<br/> 
 Create the folder: `/mnt/secrets/rpx`
 2. In this folder we create a file per secret.
 ie.
