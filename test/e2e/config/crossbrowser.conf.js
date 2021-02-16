@@ -47,6 +47,17 @@ const config = {
       maxInstances: 1
     },
 
+    {
+      browserName: 'firefox',
+      version: 'latest',
+      platform: 'Windows 10',
+      name: 'firefox-tests',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      maxInstances: 1
+    },
+
     // {
     //   browserName: 'internet explorer',
     //   platform: 'Windows 10',
@@ -59,17 +70,17 @@ const config = {
     //
     // },
 
-    {
-      browserName: 'safari',
-      platform: 'macOS 10.13',
-      version: '11',
-      name: 'Safari-TEST',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      maxInstances: 1
-
-    },
+    // {
+    //   browserName: 'safari',
+    //   platform: 'macOS 10.13',
+    //   version: '11',
+    //   name: 'Safari-TEST',
+    //   tunnelIdentifier: 'reformtunnel',
+    //   extendedDebugging: true,
+    //   sharedTestFiles: false,
+    //   maxInstances: 1
+    //
+    // },
 
     // {
     //   browserName: 'MicrosoftEdge',
