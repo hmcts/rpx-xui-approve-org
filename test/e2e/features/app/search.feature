@@ -1,4 +1,3 @@
-@fullfunctional
 Feature: Search Organisation
 
     Background:
@@ -7,7 +6,7 @@ Feature: Search Organisation
         Then I should be redirected to approve organisation dashboard page
         Then I Check the active Organisation banner appear
 
-
+@fullfunctional
     Scenario: Verify search with Organisation name, Pending organisation
         Then I search with organisation name and validate results
 
