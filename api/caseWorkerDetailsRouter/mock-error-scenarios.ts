@@ -13,7 +13,18 @@ export function getErrorResponse(req, res) {
           timestamp: Date.now()
         }
       }
+    case 'fileName-404.xlsx':
+      return {
+        status: 400, json: {
+          error_code: 404,
+          status: 'BAD_REQUEST',
+          error_message: 'Missing column headers',
+          error_description: 'File is missing the required column headers. Please check the file',
+          timestamp: Date.now()
+        }
+      }
     case 'fileName-400-2.xlsx':
+
       return {
         status: 400, json: {
           error_code: 400,
@@ -60,16 +71,19 @@ export function getErrorResponse(req, res) {
 
 export function getPartialSuccess(req, res) {
   if (req.files[0].originalname === 'fileName-200-partial.xlsx') {
+    let errorDetails = [];
+    for(let i = 0; i < 5 ; i ++){
+      errorDetails.push({
+        "row_id": i + 1,
+        "field_in_error": "primary location "+ i+1,
+        "error_description": "Primary base location must not be empty "+i + 1 
+      }); 
+    }
+
     const partialResponse = {
       message: "Request completed with partial success. Some records failed during validation and were ignored.",
       message_details: "3 record(s) failed validation, 1 record(s) uploaded, and 0 record(s) suspended",
-      error_details: [
-        {
-          row_id: 2,
-          field_in_error: "primary_location",
-          error_description: "Primary base location must not be empty"
-        }
-      ]
+      error_details: errorDetails
     }
     return partialResponse
   }

@@ -434,10 +434,10 @@
   dependencies:
     tslib "^1.9.0"
 
-"@hmcts/rpx-xui-node-lib@^2.24.3":
-  version "2.24.3"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.24.3.tgz#63292f848fb10a475d7aa65abeefa0b030a5ed9f"
-  integrity sha512-5pmLQIdJ3CdpxzMa+6IGFQ4+MB24yZ9Ocim7DlLvTe2jHQYZwE/TlbNGkhRjXmqPQy4bt/9zuk4X8IhyDgxtdA==
+"@hmcts/rpx-xui-node-lib@^2.24.4":
+  version "2.24.4"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-node-lib/-/rpx-xui-node-lib-2.24.4.tgz#8ce55f11c844a90ebcebec6adc8379c464ebb2a0"
+  integrity sha512-5fvj731uPkh9O58F1Tq3rmeqZzYcWlTqhJvBNdpqEYmVW7zsywmloDTykM5rzYhG6fhnfgpVaycaF4lFm0kAuQ==
   dependencies:
     "@hapi/joi" "^17.1.1"
     axios "^0.21.1"
@@ -901,6 +901,13 @@
   version "5.2.7"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.7.tgz#315d570ccb56c53452ff8638738df60726d5b6ea"
   integrity sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
+
+"@types/multer@^1.4.5":
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/@types/multer/-/multer-1.4.5.tgz#db0557562307e9adb6661a9500c334cd7ddd0cd9"
+  integrity sha512-9b/0a8JyrR0r2nQhL73JR86obWL7cogfX12augvlrvcpciCo/hkvEsgu80Z4S2g2DHGVXHr8pUIi1VhqFJ8Ufw==
+  dependencies:
+    "@types/express" "*"
 
 "@types/node@*":
   version "14.0.23"

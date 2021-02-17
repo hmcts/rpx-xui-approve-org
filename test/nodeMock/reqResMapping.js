@@ -1,9 +1,10 @@
 const pendingOrganisation = require('./pendingOrganisations');
 const activeOrganisation = require('./activeOrganisations');
 const AppConfigMock = require('./mockdata/appConfig');
-
+const stafDetailsMapping = require('./staffDetails/reqResMappings');
 
 const requestMapping = {
+    ...stafDetailsMapping.get,
    get:{
         '/auth/login': (req, res) => {
            res.set("location", "https://idam-web-public.aat.platform.hmcts.net/login?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Foauth2%2Fcallback&scope=profile%20openid%20roles%20manage-user%20create-user&state=q5GPi2LJ_2sXXDS4eCkPO5hbc3gybg1cl6U4V1ehdXk&client_id=xuiaowebapp")
@@ -55,6 +56,7 @@ const requestMapping = {
        }
     },
     post:{
+        ...stafDetailsMapping.post,
      '/api/reinviteUser': (req,res) => {
             res.send({ "userIdentifier": "97ecc487-cdeb-42a8-b794-84840a44f58c", "idamStatus": null });
      } 
