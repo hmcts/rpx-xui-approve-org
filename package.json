@@ -204,7 +204,8 @@
   },
   "lint-staged": {
     "*": [
-      "yarn lint:ng",
+      "prettier --write",
+      "eslint --fix --format table -c .eslintrc.js src",
       "git add"
     ]
   }
