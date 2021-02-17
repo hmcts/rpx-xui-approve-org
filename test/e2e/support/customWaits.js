@@ -4,15 +4,15 @@ const CucumberReporter = require('./CucumberReporter');
 class BrowserWaits {
 
     constructor() {
-        this.waitTime = 40000;
+        this.waitTime = 50000;
         this.pageErrors = $$(".error-summary");
     }
 
     async waitForElement(waitelement,customWaitInSec) {
         let waitTime = customWaitInSec ? customWaitInSec * 1000 : this.waitTime;
-        CucumberReporter.AddMessage("Before starting wait for element " + waitTime / 1000 + " : " + waitelement.locator().toString()); 
+        CucumberReporter.AddMessage("Before starting wait for element " + waitTime / 1000 + " : " + waitelement.locator().toString());
         await browser.wait(EC.visibilityOf(waitelement), waitTime , "Error : " + waitelement.locator().toString());
-        CucumberReporter.AddMessage("wait done for sec" + waitTime / 1000); 
+        CucumberReporter.AddMessage("wait done for sec" + waitTime / 1000);
 
     }
 
@@ -54,14 +54,14 @@ class BrowserWaits {
 
     async waitForBrowserReadyState(waitInSec){
         let resolvedWaitTime = waitInSec ? waitInSec * 1000 : this.waitTime;
- 
+
         CucumberReporter.AddMessage("Started step");
         await this.waitForCondition(async () => {
             let browserState = await browser.executeScript('return document.readyState;');
             CucumberReporter.AddMessage('browser readyState value  "' + browserState+'"');
             return browserState === 'complete';
-        }, resolvedWaitTime); 
-    } 
+        }, resolvedWaitTime);
+    }
 
 
     async waitForSelector(selector) {
@@ -129,4 +129,4 @@ class BrowserWaits {
 
 }
 
-module.exports = new BrowserWaits(); 
+module.exports = new BrowserWaits();
