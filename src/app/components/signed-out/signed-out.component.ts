@@ -14,8 +14,4 @@ export class SignedOutComponent {
   public crazyFunctionShouldBeLintedAndHaveAReturnType() {
     console.log('kuda');
   }
-
-  public anotherTestFunction() {
-    console.log('kuda');
-  }
 }
