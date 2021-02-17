@@ -33,6 +33,27 @@ function HeaderPage() {
     return tabs;
   }
 
+  this.getTabElement = async function(tabDisplayLabel){
+    await browserWaits.waitForElement(this.primaryNavListContainer);
+    let tabsCount = await this.primaryNavItems.count();
+    // return await this.primaryNavItems.getText();
+    let returnTabElement = null;
+    for (let tabCounter = 0; tabCounter < tabsCount; tabCounter++) {
+      let tabLabel = await this.primaryNavItems.get(tabCounter).getText();
+      if (tabLabel === tabDisplayLabel){
+        returnTabElement = await this.primaryNavItems.get(tabCounter);
+        break; 
+      }
+    }
+    return returnTabElement;
+  }
+
+  this.clickTab = async function(tabLabel){
+    let tabElement = await this.getTabElement(tabLabel);
+    expect(tabElement, `Tab with label "${tabLabel}" is not present`).to.be.not.null;
+    await tabElement.click();
+  }
+
   this.isTabDisplayed = async function(tabName){
     const tabs = await this.getTabsDisplayed();
     return tabs.includes(tabName); 

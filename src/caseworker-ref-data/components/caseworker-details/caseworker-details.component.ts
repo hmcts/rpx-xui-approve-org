@@ -23,7 +23,7 @@ export class CaseWorkerDetailsComponent {
       this.errorDesc = 'You need to select a file to upload. Please try again.';
       return;
     }
-    formData.append('excel', inputElement.files.item(0));
+    formData.append('file', inputElement.files.item(0));
     this.caseWorkerRefDataService.postFile(formData).subscribe((response: CaseWorkerRefDataUploadResponse) => {
       if (response.error_details && response.error_details.length > 0) {
         this.router.navigate(['/caseworker-details/partial-success'], { state: response });
@@ -47,7 +47,7 @@ export class CaseWorkerDetailsComponent {
 
     // if the error is a 400 then use the error description as the display message
     if (handledStatus === 400) {
-      this.errorDesc = errorResponse.error.error_description;
+      this.errorDesc = errorResponse.error.errorDescription;
     }
   }
 }
