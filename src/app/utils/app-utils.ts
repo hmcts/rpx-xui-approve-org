@@ -9,7 +9,6 @@ import { GlobalError } from '../store/reducers/app.reducer';
  *
  */
 export class AppUtils {
-
   public static setPageTitle(url): string {
     /**
      * it sets correct page titles
@@ -18,10 +17,10 @@ export class AppUtils {
       case '/pending-organisations/organisation/': {
         return 'Pending organisation details - Approve organisation';
       }
-      case '/pending-organisations/approve' : {
+      case '/pending-organisations/approve': {
         return 'Check details - Approve organisations';
       }
-      case '/pending-organisations/approve-success' : {
+      case '/pending-organisations/approve-success': {
         return 'Confirmation - Approve organisations';
       }
       case '/pending-organisations': {
@@ -37,7 +36,6 @@ export class AppUtils {
     }
     // default return
     return 'Active organisations - Approve organisations';
-
   }
 
   public static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
@@ -76,13 +74,15 @@ export class AppUtils {
       const organisation: Organisation = {
         organisationIdentifier: org.organisationId,
         sraId: org.sraId,
-        contactInformation: [{
-          addressLine1: org.addressLine1,
-          addressLine2: org.addressLine2,
-          townCity: org.townCity,
-          county: org.county,
-          dxAddress: org.dxNumber
-          }],
+        contactInformation: [
+          {
+            addressLine1: org.addressLine1,
+            addressLine2: org.addressLine2,
+            townCity: org.townCity,
+            county: org.county,
+            dxAddress: org.dxNumber
+          }
+        ],
         superUser: {
           userIdentifier: org.admin,
           firstName: org.admin,
@@ -127,18 +127,19 @@ export class AppUtils {
     return users;
   }
 
-
   public static get500Error(orgId: string): GlobalError {
-    const errorMessages = [{
-      bodyText: 'Try again later.',
-      urlText: null,
-      url: null
-    },
-    {
-      bodyText: null,
-      urlText: 'Go back to manage users',
-      url: `/organisation-details/${orgId}`
-    }];
+    const errorMessages = [
+      {
+        bodyText: 'Try again later.',
+        urlText: null,
+        url: null
+      },
+      {
+        bodyText: null,
+        urlText: 'Go back to manage users',
+        url: `/organisation-details/${orgId}`
+      }
+    ];
 
     const globalError = {
       header: 'Sorry, there is a problem with the service',
@@ -161,16 +162,18 @@ export class AppUtils {
   }
 
   public static get404Error(orgId: string): GlobalError {
-    const errorMessages = [{
-      bodyText: 'Contact Support teams to reactivate this account',
-      urlText: null,
-      url: null
-    },
-    {
-      bodyText: null,
-      urlText: 'Go back to manage users',
-      url: `/organisation-details/${orgId}`
-    }];
+    const errorMessages = [
+      {
+        bodyText: 'Contact Support teams to reactivate this account',
+        urlText: null,
+        url: null
+      },
+      {
+        bodyText: null,
+        urlText: 'Go back to manage users',
+        url: `/organisation-details/${orgId}`
+      }
+    ];
 
     const globalError = {
       header: 'Sorry, there is a problem with this account',
@@ -182,13 +185,13 @@ export class AppUtils {
   // Util method to return Navitems
   // based on user's role
   public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
-    let roleNavItems: NavItem [] = new Array<NavItem>();
-    userRoles.forEach(role => {
+    let roleNavItems: NavItem[] = new Array<NavItem>();
+    userRoles.forEach((role: string) => {
       if (roleBasedNav.hasOwnProperty(role)) {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
       }
     });
-    return roleNavItems.sort((a, b) => (a.orderId > b.orderId) ? 1 : (a.orderId < b.orderId) ? -1 : 0)
+    return roleNavItems.sort((a, b) => (a.orderId > b.orderId ? 1 : a.orderId < b.orderId ? -1 : 0));
   }
 
   // Helper method to take the roles
@@ -200,11 +203,15 @@ export class AppUtils {
       // we get the roles in this format before decoding 'j%3A%5B%22prd-admin%22%5D'
       // after deconding we get it in format 'j:["prd-admin"]'
       if (roles.length === 2) {
-         const returnVal = JSON.parse(roles[1]);
-         return returnVal;
+        const returnVal = JSON.parse(roles[1]);
+        return returnVal;
       }
     }
     return [];
   }
+}
 
+export interface Action<Payload> {
+  type: string;
+  payload?: Payload;
 }
