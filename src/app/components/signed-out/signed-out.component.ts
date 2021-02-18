@@ -10,12 +10,4 @@ import { Component } from '@angular/core';
 })
 export class SignedOutComponent {
   public redirectUrl = './';
-
-  public crazyFunctionShouldBeLintedAndHaveAReturnType() {
-    console.log('kuda');
-  }
-
-  public anotherTestFunction() {
-    console.log('kuda');
-  }
 }

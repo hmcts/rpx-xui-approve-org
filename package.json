@@ -25,7 +25,7 @@
     "test:a11y": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/protractor.conf.js",
     "lint": "yarn lint:ng && lint:node",
     "lint:node": "cd api && yarn lint",
-    "lint:ng": "eslint  --format table -c .eslintrc.js src",
+    "lint:ng": "eslint --format table src",
     "e2e": "ng e2e",
     "json-server": "json-server db.json --port 1400",
     "pre-push": "yarn lint && yarn build:prod && ng test organisation-manager --code-coverage",
@@ -155,7 +155,6 @@
     "cucumber-pretty": "1.5.0",
     "dotenv-extended": "^2.7.1",
     "eslint": "^7.20.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.3.1",
@@ -200,14 +199,14 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm run test:ng"
+      "pre-push": "yarn test:ng"
     }
   },
   "lint-staged": {
     "*": [
       "prettier --write",
       "eslint --fix --format table -c .eslintrc.js src",
-      "git add"
+      "cd api && npx eslint --fix --format table -c .eslintrc.js ."
     ]
   }
 }
