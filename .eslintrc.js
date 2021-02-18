@@ -12,7 +12,7 @@ module.exports = {
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint', 'prettier'],
 	rules: {
-		'prettier/prettier': 'error',
+		'prettier/prettier': 'warn',
 
 		'lines-between-class-members': 'off',
 		'no-useless-constructor': 'off',
