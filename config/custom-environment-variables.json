@@ -78,6 +78,7 @@
   "pact": {
     "brokerUrl": "PACT_BROKER_URL",
     "consumerVersion": "PACT_CONSUMER_VERSION",
+    "branchName": "PACT_BRANCH_NAME",
     "brokerUsername": "PACT_BROKER_USERNAME",
     "brokerPassword": "PACT_BROKER_PASSWORD"
   }
