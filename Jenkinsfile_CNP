@@ -13,8 +13,6 @@ properties([
 
 @Library("Infrastructure")
 
-// Disable pact testing on pipeline
-//
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
 import uk.gov.hmcts.contino.Environment
@@ -54,7 +52,6 @@ withPipeline(type, product, component) {
     enableAksStagingDeployment()
     disableLegacyDeployment()
 
-// Disable pact testing on pipeline
 
     enablePactAs([
       AppPipelineDsl.PactRoles.CONSUMER
@@ -226,6 +223,13 @@ withPipeline(type, product, component) {
             reportDir            : "reports/tests/ngIntegration/",
             reportFiles          : 'index.html',
             reportName           : 'AAt NG Integration Test'
+        ])
+    }
+
+    onMaster() {
+        env.PACT_BRANCH_NAME = 'master'
+        enablePactAs([
+                AppPipelineDsl.PactRoles.CONSUMER
         ])
     }
 }
