@@ -13,7 +13,7 @@ export class UsersService {
 		return this.http.get<any>(this.orgUsersUrl + payload);
 	}
 
-	public inviteUser(orgId: string, data: string): Observable<any> {
+	public inviteUser(orgId: string, data): Observable<any> {
 		return this.http.post<any>(this.reinviteUserUrl + orgId, data);
 	}
 }

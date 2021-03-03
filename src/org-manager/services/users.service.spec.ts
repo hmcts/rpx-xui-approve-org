@@ -17,7 +17,7 @@ describe('Accept terms And Conditions Service', () => {
 	it('should inviteUser', () => {
 		const mockHttpClient = jasmine.createSpyObj('mockHttpClient', ['get', 'post']);
 		const service = new UsersService(mockHttpClient);
-		service.inviteUser('dummy', '');
+		service.inviteUser('dummy', {});
 		expect(mockHttpClient.post).toHaveBeenCalledWith(service.reinviteUserUrl + 'dummy', {});
 	});
 });
