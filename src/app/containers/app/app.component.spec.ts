@@ -12,6 +12,7 @@ import { HeaderComponent } from '../header/header.component';
 import { AppComponent } from './app.component';
 
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const windowMock: Window = { gtag: () => {}} as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);

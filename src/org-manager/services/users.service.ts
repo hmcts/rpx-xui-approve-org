@@ -5,18 +5,15 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class UsersService {
+	public orgUsersUrl: string = environment.organisationUsersUrl;
+	public reinviteUserUrl: string = environment.reinviteUserUrl;
+	constructor(private readonly http: HttpClient) {}
 
-  public orgUsersUrl = environment.organisationUsersUrl;
-  public reinviteUserUrl = environment.reinviteUserUrl;
-  constructor(private readonly http: HttpClient) {
-  }
+	public getOrganisationUsers(payload: string): Observable<any> {
+		return this.http.get<any>(this.orgUsersUrl + payload);
+	}
 
-  public getOrganisationUsers(payload): Observable<any> {
-    return this.http.get<any>(this.orgUsersUrl + payload);
-  }
-
-  public inviteUser(orgId, data): Observable<any> {
-    return this.http.post<any>(this.reinviteUserUrl + orgId, data);
-  }
-
+	public inviteUser(orgId: string, data: string): Observable<any> {
+		return this.http.post<any>(this.reinviteUserUrl + orgId, data);
+	}
 }

@@ -15,14 +15,12 @@ export class OrganisationDetailsInfoComponent {
   @Output() public approveEvent: EventEmitter<OrganisationVM> = new EventEmitter();
   @Output() public deleteEvent: EventEmitter<OrganisationVM> = new EventEmitter();
 
-  constructor() {}
-
   /**
    * Approve Organisation
    *
    * Send an event to the parent to approve the organisation.
    */
-  public approveOrganisation(data: OrganisationVM) {
+  public approveOrganisation(data: OrganisationVM): void {
     if (data) {
       this.approveEvent.emit(data);
     }
@@ -33,7 +31,7 @@ export class OrganisationDetailsInfoComponent {
    *
    * Send an event to the parent to delete the organisation.
    */
-  public deleteOrganisation(data: OrganisationVM) {
+  public deleteOrganisation(data: OrganisationVM): void {
     if (data) {
       this.deleteEvent.emit(data);
     }

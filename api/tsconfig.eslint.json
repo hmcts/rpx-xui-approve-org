@@ -1,10 +1,33 @@
 {
   "extends": "./tsconfig.json",
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "*.js",
+    "yarn.lock"
   ],
   "include": [
-    "*",
+    "auth",
+    "caseWorkerDetailsRouter",
+    "configuration",
+    "customTypings",
+    "environment",
+    "healthCheck",
+    "interfaces",
+    "lib",
+    "monitoring-tools",
+    "organisation",
+    "pbaAccounts",
+    "reinviteUser",
+    "services",
+    "states",
+    "test",
+    "updatePba",
+    "user",
+    "application.ts",
+    "health.ts",
+    "local.ts",
+    "routes.ts",
+    "server.ts",
     "../.eslintrc.js",
     // these are the eslint-only inclusions
     "./.eslintrc.js"
