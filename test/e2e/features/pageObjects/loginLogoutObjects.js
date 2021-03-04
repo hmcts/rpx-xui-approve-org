@@ -2,6 +2,8 @@
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
+const CucumberReporter = require('../../support/CucumberReporter');
+
 
 function loginLogoutObjects() {
 
@@ -13,6 +15,9 @@ function loginLogoutObjects() {
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
   this.dashboard_header= element(by.xpath("//a[@class='hmcts-header__link']"));
 
+  this.incorrectCredentialsErrorHeader = element(by.xpath('//h2[@id = "validation-error-summary-heading"][contains(text(),"Incorrect email or password")]'));
+
+
   this.isLoginPageDisplayed = async function(){
     try{
       await BrowserWaits.waitForElement(this.emailAddress);
@@ -23,12 +28,18 @@ function loginLogoutObjects() {
     }
   }
 
+  this.isLoginCredentialsErrorDisplayed = async function () {
+    return await this.incorrectCredentialsErrorHeader.isPresent();
+  }
+
+
   this.getEmailFieldValue = async function(){
     return await this.emailAddress.getAttribute('value');
   }
 
   this.loginWithCredentials = async function (username,password) {
     await BrowserWaits.waitForElement(this.emailAddress);
+    CucumberReporter.AddMessage("IDAM REDIRECT URL: " + await browser.getCurrentUrl());
     await this.enterUrEmail(username);
     await this.enterPassword(password);
     await this.clickSignIn();

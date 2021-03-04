@@ -20,7 +20,7 @@ async function loginattemptCheckAndRelogin(username,password,world){
 
   let loginAttemptRetryCounter = 1;
 
-  while(loginAttemptRetryCounter < 3){
+  while(loginAttemptRetryCounter < 10){
 
     try{
         await browserWaits.waitForstalenessOf(loginPage.emailAddress,5);
@@ -28,6 +28,8 @@ async function loginattemptCheckAndRelogin(username,password,world){
       }catch(err){
         let emailFieldValue = await loginPage.getEmailFieldValue();
         if (!emailFieldValue.includes(username)){
+          world.attach(" is invalid credentials error displayed?  " + await loginPage.isLoginCredentialsErrorDisplayed());
+
           if(loginAttemptRetryCounter === 1){
             firstAttemptFailedLogins++;
           }
