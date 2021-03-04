@@ -4,6 +4,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as csurf from 'csurf'
 import * as express from 'express'
+import * as session from 'express-session'
 import * as helmet from 'helmet'
 import { attach } from './auth'
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration'
@@ -48,7 +49,7 @@ export const app = express()
 
 export const logger = log4jui.getLogger('server')
 
-export const csrfProtection = csurf()
+export const csrfProtection = csurf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true, sameSite: 'strict' } })
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -102,6 +103,76 @@ console.log(showFeature(FEATURE_HELMET_ENABLED))
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   console.log('Helmet enabled')
   app.use(helmet(getConfigValue(HELMET)))
+  app.use(helmet.noSniff())
+  app.use(helmet.frameguard({ action: 'deny' }))
+  app.use(helmet.referrerPolicy({ policy: ['origin'] }))
+  app.use(helmet.hidePoweredBy())
+  app.use(helmet.hsts({ maxAge: 28800000 }))
+  app.use(helmet.xssFilter())
+  app.use((req, res, next) => {
+    res.setHeader('X-Robots-Tag', 'noindex')
+    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate')
+    next()
+  })
+  app.get('/robots.txt', (req, res) => {
+    res.type('text/plain')
+    res.send('User-agent: *\nDisallow: /')
+  })
+  app.get('/sitemap.xml', (req, res) => {
+    res.type('text/xml')
+    res.send('User-agent: *\nDisallow: /')
+  })
+  app.disable('x-powered-by')
+  app.disable('X-Powered-By')
+  app.use(session({
+    cookie: {
+      httpOnly: true,
+      maxAge: 28800000,
+      sameSite: 'strict',
+      secure: true,
+    },
+    secret: getConfigValue(SESSION_SECRET),
+  }))
+  app.use(helmet.contentSecurityPolicy({
+    directives: {
+      connectSrc: [
+        '\'self\'',
+        '*.gov.uk',
+        'dc.services.visualstudio.com',
+        '*.launchdarkly.com',
+        'www.google-analytics.com',
+      ],
+      defaultSrc: [`'self'`],
+      fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
+      formAction: [`'none'`],
+      frameAncestors: [`'self'`],
+      frameSrc: [`'self'`],
+      imgSrc: [
+        '\'self\'',
+        'data:',
+        'https://www.google-analytics.com',
+        'https://www.googletagmanager.com',
+        'https://raw.githubusercontent.com/hmcts/',
+        'http://stats.g.doubleclick.net/',
+        'http://ssl.gstatic.com/',
+        'http://www.gstatic.com/',
+        'https://fonts.gstatic.com',
+      ],
+      mediaSrc: ['\'self\''],
+      scriptSrc: [
+        '\'self\'',
+        'www.google-analytics.com',
+        'www.googletagmanager.com',
+        'az416426.vo.msecnd.net',
+      ],
+      styleSrc: [
+        '\'self\'',
+        'https://fonts.googleapis.com',
+        'https://fonts.gstatic.com',
+        'http://tagmanager.google.com/',
+      ],
+    },
+  }))
 }
 
 console.log('OIDC enabled:')
@@ -149,6 +220,7 @@ const baseStoreOptions = {
   cookie: {
     httpOnly: true,
     maxAge: 1800000,
+    sameSite: 'strict',
     secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
   },
   name: 'ao-webapp',
