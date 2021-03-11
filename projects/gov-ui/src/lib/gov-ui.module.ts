@@ -33,8 +33,8 @@ const COMPONENTS = [
 @NgModule({
   imports: [
     FormsModule,
-    ReactiveFormsModule,
     CommonModule,
+    ReactiveFormsModule,
     RouterModule
   ],
   declarations: [...COMPONENTS],

@@ -92,6 +92,7 @@ export const apiErrors = {
 };
 
 const featureNames = {
+  // note this is the only place where caseworker referred to as case-worker (due to feature settings)
   caseworkerDetails: 'ao-case-worker-details'
 };
 
@@ -106,7 +107,7 @@ export const navItemsArray = [{
   orderId: 0
 },
 {
-  text: 'Caseworker details',
+  text: 'Staff details',
   href: '/caseworker-details',
   active: false,
   feature: {

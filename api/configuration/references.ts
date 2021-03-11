@@ -33,6 +33,7 @@ export const SERVICES_IDAM_WEB = 'services.idamWeb'
 export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi'
 export const SERVICES_FEE_AND_PAY_PATH = 'services.feeAndPayApi'
 export const SERVICE_S2S_PATH = 'services.s2s'
+export const SERVICE_CASE_WORKER_PATH = 'services.caseworkerApi'
 
 export const SESSION_SECRET = 'sessionSecret'
 
@@ -62,6 +63,8 @@ export const USER_TIMEOUT_IN_SECONDS = 'userTimeoutInSeconds'
 
 // PACT
 export const PACT_BROKER_URL = 'pact.brokerUrl'
+export const PACT_BRANCH_NAME = 'pact.branchName'
 export const PACT_CONSUMER_VERSION = 'pact.consumerVersion'
 export const PACT_BROKER_USERNAME = 'pact.brokerUsername'
 export const PACT_BROKER_PASSWORD = 'pact.brokerPassword'
+

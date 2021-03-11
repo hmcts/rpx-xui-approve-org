@@ -9,6 +9,7 @@ import reinviteUserRouter from './reinviteUser'
 import stateRouter from './states'
 import pbaRouter from './updatePba'
 import userDetailsRouter from './user'
+import caseWorkerDetailsRouter from './caseWorkerDetailsRouter'
 
 const router = express.Router({ mergeParams: true })
 // open routes
@@ -22,6 +23,7 @@ router.use('/organisations', organisationRouter)
 router.use('/updatePba', pbaRouter)
 router.use('/pbaAccounts', pbaAccounts)
 router.use('/monitoring-tools', getappInsightsInstrumentationKey)
-router.use('/reinviteUser', reinviteUserRouter )
+router.use('/reinviteUser', reinviteUserRouter)
+router.use('/caseworkerdetails', caseWorkerDetailsRouter)
 
 export default router

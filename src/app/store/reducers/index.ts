@@ -23,7 +23,7 @@ export interface NavItem {
     featureName: string;
   },
   orderId: number
-}
+};
 
 export interface UserRoleNav {
   [key: string]: NavItem

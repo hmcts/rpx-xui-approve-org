@@ -104,12 +104,19 @@ defineSupportCode(({ Before,After }) => {
 
     After(async function (scenario) {
         const world = this;
-        if (scenario.result.status === 'failed') {
-            await prinrBrowserLogs();
-            const stream = await browser.takeScreenshot();
-            const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-            world.attach(decodedImage, 'image/png'); 
-        } 
+        try{
+            if (scenario.result.status === 'failed') {
+                await prinrBrowserLogs();
+                const stream = await browser.takeScreenshot();
+                const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+                world.attach(decodedImage, 'image/png');
+            } else {
+                await clearBrowserLogs();
+            }
+        }catch(err){
+            CucumberReportLog.AddMessage("Error in after hooks. see err details : "+err);
+        }
+       
         await Promise.all(getCookieCleanupPromises());
 
     });
@@ -125,6 +132,12 @@ async function prinrBrowserLogs(){
     }
     CucumberReportLog.AddJson(browserErrorLogs); 
 }
+
+async function clearBrowserLogs() {
+    let browserLog = await browser.manage().logs().get('browser');
+   ;
+}
+
 
 function getCookieCleanupPromises(){
 
