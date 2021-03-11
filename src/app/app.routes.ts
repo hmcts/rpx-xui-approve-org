@@ -1,10 +1,12 @@
-import { Routes } from '@angular/router';
-import { AuthGuard } from 'src/services/auth/auth.guard';
 import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent } from './components';
+import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
+
+import { AuthGuard } from 'src/services/auth/auth.guard';
+import { NotAuthorisedComponent } from './components/not-authorised/not-authorised.component';
+import { RedirectComponent } from './containers';
+import { Routes } from '@angular/router';
 import {ServiceDownComponent} from './components/service-down/service-down.component';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
-import { RoleGuard } from '@hmcts/rpx-xui-common-lib';
-import { RedirectComponent } from './containers';
 
 export const ROUTES: Routes = [
   {
@@ -12,6 +14,12 @@ export const ROUTES: Routes = [
     component: RedirectComponent,
     canActivate: [AuthGuard],
     pathMatch: 'full',
+  },
+  {
+    path: 'caseworker-details',
+    canActivate: [AuthGuard, RoleGuard],
+    loadChildren: '../caseworker-ref-data/caseworker-ref-data.module#CaseWorkerRefDataModule',
+    data: {needsRole: ['cwd-admin'], roleMatching: RoleMatching.ALL }
   },
   {
     canActivate: [AuthGuard],
@@ -22,7 +30,7 @@ export const ROUTES: Routes = [
     path: 'organisation',
     canActivate: [AuthGuard, RoleGuard],
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule',
-    data: ['prd-admin']
+    data: {needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
   },
   {
     path: 'cookies',
@@ -43,6 +51,10 @@ export const ROUTES: Routes = [
   {
     path: 'service-down',
     component: ServiceDownComponent
+  },
+   {
+    path: 'not-authorised',
+    component: NotAuthorisedComponent
   },
   {
     path: 'signed-out',
