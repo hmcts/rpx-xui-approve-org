@@ -4,7 +4,7 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as csurf from 'csurf'
 import * as express from 'express'
-import * as session from 'express-session'
+// import * as session from 'express-session'
 import * as helmet from 'helmet'
 import { attach } from './auth'
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration'
@@ -124,15 +124,15 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   })
   app.disable('x-powered-by')
   app.disable('X-Powered-By')
-  app.use(session({
-    cookie: {
-      httpOnly: true,
-      maxAge: 28800000,
-      sameSite: 'strict',
-      secure: true,
-    },
-    secret: getConfigValue(SESSION_SECRET),
-  }))
+  // app.use(session({
+  //   cookie: {
+  //     httpOnly: true,
+  //     maxAge: 28800000,
+  //     sameSite: 'strict',
+  //     secure: true,
+  //   },
+  //   secret: getConfigValue(SESSION_SECRET),
+  // }))
   app.use(helmet.contentSecurityPolicy({
     directives: {
       connectSrc: [
