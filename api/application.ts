@@ -4,7 +4,6 @@ import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
 import * as csurf from 'csurf'
 import * as express from 'express'
-// import * as session from 'express-session'
 import * as helmet from 'helmet'
 import { attach } from './auth'
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration'
@@ -49,7 +48,7 @@ export const app = express()
 
 export const logger = log4jui.getLogger('server')
 
-export const csrfProtection = csurf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true, sameSite: 'strict' } })
+export const csrfProtection = csurf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true } })
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -109,30 +108,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
   app.use(helmet.hidePoweredBy())
   app.use(helmet.hsts({ maxAge: 28800000 }))
   app.use(helmet.xssFilter())
-  app.use((req, res, next) => {
-    res.setHeader('X-Robots-Tag', 'noindex')
-    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate')
-    next()
-  })
-  app.get('/robots.txt', (req, res) => {
-    res.type('text/plain')
-    res.send('User-agent: *\nDisallow: /')
-  })
-  app.get('/sitemap.xml', (req, res) => {
-    res.type('text/xml')
-    res.send('User-agent: *\nDisallow: /')
-  })
-  app.disable('x-powered-by')
-  app.disable('X-Powered-By')
-  // app.use(session({
-  //   cookie: {
-  //     httpOnly: true,
-  //     maxAge: 28800000,
-  //     sameSite: 'strict',
-  //     secure: true,
-  //   },
-  //   secret: getConfigValue(SESSION_SECRET),
-  // }))
   app.use(helmet.contentSecurityPolicy({
     directives: {
       connectSrc: [
@@ -176,6 +151,21 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
       ],
     },
   }))
+  app.use((req, res, next) => {
+    res.setHeader('X-Robots-Tag', 'noindex')
+    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate')
+    next()
+  })
+  app.get('/robots.txt', (req, res) => {
+    res.type('text/plain')
+    res.send('User-agent: *\nDisallow: /')
+  })
+  app.get('/sitemap.xml', (req, res) => {
+    res.type('text/xml')
+    res.send('User-agent: *\nDisallow: /')
+  })
+  app.disable('x-powered-by')
+  app.disable('X-Powered-By')
 }
 
 console.log('OIDC enabled:')
@@ -223,7 +213,6 @@ const baseStoreOptions = {
   cookie: {
     httpOnly: true,
     maxAge: 1800000,
-    sameSite: 'strict',
     secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
   },
   name: 'ao-webapp',
