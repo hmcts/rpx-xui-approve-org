@@ -48,7 +48,7 @@ export const app = express()
 
 export const logger = log4jui.getLogger('server')
 
-export const csrfProtection = csurf({ cookie: { key: 'XSRF-TOKEN', httpOnly: true, secure: true } })
+export const csrfProtection = csurf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true } })
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
