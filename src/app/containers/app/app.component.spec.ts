@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { async, fakeAsync, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ManageSessionServices, windowToken } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
@@ -175,6 +175,17 @@ describe('AppComponent', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith(new Logout());
 
+  }));
+
+  it('should call the onFocusMainContent method', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    spyOn(fixture.componentInstance, 'onFocusMainContent');
+  
+    let skipLinkElement = fixture.debugElement.nativeElement.querySelector('#skip-link');
+    skipLinkElement.click();
+    fixture.detectChanges();
+    expect(app.onFocusMainContent).toHaveBeenCalled();  
   }));
 
 });
