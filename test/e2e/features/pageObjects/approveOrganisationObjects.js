@@ -18,20 +18,20 @@ function approveOrganisationBannerObjects() {
   this.checkNow= element(by.partialLinkText("Check no"));
   this.activeOrganisationPageHeading = element(by.xpath("//h1[contains(@class,'hmcts-page-heading__title') and contains(text(),'Active organisations')]"));
 
-  this.selectCheckBox= element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[1]/div"));
+  this.selectCheckBox= element(by.xpath("//*[@id='content']/form/table/thead/tr[2]/td[1]/div"));
   this.activate_button= element(by.xpath("//button[@class='govuk-button']"));
   this.approve_button= element(by.xpath("//button[@class='govuk-button']"));
   this.confirmationScreen= element(by.xpath("//div[@class='govuk-panel govuk-panel--confirmation']"));
   this.backtoOrganisations= element(by.partialLinkText("Back to organisatio"));
   this.mainHeader = element(by.xpath("//h1[contains(@class,'govuk-heading-xl')]"));
 
-  this.orgName=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[2]]"));
-  this.administratorText=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[4]"));
-  this.addressText=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[3]"));
+  this.orgName=element(by.xpath("//*[@id='content']/form/table/thead/tr[2]/td[2]]"));
+  this.administratorText=element(by.xpath("//*[@id='content']/form/table/thead/tr[2]/td[4]"));
+  this.addressText=element(by.xpath("//*[@id='content']/form/table/thead/tr[2]/td[3]"));
 
   this.approveOrgName= element(by.xpath("//h2[@class='govuk-heading-m']"));
-  this.approveAdministratorText= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[2]/dd/div[2]"));
-  this.approveAddress= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[1]/dd"));
+  this.approveAdministratorText= element(by.xpath("//*[@id='content']/div/div/div/dl/div[2]/dd/div[2]"));
+  this.approveAddress= element(by.xpath("//*[@id='content']/div/div/div/dl/div[1]/dd"));
 
 
 //*[@id="main-content"]/form/table/thead/tr[2]/td[1]/div
