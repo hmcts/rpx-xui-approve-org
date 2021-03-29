@@ -181,7 +181,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     spyOn(fixture.componentInstance, 'onFocusMainContent');
-  
+
     let skipLinkElement = fixture.debugElement.nativeElement.querySelector('#skip-link');
     skipLinkElement.click();
     fixture.detectChanges();
@@ -189,6 +189,3 @@ describe('AppComponent', () => {
   }));
 
 });
-
-
-
