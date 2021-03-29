@@ -182,10 +182,10 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
     spyOn(fixture.componentInstance, 'onFocusMainContent');
 
-    let skipLinkElement = fixture.debugElement.nativeElement.querySelector('#skip-link');
+    const skipLinkElement = fixture.debugElement.nativeElement.querySelector('#skip-link');
     skipLinkElement.click();
     fixture.detectChanges();
-    expect(app.onFocusMainContent).toHaveBeenCalled();  
+    expect(app.onFocusMainContent).toHaveBeenCalled();
   }));
 
 });
