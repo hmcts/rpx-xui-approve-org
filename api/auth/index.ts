@@ -1,13 +1,15 @@
 import { AUTH, xuiNode } from '@hmcts/rpx-xui-node-lib'
 import * as express from 'express'
 import { NextFunction, Request, Response } from 'express'
+import { EnhancedRequest } from '../lib/models'
 import {getConfigValue} from '../configuration'
 import {COOKIE_ROLES} from '../configuration/references'
 import { http } from '../lib/http'
 
+
 //TODO: once both todo's below are complete, we can remove this file
 
-const successCallback = (req: Request, res: Response, next: NextFunction) => {
+const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { roles } = req.session.passport.user.userinfo
 
   //TODO: remove dependency on the roles cookie, can then remove this event handler entirely
