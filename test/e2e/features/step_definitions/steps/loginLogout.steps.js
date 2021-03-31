@@ -145,6 +145,13 @@ defineSupportCode(function ({ Given, When, Then }) {
     await loginattemptCheckAndRelogin(this.config.username,this.config.password,this);
   });
 
+  Given(/^I am logged into approve organisation with CWD admin$/, async function () {
+    await loginPage.loginWithCredentials(this.config.cwdAdmin, this.config.cwdAdmPass);
+    browser.sleep(SHORT_DELAY);
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(this.config.cwdAdmin, this.config.cwdAdmPass, this);
+  });
+
   Given(/^I am logged into approve organisation with approver prd admin$/, async function () {
     await loginPage.loginWithCredentials(config.config.params.approver_username, config.config.params.approver_password);
     browser.sleep(LONG_DELAY);

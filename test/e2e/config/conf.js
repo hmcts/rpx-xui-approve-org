@@ -65,6 +65,8 @@ const config = {
     password: 'Monday01',
     approver_username: 'vamshiadminuser@mailnesia.com',
     approver_password: 'Testing123',
+    cwdAdmin: "cwd_admin@mailinator.com",
+    cwdAdmPass: "Welcome01",
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,

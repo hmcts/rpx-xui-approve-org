@@ -4,7 +4,7 @@ Feature: Staff details upload
 
     Background:
         When I navigate to EUI Approve Organisation Url
-        Given I am logged into approve organisation with HMCTS admin
+        Given I am logged into approve organisation with CWD admin
         Then I should be redirected to approve organisation dashboard page
         When I click navigation tab Staff details
 
