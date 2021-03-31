@@ -93,9 +93,9 @@ export async function xxsrftoken()  {
 
 function getPuppeteerLaunchOptions(url) {
   const puppeteerOption = { ignoreHTTPSErrors: true, headless: true, args: [] };
-  if (!url.includes('administer-org.')) {
-    puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
-  }
+  // if (!url.includes('administer-org.')) {
+  //   puppeteerOption.args.push('--proxy-server=http://proxyout.reform.hmcts.net:8080');
+  // }
 
   return puppeteerOption;
 }
