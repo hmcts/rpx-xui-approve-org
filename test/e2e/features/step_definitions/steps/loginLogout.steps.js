@@ -146,10 +146,11 @@ defineSupportCode(function ({ Given, When, Then }) {
   });
 
   Given(/^I am logged into approve organisation with CWD admin$/, async function () {
-    await loginPage.loginWithCredentials(this.config.cwdAdmin, this.config.cwdAdmPass);
+
+    await loginPage.loginWithCredentials('cwd_admin@mailinator.com', 'Welcome01');
     browser.sleep(SHORT_DELAY);
     loginAttempts++;
-    await loginattemptCheckAndRelogin(this.config.cwdAdmin, this.config.cwdAdmPass, this);
+    await loginattemptCheckAndRelogin('cwd_admin@mailinator.com', 'Welcome01', this);
   });
 
   Given(/^I am logged into approve organisation with approver prd admin$/, async function () {
