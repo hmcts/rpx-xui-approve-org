@@ -4,7 +4,7 @@ import { PactTestSetup } from '../settings/provider.mock';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'idamApi_users', port: 8000 });
 
 
 describe("Idam API user details", async () => {
