@@ -17,3 +17,8 @@ nodejs:
         - launch-darkly-client-id
 redis:
   enabled: true
+idam-pr:
+  enabled: true
+  redirect_uris:
+    XUIAO:
+      - https://${SERVICE_FQDN}/oauth2/callback
