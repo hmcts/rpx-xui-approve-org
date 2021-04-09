@@ -74,7 +74,7 @@ up through AKS deployed through Flux to AAT, ITHC and Prod, the application will
 The developer needs to set these up locally, so that the developer can see any issues early in
 the development process, and not when the application is placed up onto the higher AKS environments.
 
-To setup the secrets locally do the following: 
+To setup the secrets locally do the following:  
 
 Note that Mac OS Catalina introduced a new feature that overlaps and reinforces the filesystem,
 therefore you will not be able to make changes in the root directory of your file system, hence there are different
