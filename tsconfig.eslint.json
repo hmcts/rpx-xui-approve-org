@@ -3,7 +3,6 @@
   "exclude": [
     "node_modules",
     "yarn.lock",
-
     "*.js"
   ],
   "include": [

@@ -3,6 +3,7 @@
   "exclude": [
     "node_modules",
     "*.js",
+    "webpack-node.config.js",
     "yarn.lock"
   ],
   "include": [

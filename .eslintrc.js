@@ -17,11 +17,12 @@ module.exports = {
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint', 'prettier'],
 	rules: {
-		'prettier/prettier': 'warn',
+		'prettier/prettier': 'off',
 
 		'lines-between-class-members': 'off',
 		'no-useless-constructor': 'off',
 		'no-restricted-syntax': 'off',
+		'prefer-const': 'off',
 		'import/prefer-default-export': 'off',
 		'implicit-arrow-linebreak': 'off',
 		'object-curly-newline': [

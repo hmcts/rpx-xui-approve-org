@@ -10,7 +10,6 @@ export const SUBMIT_REINVITE_USER_ERROR_CODE_429 = '[Users] Submit Reinvite User
 
 export class ShowUserDetails implements Action {
 	public readonly type = SHOW_USER_DETAILS;
-
 	constructor(public payload) {}
 }
 

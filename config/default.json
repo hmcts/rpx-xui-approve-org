@@ -1,9 +1,15 @@
 {
-  "environment": "production",
+  "environment": "DEFAULT ENVIRONMENT",
+  "stub": false,
+  "appInsightsInstrumentationKey": "",
+  "secrets": {
+    "rpx": {
+      "AppInsightsInstrumentationKey": "AAA"
+    }
+  },
   "cookies": {
     "token": "__auth__",
-    "userId": "__userid__",
-    "roles": "roles"
+    "userId": "__userid__"
   },
   "exceptionOptions": {
     "maxLines": 1
@@ -11,29 +17,33 @@
   "indexUrl": "/",
   "logging": "debug",
   "maxLogLine": 80,
-  "idamClient": "xuiaowebapp",
+  "idamClient": "xuimowebapp",
   "microservice": "xui_webapp",
   "now": false,
   "oauthCallbackUrl": "/oauth2/callback",
+  "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/realms/root/realms/hmcts",
+  "loginRoleMatcher": "^pui-.*-manager$",
   "protocol": "https",
   "services": {
-    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
-    "ccdDefApi": "http://ccd-definition-store-api-prod.service.core-compute-prod.internal",
     "idamApi": "https://idam-api.platform.hmcts.net",
     "idamWeb": "https://hmcts-access.service.gov.uk",
     "rdProfessionalApi": "http://rd-professional-api-prod.service.core-compute-prod.internal",
+    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "feeAndPayApi": "https://payment-api-prod.service.core-compute-prod.internal",
-    "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal"
+    "termsAndConditions": "http://xui-terms-and-conditions-aat.service.core-compute-aat.internal",
+    "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
+    "caseAssignmentApi": "http://aac-manage-case-assignment-prod.service.core-compute-prod.internal"
   },
-  "userTimeoutInSeconds": 28800,
-  "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts",
-  "sessionSecret": "secretSauce",
+  "sessionSecret": ["mo-topSecret1","secretSauce"],
+  "jurisdictions": [ "SSCS", "AUTOTEST1", "DIVORCE", "PROBATE", "PUBLICLAW", "bulkscan", "BULKSCAN","IA", "EMPLOYMENT", "CMC" ],
+  "caseTypes": "MoneyClaimCase,DIVORCE,FinancialRemedyContested,FinancialRemedyMVP2,Asylum,Caveat,GrantOfRepresentation,StandingSearch,WillLodgement,CARE_SUPERVISION_EPO,Benefit",
   "feature": {
     "appInsightsEnabled": true,
     "proxyEnabled": false,
     "secureCookieEnabled": true,
-    "helmetEnabled": false,
-    "redisEnabled": true,
+    "termsAndConditionsEnabled": false,
+    "helmetEnabled": true,
+    "redisEnabled": false,
     "oidcEnabled": false
   },
   "helmet": {
@@ -80,24 +90,32 @@
       "enable": true
     },
     "frameguard": {
-      "action":"deny"
+      "action": "deny"
     },
     "hidePoweredBy": {
       "setTo": "XUI Server 1.0"
     }
   },
   "redis": {
-    "host": "xui-ao-webapp-prod.redis.cache.windows.net",
-    "port": 6380,
-    "tls": true,
     "prefix": "activity:",
     "ttl": 86400
   },
+  "links": {
+    "manageCaseLink": "https://manage-case.platform.hmcts.net/cases",
+    "manageOrgLink": "https://manage-org.platform.hmcts.net"
+  },
+  "sessionTimeouts": [
+    {
+      "idleModalDisplayTime": 10,
+      "pattern": ".",
+      "totalIdleTime": 50
+    }
+  ],
   "pact": {
+    "branchName": "Dev",
     "brokerUrl": "https://pact-broker.platform.hmcts.net",
     "consumerVersion": "",
     "brokerUsername": "",
     "brokerPassword": ""
   }
 }
-

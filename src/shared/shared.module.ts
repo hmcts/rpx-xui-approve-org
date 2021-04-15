@@ -9,14 +9,9 @@ import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
 
 @NgModule({
-  imports: [ReactiveFormsModule, ExuiCommonLibModule.forChild()],
-  exports: [ReactiveFormsModule, IdentityBarComponent, PhaseBannerComponent],
-  declarations: [IdentityBarComponent, PhaseBannerComponent],
-  providers: [
-    HealthCheckGuard,
-    HealthCheckService,
-    LoggerService,
-    DefaultErrorHandler,
-  ],
+	imports: [ReactiveFormsModule, ExuiCommonLibModule.forChild()],
+	exports: [ReactiveFormsModule, IdentityBarComponent, PhaseBannerComponent],
+	declarations: [IdentityBarComponent, PhaseBannerComponent],
+	providers: [HealthCheckGuard, HealthCheckService, LoggerService, DefaultErrorHandler],
 })
 export class SharedModule {}

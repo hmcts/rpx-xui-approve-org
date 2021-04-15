@@ -10,7 +10,7 @@ export interface UsersState {
 	organisationId: string;
 	isFormValid: boolean;
 	errorHeader: string;
-	errorMessages: any;
+	errorMessages: object;
 	reinviteSuccessEmail: string;
 }
 

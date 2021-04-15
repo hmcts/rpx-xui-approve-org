@@ -13,8 +13,6 @@ properties([
 
 @Library("Infrastructure")
 
-// Disable pact testing on pipeline
-//
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
 import uk.gov.hmcts.contino.Environment
@@ -32,6 +30,10 @@ def secrets = [
   'rpx-${env}': [
     secret('test-email', 'TEST_EMAIL'),
     secret('test-password', 'TEST_PASSWORD'),
+    secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
+    secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
+    secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
   ]
 ]
 
@@ -50,7 +52,6 @@ withPipeline(type, product, component) {
     enableAksStagingDeployment()
     disableLegacyDeployment()
 
-// Disable pact testing on pipeline
 
     enablePactAs([
       AppPipelineDsl.PactRoles.CONSUMER
@@ -153,6 +154,16 @@ withPipeline(type, product, component) {
     }
 
     after('functionalTest:preview') {
+
+      publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "reports/tests/api_functional/",
+        reportFiles          : 'mochawesome.html',
+        reportName           : 'PREVIEW API Functional Test'
+      ])
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -184,8 +195,19 @@ withPipeline(type, product, component) {
         ])
     }
 
+
     after('functionalTest:aat') {
-        publishHTML([
+
+      publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "reports/tests/api_functional/",
+        reportFiles          : 'mochawesome.html',
+        reportName           : 'AAT API Functional Test'
+      ])
+
+      publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
@@ -201,6 +223,13 @@ withPipeline(type, product, component) {
             reportDir            : "reports/tests/ngIntegration/",
             reportFiles          : 'index.html',
             reportName           : 'AAt NG Integration Test'
+        ])
+    }
+
+    onMaster() {
+        env.PACT_BRANCH_NAME = 'master'
+        enablePactAs([
+                AppPipelineDsl.PactRoles.CONSUMER
         ])
     }
 }
