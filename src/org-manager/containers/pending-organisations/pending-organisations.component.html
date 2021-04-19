@@ -2,7 +2,7 @@
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <app-notification-banner-component>
       <ng-container *ngIf="(activeOrgsCount$ | async) as activeOrgCount; ">
-        <span>{{activeOrgCount}} organisations are active. <a [routerLink]="['/active-organisation']"> Check now.</a></span>
+        <span>{{activeOrgCount}} organisations are active. <a [routerLink]="['/active-organisation']"> active organisations.</a></span>
       </ng-container>
       <ng-container *ngIf="!(activeLoaded$ | async)">
         <h3 class="govuk-heading-s">Loading active organisations...</h3>
