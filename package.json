@@ -42,6 +42,7 @@
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/**/*.spec.ts",
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error node -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
+    "test:can-i-deploy:consumer": "export VERSION=$(git rev-parse --short HEAD) && SSL_CERT_FILE=test/pact/cer/ca-bundle.crt pact-broker can-i-deploy --pacticipant 'xui_approveorg' --version ${VERSION} --broker-base-url https://pact-broker.platform.hmcts.net",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone"
