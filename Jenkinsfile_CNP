@@ -53,7 +53,7 @@ withPipeline(type, product, component) {
 
 
     enablePactAs([
-      AppPipelineDsl.PactRoles.CONSUMER
+      AppPipelineDsl.PactRoles.CONSUMER,
     ])
 
     after('build') {
@@ -192,13 +192,6 @@ withPipeline(type, product, component) {
             reportDir            : "reports/tests/ngIntegration/",
             reportFiles          : 'index.html',
             reportName           : 'AAt NG Integration Test'
-        ])
-    }
-
-    onMaster() {
-        env.PACT_BRANCH_NAME = 'master'
-        enablePactAs([
-                AppPipelineDsl.PactRoles.CONSUMER
         ])
     }
 }
