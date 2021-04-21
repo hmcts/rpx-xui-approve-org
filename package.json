@@ -94,7 +94,7 @@
     "get-port": "^5.1.1",
     "git-rev-sync": "^2.0.0",
     "global-agent": "^2.1.8",
-    "govuk-frontend": "3.1.0",
+    "govuk-frontend": "3.11.0",
     "helmet": "^3.21.3",
     "isomorphic-fetch": "^3.0.0",
     "json-stringify-safe": "^5.0.1",
