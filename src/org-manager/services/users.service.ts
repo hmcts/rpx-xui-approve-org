@@ -7,6 +7,7 @@ import { environment } from '../../environments/environment';
 export class UsersService {
 	public orgUsersUrl = environment.organisationUsersUrl;
 	public reinviteUserUrl = environment.reinviteUserUrl;
+
 	constructor(private readonly http: HttpClient) {}
 
 	public getOrganisationUsers(payload): Observable<any> {
