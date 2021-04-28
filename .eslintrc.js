@@ -42,11 +42,6 @@ module.exports = {
 		'@typescript-eslint/naming-convention': [
 			'warn',
 			{ selector: 'variableLike', format: ['camelCase'] },
-			{
-				selector: ['variable', 'function'],
-				modifiers: ['const'],
-				format: ['UPPER_CASE'],
-			},
 		],
 		'@typescript-eslint/prefer-readonly': 'warn',
 		'@typescript-eslint/no-unsafe-call': 'warn',
