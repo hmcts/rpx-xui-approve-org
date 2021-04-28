@@ -1,13 +1,18 @@
-import { Component } from '@angular/core';
-
+import {Component, OnInit} from '@angular/core';
 /*
- * Sign Out Component
- * Responsible for displaying you been singed out page.
- * */
+* Sign Out Component
+* Responsible for displaying you been singed out page.
+* */
+
 @Component({
-	selector: 'app-sign-out',
-	templateUrl: './signed-out.component.html',
+  selector: 'app-sign-out',
+  templateUrl: './signed-out.component.html',
 })
-export class SignedOutComponent {
-	public redirectUrl = './';
+export class SignedOutComponent implements OnInit {
+  public redirectUrl: string;
+  constructor() { }
+
+  public ngOnInit(): void {
+    this.redirectUrl = './';
+  }
 }

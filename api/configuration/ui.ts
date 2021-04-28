@@ -47,7 +47,7 @@ export const uiConfig = (): UIConfig => {
     exceptionOptions: {
       maxLines: getConfigValue(MAX_LINES),
     } as UIConfigExceptionOptions,
-    health: healthEndpoints(),
+    health: healthEndpoints() ,
     idamClient: getConfigValue(IDAM_CLIENT),
     indexUrl: getConfigValue(INDEX_URL),
     iss: getConfigValue(SERVICES_ISS_PATH),

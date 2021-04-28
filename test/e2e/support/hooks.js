@@ -116,11 +116,11 @@ defineSupportCode(({ Before,After }) => {
         }catch(err){
             CucumberReportLog.AddMessage("Error in after hooks. see err details : "+err);
         }
-
+       
         await Promise.all(getCookieCleanupPromises());
 
     });
-});
+}); 
 
 async function prinrBrowserLogs(){
     let browserLog = await browser.manage().logs().get('browser');
@@ -130,7 +130,7 @@ async function prinrBrowserLogs(){
             browserErrorLogs.push(browserLog[browserLogCounter]);
         }
     }
-    CucumberReportLog.AddJson(browserErrorLogs);
+    CucumberReportLog.AddJson(browserErrorLogs); 
 }
 
 async function clearBrowserLogs() {

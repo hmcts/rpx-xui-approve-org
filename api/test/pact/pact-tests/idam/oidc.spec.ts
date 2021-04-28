@@ -39,7 +39,8 @@ describe("OpenId Connect API", async() => {
     it('returns a json configuration', async () => {
       const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`
 
-      const issuer = oidc.configure({
+      // @ts-ignore
+      const issuer = await oidc.configure({
         authorizationURL: `${oidcUrl}/authorize`,
         callbackURL: `${pactSetUp.provider.mockService.baseUrl}/oauth2/callback`,
         clientID: 'rpx-ao',

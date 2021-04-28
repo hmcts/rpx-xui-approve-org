@@ -1,9 +1,15 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-	selector: 'app-phase-banner',
-	templateUrl: './phase-banner.component.html',
+  selector: 'app-phase-banner',
+  templateUrl: './phase-banner.component.html'
 })
-export class PhaseBannerComponent {
-	@Input() type: string;
+export class PhaseBannerComponent implements OnInit {
+  @Input() type: string;
+
+  constructor() { }
+
+  ngOnInit() {
+  }
+
 }

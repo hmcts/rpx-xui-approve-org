@@ -6,25 +6,30 @@ import { Store, select } from '@ngrx/store';
 
 @Injectable()
 export class HealthCheckService implements OnDestroy {
-	routeSubscription: Subscription;
 
-	constructor(private http: HttpClient, private store: Store<fromRoot.State>) {}
+    routeSubscription: Subscription;
 
-	doHealthCheck(): Observable<any> {
-		const healthState = true;
-		const result: { healthState } = { healthState };
-		let path = '';
+    constructor(
+        private http: HttpClient,
+        private store: Store<fromRoot.State>,
+    ) { }
 
-		this.routeSubscription = this.store.pipe(select(fromRoot.getRouterUrl)).subscribe((value) => {
-			path = value;
-		});
+    doHealthCheck(): Observable<any> {
+        const healthState = true;
+        const result: { healthState } = { healthState };
+        let path = '';
 
-		return path ? this.http.get('/api/healthCheck?path=' + encodeURIComponent(path)) : of(result);
-	}
+        this.routeSubscription = this.store.pipe(select(fromRoot.getRouterUrl)).subscribe(value => {
+            path = value;
+        });
 
-	ngOnDestroy() {
-		if (this.routeSubscription) {
-			this.routeSubscription.unsubscribe();
-		}
-	}
+        return path ? this.http.get('/api/healthCheck?path=' + encodeURIComponent(path)) : of(result);
+    }
+
+    ngOnDestroy() {
+        if (this.routeSubscription) {
+            this.routeSubscription.unsubscribe();
+        }
+    }
+
 }

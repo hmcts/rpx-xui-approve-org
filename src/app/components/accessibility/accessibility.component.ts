@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
     templateUrl: './accessibility.component.html'
 })
 export class AccessibilityComponent {
+  constructor() {
+  }
 }

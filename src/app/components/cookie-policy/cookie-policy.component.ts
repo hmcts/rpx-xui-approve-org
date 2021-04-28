@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
     templateUrl: './cookie-policy.component.html'
 })
 export class CookiePolicyComponent {
+    constructor() {
+    }
 }
