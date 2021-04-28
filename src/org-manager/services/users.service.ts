@@ -13,9 +13,7 @@ export class UsersService {
 		return this.http.get<any>(this.orgUsersUrl + payload);
 	}
 
-	public inviteUser(orgId, data, name): Observable<any> {
-		if (name == data) {
-		}
+	public inviteUser(orgId, data): Observable<any> {
 		return this.http.post<any>(this.reinviteUserUrl + orgId, data);
 	}
 }

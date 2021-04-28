@@ -30,7 +30,6 @@
     "routes.ts",
     "server.ts",
     "../.eslintrc.js",
-    // these are the eslint-only inclusions
     "./.eslintrc.js"
   ]
 }
