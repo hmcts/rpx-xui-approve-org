@@ -78,8 +78,8 @@
     "@types/passport": "^1.0.3",
     "applicationinsights": "^1.5.0",
     "applicationinsights-js": "^1.0.20",
-    "base-64": "^0.1.0",
     "axios": "^0.21.1",
+    "base-64": "^0.1.0",
     "config": "^3.2.4",
     "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.4",
@@ -117,7 +117,7 @@
     "passport": "^0.4.1",
     "path": "^0.12.7",
     "protractor-screenshot-utils": "^1.0.6",
-    "redis": "^3.0.2",
+    "redis": "^3.1.2",
     "rxjs": "^6.0.0",
     "rxjs-compat": "^6.4.0",
     "session-file-store": "^1.2.0",
@@ -128,7 +128,7 @@
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.13.0",
+    "@angular-devkit/build-angular": "^0.1102.11",
     "@angular-devkit/build-ng-packagr": "~0.6.8",
     "@angular/cli": "~6.0.8",
     "@angular/compiler-cli": "^7.2.13",
@@ -161,7 +161,7 @@
     "jasmine-core": "^2.99.1",
     "jasmine-marbles": "^0.4.1",
     "jasmine-spec-reporter": "~4.2.1",
-    "json-server": "^0.14.2",
+    "json-server": "^0.16.3",
     "karma": "3.1.4",
     "karma-chrome-launcher": "2.2.0",
     "karma-coverage": "^1.1.2",
@@ -204,6 +204,8 @@
     "**/**/ini": "^1.3.6",
     "**/**/elliptic": "^6.5.4",
     "**/**/y18n": "^3.2.2",
-    "**/**/jose": "1.28.1"
+    "**/**/jose": "1.28.1",
+    "**/**/**/ssri": "^8.0.1",
+    "**/**/**/**/xmlhttprequest-ssl": "^1.6.2"
   }
 }
