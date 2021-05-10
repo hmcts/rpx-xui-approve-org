@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+        "no-string-literal": false,
         "object-literal-key-quotes": false,
         "object-literal-sort-keys": false,
         "arrow-parens": [
