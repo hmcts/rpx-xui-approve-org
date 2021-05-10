@@ -7,8 +7,8 @@ import { fieldName, getFormData, getHeaders, getUploadFileUrl } from './util'
 const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
-async function caseWorkerDetailsRoute(req:any, res: express.Response) {
-  if(!req.file) {
+async function caseWorkerDetailsRoute(req: any, res: express.Response) {
+  if (!req.file) {
     res.status(400)
     res.send('You need to select a file to upload. Please try again.')
     return
@@ -21,11 +21,11 @@ async function caseWorkerDetailsRoute(req:any, res: express.Response) {
     const {status, data} = await req.http.post(uploadUrl, formData, headers)
     res.status(status)
     res.send(data)
-  } catch(error) {
-    if(error.status) {
+  } catch (error) {
+    if (error.status) {
       res.status(error.status)
     }
-    if(error.data) {
+    if (error.data) {
       res.send(error.data)
     }
   }

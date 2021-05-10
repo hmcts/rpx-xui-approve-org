@@ -1,11 +1,6 @@
-import {
-  UIConfig,
-  UIConfigCookies,
-  UIConfigExceptionOptions,
-  UIConfigServices
-} from '../interfaces/ui.config'
-import {healthEndpoints} from './health'
-import {getConfigValue, getEnvironment, showFeature} from './index'
+import { getConfigValue, getEnvironment, showFeature } from '.';
+import { UIConfig, UIConfigCookies, UIConfigExceptionOptions, UIConfigServices } from '../interfaces/ui.config';
+import { healthEndpoints } from './health';
 import {
   COOKIE_ROLES,
   COOKIE_TOKEN,
@@ -14,6 +9,7 @@ import {
   FEATURE_SECURE_COOKIE_ENABLED,
   IDAM_CLIENT,
   INDEX_URL,
+  LAUNCH_DARKLY_CLIENT_ID,
   LOGGING,
   MAX_LINES,
   MAX_LOG_LINE,
@@ -30,8 +26,7 @@ import {
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET,
-  LAUNCH_DARKLY_CLIENT_ID
-} from './references'
+} from './references';
 
 export const uiConfig = (): UIConfig => {
 
