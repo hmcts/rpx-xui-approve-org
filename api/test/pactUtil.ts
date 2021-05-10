@@ -6,23 +6,22 @@ import * as path from 'path';
 let mockServerPort: number;
 let provider: Pact;
 
-export async function providerSetUp(providerName:string) {
+export async function providerSetUp(providerName: string) {
   mockServerPort = await getPort()
 
   provider = new Pact({
-    port: mockServerPort,
-    log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-    dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-    spec: 2,
     consumer: "xui_approveorg",
-    provider: providerName,
+    dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
+    log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
     pactfileWriteMode: "merge",
+    port: mockServerPort,
+    provider: providerName,
+    spec: 2,
   })
   before(() => provider.setup())
 
 //  return  provider;
 }
-
 
 export async function providerFinalize() {
   after(() => provider.finalize())
@@ -31,15 +30,13 @@ export async function providerFinalize() {
 //  return  provider;
 }
 
-export async  function addInteraction(interaction:InteractionObject){
+export async  function addInteraction(interaction: InteractionObject) {
 
   // @ts-ignore
   provider.addInteraction(interaction).then(() => {
-
+    // Do nothing, apparently.
   })
 }
-
-
 
 export async function getOperation(taskUrl: string) {
 
@@ -67,20 +64,19 @@ export async function deleteOperation(taskUrl: string) {
     }
   }
 
-
   let response: AxiosResponse
   response = await axios.delete(taskUrl, axiosConfig)
   return response
 
 }
 
-export async function putOperation(taskUrl: string, payload:any){
+export async function putOperation(taskUrl: string, payload: any) {
 
   const axiosConfig = {
     headers: {
+      "Authorization": "Bearer some-access-token",
       "Content-Type": "application/json",
-      "ServiceAuthorization": "ServiceAuthToken",
-      "Authorization": "Bearer some-access-token"
+      "ServiceAuthorization": "ServiceAuthToken"
     }
   }
   let response: AxiosResponse
@@ -88,7 +84,7 @@ export async function putOperation(taskUrl: string, payload:any){
   return response
 }
 
-export async function postOperation(taskUrl: string, payload:any){
+export async function postOperation(taskUrl: string, payload: any) {
 
   const axiosConfig = {
     headers: {
@@ -104,7 +100,7 @@ export async function postOperation(taskUrl: string, payload:any){
   return response
 }
 
-export async function postLease(taskUrl: string, payload:any){
+export async function postLease(taskUrl: string, payload: any) {
 
   const axiosConfig = {
     headers: {
@@ -116,7 +112,7 @@ export async function postLease(taskUrl: string, payload:any){
   return response
 }
 
-export async function idamGetUserDetails(taskUrl:string){
+export async function idamGetUserDetails(taskUrl: string) {
 
   const axiosConfig = {
     headers: {

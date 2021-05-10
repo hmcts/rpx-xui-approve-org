@@ -71,13 +71,13 @@ export function getErrorResponse(req, res) {
 
 export function getPartialSuccess(req, res) {
   if (req.files[0].originalname === 'fileName-200-partial.xlsx') {
-    let errorDetails = [];
-    for(let i = 0; i < 5 ; i ++){
+    const errorDetails = [];
+    for (let i = 0; i < 5 ; i ++) {
       errorDetails.push({
         "row_id": i + 1,
-        "field_in_error": "primary location "+ i+1,
-        "error_description": "Primary base location must not be empty "+i + 1 
-      }); 
+        "field_in_error": "primary location " + i + 1,
+        "error_description": "Primary base location must not be empty " + i + 1
+      });
     }
 
     const partialResponse = {
