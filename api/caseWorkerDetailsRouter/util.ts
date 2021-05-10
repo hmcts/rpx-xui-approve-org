@@ -51,7 +51,7 @@ export function getContentType(contentType: string, formData: FormData) {
 }
 
 export function getFormData(file: File): FormData {
-    let formData = new FormData();
+    const formData = new FormData();
     formData.append(fieldName, file.buffer, file.originalname);
     return formData
 }

@@ -57,8 +57,7 @@ export interface AssignAccessWithinOrganisationDto {
   status_message: string
 }
 
-
-export interface OrganisationUsers{
+export interface OrganisationUsers {
   email: string,
   firstName: string,
   lastName: string,
@@ -71,25 +70,22 @@ export interface OrganisationUsers{
   userIdentifier: string
 }
 
-export interface OrganisationDeletedMessage{
-  message:string,
-  statusCode:number;
+export interface OrganisationDeletedMessage {
+  message: string,
+  statusCode: number;
 }
 
 // TODO Remove if Not used ....
 
-export interface UserAddedResponse{
+export interface UserAddedResponse {
   idamStatus: string,
-  userIdentifier:string
+  userIdentifier: string
 }
 
-export interface AccountDetailsResponse{
+export interface AccountDetailsResponse {
   account_name: string,
   account_number: string,
   available_balance: number,
   credit_limit: number,
-  status:string
+  status: string
 }
-
-
-
