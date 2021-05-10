@@ -4,32 +4,33 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-    production: false,
-    // remove this line if GA is need only for production. For time being, to test on aat env, added this.
-    googleAnalyticsKey: 'UA-124734893-6',
-    serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
-    serviceDeskTel: '0300 3030686',
-    singleOrgUrl: 'api/organisations?organisationId=',
-    organisationUsersUrl: 'api/organisations?usersOrgId=',
-    orgActiveUrl: 'api/organisations?status=ACTIVE',
-    updatePbaUrl: 'api/updatePba',
-    pbaAccUrl: 'api/pbaAccounts',
-    orgPendingUrl: 'api/organisations?status=PENDING',
-    organisationsUrl: 'api/organisations/',
-    reinviteUserUrl: 'api/reinviteUser?organisationId=',
-    loggingLevel: 'DEBUG',
-    cookies: {
-      token: '__auth__',
-      userId: '__userid__',
-      roles: 'roles'
-    },
-    urls: {
-      idam: {
-        idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
-        idamClientID: 'xuiaowebapp',
-        idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
-        indexUrl: '/',
-        oauthCallbackUrl: 'oauth2/callback'
-      }
+  production: false,
+  // remove this line if GA is need only for production. For time being, to test on aat env, added this.
+  googleAnalyticsKey: 'UA-124734893-6',
+  serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
+  serviceDeskTel: '0300 3030686',
+  singleOrgUrl: 'api/organisations?organisationId=',
+  organisationUsersUrl: 'api/organisations?usersOrgId=',
+  orgActiveUrl: 'api/organisations?status=ACTIVE',
+  updatePbaUrl: 'api/updatePba',
+  pbaUrl: 'api/pba',
+  pbaAccUrl: 'api/pbaAccounts',
+  orgPendingUrl: 'api/organisations?status=PENDING',
+  organisationsUrl: 'api/organisations/',
+  reinviteUserUrl: 'api/reinviteUser?organisationId=',
+  loggingLevel: 'DEBUG',
+  cookies: {
+    token: '__auth__',
+    userId: '__userid__',
+    roles: 'roles'
+  },
+  urls: {
+    idam: {
+      idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
+      idamClientID: 'xuiaowebapp',
+      idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
+      indexUrl: '/',
+      oauthCallbackUrl: 'oauth2/callback'
+    }
   }
 };

@@ -1,0 +1,33 @@
+<div class="hmcts-width-container">
+  <main class="govuk-main-wrapper" id="main-content" role="main">
+    <h1 class="hmcts-page-heading__title govuk-heading-xl">
+      Organisation approvals
+    </h1>
+
+    <!-- The global search component -->
+    <!-- <app-search-organisations-form
+      [searchString]="searchString" (submitForm)="submitSearch($event)">
+    </app-search-organisations-form> -->
+
+    <!-- The tabs -->
+    <div class="govuk-tabs" data-module="govuk-tabs">
+      <h2 class="govuk-tabs__title">Contents</h2>
+
+      <ul class="govuk-tabs__list" role="tablist">
+        <ng-container *ngFor="let tab of tabs">
+          <li class="govuk-tabs__list-item" [ngClass]="{'govuk-tabs__list-item--selected': activeRoute === tab.url}" role="presentation">
+            <a class="govuk-tabs__tab" routerLinkActive="router-link-active" role="tab"
+              [routerLink]="tab.url" [attr.aria-selected]="activeRoute === tab.url">
+              {{tab.label}}
+            </a>
+          </li>
+        </ng-container>
+      </ul>
+
+      <div class="govuk-tabs__panel" role="tabpanel">
+        <router-outlet></router-outlet>
+      </div>
+
+    </div>
+  </main>
+</div>
