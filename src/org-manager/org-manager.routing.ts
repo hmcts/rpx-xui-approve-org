@@ -54,7 +54,7 @@ export const ROUTES: Routes = [
     redirectTo: 'organisation/pending'
   },
   {
-    path: 'pending-organisations',
+    path: 'active-organisations',
     pathMatch: 'full',
     redirectTo: 'organisation/active'
   },
