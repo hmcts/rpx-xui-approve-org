@@ -1,0 +1,39 @@
+<h2 class="govuk-heading-l">
+  New PBAs
+  <span *ngIf="pendingPBAsCount > -1">({{pendingPBAsCount}})</span>
+</h2>
+<table class="govuk-table" *ngIf="orgsWithPendingPBAs; else loading">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th class="govuk-table__header" scope="col">Organisation</th>
+      <th class="govuk-table__header" scope="col">PBAs</th>
+      <th class="govuk-table__header" scope="col">Administrator</th>
+      <th class="govuk-table__header" scope="col">Date received</th>
+      <th class="govuk-table__header" scope="col"></th>
+    </tr>
+    <!-- TODO: Filter the list below by organisationFilter -->
+    <tr class="govuk-table__row" *ngFor="let org of orgsWithPendingPBAs">
+      <td class="govuk-table__cell">{{org.name}}</td>
+      <td class="govuk-table__cell">
+        <div *ngFor="let pba of org.pbaNumbers">
+          {{pba.pbaNumber}}
+        </div>
+      </td>
+      <td class="govuk-table__cell">
+        <span *ngIf="org.admin">
+          {{org.admin}}<br>
+          <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
+        </span>
+      </td>
+      <td class="govuk-table__cell">
+        {{org.receivedDate | date:'dd/MM/yyyy'}}
+      </td>
+      <td class="govuk-table__cell">
+        <a class="govuk-link" [routerLink]="['review', org.organisationIdentifier]" routerLinkActive="router-link-active">View</a>
+      </td>
+    </tr>
+  </thead>
+</table>
+<ng-template #loading>
+  <h3 class="govuk-heading-s"><span>Loading...</span></h3>
+</ng-template>
