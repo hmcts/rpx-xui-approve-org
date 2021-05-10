@@ -1,37 +1,62 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ApproveOrganisationSuccessComponent } from 'src/org-manager/containers/approve-organisation-success/approve-organisation-success.component';
-import { ApproveOrganisationComponent } from 'src/org-manager/containers/approve-organisation/approve-organisation.component';
-import { PendingOrganisationsComponent} from 'src/org-manager/containers/pending-organisations/pending-organisations.component';
-import { AuthGuard } from 'src/services/auth/auth.guard';
-import { OrganisationDetailsComponent } from './components';
-import { ActiveOrganisationsComponent } from './containers';
-import { EditDetailsComponent } from './containers/edit-details/edit-details.component';
-import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success/reinvite-user-success.component';
-import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
-import { UserDetailsComponent } from './containers/user-details/user-details.component';
-import { UserApprovalGuard } from './guards/users-approval.guard';
-import { DeleteOrganisationComponent } from './containers/delete-organisation/delete-organisation.component';
-import {DeleteOrganisationSuccessComponent} from './containers/delete-organisation-success/delete-organisation-success.component';
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
+
+import { AuthGuard } from '../services/auth/auth.guard';
+import { ActiveOrganisationsComponent } from './containers';
+import { ApproveOrganisationComponent } from './containers/approve-organisation';
+import { ApproveOrganisationSuccessComponent } from './containers/approve-organisation-success';
+import { DeleteOrganisationComponent } from './containers/delete-organisation';
+import { DeleteOrganisationSuccessComponent } from './containers/delete-organisation-success';
+import { EditDetailsComponent } from './containers/edit-details';
+import { OrganisationsHomeComponent } from './containers/home';
+import { OrganisationDetailsComponent } from './containers/organisation-details';
+import { PendingOrganisationsComponent } from './containers/pending-organisations';
+import { PendingPBAsComponent } from './containers/pending-pbas';
+import { ReinviteUserComponent } from './containers/reinvite-user';
+import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success';
+import { UserDetailsComponent } from './containers/user-details';
+import { UserApprovalGuard } from './guards';
 
 export const ROUTES: Routes = [
   {
     path: 'organisation',
-    component: PendingOrganisationsComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: {needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
+    component: OrganisationsHomeComponent,
+    canActivate: [ AuthGuard ],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'pending'
+      },
+      {
+        path: 'pending',
+        component: PendingOrganisationsComponent,
+        canActivate: [ AuthGuard, RoleGuard ],
+        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
+      },
+      {
+        path: 'pbas',
+        component: PendingPBAsComponent,
+        canActivate: [ AuthGuard, RoleGuard ],
+        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
+      },
+      {
+        path: 'active',
+        component: ActiveOrganisationsComponent,
+        canActivate: [ AuthGuard ]
+      }
+    ]
   },
   {
     path: 'pending-organisations',
-    component: PendingOrganisationsComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: {needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
+    pathMatch: 'full',
+    redirectTo: 'organisation/pending'
   },
   {
-    path: 'active-organisation',
-    component: ActiveOrganisationsComponent,
-    canActivate: [AuthGuard],
+    path: 'pending-organisations',
+    pathMatch: 'full',
+    redirectTo: 'organisation/active'
   },
   {
     path: 'approve-organisations',
