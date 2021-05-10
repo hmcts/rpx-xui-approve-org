@@ -1,13 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import {filter, take, takeWhile} from 'rxjs/operators';
+import { filter, take, takeWhile } from 'rxjs/operators';
+
 import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
-import { OrganisationUserListModel, OrganisationVM} from '../../models/organisation';
+import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
 import * as fromStore from '../../store';
-import {NavigateToDeleteOrganisation} from '../../store/actions/organisations.actions';
 
 /**
  * Bootstraps Organisation Details
@@ -27,12 +27,15 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationAdminEmail: string;
   public isActiveOrg = false;
   public organisationDeletable = false;
+
+  private getShowOrgDetailsSubscription: Subscription;
+  private getAllLoadedSubscription: Subscription;
+  private getOrganisationDeletableSubscription: Subscription;
+
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly userApprovalGuard: UserApprovalGuard) {}
-    private getShowOrgDetailsSubscription: Subscription;
-    private getAllLoadedSubscription: Subscription;
-    private getOrganisationDeletableSubscription: Subscription;
+    private readonly userApprovalGuard: UserApprovalGuard
+  ) {}
 
   public ngOnInit(): void {
 
