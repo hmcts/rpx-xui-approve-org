@@ -17,11 +17,11 @@ const logger = log4jui.getLogger('pba-service')
  */
 export async function handleGet(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
   try {
-    logger.info('handle get method', path);
+    logger.info('handle GET method', path);
     const headers = setHeaders(req);
     return await httpMock.get(path, { headers });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in get response');
+    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in GET response');
     throw e;
   }
 
@@ -37,11 +37,11 @@ export async function handleGet(path: string, req: EnhancedRequest): Promise<Axi
  */
 export async function handlePost<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
   try {
-    logger.info('handle post method', path);
+    logger.info('handle POST method', path);
     const headers = setHeaders(req);
     return await httpMock.post(path, body, { headers });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in post response');
+    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in POST response');
     throw e;
   }
 
@@ -57,11 +57,11 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest)
  */
 export async function handlePut<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
   try {
-    logger.info('handle put method', path);
+    logger.info('handle PUT method', path);
     const headers = setHeaders(req);
     return await httpMock.put(path, body, { headers });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in put response');
+    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in PUT response');
     throw e;
   }
 }
@@ -76,14 +76,14 @@ export async function handlePut<T>(path: string, body: T, req: EnhancedRequest):
  */
 export async function handleDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
   try {
-    logger.info('handle delete method', path);
+    logger.info('handle DELETE method', path);
     const headers = setHeaders(req);
     return await httpMock.delete(path, {
       data: body,
       headers
     });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in delete response');
+    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in DELETE response');
     throw e;
   }
 }
