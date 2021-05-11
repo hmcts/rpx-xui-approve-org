@@ -35,7 +35,7 @@ describe('Delete Organisation', function () {
 
            if(state === 'ACTIVE'){
                actions.push(...PallyActions.waitForPageWithCssLocator('.hmcts-banner'));
-               actions.push(...PallyActions.clickElement('.hmcts-banner a'));
+               actions.push(...PallyActions.clickElement('.govuk-tabs__list li:nth-of-type(3) a'));
                actions.push(...PallyActions.waitForPageWithCssLocatorNotPresent('.hmcts-banner'));
                actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
 
@@ -61,7 +61,7 @@ describe('Delete Organisation', function () {
             // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
             if (state === 'ACTIVE') {
                 actions.push(...PallyActions.waitForPageWithCssLocator('.hmcts-banner'));
-                actions.push(...PallyActions.clickElement('.hmcts-banner a'));
+                actions.push(...PallyActions.clickElement('.govuk-tabs__list li:nth-of-type(3) a'));
                 actions.push(...PallyActions.waitForPageWithCssLocatorNotPresent('.hmcts-banner'));
                 actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
 
@@ -87,7 +87,7 @@ describe('Delete Organisation', function () {
         if (state === 'ACTIVE') {
 
             actions.push(...PallyActions.waitForPageWithCssLocator('.hmcts-banner'));
-            actions.push(...PallyActions.clickElement('.hmcts-banner a'));
+            actions.push(...PallyActions.clickElement('.govuk-tabs__list li:nth-of-type(3) a'));
             actions.push(...PallyActions.waitForPageWithCssLocatorNotPresent('.hmcts-banner'));
             actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
 
