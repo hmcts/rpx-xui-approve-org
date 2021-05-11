@@ -1,42 +1,4 @@
-import { InteractionObject, Pact } from '@pact-foundation/pact';
 import axios, { AxiosResponse } from 'axios';
-import * as getPort from 'get-port';
-import * as path from 'path';
-
-let mockServerPort: number;
-let provider: Pact;
-
-export async function providerSetUp(providerName: string) {
-  mockServerPort = await getPort()
-
-  provider = new Pact({
-    consumer: "xui_approveorg",
-    dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-    log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-    pactfileWriteMode: "merge",
-    port: mockServerPort,
-    provider: providerName,
-    spec: 2,
-  })
-  before(() => provider.setup())
-
-//  return  provider;
-}
-
-export async function providerFinalize() {
-  after(() => provider.finalize())
-  // verify with Pact, and reset expectations
-  afterEach(() => provider.verify())
-//  return  provider;
-}
-
-export async  function addInteraction(interaction: InteractionObject) {
-
-  // @ts-ignore
-  provider.addInteraction(interaction).then(() => {
-    // Do nothing, apparently.
-  })
-}
 
 export async function getOperation(taskUrl: string) {
 
