@@ -48,17 +48,8 @@ export const ROUTES: Routes = [
       }
     ]
   },
-  {
-    path: 'pending-organisations',
-    component: PendingOrganisationsComponent,
-    canActivate: [ AuthGuard, RoleGuard ],
-    data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
-  },
-  {
-    path: 'active-organisations',
-    component: ActiveOrganisationsComponent,
-    canActivate: [ AuthGuard ]
-  },
+  { path: 'pending-organisations', pathMatch: 'full', redirectTo: 'organisation/pending' },
+  { path: 'active-organisation', pathMatch: 'full', redirectTo: 'organisation/active' },
   {
     path: 'approve-organisations',
     component: ApproveOrganisationComponent,
