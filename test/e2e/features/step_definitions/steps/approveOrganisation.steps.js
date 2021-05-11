@@ -66,9 +66,9 @@ defineSupportCode(function ({ Given, When, Then }) {
     await browserWaits.waitForElement(bannerPage.checkNow);
     await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
     await bannerPage.checkNow.click();
-    await browserWaits.waitForElement(bannerPage.activeOrganisationPageHeading);
-    await waitForElement('govuk-heading-xl');
-    await expect(bannerPage.activeOrganisationPageHeading.getText())
+    await browserWaits.waitForElement(bannerPage.secondaryHeader);
+    await waitForElement('govuk-heading-l');
+    await expect(bannerPage.secondaryHeader.getText())
       .to
       .eventually
       .equals('Active organisations');
