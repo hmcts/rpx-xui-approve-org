@@ -4,7 +4,7 @@ import { By } from '@angular/platform-browser';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { OrganisationsHomeComponent } from './organisations-home.component';
+import { HomeComponent } from './home.component';
 
 @Component({
   template: `<div>Bob</div>`
@@ -18,7 +18,7 @@ export const MOCK_ROUTES: Routes = [
   },
   {
     path: 'organisation',
-    component: OrganisationsHomeComponent,
+    component: HomeComponent,
     children: [
       { path: 'pending', component: MockComponent },
       { path: 'pbas', component: MockComponent },
@@ -27,19 +27,19 @@ export const MOCK_ROUTES: Routes = [
   }
 ];
 
-describe('OrganisationsHomeComponent', () => {
+describe('HomeComponent', () => {
 
-  let fixture: ComponentFixture<OrganisationsHomeComponent>;
-  let component: OrganisationsHomeComponent;
+  let fixture: ComponentFixture<HomeComponent>;
+  let component: HomeComponent;
   let router: Router;
 
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [ RouterTestingModule.withRoutes(MOCK_ROUTES) ],
-      declarations: [ OrganisationsHomeComponent, MockComponent ]
+      declarations: [ HomeComponent, MockComponent ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(OrganisationsHomeComponent);
+    fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     router = TestBed.get(Router);
 

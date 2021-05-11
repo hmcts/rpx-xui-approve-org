@@ -1,1 +1,1 @@
-export * from './organisations-home.component';
+export * from './home.component';
