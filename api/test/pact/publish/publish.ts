@@ -34,9 +34,9 @@ const publish = async (): Promise<void> => {
     await pact.publishPacts(opts)
 
     console.log(`Pact contract publishing complete!
-    
+
     Head over to ${pactBroker}
-    to see your published contracts.`)
+    to see your published contracts.`);
 
   } catch (e) {
     console.log('Pact contract publishing failed: ', e)
