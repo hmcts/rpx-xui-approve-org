@@ -9,7 +9,7 @@ import { ApproveOrganisationSuccessComponent } from './containers/approve-organi
 import { DeleteOrganisationComponent } from './containers/delete-organisation';
 import { DeleteOrganisationSuccessComponent } from './containers/delete-organisation-success';
 import { EditDetailsComponent } from './containers/edit-details';
-import { OrganisationsHomeComponent } from './containers/home';
+import { HomeComponent } from './containers/home';
 import { OrganisationDetailsComponent } from './containers/organisation-details';
 import { PendingOrganisationsComponent } from './containers/pending-organisations';
 import { PendingPBAsComponent } from './containers/pending-pbas';
@@ -21,7 +21,7 @@ import { UserApprovalGuard } from './guards';
 export const ROUTES: Routes = [
   {
     path: 'organisation',
-    component: OrganisationsHomeComponent,
+    component: HomeComponent,
     canActivate: [ AuthGuard ],
     children: [
       {
