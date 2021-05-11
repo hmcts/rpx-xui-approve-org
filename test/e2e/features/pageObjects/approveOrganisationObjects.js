@@ -24,6 +24,7 @@ function approveOrganisationBannerObjects() {
   this.confirmationScreen= element(by.xpath("//div[@class='govuk-panel govuk-panel--confirmation']"));
   this.backtoOrganisations= element(by.partialLinkText("Back to organisatio"));
   this.mainHeader = element(by.xpath("//h1[contains(@class,'govuk-heading-xl')]"));
+  this.secondaryHeader = element(by.xpath("//h2[contains(@class,'govuk-heading-l')]"));
 
   this.orgName=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[2]]"));
   this.administratorText=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[4]"));

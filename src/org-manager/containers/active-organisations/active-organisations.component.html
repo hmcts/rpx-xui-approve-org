@@ -1,48 +1,51 @@
-<div class="hmcts-width-container">
-  <app-back-link [store]="store"></app-back-link>
-  <main class="govuk-main-wrapper">
-     <h1 class="hmcts-page-heading__title govuk-heading-xl">Active organisations</h1>
-     <ng-container *ngIf="{loading: loading$ | async, activeSearchString: activeSearchString$ | async, orgs: orgs$ | async  } as data">
-        <app-search-organisations-form *ngIf="!data.loading" [searchString]="data.activeSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
-        <table class="govuk-table" *ngIf="!data.loading; else loading">
-            <thead class="govuk-table__head">
-              <tr class="govuk-table__row">
-                <th class="govuk-table__header" scope="col">Name</th>
-                <th class="govuk-table__header" scope="col">Address</th>
-                <th class="govuk-table__header" scope="col">Administrator</th>
-                <th class="govuk-table__header" scope="col">Status</th>
-                <th class="govuk-table__header" scope="col"></th>
-              </tr>
-              <tr class="govuk-table__row" *ngFor="let org of data.orgs | filterOrganisations: data.activeSearchString">
-                <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
-                <td class="govuk-table__cell">
-                  {{org.addressLine1}}<br>
-                  <div *ngIf='org.addressLine2'>
-                      {{org.addressLine2}}<br>
-                  </div>
-                  {{org.townCity}}<br>
-                  <div *ngIf='org.county'>
-                    {{org.county}}<br>
-                  </div>
-                  <div *ngIf='org.postCode'>
-                    {{org.postCode}}<br>
-                  </div>
-                </td>
-                <td class="govuk-table__cell">{{org.admin}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span></td>
-                <td class="govuk-table__cell"><span class="hmcts-badge hmcts-badge--green">{{org.status}}</span>
-                </td>
-                <td class="govuk-table__cell">
-                    <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
-                </td>
-              </tr>
-            </thead>
-          </table>
-          <ng-template #loading>
-            <h3 class="govuk-heading-s">Loading active organisations...</h3>
-          </ng-template>
-     </ng-container>   
-     
-       
-        
-  </main>
-</div>
+<h2 class="govuk-heading-l">
+  Active organisations
+</h2>
+<ng-container *ngIf="{loading: loading$ | async, activeSearchString: activeSearchString$ | async, orgs: orgs$ | async  } as data">
+
+  <app-search-organisations-form *ngIf="!data.loading" [searchString]="data.activeSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
+  
+  <table class="govuk-table" *ngIf="!data.loading; else loading">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Name</th>
+        <th class="govuk-table__header" scope="col">Address</th>
+        <th class="govuk-table__header" scope="col">Administrator</th>
+        <th class="govuk-table__header" scope="col">Status</th>
+        <th class="govuk-table__header" scope="col"></th>
+      </tr>
+      <tr class="govuk-table__row" *ngFor="let org of data.orgs | filterOrganisations: data.activeSearchString">
+        <td class="govuk-table__cell">
+          {{org.name}}<br>
+          <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
+        </td>
+        <td class="govuk-table__cell">
+          {{org.addressLine1}}<br>
+          <div *ngIf='org.addressLine2'>
+            {{org.addressLine2}}<br>
+          </div>
+          {{org.townCity}}<br>
+          <div *ngIf='org.county'>
+            {{org.county}}<br>
+          </div>
+          <div *ngIf='org.postCode'>
+            {{org.postCode}}<br>
+          </div>
+        </td>
+        <td class="govuk-table__cell">
+          {{org.admin}}<br>
+          <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
+        </td>
+        <td class="govuk-table__cell">
+          <span class="hmcts-badge hmcts-badge--green">{{org.status}}</span>
+        </td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
+        </td>
+      </tr>
+    </thead>
+  </table>
+  <ng-template #loading>
+    <h3 class="govuk-heading-s">Loading active organisations...</h3>
+  </ng-template>
+</ng-container>
