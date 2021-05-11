@@ -62,7 +62,7 @@ defineSupportCode(function ({ Given, When, Then,And }) {
     await expect(bannerPage.backtoOrganisations.isDisplayed()).to.eventually.be.true;
     await bannerPage.backtoOrganisations.click();
     await browserWaits.waitForElement(element(by.css('.hmcts-banner')));
-    await expect(bannerPage.mainHeader.getText())
+    await expect(bannerPage.secondaryHeader.getText())
       .to
       .eventually
       .equals('Organisations pending activation');

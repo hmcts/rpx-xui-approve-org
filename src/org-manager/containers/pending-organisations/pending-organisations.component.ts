@@ -18,7 +18,7 @@ import * as fromOrganisation from '../../store/';
 export class PendingOrganisationsComponent implements OnInit {
   public columnConfig: GovukTableColumnConfig[];
   public pendingOrgs$: Observable<OrganisationVM[]>;
-  public inputForm: FormGroup;
+
   public loaded$: Observable<boolean>;
   public pendingSearchString$: Observable<string>;
 
@@ -29,10 +29,6 @@ export class PendingOrganisationsComponent implements OnInit {
               private readonly fb: FormBuilder) {}
 
   public ngOnInit(): void {
-    this.inputForm = this.fb.group({
-      pendingOrgInputRadio: ['', Validators.required]
-    });
-
     this.loaded$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
     this.loaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
       if (!loaded) {
