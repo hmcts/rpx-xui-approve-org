@@ -36,32 +36,50 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   ) {}
 
   public ngOnInit(): void {
-    const status = this.getStatus();
-    this.pbaService.getPBAsByStatus(status).subscribe((pendingPBAs: any[]) => {
-      if (pendingPBAs && pendingPBAs.length > 0) {
-        const orgIds = pendingPBAs.map(org => org.organisationIdentifier);
-        this.getActiveLoadedSubscription = this.store.pipe(select(fromStore.getActiveLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
-          if (!loaded) {
-            this.store.dispatch(new fromStore.LoadActiveOrganisation());
-          }
-        });
-        this.orgs$ = this.store.pipe(select(fromStore.getActiveByOrgIds, { orgIds }));
-        this.orgs$.pipe(filter(orgs => orgs.length > 0)).subscribe(orgs => {
-          this.orgsWithPendingPBAs = orgs.map(org => {
-            const withPBAs = pendingPBAs.find(pending => pending.organisationIdentifier === org.organisationId);
-            return this.toRenderableOrganisation(org, withPBAs);
-          });
-        })
-      } else {
-        this.orgsWithPendingPBAs = [];
-      }
-    });
+    this.loadPendingPBAs();
   }
 
   public ngOnDestroy(): void {
     if (this.getActiveLoadedSubscription) {
       this.getActiveLoadedSubscription.unsubscribe();
     }
+  }
+
+  private loadPendingPBAs(): void {
+    const status = this.getStatus();
+    this.pbaService.getPBAsByStatus(status).subscribe({
+      next: (pendingPBAs: any[]) => {
+        if (pendingPBAs && pendingPBAs.length > 0) {
+          const orgIds = pendingPBAs.map(org => org.organisationIdentifier);
+          this.getActiveLoadedSubscription = this.store
+            .pipe(select(fromStore.getActiveLoaded))
+            .pipe(takeWhile(loaded => !loaded)).subscribe({
+              next: loaded => {
+                if (!loaded) {
+                  this.store.dispatch(new fromStore.LoadActiveOrganisation());
+                }
+              }
+          });
+          this.orgs$ = this.store.pipe(select(fromStore.getActiveByOrgIds, { orgIds }));
+          this.orgs$.pipe(filter(orgs => orgs.length > 0)).subscribe({
+            next: (orgs: OrganisationVM[]) => {
+              this.orgsWithPendingPBAs = orgs.map(org => {
+                const withPBAs = pendingPBAs.find(pending => pending.organisationIdentifier === org.organisationId);
+                return this.toRenderableOrganisation(org, withPBAs);
+              });
+            },
+            error: (error: any) => {
+              console.log('Error getting active organisations', error);
+            }
+          })
+        } else {
+          this.orgsWithPendingPBAs = [];
+        }
+      },
+      error: (error: any) => {
+        console.log('Error getting PBAs by status:', status, error);
+      }
+    });
   }
 
   private toRenderableOrganisation(raw: any, withPBAs: any): any {
