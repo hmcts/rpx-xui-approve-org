@@ -16,7 +16,6 @@ function approveOrganisationBannerObjects() {
   this.activeOrganisationTextBanner = element(by.xpath("//div[@class='hmcts-banner__message']//span[contains(text(),'organisations are active')]")); 
   //this.checkNow= element(by.xpath("//a[contains(text(),'Check now.')]"));
   this.checkNow= element(by.partialLinkText("Check no"));
-  this.activeOrganisationPageHeading = element(by.xpath("//h1[contains(@class,'hmcts-page-heading__title') and contains(text(),'Active organisations')]"));
 
   this.selectCheckBox= element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[1]/div"));
   this.activate_button= element(by.xpath("//button[@class='govuk-button']"));
