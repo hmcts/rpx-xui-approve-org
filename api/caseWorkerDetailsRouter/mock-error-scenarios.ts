@@ -1,6 +1,6 @@
 
 export function getErrorResponse(req, res) {
-  const fileName = req.files[0].originalname
+  const fileName = req.files[0].originalname;
   switch (fileName) {
     //this is for 400 error
     case 'fileName-400.xlsx':
@@ -12,7 +12,7 @@ export function getErrorResponse(req, res) {
           error_description: 'File is missing the required column headers. Please check the file',
           timestamp: Date.now()
         }
-      }
+      };
     case 'fileName-404.xlsx':
       return {
         status: 400, json: {
@@ -22,7 +22,7 @@ export function getErrorResponse(req, res) {
           error_description: 'File is missing the required column headers. Please check the file',
           timestamp: Date.now()
         }
-      }
+      };
     case 'fileName-400-2.xlsx':
 
       return {
@@ -33,7 +33,7 @@ export function getErrorResponse(req, res) {
           error_description: 'File provided in request is not in xls(x) format',
           timestamp: Date.now()
         }
-      }
+      };
     case 'fileName-401.xlsx':
       return {
         status: 401, json: {
@@ -43,7 +43,7 @@ export function getErrorResponse(req, res) {
           error_description: 'Request has not been applied because it lacks valid authentication credentials for the target resource',
           timestamp: Date.now()
         }
-      }
+      };
     case 'fileName-403.xlsx':
       return {
         status: 403, json: {
@@ -53,7 +53,7 @@ export function getErrorResponse(req, res) {
           error_description: 'Request has not been applied since user does not have sufficient access to call this API',
           timestamp: Date.now()
         }
-      }
+      };
     case 'fileName-500.xlsx':
       return {
         status: 500, json: {
@@ -63,9 +63,9 @@ export function getErrorResponse(req, res) {
           error_description: 'Database connection error',
           timestamp: Date.now()
         }
-      }
+      };
     default:
-      return null
+      return null;
   }
 }
 
@@ -84,12 +84,15 @@ export function getPartialSuccess(req, res) {
       message: "Request completed with partial success. Some records failed during validation and were ignored.",
       message_details: "3 record(s) failed validation, 1 record(s) uploaded, and 0 record(s) suspended",
       error_details: errorDetails
-    }
-    return partialResponse
+    };
+    return partialResponse;
   }
-  return null
+  return null;
 }
 
 export function getSuccess() {
-  return { message: "Request Completed Successfully", message_details: "2 record(s) uploaded and 0 record(s) marked as suspended" }
+  return {
+    message: "Request Completed Successfully",
+    message_details: "2 record(s) uploaded and 0 record(s) marked as suspended"
+  };
 }

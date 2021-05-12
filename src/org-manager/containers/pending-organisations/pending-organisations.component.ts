@@ -1,13 +1,14 @@
+import 'rxjs/add/observable/of';
+
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { GovukTableColumnConfig } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/components/gov-uk-table/gov-uk-table.component';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import 'rxjs/add/observable/of';
-import {takeWhile} from 'rxjs/operators';
-import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
+import { takeWhile } from 'rxjs/operators';
+
 import * as fromStore from '../../../org-manager/store';
+import { PendingOverviewColumnConfig } from '../../config/pending-overview.config';
+import { OrganisationVM } from '../../models/organisation';
 import * as fromOrganisation from '../../store/';
 
 @Component({
@@ -25,8 +26,7 @@ export class PendingOrganisationsComponent implements OnInit {
   public activeOrgsCount$: Observable<number>;
   public activeLoaded$: Observable<boolean>;
 
-  constructor(public store: Store<fromStore.OrganisationRootState>,
-              private readonly fb: FormBuilder) {}
+  constructor(public store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
     this.loaded$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));

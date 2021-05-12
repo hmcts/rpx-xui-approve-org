@@ -3,13 +3,13 @@ import * as path from 'path';
 
 export interface PactTestSetupConfig {
   provider: string;
-  port: number
+  port: number;
 }
 
 export class PactTestSetup {
 
-  provider: Pact
-  port: number
+  provider: Pact;
+  port: number;
 
   constructor(config: PactTestSetupConfig) {
     this.provider = new Pact({
@@ -20,6 +20,6 @@ export class PactTestSetup {
       port: this.port,
       provider: config.provider,
       spec: 2
-    })
+    });
   }
 }
