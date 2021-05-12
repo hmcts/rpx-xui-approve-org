@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { filter, takeWhile } from 'rxjs/operators';
 
 import { OrganisationVM } from '../../models/organisation';
 import { PbaService } from '../../services';
 import * as fromStore from '../../store';
+import { OrganisationModel, PBANumberModel, RenderableOrganisation } from './models';
 
 @Component({
   selector: 'app-pending-pbas',
@@ -15,9 +16,7 @@ import * as fromStore from '../../store';
 export class PendingPBAsComponent implements OnInit, OnDestroy {
   public static PENDING_STATUS: string = 'pending';
 
-  public orgs$: Observable<OrganisationVM[]>;
-  public orgsWithPendingPBAs: any[];
-  public organisationFilter: string;
+  public orgsWithPendingPBAs: RenderableOrganisation[];
   public get pendingPBAsCount(): number {
     if (this.orgsWithPendingPBAs) {
       return this.orgsWithPendingPBAs.reduce((count, org) => {
@@ -28,11 +27,12 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   }
 
   private getActiveLoadedSubscription: Subscription;
+  private getActiveOrganisationsSubscription: Subscription;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly pbaService: PbaService,
-    private readonly router: Router // Temporarily here for testing purposes.
+    private readonly router: Router
   ) {}
 
   public ngOnInit(): void {
@@ -43,46 +43,74 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
     if (this.getActiveLoadedSubscription) {
       this.getActiveLoadedSubscription.unsubscribe();
     }
+    if (this.getActiveOrganisationsSubscription) {
+      this.getActiveOrganisationsSubscription.unsubscribe();
+    }
+  }
+
+  public handleLoadedActiveOrganisations(active: OrganisationVM[], pending: OrganisationModel[]): void {
+    this.orgsWithPendingPBAs = active.map(a => {
+      const withPBAs = pending.find(p => p.organisationIdentifier === a.organisationId);
+      if (withPBAs) {
+        return this.toRenderableOrganisation(a, withPBAs);
+      }
+      return undefined;
+    }).filter(org => !!org);
   }
 
   private loadPendingPBAs(): void {
     const status = this.getStatus();
     this.pbaService.getPBAsByStatus(status).subscribe({
-      next: (pendingPBAs: any[]) => {
+      next: (pendingPBAs: OrganisationModel[]) => {
         if (pendingPBAs && pendingPBAs.length > 0) {
-          const orgIds = pendingPBAs.map(org => org.organisationIdentifier);
-          this.getActiveLoadedSubscription = this.store
-            .pipe(select(fromStore.getActiveLoaded))
-            .pipe(takeWhile(loaded => !loaded)).subscribe({
-              next: loaded => {
-                if (!loaded) {
-                  this.store.dispatch(new fromStore.LoadActiveOrganisation());
-                }
-              }
-          });
-          this.orgs$ = this.store.pipe(select(fromStore.getActiveByOrgIds, { orgIds }));
-          this.orgs$.pipe(filter(orgs => orgs.length > 0)).subscribe({
-            next: (orgs: OrganisationVM[]) => {
-              this.orgsWithPendingPBAs = orgs.map(org => {
-                const withPBAs = pendingPBAs.find(pending => pending.organisationIdentifier === org.organisationId);
-                return this.toRenderableOrganisation(org, withPBAs);
-              });
-            },
-            error: (error: any) => {
-              console.log('Error getting active organisations', error);
-            }
-          })
+          this.handlePendingPBAs(pendingPBAs);
         } else {
-          this.orgsWithPendingPBAs = [];
+          this.handleNoPendingPBAs();
         }
       },
       error: (error: any) => {
-        console.log('Error getting PBAs by status:', status, error);
+        this.handleError(`Error getting PBAs by status: ${status}`, error);
       }
     });
   }
 
-  private toRenderableOrganisation(raw: any, withPBAs: any): any {
+  private handleNoPendingPBAs(): void {
+    this.orgsWithPendingPBAs = [];
+  }
+
+  private handlePendingPBAs(pendingPBAs: OrganisationModel[]): void {
+    this.ensureActiveOrganisationsLoaded();
+    const orgIds = pendingPBAs.map(org => org.organisationIdentifier);
+    this.getActiveOrganisationsSubscription = this.store
+      .pipe(select(fromStore.getActiveByOrgIds, { orgIds }))
+      .pipe(filter(orgs => orgs.length > 0))
+      .subscribe({
+        next: (orgs: OrganisationVM[]) => {
+          this.handleLoadedActiveOrganisations(orgs, pendingPBAs);
+        },
+        error: (error: any) => {
+          this.handleError('Error getting active organisations', error);
+        }
+      });
+  }
+
+  private ensureActiveOrganisationsLoaded(): void {
+    this.getActiveLoadedSubscription = this.store
+      .pipe(select(fromStore.getActiveLoaded))
+      .pipe(takeWhile(loaded => !loaded))
+      .subscribe({
+        next: loaded => {
+          if (!loaded) {
+            this.store.dispatch(new fromStore.LoadActiveOrganisation());
+          }
+        },
+        error: (error: any) => {
+          this.handleError('Error getting loaded state for active organisations', error);
+        }
+      });
+  }
+
+  private toRenderableOrganisation(raw: OrganisationVM, withPBAs: OrganisationModel): RenderableOrganisation {
     return {
       ...raw,
       pbaNumbers: withPBAs.pbaNumbers,
@@ -94,8 +122,8 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
    * For a given set of PBA numbers, choose the earliest dateCreated.
    * @param pbaNumbers The numbers, each of which will have a dateCreated property.
    */
-  private getReceivedDate(pbaNumbers: { dateCreated: string }[]): string {
-    return pbaNumbers.reduce((currentEarliest: string, number: { dateCreated: string }) => {
+  private getReceivedDate(pbaNumbers: PBANumberModel[]): string {
+    return pbaNumbers.reduce((currentEarliest: string, number: PBANumberModel) => {
       const epoch = Date.parse(number.dateCreated);
       const earliest = Date.parse(currentEarliest);
       if (epoch < earliest) {
@@ -108,5 +136,24 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   private getStatus(): string {
     const statusModifier = this.router.routerState.snapshot.root.queryParams['status'];
     return statusModifier || PendingPBAsComponent.PENDING_STATUS;
+  }
+
+  private handleError(message: string, error: any): void {
+    if (error && error.status) {
+      console.error(message, error);
+      switch (error.status) {
+        case 401:
+        case 403:
+          this.router.navigateByUrl('/not-authorised');
+          break;
+        case 500:
+          this.router.navigateByUrl('/service-down');
+          break;
+        default:
+          // TODO: Specific 400 error handling needed. "Something went wrong"?
+          this.router.navigateByUrl('/service-down');
+          break;
+      }
+    }
   }
 }
