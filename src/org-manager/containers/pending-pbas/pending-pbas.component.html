@@ -11,7 +11,8 @@
       <th class="govuk-table__header" scope="col">Date received</th>
       <th class="govuk-table__header" scope="col"></th>
     </tr>
-    <!-- TODO: Filter the list below by organisationFilter -->
+  </thead>
+  <tbody class="govuk-table__body">
     <tr class="govuk-table__row" *ngFor="let org of orgsWithPendingPBAs">
       <td class="govuk-table__cell">{{org.name}}</td>
       <td class="govuk-table__cell">
@@ -29,10 +30,13 @@
         {{org.receivedDate | date:'dd/MM/yyyy'}}
       </td>
       <td class="govuk-table__cell">
-        <a class="govuk-link" [routerLink]="['review', org.organisationIdentifier]" routerLinkActive="router-link-active">View</a>
+        <a class="govuk-link" [routerLink]="['review', org.organisationId]" routerLinkActive="router-link-active">View</a>
       </td>
     </tr>
-  </thead>
+    <tr class="govuk-table__row" *ngIf="orgsWithPendingPBAs.length === 0">
+      <td class="govuk-table__cell" colspan="5">There are no pending PBAs</td>
+    </tr>
+  </tbody>
 </table>
 <ng-template #loading>
   <h3 class="govuk-heading-s"><span>Loading...</span></h3>
