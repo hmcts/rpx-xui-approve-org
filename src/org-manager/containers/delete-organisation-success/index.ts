@@ -1,1 +1,1 @@
-export * from './delete-organisation-success.component'
+export * from './delete-organisation-success.component';

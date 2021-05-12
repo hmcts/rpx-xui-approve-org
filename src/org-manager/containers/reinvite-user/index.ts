@@ -1,1 +1,1 @@
-export * from './reinvite-user.component'
+export * from './reinvite-user.component';

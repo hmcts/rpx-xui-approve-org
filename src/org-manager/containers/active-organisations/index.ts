@@ -1,1 +1,1 @@
-export * from './active-organisations.component'
+export * from './active-organisations.component';
