@@ -3,10 +3,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, User } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
-import { CookieService, CookieModule } from 'ngx-cookie';
-import { PendingOrganisationsMockCollectionObj } from 'src/org-manager/mock/pending-organisation.mock';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
+import { CookieModule } from 'ngx-cookie';
+
 import * as fromRoot from '../../../app/store';
+import { PendingOrganisationsMockCollectionObj } from '../../mock/pending-organisation.mock';
+import { OrganisationVM } from '../../models/organisation';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
 

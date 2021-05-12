@@ -30,7 +30,7 @@ import {
 
 export const uiConfig = (): UIConfig => {
 
-  const configEnv = getEnvironment()
+  const configEnv = getEnvironment();
 
   return {
     configEnv,
@@ -66,5 +66,5 @@ export const uiConfig = (): UIConfig => {
     } as UIConfigServices,
     sessionSecret: getConfigValue(SESSION_SECRET),
     launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID)
-  }
-}
+  };
+};

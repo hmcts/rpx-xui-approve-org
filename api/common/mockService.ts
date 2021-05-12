@@ -6,7 +6,7 @@ import { setHeaders } from '../lib/proxy';
 import { exists } from '../lib/util';
 import { httpMock } from './httpMock';
 
-const logger = log4jui.getLogger('pba-service')
+const logger = log4jui.getLogger('pba-service');
 
 /**
  * Handle GET method

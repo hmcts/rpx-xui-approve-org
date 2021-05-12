@@ -1,4 +1,3 @@
-import {OrganisationVM} from './../../models/organisation';
 import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -8,6 +7,7 @@ import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of, throwError } from 'rxjs';
 
 import * as fromRoot from '../../../app/store/reducers';
+import { OrganisationVM } from '../../models/organisation';
 import { PbaService } from '../../services';
 import * as fromStore from '../../store';
 import { LoadActiveOrganisation } from '../../store/actions/organisations.actions';

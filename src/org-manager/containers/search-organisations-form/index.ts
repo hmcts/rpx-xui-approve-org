@@ -1,1 +1,1 @@
-export * from './search-organisations-form.component'
+export * from './search-organisations-form.component';

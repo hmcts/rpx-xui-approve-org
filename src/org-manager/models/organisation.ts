@@ -7,12 +7,12 @@ export interface OrganisationAddress {
   county: string;
   dxAddress: OrganisationDxAddress[];
   postCode?: string;
-  }
+}
 
 export interface OrganisationDxAddress {
-      dxNumber: string;
-      dxExchange: string;
-  }
+  dxNumber: string;
+  dxExchange: string;
+}
 
 export interface OrganisationSuperUser {
   userIdentifier: string;
@@ -37,7 +37,7 @@ export interface OrganisationUserListModel {
   isError: boolean;
 }
 
-export interface  Organisation {
+export interface Organisation {
   sraId?: string;
   organisationIdentifier: string;
   contactInformation: OrganisationAddress[];
@@ -48,22 +48,22 @@ export interface  Organisation {
 }
 
 export class OrganisationVM {
-  organisationId: string;
-  status: string;
-  admin: string;
-  adminEmail: string;
-  addressLine1: string;
-  addressLine2: string;
-  postCode?: string;
-  townCity: string;
-  county: string;
-  name: string;
-  view: string;
-  pbaNumber: any[];
-  dxNumber: any[];
-  sraId?: string;
-  isAccLoaded?: boolean;
-  accountDetails?: object
+  public organisationId: string;
+  public status: string;
+  public admin: string;
+  public adminEmail: string;
+  public addressLine1: string;
+  public addressLine2: string;
+  public postCode?: string;
+  public townCity: string;
+  public county: string;
+  public name: string;
+  public view: string;
+  public pbaNumber: any[];
+  public dxNumber: any[];
+  public sraId?: string;
+  public isAccLoaded?: boolean;
+  public accountDetails?: object
 }
 
 export interface OrganisationSummary extends OrganisationVM {
