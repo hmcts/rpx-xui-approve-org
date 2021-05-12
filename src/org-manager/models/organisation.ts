@@ -5,7 +5,7 @@ export interface OrganisationAddress {
   addressLine2: string;
   townCity: string;
   county: string;
-  dxAddress: [OrganisationDxAddress];
+  dxAddress: OrganisationDxAddress[];
   postCode?: string;
   }
 
@@ -40,11 +40,11 @@ export interface OrganisationUserListModel {
 export interface  Organisation {
   sraId?: string;
   organisationIdentifier: string;
-  contactInformation: [OrganisationAddress];
+  contactInformation: OrganisationAddress[];
   superUser: OrganisationSuperUser;
   status: string;
   name: string;
-  paymentAccount: [any];
+  paymentAccount: any[];
 }
 
 export class OrganisationVM {
@@ -59,12 +59,11 @@ export class OrganisationVM {
   county: string;
   name: string;
   view: string;
-  pbaNumber: [any];
-  dxNumber: [any];
+  pbaNumber: any[];
+  dxNumber: any[];
   sraId?: string;
   isAccLoaded?: boolean;
   accountDetails?: object
-
 }
 
 export interface OrganisationSummary extends OrganisationVM {
