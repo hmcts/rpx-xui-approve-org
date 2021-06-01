@@ -40,7 +40,7 @@ const config = {
       browserName: 'chrome',
       version: 'latest',
       platform: 'Windows 10',
-      name: 'chrome-tests',
+      name: 'chrome-win-tests',
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
@@ -58,40 +58,61 @@ const config = {
       maxInstances: 1
     },
 
+    // {
+    //   browserName: 'internet explorer',
+    //   platform: 'Windows 10',
+    //   version: '11.285',
+    //   name: 'IE-TEST',
+    //   tunnelIdentifier: 'reformtunnel',
+    //   extendedDebugging: true,
+    //   sharedTestFiles: false,
+    //   maxInstances: 1
+    // },
+
     {
-      browserName: 'internet explorer',
-      platform: 'Windows 10',
-      version: 'latest',
-      name: 'IE-TEST',
+      browserName: 'safari',
+      platform: 'macOS 10.15',
+      version: '13.1',
+      name: 'Safari-TEST',
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
       maxInstances: 1
 
-    }
+    },
 
-    // {
-    //   browserName: 'safari',
-    //   platform: 'macOS 10.13',
-    //   version: '11',
-    //   name: 'Safari-TEST',
-    //   tunnelIdentifier: 'reformtunnel',
-    //   extendedDebugging: true,
-    //   sharedTestFiles: false,
-    //   maxInstances: 1
-    //
-    // },
+    {
+      browserName: 'MicrosoftEdge',
+      platform: 'macOS 10.15',
+      version: '90.0',
+      name: 'chromium-tests',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      maxInstances: 1
+    },
 
-    // {
-    //   browserName: 'MicrosoftEdge',
-    //   version: '18.17763',
-    //   platform: 'Windows 10',
-    //   name: 'chromium-tests',
-    //   tunnelIdentifier: 'reformtunnel',
-    //   extendedDebugging: true,
-    //   sharedTestFiles: false,
-    //   maxInstances: 1
-    // }
+    {
+      browserName: 'chrome',
+      version: 'latest',
+      platform: 'macOS 10.15',
+      name: 'chrome-mac-tests',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      maxInstances: 1
+    },
+
+    {
+      browserName: 'firefox',
+      version: 'latest',
+      platform: 'macOS 10.15',
+      name: 'ff-mac-tests',
+      tunnelIdentifier: 'reformtunnel',
+      extendedDebugging: true,
+      sharedTestFiles: false,
+      maxInstances: 1
+    },
   ],
 
 
