@@ -15,5 +15,12 @@ nodejs:
         - ao-s2s-client-secret
         - ao-idam-client-secret
         - launch-darkly-client-id
+  autoscaling:
+    enabled: false
 redis:
   enabled: true
+idam-pr:
+  enabled: true
+  redirect_uris:
+    XUIAO:
+      - https://${SERVICE_FQDN}/oauth2/callback

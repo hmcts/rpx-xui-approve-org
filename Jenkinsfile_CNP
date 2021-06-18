@@ -22,7 +22,6 @@ def product   = "xui"
 def component = "ao-webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
-def deployToAatOnly = false  // set to true if only deploy upto AAT, set to false will deploy all the way to production
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -54,41 +53,11 @@ withPipeline(type, product, component) {
 
 
     enablePactAs([
-      AppPipelineDsl.PactRoles.CONSUMER
+      AppPipelineDsl.PactRoles.CONSUMER,
     ])
-
-    after('checkout') {
-      yarnBuilder.yarn('cache clean')
-    }
-
-    if (deployToAatOnly) {
-      before('buildinfra:prod') {
-        currentBuild.result = 'SUCCESS'
-        currentBuild.description = "SUCCESS TILL AAT"
-        error 'XUI  projects are not authorised to be in production environments yet.'
-      }
-    }
 
     after('build') {
         yarnBuilder.yarn('build')
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/lint/node/",
-            reportFiles          : 'index.html',
-            reportName           : 'node lint Report'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/lint/ng/",
-            reportFiles          : 'index.html',
-            reportName           : 'ng lint Report'
-        ])
     }
 
     after('test') {
@@ -223,13 +192,6 @@ withPipeline(type, product, component) {
             reportDir            : "reports/tests/ngIntegration/",
             reportFiles          : 'index.html',
             reportName           : 'AAt NG Integration Test'
-        ])
-    }
-
-    onMaster() {
-        env.PACT_BRANCH_NAME = 'master'
-        enablePactAs([
-                AppPipelineDsl.PactRoles.CONSUMER
         ])
     }
 }

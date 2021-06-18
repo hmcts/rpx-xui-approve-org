@@ -23,7 +23,7 @@
     "build:ng": "ng build",
     "test:ng": "ng test",
     "test:coverage": "echo 'not implemented'",
-    "test:a11y": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/protractor.conf.js",
+    "test:a11y": "webdriver-manager update --gecko=false --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/accessibility/config/protractor.conf.js",
     "lint": "yarn lint:ng",
     "lint:node": "cd api && yarn lint",
     "lint:ng": "ng lint",
@@ -32,8 +32,8 @@
     "pre-push": "yarn lint && yarn build:prod && ng test organisation-manager --code-coverage",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "test": "yarn test:ng",
-    "test:crossbrowser": "webdriver-manager update && protractor ./test/e2e/config/crossbrowser.conf.js",
-    "test:smoke": "sh whitelist.sh && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",
+    "test:crossbrowser": "protractor ./test/e2e/config/crossbrowser.conf.js",
+    "test:smoke": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js",
     "test:smoke:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/smoke.conf.js --local",
     "test:functional": "yarn test:api && yarn test:ngIntegration && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js",
     "test:functional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
@@ -42,6 +42,7 @@
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/**/*.spec.ts",
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error node -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
+    "test:can-i-deploy:consumer": "export VERSION=$(git rev-parse --short HEAD) && SSL_CERT_FILE=test/pact/cer/ca-bundle.crt pact-broker can-i-deploy --pacticipant 'xui_approveorg' --version ${VERSION} --broker-base-url https://pact-broker.platform.hmcts.net",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone"
@@ -202,6 +203,8 @@
     "**/**/bl": "^4.0.3",
     "**/**/node-forge": "^0.10.0",
     "**/**/ini": "^1.3.6",
-    "**/**/elliptic": "^6.5.4"
+    "**/**/elliptic": "^6.5.4",
+    "**/**/y18n": "^3.2.2",
+    "**/**/jose": "1.28.1"
   }
 }

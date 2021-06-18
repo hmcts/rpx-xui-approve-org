@@ -80,15 +80,6 @@ const organisations: Organisation[] = [
     sraId: somethingLike('sraId'),
     sraRegulated: somethingLike(true),
     status: somethingLike('success'),
-    contactInformation: {
-      addressLine1: somethingLike('abc'),
-      addressLine2: somethingLike('abc'),
-      addressLine3: somethingLike('abc'),
-      country: somethingLike('UK'),
-      county: somethingLike('county'),
-      postCode: somethingLike('POSTCODE'),
-      townCity: somethingLike('Town/City')
-    },
     superUser: {
       firstName: somethingLike("Joe"),
       lastName: somethingLike("Bloggs"),
