@@ -63,7 +63,7 @@ export class OrganisationVM {
   public dxNumber: any[];
   public sraId?: string;
   public isAccLoaded?: boolean;
-  public accountDetails?: object
+  public accountDetails?: object;
 }
 
 export interface OrganisationSummary extends OrganisationVM {

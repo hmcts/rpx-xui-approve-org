@@ -1,1 +1,1 @@
-export * from './users-approval.guard'
+export * from './users-approval.guard';
