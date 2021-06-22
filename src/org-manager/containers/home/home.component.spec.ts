@@ -1,9 +1,15 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { combineReducers, StoreModule } from '@ngrx/store';
 
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromOrganisation from '../../../org-manager/store';
+import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
 
 @Component({
@@ -35,8 +41,17 @@ describe('HomeComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule.withRoutes(MOCK_ROUTES) ],
-      declarations: [ HomeComponent, MockComponent ]
+      imports: [
+        RouterTestingModule.withRoutes(MOCK_ROUTES),
+        FormsModule,
+        ReactiveFormsModule,
+        ExuiCommonLibModule,
+        StoreModule.forRoot({
+          ...fromRoot.reducers,
+          feature: combineReducers(fromOrganisation.reducers)
+        }),
+      ],
+      declarations: [ HomeComponent, SearchOrganisationsFormComponent, MockComponent ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
