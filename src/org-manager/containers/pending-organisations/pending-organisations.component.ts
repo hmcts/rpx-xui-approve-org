@@ -1,13 +1,10 @@
-import 'rxjs/add/observable/of';
-
 import { Component, OnInit } from '@angular/core';
-import { GovukTableColumnConfig } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/components/gov-uk-table/gov-uk-table.component';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
+import { FilterOrganisationsPipe } from 'src/org-manager/pipes';
 
 import * as fromStore from '../../../org-manager/store';
-import { PendingOverviewColumnConfig } from '../../config/pending-overview.config';
 import { OrganisationVM } from '../../models/organisation';
 import * as fromOrganisation from '../../store/';
 
@@ -17,16 +14,15 @@ import * as fromOrganisation from '../../store/';
 })
 
 export class PendingOrganisationsComponent implements OnInit {
-  public columnConfig: GovukTableColumnConfig[];
-  public pendingOrgs$: Observable<OrganisationVM[]>;
-
   public loaded$: Observable<boolean>;
-  public pendingSearchString$: Observable<string>;
+  public searchString: string = '';
+  public filteredOrgs: OrganisationVM[];
+  public filteredOrgsCount: number;
 
-  public activeOrgsCount$: Observable<number>;
-  public activeLoaded$: Observable<boolean>;
+  private readonly filter: FilterOrganisationsPipe = new FilterOrganisationsPipe();
+  private orgs: OrganisationVM[];
 
-  constructor(public store: Store<fromStore.OrganisationRootState>) {}
+  constructor(private readonly store: Store<fromStore.OrganisationRootState>) {}
 
   public ngOnInit(): void {
     this.loaded$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
@@ -35,23 +31,24 @@ export class PendingOrganisationsComponent implements OnInit {
         this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
       }
     });
-
-    this.activeLoaded$ = this.store.pipe(select(fromOrganisation.getActiveLoaded));
-    this.activeLoaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
-      if (!loaded) {
-        this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
-      }
+    this.store.pipe(select(fromStore.getPendingOrganisationsArray)).subscribe(orgs => {
+      this.orgs = orgs;
+      this.doFiltering();
     });
-
-    this.activeOrgsCount$ = this.store.pipe(select(fromOrganisation.activeOrganisationsCount));
-    this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
-    this.columnConfig = PendingOverviewColumnConfig;
+    // this.columnConfig = PendingOverviewColumnConfig;
     this.store.dispatch(new fromStore.ClearErrors());
-    this.pendingSearchString$ = this.store.pipe(select(fromOrganisation.getPendingSearchString));
+    this.store.pipe(select(fromOrganisation.getSearchString)).subscribe(str => {
+      this.searchString = str;
+      this.doFiltering();
+    });
   }
 
-  public submitSearch(searchString: string) {
-    this.store.dispatch(new fromOrganisation.UpdatePendingOrganisationsSearchString(searchString));
+  private doFiltering(): void {
+    if (this.orgs && this.searchString) {
+      this.filteredOrgs = this.filter.transform(this.orgs, this.searchString);
+    } else {
+      this.filteredOrgs = this.orgs;
+    }
+    this.filteredOrgsCount = (this.filteredOrgs || []).length;
   }
-
 }
