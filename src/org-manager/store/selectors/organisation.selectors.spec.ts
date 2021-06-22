@@ -21,7 +21,8 @@ const organisationState = {
   orgForReview: null,
   organisationUsersList: { users: null, isError: false },
   showOrganisationDetailsUserTab: {orgId: null, showUserTab: false},
-  organisationDeletable: false
+  organisationDeletable: false,
+  searchString: ''
 };
 
 describe('Organisation selectors', () => {
@@ -168,6 +169,16 @@ describe('Organisation selectors', () => {
         result = value;
       });
       expect(result).toEqual(false);
+    });
+  });
+
+  describe('getSearchString', () => {
+    it('should return string', () => {
+      let result;
+      store.pipe(select(fromSelectors.getSearchString)).subscribe(value => {
+        result = value;
+      });
+      expect(result).toEqual('');
     });
   });
 });

@@ -19,6 +19,7 @@ export interface OrganisationState {
   orgForReview: OrganisationVM | null;
   showOrganisationDetailsUserTab: {orgId: string; showUserTab: boolean};
   organisationDeletable: boolean;
+  searchString: string;
 }
 
 export const initialState: OrganisationState = {
@@ -28,7 +29,8 @@ export const initialState: OrganisationState = {
   errorMessage: '',
   orgForReview: null,
   showOrganisationDetailsUserTab: {orgId: null, showUserTab: false},
-  organisationDeletable: false
+  organisationDeletable: false,
+  searchString: ''
 };
 
 export function reducer(
@@ -399,6 +401,14 @@ export function reducer(
       return {
         ...state,
         organisationDeletable
+      };
+    }
+
+
+    case fromActions.OrgActionTypes.UPDATE_ORGANISATIONS_SEARCH_STRING: {
+      return {
+        ...state,
+        searchString: action.payload
       };
     }
 
