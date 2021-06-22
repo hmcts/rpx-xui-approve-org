@@ -64,6 +64,8 @@ export class OrganisationVM {
   public sraId?: string;
   public isAccLoaded?: boolean;
   public accountDetails?: object;
+  public dateReceived?: string;
+  public dateApproved?: string;
 }
 
 export interface OrganisationSummary extends OrganisationVM {
