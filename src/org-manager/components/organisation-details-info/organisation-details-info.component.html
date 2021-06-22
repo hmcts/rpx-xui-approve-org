@@ -17,17 +17,7 @@
           Address
        </dt>
        <dd class="govuk-check-your-answers__answer">
-          {{org.addressLine1}}<br>
-          <div *ngIf='org.addressLine2'>
-              {{org.addressLine2}}<br>
-          </div>
-          {{org.townCity}}<br>
-          <div *ngIf='org.county'>
-             {{org.county}}<br>
-          </div>
-           <div *ngIf='org.postCode'>
-               {{org.postCode}}<br>
-           </div>
+         <app-org-address [organisation]="org"></app-org-address>
        </dd>
        <dd class="govuk-check-your-answers__change">
        </dd>

@@ -2,11 +2,13 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
-import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisations.pipe';
+
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromOrganisation from '../../../org-manager/store/';
-import {ActiveOrganisationsComponent} from './active-organisations.component';
+import { OrganisationAddressComponent } from '../../components/organisation-address';
+import { FilterOrganisationsPipe } from '../../pipes/filter-organisations.pipe';
+import { ActiveOrganisationsComponent } from './active-organisations.component';
 
 describe('Active Organisation', () => {
   let component: ActiveOrganisationsComponent;
@@ -21,7 +23,9 @@ describe('Active Organisation', () => {
         }),
       ],
       declarations: [
-        ActiveOrganisationsComponent, FilterOrganisationsPipe
+        ActiveOrganisationsComponent,
+        FilterOrganisationsPipe,
+        OrganisationAddressComponent
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
