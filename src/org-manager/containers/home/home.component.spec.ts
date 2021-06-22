@@ -5,10 +5,11 @@ import { By } from '@angular/platform-browser';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { combineReducers, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisation from '../../../org-manager/store';
+import { OrgActionTypes } from '../../../org-manager/store';
 import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
 
@@ -38,6 +39,7 @@ describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
   let router: Router;
+  let store: Store<fromOrganisation.OrganisationRootState>;
 
   beforeEach((() => {
     TestBed.configureTestingModule({
@@ -57,6 +59,8 @@ describe('HomeComponent', () => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     router = TestBed.get(Router);
+    store = TestBed.get(Store);
+    spyOn(store, 'dispatch').and.callThrough();
 
     fixture.detectChanges();
   }));
@@ -95,5 +99,14 @@ describe('HomeComponent', () => {
       expect(selectedTab.nativeElement.textContent.trim()).toEqual(CHOSEN_TAB.label);
     });
   }));
+
+  it('should perform a search when the search form is submitted', () => {
+    const SEARCH_STRING = `Bob's Solicitors`;
+    component.submitSearch(SEARCH_STRING);
+    expect(store.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
+      payload: SEARCH_STRING,
+      type: OrgActionTypes.UPDATE_ORGANISATIONS_SEARCH_STRING
+    }));
+  });
 
 });
