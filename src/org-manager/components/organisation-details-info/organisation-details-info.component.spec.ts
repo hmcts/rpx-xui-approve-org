@@ -1,8 +1,10 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterModule} from '@angular/router';
-import {RouterTestingModule} from '@angular/router/testing';
-import {OrganisationVM} from 'src/org-manager/models/organisation';
-import {OrganisationDetailsInfoComponent} from './organisation-details-info.component';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterModule } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { OrganisationVM } from '../../models/organisation';
+import { OrganisationAddressComponent } from '../organisation-address';
+import { OrganisationDetailsInfoComponent } from './organisation-details-info.component';
 
 describe('OrganisationDetailsInfoComponent', () => {
   let component: OrganisationDetailsInfoComponent;
@@ -35,7 +37,7 @@ describe('OrganisationDetailsInfoComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, RouterTestingModule.withRoutes([])],
-      declarations: [OrganisationDetailsInfoComponent]
+      declarations: [OrganisationDetailsInfoComponent, OrganisationAddressComponent]
     })
       .compileComponents();
   }));
