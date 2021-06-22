@@ -1,5 +1,6 @@
 <h2 class="govuk-heading-l">
   Active organisations
+  <span *ngIf="(activeOrgsCount$ | async) as activeOrgCount">({{activeOrgCount}})</span>
 </h2>
 <ng-container *ngIf="{loading: loading$ | async, activeSearchString: activeSearchString$ | async, orgs: orgs$ | async  } as data">
 
@@ -8,10 +9,10 @@
   <table class="govuk-table" *ngIf="!data.loading; else loading">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th class="govuk-table__header" scope="col">Name</th>
+        <th class="govuk-table__header" scope="col">Organisation</th>
         <th class="govuk-table__header" scope="col">Address</th>
         <th class="govuk-table__header" scope="col">Administrator</th>
-        <th class="govuk-table__header" scope="col">Status</th>
+        <th class="govuk-table__header" scope="col">Date approved</th>
         <th class="govuk-table__header" scope="col"></th>
       </tr>
       <tr class="govuk-table__row" *ngFor="let org of data.orgs | filterOrganisations: data.activeSearchString">
@@ -20,24 +21,14 @@
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
         </td>
         <td class="govuk-table__cell">
-          {{org.addressLine1}}<br>
-          <div *ngIf='org.addressLine2'>
-            {{org.addressLine2}}<br>
-          </div>
-          {{org.townCity}}<br>
-          <div *ngIf='org.county'>
-            {{org.county}}<br>
-          </div>
-          <div *ngIf='org.postCode'>
-            {{org.postCode}}<br>
-          </div>
+          <app-org-address [organisation]="org"></app-org-address>
         </td>
         <td class="govuk-table__cell">
           {{org.admin}}<br>
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
         </td>
         <td class="govuk-table__cell">
-          <span class="hmcts-badge hmcts-badge--green">{{org.status}}</span>
+          {{org.dateApproved | date:'dd/MM/yyyy'}}
         </td>
         <td class="govuk-table__cell">
           <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
