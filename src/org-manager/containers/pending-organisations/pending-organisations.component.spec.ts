@@ -1,10 +1,10 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 
 import * as fromRoot from '../../../app/store/reducers';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import * as fromStore from '../../../org-manager/store';
 import { OrganisationAddressComponent } from '../../components/organisation-address';
 import { FilterOrganisationsPipe } from '../../pipes';
 import { PendingOrganisationsComponent } from './pending-organisations.component';
@@ -12,7 +12,7 @@ import { PendingOrganisationsComponent } from './pending-organisations.component
 describe('PendingOrganisationComponent', () => {
   let component: PendingOrganisationsComponent;
   let fixture: ComponentFixture<PendingOrganisationsComponent>;
-  let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+  let store: Store<fromStore.OrganisationRootState>;
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
