@@ -1,12 +1,13 @@
 <h2 class="govuk-heading-l">
   Active organisations
-  <span *ngIf="(activeOrgsCount$ | async) as activeOrgCount">({{activeOrgCount}})</span>
+  <ng-container *ngIf="(loaded$ | async)">
+    ({{filteredOrgsCount}}<span *ngIf="searchString"> found</span>)
+  </ng-container>
 </h2>
-<ng-container *ngIf="{loading: loading$ | async, activeSearchString: activeSearchString$ | async, orgs: orgs$ | async  } as data">
 
-  <app-search-organisations-form *ngIf="!data.loading" [searchString]="data.activeSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
-  
-  <table class="govuk-table" *ngIf="!data.loading; else loading">
+<ng-container *ngIf="(loaded$ | async); else loading">
+
+  <table class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th class="govuk-table__header" scope="col">Organisation</th>
@@ -15,7 +16,7 @@
         <th class="govuk-table__header" scope="col">Date approved</th>
         <th class="govuk-table__header" scope="col"></th>
       </tr>
-      <tr class="govuk-table__row" *ngFor="let org of data.orgs | filterOrganisations: data.activeSearchString">
+      <tr class="govuk-table__row govuk-radios" *ngFor="let org of filteredOrgs">
         <td class="govuk-table__cell">
           {{org.name}}<br>
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
@@ -28,7 +29,7 @@
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
         </td>
         <td class="govuk-table__cell">
-          {{org.dateApproved | date:'dd/MM/yyyy'}}
+          {{org.dateReceived | date:'dd/MM/yyyy'}}
         </td>
         <td class="govuk-table__cell">
           <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
@@ -36,7 +37,9 @@
       </tr>
     </thead>
   </table>
-  <ng-template #loading>
-    <h3 class="govuk-heading-s">Loading active organisations...</h3>
-  </ng-template>
+  
 </ng-container>
+
+<ng-template #loading>
+  <h3 class="govuk-heading-s">Loading active organisations...</h3>
+</ng-template>
