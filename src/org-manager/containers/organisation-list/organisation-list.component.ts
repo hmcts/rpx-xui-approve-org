@@ -6,7 +6,6 @@ import { FilterOrganisationsPipe } from 'src/org-manager/pipes';
 
 import { OrganisationVM } from '../../models/organisation';
 import * as fromStore from '../../store';
-import * as fromOrganisation from '../../store';
 
 export abstract class OrganisationListComponent implements OnInit {
   private readonly filter: FilterOrganisationsPipe = new FilterOrganisationsPipe();
@@ -36,7 +35,7 @@ export abstract class OrganisationListComponent implements OnInit {
       this.doFiltering();
     });
     this.store.dispatch(new fromStore.ClearErrors());
-    this.store.pipe(select(fromOrganisation.getSearchString)).subscribe(str => {
+    this.store.pipe(select(fromStore.getSearchString)).subscribe(str => {
       this.searchString = str;
       this.doFiltering();
     });
