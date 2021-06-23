@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
 import { Action, MemoizedSelector, Store } from '@ngrx/store';
 
-import * as fromStore from '../../../org-manager/store';
-import * as fromOrganisation from '../../../org-manager/store/';
 import { OrganisationVM } from '../../models/organisation';
+import * as fromStore from '../../store';
 import { OrganisationListComponent } from './../organisation-list/organisation-list.component';
 
 /**
@@ -16,16 +15,16 @@ import { OrganisationListComponent } from './../organisation-list/organisation-l
 
 export class ActiveOrganisationsComponent extends OrganisationListComponent {
   public get loadedSelector(): MemoizedSelector<object, boolean> {
-    return fromOrganisation.getActiveLoaded;
+    return fromStore.getActiveLoaded;
   }
   public get loadAction(): Action {
-    return new fromOrganisation.LoadActiveOrganisation();
+    return new fromStore.LoadActiveOrganisation();
   }
   public get organisationsSelector(): MemoizedSelector<object, OrganisationVM[]> {
     return fromStore.getActiveOrganisationArray;
   }
 
-  constructor(protected readonly store: Store<fromOrganisation.OrganisationRootState>) {
+  constructor(protected readonly store: Store<fromStore.OrganisationRootState>) {
     super(store);
   }
 }
