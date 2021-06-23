@@ -11,11 +11,9 @@ function approveOrganisationBannerObjects() {
   this.submit_button= element(by.css("[class='div.govuk-button']"));
 
   this.approveorgBanner= element(by.xpath("//*[@id='content']/div"));
-  this.bannerMessageContainer = element(by.css('.hmcts-banner__message'));
-  this.bannerText= element(by.xpath("//div[@class='hmcts-banner__message']"));
-  this.activeOrganisationTextBanner = element(by.xpath("//div[@class='hmcts-banner__message']//span[contains(text(),'organisations are active')]")); 
   //this.checkNow= element(by.xpath("//a[contains(text(),'Check now.')]"));
-  this.checkNow= element(by.partialLinkText("Check no"));
+  // this.checkNow= element(by.partialLinkText("Check no"));
+  this.activeOrgsTab = element(by.partialLinkText("Active organisations"));
 
   this.selectCheckBox= element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[1]/div"));
   this.activate_button= element(by.xpath("//button[@class='govuk-button']"));
@@ -47,12 +45,6 @@ function approveOrganisationBannerObjects() {
   this.enterUrEmail = async function (email) {
     await this.emailAddress.sendKeys(email);
   };
-
-  this.validateBannerTextContains = async function(containsText){
-    await browserWaits.waitForElement(this.bannerMessageContainer);
-    const bannerText = await this.bannerMessageContainer.getText();
-    assert(bannerText.includes(containsText), bannerText + ' does not contains expected text => ' + containsText); 
-  }
 
   this.enterPassword = async function (password) {
     await this.password.sendKeys(password);

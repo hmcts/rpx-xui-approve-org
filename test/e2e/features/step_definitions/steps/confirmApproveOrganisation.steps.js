@@ -61,11 +61,11 @@ defineSupportCode(function ({ Given, When, Then,And }) {
   Then(/^I click to Back to Organisations link$/, { timeout: 600 * 1000 }, async function () {
     await expect(bannerPage.backtoOrganisations.isDisplayed()).to.eventually.be.true;
     await bannerPage.backtoOrganisations.click();
-    await browserWaits.waitForElement(element(by.css('.hmcts-banner')));
+    await expect(bannerPage.secondaryHeader.isDisplayed()).to.eventually.be.true;
     await expect(bannerPage.secondaryHeader.getText())
       .to
       .eventually
-      .equals('Organisations pending activation');
+      .equals('New registrations');
   });
 
 });
