@@ -5,7 +5,6 @@ import { Store, StoreModule } from '@ngrx/store';
 
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromOrganisation from '../../../org-manager/store/';
 import { OrganisationAddressComponent } from '../../components/organisation-address';
 import { FilterOrganisationsPipe } from '../../pipes/filter-organisations.pipe';
 import { ActiveOrganisationsComponent } from './active-organisations.component';
@@ -27,9 +26,7 @@ describe('Active Organisation', () => {
         FilterOrganisationsPipe,
         OrganisationAddressComponent
       ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ]
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     }).compileComponents();
     store = TestBed.get(Store);
 
@@ -38,14 +35,7 @@ describe('Active Organisation', () => {
     fixture.detectChanges();
   }));
 
-  it('should create compoent ', () => {
+  it('should create compoent', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should dispatch UpdateActiveOrganisationsSearchString action on submitSearch', () => {
-    const expectedAction = new fromOrganisation.UpdateActiveOrganisationsSearchString('');
-    spyOn(store, 'dispatch').and.callThrough();
-    component.submitSearch('');
-    expect(store.dispatch).toHaveBeenCalledWith(expectedAction);
   });
 });
