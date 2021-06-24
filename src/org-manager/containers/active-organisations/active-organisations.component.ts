@@ -11,8 +11,8 @@ import { OrganisationListComponent } from './../organisation-list/organisation-l
 @Component({
   selector: 'app-prd-org-overview-component',
   templateUrl: './active-organisations.component.html',
+  styleUrls: [ '../organisation-list/organisation-list.component.scss' ]
 })
-
 export class ActiveOrganisationsComponent extends OrganisationListComponent {
   public get loadedSelector(): MemoizedSelector<object, boolean> {
     return fromStore.getActiveLoaded;
