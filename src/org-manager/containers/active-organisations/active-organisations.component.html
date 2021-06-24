@@ -28,10 +28,10 @@
           {{org.admin}}<br>
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
         </td>
-        <td class="govuk-table__cell">
+        <td class="govuk-table__cell no-wrap">
           {{org.dateApproved | date:'dd/MM/yyyy'}}
         </td>
-        <td class="govuk-table__cell">
+        <td class="govuk-table__cell no-wrap">
           <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
         </td>
       </tr>
