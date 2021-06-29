@@ -14,6 +14,7 @@ export abstract class OrganisationListComponent implements OnInit {
   public searchString: string = '';
   public filteredOrgs: OrganisationVM[];
   public filteredOrgsCount: number;
+  public orgsCount: number;
 
   private orgs: OrganisationVM[];
 
@@ -48,5 +49,6 @@ export abstract class OrganisationListComponent implements OnInit {
       this.filteredOrgs = this.orgs;
     }
     this.filteredOrgsCount = (this.filteredOrgs || []).length;
+    this.orgsCount = (this.orgs || []).length;
   }
 }
