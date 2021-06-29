@@ -35,6 +35,12 @@
           <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
         </td>
       </tr>
+      <tr class="govuk-table__row" *ngIf="orgsCount === 0">
+        <td class="govuk-table__cell" colspan="5">There are no active organisations.</td>
+      </tr>
+      <tr class="govuk-table__row" *ngIf="orgsCount > 0 && filteredOrgsCount === 0">
+        <td class="govuk-table__cell" colspan="5">No organisations match your search.</td>
+      </tr>
     </thead>
   </table>
   
