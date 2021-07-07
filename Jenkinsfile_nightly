@@ -11,7 +11,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure")
+@Library("Infrastructure@ccd-1257")
 
 def type      = "nodejs"
 def product   = "xui"
@@ -42,12 +42,18 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    enableFortifyScan()
     // enableSecurityScan()
     enableFullFunctionalTest(30)
     enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     after('checkout') {sh 'yarn cache clean'}
+
+    before('fullFunctionalTest') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/java/Fortify Reports/**/*'
+    }
+    
     after('build') {
         sh 'npm run build'
         publishHTML([
