@@ -14,7 +14,7 @@ properties([
 @Library("Infrastructure@ccd-1257")
 
 def type      = "nodejs"
-def product   = "xui"
+def product   = "rpx"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 def vault = "rpx"
@@ -53,7 +53,7 @@ withNightlyPipeline(type, product, component) {
     before('fullFunctionalTest') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/test/java/Fortify Reports/**/*'
     }
-    
+
     after('build') {
         sh 'npm run build'
         publishHTML([
