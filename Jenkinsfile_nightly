@@ -11,7 +11,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@ccd-1257")
+@Library("Infrastructure")
 
 def type      = "nodejs"
 def product   = "rpx"
