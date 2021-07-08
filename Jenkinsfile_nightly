@@ -46,7 +46,7 @@ withNightlyPipeline(type, product, component) {
     // enableSecurityScan()
     enableFullFunctionalTest(30)
     enableMutationTest()
-    // enableCrossBrowserTest()
+    enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     after('checkout') {sh 'yarn cache clean'}
 
