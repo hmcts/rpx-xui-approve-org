@@ -9,6 +9,11 @@ export const getOrganisationsState = createSelector(
   fromOrganisation.getRootApproveOrgState,
   (state: fromOrganisation.OrganisationRootState) => (state && state.organisations) ? state.organisations : fromPendingOrganisations.initialState
 );
+
+export const getSearchString = createSelector(
+  getOrganisationsState,
+  (orgState) => orgState.searchString
+);
 // entry for Active Organisations
 export const getActiveOrganisationState = createSelector(
   getOrganisationsState,
