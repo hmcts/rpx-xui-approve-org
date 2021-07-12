@@ -1,5 +1,5 @@
-import {Component,  EventEmitter, OnInit, Output, Input} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-search-organisations-form',
@@ -17,13 +17,13 @@ export class SearchOrganisationsFormComponent implements OnInit {
     });
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.searchOrgForm.valid) {
       this.submitForm.emit(this.searchOrgForm.controls.search.value);
     }
   }
 
-  public onReset() {
+  public onReset(): void {
     this.searchOrgForm.controls.search.setValue('');
     this.onSubmit();
   }
