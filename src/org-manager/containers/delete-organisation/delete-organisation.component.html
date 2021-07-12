@@ -25,17 +25,7 @@
                   Address
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  {{orgForReview.addressLine1}}<br>
-                  <div *ngIf='orgForReview.addressLine2'>
-                    {{orgForReview.addressLine2}}<br>
-                  </div>
-                  {{orgForReview.townCity}}<br>
-                  <div *ngIf='orgForReview.county'>
-                    {{orgForReview.county}}<br>
-                  </div>
-                  <div *ngIf='orgForReview.postCode'>
-                    {{orgForReview?.postCode}}<br>
-                  </div>
+                  <app-org-address [organisation]="orgForReview"></app-org-address>
                 </dd>
 
               </div>
