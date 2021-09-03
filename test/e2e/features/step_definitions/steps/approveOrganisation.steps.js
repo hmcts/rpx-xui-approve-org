@@ -31,11 +31,11 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     Then(/^I Check the active Organisation banner appear$/, async function () {
-   
+
       CucumberReporter.AddMessage("Started step");
-      await browserWaits.waitForBrowserReadyState(120); 
+      await browserWaits.waitForBrowserReadyState(120);
       await browser.sleep(LONG_DELAY);
-      CucumberReporter.AddMessage("Completed LONG DALAY"); 
+      CucumberReporter.AddMessage("Completed LONG DALAY");
 
       await browserWaits.waitForElement(bannerPage.approveorgBanner);
       await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
@@ -73,5 +73,19 @@ defineSupportCode(function ({ Given, When, Then }) {
       .eventually
       .equals('Active organisations');
   });
+
+  Then(/^I delete the organisation Active Organisation$/, async function () {
+    browser.sleep(MID_DELAY);
+    await expect(bannerPage.viewOrg.isDisplayed()).to.eventually.be.true;
+    await bannerPage.viewOrg.click();
+    browser.sleep(MID_DELAY);
+
+    await expect(bannerPage.deleteOrganisation.isDisplayed()).to.eventually.be.true;
+    await bannerPage.deleteOrganisation.click();
+    browser.sleep(SHORT_DELAY);
+    await expect(bannerPage.deleteOrganisationWarning.isDisplayed()).to.eventually.be.true;
+    await bannerPage.deleteOrganisationWarning.click();
+  });
+
 
 });
