@@ -210,6 +210,7 @@
     "**/**/ssri": "6.0.2",
     "**/**/xmlhttprequest-ssl": "1.6.1",
     "**/**/browserslist": "4.16.5",
-    "**/**/path-parse": "1.0.7"
+    "**/**/path-parse": "1.0.7",
+    "**/**/normalize-url": "4.5.1"
   }
 }
