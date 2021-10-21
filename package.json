@@ -208,6 +208,7 @@
     "**/**/jose": "1.28.1",
     "**/**/ansi-regex": "5.0.1",
     "**/**/ssri": "6.0.2",
-    "**/**/xmlhttprequest-ssl": "1.6.1"
+    "**/**/xmlhttprequest-ssl": "1.6.1",
+    "**/**/hosted-git-info": "2.8.9"
   }
 }
