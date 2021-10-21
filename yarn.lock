@@ -427,10 +427,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@0.1.60":
-  version "0.1.60"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-0.1.60.tgz#8c8c6b336377f62fa43a67f0663e6d56549fd0bd"
-  integrity sha512-Ptpb14CM2/RNJmEmcn4jTTvXVqgJv+XXKoRqDF6ooivAsyEXhxhu57wHzyh6u3+XLVC2bbb/NrV5idxG5gyvhQ==
+"@hmcts/rpx-xui-common-lib@1.4.6-add-pagination-component":
+  version "1.4.6-add-pagination-component"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.6-add-pagination-component.tgz#10ed1c83deddedc3e0b45be59a3619a5eee9224b"
+  integrity sha512-TxnfSj72ci9KX39gOcYihZZwe7r3IXsKzGjF6iX8mhrB1Lo7xgJ7AY6uzy0k3iC+I0dhcEGwYLqTp4fVLDcMFQ==
   dependencies:
     tslib "^1.9.0"
 
@@ -7936,6 +7936,11 @@ ngx-logger@^4.0.3:
   dependencies:
     tslib "^1.9.0"
     vlq "^1.0.0"
+
+ngx-pagination@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/ngx-pagination/-/ngx-pagination-5.1.1.tgz#f8494da1e5eb0665382349a4d926c13a491bed21"
+  integrity sha512-KxHES+Dn6pbetytO9ng2GAdclmo4UcwzFmQyVPWh2xRPbAlv5/ezL2xnDVBFMqCoJQaZagvdQ+ZZFbqGWqAvCQ==
 
 nice-try@^1.0.4:
   version "1.0.5"

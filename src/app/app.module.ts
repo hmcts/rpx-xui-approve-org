@@ -41,6 +41,8 @@ import { EnvironmentService } from './services/environment.service';
 import {LogOutKeepAliveService} from './services/keep-alive/keep-alive.service';
 import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../models/environmentConfig.model'
 
+import { NgxPaginationModule } from 'ngx-pagination';
+
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
   : [];
@@ -70,7 +72,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       disableConsoleLogging: false
     }),
     ExuiCommonLibModule.forRoot(),
-    NgIdleKeepaliveModule.forRoot()
+    NgIdleKeepaliveModule.forRoot(),
+    NgxPaginationModule
   ],
   providers: [
     LogOutKeepAliveService,

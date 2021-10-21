@@ -5,7 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import {filter, take, takeWhile} from 'rxjs/operators';
 import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
-import { OrganisationUserListModel, OrganisationVM} from '../../models/organisation';
+import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
 import * as fromStore from '../../store';
 import {NavigateToDeleteOrganisation} from '../../store/actions/organisations.actions';
 
@@ -27,6 +27,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationAdminEmail: string;
   public isActiveOrg = false;
   public organisationDeletable = false;
+
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly userApprovalGuard: UserApprovalGuard) {}

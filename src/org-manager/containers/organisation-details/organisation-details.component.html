@@ -42,6 +42,7 @@
               <h1 class="govuk-heading-xl">Users</h1>
               <h3 class="govuk-heading-s" *ngIf="!data.userLists?.users">Loading...</h3>
               <xuilib-user-list  *ngIf="data.userLists?.users" [users]="data.userLists.users" (userClick)="onShowUserDetails($event)"></xuilib-user-list>
+            </div>
             </ng-template>
           </ng-container>
           <ng-template #showOrgDetails>
