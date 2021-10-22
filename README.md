@@ -69,7 +69,7 @@ values contained within values.preview.template.yaml and values.aat.template.yam
 # Setting up Secrets locally (Required)
 
 You need to setup secrets locally before you run the project. Why? - When you push this application
-up through AKS deployed through Flux to AAT, ITHC and Prod, the application will take in the secrets on these environments.
+up through AKS deployed through Flux to AAT, ITHC and Prod, the application will take in the secrets on these environments. 
 
 The developer needs to set these up locally, so that the developer can see any issues early in
 the development process, and not when the application is placed up onto the higher AKS environments.
