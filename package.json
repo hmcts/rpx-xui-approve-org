@@ -219,6 +219,7 @@
     "**/**/jszip": "3.7.0",
     "**/**/set-value": "4.0.1",
     "**/**/underscore": "1.12.1",
-    "**/**/handlebars": "4.7.7"
+    "**/**/handlebars": "4.7.7",
+    "**/**/passport-oauth2": "1.6.1"
   }
 }
