@@ -63,7 +63,7 @@
     "@hmcts/frontend": "0.0.41-alpha",
     "@hmcts/nodejs-healthcheck": "^1.6.0",
     "@hmcts/properties-volume": "^0.0.9",
-    "@hmcts/rpx-xui-common-lib": "1.4.6-add-pagination-component-r2",
+    "@hmcts/rpx-xui-common-lib": "1.4.6-add-pagination-component-r3",
     "@hmcts/rpx-xui-node-lib": "^2.24.4",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
