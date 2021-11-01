@@ -7,6 +7,7 @@ import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisati
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromOrganisation from '../../../org-manager/store/';
+import { PaginatePipe, PaginationService } from 'ngx-pagination';
 import { PendingOrganisationsComponent } from './pending-organisations.component';
 
 describe('PendingOrganisationComponent', () => {
@@ -23,9 +24,9 @@ describe('PendingOrganisationComponent', () => {
                     feature: combineReducers(fromOrganisationPendingStore.reducers),
                 }),
             ],
-            providers: [FormBuilder],
+            providers: [FormBuilder, PaginationService],
             declarations: [
-              PendingOrganisationsComponent, FilterOrganisationsPipe
+              PendingOrganisationsComponent, FilterOrganisationsPipe, PaginatePipe
             ],
             schemas: [
                 CUSTOM_ELEMENTS_SCHEMA
