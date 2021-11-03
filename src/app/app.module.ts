@@ -24,7 +24,7 @@ import { ROUTES } from './app.routes';
 
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
-import { ExuiCommonLibModule, LAUNCHDARKLYKEY } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
 import config from 'config';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
@@ -69,7 +69,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false
     }),
-    ExuiCommonLibModule.forRoot(),
+    ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
@@ -85,7 +85,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       deps: [EnvironmentService],
       multi: true
     },
-    { provide: LAUNCHDARKLYKEY, useFactory: launchDarklyClientIdFactory, deps: [ENVIRONMENT_CONFIG] },
+    { provide: FeatureToggleService, useClass: LaunchDarklyService },
   ],
   bootstrap: [AppComponent]
 })
