@@ -12,8 +12,7 @@
     <ng-container *ngIf="{pendingSearchString: pendingSearchString$ | async, pendingOrgs: pendingOrgs$ | async } as data">
      <ng-container *ngIf="(loaded$ | async); else loading">
       <app-search-organisations-form [searchString]="data.pendingSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
-      <div class="pagination-top"
-          attr.aria-label="{{ getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) }} results have been found" role="status">
+      <div class="pagination-top" *ngIf="(loaded$ | async) && getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) > pagination.page_size" attr.aria-label="{{ getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) }} results have been found" role="status">
           <span class="text-16" id="search-result-summary__text">Showing 
             <span class="govuk-!-font-weight-bold">{{ getFirstResult((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) }}</span>
             to

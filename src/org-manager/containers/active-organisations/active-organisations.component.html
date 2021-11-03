@@ -4,8 +4,7 @@
      <h1 class="hmcts-page-heading__title govuk-heading-xl">Active organisations</h1>
      <ng-container *ngIf="{loading: loading$ | async, activeSearchString: activeSearchString$ | async, orgs: orgs$ | async  } as data">
         <app-search-organisations-form *ngIf="!data.loading" [searchString]="data.activeSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
-        <div *ngIf="!data.loading" class="pagination-top"
-          attr.aria-label="{{ getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) }} results have been found" role="status">
+        <div class="pagination-top" *ngIf="!data.loading  && getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) > pagination.page_size" attr.aria-label="{{ getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) }} results have been found" role="status">
           <span class="text-16" id="search-result-summary__text">Showing 
             <span class="govuk-!-font-weight-bold">{{ getFirstResult((data.orgs | filterOrganisations: data.activeSearchString)) }}</span>
             to

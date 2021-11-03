@@ -70,29 +70,26 @@ export class PendingOrganisationsComponent implements OnInit {
   }
 
   public getFirstResult(orgs: OrganisationVM[]): number {
-    if (orgs) {
+    if (orgs && orgs.length > 0) {
       const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
-      if ((currentPage - 1) * this.pagination.page_size > orgs.length) {
-         return orgs.length;
+      if (currentPage === 1) {
+        return currentPage;
       }
-      return (currentPage - 1) * this.pagination.page_size;
+      return (currentPage - 1) * this.pagination.page_size + 1;
     }
     return 0;
   }
 
   public getLastResult(orgs: OrganisationVM[]): number {
-    if (orgs) {
+    if (orgs && orgs.length > 0) {
       const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
-      if ((currentPage) * this.pagination.page_size > orgs.length) {
-        return orgs.length;
-      }
       return (currentPage) * this.pagination.page_size;
     }
     return 0;
   }
 
   public getTotalResults(orgs: OrganisationVM[]): number {
-    if (orgs) {
+    if (orgs && orgs.length > 0) {
       return orgs.length;
     }
     return 0;
