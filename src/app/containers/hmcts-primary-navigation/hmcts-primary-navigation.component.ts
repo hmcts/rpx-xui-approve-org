@@ -23,6 +23,9 @@ export class HmctsPrimaryNavigationComponent {
     }
 
     public isFeatureNavEnabled$(navItem: NavItem): Observable<boolean> {
+        console.log('navItem', navItem);
+        console.log('isfeatureToggleable', navItem.feature.isfeatureToggleable);
+
         return navItem.feature.isfeatureToggleable ? this.featureToggleService.isEnabled(navItem.feature.featureName) : of(true);
     }
 }
