@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { NavItem } from '../../store';
@@ -8,7 +8,7 @@ import { NavItem } from '../../store';
     templateUrl: './hmcts-primary-navigation.component.html',
     styleUrls: ['./hmcts-primary-navigation.component.scss']
 })
-export class HmctsPrimaryNavigationComponent {
+export class HmctsPrimaryNavigationComponent implements OnInit {
 
     @Input() set userLoggedIn(value) {
         this.isUserLoggedIn = value;
@@ -20,6 +20,10 @@ export class HmctsPrimaryNavigationComponent {
 
     isUserLoggedIn: boolean;
     constructor(private featureToggleService: FeatureToggleService) {
+    }
+
+    ngOnInit(): void {
+      console.log('items', this.items);
     }
 
     public isFeatureNavEnabled$(navItem: NavItem): Observable<boolean> {
