@@ -1,5 +1,13 @@
 <ng-container *ngIf="org; else noOrg">
-  <h1 class="govuk-heading-xl">Organisation details</h1>
+  <ng-container *ngIf="org.status==='PENDING'; else showheading">
+    <h1 class="govuk-heading-xl">Registration details</h1>
+    <h2 class="govuk-heading-l">Organisation details</h2>
+    <strong style="display: inline-block" class="govuk-heading-s">Registration status</strong>
+    <span style="margin-left: 10px" class="hmcts-badge">PENDING</span>
+  </ng-container>
+  <ng-template #showheading>
+    <h1 class="govuk-heading-xl">Organisation details</h1>
+  </ng-template>
   <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview" *ngIf="org">
     <div class="govuk-check-your-answers__contents">
        <dt class="govuk-check-your-answers__question">
