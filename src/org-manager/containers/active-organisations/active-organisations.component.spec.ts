@@ -6,7 +6,8 @@ import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisati
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromOrganisation from '../../../org-manager/store/';
-import {ActiveOrganisationsComponent} from './active-organisations.component';
+import { ActiveOrganisationsComponent } from './active-organisations.component';
+import { PaginatePipe, PaginationService } from 'ngx-pagination';
 
 describe('Active Organisation', () => {
   let component: ActiveOrganisationsComponent;
@@ -20,8 +21,9 @@ describe('Active Organisation', () => {
           ...fromRoot.reducers
         }),
       ],
+      providers: [PaginationService],
       declarations: [
-        ActiveOrganisationsComponent, FilterOrganisationsPipe
+        ActiveOrganisationsComponent, FilterOrganisationsPipe, PaginatePipe
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
