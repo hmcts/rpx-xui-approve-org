@@ -22,7 +22,7 @@ import { effects, reducers } from './store';
     SharedModule,
     StoreModule.forFeature('orgState', reducers),
     EffectsModule.forFeature(effects),
-    ExuiCommonLibModule.forChild()
+    ExuiCommonLibModule
   ],
   exports: [...fromContainers.containers],
   declarations: [...fromContainers.containers, ...fromComponents.components, ...fromPipes.pipes],
