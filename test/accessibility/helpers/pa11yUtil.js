@@ -19,7 +19,7 @@ async function pa11ytest(test,actions,timeoutVal) {
     console.log("pally test with actions : " + test.test.title);
     console.log(actions);
 
-    let screenshotPath = process.env.PWD + "/" + conf.reportPath + 'assets/';
+    let screenshotPath = conf.reportPath + 'assets/';
     if (!fs.existsSync(screenshotPath)) {
         fs.mkdirSync(screenshotPath, { recursive: true });
     }

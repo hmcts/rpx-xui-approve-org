@@ -10,6 +10,8 @@ import * as fromRoot from '../../store';
 import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { CookieService } from 'ngx-cookie';
 import { AppUtils } from 'src/app/utils/app-utils';
+import { Router, RoutesRecognized } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -28,8 +30,23 @@ export class AppComponent implements OnInit {
     private readonly idleService: ManageSessionServices,
     private readonly environmentService: EnvironmentService,
     private readonly roleService: RoleService,
-    private readonly cookieService: CookieService
-  ) {}
+    private readonly cookieService: CookieService,
+    private readonly router: Router,
+    private readonly titleService: Title
+  ) {
+    this.router.events.subscribe((data) => {
+      if (data instanceof RoutesRecognized) {
+        let child = data.state.root;
+        do {
+          child = child.firstChild;
+        } while (child.firstChild);
+        const d = child.data;
+        if (d.title) {
+          this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
+        }
+      }
+    });
+  }
 
   public ngOnInit() {
     this.environmentService.getEnv$().subscribe(env => {
@@ -46,11 +63,6 @@ export class AppComponent implements OnInit {
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
     this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
-    this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
-      if (rootState) {
-        this.store.dispatch(new fromRoot.SetPageTitle(rootState.state.url));
-      }
-    });
 
     this.idleStart();
     this.idleService.appStateChanges().subscribe(value => {
