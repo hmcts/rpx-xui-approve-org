@@ -42,20 +42,6 @@ export function reducer(
   action: fromAction.appActions
 ): AppState {
   switch (action.type) {
-    case fromAction.SET_PAGE_TITLE: {
-      const pageTitle = AppUtils.setPageTitle(action.payload);
-      return {
-        ...state,
-        pageTitle
-      };
-    }
-    case fromAction.SET_PAGE_TITLE_ERRORS: {
-      const pageTitle = `Error: ${state.pageTitle}`;
-      return {
-        ...state,
-        pageTitle
-      };
-    }
     case fromAction.LOGOUT: {
       return {
         ...state,
