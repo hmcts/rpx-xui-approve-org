@@ -11,7 +11,7 @@ import { HealthCheckService } from './services/health-check.service';
 @NgModule( {
   imports: [
     ReactiveFormsModule,
-    ExuiCommonLibModule.forChild()
+    ExuiCommonLibModule
   ],
   exports: [
     ReactiveFormsModule,
