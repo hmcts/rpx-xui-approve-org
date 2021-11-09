@@ -61,7 +61,7 @@ function generateReport(passCount, failCount, tests) {
     consoleReport(reportJson);
 
     let sourceReport = __dirname + '/Report.html';
-    let destDir = process.env.PWD + "/" + conf.reportPath;
+    let destDir = conf.reportPath;
     if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir);
     }
@@ -90,7 +90,7 @@ function getTestDetails(test) {
 
 
 function copyResources() {
-    let resourceDir = process.env.PWD + "/" + conf.reportPath + 'resources/';
+    let resourceDir = conf.reportPath + 'resources/';
     let cssDir = resourceDir + 'css/';
     if (!fs.existsSync(cssDir)) {
         fs.mkdirSync(cssDir, { recursive: true });
