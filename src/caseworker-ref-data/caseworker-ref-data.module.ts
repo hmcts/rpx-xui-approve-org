@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     caseWorkerRefDataRouting,
     SharedModule,
-    ExuiCommonLibModule.forChild(),
+    ExuiCommonLibModule,
     FormsModule
   ],
   exports: [...fromContainers.containers],
