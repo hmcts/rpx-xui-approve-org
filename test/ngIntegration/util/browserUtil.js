@@ -47,7 +47,7 @@ class BrowserUtil {
     let startTime = new Date();
     let elapsedTime = 0;
     let ldDone = false;
-    let ldUrl = "";
+    let ldUrl = null
     while (!ldDone && elapsedTime < 15) {
       let perf = await browser.executeScript("return window.performance.getEntriesByType('resource')");
       perf.forEach(async (perfitem) => {
@@ -59,8 +59,11 @@ class BrowserUtil {
       });
       elapsedTime = (new Date() - startTime) / 1000;
     }
-
-    return (await axios.get(ldUrl)).data;
+    if (ldUrl){
+      return (await axios.get(ldUrl)).data;
+    }else{
+      return {message: "Test : Launch darkly API call is not found in network calls"};
+    }
   }
 
 

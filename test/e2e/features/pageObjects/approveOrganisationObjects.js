@@ -13,7 +13,7 @@ function approveOrganisationBannerObjects() {
   this.approveorgBanner= element(by.xpath("//*[@id='content']/div"));
   this.bannerMessageContainer = element(by.css('.hmcts-banner__message'));
   this.bannerText= element(by.xpath("//div[@class='hmcts-banner__message']"));
-  this.activeOrganisationTextBanner = element(by.xpath("//div[@class='hmcts-banner__message']//span[contains(text(),'organisations are active')]")); 
+  this.activeOrganisationTextBanner = element(by.xpath("//div[@class='hmcts-banner__message']//span[contains(text(),'organisations are active')]"));
   //this.checkNow= element(by.xpath("//a[contains(text(),'Check now.')]"));
   this.checkNow= element(by.partialLinkText("Check no"));
   this.activeOrganisationPageHeading = element(by.xpath("//h1[contains(@class,'hmcts-page-heading__title') and contains(text(),'Active organisations')]"));
@@ -32,11 +32,10 @@ function approveOrganisationBannerObjects() {
   this.approveOrgName= element(by.xpath("//h2[@class='govuk-heading-m']"));
   this.approveAdministratorText= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[2]/dd/div[2]"));
   this.approveAddress= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[1]/dd"));
+  this.deleteOrganisation = element(by.xpath("//*[@id='content']/div/div/app-org-details-info/button"));
+  this.deleteOrganisationWarning= element(by.xpath("//button[contains(text(),'Delete organisation')]"));
+  this.viewOrg= element(by.xpath("//thead/tr[2]/td[5]/a[1]"));
 
-
-//*[@id="main-content"]/form/table/thead/tr[2]/td[1]/div
-
-  //*[@id="G33DM47"]
 
   this.givenIAmUnauthenticatedUser = async function () {
     await this.enterUrEmail("test@gmail.com");
@@ -51,7 +50,7 @@ function approveOrganisationBannerObjects() {
   this.validateBannerTextContains = async function(containsText){
     await browserWaits.waitForElement(this.bannerMessageContainer);
     const bannerText = await this.bannerMessageContainer.getText();
-    assert(bannerText.includes(containsText), bannerText + ' does not contains expected text => ' + containsText); 
+    assert(bannerText.includes(containsText), bannerText + ' does not contains expected text => ' + containsText);
   }
 
   this.enterPassword = async function (password) {
