@@ -111,7 +111,7 @@ export const navItemsArray = [{
   href: '/caseworker-details',
   active: false,
   feature: {
-    isfeatureToggleable: true,
+    isfeatureToggleable: false,
     featureName: featureNames.caseworkerDetails
   },
   orderId: 1
