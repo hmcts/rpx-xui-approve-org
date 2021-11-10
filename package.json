@@ -64,7 +64,7 @@
     "@hmcts/nodejs-healthcheck": "^1.6.0",
     "@hmcts/properties-volume": "^0.0.9",
     "@hmcts/rpx-xui-common-lib": "0.1.60",
-    "@hmcts/rpx-xui-node-lib": "^2.24.4",
+    "@hmcts/rpx-xui-node-lib": "^2.25.5",
     "@ng-idle/core": "^8.0.0-beta.4",
     "@ng-idle/keepalive": "^8.0.0-beta.4",
     "@ngrx/effects": "^7.4.0",
@@ -78,8 +78,8 @@
     "@types/passport": "^1.0.3",
     "applicationinsights": "^1.5.0",
     "applicationinsights-js": "^1.0.20",
-    "base-64": "^0.1.0",
     "axios": "^0.21.2",
+    "base-64": "^0.1.0",
     "config": "^3.2.4",
     "connect-redis": "^4.0.4",
     "cookie-parser": "^1.4.4",
@@ -218,7 +218,5 @@
     "**/**/glob-parent": "5.1.2",
     "**/**/url-parse": "1.5.2",
     "**/**/set-value": "4.0.1"
- 
-
   }
 }
