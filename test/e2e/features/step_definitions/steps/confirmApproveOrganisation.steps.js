@@ -58,6 +58,15 @@ defineSupportCode(function ({ Given, When, Then,And }) {
       .contains('Organisation approved successfully');
   });
 
+  Then(/^I see the Confirmation screen of Deleted Organisation$/, { timeout: 600 * 1000 }, async function () {
+    await browserWaits.waitForElement(bannerPage.confirmationScreen);
+    await expect(bannerPage.confirmationScreen.isDisplayed()).to.eventually.be.true;
+    await expect(bannerPage.confirmationScreen.getText())
+      .to
+      .eventually
+      .contains('has been deleted');
+  });
+
   Then(/^I click to Back to Organisations link$/, { timeout: 600 * 1000 }, async function () {
     await expect(bannerPage.backtoOrganisations.isDisplayed()).to.eventually.be.true;
     await bannerPage.backtoOrganisations.click();
@@ -68,4 +77,4 @@ defineSupportCode(function ({ Given, When, Then,And }) {
       .equals('Organisations pending activation');
   });
 
-});
+});//*[@id="main-content"]/div/div/div

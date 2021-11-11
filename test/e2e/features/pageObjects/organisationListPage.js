@@ -19,7 +19,7 @@ function OrganisationListPage() {
     this.searchAndValidateByName = async function(){
         await this.waitForOrgListToDisplay();
         // const searchWithName = await this.getOrgNameFromRow(1);
-        const searchWithName = 'Auto';
+        const searchWithName = 'API Test Org';
         await this.searchInput.sendKeys(searchWithName);
         await this.searchBtn .click();
         browser.sleep(2000);
