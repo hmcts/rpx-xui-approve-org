@@ -1,5 +1,4 @@
 import { UserModel } from '../../../models/user.model';
-import {AppUtils} from '../../utils/app-utils';
 import * as fromAction from '../actions';
 
 
