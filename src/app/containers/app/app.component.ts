@@ -10,7 +10,7 @@ import * as fromRoot from '../../store';
 import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { CookieService } from 'ngx-cookie';
 import { AppUtils } from 'src/app/utils/app-utils';
-import { Router, RoutesRecognized } from '@angular/router';
+import { Event, Router, RoutesRecognized } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 
 @Component({
@@ -20,7 +20,6 @@ import { Title } from '@angular/platform-browser';
 })
 export class AppComponent implements OnInit {
 
-  public title$: Observable<string>;
   public identityBar$: Observable<string[]>;
   public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
 
@@ -35,17 +34,21 @@ export class AppComponent implements OnInit {
     private readonly titleService: Title
   ) {
     this.router.events.subscribe((data) => {
-      if (data instanceof RoutesRecognized) {
-        let child = data.state.root;
-        do {
-          child = child.firstChild;
-        } while (child.firstChild);
-        const d = child.data;
-        if (d.title) {
-          this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
-        }
-      }
+      this.setTitleIfPresent(data);
     });
+  }
+
+  public setTitleIfPresent(data: Event) {
+    if (data instanceof RoutesRecognized) {
+      let child = data.state.root;
+      do {
+        child = child.firstChild;
+      } while (child.firstChild);
+      const d = child.data;
+      if (d.title) {
+        this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
+      }
+    }
   }
 
   public ngOnInit() {
@@ -62,7 +65,6 @@ export class AppComponent implements OnInit {
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
-    this.title$ = this.store.pipe(select(fromRoot.getAppPageTitle));
 
     this.idleStart();
     this.idleService.appStateChanges().subscribe(value => {
