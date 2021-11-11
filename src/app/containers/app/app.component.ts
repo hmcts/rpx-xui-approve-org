@@ -38,19 +38,6 @@ export class AppComponent implements OnInit {
     });
   }
 
-  public setTitleIfPresent(data: Event) {
-    if (data instanceof RoutesRecognized) {
-      let child = data.state.root;
-      do {
-        child = child.firstChild;
-      } while (child.firstChild);
-      const d = child.data;
-      if (d.title) {
-        this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
-      }
-    }
-  }
-
   public ngOnInit() {
     this.environmentService.getEnv$().subscribe(env => {
       if (env.oidcEnabled) {
@@ -139,4 +126,18 @@ export class AppComponent implements OnInit {
       return this.store.dispatch(new fromRoot.Logout());
     }
   }
+
+  public setTitleIfPresent(data: Event) {
+    if (data instanceof RoutesRecognized) {
+      let child = data.state.root;
+      do {
+        child = child.firstChild;
+      } while (child.firstChild);
+      const d = child.data;
+      if (d.title) {
+        this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
+      }
+    }
+  }
+
 }
