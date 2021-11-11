@@ -61,7 +61,7 @@ function generateReport(passCount, failCount, tests) {
     consoleReport(reportJson);
 
     let sourceReport = __dirname + '/Report.html';
-    let destDir = conf.reportPath;
+    let destDir = process.env.PWD + "/" + conf.reportPath;
     if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir);
     }
