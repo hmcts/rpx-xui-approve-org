@@ -73,7 +73,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     }),
     ExuiCommonLibModule.forRoot(),
     NgIdleKeepaliveModule.forRoot(),
-    NgxPaginationModule
+    NgxPaginationModule,
   ],
   providers: [
     LogOutKeepAliveService,
