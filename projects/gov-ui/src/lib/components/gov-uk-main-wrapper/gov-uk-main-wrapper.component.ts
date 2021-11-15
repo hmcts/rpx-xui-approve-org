@@ -15,7 +15,7 @@ import {Location} from '@angular/common';
   selector: 'lib-gov-uk-main-wrapper',
   template: `
     <a *ngIf="backLink" [routerLink]="" (click)="onGoBack()" class="govuk-back-link">Back</a>
-    <main id="content" role="main" class="govuk-main-wrapper">
+    <main id="content" class="govuk-main-wrapper" role="main" tabindex="-1">
       <app-hmcts-error-summary
         *ngIf="errors && !errors.isFormValid"
         [errorMessages]="errors.items"
