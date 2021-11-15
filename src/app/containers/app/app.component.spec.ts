@@ -1,18 +1,18 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { async, fakeAsync, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ManageSessionServices, windowToken } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { EnvironmentService } from 'src/app/services/environment.service';
-import {Logout, reducers} from 'src/app/store';
+import { Logout, reducers } from 'src/app/store';
 import * as fromRoot from '../../store';
 import { HeaderComponent } from '../header/header.component';
 import { AppComponent } from './app.component';
 
 
-const windowMock: Window = { gtag: () => {}} as any;
+const windowMock: Window = { gtag: () => { } } as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
 const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
@@ -21,7 +21,7 @@ describe('AppComponent', () => {
   let store: Store<fromRoot.State>;
   beforeEach(async(() => {
     environmentMockService.getEnv$.and.returnValue(of({}));
-    idleMockService.appStateChanges.and.returnValue(of({type: 'modal'}));
+    idleMockService.appStateChanges.and.returnValue(of({ type: 'modal' }));
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -41,8 +41,8 @@ describe('AppComponent', () => {
           provide: windowToken,
           useValue: windowMock
         },
-        { provide: ManageSessionServices, useValue: idleMockService},
-        { provide: EnvironmentService, useValue: environmentMockService},
+        { provide: ManageSessionServices, useValue: idleMockService },
+        { provide: EnvironmentService, useValue: environmentMockService },
         { provide: CookieService, useValue: cookieService }
       ],
     }).compileComponents();
@@ -75,7 +75,7 @@ describe('AppComponent', () => {
   let store: Store<fromRoot.State>;
   beforeEach(async(() => {
     environmentMockService.getEnv$.and.returnValue(of({}));
-    idleMockService.appStateChanges.and.returnValue(of({type: 'signout'}));
+    idleMockService.appStateChanges.and.returnValue(of({ type: 'signout' }));
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -95,8 +95,8 @@ describe('AppComponent', () => {
           provide: windowToken,
           useValue: windowMock
         },
-        { provide: ManageSessionServices, useValue: idleMockService},
-        { provide: EnvironmentService, useValue: environmentMockService},
+        { provide: ManageSessionServices, useValue: idleMockService },
+        { provide: EnvironmentService, useValue: environmentMockService },
         { provide: CookieService, useValue: cookieService }
       ],
     }).compileComponents();
@@ -129,7 +129,7 @@ describe('AppComponent', () => {
   let store: Store<fromRoot.State>;
   beforeEach(async(() => {
     environmentMockService.getEnv$.and.returnValue(of({}));
-    idleMockService.appStateChanges.and.returnValue(of({type: 'keepalive'}));
+    idleMockService.appStateChanges.and.returnValue(of({ type: 'keepalive' }));
     TestBed.configureTestingModule({
       declarations: [
         AppComponent,
@@ -149,8 +149,8 @@ describe('AppComponent', () => {
           provide: windowToken,
           useValue: windowMock
         },
-        { provide: ManageSessionServices, useValue: idleMockService},
-        { provide: EnvironmentService, useValue: environmentMockService},
+        { provide: ManageSessionServices, useValue: idleMockService },
+        { provide: EnvironmentService, useValue: environmentMockService },
         { provide: CookieService, useValue: cookieService }
       ],
     }).compileComponents();
@@ -175,6 +175,17 @@ describe('AppComponent', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith(new Logout());
 
+  }));
+
+  it('should call the onFocusMainContent method', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    spyOn(fixture.componentInstance, 'onFocusMainContent');
+
+    const skipLinkElement = fixture.debugElement.nativeElement.querySelector('#skip-link');
+    skipLinkElement.click();
+    fixture.detectChanges();
+    expect(app.onFocusMainContent).toHaveBeenCalled();
   }));
 
 });
