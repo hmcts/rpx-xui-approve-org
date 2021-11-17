@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisations.pipe';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
@@ -19,6 +20,7 @@ describe('Active Organisation', () => {
         StoreModule.forRoot({
           ...fromRoot.reducers
         }),
+        ExuiCommonLibModule
       ],
       declarations: [
         ActiveOrganisationsComponent, FilterOrganisationsPipe
