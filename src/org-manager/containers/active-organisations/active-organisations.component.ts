@@ -19,7 +19,7 @@ export class ActiveOrganisationsComponent implements OnInit {
   public loading$: Observable<boolean>;
   public activeSearchString$: Observable<string>;
   public pagination: PaginationParameter;
-  public moreResultsToGo: boolean = false;
+  public moreResultsToGo: boolean = true;
 
   private totalResults: number = 0;
 

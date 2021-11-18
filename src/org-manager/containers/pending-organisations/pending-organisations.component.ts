@@ -25,7 +25,7 @@ export class PendingOrganisationsComponent implements OnInit {
   public activeOrgsCount$: Observable<number>;
   public activeLoaded$: Observable<boolean>;
   public pagination: PaginationParameter;
-  public moreResultsToGo: boolean = false;
+  public moreResultsToGo: boolean = true;
 
   private totalResults: number = 0;
 
