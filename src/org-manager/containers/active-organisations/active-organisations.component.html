@@ -46,15 +46,10 @@
               </tr>
             </thead>
           </table>
-          <xuilib-pagination *ngIf="!data.loading  && getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) > pagination.page_size" [moreItems]="moreResultsToGo" [firstRecord]="pagination.page_number"
-            (previousPage)="getPreviousResultsPage()" (nextPage)="getNextResultsPage()">
-            </xuilib-pagination>
+          <xuilib-pagination-v1 *ngIf="!data.loading && getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) > pagination.page_size" (pageChange)="onPaginationHandler($event)"></xuilib-pagination-v1>
           <ng-template #loading>
             <h3 class="govuk-heading-s">Loading active organisations...</h3>
           </ng-template>
      </ng-container>   
-     
-       
-        
   </main>
 </div>
