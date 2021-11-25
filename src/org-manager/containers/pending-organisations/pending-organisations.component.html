@@ -55,9 +55,7 @@
             </tr>
           </thead>
         </table>
-       <xuilib-pagination *ngIf="(loaded$ | async) && getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) > pagination.page_size" [moreItems]="moreResultsToGo" [firstRecord]="pagination.page_number"
-          (previousPage)="getPreviousResultsPage()" (nextPage)="getNextResultsPage()">
-          </xuilib-pagination>
+        <xuilib-pagination-v1 *ngIf="(loaded$ | async) && getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) > pagination.page_size" (pageChange)="onPaginationHandler($event)"></xuilib-pagination-v1>
       </form>
     </ng-container>
     <ng-template #loading>

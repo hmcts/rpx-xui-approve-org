@@ -19,9 +19,6 @@ export class ActiveOrganisationsComponent implements OnInit {
   public loading$: Observable<boolean>;
   public activeSearchString$: Observable<string>;
   public pagination: PaginationParameter;
-  public moreResultsToGo: boolean = true;
-
-  private totalResults: number = 0;
 
   constructor(
     public readonly store: Store<fromOrganisation.OrganisationRootState>,
@@ -46,25 +43,12 @@ export class ActiveOrganisationsComponent implements OnInit {
   }
 
   public submitSearch(searchString: string) {
-    this.pagination.page_number = 1;
+    this.onPaginationHandler(1);
     this.store.dispatch(new fromOrganisation.UpdateActiveOrganisationsSearchString(searchString));
   }
 
-  public getPreviousResultsPage(): void {
-    if (this.pagination.page_number > 1) {
-      this.pagination.page_number = this.pagination.page_number - 1;
-    } else {
-      this.moreResultsToGo = true;
-    }
-  }
-
-  public getNextResultsPage(): void {
-    const maxPages = Math.ceil(this.totalResults / this.pagination.page_size);
-    if (this.pagination.page_number < maxPages) {
-      this.pagination.page_number = this.pagination.page_number + 1;
-    } else {
-      this.moreResultsToGo = false;
-    }
+  public onPaginationHandler(pageNumber: number): void {
+    this.pagination.page_number = pageNumber;
   }
 
   public getFirstResult(orgs: OrganisationVM[]): number {
@@ -88,7 +72,6 @@ export class ActiveOrganisationsComponent implements OnInit {
 
   public getTotalResults(orgs: OrganisationVM[]): number {
     if (orgs && orgs.length > 0) {
-      this.totalResults = orgs.length;
       return orgs.length;
     }
     return 0;
