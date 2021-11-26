@@ -17,10 +17,10 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
-    'prettier/prettier': 'warn',
+    'prettier/prettier': 'error',
 
-    'lines-between-class-members': 'off',
-    'no-useless-constructor': 'off',
+    'lines-between-class-members': 'warn',
+    'no-useless-constructor': 'warn',
     'no-restricted-syntax': 'off',
     'prefer-const': [
       'warn',
@@ -30,7 +30,7 @@ module.exports = {
       },
     ],
     'import/prefer-default-export': 'off',
-    'implicit-arrow-linebreak': 'off',
+    'implicit-arrow-linebreak': 'warn',
     'object-curly-newline': [
       'off',
       {
@@ -64,7 +64,7 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'off',
     '@typescript-eslint/no-misused-promises': ['off', { checksConditionals: false }],
     '@typescript-eslint/member-ordering': [
-      'warn',
+      'error',
       {
         default: [
           'public-static-field',
