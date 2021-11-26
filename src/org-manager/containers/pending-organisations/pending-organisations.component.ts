@@ -82,7 +82,8 @@ export class PendingOrganisationsComponent implements OnInit {
   public getLastResult(orgs: OrganisationVM[]): number {
     if (orgs && orgs.length > 0) {
       const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
-      return (currentPage) * this.pagination.page_size;
+      const results = (currentPage) * this.pagination.page_size;
+      return (results > orgs.length) ? orgs.length : results;
     }
     return 0;
   }
