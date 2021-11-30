@@ -11,7 +11,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     When('I select file to upload Staff details', async function(){
-        await staffDetailsPage.selectFile(path.resolve(__dirname,'../../../../data/Staff Data Upload Template V1.0.1.xlsx'));
+        await staffDetailsPage.selectFile(path.resolve(__dirname,'../../../../data/Staff Data Upload Template V2.0.0.xlsx'));
     });
 
     When('I click upload button in Staff details upload page', async function(){

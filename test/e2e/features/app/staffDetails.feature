@@ -1,5 +1,5 @@
 
-@fullfunctiona__
+@fullfunctional
 Feature: Staff details upload
 
     Background:
