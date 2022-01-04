@@ -4,6 +4,15 @@
      <h1 class="hmcts-page-heading__title govuk-heading-xl">Active organisations</h1>
      <ng-container *ngIf="{loading: loading$ | async, activeSearchString: activeSearchString$ | async, orgs: orgs$ | async  } as data">
         <app-search-organisations-form *ngIf="!data.loading" [searchString]="data.activeSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
+        <div class="pagination-top" *ngIf="!data.loading  && getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) > pagination.page_size" attr.aria-label="{{ getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) }} results have been found" role="status">
+          <span class="text-16" id="search-result-summary__text">Showing 
+            <span class="govuk-!-font-weight-bold">{{ getFirstResult((data.orgs | filterOrganisations: data.activeSearchString)) }}</span>
+            to
+            <span class="govuk-!-font-weight-bold">{{ getLastResult((data.orgs | filterOrganisations: data.activeSearchString)) }}</span>
+            of
+            <span class="govuk-!-font-weight-bold">{{ getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) }}</span> results
+          </span>
+        </div>
         <table class="govuk-table" *ngIf="!data.loading; else loading">
             <thead class="govuk-table__head">
               <tr class="govuk-table__row">
@@ -13,7 +22,7 @@
                 <th class="govuk-table__header" scope="col">Status</th>
                 <th class="govuk-table__header" scope="col"></th>
               </tr>
-              <tr class="govuk-table__row" *ngFor="let org of data.orgs | filterOrganisations: data.activeSearchString">
+              <tr class="govuk-table__row" *ngFor="let org of (data.orgs | filterOrganisations: data.activeSearchString | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: (data.orgs | filterOrganisations: data.activeSearchString).length })">
                 <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
                 <td class="govuk-table__cell">
                   {{org.addressLine1}}<br>
@@ -37,12 +46,10 @@
               </tr>
             </thead>
           </table>
+          <xuilib-pagination-v1 *ngIf="!data.loading && getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) > pagination.page_size" (pageChange)="onPaginationHandler($event)"></xuilib-pagination-v1>
           <ng-template #loading>
             <h3 class="govuk-heading-s">Loading active organisations...</h3>
           </ng-template>
      </ng-container>   
-     
-       
-        
   </main>
 </div>
