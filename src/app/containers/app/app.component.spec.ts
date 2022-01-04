@@ -1,5 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, fakeAsync, TestBed } from '@angular/core/testing';
+import { Title } from '@angular/platform-browser';
+import { RoutesRecognized } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ManageSessionServices, windowToken } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
@@ -16,6 +18,7 @@ const windowMock: Window = { gtag: () => { } } as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
 const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
+const titleService = jasmine.createSpyObj('titleService', ['setTitle']);
 
 describe('AppComponent', () => {
   let store: Store<fromRoot.State>;
@@ -43,7 +46,8 @@ describe('AppComponent', () => {
         },
         { provide: ManageSessionServices, useValue: idleMockService },
         { provide: EnvironmentService, useValue: environmentMockService },
-        { provide: CookieService, useValue: cookieService }
+        { provide: CookieService, useValue: cookieService },
+        { provide: Title, useValue: titleService }
       ],
     }).compileComponents();
     store = TestBed.get(Store);
@@ -68,6 +72,52 @@ describe('AppComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new Logout());
 
   }));
+
+  it('should call the title service', () => {
+    let testRoute: RoutesRecognized;
+
+    testRoute = new RoutesRecognized(1, 'test', 'test', {
+      url: 'test',
+      root: {
+        firstChild: {
+          data: { title: 'Test' },
+          url: [],
+          params: {},
+          queryParams: {},
+          fragment: '',
+          outlet: '',
+          component: '',
+          routeConfig: {},
+          root: null,
+          parent: null,
+          firstChild: null,
+          children: [],
+          pathFromRoot: [],
+          paramMap: null,
+          queryParamMap: null
+        },
+        data: { title: 'Test' },
+        url: [],
+        params: {},
+        queryParams: {},
+        fragment: '',
+        outlet: '',
+        component: '',
+        routeConfig: {},
+        root: null,
+        parent: null,
+        children: [],
+        pathFromRoot: [],
+        paramMap: null,
+        queryParamMap: null
+      }
+    });
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.setTitleIfPresent(testRoute);
+    fixture.detectChanges();
+    expect(titleService.setTitle).toHaveBeenCalled();
+  });
 
 });
 
