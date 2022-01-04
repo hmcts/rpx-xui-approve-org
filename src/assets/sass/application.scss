@@ -35,6 +35,15 @@ html {
   display: none !important;
 }
 
+.govuk-skip-link:focus {
+  outline-offset: 0;
+  text-decoration: underline;
+}
+
+#content {
+  outline: 0;
+}
+
 .jui-measure {
   max-width: 833px;
 }
