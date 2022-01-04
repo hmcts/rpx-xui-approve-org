@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { async, fakeAsync, TestBed } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { RoutesRecognized } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -225,6 +225,17 @@ describe('AppComponent', () => {
 
     expect(store.dispatch).toHaveBeenCalledWith(new Logout());
 
+  }));
+
+  xit('should call the onFocusMainContent method', fakeAsync(() => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    spyOn(fixture.componentInstance, 'onFocusMainContent');
+
+    const skipLinkElement = fixture.debugElement.nativeElement.querySelector('#skip-link');
+    skipLinkElement.click();
+    fixture.detectChanges();
+    expect(app.onFocusMainContent).toHaveBeenCalled();
   }));
 
 });

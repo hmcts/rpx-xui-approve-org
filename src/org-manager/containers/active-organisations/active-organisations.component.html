@@ -1,6 +1,6 @@
 <div class="hmcts-width-container">
   <app-back-link [store]="store"></app-back-link>
-  <main class="govuk-main-wrapper">
+  <main id="content" class="govuk-main-wrapper" role="main" tabindex="-1">
      <h1 class="hmcts-page-heading__title govuk-heading-xl">Active organisations</h1>
      <ng-container *ngIf="{loading: loading$ | async, activeSearchString: activeSearchString$ | async, orgs: orgs$ | async  } as data">
         <app-search-organisations-form *ngIf="!data.loading" [searchString]="data.activeSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>

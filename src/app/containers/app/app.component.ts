@@ -22,6 +22,7 @@ export class AppComponent implements OnInit {
 
   public identityBar$: Observable<string[]>;
   public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
+  public mainContentId = 'content';
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -140,4 +141,12 @@ export class AppComponent implements OnInit {
     }
   }
 
+  // the fragment attribute in Angular is good however it only scrolls to the anchor tag
+  // focussing is not currently supported by the Angular RouterModule and fragment hence this workaround
+  public onFocusMainContent() {
+    const element = document.getElementById(this.mainContentId);
+    if (element) {
+      element.focus();
+    }
+  }
 }
