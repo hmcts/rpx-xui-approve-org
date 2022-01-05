@@ -227,7 +227,7 @@ describe('AppComponent', () => {
 
   }));
 
-  xit('should call the onFocusMainContent method', fakeAsync(() => {
+  it('should call the onFocusMainContent method', fakeAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     spyOn(fixture.componentInstance, 'onFocusMainContent');
