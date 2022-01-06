@@ -21,8 +21,8 @@ def vault = "rpx"
 
 def secrets = [
   'rpx-${env}': [
-    secret('test-email', 'TEST_EMAIL'),
-    secret('test-password', 'TEST_PASSWORD'),
+    secret('ao-test-email', 'TEST_EMAIL'),
+    secret('ao-test-password', 'TEST_PASSWORD'),
     secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
     secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
     secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
