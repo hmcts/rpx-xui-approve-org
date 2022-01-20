@@ -69,17 +69,17 @@ const config = {
     //   maxInstances: 1
     // },
 
-    {
-      browserName: 'safari',
-      platform: 'macOS 10.15',
-      version: '13.1',
-      name: 'Safari-TEST',
-      tunnelIdentifier: 'reformtunnel',
-      extendedDebugging: true,
-      sharedTestFiles: false,
-      maxInstances: 1
-
-    },
+    // {
+    //   browserName: 'safari',
+    //   platform: 'macOS 10.15',
+    //   version: '13.1',
+    //   name: 'Safari-TEST',
+    //   tunnelIdentifier: 'reformtunnel',
+    //   extendedDebugging: true,
+    //   sharedTestFiles: false,
+    //   maxInstances: 1
+    //
+    // },
 
     {
       browserName: 'MicrosoftEdge',
