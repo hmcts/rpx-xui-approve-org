@@ -90,7 +90,7 @@ function getTestDetails(test) {
 
 
 function copyResources() {
-    let resourceDir = process.env.PWD + "/" + conf.reportPath + 'resources/';
+    let resourceDir = conf.reportPath + 'resources/';
     let cssDir = resourceDir + 'css/';
     if (!fs.existsSync(cssDir)) {
         fs.mkdirSync(cssDir, { recursive: true });
