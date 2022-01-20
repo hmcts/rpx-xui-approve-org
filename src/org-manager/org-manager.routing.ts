@@ -33,18 +33,18 @@ export const ROUTES: Routes = [
         path: 'pending',
         component: PendingOrganisationsComponent,
         canActivate: [ AuthGuard, RoleGuard ],
-        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
+        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Pending organisations' }
       },
       {
         path: 'pbas',
         component: PendingPBAsComponent,
         canActivate: [ AuthGuard, RoleGuard ],
-        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
+        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Pending PBAs' }
       },
       {
         path: 'active',
         component: ActiveOrganisationsComponent,
-        canActivate: [ AuthGuard ]
+        canActivate: [ AuthGuard ],  data: { title: 'Active organisations' }
       }
     ]
   },
@@ -54,26 +54,41 @@ export const ROUTES: Routes = [
     path: 'approve-organisations',
     component: ApproveOrganisationComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Check details'
+    }
   },
   {
     path: 'approve-organisations-success',
     component: ApproveOrganisationSuccessComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Confirmation'
+    }
   },
   {
     path: 'delete-organisation',
     component: DeleteOrganisationComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Delete organisation'
+    }
   },
   {
     path: 'delete-organisation-success',
     component: DeleteOrganisationSuccessComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Delete organisation success'
+    }
   },
   {
     path: 'organisation-details/:orgId',
     component: OrganisationDetailsComponent,
     canActivate: [AuthGuard],
+    data: {
+      title: 'Organisation details'
+    }
   },
   {
     path: 'change/:fields/:orgId',
