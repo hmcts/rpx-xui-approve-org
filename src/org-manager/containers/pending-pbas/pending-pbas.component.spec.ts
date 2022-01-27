@@ -77,7 +77,7 @@ describe('PendingPBAsComponent', () => {
       providers: [
         { provide: PbaService, useValue: pbaServiceSpy }
       ],
-      declarations: [ PendingPBAsComponent ]
+      declarations: [PendingPBAsComponent]
     }).compileComponents();
 
     store = TestBed.get(Store);
@@ -92,18 +92,22 @@ describe('PendingPBAsComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should show a table with a single row that says there are none pending', () => {
-      const tds = utils.getDebugElements('td');
-      expect(tds.length).toEqual(1);
-      utils.checkText(tds[0], 'There are no pending PBAs');
+    it('should show there are no new PBA requests.', () => {
+      component.loaded$ = of(true);
+      fixture.detectChanges();
+      const messageContent = fixture.debugElement.nativeElement.querySelector('.govuk-heading-l').parentElement.textContent;
+      expect(messageContent).toContain('There are no new PBA requests.');
     });
 
     it('should show an appropriate count of zero in the title', () => {
       utils.checkText(utils.getTitle(), 'New PBAs (0)');
+
       expect(component.pendingPBAsCount).toEqual(0);
     });
 
     it('should not show a "Loading..." indicator', () => {
+      component.loaded$ = of(true);
+      fixture.detectChanges();
       expect(utils.getLoadingIndicator()).toBeNull();
     });
   });
@@ -111,13 +115,13 @@ describe('PendingPBAsComponent', () => {
   describe('When PBAs have been loaded', () => {
     let storeDispatchSpy: jasmine.Spy;
     const ORGS_WITH_PENDING_PBAS: OrganisationModel[] = [
-      utils.organisationModel('bob', [ 'PBA0000001', 'PBA0000002' ]),
-      utils.organisationModel('jane', [ 'PBA0000005' ])
+      utils.organisationModel('bob', ['PBA0000001', 'PBA0000002']),
+      utils.organisationModel('jane', ['PBA0000005'])
     ];
     const STORE_ORGS: OrganisationVM[] = [
-      utils.organisationVM('bob', 'Bob', [ 'PBA0000001', 'PBA0000002' ]),
-      utils.organisationVM('fred', 'Fred', [ 'PBA0000003', 'PBA0000004' ]),
-      utils.organisationVM('jane', 'Jane', [ 'PBA0000005', 'PBA0000006', 'PBA0000007' ])
+      utils.organisationVM('bob', 'Bob', ['PBA0000001', 'PBA0000002']),
+      utils.organisationVM('fred', 'Fred', ['PBA0000003', 'PBA0000004']),
+      utils.organisationVM('jane', 'Jane', ['PBA0000005', 'PBA0000006', 'PBA0000007'])
     ];
     beforeEach(() => {
       pbaServiceSpy.getPBAsByStatus.and.returnValue(of(ORGS_WITH_PENDING_PBAS));
