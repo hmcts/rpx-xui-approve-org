@@ -1,4 +1,5 @@
 import { OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Action, MemoizedSelector, select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
@@ -21,7 +22,8 @@ export abstract class OrganisationListComponent implements OnInit {
   public abstract get loadAction(): Action;
   public abstract get organisationsSelector(): MemoizedSelector<object, OrganisationVM[]>;
 
-  constructor(protected readonly store: Store<fromStore.OrganisationRootState>) {}
+  constructor(protected readonly store: Store<fromStore.OrganisationRootState>, private readonly route: ActivatedRoute) {
+  }
 
   public ngOnInit(): void {
     this.loaded$ = this.store.pipe(select(this.loadedSelector));
@@ -42,7 +44,10 @@ export abstract class OrganisationListComponent implements OnInit {
   }
 
   private doFiltering(): void {
-    if (this.orgs && this.searchString) {
+    const resetStatus = this.route.snapshot.queryParams.reset;
+    if (resetStatus) {
+      this.filteredOrgs = null;
+    } else if (this.orgs && this.searchString) {
       this.filteredOrgs = this.filter.transform(this.orgs, this.searchString);
     } else {
       this.filteredOrgs = this.orgs;

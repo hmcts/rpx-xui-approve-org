@@ -2,7 +2,8 @@
   New PBAs
   <span *ngIf="pendingPBAsCount > -1">({{pendingPBAsCount}})</span>
 </h2>
-<table class="govuk-table" *ngIf="orgsWithPendingPBAs; else loading">
+<ng-container *ngIf="(loaded$ | async); else loading">
+  <table class="govuk-table" *ngIf="pendingPBAsCount; else noData">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
       <th class="govuk-table__header" scope="col">Organisation</th>
@@ -33,11 +34,11 @@
         <a class="govuk-link" [routerLink]="['review', org.organisationId]" routerLinkActive="router-link-active">View</a>
       </td>
     </tr>
-    <tr class="govuk-table__row" *ngIf="orgsWithPendingPBAs.length === 0">
-      <td class="govuk-table__cell" colspan="5">There are no pending PBAs</td>
-    </tr>
   </tbody>
-</table>
+  </table>
+  <ng-template  #noData>There are no new PBA requests.</ng-template>
+</ng-container>
+
 <ng-template #loading>
   <h3 class="govuk-heading-s"><span>Loading...</span></h3>
 </ng-template>
