@@ -39,10 +39,12 @@
       </tr>
     </thead>
   </table>
-  <ng-template  #noData>There are no new registrations.</ng-template>
+  <ng-template  #noData>
+    <span class="govuk-body"> There are no new registrations. </span>
+  </ng-template>
 </ng-container>
 <ng-template #loading>
   <h3 class="govuk-heading-s">
-    <span >Loading...</span>
+    <span>Loading...</span>
   </h3>
 </ng-template>
