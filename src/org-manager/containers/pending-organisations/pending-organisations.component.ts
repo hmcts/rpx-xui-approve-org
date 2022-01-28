@@ -22,7 +22,7 @@ export class PendingOrganisationsComponent extends OrganisationListComponent {
     return fromStore.getPendingOrganisationsArray;
   }
 
-  constructor(protected readonly store: Store<fromStore.OrganisationRootState>, route: ActivatedRoute) {
+  constructor(protected readonly store: Store<fromStore.OrganisationRootState>, protected readonly route: ActivatedRoute) {
     super(store, route);
   }
 }

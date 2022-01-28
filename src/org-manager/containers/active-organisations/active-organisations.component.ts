@@ -25,7 +25,7 @@ export class ActiveOrganisationsComponent extends OrganisationListComponent {
     return fromStore.getActiveOrganisationArray;
   }
 
-  constructor(protected readonly store: Store<fromStore.OrganisationRootState>, route: ActivatedRoute) {
+  constructor(protected readonly store: Store<fromStore.OrganisationRootState>, protected readonly route: ActivatedRoute) {
     super(store, route);
   }
 }
