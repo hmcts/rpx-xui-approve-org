@@ -77,7 +77,7 @@ describe('PendingPBAsComponent', () => {
       providers: [
         { provide: PbaService, useValue: pbaServiceSpy }
       ],
-      declarations: [PendingPBAsComponent]
+      declarations: [ PendingPBAsComponent ]
     }).compileComponents();
 
     store = TestBed.get(Store);
@@ -101,7 +101,6 @@ describe('PendingPBAsComponent', () => {
 
     it('should show an appropriate count of zero in the title', () => {
       utils.checkText(utils.getTitle(), 'New PBAs (0)');
-
       expect(component.pendingPBAsCount).toEqual(0);
     });
 
@@ -115,13 +114,13 @@ describe('PendingPBAsComponent', () => {
   describe('When PBAs have been loaded', () => {
     let storeDispatchSpy: jasmine.Spy;
     const ORGS_WITH_PENDING_PBAS: OrganisationModel[] = [
-      utils.organisationModel('bob', ['PBA0000001', 'PBA0000002']),
-      utils.organisationModel('jane', ['PBA0000005'])
+      utils.organisationModel('bob', [ 'PBA0000001', 'PBA0000002' ]),
+      utils.organisationModel('jane', [ 'PBA0000005' ])
     ];
     const STORE_ORGS: OrganisationVM[] = [
-      utils.organisationVM('bob', 'Bob', ['PBA0000001', 'PBA0000002']),
-      utils.organisationVM('fred', 'Fred', ['PBA0000003', 'PBA0000004']),
-      utils.organisationVM('jane', 'Jane', ['PBA0000005', 'PBA0000006', 'PBA0000007'])
+      utils.organisationVM('bob', 'Bob', [ 'PBA0000001', 'PBA0000002' ]),
+      utils.organisationVM('fred', 'Fred', [ 'PBA0000003', 'PBA0000004' ]),
+      utils.organisationVM('jane', 'Jane', [ 'PBA0000005', 'PBA0000006', 'PBA0000007' ])
     ];
     beforeEach(() => {
       pbaServiceSpy.getPBAsByStatus.and.returnValue(of(ORGS_WITH_PENDING_PBAS));
