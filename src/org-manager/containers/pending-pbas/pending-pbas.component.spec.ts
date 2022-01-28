@@ -92,7 +92,7 @@ describe('PendingPBAsComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should show there are no new PBA requests.', () => {
+    it('should show there are no new PBA requests', () => {
       component.loaded$ = of(true);
       fixture.detectChanges();
       const messageContent = fixture.debugElement.nativeElement.querySelector('.govuk-heading-l').parentElement.textContent;
