@@ -52,6 +52,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   }
 
   public handleLoadedActiveOrganisations(active: OrganisationVM[], pending: OrganisationModel[]): void {
+    // TODO: after QA this code will be removed before merge .(it's for demo purposes)
     const resetStatus = this.route.snapshot.queryParams.reset;
     this.loaded$ = of(true);
     active = resetStatus ? [] : active;
