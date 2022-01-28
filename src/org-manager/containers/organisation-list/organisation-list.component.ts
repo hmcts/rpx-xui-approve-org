@@ -22,7 +22,7 @@ export abstract class OrganisationListComponent implements OnInit {
   public abstract get loadAction(): Action;
   public abstract get organisationsSelector(): MemoizedSelector<object, OrganisationVM[]>;
 
-  constructor(protected readonly store: Store<fromStore.OrganisationRootState>, private readonly route: ActivatedRoute) {
+  constructor(protected readonly store: Store<fromStore.OrganisationRootState>, protected readonly route: ActivatedRoute) {
   }
 
   public ngOnInit(): void {
