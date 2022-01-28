@@ -44,6 +44,7 @@ export abstract class OrganisationListComponent implements OnInit {
   }
 
   private doFiltering(): void {
+    // TODO: after QA this code will be removed before merge .(it's for demo purposes)
     const resetStatus = this.route.snapshot.queryParams.reset;
     if (resetStatus) {
       this.filteredOrgs = null;
