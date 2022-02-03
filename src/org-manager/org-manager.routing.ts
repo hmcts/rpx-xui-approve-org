@@ -10,6 +10,7 @@ import { DeleteOrganisationComponent } from './containers/delete-organisation';
 import { DeleteOrganisationSuccessComponent } from './containers/delete-organisation-success';
 import { EditDetailsComponent } from './containers/edit-details';
 import { HomeComponent } from './containers/home';
+import { NewPBAsComponent } from './containers/new-pbas';
 import { OrganisationDetailsComponent } from './containers/organisation-details';
 import { PendingOrganisationsComponent } from './containers/pending-organisations';
 import { PendingPBAsComponent } from './containers/pending-pbas';
@@ -22,7 +23,7 @@ export const ROUTES: Routes = [
   {
     path: 'organisation',
     component: HomeComponent,
-    canActivate: [ AuthGuard ],
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',
@@ -32,21 +33,27 @@ export const ROUTES: Routes = [
       {
         path: 'pending',
         component: PendingOrganisationsComponent,
-        canActivate: [ AuthGuard, RoleGuard ],
+        canActivate: [AuthGuard, RoleGuard],
         data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Pending organisations' }
       },
       {
         path: 'pbas',
         component: PendingPBAsComponent,
-        canActivate: [ AuthGuard, RoleGuard ],
+        canActivate: [AuthGuard, RoleGuard],
         data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Pending PBAs' }
       },
       {
         path: 'active',
         component: ActiveOrganisationsComponent,
-        canActivate: [ AuthGuard ],  data: { title: 'Active organisations' }
+        canActivate: [AuthGuard], data: { title: 'Active organisations' }
       }
     ]
+  },
+  {
+    path: 'pbas/new/:orgId',
+    component: NewPBAsComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'New PBAs' }
   },
   { path: 'pending-organisations', pathMatch: 'full', redirectTo: 'organisation/pending' },
   { path: 'active-organisation', pathMatch: 'full', redirectTo: 'organisation/active' },
