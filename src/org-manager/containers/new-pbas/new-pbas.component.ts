@@ -15,7 +15,6 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
 
   public orgs$: Observable<OrganisationVM>;
   public organisationId: string;
-  public isActiveOrg = false;
 
   private getAllLoadedSubscription: Subscription;
 
@@ -37,17 +36,12 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
       take(1)
     ).subscribe(({ organisationId, pbaNumber, isAccLoaded, status }) => {
       this.organisationId = organisationId;
-      if (status === 'ACTIVE') {
-        this.isActiveOrg = true;
-      }
 
       if (!isAccLoaded && pbaNumber.length) {
         this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
           orgId: organisationId,
           pbas: pbaNumber.toString()
-        }
-        )
-        );
+        }));
       }
     });
   }

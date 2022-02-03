@@ -48,7 +48,6 @@ describe('NewPBAsComponent', () => {
   });
 
   it('on go back to active org when the organisation is active', () => {
-    component.isActiveOrg = true;
     const expectedAction = new fromRoot.Go({ path: ['/organisation/pbas']});
     spyOn(store, 'dispatch').and.callThrough();
     component.onGoBack();
