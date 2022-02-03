@@ -1,0 +1,18 @@
+<ng-container *ngIf="{org: orgs$ | async } as data">
+  <app-identity-bar-component>
+    <strong>{{data.org?.name}}</strong>
+    <span style="margin-left: 10px; display: inline-block" class="hmcts-badge">
+      Approved
+    </span>
+  </app-identity-bar-component>
+  <div class="hmcts-width-container">
+    <xuilib-hmcts-main-wrapper (backEvent)="onGoBack()">
+      <ng-container *ngIf="!data.org">
+        <h1 class="govuk-heading-xl">Approve new PBA number</h1>
+        <h3 class="govuk-heading-s">Loading...</h3>
+      </ng-container>
+      <app-new-pbas-info *ngIf="data.org" [org]="data.org">
+      </app-new-pbas-info>
+    </xuilib-hmcts-main-wrapper>
+  </div>
+</ng-container>
