@@ -5,6 +5,7 @@ import { DeleteOrganisationComponent } from './delete-organisation';
 import { DeleteOrganisationSuccessComponent } from './delete-organisation-success';
 import { EditDetailsComponent } from './edit-details';
 import { HomeComponent } from './home';
+import { NewPBAsComponent } from './new-pbas';
 import { OrganisationDetailsComponent } from './organisation-details';
 import { PendingOrganisationsComponent } from './pending-organisations';
 import { PendingPBAsComponent } from './pending-pbas';
@@ -20,6 +21,7 @@ export const containers: any[] = [
   DeleteOrganisationComponent,
   DeleteOrganisationSuccessComponent,
   EditDetailsComponent,
+  NewPBAsComponent,
   OrganisationDetailsComponent,
   HomeComponent,
   PendingOrganisationsComponent,
