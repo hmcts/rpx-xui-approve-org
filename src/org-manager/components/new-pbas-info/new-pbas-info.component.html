@@ -1,0 +1,24 @@
+<ng-container *ngIf="org; else noOrg">
+  <h1 class="govuk-heading-xl">Approve new PBA number</h1>
+  <div class="govuk-form-group">
+    <label class="govuk-label govuk-label--m">
+      Name on MyHMCTS account
+    </label>
+    <p>{{org.name}}</p>
+  </div>
+  <br />
+  <h3 class="govuk-heading-m">PBA accounts</h3>
+
+  <app-pba-account-approval *ngFor="let pba of org.pbaNumber; let i = index" [pbaNumbers]="org.pbaNumber.join(',')"
+    [pbaNumber]="pba" [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId">
+  </app-pba-account-approval>
+
+  <button class="govuk-button" data-module="govuk-button">
+    Continue
+  </button>
+</ng-container>
+
+<ng-template #noOrg>
+  <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
+  <p>Try again later.</p>
+</ng-template>
