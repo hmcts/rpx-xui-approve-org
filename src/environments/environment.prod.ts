@@ -6,7 +6,7 @@ export const environment = {
   singleOrgUrl: 'api/organisations?organisationId=',
   organisationUsersUrl: 'api/organisations?usersOrgId=',
   orgActiveUrl: 'api/organisations?status=ACTIVE',
-  orgPendingUrl: 'api/organisations?status=PENDING',
+  orgPendingUrl: 'api/organisations?status=PENDING,REVIEW',
   reinviteUserUrl: 'api/reinviteUser?organisationId=',
   updatePbaUrl: 'api/updatePba',
   pbaUrl: 'api/pba',

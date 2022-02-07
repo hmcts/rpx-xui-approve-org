@@ -3,7 +3,13 @@
     <strong>{{data.org?.name}}</strong>
     <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(data.org?.status=='ACTIVE') ?
     'hmcts-badge--green':'hmcts-badge--blue'">
-      {{data.org?.status}}
+    <span *ngIf="data.org?.status=='REVIEW'; else status">
+        UNDER REVIEW
+    </span>
+    <ng-template #status>
+       {{data.org?.status}}
+   </ng-template>
+
     </span>
   </app-identity-bar-component>
   <div class="hmcts-width-container">

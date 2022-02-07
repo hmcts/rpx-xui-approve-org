@@ -1,0 +1,28 @@
+.govuk-table-cell {
+    display: table-cell;
+    padding: 0.63157895em 1.05263158em 0.47368421em 0;
+}
+
+.govuk-table-cell-dt {
+  font-weight: bold;
+  margin: govuk-em(12, 19) 4em govuk-em(4,19) 0;
+}
+
+.govuk-check-your-answers__question,
+.govuk-check-your-answers__answer,
+.govuk-check-your-answers__change {
+  display: block;
+  margin: 0;
+    display: table-cell;
+    padding: govuk-em(12, 19) govuk-em(20, 19) govuk-em(9, 19) 0;
+
+}
+
+.govuk-check-your-answers__question {
+  font-weight: bold;
+  margin: govuk-em(12, 19) 4em govuk-em(4,19) 0;
+}
+
+.govuk-check-your-answers__answer {
+  padding-bottom: govuk-em(9, 19); // from Elements' td
+}
