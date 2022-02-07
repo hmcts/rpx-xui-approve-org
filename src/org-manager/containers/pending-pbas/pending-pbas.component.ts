@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { filter, takeWhile } from 'rxjs/operators';
 
 import { OrganisationVM } from '../../models/organisation';
@@ -15,6 +15,7 @@ import { OrganisationModel, PBANumberModel, RenderableOrganisation } from './mod
 })
 export class PendingPBAsComponent implements OnInit, OnDestroy {
   public static PENDING_STATUS: string = 'pending';
+  public loaded$: Observable<boolean>;
 
   public orgsWithPendingPBAs: RenderableOrganisation[];
   public get pendingPBAsCount(): number {
@@ -32,11 +33,13 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly pbaService: PbaService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
   ) {}
 
   public ngOnInit(): void {
     this.loadPendingPBAs();
+    this.loaded$ = of(false);
   }
 
   public ngOnDestroy(): void {
@@ -49,6 +52,10 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   }
 
   public handleLoadedActiveOrganisations(active: OrganisationVM[], pending: OrganisationModel[]): void {
+    // TODO: after QA this code will be removed before merge .(it's for demo purposes)
+    const resetStatus = this.route.snapshot.queryParams.reset;
+    this.loaded$ = of(true);
+    active = resetStatus ? [] : active;
     this.orgsWithPendingPBAs = active.map(a => {
       const withPBAs = pending.find(p => p.organisationIdentifier === a.organisationId);
       if (withPBAs) {
