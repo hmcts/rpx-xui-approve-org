@@ -11,7 +11,7 @@ function report(runner) {
     let passCounter = 0;
     let failCounter = 0;
     runner.on('pass', function (test) {
-        if (test.ctx.a11yResult.issues && test.ctx.a11yResult.issues.length === 0) {
+        if (test.ctx.a11yResult.issues.length === 0) {
             onPass(test);
         } else {
             test.state = "failed";
@@ -124,7 +124,7 @@ function consoleReport(reportjson) {
             if (a11yResult.issues) {
                 for (let issueCounter = 0; issueCounter < a11yResult.issues.length; issueCounter++) {
                     console.log("\t \t \t " + (issueCounter + 1) + ". " + a11yResult.issues[issueCounter].code);
-                    // console.log("\t \t \t \t"+a11yResult.issues[issueCounter].context);
+                    // console.log("\t \t \t \t"+a11yResult.issues[issueCounter].context); 
                     console.log("\t \t \t \t" + a11yResult.issues[issueCounter].selector);
                     console.log("\t \t \t \t" + a11yResult.issues[issueCounter].message);
                 }
