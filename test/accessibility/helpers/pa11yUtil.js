@@ -41,7 +41,7 @@ async function pa11ytestRunner(test,actions,timeoutVal) {
     if (!fs.existsSync(screenshotPath)) {
         fs.mkdirSync(screenshotPath, { recursive: true });
     }
-    screenshotName = Date.now() + '.png';
+    screenshotName = Date.now() + '.png'; 
     screenshotPath = screenshotPath + Date.now()+'.png';
     screenshotReportRef = 'assets/' + screenshotName;
 
@@ -51,7 +51,7 @@ async function pa11ytestRunner(test,actions,timeoutVal) {
     data: 'foobar'
     }, 'secret', { expiresIn: 60 * 60 });
 
-    const encodedRoles = encodeURIComponent(userRoles?.length > 0 ? 'j:' + JSON.stringify(userRoles) : 'j:["prd-admin"]')
+    const encodedRoles = encodeURIComponent(userRoles.length > 0 ? 'j:' + JSON.stringify(userRoles) : 'j:["prd-admin"]')
 
     const cookies = [
         {
@@ -75,7 +75,7 @@ async function pa11ytestRunner(test,actions,timeoutVal) {
     ];
     const browser = await puppeteer.launch({
         ignoreHTTPSErrors: false,
-        headless: conf.headless
+        headless: conf.headless 
     });
     const page = await browser.newPage();
     await page.setCookie(...cookies);
@@ -101,7 +101,7 @@ async function pa11ytestRunner(test,actions,timeoutVal) {
         userRoles = [];
         await page.screenshot({ path: screenshotPath});
         const elapsedTime = Date.now() - startTime;
-        result = {};
+        result = {}; 
         result.executionTime = elapsedTime;
         result.screenshot = screenshotReportRef;
         test.a11yResult = result;
@@ -112,7 +112,7 @@ async function pa11ytestRunner(test,actions,timeoutVal) {
         throw err;
 
     }
-    userRoles = [];
+    userRoles = []; 
     await page.close();
     await browser.close();
     const elapsedTime = Date.now() - startTime;
@@ -121,12 +121,12 @@ async function pa11ytestRunner(test,actions,timeoutVal) {
     test.a11yResult = result;
     console.log("Test Execution time : "+elapsedTime);
     if (conf.failTestOna11yIssues){
-        assert(result.issues.length === 0, "a11y issues reported")
+        assert(result.issues.length === 0, "a11y issues reported") 
     }
     return result;
 
 }
 
-
+ 
 
 module.exports = { pa11ytest, pa11yTestUserRoles}
