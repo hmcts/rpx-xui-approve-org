@@ -55,6 +55,26 @@ describe('OrganisationDetailsInfoComponent', () => {
 
   describe('approveOrganisation', () => {
 
+    it('should show heading and titles', () => {
+      const headerContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
+      expect(headerContent).toContain('Organisation details');
+      const headingContent = fixture.debugElement.nativeElement.querySelector('h3.govuk-heading-m').textContent;
+      expect(headingContent).toContain('Organisation details');
+    });
+
+    it('should show organisation details', () => {
+      const nameContent = fixture.debugElement.nativeElement.querySelector('dd.govuk-check-your-answers__answer').textContent;
+      expect(nameContent).toContain('Glen Byrne');
+      const adressContent = fixture.debugElement.nativeElement.querySelector('app-org-address').textContent;
+      expect(adressContent).toContain('13 Berryfield drive, Finglas');
+      const mailContent = fixture.debugElement.nativeElement.querySelector('div.govuk-caption-m').textContent;
+      expect(mailContent).toContain('glen@byrne.com');
+      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-table-cell')[2].textContent;
+      expect(pbaNumber).toContain('101010');
+      const accountName = fixture.debugElement.nativeElement.querySelectorAll('span.govuk-caption-m')[0].textContent;
+      expect(accountName).toContain('RAY NIXON BROWN');
+    });
+
     it('should call approveEvent.emit if there is organisation data.', () => {
 
       spyOn(component.approveEvent, 'emit').and.callThrough();
