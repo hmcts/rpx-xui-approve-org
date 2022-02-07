@@ -92,10 +92,11 @@ describe('PendingPBAsComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should show a table with a single row that says there are none pending', () => {
-      const tds = utils.getDebugElements('td');
-      expect(tds.length).toEqual(1);
-      utils.checkText(tds[0], 'There are no pending PBAs');
+    it('should show there are no new PBA requests', () => {
+      component.loaded$ = of(true);
+      fixture.detectChanges();
+      const messageContent = fixture.debugElement.nativeElement.querySelector('.govuk-heading-l').parentElement.textContent;
+      expect(messageContent).toContain('There are no new PBA requests.');
     });
 
     it('should show an appropriate count of zero in the title', () => {
@@ -104,6 +105,8 @@ describe('PendingPBAsComponent', () => {
     });
 
     it('should not show a "Loading..." indicator', () => {
+      component.loaded$ = of(true);
+      fixture.detectChanges();
       expect(utils.getLoadingIndicator()).toBeNull();
     });
   });
