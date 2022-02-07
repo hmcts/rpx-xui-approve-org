@@ -6,7 +6,8 @@ import { OrganisationVM} from 'src/org-manager/models/organisation';
  */
 @Component({
   selector: 'app-org-details-info',
-  templateUrl: './organisation-details-info.component.html'
+  templateUrl: './organisation-details-info.component.html',
+  styleUrls: ['./organisation-details-info.component.scss']
 })
 export class OrganisationDetailsInfoComponent {
 

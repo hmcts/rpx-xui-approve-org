@@ -1,113 +1,132 @@
 <ng-container *ngIf="org; else noOrg">
-   <ng-container *ngIf="org.status==='PENDING'; else showheading">
-      <h1 class="govuk-heading-xl">Registration details</h1>
-      <h2 class="govuk-heading-l">Organisation details</h2>
-      <strong style="display: inline-block" class="govuk-heading-s">Registration status</strong>
-      <span style="margin-left: 10px" class="hmcts-badge">PENDING</span>
-    </ng-container>
-    <ng-template #showheading>
-      <h1 class="govuk-heading-xl">Organisation details</h1>
-    </ng-template>
-  <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview" *ngIf="org">
-    <div class="govuk-check-your-answers__contents">
-       <dt class="govuk-check-your-answers__question">
+  <ng-container *ngIf="org.status==='PENDING' || org.status==='REVIEW'; else showheading">
+    <h1 class="govuk-heading-xl">Approve organisation</h1>
+  </ng-container>
+  <ng-template #showheading>
+    <h1 class="govuk-heading-xl">Organisation details </h1>
+  </ng-template>
+  <div>
+    <h3 class="govuk-heading-m">Organisation details</h3>
+    <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview" *ngIf="org">
+      <div class="govuk-check-your-answers__contents">
+        <dt class="govuk-check-your-answers__question">
           Name
-       </dt>
-       <dd class="govuk-check-your-answers__answer">
+        </dt>
+        <dd class="govuk-check-your-answers__answer">
           {{org.name}}
-          <div class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</div>
-       </dd>
-       <dd class="govuk-check-your-answers__change">
-       </dd>
-    </div>
-    <div class="govuk-check-your-answers__contents">
-       <dt class="govuk-check-your-answers__question">
-          Address
-       </dt>
-       <dd class="govuk-check-your-answers__answer">
-         <app-org-address [organisation]="org"></app-org-address>
-       </dd>
-       <dd class="govuk-check-your-answers__change">
-       </dd>
-    </div>
-    <div class="govuk-check-your-answers__contents">
-       <dt class="govuk-check-your-answers__question">
-          PBA number
-       </dt>
-       <dd class="govuk-check-your-answers__answer">
-           <div *ngFor="let pba of org.pbaNumber; let i = index">
-               {{pba}}
-               <span class="govuk-caption-m govuk-!-font-size-16">
-                   Account name:
-                   <span>
-                     <ng-container *ngIf="org?.accountDetails[i]?.account_name; else noAccountName" >
-                       {{org.accountDetails[i]?.account_name}}
-                     </ng-container>
-                     <ng-template #noAccountName>
-                        currently unavailable
-                     </ng-template>
-                   </span>
-               </span>
-           </div>
-       </dd>
-       <dd class="govuk-check-your-answers__change">
-             <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
-             {{org.pbaNumber.length ? 'Change' : 'Add'}}
-             </a>
-       </dd>
-    </div>
-    <div class="govuk-check-your-answers__contents">
-       <dt class="govuk-check-your-answers__question">
-          DX number
-       </dt>
-       <dd class="govuk-check-your-answers__answer">
-          {{org.dxNumber[0]?.dxNumber}}
-       </dd>
-       <dd class="govuk-check-your-answers__change">
-       </dd>
-    </div>
-    <div class="govuk-check-your-answers__contents">
-       <dt class="govuk-check-your-answers__question">
-          DX exchange
-       </dt>
-       <dd class="govuk-check-your-answers__answer">
-          {{org.dxNumber[0]?.dxExchange}}
-       </dd>
-       <dd class="govuk-check-your-answers__change">
-       </dd>
-    </div>
-    <div class="govuk-check-your-answers__contents">
-       <dt class="govuk-check-your-answers__question">
+        </dd>
+        <dd class="govuk-check-your-answers__change">
+        </dd>
+      </div>
+      <div class="govuk-check-your-answers__contents">
+        <dt class="govuk-check-your-answers__question">
+          SRA ID
+        </dt>
+        <dd class="govuk-check-your-answers__answer">
+          {{org.sraId}}
+        </dd>
+        <dd class="govuk-check-your-answers__change">
+        </dd>
+      </div>
+      <div class="govuk-check-your-answers__contents">
+        <dt class="govuk-check-your-answers__question">
           Administrator
-       </dt>
-       <dd class="govuk-check-your-answers__answer">
+        </dt>
+        <dd class="govuk-check-your-answers__answer">
           <div>{{org.admin}}</div>
           <div class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</div>
-       </dd>
-       <dd class="govuk-check-your-answers__change">
-       </dd>
+        </dd>
+        <dd class="govuk-check-your-answers__change">
+        </dd>
+      </div>
+      <div class="govuk-check-your-answers__contents">
+        <dt class="govuk-table-cell-dt">
+          Address
+        </dt>
+        <dd class="govuk-table-cell">
+          <app-org-address [organisation]="org"></app-org-address>
+        </dd>
+        <dd class="govuk-table-cell">
+        </dd>
+      </div>
+      <div class="govuk-check-your-answers__contents">
+        <dt class="govuk-check-your-answers__question">
+          DX
+        </dt>
+        <dd class="govuk-check-your-answers__answer">
+          {{org.dxNumber[0]?.dxNumber}}
+        </dd>
+        <dd class="govuk-check-your-answers__change">
+        </dd>
+      </div>
+      <div class="govuk-check-your-answers__contents">
+        <br>
+        <br>
+        <h3 class="govuk-heading-m">PBAs</h3>
+      </div>
+      <div class="govuk-check-your-answers__contents">
+        <dt class="govuk-table-cell-dt">
+          PBA number
+        </dt>
+        <dd class="govuk-table-cell">
+          <div *ngFor="let pba of org.pbaNumber; let i = index">
+            {{pba}}
+          </div>
+        </dd>
+        <dd class="govuk-table-cell">
+          <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
+            {{org.pbaNumber.length ? 'Change' : 'Add'}}
+          </a>
+        </dd>
+      </div>
+      <div class="govuk-check-your-answers__contents">
+        <dt class="govuk-check-your-answers__question">
+          Name on Liberata account
+        </dt>
+        <dd class="govuk-check-your-answers__answer">
+            <span class="govuk-caption-m govuk-!-font-size-16" *ngIf="!!org?.accountDetails">
+              {{org?.accountDetails[0]?.account_name}}
+            </span>
+        </dd>
+        <dd class="govuk-check-your-answers__change">
+        </dd>
+      </div>
+    </dl>
+    <div class="govuk-form-group">
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+          What would you like to do with this registration?
+        </legend>
+        <div class="govuk-radios govuk-radios">
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="decision" name="decision" type="radio" value="approve">
+            <label class="govuk-label govuk-radios__label" for="decision">
+              Approve it
+            </label>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="decision-2" name="decision" type="radio" value="reject">
+            <label class="govuk-label govuk-radios__label" for="decision-2">
+              Reject it
+            </label>
+          </div>
+          <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="decision-3" name="decision" type="radio" value="hold">
+            <label class="govuk-label govuk-radios__label" for="decision-3">
+              Place registration under review pending further investigation
+            </label>
+          </div>
+        </div>
+      </fieldset>
     </div>
-    <div class="govuk-check-your-answers__contents">
-       <dt class="govuk-check-your-answers__question">
-          SRA Id
-       </dt>
-       <dd class="govuk-check-your-answers__answer">
-          {{org.sraId}}
-       </dd>
-       <dd class="govuk-check-your-answers__change">
-       </dd>
-    </div>
-  </dl>
-  <button *ngIf="org.status=='PENDING'" (click)="approveOrganisation(org)" type="submit" class="govuk-button">Approve organisation</button>
-  <!-- Note: The delete-org-button CSS class (which adds a left margin) is applied only when the organisation status
-    is "PENDING" and there are two buttons (Approve and Delete).
-  -->
-  <button *ngIf="org.status==='PENDING' || orgDeletable" (click)="deleteOrganisation(org)" type="submit" class="govuk-button govuk-button--secondary"
-          [class.delete-org-button]="org.status==='PENDING'">Delete organisation</button>
+    <br>
+    <button class="govuk-button" data-module="govuk-button">
+      Submit
+    </button>
+  </div>
 </ng-container>
+
 <ng-template #noOrg>
   <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
   <p>Try again later.</p>
 </ng-template>
-
-
