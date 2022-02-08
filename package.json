@@ -121,7 +121,6 @@
     "protractor-screenshot-utils": "^1.0.6",
     "redis": "^3.0.2",
     "rxjs": "^6.0.0",
-    "rxjs-compat": "^6.4.0",
     "session-file-store": "^1.2.0",
     "shortid": "^2.2.14",
     "smoothscroll-polyfill": "^0.4.3",
