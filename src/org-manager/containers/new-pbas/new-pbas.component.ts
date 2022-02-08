@@ -13,10 +13,11 @@ import * as fromStore from '../../store';
 })
 export class NewPBAsComponent implements OnInit, OnDestroy {
 
+  public confirmDecision: boolean = false;
+  private getAllLoadedSubscription: Subscription;
+  public newPBAs = new Map<string, string>();
   public orgs$: Observable<OrganisationVM>;
   public organisationId: string;
-
-  private getAllLoadedSubscription: Subscription;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>
@@ -46,11 +47,27 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public onGoBack() {
-    this.store.dispatch(new fromRoot.Go({ path: ['/organisation/pbas'] }));
+  public onGoBack(): void {
+    if (!this.confirmDecision) {
+      this.store.dispatch(new fromRoot.Go({ path: ['/organisation/pbas'] }));
+    } else {
+      this.confirmDecision = false;
+    }
   }
 
-  public ngOnDestroy() {
+  public onContinue(): void {
+    this.confirmDecision = true;
+  }
+
+  public setNewPBA(event): void {
+    if (this.newPBAs[event.name]) {
+      this.newPBAs[event.name] = event.value;
+    } else {
+      this.newPBAs.set(event.name, event.value);
+    }
+  }
+
+  public ngOnDestroy(): void {
     if (this.getAllLoadedSubscription) {
       this.getAllLoadedSubscription.unsubscribe();
     }

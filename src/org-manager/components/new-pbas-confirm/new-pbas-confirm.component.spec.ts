@@ -5,16 +5,16 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { PBAAccountApprovalComponent } from '..';
 import { OrganisationAddressComponent } from '../organisation-address';
 
-import { NewPBAsInfoComponent } from './new-pbas-info.component';
+import { NewPBAsConfirmComponent } from './new-pbas-confirm.component';
 
-describe('NewPBAsInfoComponent', () => {
-  let component: NewPBAsInfoComponent;
-  let fixture: ComponentFixture<NewPBAsInfoComponent>;
+describe('NewPBAsConfirmComponent', () => {
+  let component: NewPBAsConfirmComponent;
+  let fixture: ComponentFixture<NewPBAsConfirmComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, RouterTestingModule.withRoutes([])],
-      declarations: [NewPBAsInfoComponent, OrganisationAddressComponent, PBAAccountApprovalComponent],
+      declarations: [NewPBAsConfirmComponent, OrganisationAddressComponent, PBAAccountApprovalComponent],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
       ],
@@ -23,7 +23,7 @@ describe('NewPBAsInfoComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NewPBAsInfoComponent);
+    fixture = TestBed.createComponent(NewPBAsConfirmComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
