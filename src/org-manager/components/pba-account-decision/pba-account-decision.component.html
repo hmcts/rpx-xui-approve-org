@@ -1,0 +1,29 @@
+<dl class="govuk-summary-list">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      PBA number
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{pbaNumber}}
+    </dd>
+  </div>
+
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Name on PBA
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{accountName || 'currently unavailable'}}
+    </dd>
+  </div>
+
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      Decision
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{decision}}
+    </dd>
+  </div>
+</dl>
+<br />

@@ -11,8 +11,12 @@
         <h1 class="govuk-heading-xl">Approve new PBA number</h1>
         <h3 class="govuk-heading-s">Loading...</h3>
       </ng-container>
-      <app-new-pbas-info *ngIf="data.org" [org]="data.org">
+
+      <app-new-pbas-info *ngIf="data.org && !confirmDecision" [org]="data.org" [newPBAs]="newPBAs"
+        (submitForm)="onContinue()" (newPBA)="setNewPBA($event)">
       </app-new-pbas-info>
+      <app-new-pbas-confirm *ngIf="data.org && confirmDecision" [org]="data.org" [newPBAs]="newPBAs">
+      </app-new-pbas-confirm>
     </xuilib-hmcts-main-wrapper>
   </div>
 </ng-container>
