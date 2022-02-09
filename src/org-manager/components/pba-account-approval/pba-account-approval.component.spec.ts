@@ -24,4 +24,16 @@ describe('NewPBAsInfoComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should call the selectOptionChanged output emitter when the selectOption method is called', () => {
+    spyOn(component.selectOptionChanged, 'emit').and.callThrough();
+    component.pbaNumber = 'PBA1234567';
+    const testEvent = {
+      target: {
+        value: 'approve'
+      }
+    };
+    component.selectOption(testEvent);
+    expect(component.selectOptionChanged.emit).toHaveBeenCalledWith({ name: component.pbaNumber, value: testEvent.target.value });
+  });
 });
