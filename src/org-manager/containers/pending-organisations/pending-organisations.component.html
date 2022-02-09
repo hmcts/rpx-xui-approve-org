@@ -34,7 +34,7 @@
         </td>
         <td class="govuk-table__cell no-wrap">
           <span *ngIf="org.status=='PENDING'" class="govuk-tag govuk-tag--blue">{{org.status}}</span>
-          <span *ngIf="org.status=='REVIEW'" class="govuk-tag govuk-tag--grey">UNDER {{org.status}}</span>
+          <span *ngIf="org.status=='REVIEW'" class="govuk-tag govuk-tag--grey">UNDER REVIEW</span>
         </td>
         <td class="govuk-table__cell no-wrap">
           <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
