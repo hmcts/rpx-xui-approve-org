@@ -2,11 +2,11 @@ import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
-import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
+import { RouterStateSerializer, StoreRouterConnectingModule, DefaultRouterStateSerializer } from '@ngrx/router-store';
 // ngrx
 import { MetaReducer, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { storeFreeze } from 'ngrx-store-freeze';
+
 import { CookieModule } from 'ngx-cookie';
 import { environment } from '../environments/environment';
 import { SharedModule } from '../shared/shared.module';
@@ -42,7 +42,7 @@ import {LogOutKeepAliveService} from './services/keep-alive/keep-alive.service';
 import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../models/environmentConfig.model'
 
 export const metaReducers: MetaReducer<any>[] = !config.production
-  ? [storeFreeze]
+  ? []
   : [];
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
@@ -61,10 +61,10 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     RouterModule.forRoot(ROUTES, {
       anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'
     }),
-    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreModule.forRoot(reducers, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
     EffectsModule.forRoot(effects),
     SharedModule,
-    StoreRouterConnectingModule,
+    StoreRouterConnectingModule.forRoot({ serializer: DefaultRouterStateSerializer }),
     OrgManagerModule,
     !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : [],
     LoggerModule.forRoot({
