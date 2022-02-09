@@ -1,3 +1,5 @@
+
+
 <ng-container *ngIf="org; else noOrg">
   <ng-container *ngIf="org.status==='PENDING' || org.status==='REVIEW'; else showheading">
     <h1 class="govuk-heading-xl">Approve organisation</h1>
@@ -7,88 +9,88 @@
   </ng-template>
   <div>
     <h3 class="govuk-heading-m">Organisation details</h3>
-    <dl class="govuk-check-your-answers govuk-check-your-answers--pba-overview" *ngIf="org">
-      <div class="govuk-check-your-answers__contents">
-        <dt class="govuk-check-your-answers__question">
+    <dl class="govuk-summary-list" *ngIf="org">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
           Name
         </dt>
-        <dd class="govuk-check-your-answers__answer">
+        <dd class="govuk-summary-list__value">
           {{org.name}}
         </dd>
-        <dd class="govuk-check-your-answers__change">
+        <dd class="govuk-summary-list__actions">
         </dd>
       </div>
-      <div class="govuk-check-your-answers__contents">
-        <dt class="govuk-check-your-answers__question">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
           SRA ID
         </dt>
-        <dd class="govuk-check-your-answers__answer">
+        <dd class="govuk-summary-list__value">
           {{org.sraId}}
         </dd>
-        <dd class="govuk-check-your-answers__change">
+        <dd class="govuk-summary-list__actions">
         </dd>
       </div>
-      <div class="govuk-check-your-answers__contents">
-        <dt class="govuk-check-your-answers__question">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
           Administrator
         </dt>
-        <dd class="govuk-check-your-answers__answer">
+        <dd class="govuk-summary-list__value">
           <div>{{org.admin}}</div>
           <div class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</div>
         </dd>
-        <dd class="govuk-check-your-answers__change">
+        <dd class="govuk-summary-list__actions">
         </dd>
       </div>
-      <div class="govuk-check-your-answers__contents">
-        <dt class="govuk-table-cell-dt">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+        <dt class="govuk-summary-list__key">
           Address
         </dt>
-        <dd class="govuk-table-cell">
+        <dd class="govuk-summary-list__value">
           <app-org-address [organisation]="org"></app-org-address>
         </dd>
-        <dd class="govuk-table-cell">
+        <dd class="govuk-summary-list__actions">
         </dd>
       </div>
-      <div class="govuk-check-your-answers__contents">
-        <dt class="govuk-check-your-answers__question">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
           DX
         </dt>
-        <dd class="govuk-check-your-answers__answer">
+        <dd class="govuk-summary-list__value">
           {{org.dxNumber[0]?.dxNumber}}
         </dd>
-        <dd class="govuk-check-your-answers__change">
+        <dd class="govuk-summary-list__actions">
         </dd>
       </div>
-      <div class="govuk-check-your-answers__contents">
+      <div class="govuk-summary-list__row">
         <br>
         <br>
         <h3 class="govuk-heading-m">PBAs</h3>
       </div>
-      <div class="govuk-check-your-answers__contents">
-        <dt class="govuk-table-cell-dt">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+        <dt class="govuk-summary-list__key">
           PBA number
         </dt>
-        <dd class="govuk-table-cell">
+        <dd class="govuk-summary-list__value">
           <div *ngFor="let pba of org.pbaNumber; let i = index">
             {{pba}}
           </div>
         </dd>
-        <dd class="govuk-table-cell">
+        <dd class="govuk-summary-list__actions">
           <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
             {{org.pbaNumber.length ? 'Change' : 'Add'}}
           </a>
         </dd>
       </div>
-      <div class="govuk-check-your-answers__contents">
-        <dt class="govuk-check-your-answers__question">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
           Name on Liberata account
         </dt>
-        <dd class="govuk-check-your-answers__answer">
-            <span class="govuk-caption-m govuk-!-font-size-16" *ngIf="!!org?.accountDetails">
+        <dd class="govuk-summary-list__value">
+            <span *ngIf="!!org?.accountDetails">
               {{org?.accountDetails[0]?.account_name}}
             </span>
         </dd>
-        <dd class="govuk-check-your-answers__change">
+        <dd class="govuk-summary-list__actions">
         </dd>
       </div>
     </dl>

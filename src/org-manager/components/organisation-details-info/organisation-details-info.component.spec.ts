@@ -63,15 +63,15 @@ describe('OrganisationDetailsInfoComponent', () => {
     });
 
     it('should show organisation details', () => {
-      const nameContent = fixture.debugElement.nativeElement.querySelector('dd.govuk-check-your-answers__answer').textContent;
+      const nameContent = fixture.debugElement.nativeElement.querySelector('dd.govuk-summary-list__value').textContent;
       expect(nameContent).toContain('Glen Byrne');
       const adressContent = fixture.debugElement.nativeElement.querySelector('app-org-address').textContent;
       expect(adressContent).toContain('13 Berryfield drive, Finglas');
       const mailContent = fixture.debugElement.nativeElement.querySelector('div.govuk-caption-m').textContent;
       expect(mailContent).toContain('glen@byrne.com');
-      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-table-cell')[2].textContent;
+      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[5].textContent;
       expect(pbaNumber).toContain('101010');
-      const accountName = fixture.debugElement.nativeElement.querySelectorAll('span.govuk-caption-m')[0].textContent;
+      const accountName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[6].textContent;
       expect(accountName).toContain('RAY NIXON BROWN');
     });
 
