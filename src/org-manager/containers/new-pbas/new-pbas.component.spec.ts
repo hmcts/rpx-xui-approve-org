@@ -32,8 +32,6 @@ describe('NewPBAsComponent', () => {
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
-      ],
-      providers: [
       ]
     }).compileComponents();
     store = TestBed.get(Store);
