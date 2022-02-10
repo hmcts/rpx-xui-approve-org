@@ -61,7 +61,7 @@
         <dd class="govuk-summary-list__actions">
         </dd>
       </div>
-      <div class="govuk-summary-list__row">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
         <br>
         <br>
         <h3 class="govuk-heading-m">PBAs</h3>
@@ -74,6 +74,9 @@
           <div *ngFor="let pba of org.pbaNumber; let i = index">
             {{pba}}
           </div>
+          <div *ngIf="org.pbaNumber.length==0">
+            No PBA Provided
+          </div>
         </dd>
         <dd class="govuk-summary-list__actions">
           <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
@@ -81,7 +84,7 @@
           </a>
         </dd>
       </div>
-      <div class="govuk-summary-list__row">
+      <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="org.pbaNumber.length!=0">
         <dt class="govuk-summary-list__key">
           Name on Liberata account
         </dt>
@@ -92,6 +95,8 @@
         </dd>
         <dd class="govuk-summary-list__actions">
         </dd>
+      </div>
+      <div class="govuk-summary-list__row">
       </div>
     </dl>
     <div class="govuk-form-group">
