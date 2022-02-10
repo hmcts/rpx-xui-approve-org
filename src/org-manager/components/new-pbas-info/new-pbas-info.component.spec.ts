@@ -17,7 +17,7 @@ describe('NewPBAsInfoComponent', () => {
       declarations: [NewPBAsInfoComponent, OrganisationAddressComponent, PBAAccountApprovalComponent],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
-      ],
+      ]
     })
       .compileComponents();
   }));
