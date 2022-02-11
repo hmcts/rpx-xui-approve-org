@@ -1,4 +1,17 @@
+<ng-container *ngIf="formGroup.invalid && submitted">
+  <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">{{errorMessage.title}}</h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <li>
+          <a routerLink="." [fragment]="errorMessage.fieldId">{{errorMessage.description}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-container>
 
+<form [formGroup]="formGroup" (submit)="onSubmit()">
 
 <ng-container *ngIf="org; else noOrg">
   <ng-container *ngIf="org.status==='PENDING' || org.status==='REVIEW'; else showheading">
@@ -99,35 +112,45 @@
       <div class="govuk-summary-list__row">
       </div>
     </dl>
-    <div class="govuk-form-group">
+    <div class="govuk-form-group"  [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">
       <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
           What would you like to do with this registration?
         </legend>
-        <div class="govuk-radios govuk-radios">
-          <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="decision" name="decision" type="radio" value="approve">
-            <label class="govuk-label govuk-radios__label" for="decision">
-              Approve it
-            </label>
-          </div>
-          <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="decision-2" name="decision" type="radio" value="reject">
-            <label class="govuk-label govuk-radios__label" for="decision-2">
-              Reject it
-            </label>
-          </div>
-          <div class="govuk-radios__item">
-            <input class="govuk-radios__input" id="decision-3" name="decision" type="radio" value="hold">
-            <label class="govuk-label govuk-radios__label" for="decision-3">
-              Place registration under review pending further investigation
-            </label>
-          </div>
-        </div>
+        <div
+        id="error-message"
+        class="govuk-error-message"
+        *ngIf="formGroup.get('radioSelected').invalid && submitted">
+        {{ errorMessage.description }}
+      </div>
+      <div class="govuk-radios__item" id="options">
+        <input class="govuk-radios__input" id="reason-0" name="radioSelected" type="radio"
+          [value]="registrationRequest[0].request" formControlName="radioSelected" [checked]="registrationRequest[0].checked"
+          (change)="onChange()"/>
+        <label class="govuk-label govuk-radios__label" for="reason-0">
+          {{ registrationRequest[0].request }}
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="reason-1" name="radioSelected" type="radio"
+          [value]="registrationRequest[1].request" formControlName="radioSelected" [checked]="registrationRequest[1].checked"
+          (change)="onChange()"/>
+        <label class="govuk-label govuk-radios__label" for="reason-1">
+          {{ registrationRequest[1].request }}
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="reason-2" name="radioSelected" type="radio"
+          [value]="registrationRequest[2].request" formControlName="radioSelected" [checked]="registrationRequest[2].checked"
+          (change)="onChange()"/>
+        <label class="govuk-label govuk-radios__label" for="reason-2">
+          {{ registrationRequest[2].request }}
+        </label>
+      </div>
       </fieldset>
     </div>
     <br>
-    <button class="govuk-button" data-module="govuk-button">
+    <button class="govuk-button govuk-!-margin-right-3" type="submit">
       Submit
     </button>
   </div>
@@ -137,3 +160,5 @@
   <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
   <p>Try again later.</p>
 </ng-template>
+
+</form>

@@ -99,6 +99,12 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  public reviewOrganisation(data: OrganisationVM) {
+    if (data) {
+      this.store.dispatch(new fromStore.NavigateToReviewOrganisation(data));
+    }
+  }
+
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
     this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({orgId: this.organisationId, showUserTab: showUsers}));
