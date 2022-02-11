@@ -16,6 +16,7 @@ import { PendingOrganisationsComponent } from './containers/pending-organisation
 import { PendingPBAsComponent } from './containers/pending-pbas';
 import { ReinviteUserComponent } from './containers/reinvite-user';
 import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success';
+import { ReviewOrganisationComponent } from './containers/review-organisation';
 import { UserDetailsComponent } from './containers/user-details';
 import { UserApprovalGuard } from './guards';
 
@@ -87,6 +88,14 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
     data: {
       title: 'Delete organisation success'
+    }
+  },
+  {
+    path: 'review-organisation',
+    component: ReviewOrganisationComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Review organisation'
     }
   },
   {

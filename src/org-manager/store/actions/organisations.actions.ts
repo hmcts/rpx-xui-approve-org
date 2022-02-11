@@ -18,6 +18,7 @@ export enum OrgActionTypes {
   APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
   APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
   NAV_TO_DELETE_ORGANISATION = '[Pending Organisations] Navigate to Delete an Organisation',
+  NAV_TO_REVIEW_ORGANISATION = '[Pending Organisations] Navigate to Review an Organisation',
   DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
   DELETE_PENDING_ORGANISATION_SUCCESS = '[Pending Organisations] Delete Pending Organisation Success',
   DELETE_PENDING_ORGANISATION_FAIL = '[Pending Organisations] Delete Pending Organisation Fail',
@@ -86,6 +87,12 @@ export class ApprovePendingOrganisationsFail implements Action {
 
 export class NavigateToDeleteOrganisation implements Action {
   public readonly type = OrgActionTypes.NAV_TO_DELETE_ORGANISATION;
+
+  constructor(public payload: OrganisationVM) { }
+}
+
+export class NavigateToReviewOrganisation implements Action {
+  public readonly type = OrgActionTypes.NAV_TO_REVIEW_ORGANISATION;
 
   constructor(public payload: OrganisationVM) { }
 }
@@ -201,6 +208,7 @@ export type OrganisationsActions =
     | LoadPendingOrganisationsFail
     | AddReviewOrganisations
     | NavigateToDeleteOrganisation
+    | NavigateToReviewOrganisation
     | DeletePendingOrganisationSuccess
     | DeleteOrganisationSuccess
     | DisplayErrorMessageOrganisations
