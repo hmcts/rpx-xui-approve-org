@@ -194,6 +194,15 @@ export class OrganisationEffects {
     })
   );
 
+
+  @Effect()
+  public navToReviewOrganisation$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.NAV_TO_REVIEW_ORGANISATION),
+    map(() => {
+      return new fromRoot.Go({ path: ['/review-organisation'] });
+    })
+  );
+
   /**
    * Navigate to the Delete Organisation Success page, on successful deletion of a pending organisation from PRD.
    */
