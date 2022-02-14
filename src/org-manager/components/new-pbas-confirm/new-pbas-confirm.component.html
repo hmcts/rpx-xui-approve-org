@@ -1,0 +1,16 @@
+<ng-container *ngIf="org; else noOrg">
+  <h1 class="govuk-heading-xl">Confirm your decision</h1>
+  <app-pba-account-decision *ngFor="let pba of org.pbaNumber; let i = index" [pbaNumber]="pba"
+    [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
+    [decision]="newPBAs.get(pba) === 'approve' ? 'Approve the account' : 'Reject the account'">
+  </app-pba-account-decision>
+
+  <button class="govuk-button" data-module="govuk-button">
+    Confirm
+  </button>
+</ng-container>
+
+<ng-template #noOrg>
+  <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
+  <p>Try again later.</p>
+</ng-template>
