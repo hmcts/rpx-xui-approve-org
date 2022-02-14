@@ -99,7 +99,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  public reviewOrganisation(data: OrganisationVM) : void {
+  public reviewOrganisation(data: OrganisationVM): void {
     if (data) {
       this.store.dispatch(new fromStore.NavigateToReviewOrganisation(data));
     }
