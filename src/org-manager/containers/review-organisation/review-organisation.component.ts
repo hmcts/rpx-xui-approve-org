@@ -11,7 +11,7 @@ import {getOrganisationForReview} from '../../store/selectors';
   templateUrl: './review-organisation.component.html'
 })
 export class ReviewOrganisationComponent implements OnInit {
-  public orgForReview: OrganisationVM | null;
+  public orgForReview: OrganisationVM;
   public confirmButtonDisabled = false;
 
   constructor(public store: Store<fromOrganisationPendingStore.OrganisationRootState>) {
