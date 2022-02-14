@@ -14,7 +14,7 @@ export class ReviewOrganisationComponent implements OnInit {
   public orgForReview: OrganisationVM | null;
   public confirmButtonDisabled = false;
 
-  constructor(private readonly store: Store<fromOrganisationPendingStore.OrganisationRootState>) {
+  constructor(public store: Store<fromOrganisationPendingStore.OrganisationRootState>) {
   }
 
   public ngOnInit(): void {
