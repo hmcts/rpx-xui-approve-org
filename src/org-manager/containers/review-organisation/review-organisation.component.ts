@@ -14,10 +14,10 @@ export class ReviewOrganisationComponent implements OnInit {
   public orgForReview: OrganisationVM | null;
   public confirmButtonDisabled = false;
 
-  constructor(public store: Store<fromOrganisationPendingStore.OrganisationRootState>) {
+  constructor(private readonly store: Store<fromOrganisationPendingStore.OrganisationRootState>) {
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this.addOrganisationForReviewSubscribe();
   }
 
@@ -26,7 +26,7 @@ export class ReviewOrganisationComponent implements OnInit {
    *
    * We subscribe to the organisation under review, so that we can display this information to the user within the view.
    */
-  public addOrganisationForReviewSubscribe() {
+  public addOrganisationForReviewSubscribe(): void {
     this.store.pipe(select(getOrganisationForReview), take(1)).subscribe((org: OrganisationVM) => {
       if (!org) {
         this.store.dispatch(new Go({path: ['/pending-organisations']}));

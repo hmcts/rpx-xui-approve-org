@@ -13,7 +13,7 @@
 
 <form [formGroup]="formGroup" (submit)="onSubmit()">
 
-<ng-container *ngIf="org; else noOrg">
+<ng-container *ngIf="org || org.status==null; else noOrg">
   <ng-container *ngIf="org.status==='PENDING' || org.status==='REVIEW'; else showheading">
     <h1 class="govuk-heading-xl">Approve organisation</h1>
   </ng-container>
@@ -77,42 +77,60 @@
       <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
         <br>
         <br>
-        <h3 class="govuk-heading-m">PBAs</h3>
+        <h3 class="govuk-heading-m">PBAs </h3>
       </div>
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+
+      <ng-container  *ngFor="let pba of org.pbaNumber; let i = index">
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+          <dt class="govuk-summary-list__key">
+            PBA number
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <div *ngIf="org.pbaNumber.length!=0" >
+              {{pba}}
+            </div>
+            <div *ngIf="org.pbaNumber.length==0">
+              No PBA Provided
+            </div>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
+              {{org.pbaNumber.length ? 'Change' : 'Add'}}
+            </a>
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="org.pbaNumber.length!=0">
+          <dt class="govuk-summary-list__key">
+            Name on Liberata account
+          </dt>
+          <dd class="govuk-summary-list__value">
+              <span *ngIf="!!org?.accountDetails">
+                {{org?.accountDetails[i]?.account_name}}
+              </span>
+          </dd>
+          <dd class="govuk-summary-list__actions">
+          </dd>
+        </div>
+      </ng-container >
+      <div *ngIf="org.pbaNumber.length==0" class="govuk-summary-list__row govuk-summary-list__row--no-border">
         <dt class="govuk-summary-list__key">
           PBA number
         </dt>
         <dd class="govuk-summary-list__value">
-          <div *ngFor="let pba of org.pbaNumber; let i = index">
-            {{pba}}
-          </div>
-          <div *ngIf="org.pbaNumber.length==0">
+          <div >
             No PBA Provided
           </div>
         </dd>
         <dd class="govuk-summary-list__actions">
           <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
-            {{org.pbaNumber.length ? 'Change' : 'Add'}}
+            Add
           </a>
-        </dd>
-      </div>
-      <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="org.pbaNumber.length!=0">
-        <dt class="govuk-summary-list__key">
-          Name on Liberata account
-        </dt>
-        <dd class="govuk-summary-list__value">
-            <span *ngIf="!!org?.accountDetails">
-              {{org?.accountDetails[0]?.account_name}}
-            </span>
-        </dd>
-        <dd class="govuk-summary-list__actions">
         </dd>
       </div>
       <div class="govuk-summary-list__row">
       </div>
     </dl>
-    <div class="govuk-form-group"  [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">
+    <div *ngIf="org.status !== 'ACTIVE'" class="govuk-form-group"  [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">
       <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
           What would you like to do with this registration?
@@ -150,8 +168,11 @@
       </fieldset>
     </div>
     <br>
-    <button class="govuk-button govuk-!-margin-right-3" type="submit">
+    <button *ngIf="org.status !== 'ACTIVE'" class="govuk-button govuk-!-margin-right-3" type="submit" >
       Submit
+    </button>
+    <button *ngIf="org.status == 'ACTIVE' || orgDeletable" (click)="deleteOrganisation(org)" type="submit" class="govuk-button govuk-button--secondary">
+      Delete organisation
     </button>
   </div>
 </ng-container>

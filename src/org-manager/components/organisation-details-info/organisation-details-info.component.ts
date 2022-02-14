@@ -48,22 +48,23 @@ export class OrganisationDetailsInfoComponent implements OnInit {
         fieldId: 'options'
       };
     }
-    if (this.formGroup.valid) {
-      const radioSelectedValue = this.formGroup.get(
-        this.radioSelectedControlName
-      ).value;
+    if (this.formGroup.invalid) {
+      return;
+    }
+    const radioSelectedValue = this.formGroup.get(
+      this.radioSelectedControlName
+    ).value;
 
-      switch (radioSelectedValue) {
-        case RequestType.APPROVE_REQUEST:
-          this.approveOrganisation(this.org);
-          break;
-        case RequestType.REJECT_REQUEST:
-          this.deleteOrganisation(this.org);
-          break;
-        default :
-          this.reviewOrganisation(this.org);
-          break;
-      }
+    switch (radioSelectedValue) {
+      case RequestType.APPROVE_REQUEST:
+        this.approveOrganisation(this.org);
+        break;
+      case RequestType.REJECT_REQUEST:
+        this.deleteOrganisation(this.org);
+        break;
+      default :
+        this.reviewOrganisation(this.org);
+        break;
     }
   }
 

@@ -20,7 +20,7 @@ describe('OrganisationDetailsInfoComponent', () => {
     county: '',
     pbaNumber: ['101010'],
     admin: 'Glen Byrne',
-    status: 'ACTIVE',
+    status: 'PENDING',
     view: 'View',
     adminEmail: 'glen@byrne.com',
     dxNumber: [{}],
@@ -58,7 +58,7 @@ describe('OrganisationDetailsInfoComponent', () => {
 
     it('should show heading and titles', () => {
       const headerContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
-      expect(headerContent).toContain('Organisation details');
+      expect(headerContent).toContain('Approve organisation');
       const headingContent = fixture.debugElement.nativeElement.querySelector('h3.govuk-heading-m').textContent;
       expect(headingContent).toContain('Organisation details');
     });
