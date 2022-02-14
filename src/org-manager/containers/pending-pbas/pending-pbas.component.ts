@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { filter, takeWhile } from 'rxjs/operators';
@@ -33,8 +33,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly pbaService: PbaService,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute
+    private readonly router: Router
   ) {}
 
   public ngOnInit(): void {
@@ -52,10 +51,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   }
 
   public handleLoadedActiveOrganisations(active: OrganisationVM[], pending: OrganisationModel[]): void {
-    // TODO: after QA this code will be removed before merge .(it's for demo purposes)
-    const resetStatus = this.route.snapshot.queryParams.reset;
     this.loaded$ = of(true);
-    active = resetStatus ? [] : active;
     this.orgsWithPendingPBAs = active.map(a => {
       const withPBAs = pending.find(p => p.organisationIdentifier === a.organisationId);
       if (withPBAs) {
