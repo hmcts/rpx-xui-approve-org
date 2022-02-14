@@ -21,7 +21,8 @@ export abstract class OrganisationListComponent implements OnInit {
   public abstract get loadAction(): Action;
   public abstract get organisationsSelector(): MemoizedSelector<object, OrganisationVM[]>;
 
-  constructor(protected readonly store: Store<fromStore.OrganisationRootState>) {}
+  constructor(protected readonly store: Store<fromStore.OrganisationRootState> ) {
+  }
 
   public ngOnInit(): void {
     this.loaded$ = this.store.pipe(select(this.loadedSelector));
