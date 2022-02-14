@@ -1,40 +1,41 @@
-  <hr />
-  <dl class="govuk-summary-list govuk-summary-list--no-border">
-    <div class="govuk-summary-list__row">
-      <dt class="govuk-summary-list__key">
-        PBA number<br><br>Name on Liberata account
-      </dt>
-      <dd class="govuk-summary-list__value">
-        {{pbaNumber}}<br><br>
-        {{accountName || 'currently unavailable'}}
-      </dd>
-      <dd class="govuk-summary-list__actions">
-        <a [routerLink]="['/change', 'pba', organisationId, pbaNumbers]">
-          Change
-        </a>
-      </dd>
-    </div>
-  </dl>
-  <div class="govuk-form-group">
-    <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-        Does the name on the Liberata account match the organisation’s name?
-      </legend>
-
-      <div class="govuk-radios govuk-radios">
-        <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="decision1" name="{{pbaNumber}}" type="radio" value="approve">
-          <label class="govuk-label govuk-radios__label" for="decision1">
-            Yes – approve the account
-          </label>
-        </div>
-        <div class="govuk-radios__item">
-          <input class="govuk-radios__input" id="decision1-2" name="{{pbaNumber}}" type="radio" value="reject">
-          <label class="govuk-label govuk-radios__label" for="decision1-2">
-            No – reject the account
-          </label>
-        </div>
-      </div>
-    </fieldset>
+<hr />
+<dl class="govuk-summary-list govuk-summary-list--no-border">
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      PBA number<br><br>Name on Liberata account
+    </dt>
+    <dd class="govuk-summary-list__value">
+      {{pbaNumber}}<br><br>
+      {{accountName || 'currently unavailable'}}
+    </dd>
+    <dd class="govuk-summary-list__actions">
+      <a [routerLink]="['/change', 'pba', organisationId, pbaNumbers]">
+        Change
+      </a>
+    </dd>
   </div>
-  <br />
+</dl>
+<div class="govuk-form-group">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+      Does the name on the Liberata account match the organisation’s name?
+    </legend>
+    <div class="govuk-radios govuk-radios">
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="decision1" name="{{pbaNumber}}" type="radio" value="approve"
+          (change)="selectOption($event)" [checked]="pbaStatus === 'approve'">
+        <label class="govuk-label govuk-radios__label" for="decision1">
+          Yes – approve the account
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="decision1-2" name="{{pbaNumber}}" type="radio" value="reject"
+          (change)="selectOption($event)" [checked]="pbaStatus === 'reject'">
+        <label class="govuk-label govuk-radios__label" for="decision1-2">
+          No – reject the account
+        </label>
+      </div>
+    </div>
+  </fieldset>
+</div>
+<br />

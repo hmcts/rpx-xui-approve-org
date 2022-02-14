@@ -10,10 +10,11 @@
   <h3 class="govuk-heading-m">PBA accounts</h3>
 
   <app-pba-account-approval *ngFor="let pba of org.pbaNumber; let i = index" [pbaNumbers]="org.pbaNumber.join(',')"
-    [pbaNumber]="pba" [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId">
+    [pbaNumber]="pba" [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
+    (selectOptionChanged)="setNewPBA($event)" [pbaStatus]="newPBAs.get(pba)">
   </app-pba-account-approval>
 
-  <button class="govuk-button" data-module="govuk-button">
+  <button class="govuk-button" data-module="govuk-button" (click)="onSubmitForm()">
     Continue
   </button>
 </ng-container>
