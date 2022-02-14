@@ -11,6 +11,7 @@ import { PendingOrganisationsComponent } from './pending-organisations';
 import { PendingPBAsComponent } from './pending-pbas';
 import { ReinviteUserComponent } from './reinvite-user';
 import { ReinviteUserSuccessComponent } from './reinvite-user-success';
+import { ReviewOrganisationComponent } from './review-organisation';
 import { SearchOrganisationsFormComponent } from './search-organisations-form';
 import { UserDetailsComponent } from './user-details';
 
@@ -19,6 +20,7 @@ export const containers: any[] = [
   ApproveOrganisationComponent,
   ApproveOrganisationSuccessComponent,
   DeleteOrganisationComponent,
+  ReviewOrganisationComponent,
   DeleteOrganisationSuccessComponent,
   EditDetailsComponent,
   NewPBAsComponent,
