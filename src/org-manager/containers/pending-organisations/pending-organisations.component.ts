@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { Action, MemoizedSelector, Store } from '@ngrx/store';
 
 import { OrganisationVM } from '../../models/organisation';
@@ -22,7 +21,7 @@ export class PendingOrganisationsComponent extends OrganisationListComponent {
     return fromStore.getPendingOrganisationsArray;
   }
 
-  constructor(protected readonly store: Store<fromStore.OrganisationRootState>, protected readonly route: ActivatedRoute) {
-    super(store, route);
+  constructor(protected readonly store: Store<fromStore.OrganisationRootState>) {
+    super(store);
   }
 }
