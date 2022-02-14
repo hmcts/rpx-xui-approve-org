@@ -3,7 +3,9 @@
     <strong>{{data.org?.name}}</strong>
     <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(data.org?.status=='ACTIVE') ?
     'hmcts-badge--green':'hmcts-badge--blue'">
-      {{data.org?.status}}
+      <span>
+        {{data.org?.status==='REVIEW' ? 'UNDER REVIEW' : data.org?.status}}
+      </span>
     </span>
   </app-identity-bar-component>
   <div class="hmcts-width-container">
@@ -45,7 +47,8 @@
             </ng-template>
           </ng-container>
           <ng-template #showOrgDetails>
-            <app-org-details-info [org]="data.org" [orgDeletable]="organisationDeletable" (approveEvent)="approveOrganisation($event)" (deleteEvent)="deleteOrganisation($event)">
+            <app-org-details-info [org]="data.org" [orgDeletable]="organisationDeletable" (approveEvent)="approveOrganisation($event)"
+            (deleteEvent)="deleteOrganisation($event)" (reviewEvent)="reviewOrganisation($event)">
           </app-org-details-info>
           </ng-template>
       </ng-template>

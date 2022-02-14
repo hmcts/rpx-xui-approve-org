@@ -18,23 +18,21 @@ describe('NewPBAsComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-        imports: [
-            StoreModule.forRoot({
-                ...fromRoot.reducers,
-                feature: combineReducers(fromOrganisationPendingStore.reducers),
-            }),
-            ExuiCommonLibModule,
-            RouterTestingModule,
-            CookieModule.forRoot(),
-        ],
-        declarations: [
-          NewPBAsComponent
-        ],
-        schemas: [
-            CUSTOM_ELEMENTS_SCHEMA
-        ],
-        providers: [
-        ]
+      imports: [
+        StoreModule.forRoot({
+          ...fromRoot.reducers,
+          feature: combineReducers(fromOrganisationPendingStore.reducers),
+        }),
+        ExuiCommonLibModule,
+        RouterTestingModule,
+        CookieModule.forRoot(),
+      ],
+      declarations: [
+        NewPBAsComponent
+      ],
+      schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+      ]
     }).compileComponents();
     store = TestBed.get(Store);
 
@@ -44,14 +42,22 @@ describe('NewPBAsComponent', () => {
   }));
 
   it('should have a component', () => {
-      expect(component).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it('on go back to active org when the organisation is active', () => {
-    const expectedAction = new fromRoot.Go({ path: ['/organisation/pbas']});
+  it('should go back to the pba list when the organisation is active and on the Approve new PBA number page', () => {
+    const expectedAction = new fromRoot.Go({ path: ['/organisation/pbas'] });
+    component.confirmDecision = false;
     spyOn(store, 'dispatch').and.callThrough();
     component.onGoBack();
     expect(store.dispatch).toHaveBeenCalledWith(expectedAction);
+  });
+
+  it('should not go back to pba list when on the PBA Confirm your decision page', () => {
+    component.confirmDecision = true;
+    spyOn(store, 'dispatch').and.callThrough();
+    component.onGoBack();
+    expect(store.dispatch).not.toHaveBeenCalled();
   });
 
 });
