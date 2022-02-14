@@ -151,6 +151,15 @@ export function reducer(
       };
     }
 
+    case fromActions.OrgActionTypes.NAV_TO_REVIEW_ORGANISATION: {
+      const orgForReview = action.payload;
+      return {
+        ...state,
+        orgForReview,
+        errorMessage: ''
+      };
+    }
+
     case fromActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS: {
       const deletedOrganisation = action.payload;
       const pendingEntities = {
