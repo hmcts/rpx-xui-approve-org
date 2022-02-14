@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { filter, takeWhile } from 'rxjs/operators';
 
 import { OrganisationVM } from '../../models/organisation';
@@ -15,6 +15,7 @@ import { OrganisationModel, PBANumberModel, RenderableOrganisation } from './mod
 })
 export class PendingPBAsComponent implements OnInit, OnDestroy {
   public static PENDING_STATUS: string = 'pending';
+  public loaded$: Observable<boolean>;
 
   public orgsWithPendingPBAs: RenderableOrganisation[];
   public get pendingPBAsCount(): number {
@@ -37,6 +38,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.loadPendingPBAs();
+    this.loaded$ = of(false);
   }
 
   public ngOnDestroy(): void {
@@ -49,6 +51,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   }
 
   public handleLoadedActiveOrganisations(active: OrganisationVM[], pending: OrganisationModel[]): void {
+    this.loaded$ = of(true);
     this.orgsWithPendingPBAs = active.map(a => {
       const withPBAs = pending.find(p => p.organisationIdentifier === a.organisationId);
       if (withPBAs) {
