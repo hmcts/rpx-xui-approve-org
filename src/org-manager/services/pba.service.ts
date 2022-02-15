@@ -17,7 +17,7 @@ export class PbaService {
   }
 
   public setPBAStatus(body: any): Observable<any> {
-    return this.http.put<any>(`${this.pbaStatusUrl}`, body);
+     return this.http.put(`${this.pbaStatusUrl}`, body);
   }
 
 }
