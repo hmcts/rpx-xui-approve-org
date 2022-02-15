@@ -12,7 +12,7 @@ const API_PATH = getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH);
 const ORGANISATIONS_URL = 'refdata/internal/v1/organisations';
 const UPDATE_URL = 'pbas';
 // EUI-3846: Note how similar the one below is to the one above.
-const SET_STATUS_URL = 'pba';
+const SET_STATUS_URL = 'pba/status';
 const GET_STATUS_URL = 'pba';
 
 /**
@@ -89,7 +89,7 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
 export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
   try {
     const pbaStatus = req.params.status;
-    const { status, data } = await handleGet(getByStatusUrl(pbaStatus), req);
+    const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     res.status(status).send(data);
   } catch (error) {
     console.error(error);
