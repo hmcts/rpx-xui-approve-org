@@ -3,7 +3,7 @@
     <h1 class="hmcts-page-heading__title govuk-heading-xl">
       Organisation approvals
     </h1>
-
+    <app-notification-banner-component *ngFor="let message of state?.notificationBanners" bannerType="{{message.bannerType}}">{{message.bannerMessage}}</app-notification-banner-component>
     <app-search-organisations-form [searchString]="searchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
 
     <!-- The tabs -->
