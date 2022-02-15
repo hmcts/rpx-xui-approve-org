@@ -22,15 +22,15 @@
     </legend>
     <div class="govuk-radios govuk-radios">
       <div class="govuk-radios__item">
-        <input class="govuk-radios__input" id="decision1" name="{{pbaNumber}}" type="radio" value="approve"
-          (change)="selectOption($event)" [checked]="pbaStatus === 'approve'">
+        <input class="govuk-radios__input" name="{{pbaNumber}}" type="radio" value="accepted"
+          (change)="selectOption($event)" [checked]="pbaStatus === 'accepted'">
         <label class="govuk-label govuk-radios__label" for="decision1">
           Yes – approve the account
         </label>
       </div>
       <div class="govuk-radios__item">
-        <input class="govuk-radios__input" id="decision1-2" name="{{pbaNumber}}" type="radio" value="reject"
-          (change)="selectOption($event)" [checked]="pbaStatus === 'reject'">
+        <input class="govuk-radios__input" name="{{pbaNumber}}" type="radio" value="rejected"
+          (change)="selectOption($event)" [checked]="pbaStatus === 'rejected'">
         <label class="govuk-label govuk-radios__label" for="decision1-2">
           No – reject the account
         </label>
