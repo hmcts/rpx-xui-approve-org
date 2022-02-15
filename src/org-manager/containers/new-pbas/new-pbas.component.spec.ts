@@ -60,4 +60,22 @@ describe('NewPBAsComponent', () => {
     expect(store.dispatch).not.toHaveBeenCalled();
   });
 
+  it('should set the confirm decision state when the continue button is clicked', () => {
+    component.onContinue();
+    expect(component.confirmDecision).toEqual(true);
+  });
+
+  it('should add the new PBA to the PBA dictionary', () => {
+    component.setNewPBA({ name: 'test', value: 'test value' });
+    const result = component.newPBAs.get('test');
+    expect(result).toEqual('test value');
+  });
+
+  it('should update a PBA if it already exists in the PBA dictionary', () => {
+    component.setNewPBA({ name: 'test', value: 'test value OLD' });
+    component.setNewPBA({ name: 'test', value: 'test value NEW' });
+    const result = component.newPBAs.get('test');
+    expect(result).toEqual('test value NEW');
+  });
+
 });
