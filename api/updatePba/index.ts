@@ -12,7 +12,7 @@ const API_PATH = getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH);
 const ORGANISATIONS_URL = 'refdata/internal/v1/organisations';
 const UPDATE_URL = 'pbas';
 // EUI-3846: Note how similar the one below is to the one above.
-const SET_STATUS_URL = 'pba';
+const SET_STATUS_URL = 'pba/status';
 const GET_STATUS_URL = 'pba';
 
 /**
