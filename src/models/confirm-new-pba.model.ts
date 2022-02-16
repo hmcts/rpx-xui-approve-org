@@ -4,7 +4,7 @@ class NewPBAModel {
   statusMessage: string;
 }
 
-export interface ConfirmNewPBAModel{
+export interface ConfirmNewPBAModel {
   newPBAs: NewPBAModel[]
   orgId: string;
 }
