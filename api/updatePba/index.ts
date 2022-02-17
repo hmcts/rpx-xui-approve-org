@@ -89,7 +89,7 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
 export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
   try {
     const pbaStatus = req.params.status;
-    const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
+    const { status, data } = await handleGet(getByStatusUrl(pbaStatus), req);
     res.status(status).send(data);
   } catch (error) {
     console.error(error);
