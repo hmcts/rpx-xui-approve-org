@@ -20,7 +20,7 @@
                 <th class="govuk-table__header" scope="col">Address</th>
                 <th class="govuk-table__header" scope="col">Administrator</th>
                 <th class="govuk-table__header" scope="col">Status</th>
-                <th class="govuk-table__header" scope="col"></th>
+                <td class="govuk-table__header" scope="col"></td>
               </tr>
               <tr class="govuk-table__row" *ngFor="let org of (data.orgs | filterOrganisations: data.activeSearchString | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: (data.orgs | filterOrganisations: data.activeSearchString).length })">
                 <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
