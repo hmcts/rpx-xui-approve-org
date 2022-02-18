@@ -227,17 +227,6 @@ describe('AppComponent', () => {
 
   }));
 
-  it('should call the onFocusMainContent method', fakeAsync(() => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    spyOn(fixture.componentInstance, 'onFocusMainContent');
-
-    const skipLinkElement = fixture.debugElement.nativeElement.querySelector('#skip-link');
-    skipLinkElement.click();
-    fixture.detectChanges();
-    expect(app.onFocusMainContent).toHaveBeenCalled();
-  }));
-
 });
 
 
