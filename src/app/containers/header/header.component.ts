@@ -21,6 +21,7 @@ export class HeaderComponent implements OnInit {
 
     isUserLoggedIn$: Observable<boolean>;
     public isBrandedHeader = false;
+    public mainContentId = 'content';
 
     constructor(public readonly store: Store<fromRoot.State>,
                 private readonly cookieService: CookieService) {}
