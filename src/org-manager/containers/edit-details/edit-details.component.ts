@@ -1,14 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AppUtils } from 'src/app/utils/app-utils';
-import * as fromRoot from '../../../app/store';
+import { UpdatePbaServices } from 'src/org-manager/services';
 import { OrgManagerConstants } from '../../org-manager.constants';
 import { OrganisationService } from '../../services/organisation.service';
-import * as fromStore from '../../store';
 @Component({
   selector: 'app-change-details',
   templateUrl: './edit-details.component.html'
@@ -19,20 +17,21 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
-  private subscirptions: Subscription;
+  private subscriptions: Subscription;
   public orgId: string;
   public pbaNumbers: string[];
   public saveDisabled = true;
   public serverError$: Observable<{ type: string; message: string }>;
   public routeSubscripton: Subscription;
-  public pipeScribtion: Subscription;
+  public pda: any;
 
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly organisationService: OrganisationService,
+    private readonly updatePbaServices: UpdatePbaServices,
     private readonly route: ActivatedRoute) {
     this.routeSubscripton = this.route.params.subscribe(params => {
-      this.orgId = params.orgId ? params.orgId : '';
+      this.orgId = params.orgId;
+      this.pda = params.id;
     });
   }
 
@@ -41,7 +40,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.changePbaFG = new FormGroup({});
     this.getOrgs();
     this.createPbaForm();
-    this.getErrorMsgs();
   }
 
   private getOrgs(): void {
@@ -51,17 +49,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           this.orgId = org.organisationId;
           this.pbaNumbers = org.pbaNumber;
           this.saveDisabled = !org.pbaNumber;
-        } else if (!org && !this.orgId) {
-          this.store.dispatch(new fromStore.LoadActiveOrganisation());
-          this.store.dispatch(new fromStore.LoadPendingOrganisations());
         }
       }));
-  }
-  private getErrorMsgs() {
-    this.store.dispatch(new fromStore.ClearPbaErrors());
-    this.pbaError$ = this.store.pipe(select(fromStore.getPbaFromErrors));
-    this.pbaErrorsHeader$ = this.store.pipe(select(fromStore.getPbaHeaderErrors));
-    this.serverError$ = this.store.pipe(select(fromStore.getServerErrors));
   }
 
   public createPbaForm(): void {
@@ -76,13 +65,13 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       this.changePbaFG.controls[inputs.config.name].updateValueAndValidity();
     }
 
-    this.pipeScribtion = this.store.pipe(select(fromStore.getPbaNumber), take(1)).subscribe((pba: string) => {
-      pba.split(',').map((p, i) => {
+    if (this.pda) {
+      this.pda.split(',').map((p, i) => {
         this.changePbaFG.patchValue({ [`pba${i + 1}`]: p });
       });
-    });
+    }
 
-    this.subscirptions = this.changePbaFG.valueChanges.subscribe(value => {
+    this.subscriptions = this.changePbaFG.valueChanges.subscribe(value => {
       const pba: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
       const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
       this.saveDisabled = !isNewPba;
@@ -97,7 +86,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     if (valid) {
-      this.store.dispatch(new fromStore.SubmitPba({ paymentAccounts, orgId: this.orgId }));
+      this.updatePbaServices.updatePba(({ paymentAccounts, orgId: this.orgId }));
     }
   }
 
@@ -120,18 +109,15 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.subscirptions) {
-      this.subscirptions.unsubscribe();
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
     }
     if (this.routeSubscripton) {
       this.routeSubscripton.unsubscribe();
     }
-    if (this.pipeScribtion) {
-      this.pipeScribtion.unsubscribe();
-    }
   }
 
   public onGoBack() {
-    this.store.dispatch(new fromRoot.Back());
+    // this.store.dispatch(new fromRoot.Back());
   }
 }

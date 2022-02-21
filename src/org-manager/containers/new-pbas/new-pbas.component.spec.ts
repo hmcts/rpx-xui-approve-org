@@ -8,14 +8,11 @@ import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { OrganisationService, PbaAccountDetails } from 'src/org-manager/services';
-
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { NewPBAsComponent } from './new-pbas.component';
 
-
 describe('NewPBAsComponent', () => {
-
   let component: NewPBAsComponent;
   let fixture: ComponentFixture<NewPBAsComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
