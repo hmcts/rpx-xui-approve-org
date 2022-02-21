@@ -74,10 +74,6 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
       this.orgSubscription.unsubscribe();
     }
 
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-
     if (this.pbaSubscription) {
       this.pbaSubscription.unsubscribe();
     }
