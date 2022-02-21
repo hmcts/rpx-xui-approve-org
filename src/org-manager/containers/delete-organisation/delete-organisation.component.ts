@@ -24,7 +24,6 @@ export class DeleteOrganisationComponent implements OnInit {
 
     this.addOrganisationForReviewSubscribe();
   }
-
   /**
    * Add Organisation For Review Subscribe
    *
