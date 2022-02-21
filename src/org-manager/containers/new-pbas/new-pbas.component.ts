@@ -32,7 +32,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.routeSubscription = this.route.params.subscribe(params => {
+    this.route.params.subscribe(params => {
       this.orgId = params.orgId ? params.orgId : '';
 
       this.orgSubscription = this.organisationService.getSingleOrganisation({ id: this.orgId })
