@@ -1,10 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { filter, take, takeWhile } from 'rxjs/operators';
-
+import { ActivatedRoute } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Observable, of, Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { AppUtils } from 'src/app/utils/app-utils';
+import { PbaAccountDetails } from 'src/org-manager/services/pba-account-details.services';
 import * as fromRoot from '../../../app/store';
 import { OrganisationVM } from '../../models/organisation';
+import { OrganisationService } from '../../services/organisation.service';
 import * as fromStore from '../../store';
 
 @Component({
@@ -14,37 +17,41 @@ import * as fromStore from '../../store';
 export class NewPBAsComponent implements OnInit, OnDestroy {
 
   public confirmDecision: boolean = false;
-  private getAllLoadedSubscription: Subscription;
   public newPBAs = new Map<string, string>();
   public orgs$: Observable<OrganisationVM>;
   public organisationId: string;
+  public orgId: string;
+  public orgSubscription: Subscription;
+  public routeSubscription: Subscription;
+  public pbaSubscription: Subscription;
 
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>
-  ) { }
+    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly organisationService: OrganisationService,
+    private readonly route: ActivatedRoute,
+    private readonly pbaAccountDetails: PbaAccountDetails,
+  ) {
+    this.routeSubscription = this.route.params.subscribe(params => {
+      this.orgId = params.orgId ? params.orgId : '';
+    });
+  }
 
   public ngOnInit(): void {
-    this.getAllLoadedSubscription = this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
-      if (!loaded) {
-        this.store.dispatch(new fromStore.LoadActiveOrganisation());
-        this.store.dispatch(new fromStore.LoadPendingOrganisations());
-      }
-    });
-
-    this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
-    this.orgs$.pipe(
-      filter(value => value !== undefined),
-      take(1)
-    ).subscribe(({ organisationId, pbaNumber, isAccLoaded, status }) => {
-      this.organisationId = organisationId;
-
-      if (!isAccLoaded && pbaNumber.length) {
-        this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
-          orgId: organisationId,
-          pbas: pbaNumber.toString()
-        }));
-      }
-    });
+    this.orgSubscription = this.organisationService.getSingleOrganisation({ id: this.orgId })
+      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe(organisationVM => {
+        this.organisationId = organisationVM.organisationId;
+        this.orgs$ = of(organisationVM);
+        if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
+          let ids: string;
+          organisationVM.pbaNumber.forEach(pbaNumber => {
+            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+          });
+          this.pbaSubscription = this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+            organisationVM.accountDetails = accountResponse;
+          });
+        }
+      });
   }
 
   public onGoBack(): void {
@@ -68,9 +75,18 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.getAllLoadedSubscription) {
-      this.getAllLoadedSubscription.unsubscribe();
+    if (this.orgSubscription) {
+      this.orgSubscription.unsubscribe();
     }
+
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+
+    if (this.pbaSubscription) {
+      this.pbaSubscription.unsubscribe();
+    }
+
     this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: false }));
   }
 }

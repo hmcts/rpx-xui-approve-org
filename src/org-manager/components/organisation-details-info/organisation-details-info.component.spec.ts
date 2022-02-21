@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationAddressComponent } from '../organisation-address';
 import { OrganisationDetailsInfoComponent } from './organisation-details-info.component';
@@ -33,7 +32,7 @@ describe('OrganisationDetailsInfoComponent', () => {
       status: 'Deleted',
       effective_date: '2019-12-22T19:30:55.000Z'
     }]
-  }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

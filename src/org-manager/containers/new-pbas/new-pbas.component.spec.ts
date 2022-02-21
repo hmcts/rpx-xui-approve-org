@@ -1,20 +1,26 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
+import { of } from 'rxjs';
+import { OrganisationService, PbaAccountDetails } from 'src/org-manager/services';
 
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { NewPBAsComponent } from './new-pbas.component';
 
 
-describe('NewPBAsComponent', () => {
+fdescribe('NewPBAsComponent', () => {
 
   let component: NewPBAsComponent;
   let fixture: ComponentFixture<NewPBAsComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+  let mockedOrganisationService: any;
+  let mockedPbaAccountDetails: any;
 
   beforeEach((() => {
     TestBed.configureTestingModule({
@@ -23,6 +29,7 @@ describe('NewPBAsComponent', () => {
           ...fromRoot.reducers,
           feature: combineReducers(fromOrganisationPendingStore.reducers),
         }),
+        HttpClientTestingModule,
         ExuiCommonLibModule,
         RouterTestingModule,
         CookieModule.forRoot(),
@@ -32,13 +39,24 @@ describe('NewPBAsComponent', () => {
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
+      ],
+      providers: [
+        OrganisationService, PbaAccountDetails,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({
+              orgId: 'orgTestId',
+            }),
+          },
+        },
       ]
     }).compileComponents();
     store = TestBed.get(Store);
-
+    mockedOrganisationService = TestBed.get(OrganisationService);
+    mockedPbaAccountDetails = TestBed.get(PbaAccountDetails);
     fixture = TestBed.createComponent(NewPBAsComponent);
     component = fixture.componentInstance;
-
   }));
 
   it('should have a component', () => {
@@ -59,5 +77,4 @@ describe('NewPBAsComponent', () => {
     component.onGoBack();
     expect(store.dispatch).not.toHaveBeenCalled();
   });
-
 });
