@@ -18,20 +18,21 @@ export class HomeComponent implements OnInit, OnDestroy {
   ];
   public searchString: string = '';
   public activeRoute: string;
+  public notificationBanners: [];
   private routeSubscription: Subscription;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly router: Router
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
-    this.setupRoute();
+    this.setupRouteState();
     // Watch for changes to the route to set the appropriate tab.
     this.routeSubscription = this.router.events.subscribe({
       next: event => {
         if (event instanceof NavigationEnd) {
-          this.setupRoute();
+          this.setupRouteState();
         }
       }
     });
@@ -49,7 +50,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromOrganisation.UpdateOrganisationsSearchString(searchString));
   }
 
-  private setupRoute(): void {
+  private setupRouteState(): void {
     this.activeRoute = this.router.url.split('?')[0];
+    if (window.history.state && window.history.state.notificationBanners) {
+      this.notificationBanners = window.history.state.notificationBanners;
+    }
   }
 }

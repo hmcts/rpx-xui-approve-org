@@ -10,6 +10,7 @@ import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisation from '../../../org-manager/store';
 import { OrgActionTypes } from '../../../org-manager/store';
+import { NotificationBannerComponent } from '../../components';
 import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
 
@@ -53,7 +54,7 @@ describe('HomeComponent', () => {
           feature: combineReducers(fromOrganisation.reducers)
         }),
       ],
-      declarations: [ HomeComponent, SearchOrganisationsFormComponent, MockComponent ]
+      declarations: [ HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
