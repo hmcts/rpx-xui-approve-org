@@ -10,7 +10,7 @@
   <h3 class="govuk-heading-m">PBA accounts</h3>
 
   <app-pba-account-approval *ngFor="let pba of org.pbaNumber; let i = index" [pbaNumbers]="org.pbaNumber.join(',')"
-    [pbaNumber]="pba" [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
+    [pbaNumber]="pba" [accountName]="org.accountDetails[i] ? org.accountDetails[i].account_name : ''" [organisationId]="org ? org.organisationId : ''"
     (selectOptionChanged)="setNewPBA($event)" [pbaStatus]="newPBAs.get(pba)">
   </app-pba-account-approval>
 
