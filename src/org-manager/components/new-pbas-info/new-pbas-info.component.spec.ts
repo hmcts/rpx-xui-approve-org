@@ -75,7 +75,6 @@ describe('NewPBAsInfoComponent', () => {
     fixture.detectChanges();
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
-    component.onSubmitForm();
     expect(component.submitForm.emit).toHaveBeenCalled();
   });
 
@@ -84,7 +83,6 @@ describe('NewPBAsInfoComponent', () => {
     const submitButton = fixture.debugElement.nativeElement.querySelector('button[type="submit"]');
     submitButton.click();
     fixture.detectChanges();
-    component.onSubmitForm();
     expect(component.submitForm.emit).not.toHaveBeenCalled();
   });
 
