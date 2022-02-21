@@ -67,11 +67,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
   }
 
   public setNewPBA(event): void {
-    if (this.newPBAs[event.name]) {
-      this.newPBAs[event.name] = event.value;
-    } else {
-      this.newPBAs.set(event.name, event.value);
-    }
+    this.newPBAs.set(event.name, event.value);
   }
 
   public ngOnDestroy(): void {
