@@ -14,7 +14,7 @@ import * as fromOrganisationPendingStore from '../../store';
 import { NewPBAsComponent } from './new-pbas.component';
 
 
-fdescribe('NewPBAsComponent', () => {
+describe('NewPBAsComponent', () => {
 
   let component: NewPBAsComponent;
   let fixture: ComponentFixture<NewPBAsComponent>;
