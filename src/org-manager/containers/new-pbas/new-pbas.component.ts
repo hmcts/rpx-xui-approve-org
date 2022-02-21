@@ -1,11 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from 'src/app/utils/app-utils';
 import { PbaAccountDetails } from 'src/org-manager/services/pba-account-details.services';
-import * as fromRoot from '../../../app/store';
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services/organisation.service';
 import * as fromStore from '../../store';
@@ -26,23 +24,23 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
   public pbaSubscription: Subscription;
 
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly router: Router,
     private readonly organisationService: OrganisationService,
     private readonly route: ActivatedRoute,
     private readonly pbaAccountDetails: PbaAccountDetails,
   ) {
-    this.routeSubscription = this.route.params.subscribe(params => {
-      this.orgId = params.orgId ? params.orgId : '';
-    });
   }
 
   public ngOnInit(): void {
-    this.orgSubscription = this.organisationService.getSingleOrganisation({ id: this.orgId })
-      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
-      .subscribe(organisationVM => {
-        this.organisationId = organisationVM.organisationId;
-        this.orgs$ = of(organisationVM);
-        if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
+    this.routeSubscription = this.route.params.subscribe(params => {
+      this.orgId = params.orgId ? params.orgId : '';
+
+      this.orgSubscription = this.organisationService.getSingleOrganisation({ id: this.orgId })
+        .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+        .subscribe(organisationVM => {
+          this.organisationId = organisationVM.organisationId;
+          this.orgs$ = of(organisationVM);
+          // if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
           let ids: string;
           organisationVM.pbaNumber.forEach(pbaNumber => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
@@ -50,13 +48,14 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
           this.pbaSubscription = this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
-        }
-      });
+          // }
+        });
+    });
   }
 
   public onGoBack(): void {
     if (!this.confirmDecision) {
-      this.store.dispatch(new fromRoot.Go({ path: ['/organisation/pbas'] }));
+      this.router.navigateByUrl('/organisation/pbas');
     } else {
       this.confirmDecision = false;
     }
@@ -82,7 +81,5 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     if (this.pbaSubscription) {
       this.pbaSubscription.unsubscribe();
     }
-
-    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: false }));
   }
 }
