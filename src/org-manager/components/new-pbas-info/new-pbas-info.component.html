@@ -5,7 +5,7 @@
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <li>
-          <a routerLink="." [fragment]="'heading'">Select the decision for the PBA account</a>
+          <a routerLink="." [fragment]="'heading'"> {{org.pbaNumber && org.pbaNumber.length>1 ? 'Select the decision for the PBA accounts' : 'Select the decision for the PBA account'}}</a>
         </li>
       </ul>
     </div>
