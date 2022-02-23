@@ -48,9 +48,11 @@ export class OrganisationDetailsInfoComponent implements OnInit {
         fieldId: 'options'
       };
     }
+
     if (this.formGroup.invalid) {
       return;
     }
+
     const radioSelectedValue = this.formGroup.get(
       this.radioSelectedControlName
     ).value;

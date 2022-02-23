@@ -22,12 +22,14 @@ export class AppUtils {
   public static mapOrganisation(apiOrg: Organisation): OrganisationVM {
     const organisationVm = new OrganisationVM();
     organisationVm.name = apiOrg.name;
-    organisationVm.adminEmail = apiOrg.superUser.email;
+    if (apiOrg.superUser) {
+      organisationVm.adminEmail = apiOrg.superUser.email;
+      organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
+    }
     organisationVm.pbaNumber = apiOrg.paymentAccount;
     organisationVm.organisationId = apiOrg.organisationIdentifier;
     organisationVm.view = 'View';
     organisationVm.status = apiOrg.status;
-    organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
     if (apiOrg.contactInformation && apiOrg.contactInformation[0]) {
       organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
       organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
@@ -52,7 +54,7 @@ export class AppUtils {
           townCity: org.townCity,
           county: org.county,
           dxAddress: org.dxNumber
-          }],
+        }],
         superUser: {
           userIdentifier: org.admin,
           firstName: org.admin,
@@ -152,7 +154,7 @@ export class AppUtils {
   // Util method to return Navitems
   // based on user's role
   public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
-    let roleNavItems: NavItem [] = new Array<NavItem>();
+    let roleNavItems: NavItem[] = new Array<NavItem>();
     userRoles.forEach(role => {
       if (roleBasedNav.hasOwnProperty(role)) {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
@@ -170,8 +172,8 @@ export class AppUtils {
       // we get the roles in this format before decoding 'j%3A%5B%22prd-admin%22%5D'
       // after deconding we get it in format 'j:["prd-admin"]'
       if (roles.length === 2) {
-         const returnVal = JSON.parse(roles[1]);
-         return returnVal;
+        const returnVal = JSON.parse(roles[1]);
+        return returnVal;
       }
     }
     return [];
