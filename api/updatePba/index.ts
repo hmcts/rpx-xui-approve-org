@@ -1,6 +1,4 @@
 import { Response } from 'express';
-
-import { handleGet } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
@@ -89,7 +87,7 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
 export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
   try {
     const pbaStatus = req.params.status;
-    const { status, data } = await handleGet(getByStatusUrl(pbaStatus), req);
+    const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     res.status(status).send(data);
   } catch (error) {
     console.error(error);

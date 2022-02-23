@@ -38,11 +38,11 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.pbaInputs = OrgManagerConstants.PBA_INPUT_FEED;
     this.changePbaFG = new FormGroup({});
-    this.getOrgs();
+    this.getOrg();
     this.createPbaForm();
   }
 
-  private getOrgs(): void {
+  private getOrg(): void {
     this.orgDetails$ = this.organisationService.getSingleOrganisation({ id: this.orgId })
       .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)), tap(org => {
         if (org) {
@@ -118,6 +118,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onGoBack() {
-    // this.store.dispatch(new fromRoot.Back());
+    window.history.back();
   }
 }

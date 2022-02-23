@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
 import { environment } from '../../environments/environment';
 import { ConfirmNewPBAModel } from '../../models/confirm-new-pba.model';
 
@@ -18,7 +17,6 @@ export class PbaService {
   }
 
   public setPBAStatus(body: any): Observable<ConfirmNewPBAModel> {
-     return this.http.put<ConfirmNewPBAModel>(`${this.pbaStatusUrl}`, body);
+    return this.http.put<ConfirmNewPBAModel>(`${this.pbaStatusUrl}`, body);
   }
-
 }

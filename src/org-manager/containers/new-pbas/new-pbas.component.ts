@@ -3,17 +3,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from 'src/app/utils/app-utils';
+import { PbaService } from 'src/org-manager/services';
 import { PbaAccountDetails } from 'src/org-manager/services/pba-account-details.services';
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services/organisation.service';
-import * as fromStore from '../../store';
-
 @Component({
   selector: 'app-new-pbas',
   templateUrl: './new-pbas.component.html'
 })
 export class NewPBAsComponent implements OnInit, OnDestroy {
-
   public confirmDecision: boolean = false;
   public newPBAs = new Map<string, string>();
   public orgs$: Observable<OrganisationVM>;
@@ -28,10 +26,12 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     private readonly organisationService: OrganisationService,
     private readonly route: ActivatedRoute,
     private readonly pbaAccountDetails: PbaAccountDetails,
+    private readonly pbaService: PbaService,
   ) {
   }
 
   public ngOnInit(): void {
+    const STATUS = 'pending';
     this.route.params.subscribe(params => {
       this.orgId = params.orgId ? params.orgId : '';
 
@@ -40,11 +40,17 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
         .subscribe(organisationVM => {
           this.organisationId = organisationVM.organisationId;
           this.orgs$ = of(organisationVM);
-          // if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
+
           let ids: string;
-          organisationVM.pbaNumber.forEach(pbaNumber => {
-            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+          this.pbaService.getPBAsByStatus(STATUS).subscribe(models => {
+            const orgFound = models.filter(orgPBA => orgPBA.organisationIdentifier === organisationVM.organisationId);
+            if (orgFound && orgFound.pbaNumbers) {
+              orgFound.pbaNumbers.forEach(pbaNumber => {
+                ids = !ids ? pbaNumber.pbaNumber : `${ids},${pbaNumber.pbaNumber}`;
+              });
+            }
           });
+
           this.pbaSubscription = this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
