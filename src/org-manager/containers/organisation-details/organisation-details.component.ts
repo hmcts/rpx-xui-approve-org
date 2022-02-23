@@ -1,15 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from 'src/app/utils/app-utils';
 import { OrganisationService, PbaAccountDetails } from 'src/org-manager/services';
-import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
-import * as fromStore from '../../store';
 
 @Component({
   selector: 'app-org-details',
@@ -31,7 +28,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public getShowOrgDetailsSubscription: Subscription;
 
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly router: Router,
     private readonly userApprovalGuard: UserApprovalGuard,
     private readonly organisationService: OrganisationService,
     private readonly route: ActivatedRoute,
@@ -45,7 +42,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
     if (this.isXuiApproverUserdata) {
-      this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
+      // this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
     }
 
     this.organisationService.getSingleOrganisation({ id: this.orgId })
@@ -86,35 +83,35 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onGoBack() {
-    this.store.dispatch(new fromRoot.Go({ path: [this.isActiveOrg ? '/active-organisation' : '/pending-organisations'] }));
+    this.router.navigateByUrl(this.isActiveOrg ? '/active-organisation' : '/pending-organisations');
   }
 
   public approveOrganisation(data: OrganisationVM) {
     if (data) {
-      this.store.dispatch(new fromStore.AddReviewOrganisations(data));
+      this.router.navigateByUrl('/approve-organisations');
     }
   }
 
   public deleteOrganisation(data: OrganisationVM) {
     if (data) {
-      this.store.dispatch(new fromStore.NavigateToDeleteOrganisation(data));
+      this.router.navigateByUrl('/delete-organisation');
     }
   }
 
   public reviewOrganisation(data: OrganisationVM): void {
     if (data) {
-      this.store.dispatch(new fromStore.NavigateToReviewOrganisation(data));
+      this.router.navigateByUrl('/review-organisation');
     }
   }
 
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
-    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: showUsers }));
+    // this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: showUsers }));
   }
 
   public onShowUserDetails(user: User) {
     if (user) {
-      this.store.dispatch(new fromStore.ShowUserDetails({ userDetails: user, isSuperUser: this.organisationAdminEmail === user.email, orgId: this.organisationId }));
+      //  this.store.dispatch(new fromStore.ShowUserDetails({ userDetails: user, isSuperUser: this.organisationAdminEmail === user.email, orgId: this.organisationId }));
     }
   }
 
@@ -122,7 +119,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     if (this.getAllLoadedSubscription) {
       this.getAllLoadedSubscription.unsubscribe();
     }
-    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: false }));
+    // this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: false }));
 
     if (this.getOrganisationDeletableSubscription) {
       this.getOrganisationDeletableSubscription.unsubscribe();
@@ -132,6 +129,6 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       this.getShowOrgDetailsSubscription.unsubscribe();
     }
 
-    this.store.dispatch(new fromStore.GetOrganisationDeletableStatusSuccess(false));
+    //   this.store.dispatch(new fromStore.GetOrganisationDeletableStatusSuccess(false));
   }
 }
