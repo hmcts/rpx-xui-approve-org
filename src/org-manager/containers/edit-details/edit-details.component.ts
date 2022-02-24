@@ -86,7 +86,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     if (valid) {
-      this.updatePbaServices.updatePba(({ paymentAccounts, orgId: this.orgId }));
+      this.updatePbaServices.updatePba(({ paymentAccounts: ['PBA1234999'], orgId: this.orgId }));
     }
   }
 

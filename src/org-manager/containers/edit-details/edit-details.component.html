@@ -18,10 +18,9 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
-          <ng-container *ngIf="(pbaError$ | async) as errors">
+          <ng-container>
             <xuilib-gov-uk-input *ngFor="let data of pbaInputs"
               [config]="data.config"
-              [errorMessage]="errors[data.config.name]"
               [group]="changePbaFG">
             </xuilib-gov-uk-input>
           </ng-container>
