@@ -48,6 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public submitSearch(searchString: string): void {
     this.store.dispatch(new fromOrganisation.UpdateOrganisationsSearchString(searchString));
+    this.refreshBanner();
   }
 
   private setupRouteState(): void {
@@ -56,4 +57,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.notificationBanners = window.history.state.notificationBanners;
     }
   }
+
+  public refreshBanner(): void {
+    if (window.history.state && window.history.state.notificationBanners) {
+      this.notificationBanners = null;
+    }
+  }
+
 }
