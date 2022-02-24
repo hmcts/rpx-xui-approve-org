@@ -76,7 +76,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
       this.saveDisabled = !isNewPba;
     });
-
   }
 
   public get fPba() { return this.changePbaFG.controls; }
