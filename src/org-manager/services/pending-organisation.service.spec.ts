@@ -71,6 +71,11 @@ describe('PendingOrganisationService', () => {
     expect(httpClient.put).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc`, organisation);
   });
 
+  it('should put review organisation', () => {
+    pendingOrganisationService.putReviewOrganisation(organisation);
+    expect(httpClient.put).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc`, organisation);
+  });
+
   it('should delete organisation', () => {
     pendingOrganisationService.deletePendingOrganisations(organisation);
     expect(httpClient.delete).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc`);

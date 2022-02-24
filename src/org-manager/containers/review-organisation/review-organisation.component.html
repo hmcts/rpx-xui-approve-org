@@ -24,7 +24,7 @@
               </div>
             </dl>
           </ng-container>
-          <button type="button" class="govuk-button" [disabled]="confirmButtonDisabled">
+          <button type="button" class="govuk-button" (click)="onPutReviewOrganisation()" [disabled]="confirmButtonDisabled">
             Confirm
           </button>
         </div>
