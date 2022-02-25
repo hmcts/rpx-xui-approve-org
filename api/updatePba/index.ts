@@ -107,7 +107,7 @@ export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Res
     const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     if (data) {
       const organisations = filterOrganisations(data, req.body.searchRequest.search_filter);
-      responseData = { organisations: organisations, total_records: organisations.length };
+      responseData = { organisations, total_records: organisations.length };
 
     } else {
       responseData = { organisations: [], total_records: 0 };
