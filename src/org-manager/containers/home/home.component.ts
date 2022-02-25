@@ -1,11 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Subscription } from 'rxjs';
-
-import * as fromStore from '../../../org-manager/store';
-import * as fromOrganisation from '../../store/';
-
+import { combineLatest, Observable, Subscription } from 'rxjs';
+import { OrganisationService } from '../../services';
+import { LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { delay, map } from 'rxjs/operators';
 @Component({
   selector: 'app-home-component',
   templateUrl: './home.component.html',
@@ -16,14 +14,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     { url: '/organisation/pbas', label: 'New PBAs' },
     { url: '/organisation/active', label: 'Active organisations' }
   ];
+  public showSpinner$: Observable<boolean>;
   public searchString: string = '';
   public activeRoute: string;
   public notificationBanners: [];
   private routeSubscription: Subscription;
-
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly router: Router
+    private readonly router: Router,
+    protected organisationService: OrganisationService,
+    private readonly loadingService: LoadingService,
   ) { }
 
   public ngOnInit(): void {
@@ -37,7 +36,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.store.pipe(select(fromOrganisation.getSearchString)).subscribe(str => this.searchString = str);
+    const libServices$ = combineLatest([
+      this.loadingService.isLoading
+    ]);
+
+    this.showSpinner$ = libServices$.pipe(delay(0), map(states => states.reduce((c, s) => c || s, false)));
   }
 
   public ngOnDestroy(): void {
@@ -47,7 +50,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public submitSearch(searchString: string): void {
-    this.store.dispatch(new fromOrganisation.UpdateOrganisationsSearchString(searchString));
+    this.organisationService.setOrganisationSearchString(searchString);
   }
 
   private setupRouteState(): void {
