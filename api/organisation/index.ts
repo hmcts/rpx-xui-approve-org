@@ -20,8 +20,7 @@ async function handleGetOrganisationsRoute(req: Request, res: Response, next: Ne
   // if a status is passed in the request it means we need to load the paged organisations list, filtered by the status
   if (req.query.status) {
     handleOrganisationPagingRoute(req, res, next)
-  }
-  else {
+  } else {
     // used to load either an individual organisation or organisation user
     try {
       const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
@@ -59,7 +58,7 @@ async function handleOrganisationPagingRoute(req: Request, res: Response, next: 
 
     if (response.data.organisations) {
       const organisations = filterOrganisations(response.data.organisations, req.body.searchRequest.search_filter);
-      responseData = { organisations: organisations, total_records: organisations.length };
+      responseData = { organisations, total_records: organisations.length };
     } else {
       responseData = { organisations: [], total_records: 0 };
     }
