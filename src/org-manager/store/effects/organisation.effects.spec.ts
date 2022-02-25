@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
+import { NotificationBannerType } from 'src/models/notification-banner-type.enum';
 import { LoggerService } from '../../../app/services/logger.service';
 import { AddGlobalError, Go } from '../../../app/store';
 import {
@@ -140,10 +141,15 @@ describe('Organisation Effects', () => {
   });
 
   describe('approvePendingOrgsSuccess$', () => {
-    it('should approvePendingOrgsSuccess action', () => {
+    it('should return an action to navigate to the "Organisation" page with success message', () => {
       const action = new fromActions.ApprovePendingOrganisationsSuccess({} as OrganisationVM);
       const completion = new Go({
-        path: ['/approve-organisations-success']
+        path: ['/organisation/pending'],
+        extras: {
+          state: {
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration approved' }],
+          },
+        },
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -238,11 +244,33 @@ describe('Organisation Effects', () => {
     });
   });
 
+  describe('putReviewOrgSuccess$', () => {
+    it('should return an action to navigate to the "Organisation" page with success message', () => {
+      const action = new fromActions.PutReviewOrganisationSuccess({} as OrganisationVM);
+      const completion = new Go({
+        path: ['/organisation/pending'],
+        extras: {
+          state: {
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration put under review' }],
+          },
+        },
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.putReviewOrgSuccess$).toBeObservable(expected);
+    });
+  });
+
   describe('deletePendingOrgSuccess$', () => {
-    it('should return an action to navigate to the "Delete Organisation" success page', () => {
+    it('should return an action to navigate to the "Organisation" page with success message', () => {
       const action = new fromActions.DeletePendingOrganisationSuccess({} as OrganisationVM);
       const completion = new Go({
-        path: ['/delete-organisation-success']
+        path: ['/organisation/pending'],
+        extras: {
+          state: {
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration rejected' }],
+          },
+        },
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
