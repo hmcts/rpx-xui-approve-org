@@ -1,16 +1,14 @@
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
-
-import * as fromRoot from '../../../app/store/reducers';
-import * as fromOrganisation from '../../../org-manager/store';
-import { OrgActionTypes } from '../../../org-manager/store';
 import { NotificationBannerComponent } from '../../components';
+import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
 
@@ -34,14 +32,12 @@ export const MOCK_ROUTES: Routes = [
     ]
   }
 ];
-
+const organisationMockService = jasmine.createSpyObj('organisationService', ['setOrganisationSearchString']);
 describe('HomeComponent', () => {
 
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
   let router: Router;
-  let store: Store<fromOrganisation.OrganisationRootState>;
-
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -49,20 +45,17 @@ describe('HomeComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         ExuiCommonLibModule,
-        StoreModule.forRoot({
-          ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisation.reducers)
-        }),
+        HttpClientTestingModule
       ],
-      declarations: [ HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent ]
+      declarations: [ HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent ],
+      providers: [
+        { provide: OrganisationService, useValue: organisationMockService }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     router = TestBed.get(Router);
-    store = TestBed.get(Store);
-    spyOn(store, 'dispatch').and.callThrough();
-
     fixture.detectChanges();
   }));
 
@@ -88,7 +81,7 @@ describe('HomeComponent', () => {
     expect(component.activeRoute).toEqual('/');
   });
 
-  it('should change the activeRoute when the route is changed', fakeAsync(() => {
+  it('should change the activeRoute when the route is changed', () => {
     const CHOSEN_TAB = component.tabs[1];
     router.navigate([CHOSEN_TAB.url]).then(() => {
       expect(component.activeRoute).toEqual(CHOSEN_TAB.url);
@@ -99,15 +92,12 @@ describe('HomeComponent', () => {
       expect(selectedTab).not.toBeNull();
       expect(selectedTab.nativeElement.textContent.trim()).toEqual(CHOSEN_TAB.label);
     });
-  }));
+  });
 
   it('should perform a search when the search form is submitted', () => {
     const SEARCH_STRING = `Bob's Solicitors`;
     component.submitSearch(SEARCH_STRING);
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.objectContaining({
-      payload: SEARCH_STRING,
-      type: OrgActionTypes.UPDATE_ORGANISATIONS_SEARCH_STRING
-    }));
+    expect(organisationMockService.setOrganisationSearchString).toHaveBeenCalledWith(SEARCH_STRING);
   });
 
 });

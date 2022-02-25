@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import createSpyObj = jasmine.createSpyObj;
 import { Organisation } from '../models/organisation';
 import { PendingOrganisationService } from './pending-organisation.service';
+import { OrganisationService } from '.';
 
 describe('PendingOrganisationService', () => {
   let httpClient: HttpClient;
@@ -44,9 +45,9 @@ describe('PendingOrganisationService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        PendingOrganisationService,
+        PendingOrganisationService, OrganisationService,
         { provide: HttpClient, useValue: httpClient },
-        { provide: environment, useValue: mockEnvironment },
+        { provide: environment, useValue: mockEnvironment }
       ]
     });
     pendingOrganisationService = TestBed.get(PendingOrganisationService);

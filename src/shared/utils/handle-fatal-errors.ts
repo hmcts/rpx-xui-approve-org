@@ -56,10 +56,5 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
       // However, if they've specified that other errors should be treated
       // as fatal, we should handle that.
       return treatAsFatal(status, navigator, fatals);
-
-      //  // TODO: Specific 400 error handling needed. "Something went wrong"?
-      //  this.router.navigateByUrl('/service-down');
-      //  break;
-
   }
 };
