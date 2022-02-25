@@ -2,7 +2,7 @@ import { CaseWorkerRefDataService } from '../../services/caseworker-ref-data.ser
 import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { handleFatalErrors } from '../../utils/caseworker-utils';
+import { handleFatalErrors } from '../../../shared/utils/handle-fatal-errors';
 
 @Component({
   selector: 'app-prd-caseworker-details',
