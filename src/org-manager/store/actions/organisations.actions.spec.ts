@@ -64,6 +64,38 @@ describe('PendingOrganisationActions actions', () => {
     });
   });
 
+  describe('PutReviewOrganisation actions GROUP', () => {
+    describe('PutReviewOrganisation', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.PutReviewOrganisation(PendingOrganisationsMockCollectionObj);
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.PUT_REVIEW_ORGANISATION,
+          payload: PendingOrganisationsMockCollectionObj
+        });
+      });
+    });
+
+    describe('PutReviewOrganisationSuccess', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.PutReviewOrganisationSuccess(PendingOrganisationsMockCollectionObj);
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS,
+          payload: PendingOrganisationsMockCollectionObj
+        });
+      });
+    });
+
+    describe('PutReviewOrganisationFail', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.PutReviewOrganisationFail({});
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.PUT_REVIEW_ORGANISATION_FAIL,
+          payload: {}
+        });
+      });
+    });
+  });
+
   describe('DeletePendingOrganisation actions GROUP', () => {
     // Initial action
     describe('DeletePendingOrganisation', () => {
