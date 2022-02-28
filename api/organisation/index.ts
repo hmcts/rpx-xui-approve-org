@@ -17,8 +17,8 @@ const logger = log4jui.getLogger('return')
  * @param next
  */
 async function handleGetOrganisationsRoute(req: Request, res: Response, next: NextFunction) {
-  // if a status is passed in the request it means we need to load the paged organisations list, filtered by the status
-  if (req.query.status) {
+  // if a search_filter is passed in the request it means we need to load the paged organisations list, filtered by the status
+  if (req.query.search_filter) {
     handleOrganisationPagingRoute(req, res, next)
   } else {
     // used to load either an individual organisation or organisation user
