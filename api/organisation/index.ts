@@ -17,63 +17,67 @@ const logger = log4jui.getLogger('return')
  * @param next
  */
 async function handleGetOrganisationsRoute(req: Request, res: Response, next: NextFunction) {
-    try {
-        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
-        const response = await req.http.get(organisationsUri)
-        logger.info('Organisations response' + response.data)
+  try {
+    const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
+    const response = await req.http.get(organisationsUri)
+    logger.info('Organisations response' + response.data)
 
-        if (response.data.organisations) {
-            res.send(response.data.organisations)
-        } else {
-            res.send(response.data)
-        }
-    } catch (error) {
-        logger.error('Organisations error ' + error)
-        if (error.message) {
-            logger.error('Error message: ' + error.message)
-          }
-        if (error.stack) {
-            logger.error('Error stack: ' + error.stack)
-          }
-        if (error.code) {
-            logger.error('Error code: ' + error.code)
-          }
-        const errReport = { apiError: error.data.message, apiStatusCode: error.status,
-            message: 'handleGetOrganisationsRoute error' }
-        res.status(500).send(errReport)
+    if (response.data.organisations) {
+      res.send(response.data.organisations)
+    } else {
+      res.send(response.data)
     }
+  } catch (error) {
+    logger.error('Organisations error ' + error)
+    if (error.message) {
+      logger.error('Error message: ' + error.message)
+    }
+    if (error.stack) {
+      logger.error('Error stack: ' + error.stack)
+    }
+    if (error.code) {
+      logger.error('Error code: ' + error.code)
+    }
+    const errReport = {
+      apiError: error.data.message, apiStatusCode: error.status,
+      message: 'handleGetOrganisationsRoute error'
+    }
+    res.status(500).send(errReport)
+  }
 }
 
 function getOrganisationUri(status, organisationId, usersOrgId): string {
-    let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
+  let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
 
-    if (status) {
-        url = `${url}?status=${status}`
-    }
-    if (organisationId) {
-        url = `${url}?id=${organisationId}`
-    }
-    if (usersOrgId) {
-      url = `${url}/${usersOrgId}/users`
-    }
-    return url
+  if (status) {
+    url = `${url}?status=${status}`
+  }
+  if (organisationId) {
+    url = `${url}?id=${organisationId}`
+  }
+  if (usersOrgId) {
+    url = `${url}/${usersOrgId}/users`
+  }
+  return url
 }
 
 async function handlePutOrganisationRoute(req: Request, res: Response, next: NextFunction) {
-    if (!req.params.id) {
-        res.status(400).send('Organisation id is missing')
-    } else {
-        try {
-            const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
-            await req.http.put(putOrganisationsUrl, req.body)
-            res.status(200).send()
-        } catch (error) {
-            console.error(error)
-            const errReport = { apiError: error.data.message, apiStatusCode: error.status,
-                message: 'handlePutOrganisationRoute error' }
-            res.status(500).send(errReport)
-        }
+  if (!req.params.id) {
+    res.status(400).send('Organisation id is missing')
+  } else {
+    try {
+      const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
+      await req.http.put(putOrganisationsUrl, req.body)
+      res.status(200).send()
+    } catch (error) {
+      console.error(error)
+      const errReport = {
+        apiError: error.data.message, apiStatusCode: error.status,
+        message: 'handlePutOrganisationRoute error'
+      }
+      res.status(500).send(errReport)
     }
+  }
 }
 
 /**
@@ -90,10 +94,12 @@ async function handleDeleteOrganisationRoute(req: Request, res: Response, next: 
     try {
       const delOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
       await req.http.delete(delOrganisationsUrl, req.body)
-      res.status(200).send({value: 'Resource deleted successfully'})
+      res.status(200).send({ value: 'Resource deleted successfully' })
     } catch (error) {
-      const errReport = { apiError: error.data.message, apiStatusCode: error.status,
-        message: 'handleDeleteOrganisationRoute error' }
+      const errReport = {
+        apiError: error.data.message, apiStatusCode: error.status,
+        message: 'handleDeleteOrganisationRoute error'
+      }
       res.status(error.status).send(errReport)
     }
   }
@@ -117,7 +123,7 @@ async function handleGetOrganisationDeletableStatusRoute(req: Request, res: Resp
   } else {
     try {
       const getOrganisationUsersUrl =
-      `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}/users?returnRoles=false`
+        `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}/users?returnRoles=false`
       const response = await req.http.get(getOrganisationUsersUrl)
       let organisationDeletable = false
       // Check that the response contains a non-zero list of users
@@ -128,8 +134,10 @@ async function handleGetOrganisationDeletableStatusRoute(req: Request, res: Resp
         organisationDeletable,
       })
     } catch (error) {
-      const errReport = { apiError: error.data.message, apiStatusCode: error.status,
-        message: 'handleGetOrganisationDeletableStatusRoute error' }
+      const errReport = {
+        apiError: error.data.message, apiStatusCode: error.status,
+        message: 'handleGetOrganisationDeletableStatusRoute error'
+      }
       res.status(error.status).send(errReport)
     }
   }
