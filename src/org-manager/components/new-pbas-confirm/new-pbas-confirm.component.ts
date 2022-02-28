@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/caseworker-ref-data/utils/caseworker-utils';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { NotificationBannerType } from '../../../models/notification-banner-type.enum';
 import { PbaService } from '../../services';
@@ -52,19 +53,8 @@ export class NewPBAsConfirmComponent implements OnDestroy {
           });
         },
         error: (error: any) => {
-          // TODO: Handle errors in unhappy path ticket (https://tools.hmcts.net/jira/browse/EUI-3673)
-          // We will just log the error for now and simulate a happy path
-          console.log(error);
-          this.router.navigateByUrl('/organisation/pbas', {
-            state: {
-              notificationBanners: [{
-                bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'PBA numbers updated'
-              }
-              ],
-            }
-          });
-        }
-      });
+          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+        }});
   };
 
   public ngOnDestroy(): void {
