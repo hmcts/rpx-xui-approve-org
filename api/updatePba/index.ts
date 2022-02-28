@@ -73,6 +73,8 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
     const { pbaNumbers, orgId } = req.body;
     await req.http.put(putStatusUrl(orgId), { pbaNumbers });
     res.status(200).send();
+    // this is for testing for QA,It will removed after QA test
+    // res.status(430).send('no permission');
   } catch (error) {
     console.error(error);
     res.status(error.status).send(error.data);
