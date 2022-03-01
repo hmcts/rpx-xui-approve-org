@@ -1,0 +1,8 @@
+#quick-links {
+  // have to 'push' the quick-links component out of the common-lib two-thirds container
+  position: relative;
+  top:105px;
+  left:100%;
+  width:250px;
+  height:0;
+}

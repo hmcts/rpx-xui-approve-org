@@ -1,0 +1,16 @@
+<div id="quick-links" class="govuk-!-margin-left-6">
+  <h3 class="govuk-heading-m">Quick links</h3>
+  <ul class="govuk-list">
+    <li *ngIf="sraId">
+      <a class="govuk-link" href="https://www.sra.org.uk/consumers/register/organisation/?sraNumber={{sraId}}"
+        target="_blank">Check SRA</a>
+    </li>
+    <li>
+      <a class="govuk-link" href="https://solicitors.lawsociety.org.uk/search/results?Name={{organisationNameEncoded}}"
+        target="_blank">Check Law Society</a>
+    </li>
+    <li>
+      <a class="govuk-link" href="https://www.google.com/search?q={{organisationNameEncoded}}" target="_blank">Google {{organisationName}}</a>
+    </li>
+  </ul>
+</div>
