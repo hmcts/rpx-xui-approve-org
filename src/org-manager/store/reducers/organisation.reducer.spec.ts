@@ -158,4 +158,14 @@ describe('Organisation Reducer', () => {
       expect(state.activeOrganisations.orgEntities).toEqual({});
     });
   });
+
+  describe('PUT_REVIEW_ORGANISATION_SUCCESS action', () => {
+    it('should update organisation status as REVIEW on state.pendingOrganisations.orgEntities', () => {
+      const preAction = new fromActions.LoadPendingOrganisationsSuccess(pendingOrganisationsMock);
+      const preState = reducer(initialState, preAction);
+      const action = new fromActions.PutReviewOrganisationSuccess(pendingOrganisationsMock[0]);
+      const state = reducer(preState, action);
+      expect(state.pendingOrganisations.orgEntities).toEqual({ ByrneLimited: {...pendingOrganisationsMock[0], status: 'REVIEW'}});
+    });
+  });
 });

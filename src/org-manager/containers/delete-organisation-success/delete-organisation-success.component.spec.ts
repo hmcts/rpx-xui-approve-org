@@ -1,9 +1,9 @@
-import {DeleteOrganisationSuccessComponent} from './delete-organisation-success.component';
-import {combineReducers, Store, StoreModule} from '@ngrx/store';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import * as fromRoot from '../../../app/store';
 import {RouterTestingModule} from '@angular/router/testing';
+import {combineReducers, Store, StoreModule} from '@ngrx/store';
+import {DeleteOrganisationSuccessComponent} from './delete-organisation-success.component';
+import * as fromRoot from '../../../app/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
 
 describe('DeleteOrganisationSuccessComponent', () => {
   let component: DeleteOrganisationSuccessComponent;

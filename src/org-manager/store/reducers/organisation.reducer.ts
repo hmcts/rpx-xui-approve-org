@@ -204,6 +204,28 @@ export function reducer(
       };
     }
 
+    case fromActions.OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS: {
+      const reviewOrg = action.payload;
+      const pendingEntities = {
+        ...state.pendingOrganisations.orgEntities
+      };
+
+      if (pendingEntities.hasOwnProperty(reviewOrg.organisationId)) {
+        pendingEntities[reviewOrg.organisationId] = {...pendingEntities[reviewOrg.organisationId], status: 'REVIEW'};
+      }
+      const pendingOrganisations = {
+        ...state.pendingOrganisations,
+        orgEntities: pendingEntities
+      };
+
+      return {
+        ...state,
+        pendingOrganisations,
+        errorMessage: '',
+        orgForReview: null
+      };
+    }
+
     case fromActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS: {
       const approvedOrg =  {
         ...action.payload,
