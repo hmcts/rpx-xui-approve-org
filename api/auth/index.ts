@@ -8,7 +8,8 @@ import { http } from '../lib/http'
 //TODO: once both todo's below are complete, we can remove this file
 
 const successCallback = (req: Request, res: Response, next: NextFunction) => {
-  const { roles } = req.session.passport.user.userinfo
+  //TODO: fix `as any` hack when we have correct typings for req.session
+  const { roles } = (req.session as any).passport.user.userinfo
 
   //TODO: remove dependency on the roles cookie, can then remove this event handler entirely
   res.cookie(getConfigValue(COOKIE_ROLES), roles)
