@@ -1,5 +1,5 @@
+import { Injectable } from '@angular/core';
 import { AppInsights } from 'applicationinsights-js';
-import { Injectable } from "@angular/core";
 
 export abstract class AbstractAppInsights implements Microsoft.ApplicationInsights.IAppInsights {
   config: Microsoft.ApplicationInsights.IConfig;  context: Microsoft.ApplicationInsights.ITelemetryContext;
