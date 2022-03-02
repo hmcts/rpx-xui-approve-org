@@ -1114,10 +1114,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.7.0-ao-rectification":
-  version "1.7.0-ao-rectification"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.0-ao-rectification.tgz#d0af6d89685ffd9e1513b71194b4d9e4e3d5e4d5"
-  integrity sha512-eJ+d52TRagyVItJ13ZXMxr68qLxjO1ZYcKHJBJsjgFO6ubdyq6vnIjW4rj/qcCdQrvboyIlr7bw0y+BXOyPpRw==
+"@hmcts/rpx-xui-common-lib@1.7.0-ao-rectification.1":
+  version "1.7.0-ao-rectification.1"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.7.0-ao-rectification.1.tgz#733ede74dc82fd682a53887e091fb43d03ef4a93"
+  integrity sha512-nvBXSx7JRyxJId9z0B95RZ7zH3Z/dK0phhnfezeqFKutKFizQ0qP+ihcVqND/6Fp6dnpprluPW9C8WSaEJ4w0g==
   dependencies:
     tslib "^1.9.0"
 
