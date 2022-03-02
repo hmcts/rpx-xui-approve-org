@@ -45,9 +45,12 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       // this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
     }
 
-    this.organisationService.getSingleOrganisation({ id: this.orgId })
-      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
-      .subscribe(organisationVM => {
+    //  this.organisationService.getSingleOrganisation({ id: this.orgId })
+    this.organisationService.getOrganisation()
+      .pipe(map(apiOrg => AppUtils.mapOrganisations(apiOrg)))
+      .subscribe(organisationVMs => {
+        const result = organisationVMs.filter(x => x.organisationId === this.orgId);
+        const organisationVM = result[0];
         this.organisationId = organisationVM.organisationId;
         this.organisationAdminEmail = organisationVM.adminEmail;
         this.showUserNavigation = false;

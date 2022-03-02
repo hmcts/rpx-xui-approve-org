@@ -1,4 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
@@ -18,7 +19,7 @@ describe('NewPBAsConfirmComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterModule, RouterTestingModule.withRoutes([])],
+      imports: [RouterModule, ReactiveFormsModule , RouterTestingModule.withRoutes([])],
       declarations: [NewPBAsConfirmComponent, OrganisationAddressComponent, PBAAccountApprovalComponent, PBAAccountDecisionComponent],
       providers: [
         { provide: PbaService, useValue: pbaServiceSpy },

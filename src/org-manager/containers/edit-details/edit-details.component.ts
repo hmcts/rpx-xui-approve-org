@@ -43,7 +43,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getOrg(): void {
-    this.orgDetails$ = this.organisationService.getSingleOrganisation({ id: this.orgId })
+    // this.orgDetails$ = this.organisationService.getSingleOrganisation({ id: this.orgId })
+    this.orgDetails$ = this.organisationService.getOrganisation()
       .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)), tap(org => {
         if (org) {
           this.orgId = org.organisationId;

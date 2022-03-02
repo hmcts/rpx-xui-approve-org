@@ -22,6 +22,7 @@
     "idamApi": "https://idam-api.platform.hmcts.net",
     "idamWeb": "https://hmcts-access.service.gov.uk",
     "rdProfessionalApi": "http://rd-professional-api-prod.service.core-compute-prod.internal",
+    "rdProfessionalExternalApi": "http://rd-professional-api-prod.service.core-compute-prod.external",
     "feeAndPayApi": "https://payment-api-prod.service.core-compute-prod.internal",
     "s2s": "http://rpe-service-auth-provider-prod.service.core-compute-prod.internal",
     "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal"

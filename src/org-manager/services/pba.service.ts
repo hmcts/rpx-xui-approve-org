@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ConfirmNewPBAModel } from '../../models/confirm-new-pba.model';
+import { SearchPBARequest } from '../../models/dtos';
 
 @Injectable()
 export class PbaService {
@@ -18,5 +19,9 @@ export class PbaService {
 
   public setPBAStatus(body: any): Observable<ConfirmNewPBAModel> {
     return this.http.put<ConfirmNewPBAModel>(`${this.pbaStatusUrl}`, body);
+  }
+
+  public searchPbasWithPagination(body: { searchRequest: SearchPBARequest, view: string }): Observable<any> {
+    return this.http.post<any[]>(`${this.pbaStatusUrl}/${body.view}`, body);
   }
 }
