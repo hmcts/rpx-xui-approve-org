@@ -15,22 +15,25 @@
     </dd>
   </div>
 </dl>
-<div class="govuk-form-group">
-  <fieldset class="govuk-fieldset">
+<div class="govuk-form-group" [formGroup]="formGroup" [ngClass]="{ 'govuk-form-group--error': formGroup.get(pbaNumber).invalid && submitted }">
+  <fieldset class="govuk-fieldset" >
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
       Does the name on the Liberata account match the organisation’s name?
     </legend>
+    <div id="error-message"class="govuk-error-message" *ngIf="formGroup.get(pbaNumber).invalid && submitted">
+      Select the decision for the PBA account
+    </div>
     <div class="govuk-radios govuk-radios">
       <div class="govuk-radios__item">
-        <input class="govuk-radios__input" name="{{pbaNumber}}" type="radio" value="accepted"
-          (change)="selectOption($event)" [checked]="pbaStatus === 'accepted'">
+        <input class="govuk-radios__input" name="{{pbaNumber}}" formControlName="{{pbaNumber}}" type="radio" value="accepted"
+          (change)="selectOption($event)" [checked]="pbaStatus === 'accepted'" [id]="pbaNumber+'_approve'">
         <label class="govuk-label govuk-radios__label" for="decision1">
           Yes – approve the account
         </label>
       </div>
       <div class="govuk-radios__item">
-        <input class="govuk-radios__input" name="{{pbaNumber}}" type="radio" value="rejected"
-          (change)="selectOption($event)" [checked]="pbaStatus === 'rejected'">
+        <input class="govuk-radios__input" name="{{pbaNumber}}" formControlName="{{pbaNumber}}" type="radio" value="rejected"
+          (change)="selectOption($event)" [checked]="pbaStatus === 'rejected'"  [id]="pbaNumber+'_reject'">
         <label class="govuk-label govuk-radios__label" for="decision1-2">
           No – reject the account
         </label>

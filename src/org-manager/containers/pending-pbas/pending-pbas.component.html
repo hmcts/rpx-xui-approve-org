@@ -1,8 +1,7 @@
 <h2 class="govuk-heading-l">
-  New PBAs
-  <span *ngIf="pendingPBAsCount > -1">({{pendingPBAsCount}})</span>
+  New PBAs <span *ngIf="pendingPBAsCount > -1">({{pendingPBAsCount}})</span>
 </h2>
-<ng-container *ngIf="(loaded$ | async); else loading">
+<ng-container *ngIf="pbasLoaded">
   <table class="govuk-table" *ngIf="pendingPBAsCount; else noData">
   <thead class="govuk-table__head">
     <tr class="govuk-table__row">
@@ -28,10 +27,10 @@
         </span>
       </td>
       <td class="govuk-table__cell">
-        {{org.receivedDate | date:'dd/MM/yyyy'}}
+        {{getReceivedDate(org.pbaNumbers) | date:'dd/MM/yyyy'}}
       </td>
       <td class="govuk-table__cell">
-        <a class="govuk-link" [routerLink]="['new', org.organisationId]" routerLinkActive="router-link-active">View</a>
+        <a class="govuk-link" [routerLink]="['new', org.organisationIdentifier]" routerLinkActive="router-link-active">View</a>
       </td>
     </tr>
   </tbody>
@@ -40,7 +39,3 @@
     <span class="govuk-body">There are no new PBA requests.</span>
   </ng-template>
 </ng-container>
-
-<ng-template #loading>
-  <h3 class="govuk-heading-s"><span>Loading...</span></h3>
-</ng-template>
