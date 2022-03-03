@@ -21,18 +21,17 @@ async function handleGetOrganisationsRoute(req: Request, res: Response, next: Ne
   } else {
     // used to load either an individual organisation or organisation user
     try {
+      req.on('error', (e) => {
+        // General error, i.e.
+        //  - ECONNRESET - server closed the socket unexpectedly
+        //  - ECONNREFUSED - server did not listen
+        //  - HPE_INVALID_VERSION
+        //  - HPE_INVALID_STATUS
+        //  - ... (other HPE_* codes) - server returned garbage
+        console.log(e);
+      });
       const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId);
       const response = await req.http.get(organisationsUri);
-
-      // req.on('error', (e) => {
-      //   // General error, i.e.
-      //   //  - ECONNRESET - server closed the socket unexpectedly
-      //   //  - ECONNREFUSED - server did not listen
-      //   //  - HPE_INVALID_VERSION
-      //   //  - HPE_INVALID_STATUS
-      //   //  - ... (other HPE_* codes) - server returned garbage
-      //   console.log(e);
-      // });
       logger.info(`Organisations get response${response.data}`);
       if (response.data.organisations) {
         res.send(response.data.organisations);
@@ -79,7 +78,7 @@ function getOrganisationUri(status, organisationId, usersOrgId): string {
     url = `${internalUrl}?status=${status}`;
   }
   if (organisationId) {
-    url = `${url}?id=${organisationId}`;
+    url = `${internalUrl}?id=${organisationId}`;
   }
   if (usersOrgId) {
     url = `${internalUrl}/${usersOrgId}/users`;
