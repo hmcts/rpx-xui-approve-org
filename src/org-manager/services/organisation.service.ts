@@ -22,7 +22,7 @@ export class OrganisationService {
   }
 
   public setOrganisationSearchString(value: string) {
-    this.organisationSearchString.next(value);
+    this.organisationSearchString.next(value || '');
   }
 
   public fetchOrganisations(): Observable<Organisation[]> {
