@@ -9,8 +9,8 @@ export class UpdatePbaServices {
   constructor(private readonly http: HttpClient) {
   }
 
-  public updatePba(body): Observable<{pba1: string; pba2: string; orgId: string}> {
-    return this.http.put<{pba1: string; pba2: string; orgId: string}>(this.updatePbaUrl, body);
+  public updatePba(body): Observable<{ pbas: string[], orgId: string }> {
+    return this.http.put<{ pbas: string[], orgId: string }>(this.updatePbaUrl, body);
   }
 
 }
