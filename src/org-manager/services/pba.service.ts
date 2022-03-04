@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { ConfirmNewPBAModel } from '../../models/confirm-new-pba.model';
+import { PendingPaymentAccount } from '../models/pendingPaymentAccount.model';
 
 @Injectable()
 export class PbaService {
@@ -18,7 +19,10 @@ export class PbaService {
   }
 
   public setPBAStatus(body: any): Observable<ConfirmNewPBAModel> {
-     return this.http.put<ConfirmNewPBAModel>(`${this.pbaStatusUrl}`, body);
+    return this.http.put<ConfirmNewPBAModel>(`${this.pbaStatusUrl}`, body);
   }
 
+  public updatePBAs(pendingPaymentAccount: PendingPaymentAccount): Observable<any> {
+    return this.http.post<any>(`api/pba/addDeletePBA`, pendingPaymentAccount);
+  }
 }

@@ -6,7 +6,9 @@ import { Observable, Subscription } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../models/organisation';
+import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
 import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
+import { PbaService } from '../../services/pba.service';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 
@@ -30,7 +32,10 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public serverError$: Observable<{ type: string; message: string }>;
   public organisationDetails: OrganisationDetails;
 
-  constructor(private readonly store: Store<fromStore.OrganisationRootState>, private readonly fb: FormBuilder) { }
+  constructor(
+    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly pbaService: PbaService,
+    private readonly fb: FormBuilder) { }
 
   public ngOnInit(): void {
     this.pbaInputs = [];
@@ -42,7 +47,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getOrgs(): void {
-
     this.orgDetails$ = this.store.pipe(select(fromStore.getActiveAndPending),
       tap((value) => {
         if (value) {
@@ -113,6 +117,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     //   });
     if (this.pbaInputs.length) {
       this.appendAnotherNumber(this.pbaInputs.length + 1);
+      this.addPbaFormItem(this.pbaInputs[this.pbaInputs.length - 1].name);
     }
   }
 
@@ -125,7 +130,16 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.pbaInputs.push(config);
   }
 
-
+  public addPbaFormItem(inputsName: string) {
+    this.changePbaFG.addControl(inputsName, new FormControl(''));
+    const validators = [
+      Validators.pattern(/(PBA\w*)/i),
+      Validators.minLength(10),
+      Validators.maxLength(10)
+    ];
+    this.changePbaFG.controls[inputsName].setValidators(validators);
+    this.changePbaFG.controls[inputsName].updateValueAndValidity();
+  }
 
   public createPbaForm(): void {
     if (this.pbaNumbers && !this.pbaInputs.length) {
@@ -133,14 +147,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         this.appendAnotherNumber(i + 1);
       }
       for (const inputs of this.pbaInputs) {
-        this.changePbaFG.addControl(inputs.name, new FormControl(''));
-        const validators = [
-          Validators.pattern(/(PBA\w*)/i),
-          Validators.minLength(10),
-          Validators.maxLength(10)
-        ];
-        this.changePbaFG.controls[inputs.name].setValidators(validators);
-        this.changePbaFG.controls[inputs.name].updateValueAndValidity();
+        this.addPbaFormItem(inputs.name);
       }
 
       this.store.pipe(select(fromStore.getPbaNumber), take(1)).subscribe((pba: string) => {
@@ -164,8 +171,21 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.dispatchStoreValidation();
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+
+    const paymentAccountUpdated: string[] = [];
+    const paymentAccountAdded: string[] = [];
+    for (let p = 0; p < paymentAccounts.length; p++) {
+      if (p < this.pbaNumbers.length) {
+        paymentAccountUpdated.push(p.toString());
+      } else {
+        paymentAccountAdded.push(p.toString());
+      }
+    }
+
+
     if (valid) {
-      this.store.dispatch(new fromStore.SubmitPba({ paymentAccounts, orgId: this.orgId }));
+      this.store.dispatch(new fromStore.SubmitPba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }));
+      this.pbaService.updatePBAs(this.pendingChanges(paymentAccountAdded));
     }
   }
 
@@ -197,4 +217,12 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public onGoBack() {
     this.store.dispatch(new fromRoot.Back());
   }
+
+  public pendingChanges(appending: string[]): PendingPaymentAccount {
+    return {
+      pendingAddPaymentAccount: appending,
+      pendingRemovePaymentAccount: []
+    };
+  }
+
 }
