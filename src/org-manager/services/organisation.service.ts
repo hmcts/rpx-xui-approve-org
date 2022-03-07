@@ -17,7 +17,7 @@ export class OrganisationService {
   constructor(private readonly http: HttpClient) {
   }
 
-  public organisationSearchStringChange() {
+  public organisationSearchStringChange(): Observable<string> {
     return this.organisationSearchString.asObservable();
   }
 
