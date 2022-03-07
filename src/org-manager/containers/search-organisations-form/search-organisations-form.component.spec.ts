@@ -1,6 +1,8 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from './search-organisations-form.component';
 
 describe('SearchOrganisationsFormComponent', () => {
@@ -9,10 +11,11 @@ describe('SearchOrganisationsFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SearchOrganisationsFormComponent ],
-      imports: [FormsModule, ReactiveFormsModule, ExuiCommonLibModule]
+      declarations: [SearchOrganisationsFormComponent],
+      imports: [FormsModule, ReactiveFormsModule, ExuiCommonLibModule, HttpClientTestingModule],
+      providers: [OrganisationService]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

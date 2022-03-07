@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { SessionStorageService } from '../../../shared/services/session-storage.service';
 import { OrganisationService } from '../../services';
 import { OrganisationListComponent } from './../organisation-list/organisation-list.component';
 
@@ -18,10 +19,11 @@ export class ActiveOrganisationsComponent extends OrganisationListComponent impl
     protected router: Router,
     protected ref: ChangeDetectorRef,
     protected organisationService: OrganisationService,
-    protected loadingService: LoadingService
+    protected loadingService: LoadingService,
+    protected sessionStorageService: SessionStorageService
 
   ) {
-    super(router, ref, organisationService, loadingService);
+    super(router, ref, organisationService, loadingService, sessionStorageService);
   }
 
   public ngOnInit(): void {
