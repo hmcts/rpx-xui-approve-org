@@ -4,7 +4,9 @@
       <form [formGroup]="searchOrgForm" (ngSubmit)="onSubmit()" >
         <xuilib-gov-uk-input
           [config]="{label: 'Search', hint: 'Search for an organisation, for example by name or postcode', name: 'search', id: 'search', type: 'text', classes: 'hmcts-search__input'}"
-          [group]="searchOrgForm">
+          [group]="searchOrgForm"
+          (change)="onSearchChange()"
+          >
         </xuilib-gov-uk-input>
         <button type="submit" class="govuk-button hmcts-search__button">
           Search
@@ -14,6 +16,6 @@
         </button>
       </form>
     </div>
-  </div>  
+  </div>
 </div>
 
