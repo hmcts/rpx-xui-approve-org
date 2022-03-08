@@ -175,10 +175,12 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const paymentAccountUpdated: string[] = [];
     const paymentAccountAdded: string[] = [];
     for (let p = 0; p < paymentAccounts.length; p++) {
-      if (p < this.pbaNumbers.length) {
-        paymentAccountUpdated.push(p.toString());
-      } else {
-        paymentAccountAdded.push(p.toString());
+      if (typeof paymentAccounts[p] === 'string') {
+        if (p < this.pbaNumbers.length) {
+          paymentAccountUpdated.push(paymentAccounts[p].toString());
+        } else {
+          paymentAccountAdded.push(paymentAccounts[p].toString());
+        }
       }
     }
 
