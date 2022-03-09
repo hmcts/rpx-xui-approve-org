@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import { ConfirmNewPBAModel } from '../../models/confirm-new-pba.model';
+import { SearchPBARequest } from '../../models/dtos';
 import { PendingPaymentAccount } from '../models/pendingPaymentAccount.model';
-
 @Injectable()
 export class PbaService {
   private readonly pbaStatusUrl: string;
-  pbaUpdateUrl: string;
+  public pbaUpdateUrl: string;
 
   constructor(private readonly http: HttpClient) {
     this.pbaStatusUrl = `${environment.pbaUrl}/status`;
@@ -26,5 +26,9 @@ export class PbaService {
 
   public updatePBAs(pendingPaymentAccount: PendingPaymentAccount): Observable<any> {
     return this.http.post<any>(`${this.pbaUpdateUrl}`, pendingPaymentAccount);
+  }
+
+  public searchPbasWithPagination(body: { searchRequest: SearchPBARequest, view: string }): Observable<any> {
+    return this.http.post<any[]>(`${this.pbaStatusUrl}/${body.view}`, body);
   }
 }

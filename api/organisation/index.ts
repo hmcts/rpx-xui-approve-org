@@ -17,38 +17,59 @@ const logger = log4jui.getLogger('return')
  * @param next
  */
 async function handleGetOrganisationsRoute(req: Request, res: Response, next: NextFunction) {
+  // if a search_filter is passed in the request it means we need to load the paged organisations list, filtered by the status
+  if (req.query.search_filter) {
+    handleOrganisationPagingRoute(req, res, next)
+  } else {
+    // used to load either an individual organisation or organisation user
+    try {
+      const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
+      const response = await req.http.get(organisationsUri)
+      logger.info('Organisations get response' + response.data)
+
+      if (response.data.organisations) {
+        res.send(response.data.organisations)
+      } else {
+        res.send(response.data)
+      }
+    } catch (error) {
+      logError(res, error);
+    }
+  }
+}
+
+/**
+ * Handle Post Organisation Route (used in Paging)
+ *
+ * The response object from PRD is different based on the request object.
+ * In case of more than 1 organisation then we get {organisations: [{org1}, {org2}]}
+ * In case of just 1 org then we get {org1}
+ *
+ * @param req
+ * @param res - {organisations: [{org1}, {org2}]} OR {org1}
+ * @param next
+ */
+async function handleOrganisationPagingRoute(req: Request, res: Response, next: NextFunction) {
   try {
-    const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
+    let responseData = null;
+    const organisationsUri = getOrganisationUri(req.query.status, null, null)
     const response = await req.http.get(organisationsUri)
-    logger.info('Organisations response' + response.data)
+    logger.info('Organisation paging response' + response.data)
 
     if (response.data.organisations) {
-      res.send(response.data.organisations)
+      const organisations = filterOrganisations(response.data.organisations, req.body.searchRequest.search_filter);
+      responseData = { organisations, total_records: organisations.length };
     } else {
-      res.send(response.data)
+      responseData = { organisations: [], total_records: 0 };
     }
+    res.send(responseData);
   } catch (error) {
-    logger.error('Organisations error ' + error)
-    if (error.message) {
-      logger.error('Error message: ' + error.message)
-    }
-    if (error.stack) {
-      logger.error('Error stack: ' + error.stack)
-    }
-    if (error.code) {
-      logger.error('Error code: ' + error.code)
-    }
-    const errReport = {
-      apiError: error.data.message, apiStatusCode: error.status,
-      message: 'handleGetOrganisationsRoute error'
-    }
-    res.status(500).send(errReport)
+    logError(res, error);
   }
 }
 
 function getOrganisationUri(status, organisationId, usersOrgId): string {
   let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
-
   if (status) {
     url = `${url}?status=${status}`
   }
@@ -143,9 +164,64 @@ async function handleGetOrganisationDeletableStatusRoute(req: Request, res: Resp
   }
 }
 
+function filterOrganisations(orgs: any, searchFilter: string): any[] {
+  const TEXT_FIELDS_TO_CHECK = ['name', 'postCode', 'sraId', 'admin'];
+  if (!orgs) { return []; }
+  if (!searchFilter || searchFilter === '') { return orgs; }
+  searchFilter = searchFilter.toLowerCase();
+  return orgs.filter((org: any) => {
+    if (org) {
+      for (const field of TEXT_FIELDS_TO_CHECK) {
+        if (textFieldMatches(org, field, searchFilter)) {
+          return true;
+        }
+      }
+      if (org.pbaNumber) {
+        for (const pbaNumber of org.pbaNumber) {
+          if (pbaNumber.toLowerCase().includes(searchFilter)) {
+            return true;
+          }
+        }
+      }
+      if (org.dxNumber && org.dxNumber.length > 0) {
+        const dxNumber = org.dxNumber[0];
+        if (dxNumber) {
+          const matchesDxNumber = dxNumber.dxNumber && dxNumber.dxNumber.toLowerCase().includes(searchFilter);
+          const matchesDxExchange = dxNumber.dxExchange && dxNumber.dxExchange.toLowerCase().includes(searchFilter);
+          return matchesDxNumber || matchesDxExchange;
+        }
+      }
+    }
+    return false;
+  });
+}
+
+function textFieldMatches(org: any, field: string, filter: string): boolean {
+  return org[field] && org[field].toLowerCase().includes(filter);
+}
+
+function logError(res: Response, error: any) {
+  logger.error('Organisations error ' + error)
+  if (error.message) {
+    logger.error('Error message: ' + error.message)
+  }
+  if (error.stack) {
+    logger.error('Error stack: ' + error.stack)
+  }
+  if (error.code) {
+    logger.error('Error code: ' + error.code)
+  }
+  const errReport = {
+    apiError: error.data.message, apiStatusCode: error.status,
+    message: 'handlePostOrganisationsRoute error'
+  }
+  res.status(500).send(errReport)
+}
+
 export const router = Router({ mergeParams: true })
 
 router.get('/', handleGetOrganisationsRoute)
+router.post('/', handleOrganisationPagingRoute)
 router.put('/:id', handlePutOrganisationRoute)
 router.delete('/:id', handleDeleteOrganisationRoute)
 router.get('/:id/isDeletable', handleGetOrganisationDeletableStatusRoute)

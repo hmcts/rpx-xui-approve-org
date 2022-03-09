@@ -1,3 +1,4 @@
+<app-quick-links *ngIf="org.status==='PENDING' || org.status==='REVIEW'" [sraId]="org.sraId" [organisationName]="org.name"></app-quick-links>
 <ng-container *ngIf="formGroup.invalid && submitted">
   <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
     <h2 class="govuk-error-summary__title" id="error-summary-title">{{errorMessage.title}}</h2>
