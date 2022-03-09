@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { RxwebValidators } from '@rxweb/reactive-form-validators';
 import { Observable, Subscription } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
+import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../models/organisation';
 import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
@@ -12,9 +14,6 @@ import { PbaService } from '../../services/pba.service';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 
-/**
- * Bootstraps Edit Organisation Details
- */
 @Component({
   selector: 'app-change-details',
   templateUrl: './edit-details.component.html'
@@ -33,9 +32,13 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public organisationDetails: OrganisationDetails;
 
   constructor(
+    private readonly updatePbaServices: UpdatePbaServices,
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly pbaService: PbaService,
+    private readonly router: Router,
     private readonly fb: FormBuilder) { }
+
+  public get fPba() { return this.changePbaFG.controls; }
 
   public ngOnInit(): void {
     this.pbaInputs = [];
@@ -65,10 +68,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     return this.changePbaFG.get('pbaNumbers') as FormArray;
   }
 
-
-  /*
-   * Current PBA Numbers contain existing and pending additions, minus pending removals
-   */
   public get currentPaymentAccounts(): PBANumberModel[] {
     return this.organisationDetails.paymentAccount
       .filter(pba => !this.organisationDetails.pendingRemovePaymentAccount.includes(pba));
@@ -93,28 +92,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.serverError$ = this.store.pipe(select(fromStore.getServerErrors));
   }
 
-  private newPbaNumber(value: string = ''): FormGroup {
-    return this.fb.group({
-      pbaNumber: new FormControl(value, {
-        validators: this.getPbaNumberValidators(),
-        updateOn: 'blur'
-      }),
-    });
-  }
-
   public onAddNewBtnClicked(): void {
-    // this.pbaFormArrayNumbers.push(this.newPbaNumber());
-    // const clone = { ...this.pbaInputs[0] };
-    // clone.config.name = 'pba' + (this.pbaInputs.length + 1);
-    // this.pbaInputs.push({
-    //   config: {
-    //     label: 'PBA number 1 (optional)',
-    //     hint: '',
-    //     name: 'pba1',
-    //     id: 'pba1',
-    //     type: 'text',
-    //     classes: ''
-    //   });
     if (this.pbaInputs.length) {
       this.appendAnotherNumber(this.pbaInputs.length + 1);
       this.addPbaFormItem(this.pbaInputs[this.pbaInputs.length - 1].name);
@@ -164,8 +142,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  // convenience getter for easy access to form fields
-  public get fPba() { return this.changePbaFG.controls; }
 
   public onSubmitPba(): void {
     this.dispatchStoreValidation();
@@ -173,21 +149,31 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
 
     const paymentAccountUpdated: string[] = [];
-    const paymentAccountAdded: string[] = [];
-    for (let p = 0; p < paymentAccounts.length; p++) {
-      if (typeof paymentAccounts[p] === 'string') {
-        if (p < this.pbaNumbers.length) {
-          paymentAccountUpdated.push(paymentAccounts[p].toString());
-        } else {
-          paymentAccountAdded.push(paymentAccounts[p].toString());
-        }
+    // const paymentAccountAdded: string[] = [];
+    paymentAccounts.forEach(paymentAccount => {
+      if (typeof paymentAccount === 'string') {
+        paymentAccountUpdated.push(paymentAccount.toString());
       }
-    }
+    });
 
+    // for (let p = 0; p < paymentAccounts.length; p++) {
+    //   if (typeof paymentAccounts[p] === 'string') {
+    //     paymentAccountUpdated.push(paymentAccounts[p].toString());
+    //     if (p - 1 < this.pbaNumbers.length) {
+    //       paymentAccountUpdated.push(paymentAccounts[p].toString());
+    //     } else {
+    //       paymentAccountAdded.push(paymentAccounts[p].toString());
+    //     }
+    //   }
+    // }
 
     if (valid) {
-      this.store.dispatch(new fromStore.SubmitPba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }));
-      this.pbaService.updatePBAs(this.pendingChanges(paymentAccountAdded));
+      this.updatePbaServices.updatePba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }).subscribe(() => {
+        console.log('done');
+        this.router.navigateByUrl('/organisation');
+      });
+      // this.store.dispatch(new fromStore.SubmitPba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }));
+      // this.pbaService.updatePBAs(this.pendingChanges(paymentAccountAdded)).subscribe(() => console.log('done'));
     }
   }
 
@@ -226,5 +212,5 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       pendingRemovePaymentAccount: []
     };
   }
-
 }
+
