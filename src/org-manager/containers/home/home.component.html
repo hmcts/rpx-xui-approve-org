@@ -1,4 +1,5 @@
 <div class="hmcts-width-container">
+  <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
   <main class="govuk-main-wrapper" id="main-content" role="main">
     <h1 class="hmcts-page-heading__title govuk-heading-xl">
       Organisation approvals
@@ -14,7 +15,7 @@
         <ng-container *ngFor="let tab of tabs">
           <li class="govuk-tabs__list-item" [ngClass]="{'govuk-tabs__list-item--selected': activeRoute === tab.url}" role="presentation">
             <a class="govuk-tabs__tab" routerLinkActive="router-link-active" role="tab"
-              [routerLink]="tab.url" [attr.aria-selected]="activeRoute === tab.url">
+              [routerLink]="tab.url" [attr.aria-selected]="activeRoute === tab.url" (click)="refreshBanner()">
               {{tab.label}}
             </a>
           </li>

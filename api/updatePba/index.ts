@@ -1,6 +1,4 @@
 import { Response } from 'express';
-
-import { handleGet } from '../common/mockService';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
@@ -75,6 +73,8 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
     const { pbaNumbers, orgId } = req.body;
     await req.http.put(putStatusUrl(orgId), { pbaNumbers });
     res.status(200).send();
+    // this is for testing for QA,It will removed after QA test
+    // res.status(430).send('no permission');
   } catch (error) {
     console.error(error);
     res.status(error.status).send(error.data);
@@ -89,10 +89,62 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
 export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
   try {
     const pbaStatus = req.params.status;
-    const { status, data } = await handleGet(getByStatusUrl(pbaStatus), req);
+    const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     res.status(status).send(data);
   } catch (error) {
     console.error(error);
     res.status(error.status).send(error.data);
   }
+}
+
+/**
+ * Handle getting all PBAs with a given status (pagination).
+ * @param req
+ * @param res
+ */
+export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
+  try {
+    let responseData = null;
+    const pbaStatus = req.params.status;
+    const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
+    if (data) {
+      const organisations = filterOrganisations(data, req.body.searchRequest.search_filter);
+      responseData = { organisations, total_records: organisations.length };
+
+    } else {
+      responseData = { organisations: [], total_records: 0 };
+    }
+    res.status(status).send(responseData);
+  } catch (error) {
+    console.error(error);
+    res.status(error.status).send(error.data);
+  }
+}
+
+function filterOrganisations(orgs: any, searchFilter: string): any[] {
+  const TEXT_FIELDS_TO_CHECK = ['name', 'admin'];
+  if (!orgs) { return []; }
+  if (!searchFilter || searchFilter === '') { return orgs; }
+  searchFilter = searchFilter.toLowerCase();
+  return orgs.filter((org: any) => {
+    if (org) {
+      for (const field of TEXT_FIELDS_TO_CHECK) {
+        if (textFieldMatches(org, field, searchFilter)) {
+          return true;
+        }
+      }
+      if (org.pbaNumbers) {
+        for (const pba of org.pbaNumbers) {
+          if (pba.pbaNumber.toLowerCase().includes(searchFilter)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  });
+}
+
+function textFieldMatches(org: any, field: string, filter: string): boolean {
+  return org[field] && org[field].toLowerCase().includes(filter);
 }
