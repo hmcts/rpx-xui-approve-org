@@ -1,6 +1,6 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {select, Store} from '@ngrx/store';
-import {take, tap} from 'rxjs/operators';
+import {take} from 'rxjs/operators';
 import {Go} from '../../../app/store/actions';
 import {OrganisationVM} from '../../../org-manager/models/organisation';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
@@ -33,5 +33,9 @@ export class ReviewOrganisationComponent implements OnInit {
       }
       this.orgForReview = org;
     });
+  }
+
+  public onPutReviewOrganisation() {
+    this.store.dispatch(new fromOrganisationPendingStore.PutReviewOrganisation(this.orgForReview));
   }
 }

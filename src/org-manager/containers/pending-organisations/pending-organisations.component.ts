@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { Action, MemoizedSelector, Store } from '@ngrx/store';
-
-import { OrganisationVM } from '../../models/organisation';
-import * as fromStore from '../../store';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { SessionStorageService } from '../../../shared/services/session-storage.service';
+import { OrganisationService } from '../../services';
 import { OrganisationListComponent } from './../organisation-list/organisation-list.component';
 
 @Component({
@@ -10,18 +10,20 @@ import { OrganisationListComponent } from './../organisation-list/organisation-l
   templateUrl: './pending-organisations.component.html',
   styleUrls: [ '../organisation-list/organisation-list.component.scss' ]
 })
-export class PendingOrganisationsComponent extends OrganisationListComponent {
-  public get loadedSelector(): MemoizedSelector<object, boolean> {
-    return fromStore.getPendingLoaded;
-  }
-  public get loadAction(): Action {
-    return new fromStore.LoadPendingOrganisations();
-  }
-  public get organisationsSelector(): MemoizedSelector<object, OrganisationVM[]> {
-    return fromStore.getPendingOrganisationsArray;
+export class PendingOrganisationsComponent extends OrganisationListComponent implements OnInit {
+
+  constructor(
+    protected router: Router,
+    protected ref: ChangeDetectorRef,
+    protected organisationService: OrganisationService,
+    protected loadingService: LoadingService,
+    protected sessionStorageService: SessionStorageService
+  ) {
+    super(router, ref, organisationService, loadingService, sessionStorageService);
   }
 
-  constructor(protected readonly store: Store<fromStore.OrganisationRootState>) {
-    super(store);
+  public ngOnInit(): void {
+    this.view = 'NEW'
+    super.ngOnInit();
   }
 }

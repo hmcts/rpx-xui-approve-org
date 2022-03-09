@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
-import { Action, MemoizedSelector, Store } from '@ngrx/store';
-
-import { OrganisationVM } from '../../models/organisation';
-import * as fromStore from '../../store';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { SessionStorageService } from '../../../shared/services/session-storage.service';
+import { OrganisationService } from '../../services';
 import { OrganisationListComponent } from './../organisation-list/organisation-list.component';
 
 /**
@@ -11,20 +11,23 @@ import { OrganisationListComponent } from './../organisation-list/organisation-l
 @Component({
   selector: 'app-prd-org-overview-component',
   templateUrl: './active-organisations.component.html',
-  styleUrls: [ '../organisation-list/organisation-list.component.scss' ]
+  styleUrls: ['../organisation-list/organisation-list.component.scss']
 })
-export class ActiveOrganisationsComponent extends OrganisationListComponent {
-  public get loadedSelector(): MemoizedSelector<object, boolean> {
-    return fromStore.getActiveLoaded;
-  }
-  public get loadAction(): Action {
-    return new fromStore.LoadActiveOrganisation();
-  }
-  public get organisationsSelector(): MemoizedSelector<object, OrganisationVM[]> {
-    return fromStore.getActiveOrganisationArray;
+export class ActiveOrganisationsComponent extends OrganisationListComponent implements OnInit {
+
+  constructor(
+    protected router: Router,
+    protected ref: ChangeDetectorRef,
+    protected organisationService: OrganisationService,
+    protected loadingService: LoadingService,
+    protected sessionStorageService: SessionStorageService
+
+  ) {
+    super(router, ref, organisationService, loadingService, sessionStorageService);
   }
 
-  constructor(protected readonly store: Store<fromStore.OrganisationRootState>) {
-    super(store);
+  public ngOnInit(): void {
+    this.view = 'ACTIVE';
+    super.ngOnInit();
   }
 }

@@ -17,6 +17,9 @@ export enum OrgActionTypes {
   APPROVE_PENDING_ORGANISATIONS = '[Pending Organisations] Approve Pending Organisations',
   APPROVE_PENDING_ORGANISATIONS_SUCCESS = '[Pending Organisations] Approve Pending Organisations Success',
   APPROVE_PENDING_ORGANISATIONS_FAIL = '[Pending Organisations] Approve Pending Organisations Fail',
+  PUT_REVIEW_ORGANISATION = '[Pending Organisations] Put Review Organisation',
+  PUT_REVIEW_ORGANISATION_SUCCESS = '[Pending Organisations] Put Review Organisation Success',
+  PUT_REVIEW_ORGANISATION_FAIL = '[Pending Organisations] Put Review Organisation Fail',
   NAV_TO_DELETE_ORGANISATION = '[Pending Organisations] Navigate to Delete an Organisation',
   NAV_TO_REVIEW_ORGANISATION = '[Pending Organisations] Navigate to Review an Organisation',
   DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
@@ -83,6 +86,21 @@ export class ApprovePendingOrganisationsSuccess implements Action {
 export class ApprovePendingOrganisationsFail implements Action {
   public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
   constructor(public payload: any) { } // TODO change type it needs to change in the service used
+}
+
+export class PutReviewOrganisation implements Action {
+  public readonly type = OrgActionTypes.PUT_REVIEW_ORGANISATION;
+  constructor(public payload: OrganisationVM) { }
+}
+
+export class PutReviewOrganisationSuccess implements Action {
+  public readonly type = OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS;
+  constructor(public payload: OrganisationVM) { }
+}
+
+export class PutReviewOrganisationFail implements Action {
+  public readonly type = OrgActionTypes.PUT_REVIEW_ORGANISATION_FAIL;
+  constructor(public payload: any) { }
 }
 
 export class NavigateToDeleteOrganisation implements Action {
@@ -230,4 +248,7 @@ export type OrganisationsActions =
     | ResetOrganisationUsers
     | ShowOrganisationDetailsUserTab
     | GetOrganisationDeletableStatusSuccess
-    | UpdateOrganisationsSearchString;
+    | UpdateOrganisationsSearchString
+    | PutReviewOrganisation
+    | PutReviewOrganisationSuccess
+    | PutReviewOrganisationFail;

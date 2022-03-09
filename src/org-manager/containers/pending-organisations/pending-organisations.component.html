@@ -1,11 +1,11 @@
 <h2 class="govuk-heading-l">
   New registrations
-  <ng-container *ngIf="(loaded$ | async)">
-    ({{filteredOrgsCount}}<span *ngIf="searchString"> found</span>)
+  <ng-container *ngIf="organisationsLoaded">
+    ({{organisationCount}}<span *ngIf="searchString"> found</span>)
   </ng-container>
 </h2>
-<ng-container *ngIf="(loaded$ | async); else loading">
-  <table class="govuk-table pending-organisations" *ngIf="filteredOrgsCount; else noData">
+<ng-container *ngIf="organisationsLoaded">
+  <table class="govuk-table pending-organisations" *ngIf="organisationCount; else noData">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th class="govuk-table__header" scope="col">Organisation</th>
@@ -15,7 +15,7 @@
         <th class="govuk-table__header" scope="col">Status</th>
         <th class="govuk-table__header" scope="col"></th>
       </tr>
-      <tr class="govuk-table__row govuk-radios" *ngFor="let org of filteredOrgs">
+      <tr class="govuk-table__row govuk-radios" *ngFor="let org of organisations">
         <td class="govuk-table__cell">
           {{org.name}}<br>
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
@@ -44,8 +44,4 @@
     <span class="govuk-body"> There are no new registrations.</span>
   </ng-template>
 </ng-container>
-<ng-template #loading>
-  <h3 class="govuk-heading-s">
-    <span>Loading...</span>
-  </h3>
-</ng-template>
+
