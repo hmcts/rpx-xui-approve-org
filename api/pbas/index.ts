@@ -12,11 +12,11 @@ mock.init();
 const url: string = getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH);
 
 export async function addDeletePBA(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
-    const pendingPaymentAccount: PendingPaymentAccount = req.body.pendingPaymentAccount;
-    const paymentAccountRequest = {
-        paymentAccounts: pendingPaymentAccount.pendingAddPaymentAccount,
-    } as PaymentAccountRequest;
+    // const pendingPaymentAccount: PendingPaymentAccount = req.body.pendingPaymentAccount;
     try {
+        const paymentAccountRequest = {
+            paymentAccounts: req.body.pendingAddPaymentAccount,
+        } as PaymentAccountRequest;
         const allPromises = [];
         // do add PBAs
         const addPBAPath: string = `${url}/refdata/external/v1/organisations/pba`;

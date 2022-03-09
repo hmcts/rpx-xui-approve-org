@@ -9,9 +9,11 @@ import { PendingPaymentAccount } from '../models/pendingPaymentAccount.model';
 @Injectable()
 export class PbaService {
   private readonly pbaStatusUrl: string;
+  pbaUpdateUrl: string;
 
   constructor(private readonly http: HttpClient) {
     this.pbaStatusUrl = `${environment.pbaUrl}/status`;
+    this.pbaUpdateUrl = `${environment.pbaUrl}/addDeletePBA`;
   }
 
   public getPBAsByStatus(status: string): Observable<any> {
@@ -23,6 +25,6 @@ export class PbaService {
   }
 
   public updatePBAs(pendingPaymentAccount: PendingPaymentAccount): Observable<any> {
-    return this.http.post<any>(`api/pba/addDeletePBA`, pendingPaymentAccount);
+    return this.http.post<any>(`${this.pbaUpdateUrl}`, pendingPaymentAccount);
   }
 }
