@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_RD_PROFESSIONAL_API_PATH, SERVICES_RD_PROFESSIONAL_EXTERNAL_API_PATH } from '../configuration/references';
+import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 const logger = log4jui.getLogger('return');
 /**
@@ -21,15 +21,6 @@ async function handleGetOrganisationsRoute(req: Request, res: Response, next: Ne
   } else {
     // used to load either an individual organisation or organisation user
     try {
-      req.on('error', (e) => {
-        // General error, i.e.
-        //  - ECONNRESET - server closed the socket unexpectedly
-        //  - ECONNREFUSED - server did not listen
-        //  - HPE_INVALID_VERSION
-        //  - HPE_INVALID_STATUS
-        //  - ... (other HPE_* codes) - server returned garbage
-        console.log(e);
-      });
       const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId);
       const response = await req.http.get(organisationsUri);
       logger.info(`Organisations get response${response.data}`);
