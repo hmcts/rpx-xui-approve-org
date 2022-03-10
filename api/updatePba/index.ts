@@ -55,7 +55,10 @@ function getByStatusUrl(status: string): string {
 export async function handleUpdatePBARoute(req: EnhancedRequest, res: Response) {
   try {
     const { paymentAccounts, orgId } = req.body;
-    await req.http.put(putUpdateUrl(orgId), { paymentAccounts });
+    const response = await req.http.put(putUpdateUrl(orgId), { paymentAccounts }).catch((error) => {
+      // console.log(error.toJSON());
+      const test = 1;
+    });
     res.status(200).send();
   } catch (error) {
     console.error(error);

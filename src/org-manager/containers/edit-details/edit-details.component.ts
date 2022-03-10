@@ -10,7 +10,6 @@ import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../models/organisation';
 import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
 import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
-import { PbaService } from '../../services/pba.service';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 
@@ -24,7 +23,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
-  private subscirptions: Subscription;
+  private subscriptions: Subscription;
   public orgId: string;
   public pbaNumbers: string[];
   public saveDisabled = true;
@@ -34,7 +33,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly updatePbaServices: UpdatePbaServices,
     private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly pbaService: PbaService,
     private readonly router: Router,
     private readonly fb: FormBuilder) { }
 
@@ -124,8 +122,13 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       for (let i = 0; i < this.pbaNumbers.length; i++) {
         this.appendAnotherNumber(i + 1);
       }
+
+      if (!this.pbaNumbers.length) {
+        this.appendAnotherNumber(1);
+      }
       for (const inputs of this.pbaInputs) {
         this.addPbaFormItem(inputs.name);
+        this.pbaNumbers = [''];
       }
 
       this.store.pipe(select(fromStore.getPbaNumber), take(1)).subscribe((pba: string) => {
@@ -134,7 +137,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         });
       });
 
-      this.subscirptions = this.changePbaFG.valueChanges.subscribe(value => {
+      this.subscriptions = this.changePbaFG.valueChanges.subscribe(value => {
         const pba: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
         const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
         this.saveDisabled = !isNewPba;
@@ -142,38 +145,22 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-
   public onSubmitPba(): void {
-    this.dispatchStoreValidation();
+    // this.dispatchStoreValidation();
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
 
     const paymentAccountUpdated: string[] = [];
-    // const paymentAccountAdded: string[] = [];
     paymentAccounts.forEach(paymentAccount => {
       if (typeof paymentAccount === 'string') {
         paymentAccountUpdated.push(paymentAccount.toString());
       }
     });
 
-    // for (let p = 0; p < paymentAccounts.length; p++) {
-    //   if (typeof paymentAccounts[p] === 'string') {
-    //     paymentAccountUpdated.push(paymentAccounts[p].toString());
-    //     if (p - 1 < this.pbaNumbers.length) {
-    //       paymentAccountUpdated.push(paymentAccounts[p].toString());
-    //     } else {
-    //       paymentAccountAdded.push(paymentAccounts[p].toString());
-    //     }
-    //   }
-    // }
-
     if (valid) {
       this.updatePbaServices.updatePba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }).subscribe(() => {
-        console.log('done');
-        this.router.navigateByUrl('/organisation');
+        this.router.navigateByUrl('/organisation-details/' + this.orgId);
       });
-      // this.store.dispatch(new fromStore.SubmitPba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }));
-      // this.pbaService.updatePBAs(this.pendingChanges(paymentAccountAdded)).subscribe(() => console.log('done'));
     }
   }
 
@@ -197,8 +184,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.subscirptions) {
-      this.subscirptions.unsubscribe();
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
     }
   }
 
@@ -213,4 +200,3 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     };
   }
 }
-
