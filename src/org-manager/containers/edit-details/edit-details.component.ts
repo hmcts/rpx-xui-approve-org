@@ -9,7 +9,7 @@ import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services'
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../models/organisation';
 import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
-import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
+import { PBAConfig } from '../../org-manager.constants';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 
@@ -69,18 +69,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public get currentPaymentAccounts(): PBANumberModel[] {
     return this.organisationDetails.paymentAccount
       .filter(pba => !this.organisationDetails.pendingRemovePaymentAccount.includes(pba));
-  }
-
-  private getPbaNumberValidators(): ValidatorFn[] {
-    return [
-      Validators.pattern(/(PBA\w*)/i),
-      Validators.minLength(10),
-      Validators.maxLength(10),
-      RxwebValidators.noneOf({
-        matchValues: this.currentPaymentAccounts.map(pba => pba.pbaNumber)
-      }),
-      RxwebValidators.unique()
-    ];
   }
 
   private getErrorMsgs() {
@@ -146,7 +134,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onSubmitPba(): void {
-    // this.dispatchStoreValidation();
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
 
@@ -162,25 +149,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('/organisation-details/' + this.orgId);
       });
     }
-  }
-
-  private dispatchStoreValidation(): void {
-    const validation = {
-      isInvalid: {
-        pba1: [
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.pattern),
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.minlength),
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.maxLength)
-        ],
-        pba2: [
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.pattern),
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.minlength),
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.maxLength)
-        ]
-      },
-      errorMsg: OrgManagerConstants.PBA_ERROR_MESSAGES
-    };
-    this.store.dispatch(new fromStore.DispatchSaveValidation(validation));
   }
 
   public ngOnDestroy(): void {
