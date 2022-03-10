@@ -4,26 +4,19 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { OrganisationService, PbaAccountDetails } from 'src/org-manager/services';
-import * as fromRoot from '../../../app/store';
 import { PbaService } from '../../services/pba.service';
-import * as fromOrganisationPendingStore from '../../store';
 import { NewPBAsComponent } from './new-pbas.component';
 
-fdescribe('NewPBAsComponent', () => {
+describe('NewPBAsComponent', () => {
   let component: NewPBAsComponent;
   let fixture: ComponentFixture<NewPBAsComponent>;
   let mockedOrganisationService: any;
   let mockedPbaAccountDetails: any;
   let mockedPbaService: any;
   let mockedPBARouter: any;
-  class RouterStub {
-    public url = '';
-    public navigate(commands: any[], extras?: any) { }
-  }
 
   const MOCKED_PBA = [
     {
