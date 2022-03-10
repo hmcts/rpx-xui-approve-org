@@ -1,7 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { QuickLinksComponent } from '..';
+
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationAddressComponent } from '../organisation-address';
 import { OrganisationDetailsInfoComponent } from './organisation-details-info.component';
@@ -37,7 +40,7 @@ describe('OrganisationDetailsInfoComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, RouterTestingModule.withRoutes([]), ReactiveFormsModule],
-      declarations: [OrganisationDetailsInfoComponent, OrganisationAddressComponent]
+      declarations: [OrganisationDetailsInfoComponent, OrganisationAddressComponent, QuickLinksComponent]
     })
       .compileComponents();
   }));
@@ -56,10 +59,14 @@ describe('OrganisationDetailsInfoComponent', () => {
   describe('approveOrganisation', () => {
 
     it('should show heading and titles', () => {
-      const headerContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
-      expect(headerContent).toContain('Approve organisation');
-      const headingContent = fixture.debugElement.nativeElement.querySelector('h3.govuk-heading-m').textContent;
-      expect(headingContent).toContain('Organisation details');
+      const headingContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
+      expect(headingContent).toContain('Approve organisation');
+      let titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[0].nativeElement.textContent;
+      expect(titleContent).toContain('Quick links');
+      titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[1].nativeElement.textContent;
+      expect(titleContent).toContain('Organisation details');
+      titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[2].nativeElement.textContent;
+      expect(titleContent).toContain('PBAs');
     });
 
     it('should show organisation details', () => {

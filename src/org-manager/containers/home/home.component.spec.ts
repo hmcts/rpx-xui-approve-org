@@ -1,12 +1,12 @@
-import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { of } from 'rxjs';
 import { NotificationBannerComponent } from '../../components';
 import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from '../search-organisations-form';
@@ -15,7 +15,7 @@ import { HomeComponent } from './home.component';
 @Component({
   template: `<div>Bob</div>`
 })
-export class MockComponent {}
+export class MockComponent { }
 
 export const MOCK_ROUTES: Routes = [
   {
@@ -32,7 +32,8 @@ export const MOCK_ROUTES: Routes = [
     ]
   }
 ];
-const organisationMockService = jasmine.createSpyObj('organisationService', ['setOrganisationSearchString']);
+const organisationMockService = jasmine.createSpyObj('organisationService', ['organisationSearchStringChange', 'setOrganisationSearchString']);
+organisationMockService.organisationSearchStringChange.and.returnValue(of(''));
 describe('HomeComponent', () => {
 
   let fixture: ComponentFixture<HomeComponent>;
@@ -47,7 +48,7 @@ describe('HomeComponent', () => {
         ExuiCommonLibModule,
         HttpClientTestingModule
       ],
-      declarations: [ HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent ],
+      declarations: [HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent],
       providers: [
         { provide: OrganisationService, useValue: organisationMockService }
       ]

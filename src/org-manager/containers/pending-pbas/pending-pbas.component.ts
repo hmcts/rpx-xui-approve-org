@@ -6,6 +6,7 @@ import { take } from 'rxjs/operators';
 import { SortOrder } from '../../../enums/sort-order';
 import SortField from '../../../models/common/sort-field.model';
 import { SearchPBARequest, SortParameter } from '../../../models/dtos';
+import { SessionStorageService } from '../../../shared/services/session-storage.service';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../shared/utils/handle-fatal-errors';
 
 import { OrganisationService, PbaService } from '../../services';
@@ -30,7 +31,8 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
     private readonly organisationService: OrganisationService,
     private readonly pbaService: PbaService,
     private readonly router: Router,
-    protected loadingService: LoadingService
+    protected loadingService: LoadingService,
+    private readonly sessionStorageService: SessionStorageService
   ) { }
 
   public ngOnInit(): void {
@@ -44,6 +46,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
           fieldName: 'organisationId',
           order: SortOrder.ASC
         };
+        this.sessionStorageService.setItem('searchString', searchString);
         this.showSpinner$ = this.loadingService.isLoading;
         const loadingToken = this.loadingService.register();
         this.performSearchPagination(searchString).pipe(
@@ -60,7 +63,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
           }
         });
       });
-    this.organisationService.setOrganisationSearchString('');
+    this.organisationService.setOrganisationSearchString(this.sessionStorageService.getItem('searchString'));
   }
 
   public ngOnDestroy(): void {
