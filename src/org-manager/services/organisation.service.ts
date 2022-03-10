@@ -17,12 +17,12 @@ export class OrganisationService {
   constructor(private readonly http: HttpClient) {
   }
 
-  public organisationSearchStringChange() {
+  public organisationSearchStringChange(): Observable<string> {
     return this.organisationSearchString.asObservable();
   }
 
   public setOrganisationSearchString(value: string) {
-    this.organisationSearchString.next(value);
+    this.organisationSearchString.next(value || '');
   }
 
   public fetchOrganisations(): Observable<Organisation[]> {
