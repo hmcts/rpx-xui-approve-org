@@ -1,8 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { RxwebValidators } from '@rxweb/reactive-form-validators';
 import { Observable, Subscription } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
