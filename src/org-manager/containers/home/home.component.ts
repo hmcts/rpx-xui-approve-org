@@ -6,7 +6,7 @@ import { LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { delay, map } from 'rxjs/operators';
 @Component({
   selector: 'app-home-component',
-  templateUrl: './home.component.html',
+  template: '',
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public readonly tabs = [

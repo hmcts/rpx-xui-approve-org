@@ -46,11 +46,8 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.organisationService.getSingleOrganisation({ id: this.orgId })
-      // this.organisationService.getOrganisation()
       .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
       .subscribe(organisationVM => {
-        // const result = organisationVMs.filter(x => x.organisationId === this.orgId);
-        //  const organisationVM = result[0];
         this.organisationId = organisationVM.organisationId;
         this.organisationAdminEmail = organisationVM.adminEmail;
         this.showUserNavigation = false;
@@ -109,12 +106,10 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
-    // this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: showUsers }));
   }
 
   public onShowUserDetails(user: User) {
     if (user) {
-      //  this.store.dispatch(new fromStore.ShowUserDetails({ userDetails: user, isSuperUser: this.organisationAdminEmail === user.email, orgId: this.organisationId }));
     }
   }
 
@@ -122,16 +117,9 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     if (this.getAllLoadedSubscription) {
       this.getAllLoadedSubscription.unsubscribe();
     }
-    // this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: false }));
 
     if (this.getOrganisationDeletableSubscription) {
       this.getOrganisationDeletableSubscription.unsubscribe();
     }
-
-    if (this.getShowOrgDetailsSubscription) {
-      this.getShowOrgDetailsSubscription.unsubscribe();
-    }
-
-    //   this.store.dispatch(new fromStore.GetOrganisationDeletableStatusSuccess(false));
   }
 }
