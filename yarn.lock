@@ -400,10 +400,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@hmcts/frontend@0.0.41-alpha":
-  version "0.0.41-alpha"
-  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.41-alpha.tgz#a1f3bd75a640e92be914d42f18ce52d3dea770d2"
-  integrity sha512-1EJhRYycSMsTUYAx+FsrQ3O9mB9WVsoULikd4J9Xu9nSMk2D4mABIzRdcqvXvlIIMSmVDXJD2xDxInJBg57TsA==
+"@hmcts/frontend@0.0.50-alpha":
+  version "0.0.50-alpha"
+  resolved "https://registry.yarnpkg.com/@hmcts/frontend/-/frontend-0.0.50-alpha.tgz#4c1f1bc87312a2929ac60e54cdd3fc28782b98f9"
+  integrity sha512-can9fxgQxw0ihRvjvz/+O7xbG0OiQbTcs3CCMQct41a2BPC6iIja3vgwNIy5TD2Vt52kYUq+fg2HGGybyjprTg==
 
 "@hmcts/nodejs-healthcheck@^1.7.0":
   version "1.7.0"
@@ -432,10 +432,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.4.8-paging":
-  version "1.4.8-paging"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.4.8-paging.tgz#0bdc49e29924f10a1660968e27228e369fd954ea"
-  integrity sha512-z2Y84PBOQPSQLSSuexPM3vhQnk1RNyeI9UI3YUsk5kasAlcq9DMgHaGlEVI/uvb5t1LVQNH7P1qRZzaX0bVPLg==
+"@hmcts/rpx-xui-common-lib@1.6.7-hmcts-pagination":
+  version "1.6.7-hmcts-pagination"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-hmcts-pagination.tgz#8d545752a0e0a3e9ce1dc5797f3d4f0a54ffa8a1"
+  integrity sha512-GBEwG/vxaSPeXDHXCOP9eFZ4Yp4H1FKQDU7Cn92TBylg8eEjdiBd+CTj1eRTqjfLE/6nE7jZA26A7gJiEKx3Eg==
   dependencies:
     tslib "^1.9.0"
 
