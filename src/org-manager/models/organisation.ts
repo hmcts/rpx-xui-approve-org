@@ -10,6 +10,17 @@ export interface OrganisationAddress {
   postCode?: string;
 }
 
+export interface OrganisationContactInformation {
+  addressLine1: string;
+  addressLine2: string;
+  addressLine3: string;
+  townCity: string;
+  county: string;
+  country: string;
+  postCode: string;
+  dxAddress: DxAddress[];
+}
+
 export interface OrganisationDetails {
   name: string;
   organisationIdentifier: string;
