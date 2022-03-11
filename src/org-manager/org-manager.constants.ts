@@ -7,19 +7,19 @@ const statusCodes = {
 };
 
 export class OrgManagerConstants {
-  static PBA_ERROR_MESSAGES = pbaErrorMessages;
-  static STATUS_CODES = statusCodes;
-  static PBA_SERVER_ERROR_MESSAGE = pbaServerErrorMessages;
+  public static PBA_ERROR_MESSAGES = pbaErrorMessages;
+  public static STATUS_CODES = statusCodes;
+  public static PBA_SERVER_ERROR_MESSAGE = pbaServerErrorMessages;
 }
 
 /**
  * Feed to create inputs for changing the PBA
  */
 export class PBAConfig {
-  label: string
-  hint: string
-  name: string
-  id: string
-  type: string
-  classes: string
+  public label: string;
+  public hint: string;
+  public name: string;
+  public id: string;
+  public type: string;
+  public classes: string;
 }
