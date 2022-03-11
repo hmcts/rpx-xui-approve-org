@@ -145,7 +145,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
     if (valid) {
       this.updatePbaServices.updatePba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }).subscribe(() => {
-        this.router.navigateByUrl('/organisation-details/' + this.orgId);
+        this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
       });
     }
   }
