@@ -6,8 +6,6 @@
     {{org?.status}}
   </span>
 </app-identity-bar-component>
-
-
 <div class="hmcts-width-container">
   <xuilib-hmcts-main-wrapper
     [summaryErrors]="pbaErrorsHeader$ | async"
@@ -20,18 +18,25 @@
         <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
           <ng-container *ngIf="(pbaError$ | async) as errors">
             <xuilib-gov-uk-input *ngFor="let data of pbaInputs"
-              [config]="data.config"
-              [errorMessage]="errors[data.config.name]"
+              [config]="data"
+              [errorMessage]="errors[data.name]"
               [group]="changePbaFG">
             </xuilib-gov-uk-input>
+            <button type="button" class="govuk-button" (click="remove(data)"">
+            Remove
+          </button>
           </ng-container>
+            <div>
+              <button type="button" class="govuk-button hmcts-button--secondary" (click)="onAddNewBtnClicked()">
+                Add another PBA number
+              </button>
+          </div>
           <button type="submit" class="govuk-button" [disabled]="!saveDisabled">
             Submit
           </button>
         </form>
       </div>
     </div>
-
   </xuilib-hmcts-main-wrapper>
 </div>
 </ng-container>
