@@ -17,14 +17,14 @@
       <div class="govuk-grid-column-two-thirds">
         <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
           <ng-container *ngIf="(pbaError$ | async) as errors">
-            <xuilib-gov-uk-input *ngFor="let data of pbaInputs"
-              [config]="data"
-              [errorMessage]="errors[data.name]"
-              [group]="changePbaFG">
-            </xuilib-gov-uk-input>
-            <button type="button" class="govuk-button" (click="remove(data)"">
-            Remove
-          </button>
+            <div *ngFor="let data of pbaInputs">
+              <xuilib-gov-uk-input
+                [config]="data"
+                [errorMessage]="errors[data.name]"
+                [group]="changePbaFG">
+              </xuilib-gov-uk-input>
+              <button type="button" class="govuk-button" (click)="remove(data)">Remove</button>
+            </div>
           </ng-container>
             <div>
               <button type="button" class="govuk-button hmcts-button--secondary" (click)="onAddNewBtnClicked()">

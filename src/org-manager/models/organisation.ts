@@ -67,6 +67,11 @@ export interface OrganisationUserListModel {
   isError: boolean;
 }
 
+export interface DxAddress {
+  dxNumber: string;
+  dxExchange: string;
+}
+
 export interface Organisation {
   sraId?: string;
   organisationIdentifier: string;
