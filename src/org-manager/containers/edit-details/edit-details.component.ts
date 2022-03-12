@@ -84,6 +84,11 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  public remove(data: PBAConfig) {
+    this.changePbaFG.removeControl(data.name);
+    this.pbaInputs = this.pbaInputs.filter(input => input.id !== data.id);
+  }
+
   public appendAnotherNumber(index: number) {
     const config = new PBAConfig();
     config.label = `PBA number ${index} (optional)`;
