@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
@@ -16,7 +16,12 @@ describe('PendingOrganisationComponent', () => {
   let fixture: ComponentFixture<PendingOrganisationsComponent>;
   let store: Store<fromStore.OrganisationRootState>;
   let httpClient: HttpClient;
-
+  @Pipe({ name: 'paginate' })
+  class MockPipe implements PipeTransform {
+    transform(value: number): number {
+      return value;
+    }
+  }
   beforeEach((() => {
     httpClient = jasmine.createSpyObj<HttpClient>('httpClient', ['get', 'post', 'put', 'delete']);
     TestBed.configureTestingModule({
@@ -29,7 +34,8 @@ describe('PendingOrganisationComponent', () => {
       declarations: [
         PendingOrganisationsComponent,
         FilterOrganisationsPipe,
-        OrganisationAddressComponent
+        OrganisationAddressComponent,
+        MockPipe
       ],
       providers: [
         { provide: HttpClient, useValue: httpClient },
