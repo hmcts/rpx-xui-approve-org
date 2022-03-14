@@ -52,10 +52,19 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
         this.performSearchPagination(searchString).pipe(
           take(1)).subscribe({
           next: (result: any) => {
-            this.loadingService.unregister(loadingToken);
-            this.orgsWithPendingPBAs = result.organisations;
-            this.pendingPBAsCount = result.total_records;
-            this.pbasLoaded = true;
+              this.loadingService.unregister(loadingToken);
+              this.orgsWithPendingPBAs = [];
+              result.organisations.forEach(renderableOrganisation => {
+                this.orgsWithPendingPBAs.push({
+                  organisationId: renderableOrganisation.organisationIdentifier ? renderableOrganisation.organisationIdentifier : '',
+                  name: renderableOrganisation ? renderableOrganisation.organisationName : '',
+                  pbaNumbers: renderableOrganisation ? renderableOrganisation.pbaNumbers : [],
+                  adminEmail: renderableOrganisation.superUser ? renderableOrganisation.superUser.email : '',
+
+                } as RenderableOrganisation);
+              });
+              this.pendingPBAsCount = result.total_records;
+              this.pbasLoaded = true;
           },
           error: (error: any) => {
             this.loadingService.unregister(loadingToken);
