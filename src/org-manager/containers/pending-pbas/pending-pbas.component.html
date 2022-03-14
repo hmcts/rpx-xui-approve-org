@@ -3,38 +3,41 @@
 </h2>
 <ng-container *ngIf="pbasLoaded">
   <table class="govuk-table" *ngIf="pendingPBAsCount; else noData">
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th class="govuk-table__header" scope="col">Organisation</th>
-      <th class="govuk-table__header" scope="col">PBAs</th>
-      <th class="govuk-table__header" scope="col">Administrator</th>
-      <th class="govuk-table__header" scope="col">Date received</th>
-      <th class="govuk-table__header" scope="col"></th>
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
-    <tr class="govuk-table__row" *ngFor="let org of orgsWithPendingPBAs">
-      <td class="govuk-table__cell">{{org.name}}</td>
-      <td class="govuk-table__cell">
-        <div *ngFor="let pba of org.pbaNumbers">
-          {{pba.pbaNumber}}
-        </div>
-      </td>
-      <td class="govuk-table__cell">
-        <span *ngIf="org.admin">
-          {{org.admin}}<br>
-          <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
-        </span>
-      </td>
-      <td class="govuk-table__cell">
-        {{getReceivedDate(org.pbaNumbers) | date:'dd/MM/yyyy'}}
-      </td>
-      <td class="govuk-table__cell">
-        <a class="govuk-link" [routerLink]="['new', org.organisationIdentifier]" routerLinkActive="router-link-active">View</a>
-      </td>
-    </tr>
-  </tbody>
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Organisation</th>
+        <th class="govuk-table__header" scope="col">PBAs</th>
+        <th class="govuk-table__header" scope="col">Administrator</th>
+        <th class="govuk-table__header" scope="col">Date received</th>
+        <th class="govuk-table__header" scope="col"></th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row" *ngFor="let org of orgsWithPendingPBAs | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: pendingPBAsCount }">
+        <td class="govuk-table__cell">{{org.organisationName}}</td>
+        <td class="govuk-table__cell">
+          <div *ngFor="let pba of org.pbaNumbers">
+            {{pba.pbaNumber}}
+          </div>
+        </td>
+        <td class="govuk-table__cell">
+          <span *ngIf="org.superUser">
+            {{org.superUser.firstName + ' ' + org.superUser.lastName}}<br>
+            <span class="govuk-caption-m govuk-!-font-size-16">{{org.superUser.email}}</span>
+          </span>
+        </td>
+        <td class="govuk-table__cell">
+          {{getReceivedDate(org.pbaNumbers) | date:'dd/MM/yyyy'}}
+        </td>
+        <td class="govuk-table__cell">
+          <a class="govuk-link" [routerLink]="['new', org.organisationIdentifier]"
+            routerLinkActive="router-link-active">View</a>
+        </td>
+      </tr>
+    </tbody>
   </table>
+  <xuilib-hmcts-pagination *ngIf="pbasLoaded && pendingPBAsCount > pagination.page_size"
+    (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
   <ng-template #noData>
     <span class="govuk-body">There are no new PBA requests.</span>
   </ng-template>
