@@ -15,7 +15,8 @@
         <th class="govuk-table__header" scope="col">Status</th>
         <th class="govuk-table__header" scope="col"></th>
       </tr>
-      <tr class="govuk-table__row govuk-radios" *ngFor="let org of organisations">
+      <tr class="govuk-table__row govuk-radios"
+        *ngFor="let org of organisations| paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
         <td class="govuk-table__cell">
           {{org.name}}<br>
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
@@ -40,8 +41,9 @@
       </tr>
     </thead>
   </table>
+  <xuilib-hmcts-pagination *ngIf="organisationsLoaded && organisationCount > pagination.page_size"
+    (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
   <ng-template #noData>
     <span class="govuk-body"> There are no new registrations.</span>
   </ng-template>
 </ng-container>
-
