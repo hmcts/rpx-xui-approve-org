@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SearchOrganisationRequest } from '../../models/dtos';
 import { Organisation } from '../models/organisation';
@@ -14,6 +14,7 @@ export class OrganisationService {
   public orgUsersUrl = environment.organisationUsersUrl;
   public organisationsUrl = environment.organisationsUrl;
   private organisationSearchString: Subject<string> = new Subject<string>();
+  private resetPagination: Subject<boolean> = new Subject<boolean>();
   constructor(private readonly http: HttpClient) {
   }
 
@@ -23,6 +24,14 @@ export class OrganisationService {
 
   public setOrganisationSearchString(value: string) {
     this.organisationSearchString.next(value || '');
+  }
+
+  public paginationParametersReset(): Observable<boolean> {
+    return this.resetPagination.asObservable();
+  }
+
+  public resetPaginationParameters() {
+    this.resetPagination.next(true);
   }
 
   public fetchOrganisations(): Observable<Organisation[]> {
