@@ -1,7 +1,7 @@
 import * as fromRoot from '../../../app/store';
 import { ReinviteUserSuccessComponent } from './reinvite-user-success.component';
 
-describe('ReinviteUserSuccessComponent', () => {
+xdescribe('ReinviteUserSuccessComponent', () => {
 
     let component: ReinviteUserSuccessComponent;
     let userStoreSpyObject;
