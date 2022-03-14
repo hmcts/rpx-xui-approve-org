@@ -1,10 +1,16 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { OrganisationService, PbaService } from '../../services';
 import { PendingPBAsComponent } from './pending-pbas.component';
-
+@Pipe({ name: 'paginate' })
+class MockPipe implements PipeTransform {
+  transform(value: number): number {
+    return value;
+  }
+}
 describe('PendingPBAsComponent', () => {
   let component: PendingPBAsComponent;
   let fixture: ComponentFixture<PendingPBAsComponent>;
@@ -22,7 +28,10 @@ describe('PendingPBAsComponent', () => {
         { provide: PbaService, useValue: pbaServiceSpy },
         OrganisationService
       ],
-      declarations: [PendingPBAsComponent]
+      declarations: [
+        PendingPBAsComponent,
+        MockPipe
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PendingPBAsComponent);
