@@ -33,7 +33,6 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationDeletable = false;
   private getShowOrgDetailsSubscription: Subscription;
   private getAllLoadedSubscription: Subscription;
-  private readonly getOrganisationDeletableSubscription: Subscription;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
@@ -140,10 +139,6 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       this.getShowOrgDetailsSubscription.unsubscribe();
     }
     this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({orgId: this.organisationId, showUserTab: false}));
-
-    if (this.getOrganisationDeletableSubscription) {
-      this.getOrganisationDeletableSubscription.unsubscribe();
-    }
 
     // Update the "organisation deletable" status in the store manually to false (to avoid the "Delete" button being
     // displayed when it shouldn't)
