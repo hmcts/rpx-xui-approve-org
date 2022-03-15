@@ -50,6 +50,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public submitSearch(searchString: string): void {
+    this.organisationService.resetPaginationParameters();
     this.organisationService.setOrganisationSearchString(searchString);
     this.refreshBanner();
   }
