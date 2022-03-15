@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -17,7 +17,7 @@ describe('NewPBAsConfirmComponent', () => {
   const pbaServiceSpy = jasmine.createSpyObj('PbaService', ['setPBAStatus']);
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, ReactiveFormsModule , RouterTestingModule.withRoutes([])],
       declarations: [NewPBAsConfirmComponent, OrganisationAddressComponent, PBAAccountApprovalComponent, PBAAccountDecisionComponent],

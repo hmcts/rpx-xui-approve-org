@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
@@ -37,7 +37,7 @@ describe('OrganisationDetailsInfoComponent', () => {
     }]
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, RouterTestingModule.withRoutes([]), ReactiveFormsModule],
       declarations: [OrganisationDetailsInfoComponent, OrganisationAddressComponent, QuickLinksComponent]
