@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, fakeAsync, TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { RoutesRecognized } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -22,7 +22,7 @@ const titleService = jasmine.createSpyObj('titleService', ['setTitle']);
 
 describe('AppComponent', () => {
   let store: Store<fromRoot.State>;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     environmentMockService.getEnv$.and.returnValue(of({}));
     idleMockService.appStateChanges.and.returnValue(of({ type: 'modal' }));
     TestBed.configureTestingModule({
@@ -55,7 +55,7 @@ describe('AppComponent', () => {
     spyOn(store, 'dispatch').and.callThrough();
   }));
 
-  it('should create the app', async(() => {
+  it('should create the app', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
 
     const app = fixture.debugElement.componentInstance;
@@ -63,7 +63,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it('should dispatch a logout action', async(() => {
+  it('should dispatch a logout action', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     app.onNavigate('sign-out');
@@ -123,7 +123,7 @@ describe('AppComponent', () => {
 
 describe('AppComponent', () => {
   let store: Store<fromRoot.State>;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     environmentMockService.getEnv$.and.returnValue(of({}));
     idleMockService.appStateChanges.and.returnValue(of({ type: 'signout' }));
     TestBed.configureTestingModule({
@@ -155,7 +155,7 @@ describe('AppComponent', () => {
     spyOn(store, 'dispatch').and.callThrough();
   }));
 
-  it('should create the app', async(() => {
+  it('should create the app', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
 
     const app = fixture.debugElement.componentInstance;
@@ -163,7 +163,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it('should dispatch a logout action', async(() => {
+  it('should dispatch a logout action', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     app.onNavigate('sign-out');
@@ -177,7 +177,7 @@ describe('AppComponent', () => {
 
 describe('AppComponent', () => {
   let store: Store<fromRoot.State>;
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     environmentMockService.getEnv$.and.returnValue(of({}));
     idleMockService.appStateChanges.and.returnValue(of({ type: 'keepalive' }));
     TestBed.configureTestingModule({
@@ -209,7 +209,7 @@ describe('AppComponent', () => {
     spyOn(store, 'dispatch').and.callThrough();
   }));
 
-  it('should create the app', async(() => {
+  it('should create the app', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
 
     const app = fixture.debugElement.componentInstance;
@@ -217,7 +217,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   }));
 
-  it('should dispatch a logout action', async(() => {
+  it('should dispatch a logout action', waitForAsync(() => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     app.onNavigate('sign-out');
