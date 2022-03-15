@@ -1,7 +1,6 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
-
 import { AuthGuard } from '../services/auth/auth.guard';
 import { ActiveOrganisationsComponent } from './containers';
 import { ApproveOrganisationComponent } from './containers/approve-organisation';
@@ -133,4 +132,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const orgManagerRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);
