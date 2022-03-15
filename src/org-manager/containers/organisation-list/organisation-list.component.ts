@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, OnDestroy, OnInit, Directive } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../shared/utils/
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services';
 
+@Directive()
 export abstract class OrganisationListComponent implements OnInit, OnDestroy {
 
   public searchString: string = '';
