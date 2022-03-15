@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,7 +11,7 @@ describe('HmctsPrimaryNavigationComponent', () => {
   let fixture: ComponentFixture<HmctsPrimaryNavigationComponent>;
   const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
   const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled'])
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HmctsPrimaryNavigationComponent ],
       imports: [

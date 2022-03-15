@@ -1,4 +1,4 @@
-import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { TestBed, ComponentFixture, waitForAsync } from '@angular/core/testing';
 import { ApproveOrganisationComponent } from './approve-organisation.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';

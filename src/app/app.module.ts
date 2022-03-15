@@ -48,8 +48,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     BrowserModule,
     CookieModule.forRoot(),
     RouterModule.forRoot(ROUTES, {
-      anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'
-    }),
+    anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload',
+    relativeLinkResolution: 'legacy'
+}),
     StoreModule.forRoot(reducers, { metaReducers, runtimeChecks: { strictStateImmutability: true, strictActionImmutability: true } }),
     EffectsModule.forRoot(effects),
     SharedModule,

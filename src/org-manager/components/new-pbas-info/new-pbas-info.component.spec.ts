@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -37,7 +37,7 @@ describe('NewPBAsInfoComponent', () => {
     }]
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, ReactiveFormsModule, FormsModule, RouterTestingModule.withRoutes([])],
       declarations: [NewPBAsInfoComponent, OrganisationAddressComponent, PBAAccountApprovalComponent],
