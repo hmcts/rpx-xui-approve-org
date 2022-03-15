@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store, StoreModule } from '@ngrx/store';
@@ -13,6 +13,12 @@ describe('Active Organisation', () => {
   let component: ActiveOrganisationsComponent;
   let fixture: ComponentFixture<ActiveOrganisationsComponent>;
   let store: Store<fromStore.OrganisationRootState>;
+  @Pipe({ name: 'paginate' })
+  class MockPipe implements PipeTransform {
+    transform(value: number): number {
+      return value;
+    }
+  }
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -24,7 +30,8 @@ describe('Active Organisation', () => {
       ],
       declarations: [
         ActiveOrganisationsComponent,
-        OrganisationAddressComponent
+        OrganisationAddressComponent,
+        MockPipe
       ],
       providers: [
         [ OrganisationService ]

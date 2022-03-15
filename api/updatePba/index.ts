@@ -108,9 +108,8 @@ export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Res
     const pbaStatus = req.params.status;
     const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     if (data) {
-      const organisations = filterOrganisations(data, req.body.searchRequest.search_filter);
-      responseData = { organisations, total_records: organisations.length };
-
+      const filteredOrganisations = filterOrganisations(data, req.body.searchRequest.search_filter);
+      responseData = createPaginatedResponse(req.body.searchRequest.pagination_parameters, filteredOrganisations);
     } else {
       responseData = { organisations: [], total_records: 0 };
     }
@@ -122,7 +121,7 @@ export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Res
 }
 
 function filterOrganisations(orgs: any, searchFilter: string): any[] {
-  const TEXT_FIELDS_TO_CHECK = ['name', 'admin'];
+  const TEXT_FIELDS_TO_CHECK = ['organisationName', 'superUser.email'];
   if (!orgs) { return []; }
   if (!searchFilter || searchFilter === '') { return orgs; }
   searchFilter = searchFilter.toLowerCase();
@@ -140,9 +139,28 @@ function filterOrganisations(orgs: any, searchFilter: string): any[] {
           }
         }
       }
+      if (org.superUser) {
+          if ((org.superUser.firstName + ' ' + org.superUser.lastName).toLowerCase().includes(searchFilter)) {
+            return true;
+          }
+
+          if (org.superUser.email.toLowerCase().includes(searchFilter)) {
+            return true;
+          }
+        }
     }
     return false;
   });
+}
+
+function createPaginatedResponse(paginationParameters: any, filteredOrganisations: any) {
+  const startIndex = (paginationParameters.page_number - 1) * paginationParameters.page_size;
+  let endIndex = startIndex + paginationParameters.page_size;
+  if (endIndex > filteredOrganisations.length) {
+    endIndex = filteredOrganisations.length;
+  }
+  const organisations = filteredOrganisations.slice(startIndex, endIndex);
+  return { organisations, total_records: filteredOrganisations.length };
 }
 
 function textFieldMatches(org: any, field: string, filter: string): boolean {
