@@ -1,12 +1,18 @@
-import {createSelector} from '@ngrx/store';
+import { createSelector } from '@ngrx/store';
 
 import * as fromRoot from '../../../app/store';
+import { OrganisationVM } from '../../models/organisation';
 import * as fromOrganisation from '../reducers';
 import * as fromPendingOrganisations from '../reducers/organisation.reducer';
 
 export const getOrganisationsState = createSelector(
   fromOrganisation.getRootApproveOrgState,
   (state: fromOrganisation.OrganisationRootState) => (state && state.organisations) ? state.organisations : fromPendingOrganisations.initialState
+);
+
+export const getSearchString = createSelector(
+  getOrganisationsState,
+  (orgState) => orgState.searchString
 );
 // entry for Active Organisations
 export const getActiveOrganisationState = createSelector(
@@ -70,6 +76,13 @@ export const getPendingSearchString = createSelector(
 export const getErrorMessage = createSelector(
   getOrganisationsState,
   (orgState) => orgState.errorMessage
+);
+
+export const getActiveByOrgIds = createSelector(
+  getActiveOrganisationState,
+  (active: { orgEntities: { [id: string]: OrganisationVM } }, props: { orgIds: string[] }) => {
+    return props.orgIds.map(orgId => active.orgEntities[orgId]).filter(val => val !== undefined);
+  }
 );
 
 export const getActiveAndPending = createSelector(

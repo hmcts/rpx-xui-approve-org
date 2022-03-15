@@ -21,7 +21,8 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/hmcts-assets"
             ],
             "styles": [
               "src/styles.scss"
@@ -82,7 +83,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],  
+            "scripts": [],
             "assets": [
               "src/favicon.ico",
               "src/assets"

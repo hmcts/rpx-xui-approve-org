@@ -1,49 +1,63 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ApproveOrganisationSuccessComponent } from 'src/org-manager/containers/approve-organisation-success/approve-organisation-success.component';
-import { ApproveOrganisationComponent } from 'src/org-manager/containers/approve-organisation/approve-organisation.component';
-import { PendingOrganisationsComponent } from 'src/org-manager/containers/pending-organisations/pending-organisations.component';
-import { AuthGuard } from 'src/services/auth/auth.guard';
-import { OrganisationDetailsComponent } from './components';
-import { ActiveOrganisationsComponent } from './containers';
-import { EditDetailsComponent } from './containers/edit-details/edit-details.component';
-import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success/reinvite-user-success.component';
-import { ReinviteUserComponent } from './containers/reinvite-user/reinvite-user.component';
-import { UserDetailsComponent } from './containers/user-details/user-details.component';
-import { UserApprovalGuard } from './guards/users-approval.guard';
-import { DeleteOrganisationComponent } from './containers/delete-organisation/delete-organisation.component';
-import { DeleteOrganisationSuccessComponent } from './containers/delete-organisation-success/delete-organisation-success.component';
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
+
+import { AuthGuard } from '../services/auth/auth.guard';
+import { ActiveOrganisationsComponent } from './containers';
+import { ApproveOrganisationComponent } from './containers/approve-organisation';
+import { ApproveOrganisationSuccessComponent } from './containers/approve-organisation-success';
+import { DeleteOrganisationComponent } from './containers/delete-organisation';
+import { DeleteOrganisationSuccessComponent } from './containers/delete-organisation-success';
+import { EditDetailsComponent } from './containers/edit-details';
+import { HomeComponent } from './containers/home';
+import { NewPBAsComponent } from './containers/new-pbas';
+import { OrganisationDetailsComponent } from './containers/organisation-details';
+import { PendingOrganisationsComponent } from './containers/pending-organisations';
+import { PendingPBAsComponent } from './containers/pending-pbas';
+import { ReinviteUserComponent } from './containers/reinvite-user';
+import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success';
+import { ReviewOrganisationComponent } from './containers/review-organisation';
+import { UserDetailsComponent } from './containers/user-details';
+import { UserApprovalGuard } from './guards';
 
 export const ROUTES: Routes = [
   {
     path: 'organisation',
-    component: PendingOrganisationsComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: {
-      needsRole: ['prd-admin'],
-      roleMatching: RoleMatching.ALL,
-      title: 'Organisations'
-    }
-  },
-  {
-    path: 'pending-organisations',
-    component: PendingOrganisationsComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: {
-      needsRole: ['prd-admin'],
-      roleMatching: RoleMatching.ALL,
-      title: 'Pending organisations'
-    }
-  },
-  {
-    path: 'active-organisation',
-    component: ActiveOrganisationsComponent,
+    component: HomeComponent,
     canActivate: [AuthGuard],
-    data: {
-      title: 'Active organisations'
-    }
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'pending'
+      },
+      {
+        path: 'pending',
+        component: PendingOrganisationsComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Pending organisations' }
+      },
+      {
+        path: 'pbas',
+        component: PendingPBAsComponent,
+        canActivate: [AuthGuard, RoleGuard],
+        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Pending PBAs' }
+      },
+      {
+        path: 'active',
+        component: ActiveOrganisationsComponent,
+        canActivate: [AuthGuard], data: { title: 'Active organisations' }
+      }
+    ]
   },
+  {
+    path: 'pbas/new/:orgId',
+    component: NewPBAsComponent,
+    canActivate: [AuthGuard, RoleGuard],
+    data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'New PBAs' }
+  },
+  { path: 'pending-organisations', pathMatch: 'full', redirectTo: 'organisation/pending' },
+  { path: 'active-organisation', pathMatch: 'full', redirectTo: 'organisation/active' },
   {
     path: 'approve-organisations',
     component: ApproveOrganisationComponent,
@@ -74,6 +88,14 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
     data: {
       title: 'Delete organisation success'
+    }
+  },
+  {
+    path: 'review-organisation',
+    component: ReviewOrganisationComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Review organisation'
     }
   },
   {
