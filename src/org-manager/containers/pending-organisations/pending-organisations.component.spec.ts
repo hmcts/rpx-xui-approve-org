@@ -43,7 +43,7 @@ describe('PendingOrganisationComponent', () => {
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(PendingOrganisationsComponent);
     component = fixture.componentInstance;

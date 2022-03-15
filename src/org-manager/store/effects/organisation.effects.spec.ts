@@ -74,7 +74,7 @@ describe('Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(OrganisationEffects);
+    effects = TestBed.inject(OrganisationEffects);
   });
 
   xdescribe('approvePendingOrganisations$', () => {

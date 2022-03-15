@@ -50,7 +50,7 @@ describe('AppComponent', () => {
         { provide: Title, useValue: titleService }
       ],
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOn(store, 'dispatch').and.callThrough();
   }));
@@ -150,7 +150,7 @@ describe('AppComponent', () => {
         { provide: CookieService, useValue: cookieService }
       ],
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOn(store, 'dispatch').and.callThrough();
   }));
@@ -204,7 +204,7 @@ describe('AppComponent', () => {
         { provide: CookieService, useValue: cookieService }
       ],
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     spyOn(store, 'dispatch').and.callThrough();
   }));

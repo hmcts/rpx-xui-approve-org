@@ -28,7 +28,7 @@ describe('App Effects', () => {
                 {provide: UserService, useValue: mockUserService}
             ]
         });
-        effects = TestBed.get(fromAppEffects.AppEffects);
+        effects = TestBed.inject(fromAppEffects.AppEffects);
     });
 
     describe('addGlobalErrorEffect$', () => {

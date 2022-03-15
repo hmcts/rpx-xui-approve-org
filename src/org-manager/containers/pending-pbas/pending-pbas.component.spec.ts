@@ -36,7 +36,7 @@ describe('PendingPBAsComponent', () => {
 
     fixture = TestBed.createComponent(PendingPBAsComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
   });
 
 });

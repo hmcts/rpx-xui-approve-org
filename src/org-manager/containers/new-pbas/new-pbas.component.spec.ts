@@ -34,7 +34,7 @@ describe('NewPBAsComponent', () => {
         CUSTOM_ELEMENTS_SCHEMA
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(NewPBAsComponent);
     component = fixture.componentInstance;

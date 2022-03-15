@@ -45,7 +45,7 @@ describe('Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(fromEffects.UsersEffects);
+    effects = TestBed.inject(fromEffects.UsersEffects);
 
   });
 

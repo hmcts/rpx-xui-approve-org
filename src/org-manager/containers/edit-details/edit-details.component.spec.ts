@@ -33,7 +33,7 @@ describe('EditDetailsComponent', () => {
             CUSTOM_ELEMENTS_SCHEMA
         ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(EditDetailsComponent);
     component = fixture.componentInstance;

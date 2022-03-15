@@ -21,7 +21,7 @@ describe('PbaService', () => {
         { provide: HttpClient, useValue: httpClient }
       ]
     });
-    service = TestBed.get(PbaService);
+    service = TestBed.inject(PbaService);
   });
 
   describe('getPBAsByStatus', () => {

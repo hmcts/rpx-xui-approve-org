@@ -56,7 +56,7 @@ describe('HomeComponent', () => {
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
 

@@ -50,7 +50,7 @@ describe('PendingOrganisationService', () => {
         { provide: environment, useValue: mockEnvironment }
       ]
     });
-    pendingOrganisationService = TestBed.get(PendingOrganisationService);
+    pendingOrganisationService = TestBed.inject(PendingOrganisationService);
     pendingOrganisationService.orgPendingUrl = mockEnvironment.orgPendingUrl;
     pendingOrganisationService.singleOrgUrl = mockEnvironment.singleOrgUrl;
     pendingOrganisationService.organisationsUrl = mockEnvironment.organisationsUrl;
