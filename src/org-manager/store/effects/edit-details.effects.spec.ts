@@ -45,7 +45,7 @@ describe('Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(EditDetailsEffects);
+    effects = TestBed.inject(EditDetailsEffects);
 
   });
 
