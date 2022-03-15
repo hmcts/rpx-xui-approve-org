@@ -47,4 +47,9 @@ describe('Logger service', () => {
     service.trace('message');
     expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
   });
+
+  it('should be able to call log', () => {
+    service.log('message');
+    expect(mockedMonitoringService.logEvent).toHaveBeenCalled();
+  });
 });

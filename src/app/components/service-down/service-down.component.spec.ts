@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import * as fromAppStore from '../../../app/store';
 import { ServiceDownComponent } from './service-down.component';
 
@@ -19,5 +20,11 @@ describe('ServiceDownComponent', () => {
     const expectedAction = new fromAppStore.ClearGlobalError();
     component.ngOnDestroy();
     expect(userStoreSpyObject.dispatch).toHaveBeenCalledWith(expectedAction);
+  });
+
+  it('sets up correctly', () => {
+    userStoreSpyObject.pipe = jasmine.createSpy('pipe').and.returnValue(of(null));
+    component.ngOnInit();
+    expect(component.currentError).not.toBeNull;
   });
 });
