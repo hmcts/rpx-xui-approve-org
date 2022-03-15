@@ -19,6 +19,7 @@ export interface OrganisationState {
   orgForReview: OrganisationVM | null;
   showOrganisationDetailsUserTab: {orgId: string; showUserTab: boolean};
   organisationDeletable: boolean;
+  searchString: string;
 }
 
 export const initialState: OrganisationState = {
@@ -28,7 +29,8 @@ export const initialState: OrganisationState = {
   errorMessage: '',
   orgForReview: null,
   showOrganisationDetailsUserTab: {orgId: null, showUserTab: false},
-  organisationDeletable: false
+  organisationDeletable: false,
+  searchString: ''
 };
 
 export function reducer(
@@ -149,6 +151,15 @@ export function reducer(
       };
     }
 
+    case fromActions.OrgActionTypes.NAV_TO_REVIEW_ORGANISATION: {
+      const orgForReview = action.payload;
+      return {
+        ...state,
+        orgForReview,
+        errorMessage: ''
+      };
+    }
+
     case fromActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS: {
       const deletedOrganisation = action.payload;
       const pendingEntities = {
@@ -190,6 +201,28 @@ export function reducer(
         ...state,
         activeOrganisations,
         errorMessage: ''
+      };
+    }
+
+    case fromActions.OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS: {
+      const reviewOrg = action.payload;
+      const pendingEntities = {
+        ...state.pendingOrganisations.orgEntities
+      };
+
+      if (pendingEntities.hasOwnProperty(reviewOrg.organisationId)) {
+        pendingEntities[reviewOrg.organisationId] = {...pendingEntities[reviewOrg.organisationId], status: 'REVIEW'};
+      }
+      const pendingOrganisations = {
+        ...state.pendingOrganisations,
+        orgEntities: pendingEntities
+      };
+
+      return {
+        ...state,
+        pendingOrganisations,
+        errorMessage: '',
+        orgForReview: null
       };
     }
 
@@ -399,6 +432,14 @@ export function reducer(
       return {
         ...state,
         organisationDeletable
+      };
+    }
+
+
+    case fromActions.OrgActionTypes.UPDATE_ORGANISATIONS_SEARCH_STRING: {
+      return {
+        ...state,
+        searchString: action.payload
       };
     }
 

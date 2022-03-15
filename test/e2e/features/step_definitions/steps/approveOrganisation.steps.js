@@ -41,34 +41,47 @@ defineSupportCode(function ({ Given, When, Then }) {
       await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
     });
 
-    Then(/^I Verify the Text on Banner$/, async function () {
-      browser.sleep(AMAZING_DELAY);
-      await browserWaits.waitForElement(bannerPage.activeOrganisationTextBanner);
-      await expect(bannerPage.bannerText.isDisplayed()).to.eventually.be.true;
-      await expect(bannerPage.bannerText.getText())
-        .to
-        .eventually
-        .contains('organisations are active');
-    });
+  // Then(/^I Verify the Check Now Link$/, async function () {
+  //   browser.sleep(AMAZING_DELAY);
+  //   await browserWaits.waitForElement(bannerPage.checkNow);
+  //   await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
+  //   await expect(bannerPage.checkNow.getText())
+  //     .to
+  //     .eventually
+  //     .contains('Check now.');
+  // });
 
-  Then(/^I Verify the Check Now Link$/, async function () {
+  Then(/^I Verify the Active Organisations Tab$/, async function () {
     browser.sleep(AMAZING_DELAY);
-    await browserWaits.waitForElement(bannerPage.checkNow);
-    await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
-    await expect(bannerPage.checkNow.getText())
+    await browserWaits.waitForElement(bannerPage.activeOrgsTab);
+    await expect(bannerPage.activeOrgsTab.isDisplayed()).to.eventually.be.true;
+    await expect(bannerPage.activeOrgsTab.getText())
       .to
       .eventually
-      .contains('Check now.');
+      .contains('Active organisations');
   });
 
-  Then(/^I click on Check Now Link to redirect to Active Organisations page$/, async function () {
+  // Then(/^I click on Check Now Link to redirect to Active Organisations page$/, async function () {
+  //   browser.sleep(LONG_DELAY);
+  //   await browserWaits.waitForElement(bannerPage.checkNow);
+  //   await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
+  //   await bannerPage.checkNow.click();
+  //   await browserWaits.waitForElement(bannerPage.secondaryHeader);
+  //   await waitForElement('govuk-heading-l');
+  //   await expect(bannerPage.secondaryHeader.getText())
+  //     .to
+  //     .eventually
+  //     .equals('Active organisations');
+  // });
+
+  Then(/^I click on Active Organisations Tab to redirect to Active Organisations page$/, async function () {
     browser.sleep(LONG_DELAY);
-    await browserWaits.waitForElement(bannerPage.checkNow);
-    await expect(bannerPage.checkNow.isDisplayed()).to.eventually.be.true;
-    await bannerPage.checkNow.click();
-    await browserWaits.waitForElement(bannerPage.activeOrganisationPageHeading);
-    await waitForElement('govuk-heading-xl');
-    await expect(bannerPage.activeOrganisationPageHeading.getText())
+    await browserWaits.waitForElement(bannerPage.activeOrgsTab);
+    await expect(bannerPage.activeOrgsTab.isDisplayed()).to.eventually.be.true;
+    await bannerPage.activeOrgsTab.click();
+    await browserWaits.waitForElement(bannerPage.secondaryHeader);
+    await waitForElement('govuk-heading-l');
+    await expect(bannerPage.secondaryHeader.getText())
       .to
       .eventually
       .equals('Active organisations');

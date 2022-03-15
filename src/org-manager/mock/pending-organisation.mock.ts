@@ -1,5 +1,5 @@
 import { SingleOrgSummary } from '../../org-manager/models/single-org-summary';
-import { OrganisationVM, OrganisationSummary } from '../models/organisation';
+import { OrganisationSummary, OrganisationVM } from '../models/organisation';
 
 export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
   {
@@ -9,13 +9,13 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
     addressLine2: '',
     townCity: '',
     county: '',
-    pbaNumber: ['101010'],
+    pbaNumber: ['101010', '271094'],
     admin: 'Glen Byrne',
     status: 'PENDING',
     view: 'View',
     adminEmail: 'glen@byrne.com',
-    dxNumber: [{}],
-    postCode: ''
+    dxNumber: [{ dxNumber: 'BOB', dxExchange: 'Roberts' }],
+    postCode: 'PC1 ABC'
   },
   {
     name: 'Siofra Moley',
@@ -30,7 +30,22 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
     view: 'View',
     adminEmail: 'siofra@moley.com',
     dxNumber: [{}],
-    postCode: ''
+    postCode: 'PC2 XYZ'
+  },
+  {
+    name: 'Odd Name',
+    organisationId: 'OddId',
+    addressLine1: '666, Hades Avenue',
+    addressLine2: '',
+    townCity: '',
+    county: '',
+    pbaNumber: null,
+    admin: 'Odd Name',
+    status: 'PENDING',
+    view: 'View',
+    adminEmail: 'odd@hades.com',
+    dxNumber: null,
+    postCode: 'PC3 ODD'
   }
 ];
 
@@ -111,7 +126,8 @@ export const orgStatePending = {
  orgForReview: null,
  organisationUsersList: { users: null, isError: false },
  showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false},
- organisationDeletable: false
+ organisationDeletable: false,
+ searchString: ''
 };
 
 export const orgStateActive = {
@@ -147,7 +163,8 @@ export const orgStateActive = {
   orgForReview: null,
   organisationUsersList: { users: null, isError: false },
   showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false},
-  organisationDeletable: false
+  organisationDeletable: false,
+  searchString: ''
 };
 
 export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [

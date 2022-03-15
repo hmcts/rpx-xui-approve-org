@@ -1,53 +1,57 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
-import { FilterOrganisationsPipe } from 'src/org-manager/pipes/filter-organisations.pipe';
+import { Store, StoreModule } from '@ngrx/store';
+
 import * as fromRoot from '../../../app/store/reducers';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromOrganisation from '../../../org-manager/store/';
+import * as fromStore from '../../../org-manager/store';
+import { OrganisationAddressComponent } from '../../components/organisation-address';
+import { FilterOrganisationsPipe } from '../../pipes';
+import { OrganisationService } from '../../services';
 import { PendingOrganisationsComponent } from './pending-organisations.component';
 
 describe('PendingOrganisationComponent', () => {
-    let component: PendingOrganisationsComponent;
-    let fixture: ComponentFixture<PendingOrganisationsComponent>;
-    let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
-    beforeEach((() => {
-        TestBed.configureTestingModule({
-            imports: [
-                RouterTestingModule,
-                ReactiveFormsModule,
-                StoreModule.forRoot({
-                    ...fromRoot.reducers,
-                    feature: combineReducers(fromOrganisationPendingStore.reducers),
-                }),
-                ExuiCommonLibModule
-            ],
-            providers: [FormBuilder],
-            declarations: [
-              PendingOrganisationsComponent, FilterOrganisationsPipe
-            ],
-            schemas: [
-                CUSTOM_ELEMENTS_SCHEMA
-            ]
-        }).compileComponents();
-        store = TestBed.get(Store);
+  let component: PendingOrganisationsComponent;
+  let fixture: ComponentFixture<PendingOrganisationsComponent>;
+  let store: Store<fromStore.OrganisationRootState>;
+  let httpClient: HttpClient;
+  @Pipe({ name: 'paginate' })
+  class MockPipe implements PipeTransform {
+    transform(value: number): number {
+      return value;
+    }
+  }
+  beforeEach((() => {
+    httpClient = jasmine.createSpyObj<HttpClient>('httpClient', ['get', 'post', 'put', 'delete']);
+    TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule,
+        StoreModule.forRoot({
+          ...fromRoot.reducers
+        }),
+      ],
+      declarations: [
+        PendingOrganisationsComponent,
+        FilterOrganisationsPipe,
+        OrganisationAddressComponent,
+        MockPipe
+      ],
+      providers: [
+        { provide: HttpClient, useValue: httpClient },
+        OrganisationService
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    }).compileComponents();
+    store = TestBed.get(Store);
 
-        fixture = TestBed.createComponent(PendingOrganisationsComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    }));
+    fixture = TestBed.createComponent(PendingOrganisationsComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  }));
 
-    it('should create', () => {
-      expect(component).toBeTruthy();
-    });
-
-    it('should dispatch UpdatePendingOrganisationsSearchString action on submitSearch', () => {
-      const expectedAction = new fromOrganisation.UpdatePendingOrganisationsSearchString('');
-      spyOn(store, 'dispatch').and.callThrough();
-      component.submitSearch('');
-      expect(store.dispatch).toHaveBeenCalledWith(expectedAction);
-    });
+  it('should create component', () => {
+    expect(component).toBeTruthy();
+  });
 });
+

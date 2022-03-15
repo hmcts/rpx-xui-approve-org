@@ -11,31 +11,30 @@ function approveOrganisationBannerObjects() {
   this.submit_button= element(by.css("[class='div.govuk-button']"));
 
   this.approveorgBanner= element(by.xpath("//*[@id='content']/div"));
-  this.bannerMessageContainer = element(by.css('.hmcts-banner__message'));
-  this.bannerText= element(by.xpath("//div[@class='hmcts-banner__message']"));
-  this.activeOrganisationTextBanner = element(by.xpath("//div[@class='hmcts-banner__message']//span[contains(text(),'organisations are active')]"));
   //this.checkNow= element(by.xpath("//a[contains(text(),'Check now.')]"));
-  this.checkNow= element(by.partialLinkText("Check no"));
-  this.activeOrganisationPageHeading = element(by.xpath("//h1[contains(@class,'hmcts-page-heading__title') and contains(text(),'Active organisations')]"));
+  // this.checkNow= element(by.partialLinkText("Check no"));
+  this.activeOrgsTab = element(by.partialLinkText("Active organisations"));
 
-  this.selectCheckBox= element(by.xpath("//*[@id='content']/form/table/thead/tr[2]/td[1]/div"));
+  this.selectCheckBox= element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[1]/div"));
   this.activate_button= element(by.xpath("//button[@class='govuk-button']"));
   this.approve_button= element(by.xpath("//button[@class='govuk-button']"));
   this.confirmationScreen= element(by.xpath("//div[@class='govuk-panel govuk-panel--confirmation']"));
   this.backtoOrganisations= element(by.partialLinkText("Back to organisatio"));
   this.mainHeader = element(by.xpath("//h1[contains(@class,'govuk-heading-xl')]"));
+  this.secondaryHeader = element(by.xpath("//h2[contains(@class,'govuk-heading-l')]"));
 
-  this.orgName=element(by.xpath("//*[@id='content']/form/table/thead/tr[2]/td[2]]"));
-  this.administratorText=element(by.xpath("//*[@id='content']/form/table/thead/tr[2]/td[4]"));
-  this.addressText=element(by.xpath("//*[@id='content']/form/table/thead/tr[2]/td[3]"));
+  this.orgName=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[2]]"));
+  this.administratorText=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[4]"));
+  this.addressText=element(by.xpath("//*[@id='main-content']/form/table/thead/tr[2]/td[3]"));
 
   this.approveOrgName= element(by.xpath("//h2[@class='govuk-heading-m']"));
-  this.approveAdministratorText= element(by.xpath("//*[@id='content']/div/div/div/dl/div[2]/dd/div[2]"));
-  this.approveAddress= element(by.xpath("//*[@id='content']/div/div/div/dl/div[1]/dd"));
-  this.deleteOrganisation = element(by.xpath("//*[@id='content']/div/div/app-org-details-info/button"));
-  this.deleteOrganisationWarning= element(by.xpath("//button[contains(text(),'Delete organisation')]"));
-  this.viewOrg= element(by.xpath("//thead/tr[2]/td[5]/a[1]"));
+  this.approveAdministratorText= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[2]/dd/div[2]"));
+  this.approveAddress= element(by.xpath("//*[@id='main-content']/div/div/div/dl/div[1]/dd"));
 
+
+//*[@id="main-content"]/form/table/thead/tr[2]/td[1]/div
+
+  //*[@id="G33DM47"]
 
   this.givenIAmUnauthenticatedUser = async function () {
     await this.enterUrEmail("test@gmail.com");
@@ -46,12 +45,6 @@ function approveOrganisationBannerObjects() {
   this.enterUrEmail = async function (email) {
     await this.emailAddress.sendKeys(email);
   };
-
-  this.validateBannerTextContains = async function(containsText){
-    await browserWaits.waitForElement(this.bannerMessageContainer);
-    const bannerText = await this.bannerMessageContainer.getText();
-    assert(bannerText.includes(containsText), bannerText + ' does not contains expected text => ' + containsText);
-  }
 
   this.enterPassword = async function (password) {
     await this.password.sendKeys(password);

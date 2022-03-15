@@ -1,27 +1,37 @@
-import { ActiveOrganisationsComponent } from './active-organisations/active-organisations.component';
-import { ApproveOrganisationSuccessComponent } from './approve-organisation-success/approve-organisation-success.component';
-import { ApproveOrganisationComponent } from './approve-organisation/approve-organisation.component';
-import {EditDetailsComponent} from './edit-details/edit-details.component';
-import { PendingOrganisationsComponent } from './pending-organisations/pending-organisations.component';
-import { ReinviteUserSuccessComponent } from './reinvite-user-success/reinvite-user-success.component';
-import { ReinviteUserComponent } from './reinvite-user/reinvite-user.component';
-import { SearchOrganisationsFormComponent } from './search-organisations-form/search-organisations-form.component';
-import { UserDetailsComponent } from './user-details/user-details.component';
-import { DeleteOrganisationComponent } from './delete-organisation/delete-organisation.component';
-import { DeleteOrganisationSuccessComponent } from './delete-organisation-success/delete-organisation-success.component';
+import { ActiveOrganisationsComponent } from './active-organisations';
+import { ApproveOrganisationComponent } from './approve-organisation';
+import { ApproveOrganisationSuccessComponent } from './approve-organisation-success';
+import { DeleteOrganisationComponent } from './delete-organisation';
+import { DeleteOrganisationSuccessComponent } from './delete-organisation-success';
+import { EditDetailsComponent } from './edit-details';
+import { HomeComponent } from './home';
+import { NewPBAsComponent } from './new-pbas';
+import { OrganisationDetailsComponent } from './organisation-details';
+import { PendingOrganisationsComponent } from './pending-organisations';
+import { PendingPBAsComponent } from './pending-pbas';
+import { ReinviteUserComponent } from './reinvite-user';
+import { ReinviteUserSuccessComponent } from './reinvite-user-success';
+import { ReviewOrganisationComponent } from './review-organisation';
+import { SearchOrganisationsFormComponent } from './search-organisations-form';
+import { UserDetailsComponent } from './user-details';
 
 export const containers: any[] = [
   ActiveOrganisationsComponent,
-  PendingOrganisationsComponent,
   ApproveOrganisationComponent,
   ApproveOrganisationSuccessComponent,
-  SearchOrganisationsFormComponent,
+  DeleteOrganisationComponent,
+  ReviewOrganisationComponent,
+  DeleteOrganisationSuccessComponent,
   EditDetailsComponent,
+  NewPBAsComponent,
+  OrganisationDetailsComponent,
+  HomeComponent,
+  PendingOrganisationsComponent,
+  PendingPBAsComponent,
   ReinviteUserComponent,
   ReinviteUserSuccessComponent,
-  UserDetailsComponent,
-  DeleteOrganisationComponent,
-  DeleteOrganisationSuccessComponent,
+  SearchOrganisationsFormComponent,
+  UserDetailsComponent
 ];
 
 export * from './active-organisations/active-organisations.component';
