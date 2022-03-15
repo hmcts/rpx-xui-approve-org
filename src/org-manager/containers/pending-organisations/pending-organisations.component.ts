@@ -1,97 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PaginationParameter } from '@hmcts/rpx-xui-common-lib';
-import { GovukTableColumnConfig } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/components/gov-uk-table/gov-uk-table.component';
-import { select, Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { takeWhile } from 'rxjs/operators';
-import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
-import * as fromStore from '../../../org-manager/store';
-import * as fromOrganisation from '../../store/';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { SessionStorageService } from '../../../shared/services/session-storage.service';
+import { OrganisationService } from '../../services';
+import { OrganisationListComponent } from './../organisation-list/organisation-list.component';
 
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-organisations.component.html',
+  styleUrls: [ '../organisation-list/organisation-list.component.scss' ]
 })
+export class PendingOrganisationsComponent extends OrganisationListComponent implements OnInit {
 
-export class PendingOrganisationsComponent implements OnInit {
-  public columnConfig: GovukTableColumnConfig[];
-  public pendingOrgs$: Observable<OrganisationVM[]>;
-  public inputForm: FormGroup;
-  public loaded$: Observable<boolean>;
-  public pendingSearchString$: Observable<string>;
-  public activeOrgsCount$: Observable<number>;
-  public activeLoaded$: Observable<boolean>;
-  public pagination: PaginationParameter;
-
-  constructor(public store: Store<fromStore.OrganisationRootState>,
-              private readonly fb: FormBuilder) {}
+  constructor(
+    protected router: Router,
+    protected ref: ChangeDetectorRef,
+    protected organisationService: OrganisationService,
+    protected loadingService: LoadingService,
+    protected sessionStorageService: SessionStorageService
+  ) {
+    super(router, ref, organisationService, loadingService, sessionStorageService);
+  }
 
   public ngOnInit(): void {
-    this.inputForm = this.fb.group({
-      pendingOrgInputRadio: ['', Validators.required]
-    });
-
-    this.loaded$ = this.store.pipe(select(fromOrganisation.getPendingLoaded));
-    this.loaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
-      if (!loaded) {
-        this.store.dispatch(new fromOrganisation.LoadPendingOrganisations());
-      }
-    });
-
-    this.activeLoaded$ = this.store.pipe(select(fromOrganisation.getActiveLoaded));
-    this.activeLoaded$.pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
-      if (!loaded) {
-        this.store.dispatch(new fromOrganisation.LoadActiveOrganisation());
-      }
-    });
-
-    this.activeOrgsCount$ = this.store.pipe(select(fromOrganisation.activeOrganisationsCount));
-    this.pendingOrgs$ = this.store.pipe(select(fromStore.getPendingOrganisationsArray));
-    this.columnConfig = PendingOverviewColumnConfig;
-    this.store.dispatch(new fromStore.ClearErrors());
-    this.pendingSearchString$ = this.store.pipe(select(fromOrganisation.getPendingSearchString));
-    this.pagination = {
-      page_number: 1,
-      page_size: 25
-    };
+    this.view = 'NEW'
+    super.ngOnInit();
   }
-
-  public submitSearch(searchString: string) {
-    this.onPaginationHandler(1);
-    this.store.dispatch(new fromOrganisation.UpdatePendingOrganisationsSearchString(searchString));
-  }
-
-  public onPaginationHandler(pageNumber: number): void {
-    this.pagination.page_number = pageNumber;
-  }
-
-  public getFirstResult(orgs: OrganisationVM[]): number {
-    if (orgs && orgs.length > 0) {
-      const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
-      if (currentPage === 1) {
-        return currentPage;
-      }
-      return (currentPage - 1) * this.pagination.page_size + 1;
-    }
-    return 0;
-  }
-
-  public getLastResult(orgs: OrganisationVM[]): number {
-    if (orgs && orgs.length > 0) {
-      const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
-      const results = (currentPage) * this.pagination.page_size;
-      return (results > orgs.length) ? orgs.length : results;
-    }
-    return 0;
-  }
-
-  public getTotalResults(orgs: OrganisationVM[]): number {
-    if (orgs && orgs.length > 0) {
-      return orgs.length;
-    }
-    return 0;
-  }
-
 }
