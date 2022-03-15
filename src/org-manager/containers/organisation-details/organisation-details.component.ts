@@ -1,9 +1,9 @@
-import { AfterContentInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription, of } from 'rxjs';
-import { filter, map, take, takeWhile } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { map, takeWhile } from 'rxjs/operators';
 import { AppUtils } from 'src/app/utils/app-utils';
 import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
@@ -40,7 +40,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     private readonly userApprovalGuard: UserApprovalGuard,
     private readonly pbaAccountDetails: PbaAccountDetails,
     private readonly organisationService: OrganisationService,
-    private route: Router,
+    private readonly route: ActivatedRoute,
   ) {
     this.route.params.subscribe(params => {
       this.orgId = params.orgId ? params.orgId : '';

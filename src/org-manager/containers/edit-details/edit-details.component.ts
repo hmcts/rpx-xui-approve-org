@@ -1,14 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { map, take, tap } from 'rxjs/operators';
+import { AppUtils } from 'src/app/utils/app-utils';
 import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../models/organisation';
 import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
 import { PBAConfig } from '../../org-manager.constants';
+import { OrganisationService } from '../../services/organisation.service';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 
@@ -23,6 +25,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
   private subscriptions: Subscription;
+  public loaded = false;
   public orgId: string;
   public pbaNumbers: string[];
   public saveDisabled = true;
@@ -32,8 +35,14 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly updatePbaServices: UpdatePbaServices,
     private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly organisationService: OrganisationService,
     private readonly router: Router,
-    private readonly fb: FormBuilder) { }
+    private readonly route: ActivatedRoute,
+    private readonly fb: FormBuilder) {
+    this.route.params.subscribe(params => {
+      this.orgId = params.orgId ? params.orgId : '';
+    });
+     }
 
   public get fPba() { return this.changePbaFG.controls; }
 
@@ -47,18 +56,19 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getOrgs(): void {
-    this.orgDetails$ = this.store.pipe(select(fromStore.getActiveAndPending),
-      tap((value) => {
+    this.organisationService.getSingleOrganisation({ id: this.orgId })
+      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe(value => {
+        this.orgDetails$ = of(value);
         if (value) {
           this.orgId = value.organisationId;
-          this.pbaNumbers = value.pbaNumber;
+          this.pbaNumbers = [];
+          value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string));
           this.createPbaForm();
           this.saveDisabled = !value.pbaNumber;
-        } else if (!value && !this.orgId) {
-          this.store.dispatch(new fromStore.LoadActiveOrganisation());
-          this.store.dispatch(new fromStore.LoadPendingOrganisations());
         }
-      }));
+        this.loaded = true;
+      });
   }
 
   public get pbaFormArrayNumbers(): FormArray {
