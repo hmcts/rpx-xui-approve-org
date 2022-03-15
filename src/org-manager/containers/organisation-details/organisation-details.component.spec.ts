@@ -143,14 +143,14 @@ describe('OrganisationDetailsComponent', () => {
 
   it('on go back to active org when the organisation is active', () => {
     component.isActiveOrg = true;
-    new fromRoot.Go({ path: ['/active-organisation'] });
+    const route = new fromRoot.Go({ path: ['/active-organisation'] });
     component.onGoBack();
     expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
   });
 
   it('on go back to pending org when the organisation is not active', () => {
     component.isActiveOrg = false;
-    new fromRoot.Go({ path: ['/pending-organisations'] });
+    const route =new fromRoot.Go({ path: ['/pending-organisations'] });
     component.onGoBack();
     expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
   });
