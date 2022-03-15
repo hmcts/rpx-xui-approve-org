@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterContentInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -35,7 +35,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly userApprovalGuard: UserApprovalGuard
-  ) {}
+  ) { }
 
   public ngOnInit(): void {
 
@@ -52,11 +52,15 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.loadOrganisation();
+  }
+
+  public loadOrganisation() {
     this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
     this.orgs$.pipe(
-        filter(value => value !== undefined),
-        take(1)
-    ).subscribe(({organisationId, pbaNumber, isAccLoaded, status, adminEmail}) => {
+      filter(value => value !== undefined),
+      take(1)
+    ).subscribe(({ organisationId, pbaNumber, isAccLoaded, status, adminEmail }) => {
       this.organisationId = organisationId;
       this.organisationAdminEmail = adminEmail;
       this.showUserNavigation = false;
@@ -73,10 +77,10 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
       if (!isAccLoaded && pbaNumber.length) {
         this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
-              orgId: organisationId,
-              pbas: pbaNumber.toString()
-            }
-          )
+          orgId: organisationId,
+          pbas: pbaNumber.toString()
+        }
+        )
         );
       }
     });
