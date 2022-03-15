@@ -23,7 +23,7 @@ describe('UpdatePbaServices', () => {
         { provide: environment, useValue: mockEnviroment },
       ]
     });
-    updatePbaServices = TestBed.get(UpdatePbaServices);
+    updatePbaServices = TestBed.inject(UpdatePbaServices);
     updatePbaServices.updatePbaUrl = mockEnviroment.updatePbaUrl;
 
   });

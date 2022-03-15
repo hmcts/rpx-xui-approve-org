@@ -23,7 +23,7 @@ describe('DeleteOrganisationSuccessComponent', () => {
         DeleteOrganisationSuccessComponent
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(DeleteOrganisationSuccessComponent);
     component = fixture.componentInstance;

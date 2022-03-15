@@ -34,7 +34,7 @@ describe('Organisation selectors', () => {
         StoreModule.forFeature('orgState', reducers),
       ],
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   });
 
