@@ -20,7 +20,7 @@ import { OrganisationDetailsComponent } from './organisation-details.component';
 class MockComponent {
 }
 
-describe('OrganisationDetailsComponent', () => {
+fdescribe('OrganisationDetailsComponent', () => {
   const MOCKED_ORGANISATION = {
     name: 'KapilgI2qEnW67CPGZrHvbTxt JainqyXJo07tRocHYtq2Ci0o',
     organisationIdentifier: 'NW1U3XB',
@@ -126,6 +126,7 @@ describe('OrganisationDetailsComponent', () => {
     mockedPbaAccountDetails = TestBed.get(PbaAccountDetails);
     mockedUserApprovalGuard = TestBed.get(UserApprovalGuard);
     mockedPBARouter = TestBed.get(Router);
+    spyOn(store, 'dispatch').and.callFake(() => { });
     spyOn(mockedUserApprovalGuard, 'isUserApprovalRole').and.returnValue(true);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
     spyOn(mockedOrganisationService, 'getOrganisationUsers').and.returnValue(of(MOCKED_USERS));
@@ -143,16 +144,16 @@ describe('OrganisationDetailsComponent', () => {
 
   it('on go back to active org when the organisation is active', () => {
     component.isActiveOrg = true;
-    const route = new fromRoot.Go({ path: ['/active-organisation'] });
+    const action = new fromRoot.Go({ path: ['/active-organisation'] });
     component.onGoBack();
-    expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalled();
   });
 
   it('on go back to pending org when the organisation is not active', () => {
     component.isActiveOrg = false;
-    const route =new fromRoot.Go({ path: ['/pending-organisations'] });
+    const action = new fromRoot.Go({ path: ['/pending-organisations'] });
     component.onGoBack();
-    expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalled();
   });
 
   it('should set showUsersTab to true or false', () => {
