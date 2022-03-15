@@ -4,10 +4,10 @@ import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
 import { filter, map, take, takeWhile } from 'rxjs/operators';
 import { AppUtils } from 'src/app/utils/app-utils';
-
 import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
+import { OrganisationService } from '../../services/organisation.service';
 import * as fromStore from '../../store';
 
 /**
@@ -27,16 +27,21 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationId: string;
   public organisationAdminEmail: string;
   public isActiveOrg = false;
+  private orgId: string;
   public organisationDeletable = false;
-
   private getShowOrgDetailsSubscription: Subscription;
   private getAllLoadedSubscription: Subscription;
-  private getOrganisationDeletableSubscription: Subscription;
+  private readonly getOrganisationDeletableSubscription: Subscription;
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly userApprovalGuard: UserApprovalGuard
-  ) { }
+    private readonly userApprovalGuard: UserApprovalGuard,
+    private readonly organisationService: OrganisationService
+  ) {
+    this.route.params.subscribe(params => {
+      this.orgId = params.orgId ? params.orgId : '';
+    });
+   }
 
   public ngOnInit(): void {
 
