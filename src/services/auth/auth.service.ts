@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as jwtDecode from 'jwt-decode';
-import { CookieService } from 'ngx-cookie';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EnvironmentService } from '../../app/services/environment.service';
@@ -10,7 +9,6 @@ import { EnvironmentService } from '../../app/services/environment.service';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly cookieService: CookieService,
     private readonly envService: EnvironmentService,
     private readonly httpService: HttpClient
   ) {
@@ -33,10 +31,10 @@ export class AuthService {
   public loginRedirect() {
     const featureEnabled = this.envService.get('oidcEnabled');
     if (featureEnabled) {
-      window.location.href = '/auth/login';
+      this.redirect('/auth/login');
     } else {
       this.generateLoginUrl().subscribe( url => {
-        window.location.href = url;
+        this.redirect(url);
       });
     }
   }
@@ -47,5 +45,9 @@ export class AuthService {
 
  public isAuthenticated(): Observable<boolean> {
     return this.httpService.get<boolean>('/auth/isAuthenticated');
+  }
+
+  public redirect(url: string) {
+    window.location.href = url;
   }
 }

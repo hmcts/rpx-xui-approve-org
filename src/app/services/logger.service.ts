@@ -6,13 +6,13 @@ import { JwtDecodeWrapper } from './jwtDecodeWrapper';
 import {EnvironmentService} from './environment.service';
 
 export interface ILoggerService {
-    trace(message: any, ...additional: any[]): void;
-    debug(message: any, ...additional: any[]): void;
-    info(message: any, ...additional: any[]): void;
-    log(message: any, ...additional: any[]): void;
-    warn(message: any, ...additional: any[]): void;
-    error(message: any, ...additional: any[]): void;
-    fatal(message: any, ...additional: any[]): void;
+    trace(message: any): void;
+    debug(message: any): void;
+    info(message: any): void;
+    log(message: any): void;
+    warn(message: any): void;
+    error(message: any): void;
+    fatal(message: any): void;
     getMessage(message: any): string;
 }
 
@@ -25,32 +25,27 @@ export class LoggerService implements ILoggerService {
                 private envService: EnvironmentService) {
     }
 
-    trace(message: any, ...additional: any[]): void {
-        const formattedMessage = this.getMessage(message);
+    trace(message: any): void {
         this.monitoringService.logEvent(message);
     }
-    debug(message: any, ...additional: any[]): void {
-        const formattedMessage = this.getMessage(message);
+    debug(message: any): void {
         this.monitoringService.logEvent(message);
     }
-    info(message: any, ...additional: any[]): void {
-        const formattedMessage = this.getMessage(message);
+    info(message: any): void {
         this.monitoringService.logEvent(message);
     }
-    log(message: any, ...additional: any[]): void {
-        const formattedMessage = this.getMessage(message);
+    log(message: any): void {
         this.monitoringService.logEvent(message);
     }
-    warn(message: any, ...additional: any[]): void {
-        const formattedMessage = this.getMessage(message);
+    warn(message: any): void {
         this.monitoringService.logEvent(message);
     }
-    error(message: any, ...additional: any[]): void {
+    error(message: any): void {
        const formattedMessage = this.getMessage(message);
        const error = new Error(formattedMessage);
        this.monitoringService.logException(error);
     }
-    fatal(message: any, ...additional: any[]): void {
+    fatal(message: any): void {
         const formattedMessage = this.getMessage(message);
         const error = new Error(formattedMessage);
         this.monitoringService.logException(error);
