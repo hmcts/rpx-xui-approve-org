@@ -2,7 +2,8 @@ import { AfterContentInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import { filter, take, takeWhile } from 'rxjs/operators';
+import { filter, map, take, takeWhile } from 'rxjs/operators';
+import { AppUtils } from 'src/app/utils/app-utils';
 
 import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
@@ -52,39 +53,41 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.loadOrganisation();
-  }
+    this.organisationService.getSingleOrganisation({ id: this.orgId })
+      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe(organisationVM => {
+        this.organisationId = organisationVM.organisationId;
+        this.organisationAdminEmail = organisationVM.adminEmail;
+        this.showUserNavigation = false;
 
-  public loadOrganisation() {
-    this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
-    this.orgs$.pipe(
-      filter(value => value !== undefined),
-      take(1)
-    ).subscribe(({ organisationId, pbaNumber, isAccLoaded, status, adminEmail }) => {
-      this.organisationId = organisationId;
-      this.organisationAdminEmail = adminEmail;
-      this.showUserNavigation = false;
-      if (status === 'ACTIVE') {
-        this.isActiveOrg = true;
-        // Check the deletable status of the organisation (required to control visibility of the "Delete" button)
-        this.store.dispatch(new fromStore.GetOrganisationDeletableStatus(this.organisationId));
-        this.getOrganisationDeletableSubscription = this.store.pipe(select(fromStore.getOrganisationDeletable)).subscribe(value => this.organisationDeletable = value);
-        if (this.isXuiApproverUserdata) {
-          this.showUserNavigation = true;
-          this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
+        if (organisationVM.status === 'ACTIVE') {
+          this.isActiveOrg = true;
+          this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe(value => this.organisationDeletable = value);
         }
-      }
 
-      if (!isAccLoaded && pbaNumber.length) {
-        this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
-          orgId: organisationId,
-          pbas: pbaNumber.toString()
+        if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
+          let ids: string;
+          organisationVM.pbaNumber.forEach(pbaNumber => {
+            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+          });
+          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+            organisationVM.accountDetails = accountResponse;
+          });
         }
-        )
-        );
-      }
-    });
-    this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
+
+        if (organisationVM.organisationId) {
+          this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId).pipe(
+            map(data => {
+              const orgUserListModel = {
+                users: AppUtils.mapUsers(data.users),
+                isError: false,
+              } as OrganisationUserListModel;
+              return orgUserListModel;
+            }));
+        }
+
+        this.orgs$ = of(organisationVM);
+      });
   }
 
   public onGoBack() {
