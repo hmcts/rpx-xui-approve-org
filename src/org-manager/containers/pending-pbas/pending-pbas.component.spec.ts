@@ -3,8 +3,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
-
 import { OrganisationService, PbaService } from '../../services';
 import { PendingPBAsComponent } from './pending-pbas.component';
 @Pipe({ name: 'paginate' })
