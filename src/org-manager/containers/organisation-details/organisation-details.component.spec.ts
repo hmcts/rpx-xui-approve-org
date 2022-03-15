@@ -20,7 +20,11 @@ import { OrganisationDetailsComponent } from './organisation-details.component';
 class MockComponent {
 }
 
+<<<<<<< HEAD
 fdescribe('OrganisationDetailsComponent', () => {
+=======
+describe('OrganisationDetailsComponent', () => {
+>>>>>>> e54944680cecf5ee6b228891272345f822f81bbb
   const MOCKED_ORGANISATION = {
     name: 'KapilgI2qEnW67CPGZrHvbTxt JainqyXJo07tRocHYtq2Ci0o',
     organisationIdentifier: 'NW1U3XB',
@@ -126,7 +130,10 @@ fdescribe('OrganisationDetailsComponent', () => {
     mockedPbaAccountDetails = TestBed.get(PbaAccountDetails);
     mockedUserApprovalGuard = TestBed.get(UserApprovalGuard);
     mockedPBARouter = TestBed.get(Router);
+<<<<<<< HEAD
     spyOn(store, 'dispatch').and.callFake(() => { });
+=======
+>>>>>>> e54944680cecf5ee6b228891272345f822f81bbb
     spyOn(mockedUserApprovalGuard, 'isUserApprovalRole').and.returnValue(true);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
     spyOn(mockedOrganisationService, 'getOrganisationUsers').and.returnValue(of(MOCKED_USERS));
@@ -144,16 +151,28 @@ fdescribe('OrganisationDetailsComponent', () => {
 
   it('on go back to active org when the organisation is active', () => {
     component.isActiveOrg = true;
+<<<<<<< HEAD
     const action = new fromRoot.Go({ path: ['/active-organisation'] });
     component.onGoBack();
     expect(store.dispatch).toHaveBeenCalled();
+=======
+    new fromRoot.Go({ path: ['/active-organisation'] });
+    component.onGoBack();
+    expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
+>>>>>>> e54944680cecf5ee6b228891272345f822f81bbb
   });
 
   it('on go back to pending org when the organisation is not active', () => {
     component.isActiveOrg = false;
+<<<<<<< HEAD
     const action = new fromRoot.Go({ path: ['/pending-organisations'] });
     component.onGoBack();
     expect(store.dispatch).toHaveBeenCalled();
+=======
+    new fromRoot.Go({ path: ['/pending-organisations'] });
+    component.onGoBack();
+    expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
+>>>>>>> e54944680cecf5ee6b228891272345f822f81bbb
   });
 
   it('should set showUsersTab to true or false', () => {

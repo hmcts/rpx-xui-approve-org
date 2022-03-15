@@ -57,8 +57,8 @@ async function handleOrganisationPagingRoute(req: Request, res: Response, next: 
     logger.info('Organisation paging response' + response.data)
 
     if (response.data.organisations) {
-      const organisations = filterOrganisations(response.data.organisations, req.body.searchRequest.search_filter);
-      responseData = { organisations, total_records: organisations.length };
+      const filteredOrganisations = filterOrganisations(response.data.organisations, req.body.searchRequest.search_filter);
+      responseData = createPaginatedResponse(req.body.searchRequest.pagination_parameters, filteredOrganisations);
     } else {
       responseData = { organisations: [], total_records: 0 };
     }
@@ -195,6 +195,16 @@ function filterOrganisations(orgs: any, searchFilter: string): any[] {
     }
     return false;
   });
+}
+
+function createPaginatedResponse(paginationParameters: any, filteredOrganisations: any) {
+  const startIndex = (paginationParameters.page_number - 1) * paginationParameters.page_size;
+  let endIndex = startIndex + paginationParameters.page_size;
+  if (endIndex > filteredOrganisations.length) {
+    endIndex = filteredOrganisations.length;
+  }
+  const organisations = filteredOrganisations.slice(startIndex, endIndex);
+  return { organisations, total_records: filteredOrganisations.length };
 }
 
 function textFieldMatches(org: any, field: string, filter: string): boolean {
