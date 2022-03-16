@@ -71,14 +71,17 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
         }
 
         if (organisationVM.organisationId) {
-          this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId).pipe(
-            map(data => {
-              const orgUserListModel = {
-                users: AppUtils.mapUsers(data.users),
-                isError: false,
-              } as OrganisationUserListModel;
-              return orgUserListModel;
-            }));
+          try {
+            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId).pipe(
+              map(data => {
+                const orgUserListModel = {
+                  users: AppUtils.mapUsers(data.users),
+                  isError: false,
+                } as OrganisationUserListModel;
+                return orgUserListModel;
+              })); 
+          } catch (error) {
+          }
         }
 
         this.orgs$ = of(organisationVM);
