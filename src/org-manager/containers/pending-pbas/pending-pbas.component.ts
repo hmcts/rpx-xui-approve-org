@@ -58,17 +58,26 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
         const loadingToken = this.loadingService.register();
         this.performSearchPagination(searchString).pipe(
           take(1)).subscribe({
-            next: (result: any) => {
+          next: (result: any) => {
               this.loadingService.unregister(loadingToken);
-              this.orgsWithPendingPBAs = result.organisations;
+              this.orgsWithPendingPBAs = [];
+              result.organisations.forEach(renderableOrganisation => {
+                this.orgsWithPendingPBAs.push({
+                  organisationId: renderableOrganisation.organisationIdentifier ? renderableOrganisation.organisationIdentifier : '',
+                  name: renderableOrganisation ? renderableOrganisation.organisationName : '',
+                  pbaNumbers: renderableOrganisation ? renderableOrganisation.pbaNumbers : [],
+                  adminEmail: renderableOrganisation.superUser ? renderableOrganisation.superUser.email : '',
+
+                } as RenderableOrganisation);
+              });
               this.pendingPBAsCount = result.total_records;
               this.pbasLoaded = true;
-            },
-            error: (error: any) => {
-              this.loadingService.unregister(loadingToken);
-              handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-            }
-          });
+          },
+          error: (error: any) => {
+            this.loadingService.unregister(loadingToken);
+            handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+          }
+        });
       });
     this.resetPaginationParameters();
     this.organisationService.setOrganisationSearchString(this.sessionStorageService.getItem('searchString'));
