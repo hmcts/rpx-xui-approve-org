@@ -1,15 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
-import { AppUtils } from 'src/app/utils/app-utils';
+import { PBAValidationContainerModel, PBAValidationModel } from 'src/org-manager/models/pbaValidation.model';
 import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
 import * as fromRoot from '../../../app/store';
+import { AppUtils } from '../../../app/utils/app-utils';
 import { OrganisationDetails } from '../../models/organisation';
 import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
-import { PBAConfig } from '../../org-manager.constants';
+import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
 import { OrganisationService } from '../../services/organisation.service';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
@@ -24,13 +25,14 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
-  private subscriptions: Subscription;
-  public loaded = false;
   public orgId: string;
   public pbaNumbers: string[];
   public saveDisabled = true;
   public serverError$: Observable<{ type: string; message: string }>;
   public organisationDetails: OrganisationDetails;
+  public subscriptions: Subscription;
+
+  public loaded = false;
 
   constructor(
     private readonly updatePbaServices: UpdatePbaServices,
@@ -42,7 +44,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.orgId = params.orgId ? params.orgId : '';
     });
-     }
+  }
 
   public get fPba() { return this.changePbaFG.controls; }
 
@@ -66,6 +68,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string));
           this.createPbaForm();
           this.saveDisabled = !value.pbaNumber;
+          this.orgDetails$ = of(value);
         }
         this.loaded = true;
       });
@@ -148,6 +151,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onSubmitPba(): void {
+    this.dispatchStoreValidation();
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
 
@@ -169,6 +173,53 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     if (this.subscriptions) {
       this.subscriptions.unsubscribe();
     }
+  }
+
+  private dispatchStoreValidation(): void {
+    const validation1 = {
+      validation: {
+        isInvalid: undefined,
+        errorMsg: [],
+      } as PBAValidationModel,
+    } as PBAValidationContainerModel;
+    const values = this.changePbaFG.controls;
+    validation1.validation.isInvalid = Object.keys(values).reduce((acc, key) => {
+      const control = this.changePbaFG.controls[key] as FormControl;
+      const validations = [
+        (control.errors && control.errors.pattern),
+        (control.errors && control.errors.minlength),
+        (control.errors && control.errors.maxLength)
+      ];
+      return { ...acc, [key]: validations };
+
+    }, {});
+    validation1.validation.errorMsg = OrgManagerConstants.PBA_ERROR_MESSAGES;
+    // {
+    //   pba1: [; kjkgsg],
+
+    // }
+    // for (const control in this.changePbaFG.controls) {
+    //   validation1.validation.isInvalid = {
+
+    //   } AS
+    // }
+
+    // const validation = {
+    //   isInvalid: {
+    //     pba1: [
+    //       (this.fPba.pba1.errors && this.fPba.pba1.errors.pattern),
+    //       (this.fPba.pba1.errors && this.fPba.pba1.errors.minlength),
+    //       (this.fPba.pba1.errors && this.fPba.pba1.errors.maxLength)
+    //     ],
+    //     pba2: [
+    //       (this.fPba.pba2.errors && this.fPba.pba2.errors.pattern),
+    //       (this.fPba.pba2.errors && this.fPba.pba2.errors.minlength),
+    //       (this.fPba.pba2.errors && this.fPba.pba2.errors.maxLength)
+    //     ]
+    //   },
+    //   errorMsg: OrgManagerConstants.PBA_ERROR_MESSAGES
+    // };
+    this.store.dispatch(new fromStore.DispatchSaveValidation(validation1.validation));
   }
 
   public onGoBack() {
