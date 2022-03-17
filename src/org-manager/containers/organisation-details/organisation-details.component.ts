@@ -79,7 +79,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
                   isError: false,
                 } as OrganisationUserListModel;
                 return orgUserListModel;
-              })); 
+              }));
           } catch (error) {
           }
         }

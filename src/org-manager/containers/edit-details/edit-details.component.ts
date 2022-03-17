@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
+import { PBAValidationContainerModel, PBAValidationModel } from 'src/org-manager/models/pbaValidation.model';
 import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
 import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
@@ -176,21 +177,24 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   private dispatchStoreValidation(): void {
-    const validation = {
-      isInvalid: {
-        pba1: [
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.pattern),
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.minlength),
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.maxLength)
-        ],
-        pba2: [
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.pattern),
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.minlength),
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.maxLength)
-        ]
-      },
-      errorMsg: OrgManagerConstants.PBA_ERROR_MESSAGES
-    };
-    this.store.dispatch(new fromStore.DispatchSaveValidation(validation));
+    const validation1 = {
+      validation: {
+        isInvalid: undefined,
+        errorMsg: [],
+      } as PBAValidationModel,
+    } as PBAValidationContainerModel;
+    const values = this.changePbaFG.controls;
+    validation1.validation.isInvalid = Object.keys(values).reduce((acc, key) => {
+      const control = this.changePbaFG.controls[key] as FormControl;
+      const validations = [
+        (control.errors && control.errors.pattern),
+        (control.errors && control.errors.minlength),
+        (control.errors && control.errors.maxLength)
+      ];
+      return { ...acc, [key]: validations };
+
+    }, {});
+    validation1.validation.errorMsg = OrgManagerConstants.PBA_ERROR_MESSAGES;
+    this.store.dispatch(new fromStore.DispatchSaveValidation(validation1.validation));
   }
 }
