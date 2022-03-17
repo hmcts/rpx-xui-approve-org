@@ -11,7 +11,7 @@ import { SearchOrganisationRequest, SortParameter } from '../../../models/dtos';
 import { SessionStorageService } from '../../../shared/services/session-storage.service';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../shared/utils/handle-fatal-errors';
 
-import { OrganisationVM } from '../../models/organisation';
+import { Organisation, OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services';
 
 @Directive()
@@ -59,15 +59,18 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
         this.showSpinner$ = this.loadingService.isLoading;
 
         const loadingToken = this.loadingService.register();
-        this.performSearchPagination(searchString).pipe(take(1)).subscribe(result => {
-          this.loadingService.unregister(loadingToken);
-          this.organisations = AppUtils.mapOrganisations(result.organisations);
-          this.organisationCount = result.total_records;
-          this.organisationsLoaded = true;
-          this.ref.detectChanges();
-        }, error => {
-          this.loadingService.unregister(loadingToken);
-          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+        this.performSearchPagination(searchString).pipe(take(1)).subscribe({
+          next: result => {
+            this.loadingService.unregister(loadingToken);
+            this.organisations = AppUtils.mapOrganisations(result.organisations);
+            this.organisationCount = result.total_records;
+            this.organisationsLoaded = true;
+            this.ref.detectChanges();
+          },
+          error: error => {
+            this.loadingService.unregister(loadingToken);
+            handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+          }
         });
       });
 

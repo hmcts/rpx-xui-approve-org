@@ -1,7 +1,7 @@
 <ng-container *ngIf="(orgDetails$ | async) as org">
 <app-identity-bar-component>
   <strong>{{org?.name}}</strong>
-  <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(org?.status=='ACTIVE') ?
+  <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(org?.status==='ACTIVE') ?
   'hmcts-badge--green':'hmcts-badge--blue'">
     {{org?.status}}
   </span>
@@ -35,7 +35,7 @@
   </xuilib-hmcts-main-wrapper>
 </div>
 </ng-container>
-<ng-container *ngIf="!(orgDetails$ | async)">
+<ng-container *ngIf="(orgDetails$ | async) === null">
   <div class="hmcts-width-container">
     <xuilib-hmcts-main-wrapper title="Organisation payment by account (PBA) number">
       <h3 class="govuk-heading-s">Loading...</h3>
