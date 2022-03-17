@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
-import { map, take, tap } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { PBAValidationContainerModel, PBAValidationModel } from 'src/org-manager/models/pbaValidation.model';
 import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
 import * as fromRoot from '../../../app/store';
@@ -194,31 +194,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
     }, {});
     validation1.validation.errorMsg = OrgManagerConstants.PBA_ERROR_MESSAGES;
-    // {
-    //   pba1: [; kjkgsg],
-
-    // }
-    // for (const control in this.changePbaFG.controls) {
-    //   validation1.validation.isInvalid = {
-
-    //   } AS
-    // }
-
-    // const validation = {
-    //   isInvalid: {
-    //     pba1: [
-    //       (this.fPba.pba1.errors && this.fPba.pba1.errors.pattern),
-    //       (this.fPba.pba1.errors && this.fPba.pba1.errors.minlength),
-    //       (this.fPba.pba1.errors && this.fPba.pba1.errors.maxLength)
-    //     ],
-    //     pba2: [
-    //       (this.fPba.pba2.errors && this.fPba.pba2.errors.pattern),
-    //       (this.fPba.pba2.errors && this.fPba.pba2.errors.minlength),
-    //       (this.fPba.pba2.errors && this.fPba.pba2.errors.maxLength)
-    //     ]
-    //   },
-    //   errorMsg: OrgManagerConstants.PBA_ERROR_MESSAGES
-    // };
     this.store.dispatch(new fromStore.DispatchSaveValidation(validation1.validation));
   }
 
