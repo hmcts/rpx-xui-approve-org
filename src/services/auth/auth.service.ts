@@ -22,7 +22,7 @@ export class AuthService {
         const base = config.services.idamWeb;
         const clientId = config.idamClient;
         const callback = `${API_BASE_URL}${config.oauthCallbackUrl}`;
-        // tslint:disable-next-line: max-line-length
+        // eslint-disable-next-line max-len
         return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=profile openid roles manage-user create-user manage-roles`;
       })
     );
