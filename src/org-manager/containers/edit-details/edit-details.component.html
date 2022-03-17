@@ -12,36 +12,36 @@
     title="Organisation payment by account (PBA) number"
     [banner]="serverError$ | async"
     (backEvent)="onGoBack()">
-
-    <div class="govuk-grid-row">
-      <div class="govuk-grid-column">
-        <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
-          <ng-container style="width:100%" *ngIf="(pbaError$ | async) as errors">
-            <div style="width:50%" *ngFor="let data of pbaInputs">
-              <div style="display:inline-block">
-                <xuilib-gov-uk-input
-                  [config]="data"
-                  [errorMessage]="errors[data.name]"
-                  [group]="changePbaFG">
-                </xuilib-gov-uk-input>
+    <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column">
+            <ng-container style="width:100%" *ngIf="(pbaError$ | async) as errors">
+              <div style="width:50%" *ngFor="let data of pbaInputs">
+                <div style="display:inline-block">
+                  <xuilib-gov-uk-input
+                    [config]="data"
+                    [errorMessage]="errors[data.name]"
+                    [group]="changePbaFG">
+                  </xuilib-gov-uk-input>
+                </div>
+                <button type="button"
+                  style="display: inline-block; margin-bottom: 30px;" 
+                  class="govuk-button hmcts-search__button govuk-button--secondary" 
+                  (click)="remove(data)">Remove</button>
               </div>
-              <button type="button"
-                style="display: inline-block; margin-bottom: 30px;" 
-                class="govuk-button hmcts-search__button govuk-button--secondary" 
-                (click)="remove(data)">Remove</button>
+            </ng-container>
+        
+          <div>
+            <button type="button" class="govuk-button hmcts-button--secondary" (click)="onAddNewBtnClicked()">
+              Add another PBA number
+              </button>
             </div>
-          </ng-container>
-        </form>
-        <div>
-          <button type="button" class="govuk-button hmcts-button--secondary" (click)="onAddNewBtnClicked()">
-            Add another PBA number
+            <button type="submit" class="govuk-button">
+              Submit
             </button>
-          </div>
-          <button type="submit" class="govuk-button" [disabled]="!saveDisabled">
-            Submit
-          </button>
+        </div>
       </div>
-    </div>
+    </form>
   </xuilib-hmcts-main-wrapper>
 </div>
 </ng-container>
@@ -52,5 +52,4 @@
     </xuilib-hmcts-main-wrapper>
   </div>
 </ng-container>
-
 
