@@ -1,14 +1,16 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { map, take, tap } from 'rxjs/operators';
 import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
 import * as fromRoot from '../../../app/store';
+import { AppUtils } from '../../../app/utils/app-utils';
 import { OrganisationDetails } from '../../models/organisation';
 import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
-import { PBAConfig } from '../../org-manager.constants';
+import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
+import { OrganisationService } from '../../services/organisation.service';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 
@@ -22,18 +24,24 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
-  private subscriptions: Subscription;
   public orgId: string;
   public pbaNumbers: string[];
   public saveDisabled = true;
   public serverError$: Observable<{ type: string; message: string }>;
   public organisationDetails: OrganisationDetails;
+  public subscriptions: Subscription;
 
   constructor(
-    private readonly updatePbaServices: UpdatePbaServices,
-    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly fb: FormBuilder,
     private readonly router: Router,
-    private readonly fb: FormBuilder) { }
+    private readonly updatePbaServices: UpdatePbaServices,
+    private readonly organisationService: OrganisationService,
+    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly route: ActivatedRoute) {
+    this.route.params.subscribe(params => {
+      this.orgId = params.orgId ? params.orgId : '';
+    });
+    }
 
   public get fPba() { return this.changePbaFG.controls; }
 
@@ -47,18 +55,17 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getOrgs(): void {
-    this.orgDetails$ = this.store.pipe(select(fromStore.getActiveAndPending),
-      tap((value) => {
+    this.organisationService.getSingleOrganisation({ id: this.orgId })
+      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe((value) => {
         if (value) {
           this.orgId = value.organisationId;
           this.pbaNumbers = value.pbaNumber;
           this.createPbaForm();
           this.saveDisabled = !value.pbaNumber;
-        } else if (!value && !this.orgId) {
-          this.store.dispatch(new fromStore.LoadActiveOrganisation());
-          this.store.dispatch(new fromStore.LoadPendingOrganisations());
+          this.orgDetails$ = of(value);
         }
-      }));
+      });
   }
 
   public get pbaFormArrayNumbers(): FormArray {
@@ -133,6 +140,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onSubmitPba(): void {
+    this.dispatchStoreValidation();
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
 
@@ -165,5 +173,24 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       pendingAddPaymentAccount: appending,
       pendingRemovePaymentAccount: []
     };
+  }
+
+  private dispatchStoreValidation(): void {
+    const validation = {
+      isInvalid: {
+        pba1: [
+          (this.fPba.pba1.errors && this.fPba.pba1.errors.pattern),
+          (this.fPba.pba1.errors && this.fPba.pba1.errors.minlength),
+          (this.fPba.pba1.errors && this.fPba.pba1.errors.maxLength)
+        ],
+        pba2: [
+          (this.fPba.pba2.errors && this.fPba.pba2.errors.pattern),
+          (this.fPba.pba2.errors && this.fPba.pba2.errors.minlength),
+          (this.fPba.pba2.errors && this.fPba.pba2.errors.maxLength)
+        ]
+      },
+      errorMsg: OrgManagerConstants.PBA_ERROR_MESSAGES
+    };
+    this.store.dispatch(new fromStore.DispatchSaveValidation(validation));
   }
 }
