@@ -1,12 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { filter, take, takeWhile } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { filter, map, take, takeWhile } from 'rxjs/operators';
 
 import * as fromRoot from '../../../app/store';
+import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
+import { OrganisationService } from '../../services/organisation.service';
+import { PbaAccountDetails } from '../../services/pba-account-details.services';
 import * as fromStore from '../../store';
 
 /**
@@ -31,10 +34,13 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   private getShowOrgDetailsSubscription: Subscription;
   private getAllLoadedSubscription: Subscription;
   private getOrganisationDeletableSubscription: Subscription;
+  public orgId: string;
 
   constructor(
+    private readonly organisationService: OrganisationService,
     private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly userApprovalGuard: UserApprovalGuard
+    private readonly userApprovalGuard: UserApprovalGuard,
+    private readonly pbaAccountDetails: PbaAccountDetails,
   ) { }
 
   public ngOnInit(): void {
@@ -51,6 +57,45 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
         this.store.dispatch(new fromStore.LoadPendingOrganisations());
       }
     });
+
+    this.organisationService.getSingleOrganisation({ id: this.orgId })
+      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe(organisationVM => {
+        this.organisationId = organisationVM.organisationId;
+        this.organisationAdminEmail = organisationVM.adminEmail;
+        this.showUserNavigation = false;
+
+        if (organisationVM.status === 'ACTIVE') {
+          this.isActiveOrg = true;
+          this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe(value => this.organisationDeletable = value);
+        }
+
+        if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
+          let ids: string;
+          organisationVM.pbaNumber.forEach(pbaNumber => {
+            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+          });
+          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+            organisationVM.accountDetails = accountResponse;
+          });
+        }
+
+        if (organisationVM.organisationId) {
+          try {
+            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId).pipe(
+              map(data => {
+                const orgUserListModel = {
+                  users: AppUtils.mapUsers(data.users),
+                  isError: false,
+                } as OrganisationUserListModel;
+                return orgUserListModel;
+              }));
+          } catch (error) {
+          }
+        }
+
+        this.orgs$ = of(organisationVM);
+      });
 
     this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
     this.orgs$.pipe(
