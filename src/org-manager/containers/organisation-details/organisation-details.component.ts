@@ -4,6 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { filter, map, take, takeWhile } from 'rxjs/operators';
 
+import { ActivatedRoute, Router } from '@angular/router';
 import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
@@ -37,11 +38,17 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public orgId: string;
 
   constructor(
-    private readonly organisationService: OrganisationService,
     private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly router: Router,
     private readonly userApprovalGuard: UserApprovalGuard,
-    private readonly pbaAccountDetails: PbaAccountDetails,
-  ) { }
+    private readonly organisationService: OrganisationService,
+    private readonly route: ActivatedRoute,
+    public readonly pbaAccountDetails: PbaAccountDetails,
+  ) {
+    this.route.params.subscribe(params => {
+      this.orgId = params.orgId ? params.orgId : '';
+    });
+  }
 
   public ngOnInit(): void {
 
