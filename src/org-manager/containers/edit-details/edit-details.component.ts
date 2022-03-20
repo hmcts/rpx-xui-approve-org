@@ -155,6 +155,23 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     if (valid) {
       this.updatePbaServices.updatePba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }).subscribe(() => {
         this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
+      }, (error) => {
+        if (error.description) {
+          const validation1 = {
+            validation: {
+              isInvalid: {undefined : []},
+              errorMsg: OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES,
+            } as PBAValidationModel,
+          };
+
+          const control = this.changePbaFG.controls['key'] as FormControl;
+          const validations = [
+            (control.errors && control.errors.pattern),
+            (control.errors && control.errors.minlength),
+            (control.errors && control.errors.maxLength)
+          ];
+          console.log(error);
+        }
       });
     }
   }
@@ -177,14 +194,14 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   private dispatchStoreValidation(): void {
-    const validation1 = {
+    const mainValidation = {
       validation: {
         isInvalid: undefined,
         errorMsg: [],
       } as PBAValidationModel,
     } as PBAValidationContainerModel;
     const values = this.changePbaFG.controls;
-    validation1.validation.isInvalid = Object.keys(values).reduce((acc, key) => {
+    mainValidation.validation.isInvalid = Object.keys(values).reduce((acc, key) => {
       const control = this.changePbaFG.controls[key] as FormControl;
       const validations = [
         (control.errors && control.errors.pattern),
@@ -194,7 +211,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       return { ...acc, [key]: validations };
 
     }, {});
-    validation1.validation.errorMsg = OrgManagerConstants.PBA_ERROR_MESSAGES;
-    this.store.dispatch(new fromStore.DispatchSaveValidation(validation1.validation));
+    mainValidation.validation.errorMsg = OrgManagerConstants.PBA_ERROR_MESSAGES;
+    this.store.dispatch(new fromStore.DispatchSaveValidation(mainValidation.validation));
   }
 }
