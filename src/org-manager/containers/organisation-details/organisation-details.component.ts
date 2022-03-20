@@ -39,7 +39,6 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly router: Router,
     private readonly userApprovalGuard: UserApprovalGuard,
     private readonly organisationService: OrganisationService,
     private readonly route: ActivatedRoute,
