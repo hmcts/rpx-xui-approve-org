@@ -36,7 +36,8 @@ export enum OrgActionTypes {
   SHOW_ORGANISATION_DETAILS_USER_TAB = '[Organisation] Show Organisation Details User Tab',
   GET_ORGANISATION_DELETABLE_STATUS = '[Organisation] Get Organisation Deletable Status',
   GET_ORGANISATION_DELETABLE_STATUS_SUCCESS = '[Organisation] Get Organisation Deletable Status Success',
-  UPDATE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Organisations Search String'
+  UPDATE_ORGANISATIONS_SEARCH_STRING = '[Organisations] Update Organisations Search String',
+  ORGANISATION_UPDATE_PBA_ERROR = '[Organisation] Organisation Update PBAs Error',
 }
 
 export class LoadPendingOrganisations implements Action {
@@ -77,6 +78,12 @@ export class ApprovePendingOrganisations implements Action {
   public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS;
   constructor(public payload: OrganisationVM) { }
 }
+
+export class OrganisationUpdatePBAError implements Action {
+  public readonly type = OrgActionTypes.ORGANISATION_UPDATE_PBA_ERROR;
+  constructor(public payload: any) { }
+}
+
 
 export class ApprovePendingOrganisationsSuccess implements Action {
   public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
@@ -233,6 +240,7 @@ export type OrganisationsActions =
     | ApprovePendingOrganisations
     | ApprovePendingOrganisationsSuccess
     | ApprovePendingOrganisationsFail
+    | OrganisationUpdatePBAError
     | ClearErrors
     | LoadActiveOrganisation
     | LoadActiveOrganisationSuccess

@@ -23,7 +23,7 @@ export class PendingOrganisationsComponent extends OrganisationListComponent imp
   }
 
   public ngOnInit(): void {
-    this.view = 'NEW'
+    this.view = 'NEW';
     super.ngOnInit();
   }
 }
