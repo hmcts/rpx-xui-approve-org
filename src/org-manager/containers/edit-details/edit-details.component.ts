@@ -161,14 +161,16 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       this.updateSubscription = this.updatePbaServices.updatePba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }).subscribe(() => {
         this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
       }, (error) => {
-          const data = error.error;
-          if (data && data.errorDescription) {
-            const pbaId = `PBA${data.errorDescription.match(/\d+/)[0]}`;
-            const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-            const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-            this.pbaErrorsHeader$ = of({ items: [{ id: 'pba1', message: [errorHeaderMessage] }], isFormValid: false });
-            this.pbaError$ = of({ pba1: { messages: [errorMessage], isInvalid: true } });
-          }
+        const data = error.error;
+        const errorPBANumber = data.errorDescription.match(/\d+/)[0];
+        const index = _.indexOf(paymentAccountUpdated, `PBA${errorPBANumber}`, 0);
+        if (data && data.errorDescription) {
+          const pbaId = `PBA${errorPBANumber}`;
+          const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+          const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+          this.pbaErrorsHeader$ = of({ items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
+          this.pbaError$ = of({ [`pba${index + 1}`]: { messages: [errorMessage], isInvalid: true } });
+        }
       });
     }
   }
