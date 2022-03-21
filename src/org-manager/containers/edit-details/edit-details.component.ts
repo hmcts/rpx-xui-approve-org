@@ -31,6 +31,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public serverError$: Observable<{ type: string; message: string }>;
   public organisationDetails: OrganisationDetails;
   public subscriptions: Subscription;
+  public updateSubscription: Subscription;
 
   public loaded = false;
 
@@ -163,8 +164,17 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     });
 
     if (valid) {
-      this.updatePbaServices.updatePba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }).subscribe(() => {
+      this.updateSubscription = this.updatePbaServices.updatePba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }).subscribe(() => {
         this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
+      }, (error) => {
+        const data = error.error;
+        if (data && data.errorDescription) {
+          const pbaId = `PBA${data.errorDescription.match(/\d+/)[0]}`;
+          const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+          const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+          this.pbaErrorsHeader$ = of({ items: [{ id: 'pba1', message: [errorHeaderMessage] }], isFormValid: false });
+          this.pbaError$ = of({ pba1: { messages: [errorMessage], isInvalid: true } });
+        }
       });
     }
   }
@@ -172,6 +182,9 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.subscriptions) {
       this.subscriptions.unsubscribe();
+    }
+    if (this.updateSubscription) {
+      this.updateSubscription.unsubscribe();
     }
   }
 
