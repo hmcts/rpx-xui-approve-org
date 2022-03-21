@@ -38,6 +38,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public orgId: string;
 
   constructor(
+    private readonly router: Router,
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly userApprovalGuard: UserApprovalGuard,
     private readonly organisationService: OrganisationService,
@@ -103,56 +104,57 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
         this.orgs$ = of(organisationVM);
       });
 
-    this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
-    this.orgs$.pipe(
-      filter(value => value !== undefined),
-      take(1)
-    ).subscribe(({ organisationId, pbaNumber, isAccLoaded, status, adminEmail }) => {
-      this.organisationId = organisationId;
-      this.organisationAdminEmail = adminEmail;
-      this.showUserNavigation = false;
-      if (status === 'ACTIVE') {
-        this.isActiveOrg = true;
-        // Check the deletable status of the organisation (required to control visibility of the "Delete" button)
-        this.store.dispatch(new fromStore.GetOrganisationDeletableStatus(this.organisationId));
-        this.getOrganisationDeletableSubscription = this.store.pipe(select(fromStore.getOrganisationDeletable)).subscribe(value => this.organisationDeletable = value);
-        if (this.isXuiApproverUserdata) {
-          this.showUserNavigation = true;
-          this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
-        }
-      }
+  //  this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
+    // this.orgs$.pipe(
+    //   filter(value => value !== undefined),
+    //   take(1)
+    // ).subscribe(({ organisationId, pbaNumber, isAccLoaded, status, adminEmail }) => {
+    //   this.organisationId = organisationId;
+    //   this.organisationAdminEmail = adminEmail;
+    //   this.showUserNavigation = false;
+    //   if (status === 'ACTIVE') {
+    //     this.isActiveOrg = true;
+    //     // Check the deletable status of the organisation (required to control visibility of the "Delete" button)
+    //     this.store.dispatch(new fromStore.GetOrganisationDeletableStatus(this.organisationId));
+    //     this.getOrganisationDeletableSubscription = this.store.pipe(select(fromStore.getOrganisationDeletable)).subscribe(value => this.organisationDeletable = value);
+    //     if (this.isXuiApproverUserdata) {
+    //       this.showUserNavigation = true;
+    //       this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
+    //     }
+    //   }
 
-      if (!isAccLoaded && pbaNumber.length) {
-        this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
-          orgId: organisationId,
-          pbas: pbaNumber.toString()
-        }
-        )
-        );
-      }
-    });
+    //   if (!isAccLoaded && pbaNumber.length) {
+    //     this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
+    //       orgId: organisationId,
+    //       pbas: pbaNumber.toString()
+    //     }
+    //     )
+    //     );
+    //   }
+    // });
     this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
 
+
   public onGoBack() {
-    this.store.dispatch(new fromRoot.Go({ path: [this.isActiveOrg ? '/active-organisation' : '/pending-organisations'] }));
+    this.router.navigateByUrl(this.isActiveOrg ? '/active-organisation' : '/pending-organisations');
   }
 
   public approveOrganisation(data: OrganisationVM) {
     if (data) {
-      this.store.dispatch(new fromStore.AddReviewOrganisations(data));
+      this.router.navigateByUrl('/approve-organisations');
     }
   }
 
   public deleteOrganisation(data: OrganisationVM) {
     if (data) {
-      this.store.dispatch(new fromStore.NavigateToDeleteOrganisation(data));
+      this.router.navigateByUrl('/delete-organisation');
     }
   }
 
   public reviewOrganisation(data: OrganisationVM): void {
     if (data) {
-      this.store.dispatch(new fromStore.NavigateToReviewOrganisation(data));
+      this.router.navigateByUrl('/review-organisation');
     }
   }
 
