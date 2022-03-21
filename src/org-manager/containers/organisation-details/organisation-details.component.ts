@@ -2,10 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
-import { filter, map, take, takeWhile } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
@@ -33,8 +32,8 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationDeletable = false;
 
   private getShowOrgDetailsSubscription: Subscription;
-  private getAllLoadedSubscription: Subscription;
-  private getOrganisationDeletableSubscription: Subscription;
+  private readonly getAllLoadedSubscription: Subscription;
+  private readonly getOrganisationDeletableSubscription: Subscription;
   public orgId: string;
 
   constructor(
@@ -50,20 +49,12 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnInit(): void {
 
+  public ngOnInit(): void {
     this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
     if (this.isXuiApproverUserdata) {
       this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
     }
-
-    this.store.dispatch(new fromStore.ResetOrganisationUsers());
-    this.getAllLoadedSubscription = this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
-      if (!loaded) {
-        this.store.dispatch(new fromStore.LoadActiveOrganisation());
-        this.store.dispatch(new fromStore.LoadPendingOrganisations());
-      }
-    });
 
     this.organisationService.getSingleOrganisation({ id: this.orgId })
       .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
@@ -103,38 +94,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
         this.orgs$ = of(organisationVM);
       });
-
-  //  this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
-    // this.orgs$.pipe(
-    //   filter(value => value !== undefined),
-    //   take(1)
-    // ).subscribe(({ organisationId, pbaNumber, isAccLoaded, status, adminEmail }) => {
-    //   this.organisationId = organisationId;
-    //   this.organisationAdminEmail = adminEmail;
-    //   this.showUserNavigation = false;
-    //   if (status === 'ACTIVE') {
-    //     this.isActiveOrg = true;
-    //     // Check the deletable status of the organisation (required to control visibility of the "Delete" button)
-    //     this.store.dispatch(new fromStore.GetOrganisationDeletableStatus(this.organisationId));
-    //     this.getOrganisationDeletableSubscription = this.store.pipe(select(fromStore.getOrganisationDeletable)).subscribe(value => this.organisationDeletable = value);
-    //     if (this.isXuiApproverUserdata) {
-    //       this.showUserNavigation = true;
-    //       this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
-    //     }
-    //   }
-
-    //   if (!isAccLoaded && pbaNumber.length) {
-    //     this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
-    //       orgId: organisationId,
-    //       pbas: pbaNumber.toString()
-    //     }
-    //     )
-    //     );
-    //   }
-    // });
-    this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
-
 
   public onGoBack() {
     this.router.navigateByUrl(this.isActiveOrg ? '/active-organisation' : '/pending-organisations');
