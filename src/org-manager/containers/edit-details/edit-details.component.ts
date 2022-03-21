@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import _ from 'lodash';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { PBAValidationContainerModel, PBAValidationModel } from 'src/org-manager/models/pbaValidation.model';
@@ -14,7 +15,6 @@ import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
 import { OrganisationService } from '../../services/organisation.service';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
-
 @Component({
   selector: 'app-change-details',
   templateUrl: './edit-details.component.html'
@@ -152,6 +152,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onSubmitPba(): void {
+    this.pbaErrorsHeader$ = of(null);
+    this.pbaError$ = of(null);
     this.dispatchStoreValidation();
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
@@ -168,12 +170,14 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
       }, (error) => {
         const data = error.error;
+        const errorPBANumber = data.errorDescription.match(/\d+/)[0];
+        const index = _.indexOf(paymentAccountUpdated, `PBA${errorPBANumber}`, 0);
         if (data && data.errorDescription) {
-          const pbaId = `PBA${data.errorDescription.match(/\d+/)[0]}`;
+          const pbaId = `PBA${errorPBANumber}`;
           const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
           const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-          this.pbaErrorsHeader$ = of({ items: [{ id: 'pba1', message: [errorHeaderMessage] }], isFormValid: false });
-          this.pbaError$ = of({ pba1: { messages: [errorMessage], isInvalid: true } });
+          this.pbaErrorsHeader$ = of({ items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
+          this.pbaError$ = of({ [`pba${index + 1}`]: { messages: [errorMessage], isInvalid: true } });
         }
       });
     }
