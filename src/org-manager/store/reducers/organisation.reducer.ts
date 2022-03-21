@@ -20,7 +20,6 @@ export interface OrganisationState {
   showOrganisationDetailsUserTab: {orgId: string; showUserTab: boolean};
   organisationDeletable: boolean;
   searchString: string;
-  error?: any;
 }
 
 export const initialState: OrganisationState = {
@@ -32,7 +31,6 @@ export const initialState: OrganisationState = {
   showOrganisationDetailsUserTab: {orgId: null, showUserTab: false},
   organisationDeletable: false,
   searchString: '',
-  error: null
 };
 
 export function reducer(
@@ -101,13 +99,6 @@ export function reducer(
       };
     }
 
-    case fromActions.OrgActionTypes.ORGANISATION_UPDATE_PBA_ERROR: {
-      return {
-        ...state,
-        error: action.payload
-      };
-
-    }
     case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS: {
       const pendingOrganisations = {
         orgEntities: {},

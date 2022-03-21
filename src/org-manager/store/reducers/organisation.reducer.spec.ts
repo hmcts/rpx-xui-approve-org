@@ -4,7 +4,7 @@ import * as fromMock from '../../mock/pending-organisation.mock';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
 
-fdescribe('Organisation Reducer', () => {
+describe('Organisation Reducer', () => {
 
   const pendingOrganisationsMock: OrganisationVM[] = fromMock.PendingOrganisationsMockCollection1;
 
