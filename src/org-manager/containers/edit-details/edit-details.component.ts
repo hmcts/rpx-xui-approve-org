@@ -2,9 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import _ from 'lodash';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { LoggerService } from 'src/app/services/logger.service';
 import { PBAValidationContainerModel, PBAValidationModel } from 'src/org-manager/models/pbaValidation.model';
 import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
 import * as fromRoot from '../../../app/store';
@@ -33,16 +33,18 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public subscriptions: Subscription;
   public updateSubscription: Subscription;
 
+  public loaded = false;
+
   constructor(
-    private readonly fb: FormBuilder,
-    private readonly router: Router,
     private readonly updatePbaServices: UpdatePbaServices,
-    private readonly organisationService: OrganisationService,
     private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly route: ActivatedRoute) {
-      this.route.params.subscribe(params => {
-        this.orgId = params.orgId ? params.orgId : '';
-      });
+    private readonly organisationService: OrganisationService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly fb: FormBuilder) {
+    this.route.params.subscribe(params => {
+      this.orgId = params.orgId ? params.orgId : '';
+    });
   }
 
   public get fPba() { return this.changePbaFG.controls; }
@@ -59,14 +61,17 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   private getOrgs(): void {
     this.organisationService.getSingleOrganisation({ id: this.orgId })
       .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
-      .subscribe((value) => {
+      .subscribe(value => {
+        this.orgDetails$ = of(value);
         if (value) {
           this.orgId = value.organisationId;
-          this.pbaNumbers = value.pbaNumber;
+          this.pbaNumbers = [];
+          value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string));
           this.createPbaForm();
           this.saveDisabled = !value.pbaNumber;
           this.orgDetails$ = of(value);
         }
+        this.loaded = true;
       });
   }
 
@@ -83,10 +88,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromStore.ClearPbaErrors());
     this.pbaError$ = this.store.pipe(select(fromStore.getPbaFromErrors));
     this.pbaErrorsHeader$ = this.store.pipe(select(fromStore.getPbaHeaderErrors));
-
-    this.pbaErrorsHeader$.subscribe(x => {
-      console.log(x);
-    });
     this.serverError$ = this.store.pipe(select(fromStore.getServerErrors));
   }
 
@@ -95,6 +96,11 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       this.appendAnotherNumber(this.pbaInputs.length + 1);
       this.addPbaFormItem(this.pbaInputs[this.pbaInputs.length - 1].name);
     }
+  }
+
+  public remove(data: PBAConfig) {
+    this.changePbaFG.removeControl(data.name);
+    this.pbaInputs = this.pbaInputs.filter(input => input.id !== data.id);
   }
 
   public appendAnotherNumber(index: number) {
@@ -146,6 +152,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onSubmitPba(): void {
+    this.pbaErrorsHeader$ = of(null);
+    this.pbaError$ = of(null);
     this.dispatchStoreValidation();
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
@@ -179,10 +187,31 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     if (this.subscriptions) {
       this.subscriptions.unsubscribe();
     }
-
     if (this.updateSubscription) {
       this.updateSubscription.unsubscribe();
     }
+  }
+
+  private dispatchStoreValidation(): void {
+    const validation1 = {
+      validation: {
+        isInvalid: undefined,
+        errorMsg: [],
+      } as PBAValidationModel,
+    } as PBAValidationContainerModel;
+    const values = this.changePbaFG.controls;
+    validation1.validation.isInvalid = Object.keys(values).reduce((acc, key) => {
+      const control = this.changePbaFG.controls[key] as FormControl;
+      const validations = [
+        (control.errors && control.errors.pattern),
+        (control.errors && control.errors.minlength),
+        (control.errors && control.errors.maxLength)
+      ];
+      return { ...acc, [key]: validations };
+
+    }, {});
+    validation1.validation.errorMsg = OrgManagerConstants.PBA_ERROR_MESSAGES;
+    this.store.dispatch(new fromStore.DispatchSaveValidation(validation1.validation));
   }
 
   public onGoBack() {
@@ -194,27 +223,5 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       pendingAddPaymentAccount: appending,
       pendingRemovePaymentAccount: []
     };
-  }
-
-  private dispatchStoreValidation(): void {
-    const mainValidation = {
-      validation: {
-        isInvalid: undefined,
-        errorMsg: [],
-      } as PBAValidationModel,
-    } as PBAValidationContainerModel;
-    const values = this.changePbaFG.controls;
-    mainValidation.validation.isInvalid = Object.keys(values).reduce((acc, key) => {
-      const control = this.changePbaFG.controls[key] as FormControl;
-      const validations = [
-        (control.errors && control.errors.pattern),
-        (control.errors && control.errors.minlength),
-        (control.errors && control.errors.maxLength)
-      ];
-      return { ...acc, [key]: validations };
-
-    }, {});
-    mainValidation.validation.errorMsg = OrgManagerConstants.PBA_ERROR_MESSAGES;
-    this.store.dispatch(new fromStore.DispatchSaveValidation(mainValidation.validation));
   }
 }
