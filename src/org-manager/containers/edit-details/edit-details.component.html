@@ -16,11 +16,16 @@
       <div class="govuk-grid-column-two-thirds">
         <form [formGroup]="changePbaFG" (ngSubmit)="onSubmitPba()" >
           <ng-container *ngIf="(pbaError$ | async) as errors">
-            <xuilib-gov-uk-input *ngFor="let data of pbaInputs"
+            <!-- <xuilib-gov-uk-input  *ngFor="let data of pbaInputs; let i = index"
               [config]="data"
               [errorMessage]="errors[data.name]"
               [group]="changePbaFG">
-            </xuilib-gov-uk-input>
+            </xuilib-gov-uk-input> -->
+              <app-prd-pba-number-input-component *ngFor="let data of pbaInputs; let i = index"
+                [errorMessages]="errors[data.name]"
+                [config]="data"
+                [group]="changePbaFG">
+              </app-prd-pba-number-input-component>
           </ng-container>
             <div>
               <button type="button" class="govuk-button hmcts-button--secondary" (click)="onAddNewBtnClicked()">

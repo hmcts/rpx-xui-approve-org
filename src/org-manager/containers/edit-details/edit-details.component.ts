@@ -152,12 +152,10 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onSubmitPba(): void {
-    this.pbaErrorsHeader$ = of(null);
-    this.pbaError$ = of(null);
+    this.getErrorMsgs();
     this.dispatchStoreValidation();
     const { valid, value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
-
     const paymentAccountUpdated: string[] = [];
     paymentAccounts.forEach(paymentAccount => {
       if (typeof paymentAccount === 'string') {
@@ -170,10 +168,9 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
       }, (error) => {
         const data = error.error;
-        const errorPBANumber = data.errorDescription.match(/\d+/)[0];
-        const index = _.indexOf(paymentAccountUpdated, `PBA${errorPBANumber}`, 0);
+        const pbaId = this.pbaDepiction(data.errorDescription);
+        const index = _.indexOf(paymentAccountUpdated, pbaId, 0);
         if (data && data.errorDescription) {
-          const pbaId = `PBA${errorPBANumber}`;
           const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
           const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
           this.pbaErrorsHeader$ = of({ items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
@@ -181,6 +178,21 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  public pbaDepiction(errorDescription: string) {
+    let result: string = '';
+    const errorParts = errorDescription.split(':');
+    if (errorParts.length === 0) {
+      result = errorParts[0];
+    }
+
+    if (errorParts.length > 1) {
+      result = errorParts[1];
+    }
+    const start = result.indexOf('PBA');
+    const end = result.indexOf(' ', start);
+    return result.substring(start, end);
   }
 
   public ngOnDestroy(): void {
