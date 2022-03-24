@@ -55,7 +55,7 @@ describe('Pa11y Accessibility tests', function () {
 
     });
 
-    it('Pending Org Confirm approval Page: /approve-organisations' , async function () {
+    xit('Pending Org Confirm approval Page: /approve-organisations' , async function () {
         await MockApp.startServer();
 
         const actions = [];
@@ -68,10 +68,10 @@ describe('Pa11y Accessibility tests', function () {
 
         await pa11ytest(this, actions);
 
-    });
+    })  ;
 
 
-    it('Pending Org Approval Confirmation Page: /approve-organisations-success' , async function () {
+    xit('Pending Org Approval Confirmation Page: /approve-organisations-success' , async function () {
         await MockApp.startServer();
 
         const actions = [];
@@ -98,7 +98,7 @@ describe('Pa11y Accessibility tests', function () {
 
     });
 
-    it('Update PBA page with error', async function () {
+    xit('Update PBA page with error', async function () {
         MockApp.onPut('/api/updatePba', (req,res) => {
             res.status(400).send({ "apiError": { "errorMessage": "3 : There is a problem with your request. Please check and try again", "errorDescription": "The PBA numbers you have entered: PBA1234567 belongs to another Organisation", "timeStamp": "06-08-2020 12:37:35.038" }, "apiStatusCode": 400, "message": "handleUpdatePBARoute error" });
         });
