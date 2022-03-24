@@ -16,13 +16,13 @@
       <div class="govuk-grid-row">
         <div class="govuk-grid-column">
             <ng-container style="width:100%" *ngIf="(pbaError$ | async) as errors">
-              <div style="width:50%" *ngFor="let data of pbaInputs">
+              <div style="width:50%" *ngFor="let data of pbaInputs; let i = index">
                 <div style="display:inline-block">
-                  <xuilib-gov-uk-input
+                  <app-prd-pba-number-input-component [id]="'pba-number-input' + i"
+                    [errorMessages]="errors[data.name]"
                     [config]="data"
-                    [errorMessage]="errors[data.name]"
                     [group]="changePbaFG">
-                  </xuilib-gov-uk-input>
+                  </app-prd-pba-number-input-component>
                 </div>
                 <button type="button"
                   style="display: inline-block; margin-bottom: 30px;" 

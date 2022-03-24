@@ -27,8 +27,8 @@ const pbaInputFeed = [
 const pbaErrorMessages = ['There is a problem. Enter a PBA number, for example PBA1234567 '];
 const errorMessagePlaceHolder = 'xxxxxxxxxx';
 const pbaServerErrorMessages = 'There is problem with the services, please try again later';
-const pbaErrorAlreadyUsedHeaderMessages = [`This PBA number ${errorMessagePlaceHolder} has already been used. `];
-const pbaErrorAlreadyUsedMessages = [`${pbaErrorAlreadyUsedHeaderMessages}You should check that the PBA has been entered correctly. You should also check if your organisationhas already been registered.  If you are still havingproblems, contact HMCTS.`];
+const pbaErrorAlreadyUsedHeaderMessages = [`There is a problem. This PBA number ${errorMessagePlaceHolder} has already been used. `];
+const pbaErrorAlreadyUsedMessages = [`${pbaErrorAlreadyUsedHeaderMessages}You should check that the PBA has been entered correctly. You should also check if your organisationhas already been registered.  If you are still having problems, contact HMCTS.`];
 
 
 const statusCodes = {
