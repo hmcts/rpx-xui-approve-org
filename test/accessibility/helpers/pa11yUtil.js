@@ -51,7 +51,7 @@ async function pa11ytestRunner(test,actions,timeoutVal) {
     data: 'foobar'
     }, 'secret', { expiresIn: 60 * 60 });
 
-    const encodedRoles = encodeURIComponent(userRoles?.length > 0 ? 'j:' + JSON.stringify(userRoles) : 'j:["prd-admin"]')
+    const encodedRoles = encodeURIComponent(userRoles && userRoles.length > 0 ? 'j:' + JSON.stringify(userRoles) : 'j:["prd-admin"]')
 
     const cookies = [
         {
