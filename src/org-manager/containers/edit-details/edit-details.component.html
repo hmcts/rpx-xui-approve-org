@@ -18,11 +18,13 @@
             <ng-container style="width:100%" *ngIf="(pbaError$ | async) as errors">
               <div style="width:50%" *ngFor="let data of pbaInputs; let i = index">
                 <div style="display:inline-block">
-                  <app-prd-pba-number-input-component [id]="'pba-number-input' + i"
-                    [errorMessages]="errors[data.name]"
+                   <div style="display:inline-block">
+                  <xuilib-gov-uk-input
                     [config]="data"
+                    [errorMessage]="errors[data.name]"
                     [group]="changePbaFG">
-                  </app-prd-pba-number-input-component>
+                  </xuilib-gov-uk-input>
+                </div>
                 </div>
                 <button type="button"
                   style="display: inline-block; margin-bottom: 30px;" 
@@ -30,7 +32,6 @@
                   (click)="remove(data)">Remove</button>
               </div>
             </ng-container>
-        
           <div>
             <button type="button" class="govuk-button hmcts-button--secondary" (click)="onAddNewBtnClicked()">
               Add another PBA number
