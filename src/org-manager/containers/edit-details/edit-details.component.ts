@@ -1,19 +1,18 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import _ from 'lodash';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { ErrorHeader } from 'src/org-manager/models/errorHeader.model';
-import { PBAValidationContainerModel, PBAValidationModel } from 'src/org-manager/models/pbaValidation.model';
-import { UpdatePbaServices } from 'src/org-manager/services/update-pba.services';
 import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
+import { ErrorHeader } from '../../models/errorHeader.model';
 import { OrganisationDetails } from '../../models/organisation';
 import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
 import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
 import { OrganisationService } from '../../services/organisation.service';
+import { UpdatePbaServices } from '../../services/update-pba.services';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 @Component({
@@ -114,11 +113,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       this.appendAnotherNumber(this.pbaInputs.length + 1);
       this.addPbaFormItem(this.pbaInputs[this.pbaInputs.length - 1].name);
     }
-  }
-
-  public remove(data: PBAConfig) {
-    this.changePbaFG.removeControl(data.name);
-    this.pbaInputs = this.pbaInputs.filter(input => input.id !== data.id);
   }
 
   public appendAnotherNumber(index: number) {
