@@ -32,7 +32,7 @@ describe('Pa11y Accessibility tests', function () {
         const actions = [];
         actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/FNTFJSY'));
         actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
-        actions.push(...PallyActions.clickElement('.hmcts-sub-navigation li:nth-of-type(2) a'));
+        // actions.push(...PallyActions.clickElement('.hmcts-sub-navigation li:nth-of-type(2) a'));
 
         await pa11ytest(this, actions);
 
@@ -83,7 +83,7 @@ describe('Pa11y Accessibility tests', function () {
 
     });
 
-    it('Active Organisation with Pending User invite user Error', async function () {
+    xit('Active Organisation with Pending User invite user Error', async function () {
         MockApp.onGet('/auth/isAuthenticated', (req, res) => {
             res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]')
             res.send(true);
@@ -105,7 +105,7 @@ describe('Pa11y Accessibility tests', function () {
 
     });
 
-    it('Active Organisation with Pending User invite user Success', async function () {
+    xit('Active Organisation with Pending User invite user Success', async function () {
         MockApp.onGet('/auth/isAuthenticated', (req, res) => {
             res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]')
             res.send(true);
@@ -131,7 +131,7 @@ describe('Pa11y Accessibility tests', function () {
     });
 
 
-    it('Active Organisation with Pending User invite user error already invite', async function () {
+    xit('Active Organisation with Pending User invite user error already invite', async function () {
         MockApp.onGet('/auth/isAuthenticated', (req, res) => {
             res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]')
             res.send(true);
