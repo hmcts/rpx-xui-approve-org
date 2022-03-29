@@ -14,7 +14,7 @@ import { OrganisationService } from '../../services/organisation.service';
 import * as fromOrganisationPendingStore from '../../store';
 import { EditDetailsComponent } from './edit-details.component';
 
-fdescribe('EditDetailsComponent', () => {
+describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
   let fixture: ComponentFixture<EditDetailsComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
