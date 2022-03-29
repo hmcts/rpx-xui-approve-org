@@ -104,6 +104,10 @@ describe('EditDetailsComponent', () => {
       uniq: (value) => ['PBA1234567', 'PBA1234567'] });
   }));
 
+  afterEach(() => {
+    fixture.destroy();
+  });
+
   it('should have a component', () => {
     fixture.detectChanges();
     expect(component).toBeTruthy();
