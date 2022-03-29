@@ -49,15 +49,16 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.route.params.subscribe(params => {
       this.orgId = params.orgId ? params.orgId : '';
     });
+    this.changePbaFG = new FormGroup({
+      pbaNumbers: this.fb.array([])
+    });
   }
 
+  public underscore(): any { return _;  }
   public get fPba() { return this.changePbaFG.controls; }
 
   public ngOnInit(): void {
     this.pbaInputs = [];
-    this.changePbaFG = new FormGroup({
-      pbaNumbers: this.fb.array([])
-    });
     this.getOrgs();
     this.getErrorMsgs();
 
@@ -190,7 +191,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         const data = error.error;
         if (data.errorDescription) {
           const pbaId = this.pbaDepiction(data.errorDescription);
-          const index = _.indexOf(paymentAccountUpdated, pbaId, 0);
+          const index = this.underscore().indexOf(paymentAccountUpdated, pbaId, 0);
           if (data && data.errorDescription) {
             const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
             const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
@@ -236,7 +237,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const { value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     let paymentAccountsClone = [...paymentAccounts];
-    paymentAccountsClone = _.uniq(paymentAccountsClone);
+    paymentAccountsClone = this.underscore().uniq(paymentAccountsClone);
     const duplicates = [];
     const paymentAccountComparables = [...paymentAccounts];
 
@@ -266,7 +267,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           }
 
           if (!items[0].message.length) {
-            _.remove(this.errorHeader.items, { id: `pba${index + 1}` });
+            this.underscore().remove(this.errorHeader.items, { id: `pba${index + 1}` });
           }
         }
       }
@@ -369,7 +370,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           }
 
           if (!items[0].message.length) {
-            _.remove(this.errorHeader.items, { id: `pba${index + 1}` });
+            this.underscore().remove(this.errorHeader.items, { id: `pba${index + 1}` });
           }
         }
       }
