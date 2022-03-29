@@ -326,7 +326,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const paymentAccountsWrapper = [...paymentAccounts];
     for (let index = 0; index < paymentAccountsWrapper.length; index++) {
       const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
-      const errorMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
+      const errorMessage = OrgManagerConstants.PBA_ERROR_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
 
       if (typeof paymentAccountsWrapper[index] === 'string' && paymentAccountsWrapper[index].length > 2 &&
         (paymentAccountsWrapper[index].length !== 10 || paymentAccountsWrapper[index].substring(0, 3) !== 'PBA')) {

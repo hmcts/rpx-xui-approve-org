@@ -44,6 +44,7 @@ export class OrgManagerConstants {
   public static PBA_INPUT_FEED = pbaInputFeed;
   public static PBA_MESSAGE_PLACEHOLDER = errorMessagePlaceHolder;
   public static PBA_ERROR_MESSAGES = pbaErrorMessages;
+  public static PBA_ERROR_MESSAGE = pbaErrorMessage;
   public static PBA_ERROR_ALREADY_USED_MESSAGES = pbaErrorAlreadyUsedMessages;
   public static PBA_ERROR_ALREADY_USED_HEADER_MESSAGES = pbaErrorAlreadyUsedHeaderMessages;
   public static STATUS_CODES = statusCodes;
