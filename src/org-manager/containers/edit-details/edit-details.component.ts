@@ -254,12 +254,19 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           if (this.errorInline[`pba${index}`].messages.filter(message => message.indexOf('has been entered more than once') > -1).length) {
             this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message.indexOf('has been entered more than once') === -1);
           }
+          if (!this.errorInline[`pba${index}`].messages.length) {
+            delete this.errorInline[`pba${index}`];
+          }
         }
 
         if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
-          const message = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
-          if (message[0].message.filter(m => m.indexOf('has been entered more than once') > -1).length) {
-            message[0].message = message[0].message.filter(m => m.indexOf('has been entered more than once') === -1);
+          const items = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
+          if (items[0].message.filter(m => m.indexOf('has been entered more than once') > -1).length) {
+            items[0].message = items[0].message.filter(m => m.indexOf('has been entered more than once') === -1);
+          }
+
+          if (!items[0].message.length) {
+            _.remove(this.errorHeader.items, { id: `pba${index + 1}` });
           }
         }
       }
@@ -293,6 +300,10 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           if (this.errorInline[`pba${index}`]) {
             if (this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
               this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message !== errorMessage);
+            }
+
+            if (!this.errorInline[`pba${index}`].messages.length) {
+              delete this.errorInline[`pba${index}`];
             }
           }
         }
@@ -345,12 +356,20 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           if (this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
             this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message !== errorMessage);
           }
+
+          if (!this.errorInline[`pba${index}`].messages.length) {
+            delete this.errorInline[`pba${index}`];
+          }
         }
 
         if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
-          const message = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
-          if (message[0].message.filter(m => m.indexOf('for example PBA1234567') > -1).length) {
-            message[0].message = message[0].message.filter(m => m.indexOf('for example PBA1234567') === -1);
+          const items = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
+          if (items[0].message.filter(m => m.indexOf('for example PBA1234567') > -1).length) {
+            items[0].message = items[0].message.filter(m => m.indexOf('for example PBA1234567') === -1);
+          }
+
+          if (!items[0].message.length) {
+            _.remove(this.errorHeader.items, { id: `pba${index + 1}` });
           }
         }
       }
