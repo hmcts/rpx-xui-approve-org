@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import _ from 'lodash';
 import { of } from 'rxjs';
 import { UpdatePbaServices } from 'src/org-manager/services';
 import * as fromRoot from '../../../app/store';
@@ -13,7 +14,7 @@ import { OrganisationService } from '../../services/organisation.service';
 import * as fromOrganisationPendingStore from '../../store';
 import { EditDetailsComponent } from './edit-details.component';
 
-describe('EditDetailsComponent', () => {
+fdescribe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
   let fixture: ComponentFixture<EditDetailsComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
@@ -98,9 +99,19 @@ describe('EditDetailsComponent', () => {
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
     fixture = TestBed.createComponent(EditDetailsComponent);
     component = fixture.componentInstance;
+    spyOn(component, 'duplicateValidator').and.callThrough();
+    spyOn(component, 'underscore').and.returnValue({
+      uniq: (value) => ['PBA1234567', 'PBA1234567'] });
   }));
 
   it('should have a component', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('should change PBA after adding another item', () => {
+    fixture.detectChanges();
+    component.onAddNewBtnClicked();
+    expect(component.duplicateValidator).toHaveBeenCalled();
   });
 });
