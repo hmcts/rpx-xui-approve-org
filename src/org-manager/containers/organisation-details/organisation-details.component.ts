@@ -1,19 +1,26 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AppUtils } from 'src/app/utils/app-utils';
-import { OrganisationService, PbaAccountDetails } from 'src/org-manager/services';
+
+import { ActivatedRoute, Router } from '@angular/router';
+import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
+import { OrganisationService } from '../../services/organisation.service';
+import { PbaAccountDetails } from '../../services/pba-account-details.services';
 import * as fromStore from '../../store';
+
+/**
+ * Bootstraps Organisation Details
+ */
 @Component({
   selector: 'app-org-details',
   templateUrl: './organisation-details.component.html'
 })
 export class OrganisationDetailsComponent implements OnInit, OnDestroy {
+
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<OrganisationUserListModel>;
   public showUsers = false;
@@ -23,15 +30,15 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationAdminEmail: string;
   public isActiveOrg = false;
   public organisationDeletable = false;
+
+  private getShowOrgDetailsSubscription: Subscription;
   private readonly getAllLoadedSubscription: Subscription;
   private readonly getOrganisationDeletableSubscription: Subscription;
-  private orgId: string;
-  public getShowOrgDetailsSubscription: Subscription;
-
+  public orgId: string;
 
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly router: Router,
+    private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly userApprovalGuard: UserApprovalGuard,
     private readonly organisationService: OrganisationService,
     private readonly route: ActivatedRoute,
@@ -41,6 +48,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       this.orgId = params.orgId ? params.orgId : '';
     });
   }
+
 
   public ngOnInit(): void {
     this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
@@ -71,14 +79,17 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
         }
 
         if (organisationVM.organisationId) {
-          this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId).pipe(
-            map(data => {
-              const orgUserListModel = {
-                users: AppUtils.mapUsers(data.users),
-                isError: false,
-              } as OrganisationUserListModel;
-              return orgUserListModel;
-            }));
+          try {
+            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId).pipe(
+              map(data => {
+                const orgUserListModel = {
+                  users: AppUtils.mapUsers(data.users),
+                  isError: false,
+                } as OrganisationUserListModel;
+                return orgUserListModel;
+              }));
+          } catch (error) {
+          }
         }
 
         this.orgs$ = of(organisationVM);
@@ -122,9 +133,17 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     if (this.getAllLoadedSubscription) {
       this.getAllLoadedSubscription.unsubscribe();
     }
+    if (this.getShowOrgDetailsSubscription) {
+      this.getShowOrgDetailsSubscription.unsubscribe();
+    }
+    this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: false }));
 
     if (this.getOrganisationDeletableSubscription) {
       this.getOrganisationDeletableSubscription.unsubscribe();
     }
+
+    // Update the "organisation deletable" status in the store manually to false (to avoid the "Delete" button being
+    // displayed when it shouldn't)
+    this.store.dispatch(new fromStore.GetOrganisationDeletableStatusSuccess(false));
   }
 }

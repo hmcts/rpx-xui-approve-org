@@ -1,54 +1,107 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import {Observable, Subscription} from 'rxjs';
-import {take, tap} from 'rxjs/operators';
+import _ from 'lodash';
+import { Observable, of, Subscription } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 import * as fromRoot from '../../../app/store';
-import {OrgManagerConstants} from '../../org-manager.constants';
+import { AppUtils } from '../../../app/utils/app-utils';
+import { ErrorHeader } from '../../models/errorHeader.model';
+import { OrganisationDetails } from '../../models/organisation';
+import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model';
+import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
+import { OrganisationService } from '../../services/organisation.service';
+import { UpdatePbaServices } from '../../services/update-pba.services';
 import * as fromStore from '../../store';
-
-/**
- * Bootstraps Edit Organisation Details
- */
+import { PBANumberModel } from '../pending-pbas/models';
 @Component({
   selector: 'app-change-details',
   templateUrl: './edit-details.component.html'
 })
 export class EditDetailsComponent implements OnInit, OnDestroy {
   public changePbaFG: FormGroup;
-  public pbaInputs: {config: {name: string}}[];
+  public pbaInputs: PBAConfig[];
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
-  private subscirptions: Subscription;
   public orgId: string;
   public pbaNumbers: string[];
   public saveDisabled = true;
   public serverError$: Observable<{ type: string; message: string }>;
+  public organisationDetails: OrganisationDetails;
+  public subscriptions: Subscription;
+  public updateSubscription: Subscription;
+  public errorHeader: ErrorHeader;
+  public errorInline = {};
 
-  constructor(private readonly store: Store<fromStore.OrganisationRootState>) {}
+  public loaded = false;
+
+  constructor(
+    private readonly updatePbaServices: UpdatePbaServices,
+    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly organisationService: OrganisationService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute,
+    private readonly fb: FormBuilder) {
+    this.errorHeader = new ErrorHeader();
+    this.errorHeader.items = [];
+    this.route.params.subscribe(params => {
+      this.orgId = params.orgId ? params.orgId : '';
+    });
+    this.changePbaFG = new FormGroup({
+      pbaNumbers: this.fb.array([])
+    });
+  }
+
+  public underscore(): any { return _;  }
+  public get fPba() { return this.changePbaFG.controls; }
 
   public ngOnInit(): void {
-    this.pbaInputs = OrgManagerConstants.PBA_INPUT_FEED;
-    this.changePbaFG = new FormGroup({});
+    this.pbaInputs = [];
     this.getOrgs();
-    this.createPbaForm();
     this.getErrorMsgs();
+
+    this.changePbaFG.valueChanges.subscribe((x) => {
+      this.duplicateValidator();
+      this.charactorLengthValidator();
+    });
+  }
+
+  private resetErrors() {
+    this.errorHeader = new ErrorHeader();
+    this.errorHeader.items = [];
+    this.errorInline = {};
+    this.pbaError$ = of(this.errorInline);
+    this.pbaErrorsHeader$ = of(this.errorHeader);
   }
 
   private getOrgs(): void {
-    this.orgDetails$ = this.store.pipe(select(fromStore.getActiveAndPending),
-        tap((value) => {
-          if (value) {
-            this.orgId = value.organisationId;
-            this.pbaNumbers = value.pbaNumber;
-            this.saveDisabled = !value.pbaNumber;
-          } else if (!value && !this.orgId) {
-            this.store.dispatch(new fromStore.LoadActiveOrganisation());
-            this.store.dispatch(new fromStore.LoadPendingOrganisations());
-          }
-        }));
+    this.organisationService.getSingleOrganisation({ id: this.orgId })
+      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe(value => {
+        this.orgDetails$ = of(value);
+        if (value) {
+          this.orgId = value.organisationId;
+          this.pbaNumbers = [];
+          value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string));
+          this.createPbaForm();
+          this.saveDisabled = !value.pbaNumber;
+          this.orgDetails$ = of(value);
+        }
+        this.loaded = true;
+      });
   }
+
+  public get pbaFormArrayNumbers(): FormArray {
+    return this.changePbaFG.get('pbaNumbers') as FormArray;
+  }
+
+  public get currentPaymentAccounts(): PBANumberModel[] {
+    return this.organisationDetails.paymentAccount
+      .filter(pba => !this.organisationDetails.pendingRemovePaymentAccount.includes(pba));
+  }
+
   private getErrorMsgs() {
     this.store.dispatch(new fromStore.ClearPbaErrors());
     this.pbaError$ = this.store.pipe(select(fromStore.getPbaFromErrors));
@@ -56,71 +109,289 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.serverError$ = this.store.pipe(select(fromStore.getServerErrors));
   }
 
-  public createPbaForm(): void {
-    for (const inputs of this.pbaInputs ) {
-      this.changePbaFG.addControl(inputs.config.name, new FormControl(''));
-      const validators = [
-        Validators.pattern(/(PBA\w*)/i),
-        Validators.minLength(10),
-        Validators.maxLength(10)
-      ];
-      this.changePbaFG.controls[inputs.config.name].setValidators(validators);
-      this.changePbaFG.controls[inputs.config.name].updateValueAndValidity();
+  public onAddNewBtnClicked(): void {
+    if (this.pbaInputs.length) {
+      this.appendAnotherNumber(this.pbaInputs.length + 1);
+      this.addPbaFormItem(this.pbaInputs[this.pbaInputs.length - 1].name);
     }
-
-    this.store.pipe(select(fromStore.getPbaNumber), take(1)).subscribe((pba: string) => {
-      pba.split(',').map((p, i) => {
-        this.changePbaFG.patchValue({[`pba${i + 1}`]: p});
-      });
-    });
-
-    this.subscirptions = this.changePbaFG.valueChanges.subscribe(value => {
-      const pba: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
-      const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
-      this.saveDisabled = !isNewPba;
-    });
-
   }
 
-  // convenience getter for easy access to form fields
-  get fPba() { return this.changePbaFG.controls; }
+  public remove(data: PBAConfig) {
+    this.changePbaFG.removeControl(data.name);
+    this.pbaInputs = this.pbaInputs.filter(input => input.id !== data.id);
+  }
+
+  public appendAnotherNumber(index: number) {
+    const config = new PBAConfig();
+    config.label = `PBA number ${index} (optional)`;
+    config.name = `pba${index}`;
+    config.id = `pba${index}`;
+    config.type = 'text';
+    this.pbaInputs.push(config);
+  }
+
+  public get getPBANumbers(): string[] {
+    const { value } = this.changePbaFG;
+    const result = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+    return result;
+  }
+
+  public addPbaFormItem(inputsName: string) {
+    this.changePbaFG.addControl(inputsName, new FormControl(''));
+  }
+
+  public createPbaForm(): void {
+    if (this.pbaNumbers && !this.pbaInputs.length) {
+      for (let i = 0; i < this.pbaNumbers.length; i++) {
+        this.appendAnotherNumber(i + 1);
+      }
+
+      if (!this.pbaNumbers.length) {
+        this.appendAnotherNumber(1);
+      }
+      for (const inputs of this.pbaInputs) {
+        this.addPbaFormItem(inputs.name);
+        this.pbaNumbers = [''];
+      }
+
+      this.store.pipe(select(fromStore.getPbaNumber), take(1)).subscribe((pba: string) => {
+        pba.split(',').map((p, i) => {
+          this.changePbaFG.patchValue({ [`pba${i + 1}`]: p });
+        });
+      });
+
+      this.subscriptions = this.changePbaFG.valueChanges.subscribe(value => {
+        const pba: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+        const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
+        this.saveDisabled = !isNewPba;
+      });
+    }
+  }
 
   public onSubmitPba(): void {
-    this.dispatchStoreValidation();
-    const {valid, value} = this.changePbaFG;
+    this.resetErrors();
+    let isValid = true;
+    const duplicationValidation = this.duplicateValidator();
+    const characterValidation = this.charactorLengthValidator();
+    const { value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
-    if (valid) {
-      this.store.dispatch(new fromStore.SubmitPba({paymentAccounts, orgId: this.orgId}));
+    const paymentAccountUpdated: string[] = [];
+
+    isValid = duplicationValidation && characterValidation;
+    paymentAccounts.forEach(paymentAccount => {
+      if (typeof paymentAccount === 'string') {
+        paymentAccountUpdated.push(paymentAccount.toString());
+      }
+    });
+
+    if (isValid) {
+      this.updateSubscription = this.updatePbaServices.updatePba({ paymentAccounts: paymentAccountUpdated, orgId: this.orgId }).subscribe(() => {
+        this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
+      }, (error) => {
+        const data = error.error;
+        if (data.errorDescription) {
+          const pbaId = this.pbaDepiction(data.errorDescription);
+          const index = this.underscore().indexOf(paymentAccountUpdated, pbaId, 0);
+          if (data && data.errorDescription) {
+            const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+            const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+            this.pbaErrorsHeader$ = of({ items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
+            this.pbaError$ = of({ [`pba${index + 1}`]: { messages: [errorMessage], isInvalid: true } });
+          }
+        } else {
+          this.errorHeader.isFromValid = false;
+          const errorHeaderMessage = OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
+          this.errorHeader.items.push({
+            id: `pba${this.errorHeader.items.length + 1}`, message: [errorHeaderMessage]});
+        }
+      });
     }
   }
 
-  private dispatchStoreValidation(): void {
-    const validation = {
-      isInvalid: {
-        pba1: [
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.pattern),
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.minlength),
-          (this.fPba.pba1.errors && this.fPba.pba1.errors.maxLength)
-        ],
-        pba2: [
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.pattern),
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.minlength),
-          (this.fPba.pba2.errors && this.fPba.pba2.errors.maxLength)
-        ]
-      },
-      errorMsg: OrgManagerConstants.PBA_ERROR_MESSAGES
-    };
-    this.store.dispatch(new fromStore.DispatchSaveValidation(validation));
+  public pbaDepiction(errorDescription: string) {
+    let result: string  = '';
+    const errorParts = errorDescription.split(':');
+    if (errorParts.length === 0) {
+      result = errorParts[0];
+    }
+
+    if (errorParts.length > 1) {
+      result = errorParts[1];
+    }
+    const start = result.indexOf('PBA');
+    const end = result.indexOf(' ', start);
+    return result.substring(start, end);
   }
 
   public ngOnDestroy(): void {
-    if (this.subscirptions) {
-      this.subscirptions.unsubscribe();
+    if (this.subscriptions) {
+      this.subscriptions.unsubscribe();
     }
+    if (this.updateSubscription) {
+      this.updateSubscription.unsubscribe();
+    }
+  }
+
+  public duplicateValidator(): boolean {
+    let validation = true;
+    const { value } = this.changePbaFG;
+    const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+    let paymentAccountsClone = [...paymentAccounts];
+    paymentAccountsClone = this.underscore().uniq(paymentAccountsClone);
+    const duplicates = [];
+    const paymentAccountComparables = [...paymentAccounts];
+
+    paymentAccountsClone.forEach((paymentAccount) => {
+      const duplicateResult = paymentAccountComparables.filter(paymentAccountComparable => paymentAccountComparable === paymentAccount);
+      if (duplicateResult.length > 1) {
+          duplicates.push(paymentAccount);
+        }
+    });
+
+    if (!duplicates.length) {
+      const payAccounts = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+      for (let index = 0; index < payAccounts.length; index++) {
+        if (this.errorInline[`pba${index}`]) {
+          if (this.errorInline[`pba${index}`].messages.filter(message => message.indexOf('has been entered more than once') > -1).length) {
+            this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message.indexOf('has been entered more than once') === -1);
+          }
+          if (!this.errorInline[`pba${index}`].messages.length) {
+            delete this.errorInline[`pba${index}`];
+          }
+        }
+
+        if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
+          const items = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
+          if (items[0].message.filter(m => m.indexOf('has been entered more than once') > -1).length) {
+            items[0].message = items[0].message.filter(m => m.indexOf('has been entered more than once') === -1);
+          }
+
+          if (!items[0].message.length) {
+            this.underscore().remove(this.errorHeader.items, { id: `pba${index + 1}` });
+          }
+        }
+      }
+    }
+
+    duplicates.forEach(payment => {
+      validation = false;
+      for (let index = 0; index < paymentAccountComparables.length; index++) {
+        const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ENTERED_MORE_THAN_ONCE_HEADER_MESSAGE[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, payment);
+        const errorMessage = OrgManagerConstants.PBA_ERROR_ENTERED_MORE_THAN_ONCE_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, payment);
+        if (paymentAccountComparables[index] === payment) {
+          if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
+            const pbaResult = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
+            const messageResult = pbaResult[0].message.filter(message => message === errorHeaderMessage);
+            if (!messageResult.length) {
+              pbaResult[0].message.push(errorHeaderMessage);
+            }
+          } else {
+            this.errorHeader.items.push({ id: `pba${index + 1}`, message: [errorHeaderMessage] });
+          }
+          this.errorHeader.isFromValid = false;
+          if (!this.errorInline[`pba${index}`]) {
+            this.errorInline[`pba${index}`] = { messages: [errorMessage], isInvalid: true };
+          } else {
+            if (!this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
+              this.errorInline[`pba${index}`].messages.push(errorMessage);
+            }
+            this.errorInline[`pba${index}`].inInvalid = true;
+          }
+        } else {
+          if (this.errorInline[`pba${index}`]) {
+            if (this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
+              this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message !== errorMessage);
+            }
+
+            if (!this.errorInline[`pba${index}`].messages.length) {
+              delete this.errorInline[`pba${index}`];
+            }
+          }
+        }
+      }
+    });
+
+    if (!validation) {
+      this.pbaErrorsHeader$ = of(this.errorHeader);
+      this.pbaError$ = of(this.errorInline);
+    }
+
+    return validation;
+  }
+
+  public charactorLengthValidator(): boolean {
+    let validation = true;
+    const { value } = this.changePbaFG;
+    const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+    const paymentAccountsWrapper = [...paymentAccounts];
+    for (let index = 0; index < paymentAccountsWrapper.length; index++) {
+      const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
+      const errorMessage = OrgManagerConstants.PBA_ERROR_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
+
+      if (typeof paymentAccountsWrapper[index] === 'string' && paymentAccountsWrapper[index].length > 2 &&
+        (paymentAccountsWrapper[index].length !== 10 || paymentAccountsWrapper[index].substring(0, 3) !== 'PBA')) {
+        validation = false;
+
+        if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
+          const pbaResult = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
+          const messageResult = pbaResult[0].message.filter(message => message === errorHeaderMessage);
+          if (!messageResult.length) {
+            pbaResult[0].message.push(errorHeaderMessage);
+          }
+        } else {
+          this.errorHeader.items.push({ id: `pba${index + 1}`, message: [errorHeaderMessage] });
+        }
+        this.errorHeader.isFromValid = false;
+
+        if (!this.errorInline[`pba${index}`]) {
+          this.errorInline[`pba${index}`] = { messages: [errorMessage], isInvalid: true };
+          this.errorInline[`pba${index}`].inInvalid = true;
+        } else {
+          if (!this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
+            this.errorInline[`pba${index}`].messages.push(errorMessage);
+          }
+          this.errorInline[`pba${index}`].inInvalid = true;
+        }
+      } else {
+        if (this.errorInline[`pba${index}`]) {
+          if (this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
+            this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message !== errorMessage);
+          }
+
+          if (!this.errorInline[`pba${index}`].messages.length) {
+            delete this.errorInline[`pba${index}`];
+          }
+        }
+
+        if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
+          const items = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
+          if (items[0].message.filter(m => m.indexOf('for example PBA1234567') > -1).length) {
+            items[0].message = items[0].message.filter(m => m.indexOf('for example PBA1234567') === -1);
+          }
+
+          if (!items[0].message.length) {
+            this.underscore().remove(this.errorHeader.items, { id: `pba${index + 1}` });
+          }
+        }
+      }
+    }
+
+    if (!validation) {
+      this.pbaErrorsHeader$ = of(this.errorHeader);
+      this.pbaError$ = of(this.errorInline);
+    }
+
+    return validation;
   }
 
   public onGoBack() {
     this.store.dispatch(new fromRoot.Back());
   }
 
+  public pendingChanges(appending: string[]): PendingPaymentAccount {
+    return {
+      pendingAddPaymentAccount: appending,
+      pendingRemovePaymentAccount: []
+    };
+  }
 }
