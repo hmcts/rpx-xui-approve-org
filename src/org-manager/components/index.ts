@@ -17,7 +17,7 @@ export const components: any[] = [
   OrganisationDetailsInfoComponent,
   PBAAccountApprovalComponent,
   PBAAccountDecisionComponent,
-  QuickLinksComponent
+  QuickLinksComponent,
 ];
 
 export * from './back-link/back-link.component';

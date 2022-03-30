@@ -1,4 +1,5 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
+import { PBANumberModel } from '../containers/pending-pbas/models/pbaNumber.model';
 
 export interface OrganisationAddress {
   addressLine1: string;
@@ -7,6 +8,35 @@ export interface OrganisationAddress {
   county: string;
   dxAddress: OrganisationDxAddress[];
   postCode?: string;
+}
+
+export interface OrganisationContactInformation {
+  addressLine1: string;
+  addressLine2: string;
+  addressLine3: string;
+  townCity: string;
+  county: string;
+  country: string;
+  postCode: string;
+  dxAddress: DxAddress[];
+}
+
+export interface OrganisationDetails {
+  name: string;
+  organisationIdentifier: string;
+  contactInformation: OrganisationContactInformation[];
+  status: string;
+  sraId: string;
+  sraRegulated: boolean;
+  superUser: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  paymentAccount: PBANumberModel[];
+  pendingAddPaymentAccount: PBANumberModel[];
+  pendingRemovePaymentAccount: PBANumberModel[];
+  response?: any;
 }
 
 export interface OrganisationDxAddress {
@@ -35,6 +65,11 @@ export interface OrganisationUser {
 export interface OrganisationUserListModel {
   users: User[];
   isError: boolean;
+}
+
+export interface DxAddress {
+  dxNumber: string;
+  dxExchange: string;
 }
 
 export interface Organisation {
