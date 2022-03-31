@@ -13,8 +13,8 @@ export class OrganisationService {
   public orgPendingUrl = environment.orgPendingUrl;
   public orgUsersUrl = environment.organisationUsersUrl;
   public organisationsUrl = environment.organisationsUrl;
-  private organisationSearchString: Subject<string> = new Subject<string>();
-  private resetPagination: Subject<boolean> = new Subject<boolean>();
+  private readonly organisationSearchString: Subject<string> = new Subject<string>();
+  private readonly resetPagination: Subject<boolean> = new Subject<boolean>();
   constructor(private readonly http: HttpClient) {
   }
 
