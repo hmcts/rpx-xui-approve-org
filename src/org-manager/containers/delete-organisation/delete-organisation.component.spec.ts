@@ -50,24 +50,6 @@ describe('DeleteOrganisationComponent', () => {
     component = fixture.componentInstance;
   }));
 
-  describe('addOrganisationForReviewSubscribe()', () => {
-
-    it('should return reviewed organisation details, so that the User can view them on the page.', () => {
-
-      storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
-      fixture.detectChanges();
-      component.addOrganisationForReviewSubscribe();
-      expect(component.orgForReview['reviewedOrganisations']).toEqual(reviewedOrganisationsDummy);
-    });
-
-    it('should dispatch a router "back" action when there are no organisation details.', () => {
-      storePipeMock.and.returnValue(of(false));
-      fixture.detectChanges();
-      component.addOrganisationForReviewSubscribe();
-      expect(storeDispatchMock).toHaveBeenCalledWith(new Go({path: ['/pending-organisations']}));
-    });
-  });
-
   describe('onDeleteOrganisation()', () => {
 
     it('should dispatch a pending organisation "delete" action', () => {
