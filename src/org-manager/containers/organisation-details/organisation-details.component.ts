@@ -102,19 +102,34 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
   public approveOrganisation(data: OrganisationVM) {
     if (data) {
-      this.router.navigateByUrl('/approve-organisations');
+      const navigationExtras = {
+        state: {
+          data
+        }
+      };
+      this.router.navigateByUrl('/approve-organisations', navigationExtras);
     }
   }
 
   public deleteOrganisation(data: OrganisationVM) {
     if (data) {
-      this.router.navigateByUrl('/delete-organisation');
+      const navigationExtras = {
+        state: {
+          data
+        }
+      };
+      this.router.navigateByUrl('/delete-organisation', navigationExtras);
     }
   }
 
   public reviewOrganisation(data: OrganisationVM): void {
     if (data) {
-      this.router.navigateByUrl('/review-organisation');
+      const navigationExtras = {
+        state: {
+          data
+        }
+      };
+      this.router.navigateByUrl('/review-organisation', navigationExtras);
     }
   }
 

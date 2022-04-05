@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { CanActivate } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
@@ -13,8 +13,7 @@ export class AuthGuard implements CanActivate {
   ) {
   }
 
-
-  canActivate(): Observable<boolean> {
+  public canActivate(): Observable<boolean> {
     return this.authService.isAuthenticated().map( isAuth => {
       if (!isAuth) {
         this.authService.loginRedirect();
