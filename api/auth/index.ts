@@ -5,8 +5,6 @@ import {getConfigValue} from '../configuration'
 import {COOKIE_ROLES} from '../configuration/references'
 import { http } from '../lib/http'
 
-//TODO: once both todo's below are complete, we can remove this file
-
 const successCallback = (req: Request, res: Response, next: NextFunction) => {
   const { roles } = req.session.passport.user.userinfo
 
