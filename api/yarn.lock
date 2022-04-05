@@ -109,6 +109,11 @@
     ts-auto-mock "^2.2.5"
     ttypescript "^1.5.10"
 
+"@nguniversal/express-engine@^7.1.1":
+  version "7.1.1"
+  resolved "https://registry.yarnpkg.com/@nguniversal/express-engine/-/express-engine-7.1.1.tgz#9445ccb374dabdadccc8de98ca8a79b536ae14de"
+  integrity sha512-RJ2VATA6s48bYNrAfjnkjUCohpR7ehiOySwGA2vuUIWCWXKDIIPxgmET5ffVHy1a2XdMsOgrQ9Whth7+CxnUgw==
+
 "@otplib/core@^12.0.1":
   version "12.0.1"
   resolved "https://registry.yarnpkg.com/@otplib/core/-/core-12.0.1.tgz#73720a8cedce211fe5b3f683cd5a9c098eaf0f8d"
@@ -1390,7 +1395,7 @@ expand-tilde@^2.0.0, expand-tilde@^2.0.2:
   dependencies:
     homedir-polyfill "^1.0.1"
 
-express-session@^1.17.0:
+express-session@^1.15.6, express-session@^1.17.0:
   version "1.17.2"
   resolved "https://registry.yarnpkg.com/express-session/-/express-session-1.17.2.tgz#397020374f9bf7997f891b85ea338767b30d0efd"
   integrity sha512-mPcYcLA0lvh7D4Oqr5aNJFMtBMKPLl++OKKxkHzZ0U0oDq1rpKBnkR5f5vCHR26VeArlTOEF9td4x5IjICksRQ==
@@ -2873,7 +2878,7 @@ opener@^1.5.2:
   resolved "https://registry.yarnpkg.com/opener/-/opener-1.5.2.tgz#5d37e1f35077b9dcac4301372271afdeb2a13598"
   integrity sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==
 
-openid-client@^3.10.0:
+openid-client@^3.10.0, openid-client@^3.14.2:
   version "3.15.10"
   resolved "https://registry.yarnpkg.com/openid-client/-/openid-client-3.15.10.tgz#35978f629bb95fdeeb0ab7365aa4800ca0b6558e"
   integrity sha512-C9r6/iVzNQ7aGp0krS5mFIY5nY8AH6ajYCH0Njns6AXy2fM3Khw/dY97QlaFJWW2QLhec6xfEk23LZw9EeX66Q==
