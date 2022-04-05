@@ -70,7 +70,7 @@
     "@ngrx/router-store": "^7.4.0",
     "@ngrx/store": "^7.4.0",
     "@ngrx/store-devtools": "^7.4.0",
-    "@types/crypto-js": "^3.1.43",
+    "@types/crypto-js": "^3.1.47",
     "@types/multer": "^1.4.5",
     "applicationinsights-js": "^1.0.20",
     "base-64": "^0.1.0",
