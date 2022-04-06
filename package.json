@@ -46,7 +46,8 @@
     "test:can-i-deploy:consumer": "export VERSION=$(git rev-parse --short HEAD) && SSL_CERT_FILE=test/pact/cer/ca-bundle.crt pact-broker can-i-deploy --pacticipant 'xui_approveorg' --version ${VERSION} --broker-base-url https://pact-broker.platform.hmcts.net",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
-    "test:nodeMock": "nodemon test/nodeMock/app --standalone"
+    "test:nodeMock": "nodemon test/nodeMock/app --standalone",
+    "postinstall": "cd api && yarn"
   },
   "private": true,
   "dependencies": {
