@@ -47,7 +47,7 @@
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && ng e2e --webdriver-update=false --protractorConfig=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
-    "postinstall": "cd api && yarn"
+    "postinstall": "cd api && yarn && cd.."
   },
   "private": true,
   "dependencies": {
