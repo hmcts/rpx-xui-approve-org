@@ -432,10 +432,10 @@
     lodash "^4.17.11"
     path "^0.12.7"
 
-"@hmcts/rpx-xui-common-lib@1.6.7-hmcts-pagination":
-  version "1.6.7-hmcts-pagination"
-  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-hmcts-pagination.tgz#8d545752a0e0a3e9ce1dc5797f3d4f0a54ffa8a1"
-  integrity sha512-GBEwG/vxaSPeXDHXCOP9eFZ4Yp4H1FKQDU7Cn92TBylg8eEjdiBd+CTj1eRTqjfLE/6nE7jZA26A7gJiEKx3Eg==
+"@hmcts/rpx-xui-common-lib@1.6.7-update-hmcts-pagination-component-rc3":
+  version "1.6.7-update-hmcts-pagination-component-rc3"
+  resolved "https://registry.yarnpkg.com/@hmcts/rpx-xui-common-lib/-/rpx-xui-common-lib-1.6.7-update-hmcts-pagination-component-rc3.tgz#83cdc83c23c058d7e3d6fe523529b1d9b5705651"
+  integrity sha512-wrFnpbcRdSGlm+CH1Co+ySecQVH/hN06qmiFsFe9rBox28ryPBK4bO1HpOKCj2JGH6ckfqGo50PMQDizLMEnwg==
   dependencies:
     tslib "^1.9.0"
 
