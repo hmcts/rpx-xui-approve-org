@@ -9,7 +9,8 @@
     "lint": "npx tslint --project .",
     "watch": "nodemon --watch '**/*.ts' --exec ts-node -r dotenv-extended/config local.ts",
     "test": "mocha -r dotenv-extended/config",
-    "test:watch": "mocha -r dotenv-extended/config --watch --recursive --watch-extensions ts"
+    "test:watch": "mocha -r dotenv-extended/config --watch --recursive --watch-extensions ts",
+    "postinstall": "cd .."
   },
   "private": true,
   "nyc": {
