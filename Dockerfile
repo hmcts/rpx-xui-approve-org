@@ -4,6 +4,7 @@ COPY --chown=hmcts:hmcts package.json yarn.lock ./
 
 FROM base as build
 RUN yarn
+RUN 'cd api && yarn && cd ..'
 COPY --chown=hmcts:hmcts . .
 RUN yarn build && rm -r node_modules/ && rm -r ~/.cache/yarn
 
