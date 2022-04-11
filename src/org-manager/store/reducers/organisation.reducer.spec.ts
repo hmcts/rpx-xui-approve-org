@@ -1,5 +1,6 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
+import { State } from '../../../app/store/reducers/index';
 import * as fromMock from '../../mock/pending-organisation.mock';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
@@ -28,7 +29,7 @@ describe('Organisation Reducer', () => {
     it('should return the initial state.activeOrganisations', () => {
       const action = new fromActions.LoadActiveOrganisation();
       const state = reducer(initialState, action);
-      expect(state.activeOrganisations).toBeDefined();
+      expect(state.activeOrganisations).toEqual({ orgEntities: {}, loaded: false, loading: true, searchString: '' });
     });
   });
 
@@ -36,7 +37,7 @@ describe('Organisation Reducer', () => {
     it('should update the state.pendingOrganisations', () => {
       const action = new fromActions.LoadPendingOrganisationsSuccess(pendingOrganisationsMock);
       const state = reducer(initialState, action);
-      expect(state).toBeDefined();
+      expect(state.pendingOrganisations.orgEntities['ByrneLimited']).toBeDefined();
     });
   });
 
@@ -44,7 +45,7 @@ describe('Organisation Reducer', () => {
     it('should update the state.activeOrganisations', () => {
       const action = new fromActions.LoadActiveOrganisationSuccess(pendingOrganisationsMock);
       const state = reducer(initialState, action);
-      expect(state).toBeDefined();
+      expect(state.pendingOrganisations.orgEntities).toEqual({});
     });
   });
 
