@@ -72,6 +72,7 @@ describe('NewPBAsConfirmComponent', () => {
         email: 'test@test.com'
       },
       paymentAccount: [{}],
+      pendingPaymentAccount: [{}],
       contactInformation: orgAddress
     };
     component.org = AppUtils.mapOrganisation(organisations);

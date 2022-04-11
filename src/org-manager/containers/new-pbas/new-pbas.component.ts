@@ -1,10 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { filter, take, takeWhile } from 'rxjs/operators';
+import { Observable, of, Subscription } from 'rxjs';
+import { filter, map, take, takeWhile } from 'rxjs/operators';
 
 import * as fromRoot from '../../../app/store';
+import { AppUtils } from '../../../app/utils/app-utils';
 import { OrganisationVM } from '../../models/organisation';
+import { OrganisationService } from '../../services/organisation.service';
+import { PbaAccountDetails } from '../../services/pba-account-details.services';
 import * as fromStore from '../../store';
 
 @Component({
@@ -20,8 +24,15 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
   public organisationId: string;
 
   constructor(
-    private readonly store: Store<fromStore.OrganisationRootState>
-  ) { }
+    private readonly organisationService: OrganisationService,
+    private readonly store: Store<fromStore.OrganisationRootState>,
+    private readonly route: ActivatedRoute,
+    public readonly pbaAccountDetails: PbaAccountDetails,
+  ) {
+    this.route.params.subscribe(params => {
+      this.organisationId = params.orgId ? params.orgId : '';
+    });
+   }
 
   public ngOnInit(): void {
     this.getAllLoadedSubscription = this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile(loaded => !loaded)).subscribe(loaded => {
@@ -31,20 +42,31 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.orgs$ = this.store.pipe(select(fromStore.getActiveAndPending));
-    this.orgs$.pipe(
-      filter(value => value !== undefined),
-      take(1)
-    ).subscribe(({ organisationId, pbaNumber, isAccLoaded, status }) => {
-      this.organisationId = organisationId;
+    this.organisationService.getSingleOrganisation({ id: this.organisationId })
+      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe(value => {
+        this.organisationId = value.organisationId;
 
-      if (!isAccLoaded && pbaNumber.length) {
+        if (!value.isAccLoaded && value.pendingPaymentAccount.length) {
         this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
-          orgId: organisationId,
-          pbas: pbaNumber.toString()
+          orgId: value.organisationId,
+          pbas: value.pendingPaymentAccount.toString()
         }));
+
+        if (value.pendingPaymentAccount && value.pendingPaymentAccount.length) {
+          let ids: string;
+          value.pendingPaymentAccount.forEach(pbaNumber => {
+            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+          });
+          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+            value.accountDetails = accountResponse;
+            this.orgs$ = of(value);
+          });
+        } else {
+          this.orgs$ = of(value);
+        }
       }
-    });
+      });
   }
 
   public onGoBack(): void {

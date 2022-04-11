@@ -27,6 +27,7 @@ describe('NewPBAsInfoComponent', () => {
     adminEmail: 'glen@byrne.com',
     dxNumber: [{}],
     postCode: '',
+    pendingPaymentAccount: ['PBA0101012'],
     accountDetails: [{
       account_number: 'PBA0101012',
       account_name: 'RAY NIXON BROWN',
