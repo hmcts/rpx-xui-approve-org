@@ -61,10 +61,14 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(organisationVM => {
         this.organisationId = organisationVM.organisationId;
         this.organisationAdminEmail = organisationVM.adminEmail;
-        this.showUserNavigation = false;
+        this.showUserNavigation = true;
 
         if (organisationVM.status === 'ACTIVE') {
           this.isActiveOrg = true;
+          if (this.isXuiApproverUserdata) {
+            this.showUserNavigation = true;
+            this.store.dispatch(new fromStore.LoadOrganisationUsers(this.organisationId));
+          }
           this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe(value => this.organisationDeletable = value);
         }
 
