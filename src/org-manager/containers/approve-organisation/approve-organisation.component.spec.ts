@@ -41,25 +41,25 @@ describe('ApproveOrganisationComponent', () => {
         component = fixture.componentInstance;
     }));
 
-    xit('should return reviewed organisations', () => {
+    it('should return reviewed organisations', () => {
         storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
         fixture.detectChanges();
         expect(component.orgForReview['reviewedOrganisations']).toEqual(reviewedOrganisationsDummy);
     });
 
-    xit('should dispatch a router "back" action when there are no reviewed activeOrg', () => {
-        storePipeMock.and.returnValue(of({reviewedOrganisations: null}));
+    it('should dispatch a router "back" action when there are no reviewed activeOrg', () => {
+        storePipeMock.and.returnValue(of(null));
         fixture.detectChanges();
-        expect(storeDispatchMock).toHaveBeenCalledWith(new fromRootActions.Back());
+        expect(storeDispatchMock).toHaveBeenCalledWith(new fromRootActions.Go({path: ['/pending-organisations']}));
     });
 
-    xit('should dispatch a pending organisation "approve" action when reviewed activeOrg are approved', () => {
+    it('should dispatch a pending organisation "approve" action when reviewed activeOrg are approved', () => {
         storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
         fixture.detectChanges();
         component.onApproveOrganisations();
         fixture.detectChanges();
         expect(storeDispatchMock).toHaveBeenCalledWith(
-            new fromOrganisationPendingStore.ApprovePendingOrganisations(activeOrganisationsDummy[0])
+            new fromOrganisationPendingStore.ApprovePendingOrganisations({ reviewedOrganisations: [activeOrganisationsDummy[0]] } as any)
         );
     });
 

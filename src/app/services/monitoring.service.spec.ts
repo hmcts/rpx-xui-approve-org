@@ -1,13 +1,17 @@
-import { HttpClient } from '@angular/common/http';
-import { TestBed, inject } from '@angular/core/testing';
-import { MonitoringService, IMonitoringService, MonitorConfig } from './monitoring.service';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
+import { MonitorConfig, MonitoringService } from './monitoring.service';
 
 describe('Monitoring service', () => {
-    const mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', {get: of({key: 'Some Value'})});
-    const mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['downloadAndSetup', 'trackException', 'trackEvent',
-    'trackPageView']);
-    const mockedConfig = new MonitorConfig();
+    let mockedHttpClient;
+    let mockedAppInsights;
+    let mockedConfig;
+
+    beforeEach(() => {
+        mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', {get: of({key: 'Some Value'})});
+        mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['downloadAndSetup', 'trackException', 'trackEvent',
+        'trackPageView']);
+        mockedConfig = new MonitorConfig();
+    });
 
     it('should be Truthy', () => {
         const service = new MonitoringService(mockedHttpClient);

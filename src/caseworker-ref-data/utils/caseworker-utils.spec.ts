@@ -2,9 +2,13 @@ import { handleFatalErrors } from '../../shared/utils/handle-fatal-errors';
 import { REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './caseworker-utils';
 
 describe('CaseWorkerUtils', () => {
-  const mockRouter = {
-    navigate: jasmine.createSpy('navigate')
-  };
+  let mockRouter;
+
+  beforeEach(() => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+  });
 
   it('should send back the status if it is not 500, 401 or 403', () => {
     // test can handle fatal errors for 400 and 402 errors
