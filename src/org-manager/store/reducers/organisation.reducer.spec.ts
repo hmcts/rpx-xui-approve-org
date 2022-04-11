@@ -52,7 +52,7 @@ describe('Organisation Reducer', () => {
     it('should update the state.orgForReview', () => {
       const action = new fromActions.AddReviewOrganisations(pendingOrganisationsMock[0]);
       const state = reducer(initialState, action);
-      expect(state.orgForReview).toBeDefined();
+      expect(state.orgForReview.organisationId).toEqual('ByrneLimited');
     });
   });
 
