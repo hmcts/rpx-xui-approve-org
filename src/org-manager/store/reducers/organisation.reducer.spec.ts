@@ -1,5 +1,5 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
-import {OrganisationVM } from 'src/org-manager/models/organisation';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromMock from '../../mock/pending-organisation.mock';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
@@ -20,7 +20,7 @@ describe('Organisation Reducer', () => {
     it('should return the initial state.pendingOrganisations', () => {
       const action = new fromActions.LoadPendingOrganisations();
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations).toEqual({orgEntities: {}, loaded: false, loading: true, searchString: ''});
+      expect(state.pendingOrganisations).toEqual({ orgEntities: {}, loaded: false, loading: true, searchString: '' });
     });
   });
 
@@ -52,15 +52,15 @@ describe('Organisation Reducer', () => {
     it('should update the state.orgForReview', () => {
       const action = new fromActions.AddReviewOrganisations(pendingOrganisationsMock[0]);
       const state = reducer(initialState, action);
-      expect(state.orgForReview).toBeDefined();
+      expect(state.orgForReview.organisationId).toEqual('ByrneLimited');
     });
   });
 
   describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
     it('should update the state with account details', () => {
-      const action = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: fromMock.LoadPbaAccountsObj});
+      const action = new fromActions.LoadPbaAccountDetailsSuccess({ orgId: '12345', data: fromMock.LoadPbaAccountsObj });
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations.orgEntities).toEqual({12345: {isAccLoaded: true, accountDetails: fromMock.LoadPbaAccountsObj }} as any);
+      expect(state.pendingOrganisations.orgEntities).toEqual({ 12345: { isAccLoaded: true, accountDetails: fromMock.LoadPbaAccountsObj } } as any);
     });
   });
 
@@ -68,7 +68,7 @@ describe('Organisation Reducer', () => {
     it('should return the initial state.organisationUsersList', () => {
       const action = new fromActions.LoadOrganisationUsers('orgId');
       const state = reducer(initialState, action);
-      expect(state.organisationUsersList).toEqual({users: null, isError: false});
+      expect(state.organisationUsersList).toEqual({ users: null, isError: false });
     });
   });
 
@@ -85,7 +85,7 @@ describe('Organisation Reducer', () => {
       }];
       const action = new fromActions.LoadOrganisationUsersSuccess(mockUserResult);
       const state = reducer(initialState, action);
-      expect(state.organisationUsersList).toEqual({users: mockUserResult, isError: false});
+      expect(state.organisationUsersList).toEqual({ users: mockUserResult, isError: false });
     });
   });
 
@@ -93,7 +93,7 @@ describe('Organisation Reducer', () => {
     it('should return the state.organisationUsersList to null when reset', () => {
       const action = new fromActions.ResetOrganisationUsers();
       const state = reducer(initialState, action);
-      expect(state.organisationUsersList).toEqual( { users: null, isError: false });
+      expect(state.organisationUsersList).toEqual({ users: null, isError: false });
     });
   });
 
@@ -115,7 +115,7 @@ describe('Organisation Reducer', () => {
 
   describe('SHOW_ORGANISATION_DETAILS_USER_TAB action', () => {
     it('should not show user tab when orgid does not match', () => {
-      const action = new fromActions.ShowOrganisationDetailsUserTab({orgId: 'dummy', showUserTab: true});
+      const action = new fromActions.ShowOrganisationDetailsUserTab({ orgId: 'dummy', showUserTab: true });
       const state = reducer(initialState, action);
       expect(state.showOrganisationDetailsUserTab.showUserTab).toBeFalsy();
     });
@@ -165,7 +165,7 @@ describe('Organisation Reducer', () => {
       const preState = reducer(initialState, preAction);
       const action = new fromActions.PutReviewOrganisationSuccess(pendingOrganisationsMock[0]);
       const state = reducer(preState, action);
-      expect(state.pendingOrganisations.orgEntities).toEqual({ ByrneLimited: {...pendingOrganisationsMock[0], status: 'REVIEW'}});
+      expect(state.pendingOrganisations.orgEntities).toEqual({ ByrneLimited: { ...pendingOrganisationsMock[0], status: 'REVIEW' } });
     });
   });
 });
