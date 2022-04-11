@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder} from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
+import { OrganisationVM } from '../../models/organisation';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-new-pbas-info',
