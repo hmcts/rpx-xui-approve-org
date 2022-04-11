@@ -14,16 +14,17 @@ export class PBAAccountApprovalComponent implements OnInit {
   @Input() public pbaStatus: string;
   @Input() public formGroup: any;
   @Input() public submitted?: boolean = true;
-  @Output() selectOptionChanged = new EventEmitter<{ name: string, value: string }>();
+  @Output() public selectOptionChanged = new EventEmitter<{ name: string, value: string }>();
   constructor( ) {
   }
 
   public ngOnInit(): void {
-    if (this.pbaNumber)
+    if (this.pbaNumber) {
     this.formGroup.get(this.pbaNumber).setValidators(Validators.required);
+    }
   }
 
   public selectOption($event): void {
-    this.selectOptionChanged.emit({ name: this.pbaNumber, value: $event.target.value })
+    this.selectOptionChanged.emit({ name: this.pbaNumber, value: $event.target.value });
   }
 }
