@@ -33,6 +33,11 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     ];
   }
 
+  public pbaNumbers(): string[] {
+    return this.org && this.org.pbaNumber && this.org.pbaNumber.length ? this.org.pbaNumber :
+      this.org && this.org.pendingPaymentAccount && this.org.pendingPaymentAccount.length ? this.org.pendingPaymentAccount : [];
+  }
+
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required),
