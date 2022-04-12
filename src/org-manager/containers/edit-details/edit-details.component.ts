@@ -84,7 +84,9 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         if (value) {
           this.orgId = value.organisationId;
           this.pbaNumbers = [];
-          value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string));
+          value.status.toUpperCase() === 'ACTIVE' ?
+            value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string)) :
+            value.pendingPaymentAccount.forEach(number => this.pbaNumbers.push(number as string));
           this.createPbaForm();
           this.saveDisabled = !value.pbaNumber;
           this.orgDetails$ = of(value);
@@ -192,11 +194,19 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         if (data.errorDescription) {
           const pbaId = this.pbaDepiction(data.errorDescription);
           const index = this.underscore().indexOf(paymentAccountUpdated, pbaId, 0);
-          if (data && data.errorDescription) {
-            const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-            const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-            this.pbaErrorsHeader$ = of({ items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
-            this.pbaError$ = of({ [`pba${index + 1}`]: { messages: [errorMessage], isInvalid: true } });
+
+          if (index > -1) {
+            if (data && data.errorDescription) {
+              const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+              const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+              this.pbaErrorsHeader$ = of({ items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
+              this.pbaError$ = of({ [`pba${index + 1}`]: { messages: [errorMessage], isInvalid: true } });
+            }
+          } else {
+            const errorHeaderMessage = OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
+            this.errorHeader.items.push({
+              id: `pba${this.errorHeader.items.length + 1}`, message: [errorHeaderMessage]
+            });
           }
         } else {
           this.errorHeader.isFromValid = false;

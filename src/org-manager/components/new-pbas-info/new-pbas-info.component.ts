@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder} from '@angular/forms';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { Subscription } from 'rxjs';
+import { OrganisationVM } from '../../models/organisation';
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-new-pbas-info',
@@ -22,7 +23,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({});
-    this.org.pbaNumber.forEach(p => this.formGroup.addControl(p, this.fb.control('' , null)));
+    this.org.pendingPaymentAccount.forEach(p => this.formGroup.addControl(p, this.fb.control('' , null)));
     this.formSub = this.formGroup.valueChanges.subscribe(() => this.submitted = false);
   }
 
