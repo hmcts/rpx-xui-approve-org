@@ -37,6 +37,7 @@ describe('OrganisationService', () => {
     },
     status: 'string;',
     name: 'string;',
+    pendingPaymentAccount: [{}],
     paymentAccount: [{}]
   };
 

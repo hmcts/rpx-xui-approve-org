@@ -80,6 +80,7 @@ export interface Organisation {
   status: string;
   name: string;
   paymentAccount: any[];
+  pendingPaymentAccount: any[];
 }
 
 export class OrganisationVM {
@@ -94,6 +95,7 @@ export class OrganisationVM {
   public county: string;
   public name: string;
   public view: string;
+  public pendingPaymentAccount?: any[];
   public pbaNumber: any[];
   public dxNumber: any[];
   public sraId?: string;
