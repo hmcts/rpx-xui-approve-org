@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response, Router } from 'express'
-import { getConfigValue } from '../configuration'
-import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
-import * as log4jui from '../lib/log4jui'
+import { NextFunction, Request, Response, Router } from 'express';
+import { getConfigValue } from '../configuration';
+import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
+import * as log4jui from '../lib/log4jui';
 
-const logger = log4jui.getLogger('return')
+const logger = log4jui.getLogger('return');
 
 /**
  * Handle Get Organisation Route
@@ -19,18 +19,18 @@ const logger = log4jui.getLogger('return')
 async function handleGetOrganisationsRoute(req: Request, res: Response, next: NextFunction) {
   // if a search_filter is passed in the request it means we need to load the paged organisations list, filtered by the status
   if (req.query.search_filter) {
-    handleOrganisationPagingRoute(req, res, next)
+    handleOrganisationPagingRoute(req, res, next);
   } else {
     // used to load either an individual organisation or organisation user
     try {
-      const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
-      const response = await req.http.get(organisationsUri)
-      logger.info('Organisations get response' + response.data)
+      const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId);
+      const response = await req.http.get(organisationsUri);
+      logger.info('Organisations get response' + response.data);
 
       if (response.data.organisations) {
-        res.send(response.data.organisations)
+        res.send(response.data.organisations);
       } else {
-        res.send(response.data)
+        res.send(response.data);
       }
     } catch (error) {
       logError(res, error);
@@ -52,9 +52,9 @@ async function handleGetOrganisationsRoute(req: Request, res: Response, next: Ne
 async function handleOrganisationPagingRoute(req: Request, res: Response, next: NextFunction) {
   try {
     let responseData = null;
-    const organisationsUri = getOrganisationUri(req.query.status, null, null)
-    const response = await req.http.get(organisationsUri)
-    logger.info('Organisation paging response' + response.data)
+    const organisationsUri = getOrganisationUri(req.query.status, null, null);
+    const response = await req.http.get(organisationsUri);
+    logger.info('Organisation paging response' + response.data);
 
     if (response.data.organisations) {
       const filteredOrganisations = filterOrganisations(response.data.organisations, req.body.searchRequest.search_filter);
@@ -69,35 +69,35 @@ async function handleOrganisationPagingRoute(req: Request, res: Response, next: 
 }
 
 function getOrganisationUri(status, organisationId, usersOrgId): string {
-  let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
+  let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`;
 
   if (status) {
-    url = `${url}?status=${status}`
+    url = `${url}?status=${status}`;
   }
   if (organisationId) {
-    url = `${url}?id=${organisationId}`
+    url = `${url}?id=${organisationId}`;
   }
   if (usersOrgId) {
-    url = `${url}/${usersOrgId}/users`
+    url = `${url}/${usersOrgId}/users`;
   }
-  return url
+  return url;
 }
 
 async function handlePutOrganisationRoute(req: Request, res: Response, next: NextFunction) {
   if (!req.params.id) {
-    res.status(400).send('Organisation id is missing')
+    res.status(400).send('Organisation id is missing');
   } else {
     try {
-      const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
-      await req.http.put(putOrganisationsUrl, req.body)
-      res.status(200).send()
+      const putOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`;
+      await req.http.put(putOrganisationsUrl, req.body);
+      res.status(200).send();
     } catch (error) {
-      console.error(error)
+      console.error(error);
       const errReport = {
         apiError: error.data.message, apiStatusCode: error.status,
         message: 'handlePutOrganisationRoute error'
-      }
-      res.status(500).send(errReport)
+      };
+      res.status(500).send(errReport);
     }
   }
 }
@@ -111,18 +111,18 @@ async function handlePutOrganisationRoute(req: Request, res: Response, next: Nex
  */
 async function handleDeleteOrganisationRoute(req: Request, res: Response, next: NextFunction) {
   if (!req.params.id) {
-    res.status(400).send('Organisation id is missing')
+    res.status(400).send('Organisation id is missing');
   } else {
     try {
-      const delOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`
-      await req.http.delete(delOrganisationsUrl, req.body)
-      res.status(200).send({ value: 'Resource deleted successfully' })
+      const delOrganisationsUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}`;
+      await req.http.delete(delOrganisationsUrl, req.body);
+      res.status(200).send({ value: 'Resource deleted successfully' });
     } catch (error) {
       const errReport = {
         apiError: error.data.message, apiStatusCode: error.status,
         message: 'handleDeleteOrganisationRoute error'
-      }
-      res.status(error.status).send(errReport)
+      };
+      res.status(error.status).send(errReport);
     }
   }
 }
@@ -141,26 +141,26 @@ async function handleDeleteOrganisationRoute(req: Request, res: Response, next: 
  */
 async function handleGetOrganisationDeletableStatusRoute(req: Request, res: Response, next: NextFunction) {
   if (!req.params.id) {
-    res.status(400).send('Organisation id is missing')
+    res.status(400).send('Organisation id is missing');
   } else {
     try {
       const getOrganisationUsersUrl =
-        `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}/users?returnRoles=false`
-      const response = await req.http.get(getOrganisationUsersUrl)
-      let organisationDeletable = false
+        `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}/users?returnRoles=false`;
+      const response = await req.http.get(getOrganisationUsersUrl);
+      let organisationDeletable = false;
       // Check that the response contains a non-zero list of users
       if (response.data.users && response.data.users.length) {
-        organisationDeletable = response.data.users.length === 1 && response.data.users[0].idamStatus === 'PENDING'
+        organisationDeletable = response.data.users.length === 1 && response.data.users[0].idamStatus === 'PENDING';
       }
       res.send({
         organisationDeletable,
-      })
+      });
     } catch (error) {
       const errReport = {
         apiError: error.data.message, apiStatusCode: error.status,
         message: 'handleGetOrganisationDeletableStatusRoute error'
-      }
-      res.status(error.status).send(errReport)
+      };
+      res.status(error.status).send(errReport);
     }
   }
 }
@@ -212,29 +212,29 @@ function textFieldMatches(org: any, field: string, filter: string): boolean {
 }
 
 function logError(res: Response, error: any) {
-  logger.error('Organisations error ' + error)
+  logger.error(`Organisations error ${error}`);
   if (error.message) {
-    logger.error('Error message: ' + error.message)
+    logger.error(`Error message: ${error.message}`);
   }
   if (error.stack) {
-    logger.error('Error stack: ' + error.stack)
+    logger.error(`Error stack: ${error.stack}`);
   }
   if (error.code) {
-    logger.error('Error code: ' + error.code)
+    logger.error(`Error code: ${error.code}`);
   }
   const errReport = {
     apiError: error.data.message, apiStatusCode: error.status,
     message: 'handlePostOrganisationsRoute error'
-  }
-  res.status(500).send(errReport)
+  };
+  res.status(500).send(errReport);
 }
 
-export const router = Router({ mergeParams: true })
+export const router = Router({ mergeParams: true });
 
-router.get('/', handleGetOrganisationsRoute)
-router.post('/', handleOrganisationPagingRoute)
-router.put('/:id', handlePutOrganisationRoute)
-router.delete('/:id', handleDeleteOrganisationRoute)
-router.get('/:id/isDeletable', handleGetOrganisationDeletableStatusRoute)
+router.get('/', handleGetOrganisationsRoute);
+router.post('/', handleOrganisationPagingRoute);
+router.put('/:id', handlePutOrganisationRoute);
+router.delete('/:id', handleDeleteOrganisationRoute);
+router.get('/:id/isDeletable', handleGetOrganisationDeletableStatusRoute);
 
-export default router
+export default router;
