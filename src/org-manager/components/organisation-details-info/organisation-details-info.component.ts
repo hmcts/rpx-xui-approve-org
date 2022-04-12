@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { OrganisationVM} from 'src/org-manager/models/organisation';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './models/organisation-details';
 
 /**
@@ -33,6 +33,11 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     ];
   }
 
+  public pbaNumbers(): string[] {
+    return this.org && this.org.pbaNumber && this.org.pbaNumber.length ? this.org.pbaNumber :
+      this.org && this.org.pendingPaymentAccount && this.org.pendingPaymentAccount.length ? this.org.pendingPaymentAccount : [];
+  }
+
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required),
@@ -62,7 +67,7 @@ export class OrganisationDetailsInfoComponent implements OnInit {
       case RequestType.REJECT_REQUEST:
         this.deleteOrganisation(this.org);
         break;
-      default :
+      default:
         this.reviewOrganisation(this.org);
         break;
     }
