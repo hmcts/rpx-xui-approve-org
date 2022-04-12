@@ -68,6 +68,16 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe(value => this.organisationDeletable = value);
         }
 
+        if (organisationVM.pendingPaymentAccount && organisationVM.pendingPaymentAccount.length) {
+          let ids: string;
+          organisationVM.pendingPaymentAccount.forEach(pbaNumber => {
+            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+          });
+          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+            organisationVM.accountDetails = accountResponse;
+          });
+        }
+
         if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
           let ids: string;
           organisationVM.pbaNumber.forEach(pbaNumber => {
