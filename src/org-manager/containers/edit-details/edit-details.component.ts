@@ -84,7 +84,9 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         if (value) {
           this.orgId = value.organisationId;
           this.pbaNumbers = [];
-          value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string));
+          value.status === 'ACTIVE' ?
+          value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string)) :
+          value.pendingPaymentAccount.forEach(number => this.pbaNumbers.push(number as string));
           this.createPbaForm();
           this.saveDisabled = !value.pbaNumber;
           this.orgDetails$ = of(value);
