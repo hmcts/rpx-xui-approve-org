@@ -61,7 +61,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
       .subscribe(organisationVM => {
         this.organisationId = organisationVM.organisationId;
         this.organisationAdminEmail = organisationVM.adminEmail;
-        this.showUserNavigation = true;
+        this.showUserNavigation = organisationVM.status === 'ACTIVE' ? true : false;
 
         if (organisationVM.status === 'ACTIVE') {
           this.isActiveOrg = true;
@@ -72,9 +72,18 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe(value => this.organisationDeletable = value);
         }
 
+        let ids: string;
         if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
-          let ids: string;
           organisationVM.pbaNumber.forEach(pbaNumber => {
+            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+          });
+          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+            organisationVM.accountDetails = accountResponse;
+          });
+        }
+
+        if (organisationVM.pendingPaymentAccount && organisationVM.pendingPaymentAccount.length) {
+          organisationVM.pendingPaymentAccount.forEach(pbaNumber => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
           this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
