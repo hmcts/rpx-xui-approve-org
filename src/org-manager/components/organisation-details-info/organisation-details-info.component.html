@@ -79,26 +79,26 @@
           <h3 class="govuk-heading-m">PBAs </h3>
         </div>
 
-        <ng-container  *ngFor="let pba of org.pbaNumber; let i = index">
+        <ng-container  *ngFor="let pba of pbaNumbers(); let i = index">
           <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
             <dt class="govuk-summary-list__key">
               PBA number
             </dt>
             <dd class="govuk-summary-list__value">
-              <div *ngIf="org.pbaNumber.length!=0" >
+              <div *ngIf="pbaNumbers().length!=0" >
                 {{pba}}
               </div>
-              <div *ngIf="org.pbaNumber.length==0">
+              <div *ngIf="pbaNumbers().length==0">
                 No PBA Provided
               </div>
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
-                {{org.pbaNumber.length ? 'Change' : 'Add'}}
+              <a [routerLink]="['/change', 'pba', org.organisationId, pbaNumbers().join(',')]">
+                {{pbaNumbers().length ? 'Change' : 'Add'}}
               </a>
             </dd>
           </div>
-          <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="org.pbaNumber.length!=0">
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="pbaNumbers().length!=0">
             <dt class="govuk-summary-list__key">
               Name on Liberata account
             </dt>
@@ -111,7 +111,7 @@
             </dd>
           </div>
         </ng-container >
-        <div *ngIf="org.pbaNumber.length==0" class="govuk-summary-list__row govuk-summary-list__row--no-border">
+        <div *ngIf="pbaNumbers().length==0" class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
             PBA number
           </dt>

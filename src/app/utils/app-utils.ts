@@ -26,6 +26,7 @@ export class AppUtils {
       organisationVm.adminEmail = apiOrg.superUser.email;
       organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
     }
+    organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;
     organisationVm.organisationId = apiOrg.organisationIdentifier;
     organisationVm.view = 'View';
@@ -63,7 +64,8 @@ export class AppUtils {
         },
         status: 'ACTIVE',
         name: org.name,
-        paymentAccount: org.pbaNumber
+        paymentAccount: org.pbaNumber,
+        pendingPaymentAccount: org.pendingPaymentAccount
       };
       organisations.push(organisation);
     });

@@ -31,6 +31,7 @@ describe('AppUtils', () => {
           email: 'vam@ff.com'
       },
       paymentAccount: [{}],
+      pendingPaymentAccount: [{}],
       contactInformation: orgAddress
   }];
     const organisationVM = AppUtils.mapOrganisations(organisations);

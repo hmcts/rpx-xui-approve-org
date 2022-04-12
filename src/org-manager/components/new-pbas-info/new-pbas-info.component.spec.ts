@@ -3,10 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { PBAAccountApprovalComponent } from '..';
 import { OrganisationAddressComponent } from '../organisation-address';
 
+import { OrganisationVM } from '../../models/organisation';
 import { NewPBAsInfoComponent } from './new-pbas-info.component';
 
 describe('NewPBAsInfoComponent', () => {
@@ -27,6 +27,7 @@ describe('NewPBAsInfoComponent', () => {
     adminEmail: 'glen@byrne.com',
     dxNumber: [{}],
     postCode: '',
+    pendingPaymentAccount: ['PBA0101012'],
     accountDetails: [{
       account_number: 'PBA0101012',
       account_name: 'RAY NIXON BROWN',
@@ -35,7 +36,7 @@ describe('NewPBAsInfoComponent', () => {
       status: 'Deleted',
       effective_date: '2019-12-22T19:30:55.000Z'
     }]
-  }
+  };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
