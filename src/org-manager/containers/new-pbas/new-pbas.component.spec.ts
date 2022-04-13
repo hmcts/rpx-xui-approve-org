@@ -9,9 +9,9 @@ import { CookieModule } from 'ngx-cookie';
 import { of } from 'rxjs';
 import * as fromRoot from '../../../app/store';
 import { OrganisationService } from '../../services/organisation.service';
+import { PbaAccountDetails } from '../../services/pba-account-details.services';
 import * as fromOrganisationPendingStore from '../../store';
 import { NewPBAsComponent } from './new-pbas.component';
-import { PbaAccountDetails } from '../../services/pba-account-details.services';
 
 const MOCKED_ORGANISATION = {
   name: 'KapilgI2qEnW67CPGZrHvbTxt JainqyXJo07tRocHYtq2Ci0o',
