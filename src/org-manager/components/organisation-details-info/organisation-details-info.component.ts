@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { OrganisationVM} from 'src/org-manager/models/organisation';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './models/organisation-details';
 
 /**
@@ -67,7 +67,7 @@ export class OrganisationDetailsInfoComponent implements OnInit {
       case RequestType.REJECT_REQUEST:
         this.deleteOrganisation(this.org);
         break;
-      default :
+      default:
         this.reviewOrganisation(this.org);
         break;
     }
