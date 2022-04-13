@@ -28,11 +28,8 @@ describe('Organisation Reducer', () => {
     it('should return the initial state.activeOrganisations', () => {
       const action = new fromActions.LoadActiveOrganisation();
       const state = reducer(initialState, action);
-<<<<<<< HEAD
-      expect(state.activeOrganisations).toEqual({ orgEntities: {}, loaded: false, loading: true, searchString: ''});
-=======
       expect(state.activeOrganisations).toEqual({ orgEntities: {}, loaded: false, loading: true, searchString: '' });
->>>>>>> 15a78fc86a544d24c6a020569b924da72456657b
+
     });
   });
 
