@@ -15,4 +15,12 @@ describe('SignedOutComponent', () => {
   it('initializes', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should set the redirectUrl on ngOnInit()', () => {
+    component.redirectUrl = 'overwrite';
+
+    component.ngOnInit();
+
+    expect(component.redirectUrl).toBe('./');
+  });
 });
