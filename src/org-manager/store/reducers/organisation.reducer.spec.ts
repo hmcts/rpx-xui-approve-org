@@ -1,7 +1,6 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
-import { State } from '../../../app/store/reducers/index';
 import * as fromMock from '../../mock/pending-organisation.mock';
+import { OrganisationVM } from '../../models/organisation';
 import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
 
@@ -30,6 +29,7 @@ describe('Organisation Reducer', () => {
       const action = new fromActions.LoadActiveOrganisation();
       const state = reducer(initialState, action);
       expect(state.activeOrganisations).toEqual({ orgEntities: {}, loaded: false, loading: true, searchString: '' });
+
     });
   });
 
