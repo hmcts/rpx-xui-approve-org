@@ -8,12 +8,13 @@ import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { EditDetailsComponent } from './edit-details.component';
 
-
-
 describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
   let fixture: ComponentFixture<EditDetailsComponent>;
-  let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+
+  let store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
+  let storeSpy: jasmine.Spy;
+
   beforeEach((() => {
     TestBed.configureTestingModule({
         imports: [
@@ -38,10 +39,18 @@ describe('EditDetailsComponent', () => {
     fixture = TestBed.createComponent(EditDetailsComponent);
     component = fixture.componentInstance;
 
+    storeSpy = spyOn(store, 'dispatch').and.callFake(() => {});
   }));
 
   it('should have a component', () => {
       expect(component).toBeTruthy();
   });
 
+  describe('onGoBack()', () => {
+    it('should dispatch a back action to the store', () => {
+      component.onGoBack();
+
+      expect(storeSpy).toHaveBeenCalledWith(new fromRoot.Back());
+    });
+  })
 });
