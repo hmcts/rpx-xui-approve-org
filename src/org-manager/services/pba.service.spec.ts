@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { SearchPBARequest } from 'src/models/dtos';
 
 import { environment } from '../../environments/environment';
 import { PbaService } from './pba.service';
@@ -42,6 +43,17 @@ describe('PbaService', () => {
       const BODY = { id: 'bob', status: 'approved' };
       service.setPBAStatus(BODY);
       expect(httpClient.put).toHaveBeenCalledWith(`${PBA_URL}/status`, BODY);
+    });
+  });
+
+  describe('searchPbasWithPagination', () => {
+    it('should include the environment variable and body in a post request', () => {
+      const searchRequest = {
+
+      } as SearchPBARequest;
+      const BODY = { view: 'approved', searchRequest };
+      service.searchPbasWithPagination(BODY);
+      expect(httpClient.post).toHaveBeenCalledWith(`${PBA_URL}/status/approved`, BODY);
     });
   });
 });
