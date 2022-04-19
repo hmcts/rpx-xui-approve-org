@@ -42,13 +42,13 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   }
 
   private loadPendingPBAs(): void {
-
     this.resetPaginationSubscription = this.organisationService.paginationParametersReset().subscribe(() => {
       this.resetPaginationParameters();
     });
 
     this.organisationSearchSubscription = this.organisationService.organisationSearchStringChange().subscribe(
       searchString => {
+        searchString = 'active';
         this.sortedBy = {
           fieldName: 'organisationId',
           order: SortOrder.ASC
