@@ -14,16 +14,16 @@
     </thead>
     <tbody class="govuk-table__body">
       <tr class="govuk-table__row" *ngFor="let org of orgsWithPendingPBAs | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: pendingPBAsCount }">
-        <td class="govuk-table__cell">{{org.organisationName}}</td>
+        <td class="govuk-table__cell">{{org.name}}</td>
         <td class="govuk-table__cell">
           <div *ngFor="let pba of org.pbaNumbers">
             {{pba.pbaNumber}}
           </div>
         </td>
         <td class="govuk-table__cell">
-          <span *ngIf="org.superUser">
-            {{org.superUser.firstName + ' ' + org.superUser.lastName}}<br>
-            <span class="govuk-caption-m govuk-!-font-size-16">{{org.superUser.email}}</span>
+          <span *ngIf="org">
+            {{org.admin}}<br>
+            <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
           </span>
         </td>
         <td class="govuk-table__cell">
