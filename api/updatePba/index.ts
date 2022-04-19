@@ -140,14 +140,20 @@ function filterOrganisations(orgs: any, searchFilter: string): any[] {
         }
       }
       if (org.superUser) {
-          if ((org.superUser.firstName + ' ' + org.superUser.lastName).toLowerCase().includes(searchFilter)) {
-            return true;
-          }
-
-          if (org.superUser.email.toLowerCase().includes(searchFilter)) {
-            return true;
-          }
+        if ((org.superUser.firstName + ' ' + org.superUser.lastName).toLowerCase().includes(searchFilter)) {
+          return true;
         }
+
+        if (org.superUser.email.toLowerCase().includes(searchFilter)) {
+          return true;
+        }
+      }
+
+      if (org.status) {
+        if (org.status.toLowerCase() === searchFilter) {
+          return true;
+        }
+      }
     }
     return false;
   });
