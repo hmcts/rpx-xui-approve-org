@@ -137,7 +137,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.organisationSearchSubscription) {
       this.organisationSearchSubscription.unsubscribe();
-    };
+    }
 
     if (this.resetPaginationSubscription) {
       this.resetPaginationSubscription.unsubscribe();

@@ -1,8 +1,8 @@
 <ng-container *ngIf="org; else noOrg">
   <h1 class="govuk-heading-xl">Confirm your decision</h1>
-  <app-pba-account-decision *ngFor="let pba of org.pbaNumber; let i = index" [pbaNumber]="pba"
-    [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
-    [decision]="newPBAs.get(pba) === 'accepted' ? 'Approve the account' : 'Reject the account'">
+  <app-pba-account-decision *ngFor="let pba of orgFiltered.pbaNumber; let i = index" [pbaNumber]="pba"
+    [accountName]="orgFiltered.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
+    [decision]="decision[i]">
   </app-pba-account-decision>
 
   <button class="govuk-button" data-module="govuk-button" (click)="confirmPBAs()">
