@@ -41,9 +41,9 @@ describe('NewPBAsConfirmComponent', () => {
   });
 
   it('should confirm the new PBAs', () => {
-    component.newPBAs = new Map<string, string>();
-    component.newPBAs.set('test1', 'test 1 value');
-    component.newPBAs.set('test2', 'test 2 value');
+    component.newPBAs = [];
+    component.newPBAs.push({ accountName: 'test1', pbaNumber: 'test 1 value', decision: 'Approve' });
+    component.newPBAs.push({ accountName: 'test1', pbaNumber: 'test 2 value', decision: 'Reject' });
 
     const orgAddress: [OrganisationAddress] = [{
       addressLine1: 'Line1',

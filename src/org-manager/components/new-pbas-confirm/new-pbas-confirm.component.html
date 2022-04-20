@@ -2,7 +2,7 @@
   <h1 class="govuk-heading-xl">Confirm your decision</h1>
   <app-pba-account-decision *ngFor="let pba of orgFiltered.pbaNumber; let i = index" [pbaNumber]="pba"
     [accountName]="orgFiltered.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
-    [decision]="decision[i]">
+    [decision]="newPBAs[i].decision">
   </app-pba-account-decision>
 
   <button class="govuk-button" data-module="govuk-button" (click)="confirmPBAs()">

@@ -10,6 +10,7 @@ import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services/organisation.service';
 import { PbaAccountDetails } from '../../services/pba-account-details.services';
 import * as fromStore from '../../store';
+import { NewPbaPayLoad } from '../../models/new-pba-payload.model';
 
 @Component({
   selector: 'app-new-pbas',
@@ -19,7 +20,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
 
   public confirmDecision: boolean = false;
   private getAllLoadedSubscription: Subscription;
-  public newPBAs = new Map<string, string>();
+  public newPBAs: NewPbaPayLoad[] = [];
   public orgs$: Observable<OrganisationVM>;
   public organisationId: string;
 
@@ -81,8 +82,8 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     this.confirmDecision = true;
   }
 
-  public setNewPBA(event): void {
-    this.newPBAs.set(event.name, event.value);
+  public setNewPBA(event: NewPbaPayLoad): void {
+    this.newPBAs.push(event);
   }
 
   public ngOnDestroy(): void {
