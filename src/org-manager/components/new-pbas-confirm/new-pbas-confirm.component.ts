@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/caseworker-ref-data/utils/caseworker-utils';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { NotificationBannerType } from '../../../models/notification-banner-type.enum';
+import { NewPbaPayLoad } from '../../models/new-pba-payload.model';
 import { PbaService } from '../../services';
 
 @Component({
@@ -15,7 +16,7 @@ export class NewPBAsConfirmComponent implements OnDestroy {
 
   @Input() public org: OrganisationVM;
   @Input() public formControls: FormControl[];
-  @Input() public newPBAs: Map<string, string>;
+  @Input() public newPBAs: NewPbaPayLoad[];
   @Input() public decision: string[] = ['Reject', 'Approve'];
   private subscription: Subscription;
   public pbaSelected: string[] = [];
@@ -30,11 +31,10 @@ export class NewPBAsConfirmComponent implements OnDestroy {
   public confirmPBAs(): void {
     const pbaNumbers = [];
 
-    this.newPBAs.forEach((value: string, key: string) => {
+    this.newPBAs.forEach(newPBA => {
       pbaNumbers.push({
-        pbaNumber: key,
-        status: value,
-        statusMessage: ''
+        pbaNumber: newPBA.pbaNumber,
+        decision: newPBA.decision,
       });
     });
 
@@ -64,9 +64,9 @@ export class NewPBAsConfirmComponent implements OnDestroy {
     if (!this.pbaSelected.length) {
       this.org.pbaNumber = [];
       this.org.accountDetails = [];
-      this.newPBAs.forEach((value, key) => {
-            this.pbaSelected.push(key);
-            this.accountSelected.push('');
+      this.newPBAs.forEach(newPBA => {
+            this.pbaSelected.push(newPBA.pbaNumber);
+            this.accountSelected.push(newPBA.accountName);
       });
       this.org.accountDetails = this.accountSelected;
       this.org.pbaNumber = this.pbaSelected;

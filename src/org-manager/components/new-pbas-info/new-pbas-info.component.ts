@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder} from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { NewPbaPayLoad } from 'src/org-manager/models/new-pba-payload.model';
 import { OrganisationVM } from '../../models/organisation';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -12,7 +13,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy {
   @Input() public org: OrganisationVM;
   @Input() public newPBAs: Map<string, string>;
   @Output() public submitForm = new EventEmitter();
-  @Output() public newPBA = new EventEmitter<{ name: string, value: string }>();
+  @Output() public newPBA = new EventEmitter<NewPbaPayLoad>();
   @Input() public formGroup: any;
   public submitted = false;
   public formSub: Subscription;
@@ -39,7 +40,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy {
     }
   }
 
-  public setNewPBA($event): void {
-    this.newPBA.emit({ name: $event.name, value: $event.value });
+  public setNewPBA($event, accountName: string): void {
+    this.newPBA.emit({ pbaNumber: $event.name, decision: $event.value, accountName });
   }
 }
