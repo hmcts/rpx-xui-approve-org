@@ -30,18 +30,10 @@ export class NewPBAsConfirmComponent implements OnDestroy {
 
   public confirmPBAs(): void {
     const pbaNumbers = [];
-
-    // this.newPBAs.forEach(newPBA => {
-    //   pbaNumbers.push({
-    //     pbaNumber: newPBA.pbaNumber,
-    //     decision: newPBA.decision,
-    //   });
-    // });
-
     this.newPBAs.forEach(newPBA => {
       pbaNumbers.push({
         pbaNumber: newPBA.pbaNumber,
-        status: newPBA.status,
+        status: newPBA.decision,
         statusMessage: ''
       });
     });

@@ -82,7 +82,12 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
   }
 
   public setNewPBA(event: NewPbaPayLoad): void {
-    this.newPBAs.push(event);
+    const newPBAFiltered = this.newPBAs.filter(newPBA => newPBA.pbaNumber === event.pbaNumber);
+    if (newPBAFiltered.length) {
+      newPBAFiltered[0].decision = event.decision;
+    } else {
+      this.newPBAs.push(event);
+    }
   }
 
   public ngOnDestroy(): void {
