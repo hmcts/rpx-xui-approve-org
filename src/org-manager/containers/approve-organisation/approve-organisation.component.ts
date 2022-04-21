@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import {Observable} from 'rxjs';
 import {tap} from 'rxjs/operators';
+import { Go } from 'src/app/store';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromStore from '../../store/';
-import { Go } from 'src/app/store';
 
 @Component({
     selector: 'app-org-pending-approve',
