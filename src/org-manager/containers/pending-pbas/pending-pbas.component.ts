@@ -64,6 +64,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
               result.organisations.forEach(renderableOrganisation => {
                 this.orgsWithPendingPBAs.push({
                   organisationId: renderableOrganisation.organisationIdentifier ? renderableOrganisation.organisationIdentifier : '',
+                  admin: `${renderableOrganisation.superUser.firstName} ${renderableOrganisation.superUser.lastName}`,
                   name: renderableOrganisation ? renderableOrganisation.organisationName : '',
                   pbaNumbers: renderableOrganisation ? renderableOrganisation.pbaNumbers : [],
                   adminEmail: renderableOrganisation.superUser ? renderableOrganisation.superUser.email : '',
