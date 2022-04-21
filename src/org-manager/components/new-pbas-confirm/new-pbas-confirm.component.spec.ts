@@ -42,8 +42,8 @@ describe('NewPBAsConfirmComponent', () => {
 
   it('should confirm the new PBAs', () => {
     component.newPBAs = [];
-    component.newPBAs.push({ accountName: 'test1', pbaNumber: 'test 1 value', decision: 'Approve' });
-    component.newPBAs.push({ accountName: 'test1', pbaNumber: 'test 2 value', decision: 'Reject' });
+    component.newPBAs.push({ accountName: 'test1', pbaNumber: 'test 1 value', decision: 'Approve', status: 'PENDING' });
+    component.newPBAs.push({ accountName: 'test1', pbaNumber: 'test 2 value', decision: 'Reject', status: 'PENDING' });
 
     const orgAddress: [OrganisationAddress] = [{
       addressLine1: 'Line1',

@@ -40,7 +40,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy {
     }
   }
 
-  public setNewPBA($event, accountName: string): void {
-    this.newPBA.emit({ pbaNumber: $event.name, decision: $event.value, accountName });
+  public setNewPBA($event, accountName: string, status: string): void {
+    this.newPBA.emit({ pbaNumber: $event.name, decision: $event.value, accountName, status});
   }
 }

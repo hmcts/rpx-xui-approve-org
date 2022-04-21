@@ -24,7 +24,7 @@
     <h3 class="govuk-heading-m" id="heading">PBA accounts</h3>
     <app-pba-account-approval *ngFor="let pba of org.pendingPaymentAccount; let i = index" [pbaNumbers]="org.pbaNumber.join(',')"
       [pbaNumber]="pba" [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
-      [id]="'pba'" (selectOptionChanged)="setNewPBA($event, org.accountDetails[i]?.account_name)" [formGroup]="formGroup"
+      [id]="pba" (selectOptionChanged)="setNewPBA($event, org.accountDetails[i]?.account_name,'pending')" [formGroup]="formGroup"
       [submitted]="submitted">
     </app-pba-account-approval>
 

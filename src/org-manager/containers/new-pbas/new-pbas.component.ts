@@ -3,14 +3,13 @@ import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, takeWhile } from 'rxjs/operators';
-
 import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
+import { NewPbaPayLoad } from '../../models/new-pba-payload.model';
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services/organisation.service';
 import { PbaAccountDetails } from '../../services/pba-account-details.services';
 import * as fromStore from '../../store';
-import { NewPbaPayLoad } from '../../models/new-pba-payload.model';
 
 @Component({
   selector: 'app-new-pbas',
