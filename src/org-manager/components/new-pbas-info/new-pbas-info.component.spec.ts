@@ -90,9 +90,13 @@ describe('NewPBAsInfoComponent', () => {
   it('should call the newPBA output emitter when the setNewPBA method is called', () => {
     spyOn(component.newPBA, 'emit').and.callThrough();
     const testName = 'test name';
-    const testValue = 'test value';
-    component.setNewPBA({ name: testName, value: testValue });
-    expect(component.newPBA.emit).toHaveBeenCalledWith({ name: testName, value: testValue });
-  });
+    const testValue = 'rejected';
+    const status = 'accepted';
+    const accountName = 'Mike Geronimo';
 
+    component.setNewPBA({ name: testName, value: testValue }, accountName, status);
+    {
+      expect(component.newPBA.emit).toHaveBeenCalledWith({ pbaNumber: testName, decision: testValue, accountName, status });
+    }
+  });
 });
