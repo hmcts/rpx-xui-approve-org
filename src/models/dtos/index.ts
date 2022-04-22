@@ -1,3 +1,4 @@
+import { DrillDownSearch } from '../../org-manager/models/DrillDownSearch';
 export interface OrganisationSearchParameter {
   ccdId?: string;
   eventId?: string;
@@ -21,6 +22,7 @@ export interface SearchPBARequest {
   sorting_parameters: SortParameter[];
   search_by?: string;
   pagination_parameters?: PaginationParameter;
+  drill_down_search?: DrillDownSearch[];
 }
 
 export interface SearchOrganisationParameter {
