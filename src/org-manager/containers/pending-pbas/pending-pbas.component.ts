@@ -53,7 +53,6 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
           fieldName: 'organisationId',
           order: SortOrder.ASC
         };
-        this.sessionStorageService.setItem('searchString', searchString);
         this.showSpinner$ = this.loadingService.isLoading;
         const loadingToken = this.loadingService.register();
         this.performSearchPagination(searchString).pipe(
