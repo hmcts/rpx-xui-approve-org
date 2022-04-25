@@ -2,7 +2,10 @@ import { Response } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
+import { SearchPBARequest } from './models/search';
 import * as mock from './pbaService.mock';
+import { DrillDownSearch } from './models/search/index';
+import { filter } from 'rxjs/operators';
 
 mock.init();
 
@@ -120,11 +123,12 @@ export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Res
   }
 }
 
-function filterOrganisations(orgs: any, searchFilter: string): any[] {
+function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?: DrillDownSearch[]): any[] {
   const TEXT_FIELDS_TO_CHECK = ['organisationName', 'superUser.email'];
   if (!orgs) { return []; }
-  if (!searchFilter || searchFilter === '') { return orgs; }
+  if ((!searchFilter || searchFilter === '') && (!drilldownFilters || !drilldownFilters.length)) { return orgs; }
   searchFilter = searchFilter.toLowerCase();
+ 
   return orgs.filter((org: any) => {
     if (org) {
       for (const field of TEXT_FIELDS_TO_CHECK) {
@@ -133,8 +137,14 @@ function filterOrganisations(orgs: any, searchFilter: string): any[] {
         }
       }
       if (org.pbaNumbers) {
+        let drilldownFilterRelevent: string[];
+        if (drilldownFilters.length) {
+           drilldownFilterRelevent = drilldownFilters.filter(x => x.field_name === 'pbaNumber').map(y => y.search_filter);
+        }
         for (const pba of org.pbaNumbers) {
-          if (pba.pbaNumber.toLowerCase().includes(searchFilter)) {
+
+          if (pba.pbaNumber.toLowerCase().includes(searchFilter) ||
+            drilldownFilterRelevent.filter(pnumber => pba.pbaNumber.toLowerCase().includes(pnumber)).length) {
             return true;
           }
         }
