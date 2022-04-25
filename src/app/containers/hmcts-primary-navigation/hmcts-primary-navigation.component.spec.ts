@@ -28,6 +28,7 @@ describe('HmctsPrimaryNavigationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HmctsPrimaryNavigationComponent);
     component = fixture.componentInstance;
+    component.userLoggedIn = true;
     fixture.detectChanges();
   });
 
