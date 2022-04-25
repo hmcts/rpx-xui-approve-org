@@ -145,7 +145,7 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
           if (pba.pbaNumber.toLowerCase().includes(searchFilter) || (drilldownFilterRelevent &&
             drilldownFilterRelevent.filter(pnumber => pba.pbaNumber.toLowerCase().includes(pnumber.toLowerCase())).length)) {
             return true;
-          } else if (drilldownFilterRelevent.length) {
+          } else if (drilldownFilterRelevent && drilldownFilterRelevent.length) {
             return false;
           }
         }
