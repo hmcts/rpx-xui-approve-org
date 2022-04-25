@@ -2,10 +2,8 @@ import { Response } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
-import { SearchPBARequest } from './models/search';
-import * as mock from './pbaService.mock';
 import { DrillDownSearch } from './models/search/index';
-import { filter } from 'rxjs/operators';
+import * as mock from './pbaService.mock';
 
 mock.init();
 
@@ -111,7 +109,7 @@ export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Res
     const pbaStatus = req.params.status;
     const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     if (data) {
-      const filteredOrganisations = filterOrganisations(data, req.body.searchRequest.search_filter);
+      const filteredOrganisations = filterOrganisations(data, req.body.searchRequest.search_filter, req.body.searchRequest.drill_down_search);
       responseData = createPaginatedResponse(req.body.searchRequest.pagination_parameters, filteredOrganisations);
     } else {
       responseData = { organisations: [], total_records: 0 };
@@ -128,7 +126,12 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
   if (!orgs) { return []; }
   if ((!searchFilter || searchFilter === '') && (!drilldownFilters || !drilldownFilters.length)) { return orgs; }
   searchFilter = searchFilter.toLowerCase();
- 
+
+  let drilldownFilterRelevent: string[];
+  if (drilldownFilters && drilldownFilters.length) {
+    drilldownFilterRelevent = drilldownFilters.filter(x => x.field_name === 'pbaPendings').map(y => y.search_filter);
+  }
+
   return orgs.filter((org: any) => {
     if (org) {
       for (const field of TEXT_FIELDS_TO_CHECK) {
@@ -137,20 +140,18 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
         }
       }
       if (org.pbaNumbers) {
-        let drilldownFilterRelevent: string[];
-        if (drilldownFilters.length) {
-           drilldownFilterRelevent = drilldownFilters.filter(x => x.field_name === 'pbaNumber').map(y => y.search_filter);
-        }
         for (const pba of org.pbaNumbers) {
 
-          if (pba.pbaNumber.toLowerCase().includes(searchFilter) ||
-            drilldownFilterRelevent.filter(pnumber => pba.pbaNumber.toLowerCase().includes(pnumber)).length) {
+          if (pba.pbaNumber.toLowerCase().includes(searchFilter) || (drilldownFilterRelevent &&
+            drilldownFilterRelevent.filter(pnumber => pba.pbaNumber.toLowerCase().includes(pnumber.toLowerCase())).length)) {
             return true;
+          } else if (drilldownFilterRelevent.length) {
+            return false;
           }
         }
       }
       if (org.superUser) {
-        if ((org.superUser.firstName + ' ' + org.superUser.lastName).toLowerCase().includes(searchFilter)) {
+        if ((`${org.superUser.firstName} ${org.superUser.lastName}`).toLowerCase().includes(searchFilter)) {
           return true;
         }
 
