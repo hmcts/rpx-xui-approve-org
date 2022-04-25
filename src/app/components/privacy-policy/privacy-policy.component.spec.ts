@@ -42,4 +42,13 @@ describe('PrivacyPolicyComponent', () => {
     await fixture.whenStable();
     expect(documenentQuery).toHaveBeenCalledWith('#overview');
   });
+
+  describe('clickout()', () => {
+    it('should set the activated route fragment if null', async () => {
+      const documenentQuery = spyOn(document, 'querySelector').and.callThrough();
+      component.clickout({});
+      await fixture.whenStable();
+      expect(documenentQuery).toHaveBeenCalledWith('#overview');
+    })
+  })
 });

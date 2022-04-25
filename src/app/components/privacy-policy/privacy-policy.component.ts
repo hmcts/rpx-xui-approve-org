@@ -13,11 +13,7 @@ export class PrivacyPolicyComponent implements OnInit {
   private subscription: Subscription;
 
   ngOnInit() {
-    this.subscription = this.route.fragment.subscribe(fragment => {
-      try {
-        document.querySelector('#' + fragment).scrollIntoView();
-      } catch (e) { }
-    });
+    this.subscription = this.route.fragment.subscribe(this.setDocumentQuerySelectorToFragment);
   }
 
   @HostListener('document:click', ['$event'])
@@ -25,10 +21,13 @@ export class PrivacyPolicyComponent implements OnInit {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
-    this.subscription = this.route.fragment.subscribe(fragment => {
-      try {
-        document.querySelector('#' + fragment).scrollIntoView();
-      } catch (e) { }
-    });
+
+    this.subscription = this.route.fragment.subscribe(this.setDocumentQuerySelectorToFragment);
+  }
+
+  private setDocumentQuerySelectorToFragment(fragment: string): void {
+    try {
+      document.querySelector('#' + fragment).scrollIntoView();
+    } catch (e) { }
   }
 }
