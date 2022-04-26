@@ -1,4 +1,8 @@
-import { DrillDownSearch } from '../../org-manager/models/DrillDownSearch';
+export interface DrillDownSearch {
+  field_name: string;
+  search_filter: string;
+}
+
 export interface OrganisationSearchParameter {
   ccdId?: string;
   eventId?: string;
@@ -44,4 +48,3 @@ export interface PaginationParameter {
   page_number: number;
   page_size: number;
 }
-
