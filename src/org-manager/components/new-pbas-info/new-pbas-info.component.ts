@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder} from '@angular/forms';
+import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { FormBuilder, Validators} from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { OrganisationVM } from '../../models/organisation';
 @Component({
@@ -7,7 +7,7 @@ import { OrganisationVM } from '../../models/organisation';
   selector: 'app-new-pbas-info',
   templateUrl: './new-pbas-info.component.html'
 })
-export class NewPBAsInfoComponent implements OnInit, OnDestroy {
+export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Input() public org: OrganisationVM;
   @Input() public newPBAs: Map<string, string>;
@@ -20,10 +20,19 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy {
 
   }
 
+  public ngAfterViewInit(): void {
+    this.submitted = false;
+  }
+
   public ngOnInit(): void {
     this.formGroup = this.fb.group({});
-    this.org.pendingPaymentAccount.forEach(p => this.formGroup.addControl(p, this.fb.control('' , null)));
-    this.formSub = this.formGroup.valueChanges.subscribe(() => this.submitted = false);
+    this.org.pendingPaymentAccount.forEach(p => this.formGroup.addControl(p, this.fb.control('', Validators.required)));
+    this.formSub = this.formGroup.valueChanges.subscribe(() => {
+      this.submitted = false;
+
+      const opt = { onlySelf: false };
+      this.formGroup.markAsDirty(opt);
+    });
   }
 
   public ngOnDestroy(): void {

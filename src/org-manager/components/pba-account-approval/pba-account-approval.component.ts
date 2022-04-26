@@ -20,7 +20,7 @@ export class PBAAccountApprovalComponent implements OnInit {
 
   public ngOnInit(): void {
     if (this.pbaNumber) {
-    this.formGroup.get(this.pbaNumber).setValidators(Validators.required);
+   // this.formGroup.get(this.pbaNumber).setValidators(Validators.required);
     }
   }
 

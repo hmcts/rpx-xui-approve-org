@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { AfterContentInit, Component, Input, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -26,19 +26,18 @@ export class NewPBAsConfirmComponent implements OnDestroy {
 
   public confirmPBAs(): void {
     const pbaNumbers = [];
-
     this.newPBAs.forEach((value: string, key: string) => {
       pbaNumbers.push({
         pbaNumber: key,
         status: value,
         statusMessage: ''
-      })
+      });
     });
 
     const payload = {
       pbaNumbers,
       orgId: this.org.organisationId
-    }
+    };
 
     this.subscription = this.pbaService.setPBAStatus(payload)
       .subscribe({
@@ -55,7 +54,7 @@ export class NewPBAsConfirmComponent implements OnDestroy {
         error: (error: any) => {
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         }});
-  };
+  }
 
   public ngOnDestroy(): void {
     if (this.subscription) {
