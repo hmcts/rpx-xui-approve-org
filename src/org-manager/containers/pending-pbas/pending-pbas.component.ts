@@ -12,6 +12,7 @@ import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../shared/utils/
 
 import { OrganisationService, PbaService } from '../../services';
 import { PBANumberModel, RenderableOrganisation } from './models';
+import { DrillDownSearch } from '../../models/DrillDownSearch';
 
 @Component({
   selector: 'app-pending-pbas',
@@ -48,7 +49,6 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
 
     this.organisationSearchSubscription = this.organisationService.organisationSearchStringChange().subscribe(
       searchString => {
-        searchString = 'active';
         this.sortedBy = {
           fieldName: 'organisationId',
           order: SortOrder.ASC
@@ -56,7 +56,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
         this.sessionStorageService.setItem('searchString', searchString);
         this.showSpinner$ = this.loadingService.isLoading;
         const loadingToken = this.loadingService.register();
-        this.performSearchPagination(searchString).pipe(
+        this.performSearchPagination('active', searchString).pipe(
           take(1)).subscribe({
           next: (result: any) => {
               this.loadingService.unregister(loadingToken);
@@ -84,17 +84,24 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
     this.organisationService.setOrganisationSearchString(this.sessionStorageService.getItem('searchString'));
   }
 
-  public performSearchPagination(searchString): Observable<any> {
-    const searchRequest = this.getSearchPBARequestPagination(searchString);
+  public performSearchPagination(searchString, pbaSearch?: string): Observable<any> {
+    const searchRequest = this.getSearchPBARequestPagination(searchString, pbaSearch);
     return this.pbaService.searchPbasWithPagination({ searchRequest, view: this.view });
   }
 
-  public getSearchPBARequestPagination(searchString): SearchPBARequest {
+  public getSearchPBARequestPagination(searchString, pbaSearch?: string): SearchPBARequest {
+    const drillDownSearch = pbaSearch ? [
+      {
+        field_name: 'pbaPendings',
+        search_filter: pbaSearch
+      } as DrillDownSearch
+    ] : undefined;
     return {
       search_filter: searchString,
       sorting_parameters: [this.getSortParameter()],
-      pagination_parameters: this.getPaginationParameter()
-    };
+      pagination_parameters: this.getPaginationParameter(),
+      drill_down_search: drillDownSearch
+    } as SearchPBARequest;
   }
 
   public getSortParameter(): SortParameter {
