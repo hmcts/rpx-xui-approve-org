@@ -135,7 +135,7 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
   return orgs.filter((org: any) => {
     if (org) {
       for (const field of TEXT_FIELDS_TO_CHECK) {
-        if (textFieldMatches(org, field, searchFilter)) {
+        if (textFieldMatches(org, field, searchFilter) && !drilldownFilterRelevent.length) {
           return true;
         }
       }
@@ -146,10 +146,13 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
             drilldownFilterRelevent.filter(pnumber => pba.pbaNumber.toLowerCase().includes(pnumber.toLowerCase())).length)) {
             return true;
           } else if (drilldownFilterRelevent && drilldownFilterRelevent.length) {
-            return false;
+            return multipleFilter(org, drilldownFilterRelevent, TEXT_FIELDS_TO_CHECK);
           }
         }
+      } else {
+        return multipleFilter(org, drilldownFilterRelevent, TEXT_FIELDS_TO_CHECK);
       }
+
       if (org.superUser) {
         if ((`${org.superUser.firstName} ${org.superUser.lastName}`).toLowerCase().includes(searchFilter)) {
           return true;
@@ -170,6 +173,18 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
   });
 }
 
+function multipleFilter(org, drilldownFilterRelevent: string[], TEXT_FIELDS_TO_CHECK: string[]): boolean {
+  let returnValue: boolean = false;
+  drilldownFilterRelevent.forEach(searchItem => {
+    for (const field of TEXT_FIELDS_TO_CHECK) {
+      if (textFieldMatches(org, field, searchItem.toLowerCase())) {
+        returnValue = true;
+      }
+    }
+  });
+  return returnValue;
+}
+
 function createPaginatedResponse(paginationParameters: any, filteredOrganisations: any) {
   const startIndex = (paginationParameters.page_number - 1) * paginationParameters.page_size;
   let endIndex = startIndex + paginationParameters.page_size;
@@ -181,5 +196,7 @@ function createPaginatedResponse(paginationParameters: any, filteredOrganisation
 }
 
 function textFieldMatches(org: any, field: string, filter: string): boolean {
-  return org[field] && org[field].toLowerCase().includes(filter);
+  const fieldDilimation = field.split('.');
+  const fieldValue = fieldDilimation.length > 1 ? org[fieldDilimation[0]][fieldDilimation[1]] : org[fieldDilimation[0]];
+  return fieldValue && fieldValue.toLowerCase().includes(filter);
 }
