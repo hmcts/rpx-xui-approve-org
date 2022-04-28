@@ -1,6 +1,7 @@
-import {AppUtils} from './app-utils';
+import { AppUtils } from './app-utils';
 import { Organisation, OrganisationVM, OrganisationAddress, OrganisationUser } from 'src/org-manager/models/organisation';
 import { User } from '@hmcts/rpx-xui-common-lib';
+import { GlobalError } from '../store/reducers/app.reducer';
 
 describe('AppUtils', () => {
 
@@ -12,12 +13,12 @@ describe('AppUtils', () => {
       county: 'Middlesex',
       postCode: 'org.postCode',
       dxAddress: [
-          {
-              dxNumber: '1111111111111',
-              dxExchange: 'DX Exchange 1'
-          }
-              ]
-      }
+        {
+          dxNumber: '1111111111111',
+          dxExchange: 'DX Exchange 1'
+        }
+      ]
+    }
     ];
     const organisations: [Organisation] = [{
       organisationIdentifier: '9VR9JLM',
@@ -25,14 +26,14 @@ describe('AppUtils', () => {
       status: 'PENDING',
       sraId: 'SRA1234560123',
       superUser: {
-          userIdentifier: '1fab0a19-e83a-436e-8ceb-e43ab487c6ed',
-          firstName: 'Vam',
-          lastName: 'Shi',
-          email: 'vam@ff.com'
+        userIdentifier: '1fab0a19-e83a-436e-8ceb-e43ab487c6ed',
+        firstName: 'Vam',
+        lastName: 'Shi',
+        email: 'vam@ff.com'
       },
       paymentAccount: [{}],
       contactInformation: orgAddress
-  }];
+    }];
     const organisationVM = AppUtils.mapOrganisations(organisations);
     expect(organisationVM[0].organisationId).toEqual(organisations[0].organisationIdentifier);
     expect(organisationVM[0].name).toEqual(organisations[0].name);
@@ -102,82 +103,82 @@ describe('AppUtils', () => {
   it('should return 404 error org url', () => {
     expect(AppUtils.get404Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
   });
- });
+});
 
 describe('getNavItemsBasedOnRole', () => {
   it('user with role1', () => {
     const navItem = {
-        text: 'text1',
-        href: 'href1',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature1'
-        },
-        orderId: 0
+      text: 'text1',
+      href: 'href1',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature1'
+      },
+      orderId: 0
     };
     const roleBasedNav = {
-          role1: navItem
+      role1: navItem
     };
     const userRoles = ['role1', 'role2', 'role3'];
     const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
     expect(navItems).toEqual([navItem]);
-   });
+  });
 
   it('user with roles in order', () => {
     const navItem1 = {
-        text: 'text1',
-        href: 'href1',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature1'
-        },
-        orderId: 1
+      text: 'text1',
+      href: 'href1',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature1'
+      },
+      orderId: 1
     };
     const navItem2 = {
-        text: 'text2',
-        href: 'href2',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature2'
-        },
-        orderId: 2
+      text: 'text2',
+      href: 'href2',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature2'
+      },
+      orderId: 2
     };
     const navItem3 = {
-        text: 'text3',
-        href: 'href3',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature3'
-        },
-        orderId: 3
+      text: 'text3',
+      href: 'href3',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature3'
+      },
+      orderId: 3
     };
     const roleBasedNav = {
-          role1: navItem1,
-          role2: navItem2,
-          role3: navItem3
+      role1: navItem1,
+      role2: navItem2,
+      role3: navItem3
     };
     const userRoles = ['role1', 'role2', 'role3'];
     const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
     expect(navItems).toEqual([navItem1, navItem2, navItem3]);
-   });
+  });
 
   it('user with no roles', () => {
     const navItem = {
-        text: 'text1',
-        href: 'href1',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature1'
-        },
-        orderId: 0
+      text: 'text1',
+      href: 'href1',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature1'
+      },
+      orderId: 0
     };
     const roleBasedNav = {
-        role4: navItem
+      role4: navItem
     };
     const userRoles = ['role1', 'role2', 'role3'];
     const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
@@ -187,9 +188,9 @@ describe('getNavItemsBasedOnRole', () => {
 
 describe('getRoles', () => {
   it('user with roles', () => {
-      const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
-      expect(roles).toEqual(['prd-admin', 'prd-aac-system', 'xui-approver-userdata', 'cwd-admin']);
-    });
+    const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
+    expect(roles).toEqual(['prd-admin', 'prd-aac-system', 'xui-approver-userdata', 'cwd-admin']);
+  });
   it('user with no roles', () => {
     const roles = AppUtils.getRoles('j%3A%5B%5D');
     expect(roles).toEqual([]);
@@ -205,5 +206,64 @@ describe('getRoles', () => {
   it('incorrect format roles', () => {
     const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%5D%3A%5B%22test%22%5D');
     expect(roles).toEqual([]);
-  })
+  });
+
+  describe('get500Error', () => {
+    it('should return a global error object', () => {
+      const error = AppUtils.get500Error('1');
+
+      const expectedObj: GlobalError = {
+        header: 'Sorry, there is a problem with the service',
+        errors: [{
+          bodyText: 'Try again later.',
+          urlText: null,
+          url: null
+        },
+        {
+          bodyText: null,
+          urlText: 'Go back to manage users',
+          url: `/organisation-details/1`
+        }]
+      }
+
+      expect(error).toEqual(expectedObj);
+    })
+  });
+
+  describe('get400Error', () => {
+    it('should return a global error object', () => {
+      const error = AppUtils.get400Error('1');
+      const expectedObj = {
+        header: 'Sorry, there is a problem',
+        errors: [{
+          bodyText: 'to check the status of the user',
+          urlText: 'Refresh and go back',
+          url: `/organisation-details/1`
+        }]
+      };
+
+      expect(error).toEqual(expectedObj);
+    })
+  });
+
+  describe('get404Error', () => {
+    it('should return a global error object', () => {
+      const error = AppUtils.get404Error('1');
+      const expectedObj = {
+        header: 'Sorry, there is a problem with this account',
+        errors: [{
+          bodyText: 'Contact Support teams to reactivate this account',
+          urlText: null,
+          url: null
+        },
+        {
+          bodyText: null,
+          urlText: 'Go back to manage users',
+          url: `/organisation-details/1`
+        }]
+      };
+
+      expect(error).toEqual(expectedObj);
+    })
+  });
 });
