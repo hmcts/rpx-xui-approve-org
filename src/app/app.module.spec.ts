@@ -1,9 +1,7 @@
-import { metaReducers } from "./app.module"
-import { MetaReducer, StoreModule } from '@ngrx/store';
-import { Actions } from "@ngrx/effects";
+import { metaReducers } from './app.module';
+import { MetaReducer } from '@ngrx/store';
 
 describe('appModule', () => {
-
     describe('metaReducer', () => {
         it('can be set and retrieved', () => {
             const reducer: MetaReducer<any> = () => { return () => {}};
