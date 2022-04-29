@@ -25,6 +25,12 @@ export class LoggerService implements ILoggerService {
                 private envService: EnvironmentService) {
     }
 
+    private processSeriousError(message: any): void {
+       const formattedMessage = this.getMessage(message);
+       const error = new Error(formattedMessage);
+       this.monitoringService.logException(error);
+    }
+
     trace(message: any): void {
         this.monitoringService.logEvent(message);
     }
@@ -41,14 +47,10 @@ export class LoggerService implements ILoggerService {
         this.monitoringService.logEvent(message);
     }
     error(message: any): void {
-       const formattedMessage = this.getMessage(message);
-       const error = new Error(formattedMessage);
-       this.monitoringService.logException(error);
+        this.processSeriousError(message);
     }
     fatal(message: any): void {
-        const formattedMessage = this.getMessage(message);
-        const error = new Error(formattedMessage);
-        this.monitoringService.logException(error);
+        this.processSeriousError(message);
     }
     getMessage(message: any): string {
         // const jwt = this.cookieService.get(this.envService.cookies.token);
