@@ -85,6 +85,15 @@ const organisations: Organisation[] = [
       lastName: somethingLike("Bloggs"),
       email: somethingLike("this@that.com")
     },
-    paymentAccount: somethingLike(["abckd"])
+    paymentAccount: somethingLike(["abckd"]),
+    contactInformation: {
+      addressLine1: somethingLike('10 Downing Street'),
+      addressLine2: somethingLike('Westminster'),
+      addressLine3: null,
+      country: somethingLike('England'),
+      county: somethingLike('Greater London'),
+      postCode: somethingLike('SW1A 2AA'),
+      townCity: somethingLike('London'),
+    }
   }
 ]
