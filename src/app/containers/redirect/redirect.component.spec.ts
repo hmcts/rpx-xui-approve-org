@@ -1,6 +1,6 @@
 import { RedirectComponent } from './redirect.component';
 describe('RedirectComponent', () => {
-  const cookieService = jasmine.createSpyObj('cookieService', ['getObject']);
+  const cookieService = jasmine.createSpyObj('cookieService', ['get']);
   const router = jasmine.createSpyObj('router', ['navigate']);
   let component: RedirectComponent;
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('RedirectComponent', () => {
     expect(url).toBeNull();
   });
   it('ngOnInit', () => {
-    cookieService.getObject.and.returnValue('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
+    cookieService.get.and.returnValue('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
     component.ngOnInit();
     expect(router.navigate).toHaveBeenCalledWith(['organisation']);
   });

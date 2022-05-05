@@ -8,7 +8,7 @@ import { CookieService } from 'ngx-cookie';
 describe('HeaderComponent', () => {
     let fixture;
     let app;
-    const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
+    const cookieService = jasmine.createSpyObj('cookieSevice', ['get']);
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
