@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit {
           }
         });
 
-        const encodedRoles = this.cookieService.getObject('roles');
+        const encodedRoles = this.cookieService.get('roles');
         if (encodedRoles) {
           const userRoles = AppUtils.getRoles(encodedRoles);
           this.navItems = AppUtils.getNavItemsBasedOnRole(AppConstants.ROLES_BASED_NAV, userRoles);
