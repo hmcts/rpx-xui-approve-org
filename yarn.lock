@@ -5563,12 +5563,7 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
-ejs@^2.6.1:
-  version "2.7.4"
-  resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.7.4.tgz#48661287573dcc53e366c7a1ae52c3a120eec9ba"
-  integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
-
-ejs@^3.1.5:
+ejs@^3.1.5, ejs@^3.1.7:
   version "3.1.7"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-3.1.7.tgz#c544d9c7f715783dd92f0bddcf73a59e6962d006"
   integrity sha512-BIar7R6abbUxDA3bfXrO4DSgwo8I+fB5/1zgujl3HLLjwd6+9iOnrT+t3grn2qbk9vOgBubXOFwX2m9axoFaGw==
@@ -9860,17 +9855,10 @@ ngrx-store-freeze@^0.2.4:
   dependencies:
     deep-freeze-strict "^1.1.1"
 
-ngx-cookie-service@^10.1.1:
-  version "10.1.1"
-  resolved "https://registry.yarnpkg.com/ngx-cookie-service/-/ngx-cookie-service-10.1.1.tgz#4d7f41ba7d788896c59cb68283df3ae9d8ffcd37"
-  integrity sha512-HvBrYHdxMN1NvFJGEIF/8EuAg2fjxj8QwqTv9h6qZGqNLU+lUba8Pb2zRPw1YA+gqKkJawOy5dYNeH0kyPyipw==
-  dependencies:
-    tslib "^2.0.0"
-
-ngx-cookie@5.0.2:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-5.0.2.tgz#cb658180b786d511d0ef163cfe195061d0a0e0e1"
-  integrity sha512-auivWhAhC5bW1HssvtQild1TREHWb1JtcKO0e+VGe9T7LHrfi5w2qcP8C58ly64PT+brZHQBvT1Azb7a6goHZA==
+ngx-cookie@6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-cookie/-/ngx-cookie-6.0.0.tgz#fb947a8358a86b8300b5666f1086e436263c50ec"
+  integrity sha512-c4y13mbF7kKSxXi3gpb+ONKpcJY6pGfsXNnLsL/QsalrIckmn2E/wl2/WubbLURZC0jjX5tofkhOK2xPuuc1/Q==
   dependencies:
     tslib "^2.0.0"
 

@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
       if (env.oidcEnabled) {
         this.store.dispatch(new fromRoot.GetUserDetails());
       }
-      const encodedRoles = this.cookieService.getObject('roles');
+      const encodedRoles = this.cookieService.get('roles');
       if (encodedRoles) {
         this.roleService.roles = AppUtils.getRoles(encodedRoles);
       }
