@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as jwtDecode from 'jwt-decode';
+import jwt_decode from "jwt-decode";
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EnvironmentService } from '../../app/services/environment.service';
@@ -40,7 +40,7 @@ export class AuthService {
   }
 
   public decodeJwt(jwt) {
-    return jwtDecode(jwt);
+    return jwt_decode(jwt);
   }
 
  public isAuthenticated(): Observable<boolean> {
