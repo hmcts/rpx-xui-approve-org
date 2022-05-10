@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { SharedModule } from '../shared/shared.module';
 import * as fromComponents from './components';
@@ -17,6 +18,7 @@ import { effects, reducers } from './store';
   imports: [
     CommonModule,
     HttpClientModule,
+    NgxPaginationModule,
     orgManagerRouting,
     SharedModule,
     StoreModule.forFeature('orgState', reducers),
