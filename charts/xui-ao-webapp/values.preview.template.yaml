@@ -18,7 +18,7 @@ nodejs:
   autoscaling:
     enabled: false
 redis:
-  enabled: true
+  enabled: false
 idam-pr:
   enabled: true
   redirect_uris:
