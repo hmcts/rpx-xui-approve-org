@@ -25,11 +25,7 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.js'],
     },
-    externals: [nodeExternals(), {
-        superagent: {
-            externals: ['formidable']
-        }
-    }],
+    externals: [nodeExternals()],
     module: {
         rules: [
             {
