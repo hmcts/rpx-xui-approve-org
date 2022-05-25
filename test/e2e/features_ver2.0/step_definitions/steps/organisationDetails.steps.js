@@ -26,6 +26,10 @@ defineSupportCode(function ({ Given, When, Then, And }) {
     await organisationDetails.approveOrg();
   });
 
+  When(/^I select reject organisation$/, async function () {
+    await organisationDetails.rejectOrg();
+  });
+
   Then('I see the organisation state as {string}', async function (orgState) {
     expect(organisationDetails.identityBar.getText()).to.eventually.include(orgState);
   });
