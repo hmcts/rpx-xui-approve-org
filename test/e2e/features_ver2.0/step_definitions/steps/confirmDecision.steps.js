@@ -6,11 +6,15 @@ const confirmDecisionPage = require('../../pageObjects/confirmDecisionPage');
 
 defineSupportCode(function ({ When, Then }) {
 
-    Then('I am on confirm decision page', async function () {
+    Then('I am on confirm decision page for {string}', async function (action) {
+        let decisionStatements = {
+            'approval': 'Approve the organisation',
+            'rejection': 'Reject the registration'
+        };
         await browserWaits.waitForElement(confirmDecisionPage.confirmBtn);
         expect(confirmDecisionPage.heading.getText()).to.eventually.equal('Confirm your decision');
         let confirmDecisionContent = await confirmDecisionPage.getContent();
-        expect(confirmDecisionContent.Decision).to.equal('Approve the organisation');
+        expect(confirmDecisionContent.Decision).to.equal(decisionStatements[action]);
     });
 
     When('I confirm the decision', async function () {
