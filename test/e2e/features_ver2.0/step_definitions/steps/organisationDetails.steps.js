@@ -3,6 +3,8 @@
 const { defineSupportCode } = require('cucumber');
 const browserWaits = require('../../../support/customWaits');
 const organisationDetails = require('../../pageObjects/organisationDetailsPage');
+const CreateOrganisationObject = require('../../pageObjects/createOrganisationObjects');
+const ChangePbaPage = require('../../pageObjects/changePbaPage');
 
 defineSupportCode(function ({ Given, When, Then, And }) {
 
@@ -28,6 +30,16 @@ defineSupportCode(function ({ Given, When, Then, And }) {
 
   Then('I see the organisation state as {string}', async function (orgState) {
     expect(organisationDetails.identityBar.getText()).to.eventually.include(orgState);
+  });
+
+  Then('I validate PBA details for PBA {int}', async function (count) {
+    let orgDetails = await organisationDetails.getOrgDetails();
+    let expectedOrgData = CreateOrganisationObject.getOrgData();
+    expect(orgDetails['PBA number']).to.include(expectedOrgData['pba_' + count]);
+  });
+
+  Then('I navigate to change PBA page for PBA {int}', async function(count) {
+    await organisationDetails.clickChangePba(count);
   });
 
 });
