@@ -34,7 +34,7 @@ const localConfig = [
     chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
-      httpProxy: 'proxyout.reform.hmcts.net:8080',
+      //httpProxy: 'proxyout.reform.hmcts.net:8080',
       sslProxy: 'proxyout.reform.hmcts.net:8080',
       noProxy: 'localhost:3000'
     }
@@ -51,10 +51,8 @@ const config = {
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000',
     targetEnv: argv.env || 'local',
-    // username: process.env.TEST_EMAIL,
-    // password: process.env.TEST_PASSWORD,
-    username: 'vmuniganti@mailnesia.com',
-    password: 'Monday01',
+    username: process.env.TEST_EMAIL,
+    password: process.env.TEST_PASSWORD,
     approver_username: 'vamshiadminuser@mailnesia.com',
     approver_password: 'Testing123',
     fr_judge_username: process.env.FR_EMAIL,
@@ -80,7 +78,7 @@ const config = {
     strict: true,
     // format: ['node_modules/cucumber-pretty'],
     format: ['node_modules/cucumber-pretty', 'json:reports_json/results_smoke.json'],
-    tags: ['@2.0_test'],
+    tags: ['@fullfunctional'],
     require: [
       '../support/timeout.js',
       '../support/world.js',
