@@ -131,7 +131,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   }
 
   public pageChange(pageNumber: number) {
-    this.currentPageNumber = pageNumber -1;
+    this.currentPageNumber = pageNumber-1;
     this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber}));
     this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
