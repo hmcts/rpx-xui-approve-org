@@ -8,7 +8,7 @@ import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { UserApprovalGuard } from 'src/org-manager/guards';
-import { OrganisationService, PbaAccountDetails } from 'src/org-manager/services';
+import { OrganisationService, PbaAccountDetails, UsersService } from 'src/org-manager/services';
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
@@ -110,7 +110,7 @@ describe('OrganisationDetailsComponent', () => {
         CUSTOM_ELEMENTS_SCHEMA
       ],
       providers: [
-        OrganisationService, PbaAccountDetails, UserApprovalGuard,
+        OrganisationService, PbaAccountDetails, UserApprovalGuard, UsersService,
         {
           provide: ActivatedRoute,
           useValue: {
