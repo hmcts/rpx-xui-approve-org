@@ -30,7 +30,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationAdminEmail: string;
   public isActiveOrg = false;
   public organisationDeletable = false;
-  public currentPageNumber: number = 0;
+  public currentPageNumber: number = 1;
   public pageTotalSize: number;
 
   private getShowOrgDetailsSubscription: Subscription;
@@ -70,7 +70,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           this.isActiveOrg = true;
           if (this.isXuiApproverUserdata) {
             this.showUserNavigation = true;
-            this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber}));
+            this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber - 1}));
           }
           this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe(value => this.organisationDeletable = value);
         }
@@ -107,7 +107,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
         if (organisationVM.organisationId) {
           try {
             this.getAllUsers(organisationVM.organisationId);
-            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId, this.currentPageNumber).pipe(
+            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId, this.currentPageNumber - 1).pipe(
               map(data => {
                 const orgUserListModel = {
                   users: AppUtils.mapUsers(data.users),
@@ -125,14 +125,13 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
   private getAllUsers(orgId: string) {
     return this.userSerive.getAllUsersList(orgId).subscribe((userList => {
-      console.log('users count', userList.users.length);
       this.pageTotalSize = userList.users.length;
     }));
   }
 
   public pageChange(pageNumber: number) {
-    this.currentPageNumber = pageNumber - 1;
-    this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber}));
+    this.currentPageNumber = pageNumber;
+    this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber - 1}));
     this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
 
