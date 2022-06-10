@@ -202,11 +202,11 @@ describe('PendingOrganisationActions actions', () => {
       it('should create an action', () => {
         const orgId = 'orgId';
         const pageNo = 1;
-        const payload = { orgId, pageNo };
-        const action = new fromOrganisation.LoadOrganisationUsers(payload);
+        const payloadData = { orgId, pageNo };
+        const action = new fromOrganisation.LoadOrganisationUsers(payloadData);
         expect({ ...action }).toEqual({
           type: fromOrganisation.OrgActionTypes.LOAD_ORGANISATION_USERS,
-          payload: payload
+          payload: payloadData
         });
       });
     });
