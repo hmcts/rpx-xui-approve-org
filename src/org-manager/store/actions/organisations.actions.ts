@@ -182,7 +182,7 @@ export class LoadPbaAccountDetailsFail implements Action {
 
 export class LoadOrganisationUsers implements Action {
   public readonly type = OrgActionTypes.LOAD_ORGANISATION_USERS;
-  constructor(public payload: string) {}
+  constructor(public payload: {orgId: string, pageNo: number}) {}
 }
 
 export class LoadOrganisationUsersSuccess implements Action {

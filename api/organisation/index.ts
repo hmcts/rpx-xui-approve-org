@@ -23,7 +23,7 @@ async function handleGetOrganisationsRoute(req: Request, res: Response, next: Ne
   } else {
     // used to load either an individual organisation or organisation user
     try {
-      const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId);
+      const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId, req.query.page);
       const response = await req.http.get(organisationsUri);
       logger.info('Organisations get response' + response.data);
 
@@ -52,7 +52,7 @@ async function handleGetOrganisationsRoute(req: Request, res: Response, next: Ne
 async function handleOrganisationPagingRoute(req: Request, res: Response, next: NextFunction) {
   try {
     let responseData = null;
-    const organisationsUri = getOrganisationUri(req.query.status, null, null);
+    const organisationsUri = getOrganisationUri(req.query.status, null, null, null);
     const response = await req.http.get(organisationsUri);
     logger.info('Organisation paging response' + response.data);
 
@@ -68,7 +68,7 @@ async function handleOrganisationPagingRoute(req: Request, res: Response, next: 
   }
 }
 
-function getOrganisationUri(status, organisationId, usersOrgId): string {
+function getOrganisationUri(status, organisationId, usersOrgId, pageNumber): string {
   let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`;
 
   if (status) {
@@ -78,7 +78,7 @@ function getOrganisationUri(status, organisationId, usersOrgId): string {
     url = `${url}?id=${organisationId}`;
   }
   if (usersOrgId) {
-    url = `${url}/${usersOrgId}/users`;
+    url = `${url}/${usersOrgId}/users?size=50&page=${pageNumber}`;
   }
   return url;
 }

@@ -200,11 +200,13 @@ describe('PendingOrganisationActions actions', () => {
     // Load
     describe('LoadOrganisationUsers', () => {
       it('should create an action', () => {
-        const payload0 = 'orgId';
-        const action = new fromOrganisation.LoadOrganisationUsers(payload0);
+        const orgId = 'orgId';
+        const pageNo = 1;
+        const payload = { orgId, pageNo };
+        const action = new fromOrganisation.LoadOrganisationUsers(payload);
         expect({ ...action }).toEqual({
           type: fromOrganisation.OrgActionTypes.LOAD_ORGANISATION_USERS,
-          payload: payload0
+          payload: payload
         });
       });
     });
