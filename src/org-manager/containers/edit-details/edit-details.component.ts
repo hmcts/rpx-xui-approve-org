@@ -62,7 +62,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.getOrgs();
     this.getErrorMsgs();
 
-    this.changePbaFG.valueChanges.subscribe((x) => {
+    this.changePbaFG.valueChanges.subscribe((_) => {
       this.duplicateValidator();
       this.charactorLengthValidator();
     });
@@ -112,7 +112,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onAddNewBtnClicked(): void {
-    if (this.pbaInputs.length) {
+    if (this.pbaInputs && this.pbaInputs.length) {
       this.appendAnotherNumber(this.pbaInputs.length + 1);
       this.addPbaFormItem(this.pbaInputs[this.pbaInputs.length - 1].name);
     }
@@ -144,20 +144,11 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
   public createPbaForm(): void {
     if (this.pbaNumbers && !this.pbaInputs.length) {
-      for (let i = 0; i < this.pbaNumbers.length; i++) {
-        this.appendAnotherNumber(i + 1);
-      }
-
-      if (!this.pbaNumbers.length) {
-        this.appendAnotherNumber(1);
-      }
-      for (const inputs of this.pbaInputs) {
-        this.addPbaFormItem(inputs.name);
-        this.pbaNumbers = [''];
-      }
-
       this.store.pipe(select(fromStore.getPbaNumber), take(1)).subscribe((pba: string) => {
         pba.split(',').map((p, i) => {
+          this.appendAnotherNumber(i + 1);
+          this.addPbaFormItem(`pba${i + 1}`);
+
           this.changePbaFG.patchValue({ [`pba${i + 1}`]: p });
         });
       });

@@ -6,7 +6,6 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
-import _ from 'lodash';
 import { of } from 'rxjs';
 import { UpdatePbaServices } from 'src/org-manager/services';
 import * as fromRoot from '../../../app/store';
@@ -101,7 +100,9 @@ describe('EditDetailsComponent', () => {
     component = fixture.componentInstance;
     spyOn(component, 'duplicateValidator').and.callThrough();
     spyOn(component, 'underscore').and.returnValue({
-      uniq: (value) => ['PBA1234567', 'PBA1234567'] });
+      uniq: (_) => ['PBA1234567', 'PBA1234567'] });
+    
+    fixture.detectChanges();
   }));
 
   afterEach(() => {
@@ -109,13 +110,21 @@ describe('EditDetailsComponent', () => {
   });
 
   it('should have a component', () => {
-    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should change PBA after adding another item', () => {
+    component.pbaInputs = [{
+      label: 'test',
+      hint: 'test',
+      name: 'test',
+      id: 'test',
+      type: 'test',
+      classes: 'test'
+    }];
     fixture.detectChanges();
     component.onAddNewBtnClicked();
+    fixture.detectChanges();
     expect(component.duplicateValidator).toHaveBeenCalled();
   });
 });
