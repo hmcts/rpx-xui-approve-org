@@ -118,21 +118,10 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-<<<<<<< Updated upstream
   public remove(data: PBAConfig) {
     this.changePbaFG.removeControl(data.name);
     this.pbaInputs = this.pbaInputs.filter(input => input.id !== data.id);
   }
-=======
-    this.store.pipe(select(fromStore.getPbaNumber), take(1)).subscribe((pba: string) => {
-      console.log(pba);
-      pba.split(',').map((p, i) => {
-        this.changePbaFG.patchValue({[`pba${i + 1}`]: p});
-      });
-
-      console.log(this.changePbaFG);
-    });
->>>>>>> Stashed changes
 
   public appendAnotherNumber(index: number) {
     const config = new PBAConfig();
