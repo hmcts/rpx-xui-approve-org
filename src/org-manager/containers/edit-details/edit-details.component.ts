@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+<<<<<<< Updated upstream
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -13,6 +14,14 @@ import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model'
 import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
 import { OrganisationService } from '../../services/organisation.service';
 import { UpdatePbaServices } from '../../services/update-pba.services';
+=======
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
+import { Observable, Subscription } from 'rxjs';
+import { take, tap } from 'rxjs/operators';
+import * as fromRoot from '../../../app/store';
+import { OrgManagerConstants } from '../../org-manager.constants';
+>>>>>>> Stashed changes
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 @Component({
@@ -118,10 +127,21 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+<<<<<<< Updated upstream
   public remove(data: PBAConfig) {
     this.changePbaFG.removeControl(data.name);
     this.pbaInputs = this.pbaInputs.filter(input => input.id !== data.id);
   }
+=======
+    this.store.pipe(select(fromStore.getPbaNumber), take(1)).subscribe((pba: string) => {
+      console.log(pba);
+      pba.split(',').map((p, i) => {
+        this.changePbaFG.patchValue({[`pba${i + 1}`]: p});
+      });
+
+      console.log(this.changePbaFG);
+    });
+>>>>>>> Stashed changes
 
   public appendAnotherNumber(index: number) {
     const config = new PBAConfig();
