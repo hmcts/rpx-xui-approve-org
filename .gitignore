@@ -23,6 +23,7 @@ api/node_modules/
 .sessions/
 
 # IDE - VSCode
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
