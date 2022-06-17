@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-<<<<<<< Updated upstream
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -14,14 +13,6 @@ import { PendingPaymentAccount } from '../../models/pendingPaymentAccount.model'
 import { OrgManagerConstants, PBAConfig } from '../../org-manager.constants';
 import { OrganisationService } from '../../services/organisation.service';
 import { UpdatePbaServices } from '../../services/update-pba.services';
-=======
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { select, Store } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
-import * as fromRoot from '../../../app/store';
-import { OrgManagerConstants } from '../../org-manager.constants';
->>>>>>> Stashed changes
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
 @Component({
