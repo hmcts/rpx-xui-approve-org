@@ -19,12 +19,12 @@
               <div style="width:50%" *ngFor="let data of pbaInputs; let i = index">
                 <div style="display:inline-block">
                    <div style="display:inline-block">
-                  <xuilib-gov-uk-input
-                    [config]="data"
-                    [errorMessage]="errors[data.name]"
-                    [group]="changePbaFG">
-                  </xuilib-gov-uk-input>
-                </div>
+                    <xuilib-gov-uk-input
+                      [config]="data"
+                      [errorMessage]="errors[data.name]"
+                      [group]="changePbaFG">
+                    </xuilib-gov-uk-input>
+                  </div>
                 </div>
                 <button type="button"
                   style="display: inline-block; margin-bottom: 30px;" 
