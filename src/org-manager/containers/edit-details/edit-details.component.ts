@@ -62,7 +62,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     this.getOrgs();
     this.getErrorMsgs();
 
-    this.changePbaFG.valueChanges.subscribe((_) => {
+    this.changePbaFG.valueChanges.subscribe((x) => {
       this.duplicateValidator();
       this.charactorLengthValidator();
     });

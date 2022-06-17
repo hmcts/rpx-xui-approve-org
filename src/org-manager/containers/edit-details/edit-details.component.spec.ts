@@ -101,7 +101,7 @@ describe('EditDetailsComponent', () => {
     spyOn(component, 'duplicateValidator').and.callThrough();
     spyOn(component, 'underscore').and.returnValue({
       uniq: (_) => ['PBA1234567', 'PBA1234567'] });
-    
+
     fixture.detectChanges();
   }));
 
