@@ -26,20 +26,20 @@ import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
 import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
 import config from 'config';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { LoggerModule, NGXLogger, NGXLoggerHttpService, NgxLoggerLevel, NGXMapperService } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
-import {AuthService} from '../services/auth/auth.service';
+import { AuthService } from '../services/auth/auth.service';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
 import { CryptoWrapper } from './services/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { LoggerService } from './services/logger.service';
 import { MonitoringService } from './services/monitoring.service';
 
-import {NgIdleKeepaliveModule} from '@ng-idle/keepalive';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
+import { EnvironmentConfig } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 import { EnvironmentService } from './services/environment.service';
-import {LogOutKeepAliveService} from './services/keep-alive/keep-alive.service';
-import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../models/environmentConfig.model'
+import { LogOutKeepAliveService } from './services/keep-alive/keep-alive.service';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -75,6 +75,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     NgIdleKeepaliveModule.forRoot()
   ],
   providers: [
+    NGXLogger,
+    NGXLoggerHttpService,
+    NGXMapperService,
     LogOutKeepAliveService,
     { provide: RouterStateSerializer, useClass: CustomSerializer },
     AuthService,
