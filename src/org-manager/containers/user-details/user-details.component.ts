@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
-import { ofType, Actions } from '@ngrx/effects';
+import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import {Observable, pipe} from 'rxjs';
+import { Observable } from 'rxjs';
 import { AppConstants } from 'src/app/app.constants';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
