@@ -1,7 +1,5 @@
-import { HttpClient } from '@angular/common/http';
-import { TestBed, inject } from '@angular/core/testing';
-import { MonitoringService, IMonitoringService, MonitorConfig } from './monitoring.service';
-import { Observable, of } from 'rxjs';
+import { of } from 'rxjs';
+import { MonitorConfig, MonitoringService } from './monitoring.service';
 
 describe('Monitoring service', () => {
     const mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', {get: of({key: 'Some Value'})});
@@ -14,7 +12,7 @@ describe('Monitoring service', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should be able to LogException and Should not call the http service', () => {
+    it('should be able to LogException and Should not call the http service', async() => {
         mockedConfig.instrumentationKey = 'somevalue';
         const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
         expect(service).toBeTruthy();
@@ -24,7 +22,7 @@ describe('Monitoring service', () => {
         expect(mockedAppInsights.trackException).toHaveBeenCalled();
     });
 
-    it('should be able to LogEvent', () => {
+    it('should be able to LogEvent', async() => {
         mockedConfig.instrumentationKey = 'somevalue';
         const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
         expect(service).toBeTruthy();
@@ -34,7 +32,7 @@ describe('Monitoring service', () => {
         expect(mockedAppInsights.trackEvent).toHaveBeenCalled();
     });
 
-    it('should be able to LogPageview', () => {
+    it('should be able to LogPageview', async() => {
         mockedConfig.instrumentationKey = 'somevalue';
         const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
         expect(service).toBeTruthy();
@@ -44,7 +42,7 @@ describe('Monitoring service', () => {
         expect(mockedAppInsights.trackPageView).toHaveBeenCalled();
     });
 
-    it('should be able to LogPageview', () => {
+    it('should be able to LogPageview', async() => {
         mockedConfig.instrumentationKey = null;
         const service = new MonitoringService(mockedHttpClient, mockedConfig, mockedAppInsights);
         expect(service).toBeTruthy();
