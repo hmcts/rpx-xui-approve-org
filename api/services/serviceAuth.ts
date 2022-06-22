@@ -5,8 +5,9 @@ import { http } from '../lib/http'
 import * as log4jui from '../lib/log4jui'
 import { getHealth, getInfo } from '../lib/util'
 
+import { EnhancedRequest } from 'models/enhanced-request.interface'
 import { getConfigValue } from '../configuration'
-import {MICROSERVICE, S2S_SECRET, SERVICE_S2S_PATH} from '../configuration/references'
+import { MICROSERVICE, S2S_SECRET, SERVICE_S2S_PATH } from '../configuration/references'
 
 const url = getConfigValue(SERVICE_S2S_PATH)
 
@@ -55,11 +56,11 @@ export async function postS2SLease() {
 }
 export const router = express.Router({ mergeParams: true })
 
-router.get('/health', (req, res, next) => {
+router.get('/health', (req: EnhancedRequest, res, next) => {
     res.status(200).send(getHealth(url, req))
 })
 
-router.get('/info', (req, res, next) => {
+router.get('/info', (req: EnhancedRequest, res, next) => {
     res.status(200).send(getInfo(url, req))
 })
 export default router

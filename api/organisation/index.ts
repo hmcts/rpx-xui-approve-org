@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response, Router } from 'express'
+import { NextFunction, Response, Router } from 'express'
 import { getConfigValue } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
+import { EnhancedRequest } from '../models/enhanced-request.interface'
 
 const logger = log4jui.getLogger('return')
 
@@ -16,7 +17,7 @@ const logger = log4jui.getLogger('return')
  * @param res - {organisations: [{org1}, {org2}]} OR {org1}
  * @param next
  */
-async function handleGetOrganisationsRoute(req: Request, res: Response, next: NextFunction) {
+async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
     try {
         const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
         const response = await req.http.get(organisationsUri)
@@ -59,7 +60,7 @@ function getOrganisationUri(status, organisationId, usersOrgId): string {
     return url
 }
 
-async function handlePutOrganisationRoute(req: Request, res: Response, next: NextFunction) {
+async function handlePutOrganisationRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
     if (!req.params.id) {
         res.status(400).send('Organisation id is missing')
     } else {
@@ -83,7 +84,7 @@ async function handlePutOrganisationRoute(req: Request, res: Response, next: Nex
  *
  * @return {Promise<void>}
  */
-async function handleDeleteOrganisationRoute(req: Request, res: Response, next: NextFunction) {
+async function handleDeleteOrganisationRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
   if (!req.params.id) {
     res.status(400).send('Organisation id is missing')
   } else {
@@ -111,7 +112,7 @@ async function handleDeleteOrganisationRoute(req: Request, res: Response, next: 
  * (There is no direct PRD API call that AO users can use to check the status of a (super)user, so this is the
  * alternative.)
  */
-async function handleGetOrganisationDeletableStatusRoute(req: Request, res: Response, next: NextFunction) {
+async function handleGetOrganisationDeletableStatusRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
   if (!req.params.id) {
     res.status(400).send('Organisation id is missing')
   } else {

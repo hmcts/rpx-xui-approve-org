@@ -1,5 +1,6 @@
-import {Request} from 'express'
-import {Response} from 'express'
+import { Response } from 'express'
+import { EnhancedRequest } from '../models/enhanced-request.interface'
+
 export function asyncReturnOrError(
     promise: any,
     message: string,
@@ -71,13 +72,13 @@ export function isObject(o) {
     return o !== null && typeof o === 'object' && Array.isArray(o) === false
 }
 
-export async function getHealth(url: string, req: Request) {
+export async function getHealth(url: string, req: EnhancedRequest) {
     const response = await req.http.get(`${url}/health`)
 
     return response.data
 }
 
-export async function getInfo(url: string, req: Request) {
+export async function getInfo(url: string, req: EnhancedRequest) {
     const response = await req.http.get(`${url}/info`)
 
     return response.data
