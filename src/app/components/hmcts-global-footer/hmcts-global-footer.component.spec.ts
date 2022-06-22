@@ -1,9 +1,9 @@
+import { Component, Input, ViewChild } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
-import {Component, DebugElement, Input, ViewChild} from '@angular/core';
-import {Helper, Navigation} from '../../containers/footer/footer.model';
-import { AppConstants } from '../../app.constants';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AppConstants } from '../../app.constants';
+import { Helper, Navigation } from '../../containers/footer/footer.model';
+import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
 
 
 describe('HmctsGlobalFooterComponent', () => {
@@ -17,7 +17,7 @@ describe('HmctsGlobalFooterComponent', () => {
     class TestDummyHostComponent {
         @Input() help: Helper;
         @Input() navigation: Navigation;
-        @ViewChild(HmctsGlobalFooterComponent)
+        @ViewChild(HmctsGlobalFooterComponent, { static: false })
         public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;
     }
 
