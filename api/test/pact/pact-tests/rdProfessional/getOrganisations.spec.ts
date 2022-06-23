@@ -71,7 +71,7 @@ function assertResponse(dto: Organisation[]): void {
   }
 }
 
-const organisations: Organisation[] = [
+const organisations = [
   {
     companyNumber: somethingLike('A1000'),
     companyUrl: somethingLike('www.google.com'),
@@ -87,4 +87,5 @@ const organisations: Organisation[] = [
     },
     paymentAccount: somethingLike(["abckd"])
   }
-]
+] as Organisation[];
+
