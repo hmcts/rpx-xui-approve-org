@@ -34,8 +34,6 @@ const pbaErrorAlreadyUsedMessages = [`${pbaErrorAlreadyUsedHeaderMessage}You sho
 const pbaErrorEnteredMoreThanOnceMessage = `This PBA number ${errorMessagePlaceHolder} has been entered more than once.`;
 const pbaErroEnteredMoreThanOnceHeaderMessages = [`There is a problem. ${pbaErrorEnteredMoreThanOnceMessage} `];
 
-//     You have entered this PBA number more than once
-
 const statusCodes = {
   serverErrors: [0, 500, 502, 503, 504]
 };
