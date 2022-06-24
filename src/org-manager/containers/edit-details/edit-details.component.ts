@@ -21,7 +21,7 @@ import { PBANumberModel } from '../pending-pbas/models';
 })
 export class EditDetailsComponent implements OnInit, OnDestroy {
   public changePbaFG: FormGroup;
-  public pbaInputs: PBAConfig[];
+  public pbaInputs: PBAConfig[] = [];
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
   public orgDetails$: Observable<any>;
@@ -58,7 +58,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public get fPba() { return this.changePbaFG.controls; }
 
   public ngOnInit(): void {
-    this.pbaInputs = [];
     this.getOrgs();
     this.getErrorMsgs();
 
@@ -161,6 +160,16 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  public navigateToErrorElement(elementId: string): void {
+    if (elementId) {
+      const htmlElement = document.getElementById(elementId);
+      if (htmlElement) {
+        htmlElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        htmlElement.focus();
+      }
+    }
+  }
+
   public onSubmitPba(): void {
     this.resetErrors();
     let isValid = true;
@@ -182,6 +191,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
       }, (error) => {
         const data = error.error;
+
         if (data.errorDescription) {
           const pbaId = this.pbaDepiction(data.errorDescription);
           const index = this.underscore().indexOf(paymentAccountUpdated, pbaId, 0);
@@ -190,20 +200,20 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
             if (data && data.errorDescription) {
               const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
               const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-              this.pbaErrorsHeader$ = of({ items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
+              this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
               this.pbaError$ = of({ [`pba${index + 1}`]: { messages: [errorMessage], isInvalid: true } });
             }
           } else {
-            const errorHeaderMessage = OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
-            this.errorHeader.items.push({
-              id: `pba${this.errorHeader.items.length + 1}`, message: [errorHeaderMessage]
-            });
+            const isInvalidPba = data.errorMessage.indexOf('3 :');
+            const errorHeaderMessage = isInvalidPba > -1 ? OrgManagerConstants.PBA_ERROR_VALID_PBA_MESSAGE :  OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
+            this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: `pba${this.errorHeader.items.length + 1}`, message: [errorHeaderMessage]}], isFormValid: false });
+            this.pbaError$ = of({ [`pba${this.errorHeader.items.length + 1}`]: { messages: [errorHeaderMessage], isInvalid: true } });
           }
         } else {
-          this.errorHeader.isFromValid = false;
           const errorHeaderMessage = OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
-          this.errorHeader.items.push({
-            id: `pba${this.errorHeader.items.length + 1}`, message: [errorHeaderMessage]});
+
+          this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: `pba${this.errorHeader.items.length + 1}`, message: [errorHeaderMessage]}], isFormValid: false });
+          this.pbaError$ = of({ [`pba${this.errorHeader.items.length + 1}`]: { messages: [errorHeaderMessage], isInvalid: true } });
         }
       });
     }
@@ -328,6 +338,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     for (let index = 0; index < paymentAccountsWrapper.length; index++) {
       const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
       const errorMessage = OrgManagerConstants.PBA_ERROR_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
+      this.errorHeader.header = 'There is a problem.';
 
       if (typeof paymentAccountsWrapper[index] === 'string' && paymentAccountsWrapper[index].length > 2 &&
         (paymentAccountsWrapper[index].length !== 10 || paymentAccountsWrapper[index].substring(0, 3) !== 'PBA')) {
