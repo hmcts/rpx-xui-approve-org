@@ -120,6 +120,15 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public remove(data: PBAConfig) {
     this.changePbaFG.removeControl(data.name);
     this.pbaInputs = this.pbaInputs.filter(input => input.id !== data.id);
+
+    this.errorHeader.items = this.errorHeader.items.filter((item) => item.id !== data.name);
+
+    if (this.errorInline[data.name]) {
+      delete this.errorInline[data.name];
+    }
+
+    this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: this.errorHeader.items, isFormValid: false });
+    this.pbaError$ = of(this.errorInline);
   }
 
   public appendAnotherNumber(index: number) {
@@ -191,30 +200,60 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
       }, (error) => {
         const data = error.error;
+        const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
+        const formControlsWithError = [];
 
-        if (data.errorDescription) {
-          const pbaId = this.pbaDepiction(data.errorDescription);
-          const index = this.underscore().indexOf(paymentAccountUpdated, pbaId, 0);
+        paymentAccountUpdated.forEach(paymentAccount => {
+          if (data.errorDescription && data.errorDescription.indexOf(paymentAccount) > -1) {
+            const errorKey = formControlsKeys.find((key) => this.fPba[key].value === paymentAccount)
 
-          if (index > -1) {
-            if (data && data.errorDescription) {
-              const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-              const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-              this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: `pba${index + 1}`, message: [errorHeaderMessage] }], isFormValid: false });
-              this.pbaError$ = of({ [`pba${index + 1}`]: { messages: [errorMessage], isInvalid: true } });
+            formControlsWithError.push(errorKey);
+          }
+        });
+
+        formControlsWithError.forEach((controlName) => {
+          if (data.errorDescription) {
+            const pbaId = this.pbaDepiction(data.errorDescription);
+            const index = this.underscore().indexOf(paymentAccountUpdated, pbaId, 0);
+  
+            if (index > -1) {
+              if (data && data.errorDescription) {
+                const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+                const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
+                this.errorInline = { 
+                  [controlName]: { messages: [errorMessage], isInvalid: true }, 
+                  ...this.errorInline 
+                };
+                this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage] }], isFormValid: false });
+                this.pbaError$ = of(this.errorInline);
+              }
+            } else {
+              const isInvalidPba = data.errorMessage.indexOf('3 :');
+              const errorHeaderMessage = isInvalidPba > -1 ? OrgManagerConstants.PBA_ERROR_VALID_PBA_MESSAGE :  OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
+              this.errorHeader.items.push({
+                id: controlName, message: [errorHeaderMessage]
+              });
+              this.errorInline = { 
+                [controlName]: { messages: [errorHeaderMessage], isInvalid: true }, 
+                ...this.errorInline 
+              };
+              this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage]}], isFormValid: false });
+              this.pbaError$ = of(this.errorInline);
             }
           } else {
-            const isInvalidPba = data.errorMessage.indexOf('3 :');
-            const errorHeaderMessage = isInvalidPba > -1 ? OrgManagerConstants.PBA_ERROR_VALID_PBA_MESSAGE :  OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
-            this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: `pba${this.errorHeader.items.length + 1}`, message: [errorHeaderMessage]}], isFormValid: false });
-            this.pbaError$ = of({ [`pba${this.errorHeader.items.length + 1}`]: { messages: [errorHeaderMessage], isInvalid: true } });
+            const errorHeaderMessage = OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
+  
+            this.errorHeader.isFromValid = false;
+            this.errorHeader.items.push({
+              id: controlName, message: [errorHeaderMessage]});
+            this.errorInline = { 
+              [controlName]: { messages: [errorHeaderMessage], isInvalid: true }, 
+              ...this.errorInline 
+            };
+            this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage]}], isFormValid: false });
+            this.pbaError$ = of(this.errorInline);
           }
-        } else {
-          const errorHeaderMessage = OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
-
-          this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: `pba${this.errorHeader.items.length + 1}`, message: [errorHeaderMessage]}], isFormValid: false });
-          this.pbaError$ = of({ [`pba${this.errorHeader.items.length + 1}`]: { messages: [errorHeaderMessage], isInvalid: true } });
-        }
+        });
       });
     }
   }
@@ -262,23 +301,26 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     if (!duplicates.length) {
       const payAccounts = Object.keys(value).map(key => value[key]).filter(item => item !== '');
       for (let index = 0; index < payAccounts.length; index++) {
-        if (this.errorInline[`pba${index}`]) {
-          if (this.errorInline[`pba${index}`].messages.filter(message => message.indexOf('has been entered more than once') > -1).length) {
-            this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message.indexOf('has been entered more than once') === -1);
+        const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
+        const errorKey = formControlsKeys.find((key) => this.fPba[key].value === payAccounts[index]);
+
+        if (this.errorInline[errorKey]) {
+          if (this.errorInline[errorKey].messages.filter(message => message.indexOf('has been entered more than once') > -1).length) {
+            this.errorInline[errorKey].messages = this.errorInline[`pba${index}`].messages.filter(message => message.indexOf('has been entered more than once') === -1);
           }
-          if (!this.errorInline[`pba${index}`].messages.length) {
-            delete this.errorInline[`pba${index}`];
+          if (!this.errorInline[errorKey].messages.length) {
+            delete this.errorInline[errorKey];
           }
         }
 
-        if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
-          const items = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
+        if (this.errorHeader.items.filter(x => x.id === errorKey).length) {
+          const items = this.errorHeader.items.filter(x => x.id === errorKey);
           if (items[0].message.filter(m => m.indexOf('has been entered more than once') > -1).length) {
             items[0].message = items[0].message.filter(m => m.indexOf('has been entered more than once') === -1);
           }
 
           if (!items[0].message.length) {
-            this.underscore().remove(this.errorHeader.items, { id: `pba${index + 1}` });
+            this.underscore().remove(this.errorHeader.items, { id: errorKey });
           }
         }
       }
@@ -287,35 +329,40 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     duplicates.forEach(payment => {
       validation = false;
       for (let index = 0; index < paymentAccountComparables.length; index++) {
+        const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
+        const errorKeys = formControlsKeys.filter((key) => this.fPba[key].value === paymentAccountComparables[index]);
+        const lastDuplicateErrorKey = errorKeys[errorKeys.length - 1];
         const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ENTERED_MORE_THAN_ONCE_HEADER_MESSAGE[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, payment);
         const errorMessage = OrgManagerConstants.PBA_ERROR_ENTERED_MORE_THAN_ONCE_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, payment);
+
+        
         if (paymentAccountComparables[index] === payment) {
-          if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
-            const pbaResult = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
+          if (this.errorHeader.items.filter(x => x.id === lastDuplicateErrorKey).length) {
+            const pbaResult = this.errorHeader.items.filter(x => x.id === lastDuplicateErrorKey);
             const messageResult = pbaResult[0].message.filter(message => message === errorHeaderMessage);
             if (!messageResult.length) {
               pbaResult[0].message.push(errorHeaderMessage);
             }
           } else {
-            this.errorHeader.items.push({ id: `pba${index + 1}`, message: [errorHeaderMessage] });
+            this.errorHeader.items.push({ id: lastDuplicateErrorKey, message: [errorHeaderMessage] });
           }
           this.errorHeader.isFromValid = false;
-          if (!this.errorInline[`pba${index}`]) {
-            this.errorInline[`pba${index}`] = { messages: [errorMessage], isInvalid: true };
+          if (!this.errorInline[lastDuplicateErrorKey]) {
+            this.errorInline[lastDuplicateErrorKey] = { messages: [errorMessage], isInvalid: true };
           } else {
-            if (!this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
-              this.errorInline[`pba${index}`].messages.push(errorMessage);
+            if (!this.errorInline[lastDuplicateErrorKey].messages.filter(message => message === errorMessage).length) {
+              this.errorInline[lastDuplicateErrorKey].messages.push(errorMessage);
             }
-            this.errorInline[`pba${index}`].inInvalid = true;
+            this.errorInline[lastDuplicateErrorKey].inInvalid = true;
           }
         } else {
-          if (this.errorInline[`pba${index}`]) {
-            if (this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
-              this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message !== errorMessage);
+          if (this.errorInline[lastDuplicateErrorKey]) {
+            if (this.errorInline[lastDuplicateErrorKey].messages.filter(message => message === errorMessage).length) {
+              this.errorInline[lastDuplicateErrorKey].messages = this.errorInline[`pba${index}`].messages.filter(message => message !== errorMessage);
             }
 
-            if (!this.errorInline[`pba${index}`].messages.length) {
-              delete this.errorInline[`pba${index}`];
+            if (!this.errorInline[lastDuplicateErrorKey].messages.length) {
+              delete this.errorInline[lastDuplicateErrorKey];
             }
           }
         }
@@ -336,56 +383,60 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     const paymentAccountsWrapper = [...paymentAccounts];
     for (let index = 0; index < paymentAccountsWrapper.length; index++) {
+      const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
+      const errorKeys = formControlsKeys.filter((key) => this.fPba[key].value === paymentAccountsWrapper[index]);
       const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
       const errorMessage = OrgManagerConstants.PBA_ERROR_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
       this.errorHeader.header = 'There is a problem.';
 
-      if (typeof paymentAccountsWrapper[index] === 'string' && paymentAccountsWrapper[index].length > 2 &&
+      errorKeys.forEach((eKey) => {
+        if (typeof paymentAccountsWrapper[index] === 'string' && paymentAccountsWrapper[index].length > 2 &&
         (paymentAccountsWrapper[index].length !== 10 || paymentAccountsWrapper[index].substring(0, 3) !== 'PBA')) {
-        validation = false;
+          validation = false;
 
-        if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
-          const pbaResult = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
-          const messageResult = pbaResult[0].message.filter(message => message === errorHeaderMessage);
-          if (!messageResult.length) {
-            pbaResult[0].message.push(errorHeaderMessage);
+          if (this.errorHeader.items.filter(x => x.id === eKey).length) {
+            const pbaResult = this.errorHeader.items.filter(x => x.id === eKey);
+            const messageResult = pbaResult[0].message.filter(message => message === errorHeaderMessage);
+            if (!messageResult.length) {
+              pbaResult[0].message.push(errorHeaderMessage);
+            }
+          } else {
+            this.errorHeader.items.push({ id: eKey, message: [errorHeaderMessage] });
+          }
+          this.errorHeader.isFromValid = false;
+
+          if (!this.errorInline[eKey]) {
+            this.errorInline[eKey] = { messages: [errorMessage], isInvalid: true };
+            this.errorInline[eKey].inInvalid = true;
+          } else {
+            if (!this.errorInline[eKey].messages.filter(message => message === errorMessage).length) {
+              this.errorInline[eKey].messages.push(errorMessage);
+            }
+            this.errorInline[eKey].inInvalid = true;
           }
         } else {
-          this.errorHeader.items.push({ id: `pba${index + 1}`, message: [errorHeaderMessage] });
-        }
-        this.errorHeader.isFromValid = false;
+          if (this.errorInline[eKey]) {
+            if (this.errorInline[eKey].messages.filter(message => message === errorMessage).length) {
+              this.errorInline[eKey].messages = this.errorInline[eKey].messages.filter(message => message !== errorMessage);
+            }
 
-        if (!this.errorInline[`pba${index}`]) {
-          this.errorInline[`pba${index}`] = { messages: [errorMessage], isInvalid: true };
-          this.errorInline[`pba${index}`].inInvalid = true;
-        } else {
-          if (!this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
-            this.errorInline[`pba${index}`].messages.push(errorMessage);
-          }
-          this.errorInline[`pba${index}`].inInvalid = true;
-        }
-      } else {
-        if (this.errorInline[`pba${index}`]) {
-          if (this.errorInline[`pba${index}`].messages.filter(message => message === errorMessage).length) {
-            this.errorInline[`pba${index}`].messages = this.errorInline[`pba${index}`].messages.filter(message => message !== errorMessage);
+            if (!this.errorInline[eKey].messages.length) {
+              delete this.errorInline[eKey];
+            }
           }
 
-          if (!this.errorInline[`pba${index}`].messages.length) {
-            delete this.errorInline[`pba${index}`];
+          if (this.errorHeader.items.filter(x => x.id === eKey).length) {
+            const items = this.errorHeader.items.filter(x => x.id === eKey);
+            if (items[0].message.filter(m => m.indexOf('for example PBA1234567') > -1).length) {
+              items[0].message = items[0].message.filter(m => m.indexOf('for example PBA1234567') === -1);
+            }
+
+            if (!items[0].message.length) {
+              this.underscore().remove(this.errorHeader.items, { id: eKey });
+            }
           }
         }
-
-        if (this.errorHeader.items.filter(x => x.id === `pba${index + 1}`).length) {
-          const items = this.errorHeader.items.filter(x => x.id === `pba${index + 1}`);
-          if (items[0].message.filter(m => m.indexOf('for example PBA1234567') > -1).length) {
-            items[0].message = items[0].message.filter(m => m.indexOf('for example PBA1234567') === -1);
-          }
-
-          if (!items[0].message.length) {
-            this.underscore().remove(this.errorHeader.items, { id: `pba${index + 1}` });
-          }
-        }
-      }
+      });
     }
 
     if (!validation) {
