@@ -215,14 +215,13 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           if (data.errorDescription) {
             const pbaId = this.pbaDepiction(data.errorDescription);
             const index = this.underscore().indexOf(paymentAccountUpdated, pbaId, 0);
-  
             if (index > -1) {
               if (data && data.errorDescription) {
                 const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_HEADER_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
                 const errorMessage = OrgManagerConstants.PBA_ERROR_ALREADY_USED_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, pbaId);
-                this.errorInline = { 
-                  [controlName]: { messages: [errorMessage], isInvalid: true }, 
-                  ...this.errorInline 
+                this.errorInline = {
+                  [controlName]: { messages: [errorMessage], isInvalid: true },
+                  ...this.errorInline
                 };
                 this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage] }], isFormValid: false });
                 this.pbaError$ = of(this.errorInline);
@@ -233,22 +232,21 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
               this.errorHeader.items.push({
                 id: controlName, message: [errorHeaderMessage]
               });
-              this.errorInline = { 
-                [controlName]: { messages: [errorHeaderMessage], isInvalid: true }, 
-                ...this.errorInline 
+              this.errorInline = {
+                [controlName]: { messages: [errorHeaderMessage], isInvalid: true },
+                ...this.errorInline
               };
               this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage]}], isFormValid: false });
               this.pbaError$ = of(this.errorInline);
             }
           } else {
             const errorHeaderMessage = OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
-  
             this.errorHeader.isFromValid = false;
             this.errorHeader.items.push({
               id: controlName, message: [errorHeaderMessage]});
-            this.errorInline = { 
-              [controlName]: { messages: [errorHeaderMessage], isInvalid: true }, 
-              ...this.errorInline 
+            this.errorInline = {
+              [controlName]: { messages: [errorHeaderMessage], isInvalid: true },
+              ...this.errorInline
             };
             this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage]}], isFormValid: false });
             this.pbaError$ = of(this.errorInline);
@@ -334,8 +332,6 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         const lastDuplicateErrorKey = errorKeys[errorKeys.length - 1];
         const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ENTERED_MORE_THAN_ONCE_HEADER_MESSAGE[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, payment);
         const errorMessage = OrgManagerConstants.PBA_ERROR_ENTERED_MORE_THAN_ONCE_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, payment);
-
-        
         if (paymentAccountComparables[index] === payment) {
           if (this.errorHeader.items.filter(x => x.id === lastDuplicateErrorKey).length) {
             const pbaResult = this.errorHeader.items.filter(x => x.id === lastDuplicateErrorKey);
@@ -382,7 +378,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const { value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     const paymentAccountsWrapper = [...paymentAccounts];
-    for (let index = 0; index < paymentAccountsWrapper.length; index++) {
+    for (const index of paymentAccountsWrapper) {
       const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
       const errorKeys = formControlsKeys.filter((key) => this.fPba[key].value === paymentAccountsWrapper[index]);
       const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
