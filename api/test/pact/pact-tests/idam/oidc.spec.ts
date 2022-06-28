@@ -14,7 +14,7 @@ describe("OpenId Connect API", async() => {
    })
 
    // Write Pact when all tests done
-   after(() => pactSetUp.provider.finalize())
+  afterAll(() => pactSetUp.provider.finalize())
 
 
   describe('when a request to .well-known endpoint is made', () => {
@@ -40,7 +40,7 @@ describe("OpenId Connect API", async() => {
       const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`
 
       // @ts-ignore
-      const issuer = await oidc.configure({
+      const issuer = oidc.configure({
         authorizationURL: `${oidcUrl}/authorize`,
         callbackURL: `${pactSetUp.provider.mockService.baseUrl}/oauth2/callback`,
         clientID: 'rpx-ao',
