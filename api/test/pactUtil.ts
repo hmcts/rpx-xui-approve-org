@@ -16,7 +16,6 @@ export async function providerSetUp(providerName:string) {
     spec: 2,
     consumer: "xui_approveorg",
     provider: providerName,
-    pactfileWriteMode: "merge",
   })
   before(() => provider.setup())
 
