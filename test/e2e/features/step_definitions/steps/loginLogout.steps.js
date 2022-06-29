@@ -72,7 +72,8 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(loginPage.failure_error_heading.getText())
       .to
       .eventually
-      .equal('Incorrect email or password');
+      .be
+      .oneOf(['Incorrect email or password', 'There is a problem with your account login details']);
   });
 
 
@@ -178,9 +179,11 @@ defineSupportCode(function ({ Given, When, Then }) {
 
   Given(/^I navigate to approve organisation Url direct link$/, { timeout: 600 * 1000 }, async function () {
     await browser.get(config.config.baseUrl + '/cases/case-filter');
-    await browser.driver.manage()
-      .deleteAllCookies();
-    await browser.refresh();
+    if (!process.env.TEST_URL.includes('demo')){ //Do not delete cookies for demo env.
+      await browser.driver.manage()
+        .deleteAllCookies();
+      await browser.refresh();
+    }
     browser.sleep(AMAZING_DELAY);
   });
 
