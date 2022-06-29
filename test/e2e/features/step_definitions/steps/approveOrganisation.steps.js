@@ -20,10 +20,15 @@ defineSupportCode(function ({ Given, When, Then }) {
 
     When(/^I navigate to EUI Approve Organisation Url$/, { timeout: 600 * 1000 }, async function () {
         await browser.get(config.config.baseUrl) ;
-        await browser.driver.manage()
+        if (!process.env.TEST_URL.includes('demo')){ //Do not delete cookies for demo env.
+          await browser.driver.manage()
             .deleteAllCookies();
-        await browser.refresh();
+          await browser.refresh();
+        }
         const world = this;
+      if ( (await browser.getCurrentUrl()).startsWith('https://login.microsoftonline.com/')) {
+        await loginPage.microsoftSignIn();
+      }
       await browserWaits.retryForPageLoad(loginPage.emailAddress,async (message) => {
         world.attach('Retry reloading page. '+message);
       });
