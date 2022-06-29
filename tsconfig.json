@@ -26,5 +26,11 @@
         "dist/gov-ui/*"
       ]
     }
-  }
+  },
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
 }
