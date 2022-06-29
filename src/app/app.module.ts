@@ -58,7 +58,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
   imports: [
     BrowserModule,
     CookieModule.forRoot(),
-    RouterModule.forRoot(ROUTES),
+    RouterModule.forRoot(ROUTES, {
+      anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'
+    }),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     SharedModule,

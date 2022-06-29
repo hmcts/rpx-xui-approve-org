@@ -14,15 +14,15 @@ properties([
 @Library("Infrastructure")
 
 def type      = "nodejs"
-def product   = "xui"
+def product   = "rpx"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 def vault = "rpx"
 
 def secrets = [
   'rpx-${env}': [
-    secret('test-email', 'TEST_EMAIL'),
-    secret('test-password', 'TEST_PASSWORD'),
+    secret('ao-test-email', 'TEST_EMAIL'),
+    secret('ao-test-password', 'TEST_PASSWORD'),
     secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
     secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
     secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
@@ -43,6 +43,7 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     // enableSecurityScan()
+    enableFortifyScan()
     enableFullFunctionalTest(30)
     enableMutationTest()
     enableCrossBrowserTest()
@@ -66,6 +67,10 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
+    }
+
+    after('fortify-scan') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
     after('fullFunctionalTest') {

@@ -5,7 +5,7 @@ import { AuthGuard } from 'src/services/auth/auth.guard';
 import { NotAuthorisedComponent } from './components/not-authorised/not-authorised.component';
 import { RedirectComponent } from './containers';
 import { Routes } from '@angular/router';
-import {ServiceDownComponent} from './components/service-down/service-down.component';
+import { ServiceDownComponent } from './components/service-down/service-down.component';
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
 
 export const ROUTES: Routes = [
@@ -19,7 +19,10 @@ export const ROUTES: Routes = [
     path: 'caseworker-details',
     canActivate: [AuthGuard, RoleGuard],
     loadChildren: '../caseworker-ref-data/caseworker-ref-data.module#CaseWorkerRefDataModule',
-    data: {needsRole: ['cwd-admin'], roleMatching: RoleMatching.ALL }
+    data: {
+      needsRole: ['cwd-admin'],
+      roleMatching: RoleMatching.ALL
+    }
   },
   {
     canActivate: [AuthGuard],
@@ -30,35 +33,59 @@ export const ROUTES: Routes = [
     path: 'organisation',
     canActivate: [AuthGuard, RoleGuard],
     loadChildren: '../org-manager/org-manager.module#OrgManagerModule',
-    data: {needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL }
+    data: {
+      needsRole: ['prd-admin'],
+      roleMatching: RoleMatching.ALL
+    }
   },
   {
     path: 'cookies',
-    component: CookiePolicyComponent
+    component: CookiePolicyComponent,
+    data: {
+      title: 'cookies'
+    }
   },
   {
     path: 'privacy-policy',
-    component: PrivacyPolicyComponent
+    component: PrivacyPolicyComponent,
+    data: {
+      title: 'Privacy policy'
+    }
   },
   {
     path: 'terms-and-conditions',
-    component: TermsAndConditionsComponent
+    component: TermsAndConditionsComponent,
+    data: {
+      title: 'Terms and conditions'
+    }
   },
   {
     path: 'accessibility',
-    component: AccessibilityComponent
+    component: AccessibilityComponent,
+    data: {
+      title: 'Accessibility'
+    }
   },
   {
     path: 'service-down',
-    component: ServiceDownComponent
+    component: ServiceDownComponent,
+    data: {
+      title: 'Service down'
+    }
   },
-   {
+  {
     path: 'not-authorised',
-    component: NotAuthorisedComponent
+    component: NotAuthorisedComponent,
+    data: {
+      title: 'Not authorised'
+    }
   },
   {
     path: 'signed-out',
-    component: SignedOutComponent
+    component: SignedOutComponent,
+    data: {
+      title: 'Signed out'
+    }
   },
   {
     path: '**',

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PaginationParameter } from '@hmcts/rpx-xui-common-lib';
 import { GovukTableColumnConfig } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/components/gov-uk-table/gov-uk-table.component';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -21,9 +22,9 @@ export class PendingOrganisationsComponent implements OnInit {
   public inputForm: FormGroup;
   public loaded$: Observable<boolean>;
   public pendingSearchString$: Observable<string>;
-
   public activeOrgsCount$: Observable<number>;
   public activeLoaded$: Observable<boolean>;
+  public pagination: PaginationParameter;
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
               private readonly fb: FormBuilder) {}
@@ -52,10 +53,46 @@ export class PendingOrganisationsComponent implements OnInit {
     this.columnConfig = PendingOverviewColumnConfig;
     this.store.dispatch(new fromStore.ClearErrors());
     this.pendingSearchString$ = this.store.pipe(select(fromOrganisation.getPendingSearchString));
+    this.pagination = {
+      page_number: 1,
+      page_size: 25
+    };
   }
 
   public submitSearch(searchString: string) {
+    this.onPaginationHandler(1);
     this.store.dispatch(new fromOrganisation.UpdatePendingOrganisationsSearchString(searchString));
+  }
+
+  public onPaginationHandler(pageNumber: number): void {
+    this.pagination.page_number = pageNumber;
+  }
+
+  public getFirstResult(orgs: OrganisationVM[]): number {
+    if (orgs && orgs.length > 0) {
+      const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
+      if (currentPage === 1) {
+        return currentPage;
+      }
+      return (currentPage - 1) * this.pagination.page_size + 1;
+    }
+    return 0;
+  }
+
+  public getLastResult(orgs: OrganisationVM[]): number {
+    if (orgs && orgs.length > 0) {
+      const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
+      const results = (currentPage) * this.pagination.page_size;
+      return (results > orgs.length) ? orgs.length : results;
+    }
+    return 0;
+  }
+
+  public getTotalResults(orgs: OrganisationVM[]): number {
+    if (orgs && orgs.length > 0) {
+      return orgs.length;
+    }
+    return 0;
   }
 
 }
