@@ -12,6 +12,11 @@ function loginLogoutObjects() {
   this.signOutlink = element(by.xpath("//a[@class='hmcts-header__navigation-link']"));
   this.failure_error_heading = element(by.css("[id='validation-error-summary-heading']"));
   this.dashboard_header= element(by.xpath("//a[@class='hmcts-header__link']"));
+  this.microsoftSignInObjects = {
+    email: $('#i0116'),
+    password: $('#i0118'),
+    submitButton: $('#idSIButton9')
+  }
 
   this.isLoginPageDisplayed = async function(){
     try{
@@ -21,6 +26,20 @@ function loginLogoutObjects() {
       console.log("Login page not displayed. error "+err);
       return false;
     }
+  }
+
+  this.microsoftSignIn = async function(){
+    if(!process.env.hasOwnProperty('HMCTS_EMAIL') || !process.env.hasOwnProperty('HMCTS_PASSWORD')) {
+      throw new Error('HMCTS_EMAIL / HMCTS_PASSWORD env. vars undefined');
+    }
+    await BrowserWaits.waitForElement(this.microsoftSignInObjects.email);
+    await this.microsoftSignInObjects.email.sendKeys(process.env.HMCTS_EMAIL);
+    await this.microsoftSignInObjects.submitButton.click();
+    await BrowserWaits.waitForElement(this.microsoftSignInObjects.password);
+    await this.microsoftSignInObjects.password.sendKeys(process.env.HMCTS_PASSWORD);
+    await this.microsoftSignInObjects.submitButton.click();
+    await BrowserWaits.waitForElement(this.microsoftSignInObjects.submitButton);
+    await this.microsoftSignInObjects.submitButton.click();
   }
 
   this.getEmailFieldValue = async function(){
