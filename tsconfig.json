@@ -2,20 +2,22 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "skipLibCheck": true,
     "target": "es5",
+    "importHelpers": true,
     "typeRoots": [
       "node_modules/@types"
     ],
+    "skipLibCheck": true,
     "lib": [
-      "es2017",
+      "es2018",
       "dom"
     ],
     "paths": {
