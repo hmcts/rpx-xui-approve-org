@@ -197,7 +197,8 @@
     "webpack": "^5.73.0",
     "webpack-cli": "^4.4.0",
     "webpack-dev-server": "^4.9.2",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "webpack-source-map-support": "^2.0.1"
   },
   "resolutions": {
     "lodash": "^4.17.19",
