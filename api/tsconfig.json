@@ -2,7 +2,6 @@
     "compileOnSave": false,
     "compilerOptions": {
         "outDir": "../dist/organisation-manager",
-        "module": "commonjs",
         "target": "es5",
         "types": ["node", "mocha", "rxjs"],
         "baseUrl": ".",
