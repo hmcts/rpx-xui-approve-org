@@ -60,10 +60,8 @@ const config = {
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000',
     targetEnv: argv.env || 'local',
-    // username: process.env.TEST_EMAIL,
-    // password: process.env.TEST_PASSWORD,
-    username: 'vmuniganti@mailnesia.com',
-    password: 'Monday01',
+    username: process.env.TEST_EMAIL,
+    password: process.env.TEST_PASSWORD,
     approver_username: 'vamshiadminuser@mailnesia.com',
     approver_password: 'Testing123',
     cwdAdmin: "cwd_admin@mailinator.com",
