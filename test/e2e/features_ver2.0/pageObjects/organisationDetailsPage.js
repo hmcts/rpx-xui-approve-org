@@ -12,6 +12,7 @@ function OrganisationDetailsPage() {
     this.orgDetailsActions = $$('.govuk-summary-list__actions');
     this.approveOrgOption = element(by.id('reason-0'));
     this.rejectOrgOption = element(by.id('reason-1'));
+    this.placeUnderReviewOrgOption = element(by.id('reason-2'));
     this.submitButton = element(by.xpath('//button[contains(text(),"Submit")]'));
 
     this.getOrgDetails = async function () {
@@ -37,6 +38,11 @@ function OrganisationDetailsPage() {
 
     this.rejectOrg = async function () {
         await this.rejectOrgOption.click();
+        await this.submitButton.click();
+    };
+
+    this.placeOrgUnderReview = async function () {
+        await this.placeUnderReviewOrgOption.click();
         await this.submitButton.click();
     };
 
