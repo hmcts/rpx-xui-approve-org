@@ -9,7 +9,8 @@ defineSupportCode(function ({ When, Then }) {
     Then('I am on confirm decision page for {string}', async function (action) {
         let decisionStatements = {
             'approval': 'Approve the organisation',
-            'rejection': 'Reject the registration'
+            'rejection': 'Reject the registration',
+            'org_under_review': 'Put the registration on hold'
         };
         await browserWaits.waitForElement(confirmDecisionPage.confirmBtn);
         expect(confirmDecisionPage.heading.getText()).to.eventually.equal('Confirm your decision');

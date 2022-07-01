@@ -30,6 +30,10 @@ defineSupportCode(function ({ Given, When, Then, And }) {
     await organisationDetails.rejectOrg();
   });
 
+  When(/^I select place registration under review$/, async function () {
+    await organisationDetails.placeOrgUnderReview();
+  });
+
   Then('I see the organisation state as {string}', async function (orgState) {
     expect(organisationDetails.identityBar.getText()).to.eventually.include(orgState);
   });
