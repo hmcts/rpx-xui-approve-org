@@ -56,6 +56,7 @@ const config = {
   //   '../features/**/recentEvents.feature',
   // ],
   baseUrl: process.env.TEST_URL || 'http://localhost:3000',
+  registerOrgUrl: process.env.REGISTER_ORG_URL  || 'https://manage-org.aat.platform.hmcts.net/',
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000',
     targetEnv: argv.env || 'local',
