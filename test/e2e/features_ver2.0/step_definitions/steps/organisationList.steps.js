@@ -47,9 +47,14 @@ defineSupportCode(function ({ setWorldConstructor, Given, When, Then }) {
 
   });
 
-  Then('I get a registration confirmation', async function () {
+  Then('I get a registration {string} confirmation', async function (decision) {
+    let decisionStatement = {
+      'accepted': 'Registration approved',
+      'rejected': 'Registration rejected',
+      'under_review': 'Registration put under review'
+    };
     await browserWaits.waitForElement(organisationListPage.bannerMessageContainer);
-    expect(organisationListPage.bannerMessageContainer.getText()).to.eventually.include('Registration approved');
+    expect(organisationListPage.bannerMessageContainer.getText()).to.eventually.include(decisionStatement[decision]);
   });
 
   When('I search for the organisation', async function () {
