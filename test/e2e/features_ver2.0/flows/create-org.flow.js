@@ -59,6 +59,7 @@ class CreateOrganisationFlow {
     await this.amOnPage("What's your payment by account (PBA) number for your organisation?");
     await createOrganisationObject.PBAnumber1.isDisplayed();
     await createOrganisationObject.enterPBANumber();
+    await createOrganisationObject.addAnotherPbaNumber.click();
     await createOrganisationObject.PBAnumber2.isDisplayed();
     await createOrganisationObject.enterPBA2Number();
     await createOrganisationObject.continue_button.click();
@@ -120,7 +121,7 @@ class CreateOrganisationFlow {
 
   async amOnPage(page) {
     await createOrganisationObject.waitForPage(page);
-  };
+  }
 
 }
 
