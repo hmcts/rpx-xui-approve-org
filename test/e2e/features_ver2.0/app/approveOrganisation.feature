@@ -12,9 +12,9 @@ Feature: Approve New Organisation
     Then I see "Approve organisation" on organisation details page
     And I see the organisation state as "PENDING"
     When I select approve organisation
-    Then I am on confirm decision page
+    Then I am on confirm decision page for "approval"
     When I confirm the decision
-    Then I get a registration confirmation
+    Then I get a registration "accepted" confirmation
     When I select "Active organisations" tab
     And I search for the organisation
     Then I can see the orgainsation listed
