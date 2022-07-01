@@ -62,6 +62,9 @@ describe('Get Account Status for a Account Name', async () => {
       }).then(() => {
         pactSetUp.provider.verify()
         pactSetUp.provider.finalize()
+      }).finally(() =>{
+        pactSetUp.provider.verify()
+        pactSetUp.provider.finalize() 
       })
     })
   })

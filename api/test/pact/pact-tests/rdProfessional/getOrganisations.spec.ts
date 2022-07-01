@@ -54,6 +54,9 @@ describe("Get a list of organisations based on status", async () => {
       }).then(() => {
         pactSetUp.provider.verify(),
         pactSetUp.provider.finalize()
+      }).finally(() => {
+        pactSetUp.provider.verify()
+        pactSetUp.provider.finalize()
       })
     })
   })
