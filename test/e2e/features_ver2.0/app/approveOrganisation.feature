@@ -2,6 +2,7 @@
 Feature: Approve New Organisation
 
   Background: 
+    Given I register a new organisation
     When I navigate to EUI Approve Organisation Url
     Given I am logged into approve organisation with HMCTS admin
     Then I should be redirected to approve organisation dashboard page
