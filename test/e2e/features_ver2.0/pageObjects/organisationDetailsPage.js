@@ -11,6 +11,8 @@ function OrganisationDetailsPage() {
     this.orgDetailsActions = $$('.govuk-summary-list__actions');
     this.pbaPageLinks = $$('[href^="/change\/pba"]'); //element(by.partialLinkText("/change/pba"));
     this.approveOrgOption = element(by.id('reason-0'));
+    this.rejectOrgOption = element(by.id('reason-1'));
+    this.placeUnderReviewOrgOption = element(by.id('reason-2'));
     this.submitButton = element(by.xpath('//button[contains(text(),"Submit")]'));
 
     this.getOrgDetails = async function () {
@@ -39,6 +41,15 @@ function OrganisationDetailsPage() {
         await browserWaits.waitForElementClickable(elementLink);
         await browser.sleep(2000);
         await elementLink.click();
+
+    this.rejectOrg = async function () {
+        await this.rejectOrgOption.click();
+        await this.submitButton.click();
+    };
+
+    this.placeOrgUnderReview = async function () {
+        await this.placeUnderReviewOrgOption.click();
+        await this.submitButton.click();
     };
 
 }
