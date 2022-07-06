@@ -24,8 +24,8 @@ export class OrganisationService {
     return this.http.get<Organisation>(`${this.singleOrgUrl}${payload.id}`);
   }
 
-  public getOrganisationUsers(payload): Observable<any> {
-    return this.http.get<any>(`${this.orgUsersUrl}${payload}`);
+  public getOrganisationUsers(orgId, pageNo): Observable<any> {
+    return this.http.get<any>(`${this.orgUsersUrl}${orgId}&page=${pageNo}`);
   }
 
   public deleteOrganisation(payload: Organisation): Observable<Response> {
