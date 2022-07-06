@@ -39,7 +39,7 @@ describe('OrganisationDetailsComponent', () => {
             CUSTOM_ELEMENTS_SCHEMA
         ],
         providers: [
-          OrganisationService, UserApprovalGuard, 
+          OrganisationService, UserApprovalGuard,
           UsersService,
         ]
     }).compileComponents();
