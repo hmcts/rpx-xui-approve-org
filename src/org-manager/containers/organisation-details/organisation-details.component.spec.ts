@@ -4,11 +4,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, User } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieService, CookieModule } from 'ngx-cookie';
+import { UserApprovalGuard } from 'src/org-manager/guards/users-approval.guard';
 import { PendingOrganisationsMockCollectionObj } from 'src/org-manager/mock/pending-organisation.mock';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
+import { OrganisationService, UsersService } from 'src/org-manager/services';
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 
 describe('OrganisationDetailsComponent', () => {
@@ -24,6 +27,7 @@ describe('OrganisationDetailsComponent', () => {
                 ...fromRoot.reducers,
                 feature: combineReducers(fromOrganisationPendingStore.reducers),
             }),
+            HttpClientTestingModule,
             ExuiCommonLibModule,
             RouterTestingModule,
             CookieModule.forRoot(),
@@ -35,6 +39,8 @@ describe('OrganisationDetailsComponent', () => {
             CUSTOM_ELEMENTS_SCHEMA
         ],
         providers: [
+          OrganisationService, UserApprovalGuard, 
+          UsersService,
         ]
     }).compileComponents();
     store = TestBed.get(Store);

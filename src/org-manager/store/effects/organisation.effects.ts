@@ -41,7 +41,7 @@ export class OrganisationEffects {
     ofType(fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS),
     map((action: fromActions.LoadOrganisationUsers) => action.payload),
     switchMap((payload) => {
-      return this.organisationService.getOrganisationUsers(payload).pipe(
+      return this.organisationService.getOrganisationUsers(payload.orgId, payload.pageNo).pipe(
           map(data => new fromActions.LoadOrganisationUsersSuccess(AppUtils.mapUsers(data.users))),
           catchError((error: Error) => {
             this.loggerService.error(error);
