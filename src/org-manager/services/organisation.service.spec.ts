@@ -68,8 +68,8 @@ describe('OrganisationService', () => {
   });
 
   it('should get organisation user list', () => {
-    organisationService.getOrganisationUsers('mockId');
-    expect(httpClient.get).toHaveBeenCalledWith(`${mockEnvironment.orgUsersUrl}mockId`);
+    organisationService.getOrganisationUsers('mockId', 1);
+    expect(httpClient.get).toHaveBeenCalledWith(`${mockEnvironment.orgUsersUrl}mockId&page=1`);
   });
 
   it('should delete organisation', () => {
