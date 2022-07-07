@@ -3,6 +3,8 @@ const activeOrganisation = require('./activeOrganisations');
 const AppConfigMock = require('./mockdata/appConfig');
 const stafDetailsMapping = require('./staffDetails/reqResMappings');
 
+const userList = require('./mockdata/usersList');
+
 const requestMapping = {
     ...stafDetailsMapping.get,
    get:{
@@ -53,7 +55,10 @@ const requestMapping = {
        },
        '/api/organisations/:OrgId/isDeletable' : (req,res) => {
            res.send({ "organisationDeletable": false }); 
-       }
+       },
+       '/api/allUserListWithoutRoles': (req,res) => {
+           res.send(userList.getAllUsersListForOrganisation(req.query.usersOrgId));
+       },
     },
     post:{
         ...stafDetailsMapping.post,
