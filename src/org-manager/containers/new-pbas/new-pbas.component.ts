@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
-import { map, takeWhile } from 'rxjs/operators';
+import { map, take, takeWhile } from 'rxjs/operators';
 
 import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
@@ -43,7 +43,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     });
 
     this.organisationService.getSingleOrganisation({ id: this.organisationId })
-      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .pipe(take(1), map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
       .subscribe(value => {
         this.organisationId = value.organisationId;
 
@@ -58,7 +58,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
           value.pendingPaymentAccount.forEach(pbaNumber => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
-          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
             value.accountDetails = accountResponse;
             this.orgs$ = of(value);
           });

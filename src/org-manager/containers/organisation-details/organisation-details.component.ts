@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppUtils } from '../../../app/utils/app-utils';
@@ -57,7 +57,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     }
 
     this.organisationService.getSingleOrganisation({ id: this.orgId })
-      .pipe(map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
+      .pipe(take(1), map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
       .subscribe(organisationVM => {
         this.organisationId = organisationVM.organisationId;
         this.organisationAdminEmail = organisationVM.adminEmail;
@@ -78,7 +78,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           organisationVM.pendingPaymentAccount.forEach(pbaNumber => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
-          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
         }
@@ -87,7 +87,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           organisationVM.pbaNumber.forEach(pbaNumber => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
-          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
         }
@@ -96,7 +96,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           organisationVM.pendingPaymentAccount.forEach(pbaNumber => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
-          this.pbaAccountDetails.getAccountDetails(ids).subscribe(accountResponse => {
+          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
         }
