@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppConstants } from '../../app.constants';
 import { Helper, Navigation } from '../../containers/footer/footer.model';
@@ -28,7 +28,7 @@ describe('HmctsGlobalFooterComponent', () => {
     const helpData: Helper = AppConstants.FOOTER_DATA;
     const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [
             RouterTestingModule

@@ -1,4 +1,4 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
@@ -9,7 +9,7 @@ describe('HeaderComponent', () => {
     let fixture;
     let app;
     const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 StoreModule.forRoot({}),

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, flush, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, flush, TestBed, waitForAsync } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { RoutesRecognized } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -25,7 +25,7 @@ describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     environmentMockService.getEnv$.and.returnValue(of({}));
     idleMockService.appStateChanges.and.returnValue(of({ type: 'modal' }));
     TestBed.configureTestingModule({
@@ -61,7 +61,7 @@ describe('AppComponent', () => {
     fixture.detectChanges();
   }));
 
-  it('should create the app', async(() => {
+  it('should create the app', waitForAsync(() => {
     expect(component).toBeTruthy();
   }));
 
