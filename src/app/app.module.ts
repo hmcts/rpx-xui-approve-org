@@ -64,7 +64,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     SharedModule,
-    StoreRouterConnectingModule,
+    StoreRouterConnectingModule.forRoot(),
     OrgManagerModule,
     !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : [],
     LoggerModule.forRoot({
@@ -90,7 +90,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       deps: [EnvironmentService],
       multi: true
     },
-    { provide: FeatureToggleService, useClass: LaunchDarklyService },
+    { provide: FeatureToggleService, useClass: LaunchDarklyService }
   ],
   bootstrap: [AppComponent]
 })
