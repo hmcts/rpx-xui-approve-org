@@ -8,7 +8,6 @@ export class UsersService {
 
   public orgUsersUrl = environment.organisationUsersUrl;
   public reinviteUserUrl = environment.reinviteUserUrl;
-  public orgUsersUrlWithoutRole = environment.organisationUsersUrlWithoutRole;
   constructor(private readonly http: HttpClient) {
   }
 
@@ -18,10 +17,6 @@ export class UsersService {
 
   public inviteUser(orgId, data): Observable<any> {
     return this.http.post<any>(this.reinviteUserUrl + orgId, data);
-  }
-
-  public getAllUsersList(orgId): Observable<any> {
-    return this.http.get<any>(this.orgUsersUrlWithoutRole + orgId);
   }
 
 }
