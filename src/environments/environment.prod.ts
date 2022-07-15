@@ -5,7 +5,6 @@ export const environment = {
   serviceDeskTel: '0300 3030686',
   singleOrgUrl: 'api/organisations?organisationId=',
   organisationUsersUrl: 'api/organisations?usersOrgId=',
-  organisationUsersUrlWithoutRole: 'api/allUserListWithoutRoles?usersOrgId=',
   orgActiveUrl: 'api/organisations?status=ACTIVE',
   orgPendingUrl: 'api/organisations?status=PENDING,REVIEW',
   reinviteUserUrl: 'api/reinviteUser?organisationId=',
