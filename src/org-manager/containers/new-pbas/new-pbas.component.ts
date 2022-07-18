@@ -48,10 +48,6 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
         this.organisationId = value.organisationId;
 
         if (!value.isAccLoaded && value.pendingPaymentAccount.length) {
-        this.store.dispatch(new fromStore.LoadPbaAccountsDetails({
-          orgId: value.organisationId,
-          pbas: value.pendingPaymentAccount.toString()
-        }));
 
         if (value.pendingPaymentAccount && value.pendingPaymentAccount.length) {
           let ids: string;
@@ -66,7 +62,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
           this.orgs$ = of(value);
         }
       }
-      });
+    });
   }
 
   public onGoBack(): void {

@@ -1,7 +1,10 @@
-import { AxiosPromise } from 'axios'
-import * as express from 'express'
-import {getConfigValue} from '../configuration'
-import {SERVICES_FEE_AND_PAY_PATH} from '../configuration/references'
+import { AxiosPromise } from 'axios';
+import * as express from 'express';
+import { getConfigValue } from '../configuration';
+import { SERVICES_FEE_AND_PAY_PATH } from '../configuration/references';
+import * as log4jui from '../lib/log4jui';
+
+const logger = log4jui.getLogger('return');
 
 async function handleAddressRoute(req, res) {
   let errReport: any
@@ -41,6 +44,7 @@ async function handleAddressRoute(req, res) {
 function getAccount(accountName: string, req: express.Request): AxiosPromise<any> {
   const url = `${getConfigValue(SERVICES_FEE_AND_PAY_PATH)}/accounts/${accountName}`
   const promise = req.http.get(url).catch(err => err)
+  logger.info(`account call ${accountName}`)
   return promise
 }
 
