@@ -101,7 +101,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           });
         }
 
-        if (organisationVM.organisationId) {
+        if (organisationVM.status !== 'PENDING' && organisationVM.organisationId) {
           try {
             this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId).pipe(
               map(data => {
