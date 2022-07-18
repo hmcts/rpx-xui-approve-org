@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { map, switchMap, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
-import * as fromActions from '../actions';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { LoggerService } from '../../../app/services/logger.service';
 import * as fromRood from '../../../app/store';
-import {UpdatePbaServices} from '../../services';
-import {LoggerService} from '../../../app/services/logger.service';
+import { UpdatePbaServices } from '../../services';
+import * as fromActions from '../actions';
 
 @Injectable()
 export class EditDetailsEffects {
