@@ -5,9 +5,9 @@ import {
 } from '@angular/router';
 import { ActionReducerMap, createFeatureSelector, createSelector } from '@ngrx/store';
 
+import { Injectable } from '@angular/core';
 import * as fromRouter from '@ngrx/router-store';
 import * as fromApp from '../reducers/app.reducer';
-import { Injectable } from "@angular/core";
 
 export interface RouterStateUrl {
   url: string;
@@ -22,12 +22,12 @@ export interface NavItem {
   feature: {
     isfeatureToggleable: boolean;
     featureName: string;
-  },
-  orderId: number
-};
+  };
+  orderId: number;
+}
 
 export interface UserRoleNav {
-  [key: string]: NavItem
+  [key: string]: NavItem;
 }
 
 export interface State {
