@@ -65,7 +65,6 @@ export class PendingOrganisationsComponent implements OnInit {
   }
 
   public onPaginationHandler(pageNumber: number): void {
-    console.log('onPaginationHandler', pageNumber);
     this.pagination.currentPage = pageNumber;
   }
 
@@ -96,4 +95,8 @@ export class PendingOrganisationsComponent implements OnInit {
     return 0;
   }
 
+  public emitPageClickEvent(pageNumber: any) {
+    this.pagination.currentPage = pageNumber;
+    //this.pageChange.emit(pageNumber);
+  }
 }
