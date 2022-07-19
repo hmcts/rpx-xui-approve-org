@@ -55,13 +55,6 @@
             </tr>
           </thead>
         </table>
-        <!-- <xuilib-pagination
-          *ngIf="(loaded$ | async) && getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) > pagination.itemsPerPage"
-          [firstRecord]="getFirstResult((data.pendingOrgs | filterOrganisations: data.pendingSearchString))"
-          [moreItems]="getLastResult((data.orgs | filterOrganisations: data.activeSearchString)) === getTotalResults((data.orgs | filterOrganisations: data.activeSearchString))"
-          (nextPage)="onPaginationHandler(pagination.currentPage + 1)"
-          (previousPage)="onPaginationHandler(pagination.currentPage - 1)">
-        </xuilib-pagination> -->
 
         <xuilib-hmcts-pagination (pageChange)="emitPageClickEvent($event)" [pageSize]="pagination.itemsPerPage"></xuilib-hmcts-pagination>
       </form>

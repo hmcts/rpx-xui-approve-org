@@ -95,8 +95,7 @@ export class PendingOrganisationsComponent implements OnInit {
     return 0;
   }
 
-  public emitPageClickEvent(pageNumber: any) {
+  public emitPageClickEvent(pageNumber: any): void {
     this.pagination.currentPage = pageNumber;
-    //this.pageChange.emit(pageNumber);
   }
 }

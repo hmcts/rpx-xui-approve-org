@@ -78,4 +78,8 @@ export class ActiveOrganisationsComponent implements OnInit {
     }
     return 0;
   }
+
+  public emitPageClickEvent(pageNumber: any): void {
+    this.pagination.currentPage = pageNumber;
+  }
 }

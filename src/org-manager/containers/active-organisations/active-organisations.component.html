@@ -46,13 +46,8 @@
               </tr>
             </thead>
           </table>
-          <xuilib-pagination
-            *ngIf="!data.loading && getTotalResults((data.orgs | filterOrganisations: data.activeSearchString)) > pagination.itemsPerPage"
-            [firstRecord]="getFirstResult((data.orgs | filterOrganisations: data.pendingSearchString)) >= 1"
-            [moreItems]="getLastResult((data.orgs | filterOrganisations: data.activeSearchString)) === getTotalResults((data.orgs | filterOrganisations: data.activeSearchString))"
-            (nextPage)="onPaginationHandler(pagination.currentPage + 1)"
-            (previousPage)="onPaginationHandler(pagination.currentPage - 1)">
-          </xuilib-pagination>
+          
+          <xuilib-hmcts-pagination (pageChange)="emitPageClickEvent($event)" [pageSize]="pagination.itemsPerPage"></xuilib-hmcts-pagination>
           <ng-template #loading>
             <h3 class="govuk-heading-s">Loading active organisations...</h3>
           </ng-template>
