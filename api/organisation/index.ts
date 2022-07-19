@@ -19,7 +19,7 @@ const logger = log4jui.getLogger('return')
  */
 async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
     try {
-        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId)
+        const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId, req.query.page)
         const response = await req.http.get(organisationsUri)
         logger.info('Organisations response' + response.data)
 
@@ -45,7 +45,7 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
     }
 }
 
-function getOrganisationUri(status, organisationId, usersOrgId): string {
+function getOrganisationUri(status, organisationId, usersOrgId, pageNumber): string {
     let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`
 
     if (status) {
@@ -55,7 +55,7 @@ function getOrganisationUri(status, organisationId, usersOrgId): string {
         url = `${url}?id=${organisationId}`
     }
     if (usersOrgId) {
-      url = `${url}/${usersOrgId}/users`
+      url = `${url}/${usersOrgId}/users?size=50&page=${pageNumber}`;
     }
     return url
 }
