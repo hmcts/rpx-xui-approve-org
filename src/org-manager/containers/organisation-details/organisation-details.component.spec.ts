@@ -3,12 +3,12 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule, User } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { UserApprovalGuard } from 'src/org-manager/guards';
-import { OrganisationService, PbaAccountDetails } from 'src/org-manager/services';
+import { OrganisationService, PbaAccountDetails, UsersService } from 'src/org-manager/services';
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
@@ -117,9 +117,21 @@ describe('OrganisationDetailsComponent', () => {
             params: of({
               orgId: 'orgTestId',
             }),
-          },
-        },
-      ]
+            HttpClientTestingModule,
+            ExuiCommonLibModule,
+            RouterTestingModule,
+            CookieModule.forRoot(),
+        ],
+        declarations: [
+          OrganisationDetailsComponent
+        ],
+        schemas: [
+            CUSTOM_ELEMENTS_SCHEMA
+        ],
+        providers: [
+          OrganisationService, UserApprovalGuard,
+          UsersService,
+        ]
     }).compileComponents();
     store = TestBed.get(Store);
     mockedOrganisationService = TestBed.get(OrganisationService);
