@@ -20,8 +20,8 @@ module.exports = function (config) {
       reports: ['html', 'lcovonly'],
       fixWebpackSourcePaths: true,
       thresholds: {
-        statements: 80,
-        lines: 80,
+        statements: 75,
+        lines: 75,
         branches: 0,
         functions: 60
       }

@@ -51,6 +51,8 @@ class MockAuthService {
   public isAuthenticated() {
     return of(this.authenticated);
   }
+
+  public loginRedirect() {}
 }
 
 describe('AuthService', () => {

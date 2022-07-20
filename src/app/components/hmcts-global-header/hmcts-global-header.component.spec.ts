@@ -44,6 +44,8 @@ describe('HmctsGlobalHeaderComponent', () => {
       name: 'some name'
     };
 
+    component.userLoggedIn = true;
+
     fixture.detectChanges();
   });
 

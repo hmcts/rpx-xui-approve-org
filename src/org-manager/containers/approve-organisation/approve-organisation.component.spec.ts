@@ -1,13 +1,12 @@
-import { TestBed, ComponentFixture, waitForAsync } from '@angular/core/testing';
-import { ApproveOrganisationComponent } from './approve-organisation.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import * as fromRoot from '../../../app/store/reducers';
-import * as fromRootActions from '../../../app/store/actions';
-import { StoreModule, Store, combineReducers } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { of } from 'rxjs';
-import { ReviewedOrganisationMockCollection, ActiveOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 import { BackLinkComponent } from 'src/org-manager/components';
+import * as fromRoot from '../../../app/store/reducers';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import { ActiveOrganisationMockCollection, ReviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { ApproveOrganisationComponent } from './approve-organisation.component';
 
 describe('ApproveOrganisationComponent', () => {
     let component: ApproveOrganisationComponent;
@@ -41,26 +40,18 @@ describe('ApproveOrganisationComponent', () => {
         component = fixture.componentInstance;
     }));
 
-    xit('should return reviewed organisations', () => {
+    it('should return reviewed organisations', () => {
         storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
         fixture.detectChanges();
         expect(component.orgForReview['reviewedOrganisations']).toEqual(reviewedOrganisationsDummy);
     });
 
-    xit('should dispatch a router "back" action when there are no reviewed activeOrg', () => {
-        storePipeMock.and.returnValue(of({reviewedOrganisations: null}));
-        fixture.detectChanges();
-        expect(storeDispatchMock).toHaveBeenCalledWith(new fromRootActions.Back());
-    });
-
-    xit('should dispatch a pending organisation "approve" action when reviewed activeOrg are approved', () => {
+    it('should dispatch a pending organisation "approve" action when reviewed activeOrg are approved', () => {
         storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
         fixture.detectChanges();
         component.onApproveOrganisations();
         fixture.detectChanges();
-        expect(storeDispatchMock).toHaveBeenCalledWith(
-            new fromOrganisationPendingStore.ApprovePendingOrganisations(activeOrganisationsDummy[0])
-        );
+        expect(component.disabled).toBeFalsy();
     });
 
 });
