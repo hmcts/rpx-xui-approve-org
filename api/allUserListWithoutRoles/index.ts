@@ -1,11 +1,12 @@
-import { NextFunction, Request, Response, Router } from 'express'
+import { NextFunction, Response, Router } from 'express'
+import { EnhancedRequest } from 'models/enhanced-request.interface'
 import { getConfigValue } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
 import * as log4jui from '../lib/log4jui'
 
 const logger = log4jui.getLogger('return')
 
-async function handleOrganisationUserListRoute(req: Request, res: Response, next: NextFunction) {
+async function handleOrganisationUserListRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
     try {
         const organisationsUri = getOrganisationUsersUri(req.query.usersOrgId)
         const response = await req.http.get(organisationsUri)
