@@ -5,6 +5,7 @@ import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import { ActivatedRoute, Router } from '@angular/router';
+import { UsersService } from 'src/org-manager/services';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
@@ -20,7 +21,7 @@ import * as fromStore from '../../store';
   templateUrl: './organisation-details.component.html'
 })
 export class OrganisationDetailsComponent implements OnInit, OnDestroy {
-
+  public orgId: string;
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<OrganisationUserListModel>;
   public showUsers = false;
@@ -30,24 +31,24 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationAdminEmail: string;
   public isActiveOrg = false;
   public organisationDeletable = false;
-
-  private getShowOrgDetailsSubscription: Subscription;
-  private readonly getAllLoadedSubscription: Subscription;
-  private readonly getOrganisationDeletableSubscription: Subscription;
-  public orgId: string;
+  public currentPageNumber: number = 1;
+  public pageTotalSize: number;
 
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly userApprovalGuard: UserApprovalGuard,
-    private readonly organisationService: OrganisationService,
     private readonly route: ActivatedRoute,
     public readonly pbaAccountDetails: PbaAccountDetails,
-  ) {
-    this.route.params.subscribe(params => {
-      this.orgId = params.orgId ? params.orgId : '';
-    });
-  }
+    private readonly userSerive: UsersService,
+    private readonly organisationService: OrganisationService) {
+      this.route.params.subscribe(params => {
+        this.orgId = params.orgId ? params.orgId : '';
+      });
+    }
+    private getShowOrgDetailsSubscription: Subscription;
+    private getAllLoadedSubscription: Subscription;
+    private getOrganisationDeletableSubscription: Subscription;
 
 
   public ngOnInit(): void {
@@ -117,6 +118,18 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
         this.orgs$ = of(organisationVM);
       });
+  }
+
+  private getAllUsers(orgId: string) {
+    return this.userSerive.getAllUsersList(orgId).subscribe((userList => {
+      this.pageTotalSize = userList.users.length;
+    }));
+  }
+
+  public pageChange(pageNumber: number) {
+    this.currentPageNumber = pageNumber;
+    this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber - 1}));
+    this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
 
   public onGoBack() {
