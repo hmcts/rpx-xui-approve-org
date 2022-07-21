@@ -8,8 +8,6 @@ import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { EditDetailsComponent } from './edit-details.component';
 
-
-
 describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
   let fixture: ComponentFixture<EditDetailsComponent>;
@@ -33,7 +31,7 @@ describe('EditDetailsComponent', () => {
             CUSTOM_ELEMENTS_SCHEMA
         ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(EditDetailsComponent);
     component = fixture.componentInstance;

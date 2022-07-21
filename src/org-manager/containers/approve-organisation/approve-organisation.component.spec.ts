@@ -31,7 +31,7 @@ describe('ApproveOrganisationComponent', () => {
                 ApproveOrganisationComponent
             ]
         }).compileComponents();
-        store = TestBed.get(Store);
+        store = TestBed.inject(Store);
 
         storePipeMock = spyOn(store, 'pipe');
         storeDispatchMock = spyOn(store, 'dispatch');
@@ -39,6 +39,16 @@ describe('ApproveOrganisationComponent', () => {
         fixture = TestBed.createComponent(ApproveOrganisationComponent);
         component = fixture.componentInstance;
     }));
+
+    describe('ngOnInit()', () => {
+        it('should dispatch route to pending-organisation if org data empty', () => {
+            storePipeMock.and.returnValue(of(null));
+
+            component.ngOnInit();
+
+            expect(storeDispatchMock).toHaveBeenCalled();
+        });
+    });
 
     it('should return reviewed organisations', () => {
         storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));

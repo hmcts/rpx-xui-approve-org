@@ -97,6 +97,16 @@ describe('PendingOrganisationActions actions', () => {
         });
       });
     });
+
+    describe('NavigateToDeleteOrganisation ', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.NavigateToDeleteOrganisation(PendingOrganisationsMockCollectionObj);
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.NAV_TO_DELETE_ORGANISATION,
+          payload: PendingOrganisationsMockCollectionObj
+        });
+      });
+    });
   });
 
   describe('DeleteOrganisation actions GROUP', () => {

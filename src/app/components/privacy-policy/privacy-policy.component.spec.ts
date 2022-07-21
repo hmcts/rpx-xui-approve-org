@@ -42,4 +42,11 @@ describe('PrivacyPolicyComponent', () => {
     await fixture.whenStable();
     expect(documenentQuery).toHaveBeenCalledWith('#overview');
   });
+
+  describe('clickout()', () => {
+    it('should unsubscribe if one is active', () => {
+      component.clickout({});
+      expect(component);
+    });
+  });
 });
