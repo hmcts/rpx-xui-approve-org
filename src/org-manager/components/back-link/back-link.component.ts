@@ -1,9 +1,9 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-back-link',
@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 export class BackLinkComponent implements OnInit, OnDestroy {
   @Input() public store: Store<fromOrganisationPendingStore.OrganisationRootState>;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private readonly route: ActivatedRoute) { }
 
   private subscription: Subscription;
   public currentUrl: string;

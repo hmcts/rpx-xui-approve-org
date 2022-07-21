@@ -8,7 +8,7 @@ import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { EnvironmentService } from 'src/app/services/environment.service';
-import { Logout, reducers } from 'src/app/store';
+import { Logout, reducers, SetModal } from 'src/app/store';
 import * as fromRoot from '../../store';
 import { HeaderComponent } from '../header/header.component';
 import { AppComponent } from './app.component';
@@ -126,6 +126,18 @@ describe('AppComponent', () => {
     flush();
     expect(component.onFocusMainContent).toHaveBeenCalled();
   }));
+
+  describe('onStaySignedIn', () => {
+    it('should dispatch modal action', () => {
+      component.onStaySignedIn();
+
+      expect(store.dispatch).toHaveBeenCalledWith(new SetModal({
+        session : {
+          isVisible: false
+        }
+      }));
+    });
+  });
 });
 
 
