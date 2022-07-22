@@ -21,6 +21,7 @@ router.use('/user', userDetailsRouter)
 router.use('/decisions', stateRouter)
 router.use('/healthCheck', healthCheck)
 router.use('/organisations', organisationRouter)
+router.use('/pba', pbaRouter);
 router.use('/updatePba', pbaRouter)
 router.use('/pbaAccounts', pbaAccounts)
 router.use('/monitoring-tools', getappInsightsInstrumentationKey)
