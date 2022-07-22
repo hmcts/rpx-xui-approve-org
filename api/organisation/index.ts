@@ -52,7 +52,7 @@ async function handleGetOrganisationsRoute(req: Request, res: Response, next: Ne
 async function handleOrganisationPagingRoute(req: Request, res: Response, next: NextFunction) {
   try {
     let responseData = null;
-    const organisationsUri = getOrganisationUri(req.query.status, null, null);
+    const organisationsUri = getOrganisationUri(req.query.status, null, null, null);
     const response = await req.http.get(organisationsUri);
     logger.info('Organisation paging response' + response.data);
 
