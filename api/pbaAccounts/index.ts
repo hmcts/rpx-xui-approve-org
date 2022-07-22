@@ -2,9 +2,6 @@ import { AxiosPromise } from 'axios';
 import * as express from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_FEE_AND_PAY_PATH } from '../configuration/references';
-import * as log4jui from '../lib/log4jui';
-
-const logger = log4jui.getLogger('return');
 
 async function handleAddressRoute(req, res) {
   let errReport: any
