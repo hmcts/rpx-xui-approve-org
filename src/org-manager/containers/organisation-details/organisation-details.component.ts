@@ -3,9 +3,8 @@ import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-
-import { ActivatedRoute, Router } from '@angular/router';
 import { UsersService } from 'src/org-manager/services';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
@@ -21,7 +20,6 @@ import * as fromStore from '../../store';
   templateUrl: './organisation-details.component.html'
 })
 export class OrganisationDetailsComponent implements OnInit, OnDestroy {
-  public orgId: string;
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<OrganisationUserListModel>;
   public showUsers = false;
@@ -33,6 +31,10 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationDeletable = false;
   public currentPageNumber: number = 1;
   public pageTotalSize: number;
+  private getShowOrgDetailsSubscription: Subscription;
+  private readonly getAllLoadedSubscription: Subscription;
+  private readonly getOrganisationDeletableSubscription: Subscription;
+  public orgId: string;
 
   constructor(
     private readonly router: Router,
@@ -46,10 +48,6 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
         this.orgId = params.orgId ? params.orgId : '';
       });
     }
-    private getShowOrgDetailsSubscription: Subscription;
-    private getAllLoadedSubscription: Subscription;
-    private getOrganisationDeletableSubscription: Subscription;
-
 
   public ngOnInit(): void {
     this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
@@ -68,7 +66,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           this.isActiveOrg = true;
           if (this.isXuiApproverUserdata) {
             this.showUserNavigation = true;
-            this.store.dispatch(new fromStore.LoadOrganisationUsers(this.organisationId));
+            this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber - 1}));
           }
           this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe(value => this.organisationDeletable = value);
         }
@@ -104,7 +102,8 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
         if (organisationVM.status !== 'PENDING' && organisationVM.organisationId) {
           try {
-            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId).pipe(
+            this.getAllUsers(organisationVM.organisationId);
+            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId, this.currentPageNumber - 1).pipe(
               map(data => {
                 const orgUserListModel = {
                   users: AppUtils.mapUsers(data.users),

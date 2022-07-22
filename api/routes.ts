@@ -9,7 +9,7 @@ import organisationRouter from './organisation'
 import pbaAccounts from './pbaAccounts'
 import reinviteUserRouter from './reinviteUser'
 import stateRouter from './states'
-import pbaRouter from './updatePba'
+import pbaRouter from './updatePba/routes'
 import userDetailsRouter from './user'
 
 const router = express.Router({ mergeParams: true });

@@ -110,28 +110,16 @@ describe('OrganisationDetailsComponent', () => {
         CUSTOM_ELEMENTS_SCHEMA
       ],
       providers: [
-        OrganisationService, PbaAccountDetails, UserApprovalGuard,
+        OrganisationService, PbaAccountDetails, UserApprovalGuard, UsersService,
         {
           provide: ActivatedRoute,
           useValue: {
             params: of({
               orgId: 'orgTestId',
             }),
-            HttpClientTestingModule,
-            ExuiCommonLibModule,
-            RouterTestingModule,
-            CookieModule.forRoot(),
-        ],
-        declarations: [
-          OrganisationDetailsComponent
-        ],
-        schemas: [
-            CUSTOM_ELEMENTS_SCHEMA
-        ],
-        providers: [
-          OrganisationService, UserApprovalGuard,
-          UsersService,
-        ]
+          },
+        },
+      ]
     }).compileComponents();
     store = TestBed.get(Store);
     mockedOrganisationService = TestBed.get(OrganisationService);
