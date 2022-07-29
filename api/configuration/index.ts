@@ -1,7 +1,7 @@
 import * as propertiesVolume from '@hmcts/properties-volume'
 import * as config from 'config'
 import { DEVELOPMENT, HTTP } from './constants'
-import {ENVIRONMENT, PROTOCOL} from './references'
+import { ENVIRONMENT, PROTOCOL } from './references'
 
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
