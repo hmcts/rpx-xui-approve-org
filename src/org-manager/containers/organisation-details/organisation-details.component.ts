@@ -8,6 +8,7 @@ import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM} from '../../models/organisation';
 import * as fromStore from '../../store';
 import {NavigateToDeleteOrganisation} from '../../store/actions/organisations.actions';
+import { OrganisationService, UsersService } from 'src/org-manager/services';
 
 /**
  * Bootstraps Organisation Details
@@ -27,9 +28,13 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationAdminEmail: string;
   public isActiveOrg = false;
   public organisationDeletable = false;
+  public currentPageNumber: number = 1;
+  public pageTotalSize: number;
   constructor(
     private readonly store: Store<fromStore.OrganisationRootState>,
-    private readonly userApprovalGuard: UserApprovalGuard) {}
+    private readonly userApprovalGuard: UserApprovalGuard,
+    private readonly userSerive: UsersService,
+    private readonly organisationService: OrganisationService) {}
     private getShowOrgDetailsSubscription: Subscription;
     private getAllLoadedSubscription: Subscription;
     private getOrganisationDeletableSubscription: Subscription;
@@ -64,7 +69,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
         this.getOrganisationDeletableSubscription = this.store.pipe(select(fromStore.getOrganisationDeletable)).subscribe(value => this.organisationDeletable = value);
         if (this.isXuiApproverUserdata) {
           this.showUserNavigation = true;
-          this.store.dispatch(new fromStore.LoadOrganisationUsers(organisationId));
+          this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber - 1}));
         }
       }
 
@@ -76,7 +81,23 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           )
         );
       }
+
+      if (this.organisationId) {
+        this.getAllUsers(this.organisationId);
+      }
     });
+    this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
+  }
+
+  private getAllUsers(orgId: string) {
+    return this.userSerive.getAllUsersList(orgId).subscribe((userList => {
+      this.pageTotalSize = userList.users.length;
+    }));
+  }
+
+  public pageChange(pageNumber: number) {
+    this.currentPageNumber = pageNumber;
+    this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber - 1}));
     this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
 

@@ -9,10 +9,7 @@ import { attach } from './auth'
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration'
 import { ERROR_NODE_CONFIG_ENV } from './configuration/constants'
 import {
-  APP_INSIGHTS_KEY,
-  COOKIE_TOKEN,
-  COOKIES_USERID,
-  FEATURE_APP_INSIGHTS_ENABLED,
+  APP_INSIGHTS_KEY, COOKIES_USERID, COOKIE_TOKEN, FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
   FEATURE_OIDC_ENABLED,
   FEATURE_PROXY_ENABLED,
@@ -26,20 +23,13 @@ import {
   MICROSERVICE,
   NOW,
   OAUTH_CALLBACK_URL,
-  PROTOCOL,
-  REDIS_KEY_PREFIX,
-  REDIS_TTL,
-  REDISCLOUD_URL,
-  S2S_SECRET,
-  SERVICE_S2S_PATH,
-  SERVICES_FEE_AND_PAY_PATH,
+  PROTOCOL, REDISCLOUD_URL, REDIS_KEY_PREFIX,
+  REDIS_TTL, S2S_SECRET, SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
-  SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET
+  SERVICES_RD_PROFESSIONAL_API_PATH, SERVICE_S2S_PATH, SESSION_SECRET
 } from './configuration/references'
-import { appInsights } from './lib/appInsights'
 import * as log4jui from './lib/log4jui'
 import * as tunnel from './lib/tunnel'
 import routes from './routes'
@@ -255,9 +245,8 @@ const nodeLibOptions = {
 const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2'
 nodeLibOptions.auth[type] = options
 
-app.use(appInsights)
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json({ limit: '5mb' }))
+app.use(bodyParser.urlencoded({limit: '5mb', extended: true}))
 app.use(cookieParser(getConfigValue(SESSION_SECRET)))
 app.use(xuiNode.configure(nodeLibOptions))
 

@@ -10,6 +10,7 @@ import stateRouter from './states'
 import pbaRouter from './updatePba'
 import userDetailsRouter from './user'
 import caseWorkerDetailsRouter from './caseWorkerDetailsRouter'
+import allUserListWithoutRolesRouter from './allUserListWithoutRoles';
 
 const router = express.Router({ mergeParams: true })
 // open routes
@@ -25,5 +26,6 @@ router.use('/pbaAccounts', pbaAccounts)
 router.use('/monitoring-tools', getappInsightsInstrumentationKey)
 router.use('/reinviteUser', reinviteUserRouter)
 router.use('/caseworkerdetails', caseWorkerDetailsRouter)
+router.use('/allUserListWithoutRoles', allUserListWithoutRolesRouter);
 
 export default router
