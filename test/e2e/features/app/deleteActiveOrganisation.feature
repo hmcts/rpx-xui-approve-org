@@ -9,7 +9,7 @@ Feature: Delete Organisation
   Scenario: Verify the Banner on Approve Organisation
     Then I Verify the Text on Banner
 
-@all @fullfunctional
+@all_deprecated @fullfunctional_deprecated
   Scenario: Verify the Check Now Link on Approve Organisation
     Then I Verify the Check Now Link
     Then I click on Check Now Link to redirect to Active Organisations page
