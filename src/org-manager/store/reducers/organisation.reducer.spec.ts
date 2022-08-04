@@ -66,7 +66,10 @@ describe('Organisation Reducer', () => {
 
   describe('LOAD_ORGANISATION_USERS action', () => {
     it('should return the initial state.organisationUsersList', () => {
-      const action = new fromActions.LoadOrganisationUsers('orgId');
+      const orgId = 'orgId';
+      const pageNo = 1;
+      const payload = { orgId, pageNo };
+      const action = new fromActions.LoadOrganisationUsers(payload);
       const state = reducer(initialState, action);
       expect(state.organisationUsersList).toEqual({users: null, isError: false});
     });
