@@ -46,7 +46,7 @@ withNightlyPipeline(type, product, component) {
     enableFortifyScan()
     enableFullFunctionalTest(30)
     enableMutationTest()
-    enableCrossBrowserTest()
+    //enableCrossBrowserTest() //Temporarily commented till EUI-6578 is resolved
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     after('checkout') {sh 'yarn cache clean'}
     after('build') {
