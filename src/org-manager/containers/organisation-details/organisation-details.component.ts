@@ -80,26 +80,22 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
-        }
-
-        if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
+        } else if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
           organisationVM.pbaNumber.forEach(pbaNumber => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
           this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
-        }
-
-        if (organisationVM.pendingPaymentAccount && organisationVM.pendingPaymentAccount.length) {
+        } else if (organisationVM.pendingPaymentAccount && organisationVM.pendingPaymentAccount.length) {
           organisationVM.pendingPaymentAccount.forEach(pbaNumber => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
           this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
-        }
-
+        } 
+        
         if (organisationVM.status !== 'PENDING' && organisationVM.organisationId) {
           try {
             this.getAllUsers(organisationVM.organisationId);
@@ -111,7 +107,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
                 } as OrganisationUserListModel;
                 return orgUserListModel;
               }));
-          } catch (error) {
+            } catch (error) {
           }
         }
 
