@@ -94,8 +94,8 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
             organisationVM.accountDetails = accountResponse;
           });
-        } 
-        
+        }
+
         if (organisationVM.status !== 'PENDING' && organisationVM.organisationId) {
           try {
             this.getAllUsers(organisationVM.organisationId);
