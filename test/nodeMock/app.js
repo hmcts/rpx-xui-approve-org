@@ -5,6 +5,7 @@ const minimist = require('minimist');
 
 let { requestMapping,configurations} = require('./reqResMapping');
 const { browser } = require('protractor');
+const nodeMockAvailablePort = require('./availablePortFinder').getAvailablePort();
 const port = 3001
 
 
@@ -39,7 +40,7 @@ class MockApp{
             app.delete(key, value);
         }
 
-        this.server = await app.listen(port)
+        this.server = await app.listen(nodeMockAvailablePort);
         console.log("mock api started");
         // return "Mock started successfully"
 
