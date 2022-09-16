@@ -17,6 +17,7 @@ export class NewPBAsConfirmComponent implements OnDestroy {
   @Input() public formControls: FormControl[];
   @Input() public newPBAs: Map<string, string>;
   private subscription: Subscription;
+  public isInactiveOrgError: boolean = false;
 
   constructor(
     private readonly router: Router,
@@ -26,6 +27,7 @@ export class NewPBAsConfirmComponent implements OnDestroy {
 
   public confirmPBAs(): void {
     const pbaNumbers = [];
+    this.isInactiveOrgError = false;
     this.newPBAs.forEach((value: string, key: string) => {
       pbaNumbers.push({
         pbaNumber: key,
@@ -52,7 +54,11 @@ export class NewPBAsConfirmComponent implements OnDestroy {
           });
         },
         error: (error: any) => {
-          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+          if (error.status === 400 && error.error.errorDescription === 'The requested Organisation is not \'Active\'') {
+            this.isInactiveOrgError = true;
+          } else {
+            handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+          }
         }});
   }
 
