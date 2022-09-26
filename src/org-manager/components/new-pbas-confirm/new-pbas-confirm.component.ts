@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -11,7 +11,7 @@ import { PbaService } from '../../services';
   selector: 'app-new-pbas-confirm',
   templateUrl: './new-pbas-confirm.component.html'
 })
-export class NewPBAsConfirmComponent implements OnDestroy {
+export class NewPBAsConfirmComponent implements OnInit, OnDestroy {
 
   @Input() public org: OrganisationVM;
   @Input() public formControls: FormControl[];
@@ -23,6 +23,10 @@ export class NewPBAsConfirmComponent implements OnDestroy {
     private readonly router: Router,
     private readonly pbaService: PbaService
   ) {
+  }
+
+  public ngOnInit(): void {
+    window.scrollTo(0, 0);
   }
 
   public confirmPBAs(): void {
