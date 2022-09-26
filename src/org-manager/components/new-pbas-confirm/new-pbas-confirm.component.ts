@@ -59,6 +59,7 @@ export class NewPBAsConfirmComponent implements OnDestroy {
           } else {
             handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           }
+          window.scrollTo(0, 0);
         }});
   }
 
