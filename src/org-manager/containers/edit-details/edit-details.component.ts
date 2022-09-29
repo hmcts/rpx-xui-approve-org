@@ -111,10 +111,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onAddNewBtnClicked(): void {
-    if (this.pbaInputs && this.pbaInputs.length) {
-      this.appendAnotherNumber(this.pbaInputs.length + 1);
-      this.addPbaFormItem(this.pbaInputs[this.pbaInputs.length - 1].name);
-    }
+    this.appendAnotherNumber(this.pbaInputs.length + 1);
+    this.addPbaFormItem(this.pbaInputs[this.pbaInputs.length - 1].name);
   }
 
   public remove(data: PBAConfig) {
