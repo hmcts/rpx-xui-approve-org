@@ -378,18 +378,18 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     const paymentAccountsWrapper = [...paymentAccounts];
 
-    for (let index = 0; index < paymentAccountsWrapper.length; index++) {
+    for (const item of paymentAccountsWrapper) {
       const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
-      const errorKeys = formControlsKeys.filter((key) => this.fPba[key].value === paymentAccountsWrapper[index]);
-      const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
-      const errorMessage = OrgManagerConstants.PBA_ERROR_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
+      const errorKeys = formControlsKeys.filter((key) => this.fPba[key].value === item);
+      const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, item);
+      const errorMessage = OrgManagerConstants.PBA_ERROR_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, item);
       this.errorHeader.header = 'There is a problem.';
 
       errorKeys.forEach((eKey) => {
-        if (typeof paymentAccountsWrapper[index] === 'string' && paymentAccountsWrapper[index].length > 2 &&
-          (paymentAccountsWrapper[index].length !== 10 ||
-            paymentAccountsWrapper[index].substring(0, 3) !== 'PBA' ||
-              isNaN(Number(paymentAccountsWrapper[index].substring(3))))) {
+        if (typeof item === 'string' && item.length > 2 &&
+          (item.length !== 10 ||
+            item.substring(0, 3) !== 'PBA' ||
+              isNaN(Number(item.substring(3))))) {
           validation = false;
 
           if (this.errorHeader.items.filter(x => x.id === eKey).length) {
