@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import _ from 'lodash';
+import { element } from 'protractor';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import * as fromRoot from '../../../app/store';
@@ -376,7 +377,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const { value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
     const paymentAccountsWrapper = [...paymentAccounts];
-    for (const index of paymentAccountsWrapper) {
+
+    for (let index = 0; index < paymentAccountsWrapper.length; index++) {
       const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
       const errorKeys = formControlsKeys.filter((key) => this.fPba[key].value === paymentAccountsWrapper[index]);
       const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, paymentAccountsWrapper[index]);
@@ -385,7 +387,9 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
       errorKeys.forEach((eKey) => {
         if (typeof paymentAccountsWrapper[index] === 'string' && paymentAccountsWrapper[index].length > 2 &&
-        (paymentAccountsWrapper[index].length !== 10 || paymentAccountsWrapper[index].substring(0, 3) !== 'PBA')) {
+          (paymentAccountsWrapper[index].length !== 10 ||
+            paymentAccountsWrapper[index].substring(0, 3) !== 'PBA' ||
+              isNaN(Number(paymentAccountsWrapper[index].substring(3))))) {
           validation = false;
 
           if (this.errorHeader.items.filter(x => x.id === eKey).length) {
