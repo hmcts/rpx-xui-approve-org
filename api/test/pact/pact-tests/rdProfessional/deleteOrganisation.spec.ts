@@ -50,6 +50,9 @@ describe("Delete active Users of organistaion based on the showDeleted Flag ", a
       }).then(() => {
         pactSetUp.provider.verify(),
         pactSetUp.provider.finalize()
+      }).finally(() => {
+        pactSetUp.provider.verify()
+        pactSetUp.provider.finalize()
       })
     })
   })

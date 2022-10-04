@@ -66,6 +66,9 @@ describe('Reinvite a User', async () => {
       }).then(() => {
         pactSetUp.provider.verify(),
         pactSetUp.provider.finalize()
+      }).finally(() => {
+        pactSetUp.provider.verify()
+        pactSetUp.provider.finalize()
       })
     })
   })

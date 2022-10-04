@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PaginationParameter } from '@hmcts/rpx-xui-common-lib';
+import { Pagination } from '@hmcts/rpx-xui-common-lib';
 import { GovukTableColumnConfig } from '@hmcts/rpx-xui-common-lib/lib/gov-ui/components/gov-uk-table/gov-uk-table.component';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import 'rxjs/add/observable/of';
-import {takeWhile} from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 import { PendingOverviewColumnConfig } from 'src/org-manager/config/pending-overview.config';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromStore from '../../../org-manager/store';
@@ -24,7 +23,7 @@ export class PendingOrganisationsComponent implements OnInit {
   public pendingSearchString$: Observable<string>;
   public activeOrgsCount$: Observable<number>;
   public activeLoaded$: Observable<boolean>;
-  public pagination: PaginationParameter;
+  public pagination: Pagination;
 
   constructor(public store: Store<fromStore.OrganisationRootState>,
               private readonly fb: FormBuilder) {}
@@ -54,8 +53,9 @@ export class PendingOrganisationsComponent implements OnInit {
     this.store.dispatch(new fromStore.ClearErrors());
     this.pendingSearchString$ = this.store.pipe(select(fromOrganisation.getPendingSearchString));
     this.pagination = {
-      page_number: 1,
-      page_size: 25
+      currentPage: 1,
+      itemsPerPage: 25,
+      totalItems: 0
     };
   }
 
@@ -65,24 +65,24 @@ export class PendingOrganisationsComponent implements OnInit {
   }
 
   public onPaginationHandler(pageNumber: number): void {
-    this.pagination.page_number = pageNumber;
+    this.pagination.currentPage = pageNumber;
   }
 
   public getFirstResult(orgs: OrganisationVM[]): number {
     if (orgs && orgs.length > 0) {
-      const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
+      const currentPage = (this.pagination.currentPage ? this.pagination.currentPage  : 1);
       if (currentPage === 1) {
         return currentPage;
       }
-      return (currentPage - 1) * this.pagination.page_size + 1;
+      return (currentPage - 1) * this.pagination.itemsPerPage + 1;
     }
     return 0;
   }
 
   public getLastResult(orgs: OrganisationVM[]): number {
     if (orgs && orgs.length > 0) {
-      const currentPage = (this.pagination.page_number ? this.pagination.page_number  : 1);
-      const results = (currentPage) * this.pagination.page_size;
+      const currentPage = (this.pagination.currentPage ? this.pagination.currentPage  : 1);
+      const results = (currentPage) * this.pagination.itemsPerPage;
       return (results > orgs.length) ? orgs.length : results;
     }
     return 0;
@@ -95,4 +95,7 @@ export class PendingOrganisationsComponent implements OnInit {
     return 0;
   }
 
+  public emitPageClickEvent(pageNumber: any): void {
+    this.pagination.currentPage = pageNumber;
+  }
 }

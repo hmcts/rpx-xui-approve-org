@@ -1,14 +1,20 @@
-import {DeleteOrganisationSuccessComponent} from './delete-organisation-success.component';
-import {combineReducers, Store, StoreModule} from '@ngrx/store';
-import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import * as fromRoot from '../../../app/store';
 import {RouterTestingModule} from '@angular/router/testing';
+import {combineReducers, Store, StoreModule} from '@ngrx/store';
+import { of } from 'rxjs';
+import { ReviewedOrganisationMockCollection } from 'src/org-manager/mock/pending-organisation.mock';
+import * as fromRoot from '../../../app/store';
+import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import {DeleteOrganisationSuccessComponent} from './delete-organisation-success.component';
 
 describe('DeleteOrganisationSuccessComponent', () => {
   let component: DeleteOrganisationSuccessComponent;
   let fixture: ComponentFixture<DeleteOrganisationSuccessComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+  let storePipeMock: any;
+  let storeDispatchMock: any;
+
+  const reviewedOrganisationsDummy = ReviewedOrganisationMockCollection;
 
   beforeEach((() => {
     TestBed.configureTestingModule({
@@ -23,7 +29,10 @@ describe('DeleteOrganisationSuccessComponent', () => {
         DeleteOrganisationSuccessComponent
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
+
+    storePipeMock = spyOn(store, 'pipe');
+    storeDispatchMock = spyOn(store, 'dispatch');
 
     fixture = TestBed.createComponent(DeleteOrganisationSuccessComponent);
     component = fixture.componentInstance;
@@ -32,5 +41,16 @@ describe('DeleteOrganisationSuccessComponent', () => {
   it('should have a component', () => {
     const deleteOrganisationSuccessComponent = new DeleteOrganisationSuccessComponent(store);
     expect(deleteOrganisationSuccessComponent).toBeTruthy();
+  });
+
+  describe('addOrganisationForReviewSubscribe()', () => {
+
+    it('should return reviewed organisation details, so that the User can view them on the page.', () => {
+
+      storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
+      fixture.detectChanges();
+      component.addOrganisationForReviewSubscribe();
+      expect(component.orgForReview['reviewedOrganisations']).toEqual(reviewedOrganisationsDummy);
+    });
   });
 });
