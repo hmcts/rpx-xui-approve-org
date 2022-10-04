@@ -2,7 +2,7 @@ import { inject, TestBed } from '@angular/core/testing';
 import { HealthCheckService } from './health-check.service';
 import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngrx/store';
-import { of, BehaviorSubject } from 'rxjs';
+import { of, BehaviorSubject, Subscription } from 'rxjs';
 
 describe('HealthCheckService', () => {
     const mockedValue = 'dummy';
@@ -33,6 +33,22 @@ describe('HealthCheckService', () => {
             expect(httpClientMock.get).toHaveBeenCalledWith('/api/healthCheck?path=dummy');
         }));
 
+    });
+
+    describe('ngOnDestroy()', () => {
+        it('should unsubscribe from route subscription', inject([HealthCheckService], (service: HealthCheckService) => {
+            service.routeSubscription = new Subscription();
+            service.ngOnDestroy();
+
+            expect(service.routeSubscription.closed).toBeTruthy();
+        }));
+
+        it('should do nothing if subscription undefined', inject([HealthCheckService], (service: HealthCheckService) => {
+            service.routeSubscription = undefined;
+            service.ngOnDestroy();
+
+            expect(service.routeSubscription).toBeUndefined();
+        }));
     });
 
 });

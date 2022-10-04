@@ -5,6 +5,7 @@ import {
 } from '@angular/router';
 import { ActionReducerMap, createFeatureSelector, createSelector } from '@ngrx/store';
 
+import { Injectable } from '@angular/core';
 import * as fromRouter from '@ngrx/router-store';
 import * as fromApp from '../reducers/app.reducer';
 
@@ -21,12 +22,12 @@ export interface NavItem {
   feature: {
     isfeatureToggleable: boolean;
     featureName: string;
-  },
-  orderId: number
-};
+  };
+  orderId: number;
+}
 
 export interface UserRoleNav {
-  [key: string]: NavItem
+  [key: string]: NavItem;
 }
 
 export interface State {
@@ -52,6 +53,7 @@ export const getRouterUrl = createSelector(
   state => state ? state.state.url : null
 );
 
+@Injectable()
 export class CustomSerializer
   implements fromRouter.RouterStateSerializer<RouterStateUrl> {
   public serialize(routerState: RouterStateSnapshot): RouterStateUrl {

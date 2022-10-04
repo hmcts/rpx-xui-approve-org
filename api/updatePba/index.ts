@@ -1,8 +1,9 @@
 import * as express from 'express'
-import {getConfigValue} from '../configuration'
+import { getConfigValue } from '../configuration'
 import {
-SERVICES_RD_PROFESSIONAL_API_PATH,
+    SERVICES_RD_PROFESSIONAL_API_PATH
 } from '../configuration/references'
+import { EnhancedRequest } from '../models/enhanced-request.interface'
 
 /**
  * Handle Update PBA Number
@@ -15,7 +16,7 @@ SERVICES_RD_PROFESSIONAL_API_PATH,
  * @param next
  */
 
-async function handleUpdatePBARoute(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function handleUpdatePBARoute(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
       try {
           const {paymentAccounts, orgId} = req.body
           const updatePbaUrl = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${orgId}/pbas`

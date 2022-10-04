@@ -1,5 +1,4 @@
 import * as fromApp from './app.actions';
-import { GlobalError } from '../reducers/app.reducer';
 
 describe('App Actions', () => {
 

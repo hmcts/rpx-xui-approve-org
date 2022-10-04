@@ -111,4 +111,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-export const orgManagerRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const orgManagerRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);
