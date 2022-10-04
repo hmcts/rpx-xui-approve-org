@@ -42,8 +42,6 @@ export class DeleteOrganisationComponent implements OnInit {
 
   /**
    * On Delete Organisation Handler
-   *
-   * @param orgForReview
    */
   public onDeleteOrganisationHandler(orgForReview: OrganisationVM) {
     if (orgForReview.status === 'PENDING') {

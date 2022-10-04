@@ -1,17 +1,17 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { CookieService } from 'ngx-cookie';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+
+import { CookieService } from 'ngx-cookie';
 import { of } from 'rxjs';
+import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation.component';
 
 describe('HmctsPrimaryNavigationComponent', () => {
   let component: HmctsPrimaryNavigationComponent;
   let fixture: ComponentFixture<HmctsPrimaryNavigationComponent>;
   const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
   const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled'])
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HmctsPrimaryNavigationComponent ],
       imports: [
@@ -28,11 +28,16 @@ describe('HmctsPrimaryNavigationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HmctsPrimaryNavigationComponent);
     component = fixture.componentInstance;
+    component.userLoggedIn = true;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should set isUserLoggedIn input', () => {
+    expect(component.isUserLoggedIn).toBeTruthy();
   });
 
   it('isFeatureNavEnabled$ isfeatureToggleable false', () => {
@@ -61,7 +66,7 @@ describe('HmctsPrimaryNavigationComponent', () => {
         featureName: ''
       },
       orderId: 0
-    }
+    };
     featureToggleService.isEnabled.and.returnValue(of(false))
     const result$ = component.isFeatureNavEnabled$(navItem);
     result$.subscribe(result => expect(result).toBeFalsy());

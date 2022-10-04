@@ -1,11 +1,17 @@
 import { handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './caseworker-utils';
 
 describe('CaseWorkerUtils', () => {
-  const mockRouter = {
+  let mockRouter = {
     navigate: jasmine.createSpy('navigate')
   };
 
-  it('should send back the status if it is not 500, 401 or 403', () => {
+  afterEach(() => {
+    mockRouter = {
+      navigate: jasmine.createSpy('navigate')
+    };
+  });
+
+  it('should send back the status if it is not 500, 401 or 403', async () => {
     // test can handle fatal errors for 400 and 402 errors
     const firstStatus = handleFatalErrors(400, mockRouter);
     const secondStatus = handleFatalErrors(402, mockRouter);
@@ -16,14 +22,14 @@ describe('CaseWorkerUtils', () => {
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
-  it('should return the status if there are no fatal changes', () => {
+  it('should return the status if there are no fatal changes', async () => {
     // ensure that the status of a 404 error is returned and navigate has not been called
     const firstStatus = treatAsFatal(404, mockRouter, []);
     expect(firstStatus).toEqual(404);
     expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
 
-  it('should attempt to navigate to the correct error pages', () => {
+  it('should attempt to navigate to the correct error pages', async () => {
     // should get correct redirect for 500
     const serviceDown = handleFatalErrors(500, mockRouter);
     expect(serviceDown).toEqual(0);
@@ -40,7 +46,7 @@ describe('CaseWorkerUtils', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
   });
 
-  it('should allow setting a fatal redirect', () => {
+  it('should allow setting a fatal redirect', async () => {
     // set fatal redirect for 404 and 415 as example
     const REDIRECT_TEST = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }, { status: 415, redirectTo: REDIRECTS.NotAuthorised }];
     const firstStatus = treatAsFatal(404, mockRouter, REDIRECT_TEST);
@@ -62,7 +68,7 @@ describe('CaseWorkerUtils', () => {
     // note: navigate method has already been called so cannot verify that
   });
 
-  it('should allow setting wildcard to ensure all errors sent to service down', () => {
+  it('should allow setting wildcard to ensure all errors sent to service down', async () => {
     // test wildcard with 402 error
     const firstStatus = treatAsFatal(402, mockRouter, WILDCARD_SERVICE_DOWN);
 
@@ -78,7 +84,7 @@ describe('CaseWorkerUtils', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.ServiceDown]);
   });
 
-  it('should ensure correctly setting redirects for handling of all errors', () => {
+  it('should ensure correctly setting redirects for handling of all errors', async () => {
     // set fatal redirect for 404 and 415 as example
     const REDIRECT_TEST = [{ status: 404, redirectTo: REDIRECTS.ServiceDown }, { status: 415, redirectTo: REDIRECTS.NotAuthorised }];
     const firstStatus = handleFatalErrors(404, mockRouter, REDIRECT_TEST);
