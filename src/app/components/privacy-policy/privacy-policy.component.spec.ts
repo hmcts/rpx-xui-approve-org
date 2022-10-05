@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { PrivacyPolicyComponent } from '..';
@@ -15,7 +15,7 @@ describe('PrivacyPolicyComponent', () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ PrivacyPolicyComponent ],
@@ -41,5 +41,12 @@ describe('PrivacyPolicyComponent', () => {
     component.ngOnInit();
     await fixture.whenStable();
     expect(documenentQuery).toHaveBeenCalledWith('#overview');
+  });
+
+  describe('clickout()', () => {
+    it('should unsubscribe if one is active', () => {
+      component.clickout({});
+      expect(component);
+    });
   });
 });
