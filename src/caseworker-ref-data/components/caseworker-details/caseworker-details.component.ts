@@ -1,8 +1,8 @@
-import { CaseWorkerRefDataService } from '../../services/caseworker-ref-data.service';
-import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { handleFatalErrors } from '../../../shared/utils/handle-fatal-errors';
+import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
+import { CaseWorkerRefDataService } from '../../services/caseworker-ref-data.service';
 
 @Component({
   selector: 'app-prd-caseworker-details',
@@ -28,7 +28,7 @@ export class CaseWorkerDetailsComponent {
       if (response.error_details && response.error_details.length > 0) {
         this.router.navigate(['/caseworker-details/partial-success'], { state: response });
       } else {
-        this.router.navigate(['/caseworker-details/upload-success'], { state: response })
+        this.router.navigate(['/caseworker-details/upload-success'], { state: response });
       }
     },
       errorResponse => {
