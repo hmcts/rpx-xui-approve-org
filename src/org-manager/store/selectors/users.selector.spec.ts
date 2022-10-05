@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
 import { reducers } from '../index';
-import {initialState, UsersState} from '../reducers/users.reducer';
+import { initialState, UsersState } from '../reducers/users.reducer';
 import * as fromSelectors from './users.selectors';
 
 describe('Edit Details selectors', () => {
@@ -85,6 +85,20 @@ describe('Edit Details selectors', () => {
         result = value;
       });
       expect(result).toEqual(initialState.errorHeader);
+    });
+  });
+
+  describe('getGetInviteUserErrorsArray', () => {
+    it('should return user form array', () => {
+      let result;
+      store.pipe(select(fromSelectors.getGetInviteUserErrorsArray)).subscribe(value => {
+        result = value;
+      });
+      expect(result).toEqual({
+        isFromValid: false,
+        header: null,
+        items: []
+      });
     });
   });
 });

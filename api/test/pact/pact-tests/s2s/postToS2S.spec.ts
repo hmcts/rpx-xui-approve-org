@@ -61,6 +61,9 @@ describe("s2s API lease", async () => {
       }).then(() => {
         pactSetUp.provider.verify()
         pactSetUp.provider.finalize()
+      }).finally(() => {
+        pactSetUp.provider.verify()
+        pactSetUp.provider.finalize()
       })
     })
   })

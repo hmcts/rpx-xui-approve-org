@@ -1,3 +1,4 @@
+import { of } from 'rxjs';
 import * as fromAppStore from '../../../app/store';
 import { ServiceDownComponent } from './service-down.component';
 
@@ -8,7 +9,9 @@ describe('ServiceDownComponent', () => {
 
   beforeEach(() => {
     userStoreSpyObject = jasmine.createSpyObj('Store', ['pipe', 'select', 'dispatch']);
+    userStoreSpyObject.pipe.and.returnValue(of('text'));
     component = new ServiceDownComponent(userStoreSpyObject);
+    component.ngOnInit();
   });
 
   it('Is Truthy', () => {

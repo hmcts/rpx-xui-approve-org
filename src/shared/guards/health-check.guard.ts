@@ -10,12 +10,12 @@ import { Store } from '@ngrx/store';
 @Injectable()
 export class HealthCheckGuard implements CanActivate {
     constructor(
-        private healthCheck: HealthCheckService,
-        private store: Store<fromRoot.State>,
+        private readonly healthCheck: HealthCheckService,
+        private readonly store: Store<fromRoot.State>,
     ) {
     }
 
-    canActivate() {
+    public canActivate(): Observable<boolean> {
         return this.checkHealth().pipe(
             switchMap((res: any) => {
                 const state = res.healthState;
@@ -31,11 +31,11 @@ export class HealthCheckGuard implements CanActivate {
         );
     }
 
-    checkHealth(): Observable<boolean> {
+    public checkHealth(): Observable<boolean> {
         return this.healthCheck.doHealthCheck();
     }
 
-    redirectToServiceDownPage() {
+    public redirectToServiceDownPage(): void {
         this.store.dispatch(new fromRoot.Go({ path: ['/service-down'] }));
     }
 }

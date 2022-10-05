@@ -23,4 +23,4 @@ export const ROUTES: Routes = [
   }
 ];
 
-export const caseWorkerRefDataRouting: ModuleWithProviders = RouterModule.forChild(ROUTES);
+export const caseWorkerRefDataRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

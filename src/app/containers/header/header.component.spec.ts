@@ -1,15 +1,15 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { StoreModule } from '@ngrx/store';
-import { reducers } from 'src/app/store/reducers';
+import { NavItem, reducers } from '../../store';
 import { CookieService } from 'ngx-cookie';
 
 describe('HeaderComponent', () => {
     let fixture;
     let app;
     const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [
                 StoreModule.forRoot({}),
@@ -41,4 +41,24 @@ describe('HeaderComponent', () => {
         expect(app.serviceName.name).toBe('Approve organisation');
     });
 
+    describe('updateNavItems', () => {
+        it('should update the active navItems', () => {
+            const navItems: NavItem = {
+                text: 'hello',
+                href: 'blah',
+                active: false,
+                orderId: 1,
+                feature: {
+                    isfeatureToggleable: false,
+                    featureName: 'string'
+                }
+            };
+
+            app.navItems = [navItems];
+
+            app.updateNavItems('blah');
+
+            expect(app.navItems[0].active).toBeTruthy();
+        });
+    });
 });

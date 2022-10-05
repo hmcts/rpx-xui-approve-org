@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -11,7 +11,7 @@ describe('HmctsGlobalHeaderComponent', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HmctsGlobalHeaderComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -43,6 +43,8 @@ describe('HmctsGlobalHeaderComponent', () => {
     component.serviceName = {
       name: 'some name'
     };
+
+    component.userLoggedIn = true;
 
     fixture.detectChanges();
   });

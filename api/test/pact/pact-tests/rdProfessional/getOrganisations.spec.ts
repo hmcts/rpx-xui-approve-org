@@ -54,6 +54,9 @@ describe("Get a list of organisations based on status", async () => {
       }).then(() => {
         pactSetUp.provider.verify(),
         pactSetUp.provider.finalize()
+      }).finally(() => {
+        pactSetUp.provider.verify()
+        pactSetUp.provider.finalize()
       })
     })
   })
@@ -71,7 +74,7 @@ function assertResponse(dto: Organisation[]): void {
   }
 }
 
-const organisations: Organisation[] = [
+const organisations = [
   {
     companyNumber: somethingLike('A1000'),
     companyUrl: somethingLike('www.google.com'),
@@ -87,4 +90,5 @@ const organisations: Organisation[] = [
     },
     paymentAccount: somethingLike(["abckd"])
   }
-]
+] as Organisation[];
+

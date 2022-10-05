@@ -1,13 +1,13 @@
-/*import { inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { StoreModule } from '@ngrx/store';
-import {AuthGuard} from './auth.guard';
-import {CookieOptionsProvider, CookieService} from 'ngx-cookie';
-import {AppConfigService} from '../config/configuration.services';
-import {environment} from '../../../environments/environment';
-import {Router} from '@angular/router';
-import {HttpClient} from '@angular/common/http';
+import { CookieService } from 'ngx-cookie';
+import { of } from 'rxjs';
+import { environment } from 'src/environments/environment';
+import { AuthGuard } from './auth.guard';
 
 const config = {
   config: {
@@ -40,35 +40,33 @@ const cookieService = {
 
 
 class HttpClientMock {
-
-  get() {
-    return 'response';
+  public get() {
+    return of('response');
   }
 }
 
-class AppConfigServiceMock {
-  getRoutesConfig() {
-    return {
-      idam: {
-        idamLoginUrl: 'dummy',
-        idamClientID: 'dummy',
-        oauthCallbackUrl: 'dummy'
-      }
-    };
+class MockAuthService {
+  public authenticated = false;
+
+  public isAuthenticated() {
+    return of(this.authenticated);
   }
+
+  public loginRedirect() {}
 }
-
-
 
 describe('AuthService', () => {
+  let service: MockAuthService;
+
   beforeEach(() => {
+    service = new MockAuthService();
+
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({})
       ],
       providers: [
-        AuthService,
-        { provide: AppConfigService, useClass: AppConfigServiceMock},
+        { provide: AuthService, useValue: service },
         { provide: environment, useValue: config },
         { provide: Router, useValue: router },
         { provide: CookieService, useValue: cookieService },
@@ -82,7 +80,21 @@ describe('AuthService', () => {
   }));
 
 
-  it('should exist', inject([AuthGuard], (gurad: AuthGuard) => {
-    expect(gurad.canActivate).toBeDefined();
+  it('should exist', inject([AuthGuard], (guard: AuthGuard) => {
+    expect(guard.canActivate).toBeDefined();
   }));
-});*/
+
+  describe('canActivate()', () => {
+    it('should return true when authenticated', inject([AuthGuard], (guard: AuthGuard) => {
+      service.authenticated = true;
+
+      guard.canActivate().subscribe(result => expect(result).toBeTruthy());
+    }));
+
+    it('should return false when unauthenticated', inject([AuthGuard], (guard: AuthGuard) => {
+      service.authenticated = false;
+
+      guard.canActivate().subscribe(result => expect(result).toBeFalsy());
+    }));
+  });
+});

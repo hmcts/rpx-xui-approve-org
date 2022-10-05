@@ -12,14 +12,21 @@ describe('Accept terms And Conditions Service', () => {
         const mockHttpClient = jasmine.createSpyObj('mockHttpClient', ['get', 'post']);
         const service = new UsersService(mockHttpClient);
         service.getOrganisationUsers('dummy');
-        expect(mockHttpClient.get).toHaveBeenCalledWith(service.orgUsersUrl + 'dummy');
+        expect(mockHttpClient.get).toHaveBeenCalledWith(`${service.orgUsersUrl}dummy`);
+    });
+
+    it('should getAllUsersList', () => {
+        const mockHttpClient = jasmine.createSpyObj('mockHttpClient', ['get', 'post']);
+        const service = new UsersService(mockHttpClient);
+        service.getAllUsersList('orgId');
+        expect(mockHttpClient.get).toHaveBeenCalledWith(`${service.orgUsersUrlWithoutRole}orgId`);
     });
 
     it('should inviteUser', () => {
         const mockHttpClient = jasmine.createSpyObj('mockHttpClient', ['get', 'post']);
         const service = new UsersService(mockHttpClient);
         service.inviteUser('dummy', {});
-        expect(mockHttpClient.post).toHaveBeenCalledWith(service.reinviteUserUrl + 'dummy', {});
+        expect(mockHttpClient.post).toHaveBeenCalledWith(`${service.reinviteUserUrl}dummy`, {});
     });
 
 });
