@@ -10,6 +10,6 @@ export interface EnhancedRequest extends express.Request {
   };
   body;
   headers;
-  session?;
+  session;
   url: string;
 }
