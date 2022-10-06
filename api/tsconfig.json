@@ -6,8 +6,7 @@
         "target": "es5",
         "types": [
             "node",
-            "mocha",
-            "rxjs"
+            "mocha"
         ],
         "baseUrl": ".",
         "lib": [
