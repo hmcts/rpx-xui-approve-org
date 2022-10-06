@@ -4,9 +4,9 @@
  * When moving to a different proxy middleware, it is important to refactor this as well.
  */
 // TODO: remove this entire file in favour of middleware/proxy.ts
-import * as express from 'express';
+import { EnhancedRequest } from './models';
 
-export function setHeaders(req: express.Request): any {
+export function setHeaders(req: EnhancedRequest): any {
   const headers: any = {};
 
   if (req.headers) {
