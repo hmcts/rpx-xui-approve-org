@@ -50,12 +50,6 @@ describe('ApproveOrganisationComponent', () => {
         });
     });
 
-    it('should return reviewed organisations', () => {
-        storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
-        fixture.detectChanges();
-        expect(component.orgForReview['reviewedOrganisations']).toEqual(reviewedOrganisationsDummy);
-    });
-
     it('should dispatch a pending organisation "approve" action when reviewed activeOrg are approved', () => {
         storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
         fixture.detectChanges();
