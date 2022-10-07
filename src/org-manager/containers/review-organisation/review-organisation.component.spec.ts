@@ -12,8 +12,9 @@ describe('ReviewOrganisationComponent', () => {
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
   let storePipeMock: any;
   let storeDispatchMock: any;
-
+  let router;
   beforeEach((() => {
+    router = jasmine.createSpyObj('router', ['navigate','getCurrentNavigation'])
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -29,8 +30,14 @@ describe('ReviewOrganisationComponent', () => {
     }).compileComponents();
     store = TestBed.get(Store);
     storePipeMock = spyOn(store, 'pipe');
-    storeDispatchMock = spyOn(store, 'dispatch');
-    fixture = TestBed.createComponent(ReviewOrganisationComponent);
-    component = fixture.componentInstance;
+    storeDispatchMock =  jasmine.createSpyObj('Store', ['pipe', 'select', 'dispatch']);
+    component = new ReviewOrganisationComponent(storeDispatchMock,router);
   }));
+
+
+  it('should dispatch fromRoot.Back action on goBack', () => {
+    component.onPutReviewOrganisation();
+    expect(storeDispatchMock.dispatch).toHaveBeenCalled();
+  });
+
 });
