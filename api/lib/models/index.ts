@@ -1,3 +1,4 @@
+import { AxiosInstance } from 'axios';
 import * as express from 'express';
 
 export interface EnhancedRequest extends express.Request {
@@ -12,4 +13,5 @@ export interface EnhancedRequest extends express.Request {
   headers;
   session;
   url: string;
+  http: AxiosInstance;
 }
