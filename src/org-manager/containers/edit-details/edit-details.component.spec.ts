@@ -127,4 +127,25 @@ describe('EditDetailsComponent', () => {
     fixture.detectChanges();
     expect(component.duplicateValidator).toHaveBeenCalled();
   });
+
+  it('should remove PBA after adding one', () => {
+    component.onAddNewBtnClicked();
+    fixture.detectChanges();
+    component.remove(component.pbaInputs[0]);
+    fixture.detectChanges();
+    expect(component.pbaInputs.length).toBe(0);
+  });
+
+  it('should submit PBA and reset errors', () => {
+    component.onAddNewBtnClicked();
+    fixture.detectChanges();
+    component.onSubmitPba();
+    expect(component.errorHeader.items.length).toBe(0);
+  });
+
+  it('should dispatch route to back', () => {
+    spyOn(store, 'dispatch').and.callThrough();
+    component.onGoBack();
+    expect(store.dispatch).toHaveBeenCalledWith(new fromRoot.Back());
+  });
 });
