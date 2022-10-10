@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import * as fromRoot from '../../../app/store';
 import { ReinviteUserSuccessComponent } from './reinvite-user-success.component';
 
-xdescribe('ReinviteUserSuccessComponent', () => {
+describe('ReinviteUserSuccessComponent', () => {
 
     let component: ReinviteUserSuccessComponent;
     let userStoreSpyObject;
