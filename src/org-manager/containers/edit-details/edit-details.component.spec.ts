@@ -143,6 +143,10 @@ describe('EditDetailsComponent', () => {
     expect(component.errorHeader.items.length).toBe(0);
   });
 
+  it('should submit PBA and reset errors', () => {
+    expect(component.pbaDepiction('PBANumber:PBA12 34567')).toBe('PBA12');
+  });
+
   it('should dispatch route to back', () => {
     spyOn(store, 'dispatch').and.callThrough();
     component.onGoBack();
