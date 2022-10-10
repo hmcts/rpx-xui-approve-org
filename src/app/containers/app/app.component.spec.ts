@@ -130,10 +130,15 @@ describe('AppComponent', () => {
     expect(titleService.setTitle).toHaveBeenCalled();
   });
 
-  it('should call the title service', () => {
+  it('should call the title service with value', () => {
     component.setTitleIfPresent(testRoute);
     fixture.detectChanges();
     expect(titleService.setTitle).toHaveBeenCalledWith(`Test - HM Courts & Tribunals Service - GOV.UK`);
+  });
+
+  it('should call the dispatchSessionAction with modal', () => {
+    fixture.detectChanges();
+    expect(store.dispatch).toHaveBeenCalled();
   });
 
   it('should call the onFocusMainContent method', fakeAsync(() => {
