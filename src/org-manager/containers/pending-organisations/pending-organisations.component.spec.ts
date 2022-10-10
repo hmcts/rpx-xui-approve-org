@@ -36,5 +36,9 @@ describe('PendingOrganisationComponent', () => {
   it('should create component', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should create component', () => {
+    expect(component.view).toBe('NEW');
+  });
 });
 
