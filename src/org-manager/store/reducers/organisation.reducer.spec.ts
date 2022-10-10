@@ -57,6 +57,22 @@ describe('Organisation Reducer', () => {
     });
   });
 
+  describe('NAV_TO_DELETE_ORGANISATION action', () => {
+    it('should update the state.orgForReview', () => {
+      const action = new fromActions.NavigateToDeleteOrganisation(pendingOrganisationsMock[0]);
+      const state = reducer(initialState, action);
+      expect(state.orgForReview.organisationId).toEqual('ByrneLimited');
+    });
+  });
+
+  describe('NAV_TO_REVIEW_ORGANISATION action', () => {
+    it('should update the state.orgForReview', () => {
+      const action = new fromActions.NavigateToReviewOrganisation(pendingOrganisationsMock[0]);
+      const state = reducer(initialState, action);
+      expect(state.orgForReview.organisationId).toEqual('ByrneLimited');
+    });
+  });
+
   describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
     it('should update the state with account details', () => {
       const action = new fromActions.LoadPbaAccountDetailsSuccess({ orgId: '12345', data: fromMock.LoadPbaAccountsObj });
