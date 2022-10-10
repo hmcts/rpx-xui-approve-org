@@ -42,4 +42,9 @@ describe('ReinviteUserComponent', () => {
       component.onSubmit('test');
       expect(component.showWarningMessage).toBeFalsy();
     });
+
+    it('should submit form and showWarningMessage should to falsy ', () => {
+      component.dispatchValidationAction();
+      expect(userStoreSpyObject.dispatch).toHaveBeenCalled();
+    });
 });

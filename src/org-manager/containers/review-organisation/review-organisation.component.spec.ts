@@ -8,13 +8,12 @@ import { ReviewOrganisationComponent } from './review-organisation.component';
 
 describe('ReviewOrganisationComponent', () => {
   let component: ReviewOrganisationComponent;
-  let fixture: ComponentFixture<ReviewOrganisationComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
   let storePipeMock: any;
   let storeDispatchMock: any;
   let router;
   beforeEach((() => {
-    router = jasmine.createSpyObj('router', ['navigate','getCurrentNavigation'])
+    router = jasmine.createSpyObj('router', ['navigate', 'getCurrentNavigation']);
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -31,7 +30,7 @@ describe('ReviewOrganisationComponent', () => {
     store = TestBed.get(Store);
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock =  jasmine.createSpyObj('Store', ['pipe', 'select', 'dispatch']);
-    component = new ReviewOrganisationComponent(storeDispatchMock,router);
+    component = new ReviewOrganisationComponent(storeDispatchMock, router);
   }));
 
 
