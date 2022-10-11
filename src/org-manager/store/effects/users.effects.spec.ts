@@ -7,7 +7,8 @@ import { LoggerService } from 'src/app/services/logger.service';
 import { UsersService } from 'src/org-manager/services';
 import * as fromActions from '../actions/users.actions';
 import * as fromEffects from './users.effects';
-import { Go } from 'src/app/store';
+import { AddGlobalError, Go } from 'src/app/store';
+import { ErrorReport } from 'src/org-manager/models/errorReport.model';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -97,15 +98,31 @@ describe('Organisation Effects', () => {
       expect(effects.submitReinviteUser$).toBeObservable(expected);
     });
 
-    // it('should submit reinvite users fail', () => {
-    //   usersServiceMock.inviteUser.and.returnValue(throwError(''));
-    //   const payload = {organisationId: 'id', form: {}};
-    //   const action = new fromActions.SubmitReinviteUser(payload);
-    //   const completion = new fromActions.SubmitReinviteUserError('' as any);
-    //   actions$ = hot('-a', {a: action});
-    //   const expected = cold('-b', {b: completion});
-    //   expect(effects.submitReinviteUser$).toBeObservable(expected);
-    // });
+    it('should submit reinvite users fail', () => {
+      usersServiceMock.inviteUser.and.returnValue(throwError({
+        error: {
+          apiStatusCode: 500,
+        } as ErrorReport
+      }));
+      const payload = {organisationId: 'id', form: {}};
+      const action = new fromActions.SubmitReinviteUser(payload);
+      const completion = new AddGlobalError({
+        header: 'Sorry, there is a problem with the service',
+        errors: [{
+          bodyText: 'Try again later.',
+          urlText: null,
+          url: null
+        },
+        {
+          bodyText: null,
+          urlText: 'Go back to manage users',
+          url: `/organisation-details/${payload.organisationId}`
+        }]
+      });
+      actions$ = hot('-a', {a: action});
+      const expected = cold('-b', {b: completion});
+      expect(effects.submitReinviteUser$).toBeObservable(expected);
+    });
   });
 });
 
