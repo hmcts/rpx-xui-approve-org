@@ -42,7 +42,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     private readonly userApprovalGuard: UserApprovalGuard,
     private readonly route: ActivatedRoute,
     public readonly pbaAccountDetails: PbaAccountDetails,
-    private readonly userSerive: UsersService,
+    private readonly userService: UsersService,
     private readonly organisationService: OrganisationService) {
       this.route.params.subscribe(params => {
         this.orgId = params.orgId ? params.orgId : '';
@@ -116,7 +116,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getAllUsers(orgId: string) {
-    return this.userSerive.getAllUsersList(orgId).subscribe((userList => {
+    return this.userService.getAllUsersList(orgId).subscribe((userList => {
       this.pageTotalSize = userList.users.length;
     }));
   }
