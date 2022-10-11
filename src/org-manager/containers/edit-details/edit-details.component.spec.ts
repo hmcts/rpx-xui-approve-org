@@ -156,4 +156,12 @@ describe('EditDetailsComponent', () => {
     component.onGoBack();
     expect(store.dispatch).toHaveBeenCalledWith(new fromRoot.Back());
   });
+
+  it('should return PendingPaymentAccount', () => {
+    const response = {
+      pendingAddPaymentAccount: ['PBA1234564', 'PBA5462541'],
+      pendingRemovePaymentAccount: []
+    };
+    expect(component.pendingChanges(['PBA1234564', 'PBA5462541'])).toEqual(response);
+  });
 });
