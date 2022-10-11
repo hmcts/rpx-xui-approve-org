@@ -62,6 +62,11 @@ describe('PendingPBAsComponent', () => {
       expect(receivedDate).toEqual(dateEarliest);
     });
 
+    it('should return pagenumber', () => {
+      component.onPaginationHandler(3);
+      expect(component.pagination.page_number).toEqual(3);
+    })
+
   });
 
 });
