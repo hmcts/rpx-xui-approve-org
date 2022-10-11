@@ -290,6 +290,30 @@ describe('Organisation Effects', () => {
     });
   });
 
+  describe('navigate to delete organisation$', () => {
+    it('should navigate to delete organisation', () => {
+      const action = new fromActions.NavigateToDeleteOrganisation({} as OrganisationVM);
+      const completion = new Go({
+        path: ['/delete-organisation']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.navToDeleteOrganisation$).toBeObservable(expected);
+    });
+  });
+
+  describe('navigate to review organisation$', () => {
+    it('should navigate to review organisation', () => {
+      const action = new fromActions.NavigateToReviewOrganisation({} as OrganisationVM);
+      const completion = new Go({
+        path: ['/review-organisation']
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.navToReviewOrganisation$).toBeObservable(expected);
+    });
+  });
+
   describe('deleteOrganisation$', () => {
     it('should return a success action', () => {
       organisationServiceMock.deleteOrganisation.and.returnValue(of(true));
