@@ -161,6 +161,22 @@ describe('AppComponent', () => {
         }
       }));
     });
+
+    it('should dispatch signout action', () => {
+      const value = {
+        type: 'signout'
+      };
+      component.dispatchSessionAction(value);
+      expect(store.dispatch).toHaveBeenCalledWith(new fromRoot.SignedOut());
+    });
+
+    it('should dispatch keepalive action', () => {
+      const value = {
+        type: 'keepalive'
+      };
+      component.dispatchSessionAction(value);
+      expect(store.dispatch).toHaveBeenCalledWith(new fromRoot.KeepAlive());
+    });
   });
 });
 

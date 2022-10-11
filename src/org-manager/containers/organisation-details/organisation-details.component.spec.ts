@@ -3,11 +3,12 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, User } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { UserApprovalGuard } from 'src/org-manager/guards';
+import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { OrganisationService, PbaAccountDetails, UsersService } from 'src/org-manager/services';
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
@@ -84,6 +85,20 @@ describe('OrganisationDetailsComponent', () => {
   let mockedPbaAccountDetails: any;
   let mockedUserApprovalGuard: any;
   let mockedPBARouter: any;
+  const organisationVM: OrganisationVM = {
+    organisationId: '123',
+    status: 'valid',
+    admin: 'Glen Byrne',
+    adminEmail: 'test@mail.com',
+    addressLine1: 'AddressLine1',
+    addressLine2: 'AddressLine2',
+    townCity: 'Sutton',
+    county: 'Surrey',
+    name: 'Glen Byrne',
+    view: 'View',
+    pbaNumber: ['PBA1234567'],
+    dxNumber: [123456],
+  }
 
   beforeEach((() => {
     TestBed.configureTestingModule({
@@ -132,6 +147,7 @@ describe('OrganisationDetailsComponent', () => {
     spyOn(mockedOrganisationService, 'getOrganisationDeletableStatus').and.returnValue(of('true'));
     spyOn(mockedPbaAccountDetails, 'getAccountDetails').and.returnValue(of(MOCKED_ACCOUNTS));
     spyOn(mockedPBARouter, 'navigateByUrl').and.returnValue(of(MOCKED_ACCOUNTS));
+    spyOn(store, 'dispatch').and.callThrough();
     fixture = TestBed.createComponent(OrganisationDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -161,5 +177,40 @@ describe('OrganisationDetailsComponent', () => {
 
     component.showUsersTab(true);
     expect(component.showUsers).toBeTruthy();
+  });
+
+  it('should return approve organisation link', () => {
+    component.approveOrganisation(organisationVM);
+    expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
+  });
+
+  it('should return delete organisation link', () => {
+    component.deleteOrganisation(organisationVM);
+    expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
+  });
+
+  it('should return review organisation link', () => {
+    component.reviewOrganisation(organisationVM);
+    expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
+  });
+
+  it('should show user details', () => {
+    const user: User = {
+      ['key']: 'test1',
+      routerLink: '/test/test1',
+      routerLinkTitle: 'Tets',
+      fullName: 'Rowdy Rathore',
+      email: 'test@mail.com',
+      status: 'valid',
+      resendInvite: false
+    }
+    component.onShowUserDetails(user);
+    expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  it('should return pageNumber', () => {
+    component.pageChange(2);
+    expect(component.currentPageNumber).toEqual(2);
+    expect(store.dispatch).toHaveBeenCalled();
   });
 });
