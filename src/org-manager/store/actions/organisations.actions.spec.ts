@@ -279,6 +279,35 @@ describe('PendingOrganisationActions actions', () => {
       });
     });
 
+    describe('UpdateOrganisationsSearchString', () => {
+      it('should update organisation search string', () => {
+        const action = new fromOrganisation.UpdateOrganisationsSearchString('test');
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.UPDATE_ORGANISATIONS_SEARCH_STRING,
+          payload: 'test'
+        });
+      });
+    });
+
+    describe('UpdatePendingOrganisationsSearchString', () => {
+      it('should update organisation search string', () => {
+        const action = new fromOrganisation.UpdatePendingOrganisationsSearchString('abc');
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING,
+          payload: 'abc'
+        });
+      });
+    });
+
+    describe('ClearErrors', () => {
+      it('should clear errors', () => {
+        const action = new fromOrganisation.ClearErrors();
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.CLEAR_ERRORS
+        });
+      });
+    });
+
     // Fail
     // No failure case because errors are handled using an "Add Global Error" action
   });
