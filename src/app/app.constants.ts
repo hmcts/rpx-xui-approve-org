@@ -53,10 +53,7 @@ const ccdRoles = [
   'caseworker-publiclaw',
   'caseworker-ia-legalrep-solicitor',
   'caseworker-publiclaw-solicitor',
-  'caseworker-civil-solicitor',
-  'caseworker-employment',
-  'caseworker-employment-legalrep-solicitor'
-
+  'caseworker-civil-solicitor'
 ];
 
 const superUserRoles = [
