@@ -200,6 +200,7 @@ export function reducer(
       return {
         ...state,
         activeOrganisations,
+        orgForReview: deletedOrganisation,
         errorMessage: ''
       };
     }
