@@ -1,6 +1,5 @@
 require('dotenv-extended').load({ path: 'api/.env.defaults' });
-module.exports = function (config) {
-    config.set({
+module.exports = {
         fileLogLevel: 'trace',
         // logLevel: 'trace',
         mutate: ["api/**/*.ts", "!api/**/*.spec.ts", "!api/test/**/*.ts"],
@@ -13,12 +12,10 @@ module.exports = function (config) {
         reporters: ["clear-text", "progress", "html"],
         tsconfigFile: 'tsconfig.json',
         mochaOptions: {
-            files: ["api/{,!(test)/**/}*.spec.ts"],
-
-            timeout: 5000
+            spec: ["api/{,!(test)/**/}*.spec.ts"],
+            require: ['ts-node/register']
         },
         htmlReporter: {
             baseDir: 'reports/tests/mutation/node/'
         }
-    });
 } 
