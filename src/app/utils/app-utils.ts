@@ -43,6 +43,7 @@ export class AppUtils {
     return organisationVm;
   }
 
+  
   public static mapOrganisationsVm(obj: OrganisationVM[]): Organisation[] {
     const organisations: Organisation[] = [];
     obj.forEach((org) => {
