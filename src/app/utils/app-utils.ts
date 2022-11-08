@@ -40,6 +40,9 @@ export class AppUtils {
       organisationVm.county = apiOrg.contactInformation[0].county;
     }
     organisationVm.sraId = apiOrg.sraId;
+    if (apiOrg.dateReceived){
+      organisationVm.dateReceived = apiOrg.dateReceived;
+    }
     return organisationVm;
   }
 
@@ -55,7 +58,7 @@ export class AppUtils {
           townCity: org.townCity,
           county: org.county,
           dxAddress: org.dxNumber
-          }],
+        }],
         superUser: {
           userIdentifier: org.admin,
           firstName: org.admin,
@@ -108,11 +111,11 @@ export class AppUtils {
       urlText: null,
       url: null
     },
-    {
-      bodyText: null,
-      urlText: 'Go back to manage users',
-      url: `/organisation-details/${orgId}`
-    }];
+      {
+        bodyText: null,
+        urlText: 'Go back to manage users',
+        url: `/organisation-details/${orgId}`
+      }];
 
     const globalError = {
       header: 'Sorry, there is a problem with the service',
@@ -140,11 +143,11 @@ export class AppUtils {
       urlText: null,
       url: null
     },
-    {
-      bodyText: null,
-      urlText: 'Go back to manage users',
-      url: `/organisation-details/${orgId}`
-    }];
+      {
+        bodyText: null,
+        urlText: 'Go back to manage users',
+        url: `/organisation-details/${orgId}`
+      }];
 
     const globalError = {
       header: 'Sorry, there is a problem with this account',
@@ -174,8 +177,8 @@ export class AppUtils {
       // we get the roles in this format before decoding 'j%3A%5B%22prd-admin%22%5D'
       // after deconding we get it in format 'j:["prd-admin"]'
       if (roles.length === 2) {
-         const returnVal = JSON.parse(roles[1]);
-         return returnVal;
+        const returnVal = JSON.parse(roles[1]);
+        return returnVal;
       }
     }
     return [];
