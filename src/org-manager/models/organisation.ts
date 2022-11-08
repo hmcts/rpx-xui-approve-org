@@ -81,8 +81,6 @@ export interface Organisation {
   name: string;
   paymentAccount: any[];
   pendingPaymentAccount: any[];
-  dateReceived?: string;
-  dateApproved?: string;
 }
 
 export class OrganisationVM {
