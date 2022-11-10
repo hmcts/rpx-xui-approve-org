@@ -93,9 +93,6 @@
               </div>
             </dd>
             <dd class="govuk-summary-list__actions">
-              <a [routerLink]="['/change', 'pba', org.organisationId, pbaNumbers().join(',')]">
-                {{pbaNumbers().length ? 'Change' : 'Add'}}
-              </a>
             </dd>
           </div>
           <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="pbaNumbers().length!=0">
@@ -121,9 +118,6 @@
             </div>
           </dd>
           <dd class="govuk-summary-list__actions">
-            <a [routerLink]="['/change', 'pba', org.organisationId, org.pbaNumber.join(',')]">
-              Add
-            </a>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
