@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { handleFatalErrors } from '../../../shared/utils/handle-fatal-errors';
 import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
 import { CaseWorkerRefDataService } from '../../services/caseworker-ref-data.service';
-import { handleFatalErrors } from '../../utils/caseworker-utils';
 
 @Component({
   selector: 'app-prd-caseworker-details',

@@ -29,7 +29,7 @@ describe('DeleteOrganisationSuccessComponent', () => {
         DeleteOrganisationSuccessComponent
       ]
     }).compileComponents();
-    store = TestBed.inject(Store);
+    store = TestBed.get(Store);
 
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock = spyOn(store, 'dispatch');
