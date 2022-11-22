@@ -13,6 +13,7 @@ export const environment = {
     organisationUsersUrl: 'api/organisations?usersOrgId=',
     organisationUsersUrlWithoutRole: 'api/allUserListWithoutRoles?usersOrgId=',
     orgActiveUrl: 'api/organisations?status=ACTIVE',
+    pbaUrl: 'api/pba',
     updatePbaUrl: 'api/updatePba',
     pbaAccUrl: 'api/pbaAccounts',
     orgPendingUrl: 'api/organisations?status=PENDING',

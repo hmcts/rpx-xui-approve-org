@@ -22,12 +22,15 @@ export class AppUtils {
   public static mapOrganisation(apiOrg: Organisation): OrganisationVM {
     const organisationVm = new OrganisationVM();
     organisationVm.name = apiOrg.name;
-    organisationVm.adminEmail = apiOrg.superUser.email;
+    if (apiOrg.superUser) {
+      organisationVm.adminEmail = apiOrg.superUser.email;
+      organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
+    }
+    organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;
     organisationVm.organisationId = apiOrg.organisationIdentifier;
     organisationVm.view = 'View';
     organisationVm.status = apiOrg.status;
-    organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
     if (apiOrg.contactInformation && apiOrg.contactInformation[0]) {
       organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
       organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
@@ -61,7 +64,8 @@ export class AppUtils {
         },
         status: 'ACTIVE',
         name: org.name,
-        paymentAccount: org.pbaNumber
+        paymentAccount: org.pbaNumber,
+        pendingPaymentAccount: org.pendingPaymentAccount
       };
       organisations.push(organisation);
     });

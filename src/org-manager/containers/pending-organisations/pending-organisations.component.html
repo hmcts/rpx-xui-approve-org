@@ -1,67 +1,49 @@
-<div class="hmcts-width-container">
-  <main id="content" class="govuk-main-wrapper" role="main" tabindex="-1">
-    <app-notification-banner-component>
-      <ng-container *ngIf="(activeOrgsCount$ | async) as activeOrgCount; ">
-        <span>{{activeOrgCount}} organisations are active. <a [routerLink]="['/active-organisation']"> Check now.</a></span>
-      </ng-container>
-      <ng-container *ngIf="!(activeLoaded$ | async)">
-        <h3 class="govuk-heading-s">Loading active organisations...</h3>
-      </ng-container>
-    </app-notification-banner-component>
-    <h1 class="hmcts-page-heading__title govuk-heading-xl">Organisations pending activation</h1>
-    <ng-container *ngIf="{pendingSearchString: pendingSearchString$ | async, pendingOrgs: pendingOrgs$ | async } as data">
-     <ng-container *ngIf="(loaded$ | async); else loading">
-      <app-search-organisations-form [searchString]="data.pendingSearchString" (submitForm)="submitSearch($event)"></app-search-organisations-form>
-      <div class="pagination-top" *ngIf="(loaded$ | async) && getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) > pagination.itemsPerPage" attr.aria-label="{{ getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) }} results have been found" role="status">
-        <span class="text-16" id="search-result-summary__text">Showing 
-          <span class="govuk-!-font-weight-bold">{{ getFirstResult((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) }}</span>
-          to
-          <span class="govuk-!-font-weight-bold">{{ getLastResult((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) }}</span>
-          of
-          <span class="govuk-!-font-weight-bold">{{ getTotalResults((data.pendingOrgs | filterOrganisations: data.pendingSearchString)) }}</span> results
-        </span>
-      </div>
-      <form [formGroup]="inputForm">
-       <table class="govuk-table">
-          <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-              <th class="govuk-table__header" scope="col">Name</th>
-              <th class="govuk-table__header" scope="col">Address</th>
-              <th class="govuk-table__header" scope="col">Administrator</th>
-              <th class="govuk-table__header" scope="col">Status</th>
-              <th class="govuk-table__header" scope="col"></th>
-            </tr>
-            <tr class="govuk-table__row govuk-radios" *ngFor="let org of (data.pendingOrgs | filterOrganisations: data.pendingSearchString | paginate: { itemsPerPage: pagination?.itemsPerPage, currentPage: pagination?.currentPage, totalItems: (data.pendingOrgs | filterOrganisations: data.pendingSearchString).length })">
-              <td class="govuk-table__cell">{{org.name}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span></td>
-              <td class="govuk-table__cell">
-                {{org.addressLine1}}<br>
-                <div *ngIf='org.addressLine2'>
-                    {{org.addressLine2}}<br>
-                </div>
-                {{org.townCity}}<br>
-                <div *ngIf='org.county'>
-                  {{org.county}}<br>
-                </div>
-                <div *ngIf='org.postCode'>
-                  {{org.postCode}}<br>
-                </div>
-              </td>
-              <td class="govuk-table__cell">{{org.admin}}<br><span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span></td>
-              <td class="govuk-table__cell"><span class="hmcts-badge">{{org.status}}</span>
-              </td>
-              <td class="govuk-table__cell">
-                  <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
-              </td>
-            </tr>
-          </thead>
-        </table>
-
-        <xuilib-hmcts-pagination (pageChange)="emitPageClickEvent($event)" [pageSize]="pagination.itemsPerPage"></xuilib-hmcts-pagination>
-      </form>
-    </ng-container>
-    <ng-template #loading>
-      <h3 class="govuk-heading-s"><span>Loading...</span></h3>
-    </ng-template>
-    </ng-container>
-  </main>
-</div>
+<h2 class="govuk-heading-l">
+  New registrations
+  <ng-container *ngIf="organisationsLoaded">
+    ({{organisationCount}}<span *ngIf="searchString"> found</span>)
+  </ng-container>
+</h2>
+<ng-container *ngIf="organisationsLoaded">
+  <table class="govuk-table pending-organisations" *ngIf="organisationCount; else noData">
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Organisation</th>
+        <th class="govuk-table__header" scope="col">Address</th>
+        <th class="govuk-table__header" scope="col">Administrator</th>
+        <th class="govuk-table__header" scope="col">Date received</th>
+        <th class="govuk-table__header" scope="col">Status</th>
+        <th class="govuk-table__header" scope="col"></th>
+      </tr>
+      <tr class="govuk-table__row govuk-radios"
+        *ngFor="let org of organisations| paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
+        <td class="govuk-table__cell">
+          {{org.name}}<br>
+          <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
+        </td>
+        <td class="govuk-table__cell">
+          <app-org-address [organisation]="org"></app-org-address>
+        </td>
+        <td class="govuk-table__cell">
+          {{org.admin}}<br>
+          <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
+        </td>
+        <td class="govuk-table__cell no-wrap">
+          {{org.dateReceived | date:'dd/MM/yyyy'}}
+        </td>
+        <td class="govuk-table__cell no-wrap govuk-!-text-align-centre">
+          <span *ngIf="org.status=='PENDING'" class="govuk-tag govuk-tag--blue">PENDING</span>
+          <span *ngIf="org.status=='REVIEW'" class="govuk-tag govuk-tag--grey">UNDER REVIEW</span>
+        </td>
+        <td class="govuk-table__cell no-wrap">
+          <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
+        </td>
+      </tr>
+    </thead>
+  </table>
+  <xuilib-hmcts-pagination *ngIf="organisationsLoaded && organisationCount > pagination.page_size"
+    (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
+  <ng-template #noData>
+    <span class="govuk-body"> There are no new registrations.</span>
+  </ng-template>
+</ng-container>

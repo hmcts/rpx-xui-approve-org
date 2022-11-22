@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import createSpyObj = jasmine.createSpyObj;
 import { Organisation } from '../models/organisation';
 import { PendingOrganisationService } from './pending-organisation.service';
+import { OrganisationService } from '.';
 
 describe('PendingOrganisationService', () => {
   let httpClient: HttpClient;
@@ -36,7 +37,8 @@ describe('PendingOrganisationService', () => {
     },
     status: 'string;',
     name: 'string;',
-    paymentAccount: [{}]
+    paymentAccount: [{}],
+    pendingPaymentAccount: [{}]
   };
 
   beforeEach(() => {
@@ -44,9 +46,9 @@ describe('PendingOrganisationService', () => {
 
     TestBed.configureTestingModule({
       providers: [
-        PendingOrganisationService,
+        PendingOrganisationService, OrganisationService,
         { provide: HttpClient, useValue: httpClient },
-        { provide: environment, useValue: mockEnvironment },
+        { provide: environment, useValue: mockEnvironment }
       ]
     });
     pendingOrganisationService = TestBed.get(PendingOrganisationService);
@@ -68,6 +70,11 @@ describe('PendingOrganisationService', () => {
 
   it('should approve organisation', () => {
     pendingOrganisationService.approvePendingOrganisations(organisation);
+    expect(httpClient.put).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc`, organisation);
+  });
+
+  it('should put review organisation', () => {
+    pendingOrganisationService.putReviewOrganisation(organisation);
     expect(httpClient.put).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc`, organisation);
   });
 
