@@ -9,24 +9,39 @@ describe('FilterOrganisationsPipe', () => {
       pipe = new FilterOrganisationsPipe();
   });
 
-  it('create an instance', () => {
+  it('should create an instance', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it('providing no value returns fallback empty array', () => {
-    expect(pipe.transform(null, 'test').length).toBeLessThanOrEqual(0);
+  it('should return an empty array when providing no value', () => {
+    expect(pipe.transform(null, 'test').length).toEqual(0);
   });
-
-  it('able to search the organisation name lower case or upper case', () => {
-    const filterResult = pipe.transform(PendingOrganisationsMockCollection2, 'Glen');
-    expect(filterResult.length).toBe(1);
-    const filterResult2 = pipe.transform(PendingOrganisationsMockCollection2, 'glen');
-    expect(filterResult2.length).toBe(1);
+  it('should return an empty array when the value contains a null', () => {
+    expect(pipe.transform([null], 'test').length).toEqual(0);
   });
-
+  it('should return all organisations when there is no search filter', () => {
+    expect(pipe.transform(PendingOrganisationsMockCollection2, '').length).toEqual(PendingOrganisationsMockCollection2.length);
+  });
+  it('should match against the name, regardless of case', () => {
+    expect(pipe.transform(PendingOrganisationsMockCollection2, 'Glen').length).toEqual(1);
+    expect(pipe.transform(PendingOrganisationsMockCollection2, 'glen').length).toEqual(1);
+    expect(pipe.transform(PendingOrganisationsMockCollection2, 'GLEN').length).toEqual(1);
+  });
+  it('should partially match against the name, regardless of case', () => {
+    expect(pipe.transform(PendingOrganisationsMockCollection2, 'Gl').length).toEqual(1);
+    expect(pipe.transform(PendingOrganisationsMockCollection2, 'len').length).toEqual(1);
+    expect(pipe.transform(PendingOrganisationsMockCollection2, 'GLE').length).toEqual(1);
+  });
+  it('should return no results when nothing matches', () => {
+    expect(pipe.transform(PendingOrganisationsMockCollection2, 'NOT TO BE FOUND').length).toEqual(0);
+  });
   it('able to search the pba number correctly', () => {
-    const filterResult = pipe.transform(PendingOrganisationsMockCollection2, '271093');
-    expect(filterResult.length).toBe(1);
+    expect(pipe.transform(PendingOrganisationsMockCollection2, '271093').length).toBe(1);
+    expect(pipe.transform(PendingOrganisationsMockCollection2, '271094').length).toBe(1);
+    expect(pipe.transform(PendingOrganisationsMockCollection2, '101010').length).toBe(1);
+  });
+  it('able to search the pba number with a partial match', () => {
+    expect(pipe.transform(PendingOrganisationsMockCollection2, '27109').length).toBe(2);
   });
 
 });

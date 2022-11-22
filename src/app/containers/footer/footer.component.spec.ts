@@ -18,6 +18,28 @@ describe('FooterComponent', () => {
     let component: FooterComponent;
     let fixture: ComponentFixture<FooterComponent>;
     let element: DebugElement;
+    const FooterData = {
+        heading: 'Help',
+        email: {
+            address: 'service-desk@hmcts.gov.uk',
+            text: 'service-desk@hmcts.gov.uk'
+        },
+        phone: {
+            text: '0207 633 4140'
+        },
+        opening: {
+            text: 'Monday to Friday, 8am to 6pm (excluding public holidays)'
+        }
+    };
+
+    const FooterDataNavigation = {
+    items: [
+        { text: 'Accessibility', href: 'accessibility', target: '_blank'},
+        { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
+        { text: 'Cookies', href: 'cookies', target: '_blank' },
+        { text: 'Privacy policy', href: 'privacy-policy', target: '_blank' }
+        ]
+    };
 
     beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
@@ -44,5 +66,9 @@ describe('FooterComponent', () => {
     });
     it('should be created by angular', () => {
         expect(fixture).not.toBeNull();
+    });
+    it('should be created by angular', () => {
+        expect(component.helpData).toEqual(FooterData);
+        expect(component.navigationData).toEqual(FooterDataNavigation);
     });
 });

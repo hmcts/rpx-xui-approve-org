@@ -1,0 +1,33 @@
+<div class="hmcts-width-container">
+  <app-back-link [store]="store"></app-back-link>
+  <main id="content" class="govuk-main-wrapper" role="main" tabindex="-1">
+    <h1 class="govuk-heading-xl">Confirm your decision</h1>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+          <ng-container *ngIf="orgForReview">
+            <dl class="govuk-summary-list">
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Name
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  <div>{{orgForReview.name}}</div>
+                </dd>
+              </div>
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  Decision
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  Put the registration on hold
+                </dd>
+              </div>
+            </dl>
+          </ng-container>
+          <button type="button" class="govuk-button" (click)="onPutReviewOrganisation()" [disabled]="confirmButtonDisabled">
+            Confirm
+          </button>
+        </div>
+      </div>
+  </main>
+</div>

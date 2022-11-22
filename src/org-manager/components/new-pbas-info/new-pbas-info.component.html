@@ -1,0 +1,40 @@
+<ng-container *ngIf="formGroup.invalid && submitted">
+  <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+    data-module="govuk-error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <li>
+          <a routerLink="." [fragment]="'heading'"> {{org.pbaNumber && org.pbaNumber.length>1 ? 'Select the decision for the PBA accounts' : 'Select the decision for the PBA account'}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-container>
+<form [formGroup]="formGroup" (submit)="onSubmitForm()">
+  <ng-container *ngIf="org; else noOrg">
+    <h1 class="govuk-heading-xl">Approve new PBA number</h1>
+    <div class="govuk-form-group">
+      <label class="govuk-label govuk-label--m">
+        Name on MyHMCTS account
+      </label>
+      <p>{{org.name}}</p>
+    </div>
+    <br />
+    <h3 class="govuk-heading-m" id="heading">PBA accounts</h3>
+    <app-pba-account-approval *ngFor="let pba of org.pendingPaymentAccount; let i = index" [pbaNumbers]="org.pbaNumber.join(',')"
+      [pbaNumber]="pba" [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
+      [id]="pba" (selectOptionChanged)="setNewPBA($event)" [pbaStatus]="newPBAs.get(pba)" [formGroup]="formGroup"
+      [submitted]="submitted">
+    </app-pba-account-approval>
+
+    <button class="govuk-button" data-module="govuk-button" type="submit">
+      Continue
+    </button>
+  </ng-container>
+
+  <ng-template #noOrg>
+    <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
+    <p>Try again later.</p>
+  </ng-template>
+</form>

@@ -1,4 +1,5 @@
-import { handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './caseworker-utils';
+import { handleFatalErrors } from '../../shared/utils/handle-fatal-errors';
+import { REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './caseworker-utils';
 
 describe('CaseWorkerUtils', () => {
   let mockRouter = {

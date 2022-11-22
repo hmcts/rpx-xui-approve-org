@@ -25,6 +25,43 @@ describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
 
+  const testRoute = new RoutesRecognized(1, 'test', 'test', {
+    url: 'test',
+    root: {
+      firstChild: {
+        data: { title: 'Test' },
+        url: [],
+        params: {},
+        queryParams: {},
+        fragment: '',
+        outlet: '',
+        component: '',
+        routeConfig: {},
+        root: null,
+        parent: null,
+        firstChild: null,
+        children: [],
+        pathFromRoot: [],
+        paramMap: null,
+        queryParamMap: null
+      },
+      data: { title: 'Test' },
+      url: [],
+      params: {},
+      queryParams: {},
+      fragment: '',
+      outlet: '',
+      component: '',
+      routeConfig: {},
+      root: null,
+      parent: null,
+      children: [],
+      pathFromRoot: [],
+      paramMap: null,
+      queryParamMap: null
+    }
+  });
+
   beforeEach(waitForAsync(() => {
     environmentMockService.getEnv$.and.returnValue(of({}));
     idleMockService.appStateChanges.and.returnValue(of({ type: 'modal' }));
@@ -72,49 +109,36 @@ describe('AppComponent', () => {
     expect(store.dispatch).toHaveBeenCalledWith(new Logout());
   });
 
-  it('should call the title service', () => {
-    let testRoute: RoutesRecognized;
+  it('should dispatch modal', () => {
+    component.dispatchModal(undefined, true);
+    expect(store.dispatch).toHaveBeenCalled();
+  });
 
-    testRoute = new RoutesRecognized(1, 'test', 'test', {
-      url: 'test',
-      root: {
-        firstChild: {
-          data: { title: 'Test' },
-          url: [],
-          params: {},
-          queryParams: {},
-          fragment: '',
-          outlet: '',
-          component: '',
-          routeConfig: {},
-          root: null,
-          parent: null,
-          firstChild: null,
-          children: [],
-          pathFromRoot: [],
-          paramMap: null,
-          queryParamMap: null
-        },
-        data: { title: 'Test' },
-        url: [],
-        params: {},
-        queryParams: {},
-        fragment: '',
-        outlet: '',
-        component: '',
-        routeConfig: {},
-        root: null,
-        parent: null,
-        children: [],
-        pathFromRoot: [],
-        paramMap: null,
-        queryParamMap: null
+  it('should dispatch modal1', () => {
+    component.dispatchModal(undefined, true);
+    expect(store.dispatch).toHaveBeenCalledWith(new SetModal({
+      session : {
+        countdown: '0',
+        isVisible: true
       }
-    });
+    }));
+  });
 
+  it('should call the title service', () => {
     component.setTitleIfPresent(testRoute);
     fixture.detectChanges();
     expect(titleService.setTitle).toHaveBeenCalled();
+  });
+
+  it('should call the title service with value', () => {
+    component.setTitleIfPresent(testRoute);
+    fixture.detectChanges();
+    expect(titleService.setTitle).toHaveBeenCalledWith(`Test - HM Courts & Tribunals Service - GOV.UK`);
+  });
+
+  it('should call the dispatchSessionAction with modal', () => {
+    fixture.detectChanges();
+    expect(store.dispatch).toHaveBeenCalled();
   });
 
   it('should call the onFocusMainContent method', fakeAsync(() => {
@@ -136,6 +160,22 @@ describe('AppComponent', () => {
           isVisible: false
         }
       }));
+    });
+
+    it('should dispatch signout action', () => {
+      const value = {
+        type: 'signout'
+      };
+      component.dispatchSessionAction(value);
+      expect(store.dispatch).toHaveBeenCalledWith(new fromRoot.SignedOut());
+    });
+
+    it('should dispatch keepalive action', () => {
+      const value = {
+        type: 'keepalive'
+      };
+      component.dispatchSessionAction(value);
+      expect(store.dispatch).toHaveBeenCalledWith(new fromRoot.KeepAlive());
     });
   });
 });

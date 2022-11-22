@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 import { of } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, map, switchMap, take } from 'rxjs/operators';
+import { NotificationBannerType } from 'src/models/notification-banner-type.enum';
 import { LoggerService } from '../../../app/services/logger.service';
 import * as fromRoot from '../../../app/store';
 import { GlobalError } from '../../../app/store/reducers/app.reducer';
@@ -56,6 +57,7 @@ export class OrganisationEffects {
     ofType(pendingOrgActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS),
     switchMap(() => {
       return this.pendingOrgService.fetchPendingOrganisations().pipe(
+        take(1),
         map(pendingOrganisations => new pendingOrgActions.LoadPendingOrganisationsSuccess(
         AppUtils.mapOrganisations(pendingOrganisations)),
         catchError((error: Error) => {
@@ -73,6 +75,7 @@ export class OrganisationEffects {
       const pendingOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
 
       return this.pendingOrgService.approvePendingOrganisations(pendingOrganisation).pipe(
+        take(1),
         map(response => {
           this.loggerService.log('Approved Organisation successfully');
           return new pendingOrgActions.ApprovePendingOrganisationsSuccess(organisation);
@@ -86,6 +89,42 @@ export class OrganisationEffects {
   );
 
   @Effect()
+  public putReviewOrg$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.PUT_REVIEW_ORGANISATION),
+    map((action: pendingOrgActions.PutReviewOrganisation) => action.payload),
+    switchMap(organisation => {
+
+      let pendingOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
+      pendingOrganisation = {...pendingOrganisation, status: 'REVIEW'};
+      return this.pendingOrgService.putReviewOrganisation(pendingOrganisation).pipe(
+        take(1),
+        map(response => {
+          return new pendingOrgActions.PutReviewOrganisationSuccess(organisation);
+        }),
+        catchError((error: Error) => {
+          this.loggerService.error(error.message);
+          return of(new pendingOrgActions.PutReviewOrganisationFail(error));
+        })
+      );
+    })
+  );
+
+  @Effect()
+  public putReviewOrgSuccess$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS),
+    map(() => {
+      return new fromRoot.Go({
+        path: ['/organisation/pending'],
+        extras: {
+          state: {
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration put under review' }],
+          },
+        },
+      });
+    })
+  );
+
+  @Effect()
   public deletePendingOrg$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.DELETE_PENDING_ORGANISATION),
     map((action: pendingOrgActions.DeletePendingOrganisation) => action.payload),
@@ -94,6 +133,7 @@ export class OrganisationEffects {
       const pendingOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
 
       return this.pendingOrgService.deletePendingOrganisations(pendingOrganisation).pipe(
+        take(1),
         map(response => {
           return new pendingOrgActions.DeletePendingOrganisationSuccess(organisation);
         }),
@@ -111,7 +151,14 @@ export class OrganisationEffects {
   public approvePendingOrgsSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS),
     map(() => {
-      return new fromRoot.Go({ path: ['/approve-organisations-success'] });
+      return new fromRoot.Go({
+        path: ['/organisation/pending'],
+        extras: {
+          state: {
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration approved' }],
+          },
+        },
+      });
     })
   );
 
@@ -121,6 +168,7 @@ export class OrganisationEffects {
     map((action: fromActions.LoadPbaAccountsDetails) => action.payload),
     switchMap((payload) => {
       return this.pbaAccountDetails.getAccountDetails(payload.pbas).pipe(
+          take(1),
           map((data) => new fromActions.LoadPbaAccountDetailsSuccess({orgId: payload.orgId, data})),
           catchError((error: Error) => {
             this.loggerService.error(error);
@@ -194,6 +242,15 @@ export class OrganisationEffects {
     })
   );
 
+
+  @Effect()
+  public navToReviewOrganisation$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.NAV_TO_REVIEW_ORGANISATION),
+    map(() => {
+      return new fromRoot.Go({ path: ['/review-organisation'] });
+    })
+  );
+
   /**
    * Navigate to the Delete Organisation Success page, on successful deletion of a pending organisation from PRD.
    */
@@ -201,7 +258,14 @@ export class OrganisationEffects {
   public deletePendingOrgSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS),
     map(() => {
-      return new fromRoot.Go({ path: ['/delete-organisation-success'] });
+      return new fromRoot.Go({
+        path: ['/organisation/pending'],
+        extras: {
+          state: {
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration rejected' }],
+          },
+        },
+      });
     })
   );
 

@@ -29,5 +29,9 @@ export class PendingOrganisationService {
   public deletePendingOrganisations(payload: Organisation): Observable<Response> {
     return this.http.delete<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`);
   }
+
+  public putReviewOrganisation(payload: Organisation): Observable<Response> {
+    return this.http.put<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`, payload);
+  }
 }
 
