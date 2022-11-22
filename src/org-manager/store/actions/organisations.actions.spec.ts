@@ -64,6 +64,38 @@ describe('PendingOrganisationActions actions', () => {
     });
   });
 
+  describe('PutReviewOrganisation actions GROUP', () => {
+    describe('PutReviewOrganisation', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.PutReviewOrganisation(PendingOrganisationsMockCollectionObj);
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.PUT_REVIEW_ORGANISATION,
+          payload: PendingOrganisationsMockCollectionObj
+        });
+      });
+    });
+
+    describe('PutReviewOrganisationSuccess', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.PutReviewOrganisationSuccess(PendingOrganisationsMockCollectionObj);
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS,
+          payload: PendingOrganisationsMockCollectionObj
+        });
+      });
+    });
+
+    describe('PutReviewOrganisationFail', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.PutReviewOrganisationFail({});
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.PUT_REVIEW_ORGANISATION_FAIL,
+          payload: {}
+        });
+      });
+    });
+  });
+
   describe('DeletePendingOrganisation actions GROUP', () => {
     // Initial action
     describe('DeletePendingOrganisation', () => {
@@ -243,6 +275,35 @@ describe('PendingOrganisationActions actions', () => {
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS_SUCCESS,
           payload: true
+        });
+      });
+    });
+
+    describe('UpdateOrganisationsSearchString', () => {
+      it('should update organisation search string', () => {
+        const action = new fromOrganisation.UpdateOrganisationsSearchString('test');
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.UPDATE_ORGANISATIONS_SEARCH_STRING,
+          payload: 'test'
+        });
+      });
+    });
+
+    describe('UpdatePendingOrganisationsSearchString', () => {
+      it('should update organisation search string', () => {
+        const action = new fromOrganisation.UpdatePendingOrganisationsSearchString('abc');
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.UPDATE_PENDING_ORGANISATIONS_SEARCH_STRING,
+          payload: 'abc'
+        });
+      });
+    });
+
+    describe('ClearErrors', () => {
+      it('should clear errors', () => {
+        const action = new fromOrganisation.ClearErrors();
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.CLEAR_ERRORS
         });
       });
     });

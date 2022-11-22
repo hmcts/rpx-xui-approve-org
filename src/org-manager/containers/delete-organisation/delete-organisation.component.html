@@ -2,11 +2,10 @@
   <app-back-link [store]="store"></app-back-link>
   <main id="content" class="govuk-main-wrapper" role="main" tabindex="-1">
     <div class="govuk-grid-row">
-      <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
           <ng-container *ngIf="orgForReview">
             <h1 class="govuk-heading-xl">
-              Delete this {{ orgForReview.status==='PENDING' ? 'registration request' : 'organisation' }}?
+              Confirm your decision
             </h1>
             <dl class="govuk-summary-list">
 
@@ -16,40 +15,18 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                   <div>{{orgForReview.name}}</div>
-                  <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.organisationId}}</div>
                 </dd>
               </div>
 
               <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                  Address
+                  Decision
                 </dt>
                 <dd class="govuk-summary-list__value">
-                  {{orgForReview.addressLine1}}<br>
-                  <div *ngIf='orgForReview.addressLine2'>
-                    {{orgForReview.addressLine2}}<br>
-                  </div>
-                  {{orgForReview.townCity}}<br>
-                  <div *ngIf='orgForReview.county'>
-                    {{orgForReview.county}}<br>
-                  </div>
-                  <div *ngIf='orgForReview.postCode'>
-                    {{orgForReview?.postCode}}<br>
-                  </div>
+                  Reject the registration
                 </dd>
-
               </div>
 
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Administrator
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <div>{{orgForReview.admin}}</div>
-                  <div class="govuk-caption-m govuk-!-font-size-16">{{orgForReview.adminEmail}}</div>
-                </dd>
-
-              </div>
             </dl>
             <div class="govuk-warning-text" *ngIf="orgForReview.status==='ACTIVE'">
               <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -66,6 +43,5 @@
           </button>
         </div>
       </div>
-    </div>
   </main>
 </div>

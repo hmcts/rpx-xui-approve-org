@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 
+import { Title } from '@angular/platform-browser';
+import { Event, Router, RoutesRecognized } from '@angular/router';
 import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
+// tslint:disable-next-line: no-duplicate-imports
+import { RoleService } from '@hmcts/rpx-xui-common-lib';
+import { CookieService } from 'ngx-cookie';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, first, take } from 'rxjs/operators';
 import { EnvironmentService } from 'src/app/services/environment.service';
+import { AppUtils } from 'src/app/utils/app-utils';
 import { environment as config } from '../../../environments/environment';
 import * as fromRoot from '../../store';
-import { RoleService } from '@hmcts/rpx-xui-common-lib';
-import { CookieService } from 'ngx-cookie';
-import { AppUtils } from 'src/app/utils/app-utils';
-import { Event, Router, RoutesRecognized } from '@angular/router';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -133,7 +134,7 @@ export class AppComponent implements OnInit {
       let child = data.state.root;
       while (child.firstChild) {
         child = child.firstChild;
-      };
+      }
       const d = child.data;
       if (d.title) {
         this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);

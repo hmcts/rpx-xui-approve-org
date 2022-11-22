@@ -1,19 +1,21 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {combineReducers, Store, StoreModule} from '@ngrx/store';
-import {of} from 'rxjs';
-import {Go} from '../../../app/store/actions';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
+
+import { Go } from '../../../app/store/actions';
 import * as fromRoot from '../../../app/store/reducers';
-import {BackLinkComponent} from '../../../org-manager/components';
+import { BackLinkComponent } from '../../../org-manager/components';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
+import { OrganisationAddressComponent } from '../../components/organisation-address';
 import {
   ActiveOrganisationMockCollection,
   PendingOrganisationsMockCollection2,
   PendingOrganisationsMockCollectionObj,
-  ReviewedOrganisationMockCollection
+  ReviewedOrganisationMockCollection,
 } from '../../mock/pending-organisation.mock';
-import {DeleteOrganisation, DeletePendingOrganisation} from '../../store/actions';
-import {DeleteOrganisationComponent} from './delete-organisation.component';
+import { DeleteOrganisation, DeletePendingOrganisation } from '../../store/actions';
+import { DeleteOrganisationComponent } from './delete-organisation.component';
 
 describe('DeleteOrganisationComponent', () => {
   let component: DeleteOrganisationComponent;
@@ -35,7 +37,8 @@ describe('DeleteOrganisationComponent', () => {
       ],
       declarations: [
         BackLinkComponent,
-        DeleteOrganisationComponent
+        DeleteOrganisationComponent,
+        OrganisationAddressComponent
       ]
     }).compileComponents();
     store = TestBed.inject(Store);
@@ -46,24 +49,6 @@ describe('DeleteOrganisationComponent', () => {
     fixture = TestBed.createComponent(DeleteOrganisationComponent);
     component = fixture.componentInstance;
   }));
-
-  describe('addOrganisationForReviewSubscribe()', () => {
-
-    it('should return reviewed organisation details, so that the User can view them on the page.', () => {
-
-      storePipeMock.and.returnValue(of({reviewedOrganisations: reviewedOrganisationsDummy}));
-      fixture.detectChanges();
-      component.addOrganisationForReviewSubscribe();
-      expect(component.orgForReview['reviewedOrganisations']).toEqual(reviewedOrganisationsDummy);
-    });
-
-    it('should dispatch a router "back" action when there are no organisation details.', () => {
-      storePipeMock.and.returnValue(of(false));
-      fixture.detectChanges();
-      component.addOrganisationForReviewSubscribe();
-      expect(storeDispatchMock).toHaveBeenCalledWith(new Go({path: ['/pending-organisations']}));
-    });
-  });
 
   describe('onDeleteOrganisation()', () => {
 

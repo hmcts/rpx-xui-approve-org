@@ -24,12 +24,18 @@ const requestMapping = {
             res.send(true);
        },
        '/api/organisations': (req,res) => {
-           if(req.query.status){
-               res.send(getOrganisationsWithStatus(req.query.status));
-           }
-
-           if (req.query.usersOrgId){
+           const queryParams = Object.keys(req.query);
+           console.log(`****************** ${queryParams}`);
+           if (queryParams.includes('organisationId')) {
+               res.send(getOrganisationsWithStatus('ACTIVE')[0]);
+           } else if (queryParams.includes('usersOrgId')) {
                res.send(getOrganisationsUsers(req.query.usersOrgId));
+           } else if (queryParams.includes('status')){
+               const status = req.query.status;
+               res.send(getOrganisationsWithStatus(status.includes('PENDING') ? 'PENDING':'ACTIVE'));
+           } 
+           else {
+               res.status(510).send({ error: `query param not recognised ${queryParams}` });
            }
        },
        '/api/pbaAccounts': (req,res) => {
@@ -50,6 +56,7 @@ const requestMapping = {
        '/api/userList':(req,res) => {
             res.send(getUsersList());
        },
+
        '/api/user/details': (req,res) => {
            res.send({ "email": "sreekanth_su1@mailinator.com", "orgId": "VRSFNPV", "roles": ["caseworker", "caseworker-divorce", "caseworker-divorce-financialremedy", "caseworker-divorce-financialremedy-solicitor", "caseworker-divorce-solicitor", "caseworker-ia", "caseworker-ia-legalrep-solicitor", "caseworker-probate", "caseworker-probate-solicitor", "caseworker-publiclaw", "caseworker-publiclaw-solicitor", "cwd-admin", "pui-case-manager", "pui-finance-manager", "pui-organisation-manager", "pui-user-manager"], "sessionTimeout": { "idleModalDisplayTime": 10, "pattern": ".", "totalIdleTime": 20 }, "userId": "4510b778-6a9d-4c53-918a-c3f80bd7aadd" }); 
        },
@@ -64,7 +71,19 @@ const requestMapping = {
         ...stafDetailsMapping.post,
      '/api/reinviteUser': (req,res) => {
             res.send({ "userIdentifier": "97ecc487-cdeb-42a8-b794-84840a44f58c", "idamStatus": null });
-     } 
+     },
+        '/api/organisations': (req, res) => {
+            const queryParams = Object.keys(req.query);
+            console.log(`****************** ${queryParams}`);
+            if (queryParams.includes('status')) {
+                const status = req.query.status;
+                const listOgOrgs = getOrganisationsWithStatus(status.includes('PENDING') ? 'PENDING' : 'ACTIVE') 
+                res.send({ organisations: listOgOrgs, total_records: listOgOrgs.length});
+            }
+            else {
+                res.status(510).send({ error: `query param not recognised ${queryParams}` });
+            }
+        } 
     },
     put:{
         '/api/updatePba': (req,res) => {
