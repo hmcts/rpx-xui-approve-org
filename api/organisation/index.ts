@@ -53,12 +53,28 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
 async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     let responseData = null;
-    const organisationsUri = getOrganisationUri(req.query.status, null, null, null);
-    const response = await req.http.get(organisationsUri);
-    logger.info('Organisation paging response' + response.data);
+    const status = req.query.status;
+    let response = null;
+    const organisationsUri = getOrganisationUri(status, null, null, null);
+    if (status && status === 'ACTIVE') {
+      //const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=500&page=1`;
+      response = await req.http.get(organisationsUri);
+      //response = getActiveOrganisations(req);
+    } else {
+      response = await req.http.get(organisationsUri);
+    }
+    logger.info('Organisation paging response: ' + response.data);
+    let organisations;
 
-    if (response.data.organisations) {
-      const filteredOrganisations = filterOrganisations(response.data.organisations, req.body.searchRequest.search_filter);
+    if (response && response.data && response.data.organisations) {
+      organisations = response.data.organisations;
+    } else {
+      organisations = response;
+    }
+    logger.info('Organisations count: ' + organisations.length);
+
+    if (organisations) {
+      const filteredOrganisations = filterOrganisations(organisations, req.body.searchRequest.search_filter);
       responseData = createPaginatedResponse(req.body.searchRequest.pagination_parameters, filteredOrganisations);
     } else {
       responseData = { organisations: [], total_records: 0 };
@@ -67,6 +83,46 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
   } catch (error) {
     logError(res, error);
   }
+}
+
+function getActiveOrganisationUrl(pageNumber: number, size: number): string {
+  return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=${size}&page=${pageNumber}`;
+}
+
+async function getActiveOrganisations(req: EnhancedRequest) {
+  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=500&page=1`;
+  const response = await req.http.get(url);
+  const chunkSize = 500;
+  const total_records = response.data.organisations.length;
+  logger.info('Organisation response count: ' + total_records);
+  const chunks = Math.floor(total_records / chunkSize);
+  const promise = [];
+  for (let i = 0; i < chunks; i++) {
+    logger.info('chunk url link', getActiveOrganisationUrl(i * chunkSize, chunkSize));
+    promise.push(req.http.get(getActiveOrganisationUrl(i * chunkSize, chunkSize)));
+  }
+  const allActiveOrg = [];
+  try {
+    await Promise.all(promise).catch(err => err).then(organisations => {
+      organisations.forEach(organisation=> {
+        allActiveOrg.push(organisation);
+      })
+    })
+  } catch (error) {
+    logger.error(error);
+    if (error.message) {
+      logger.error('Error message: ' + error.message)
+    }
+    if (error.stack) {
+      logger.error('Error stack: ' + error.stack)
+    }
+    if (error.code) {
+      logger.error('Error code: ' + error.code)
+    }
+    throw error
+  }
+  
+  return allActiveOrg;
 }
 
 function getOrganisationUri(status, organisationId, usersOrgId, pageNumber): string {
