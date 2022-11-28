@@ -59,11 +59,11 @@ withPipeline(type, product, component) {
       AppPipelineDsl.PactRoles.CONSUMER,
     ])
 
-    afterSuccess {
+    afterSuccess('build') {
         yarnBuilder.yarn('build')
     }
 
-    afterSuccess {
+    afterSuccess('test') {
 
         publishHTML ( [
             allowMissing         : true,
