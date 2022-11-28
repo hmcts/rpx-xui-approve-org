@@ -1,3 +1,4 @@
+import { AxiosPromise } from 'axios'
 import { NextFunction, Response, Router } from 'express'
 import { getConfigValue } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
@@ -57,8 +58,9 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
     let response = null;
     const organisationsUri = getOrganisationUri(status, null, null, null);
     if (status && status === 'ACTIVE') {
-      //const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=500&page=1`;
-      response = await req.http.get(organisationsUri);
+      const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=5&page=1`;
+      logger.info('Organisation url: ', url);
+      response = await req.http.get(url);
       //response = getActiveOrganisations(req);
     } else {
       response = await req.http.get(organisationsUri);
@@ -71,7 +73,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
     } else {
       organisations = response;
     }
-    logger.info('Organisations count: ' + organisations.length);
+    logger.info('Organisations count: ' + organisations.total_records);
 
     if (organisations) {
       const filteredOrganisations = filterOrganisations(organisations, req.body.searchRequest.search_filter);
@@ -93,10 +95,10 @@ async function getActiveOrganisations(req: EnhancedRequest) {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=500&page=1`;
   const response = await req.http.get(url);
   const chunkSize = 500;
-  const total_records = response.data.organisations.length;
+  const total_records = response.data.total_records;
   logger.info('Organisation response count: ' + total_records);
   const chunks = Math.floor(total_records / chunkSize);
-  const promise = [];
+  const promise = new Array<AxiosPromise<any>>();
   for (let i = 0; i < chunks; i++) {
     logger.info('chunk url link', getActiveOrganisationUrl(i * chunkSize, chunkSize));
     promise.push(req.http.get(getActiveOrganisationUrl(i * chunkSize, chunkSize)));
