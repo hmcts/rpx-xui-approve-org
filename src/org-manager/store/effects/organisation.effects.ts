@@ -109,6 +109,29 @@ export class OrganisationEffects {
     })
   );
 
+  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  @Effect()
+  public deleteReviewOrganisation$ = this.actions$.pipe(
+    ofType(pendingOrgActions.OrgActionTypes.DELETE_REVIEW_ORGANISATION),
+    map((action: pendingOrgActions.DeleteReviewOrganisation) => action.payload),
+    switchMap(organisation => {
+      let reviewOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
+      reviewOrganisation = {...reviewOrganisation, status: 'PENDING'};
+      return this.pendingOrgService.putPendingOrganisation(reviewOrganisation).pipe(
+        take(1),
+        map(response => {
+          const pendingOrganisation = AppUtils.mapOrganisation({...reviewOrganisation, status: 'REVIEW'})
+          return new pendingOrgActions.DeletePendingOrganisation(pendingOrganisation);
+        }),
+        catchError(errorReport => {
+          this.loggerService.error(errorReport.error.message);
+          const action = OrganisationEffects.getErrorAction(errorReport.error, 'under review');
+          return of(action);
+        })
+      );
+    })
+  );
+
   @Effect()
   public putReviewOrgSuccess$ = this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS),
@@ -307,11 +330,11 @@ export class OrganisationEffects {
     }
   }
 
-  public static getErrorAction(error: ErrorReport): Action {
+  public static getErrorAction(error: ErrorReport, status = 'active'): Action {
     switch (error.apiStatusCode) {
       case 400:
       case 404:
-        return new fromRoot.AddGlobalError(this.get400GenericError());
+        return new fromRoot.AddGlobalError(this.get400GenericError(status));
       case 403:
         return new fromRoot.AddGlobalError(this.get403Error());
       case 500:
@@ -334,9 +357,9 @@ export class OrganisationEffects {
     return globalError;
   }
 
-  public static get400GenericError(): GlobalError {
+  public static get400GenericError(status: string): GlobalError {
     const errorMessage = {
-      bodyText: 'Contact your support teams to delete this active organisation.',
+      bodyText: `Contact your support teams to delete this ${status} organisation.`,
       urlText: null,
       url: null
     };
