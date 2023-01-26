@@ -1,4 +1,4 @@
-import { PendingOrganisationsMockCollection1, PendingOrganisationsMockCollectionObj } from '../../mock/pending-organisation.mock';
+import { PendingOrganisationsMockCollection1, PendingOrganisationsMockCollectionObj, ReviewOrganisationsMockCollection } from '../../mock/pending-organisation.mock';
 import * as fromOrganisation from './organisations.actions';
 
 describe('PendingOrganisationActions actions', () => {
@@ -136,6 +136,20 @@ describe('PendingOrganisationActions actions', () => {
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.NAV_TO_DELETE_ORGANISATION,
           payload: PendingOrganisationsMockCollectionObj
+        });
+      });
+    });
+  });
+
+  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  describe('DeleteReviewOrganisation actions GROUP', () => {
+    // Initial action
+    describe('DeleteReviewOrganisation', () => {
+      it('should create an action', () => {
+        const action = new fromOrganisation.DeleteReviewOrganisation(ReviewOrganisationsMockCollection[0]);
+        expect({ ...action}).toEqual({
+          type: fromOrganisation.OrgActionTypes.DELETE_REVIEW_ORGANISATION,
+          payload: ReviewOrganisationsMockCollection[0]
         });
       });
     });

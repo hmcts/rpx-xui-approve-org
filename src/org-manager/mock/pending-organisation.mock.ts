@@ -52,6 +52,57 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
   }
 ];
 
+export const ReviewOrganisationsMockCollection: OrganisationVM[] = [
+  {
+    name: 'Glen Byrne',
+    organisationId: 'Byrne Limited',
+    addressLine1: '13 Berryfield Drive, Finglas, Dublin',
+    addressLine2: '',
+    townCity: '',
+    county: '',
+    pendingPaymentAccount: ['101011', '271095'],
+    pbaNumber: ['101010', '271094'],
+    admin: 'Glen Byrne',
+    status: 'REVIEW',
+    view: 'View',
+    adminEmail: 'glen@byrne.com',
+    dxNumber: [{ dxNumber: 'BOB', dxExchange: 'Roberts' }],
+    postCode: 'PC1 ABC'
+  },
+  {
+    name: 'Siofra Moley',
+    organisationId: 'Moley Limited',
+    addressLine1: '45 Malachy Conlon Pk, Newry, Co. Down',
+    addressLine2: '',
+    townCity: '',
+    county: '',
+    pendingPaymentAccount: ['271094'],
+    pbaNumber: ['271093'],
+    admin: 'Siofra Moley',
+    status: 'REVIEW',
+    view: 'View',
+    adminEmail: 'siofra@moley.com',
+    dxNumber: [{}],
+    postCode: 'PC2 XYZ'
+  },
+  {
+    name: 'Odd Name',
+    organisationId: 'OddId',
+    addressLine1: '666, Hades Avenue',
+    addressLine2: '',
+    townCity: '',
+    county: '',
+    pendingPaymentAccount: null,
+    pbaNumber: null,
+    admin: 'Odd Name',
+    status: 'REVIEW',
+    view: 'View',
+    adminEmail: 'odd@hades.com',
+    dxNumber: null,
+    postCode: 'PC3 ODD'
+  }
+];
+
 export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
