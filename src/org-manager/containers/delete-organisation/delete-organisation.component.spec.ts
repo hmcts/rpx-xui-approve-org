@@ -13,8 +13,9 @@ import {
   PendingOrganisationsMockCollection2,
   PendingOrganisationsMockCollectionObj,
   ReviewedOrganisationMockCollection,
+  ReviewOrganisationsMockCollection,
 } from '../../mock/pending-organisation.mock';
-import { DeleteOrganisation, DeletePendingOrganisation } from '../../store/actions';
+import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation } from '../../store/actions';
 import { DeleteOrganisationComponent } from './delete-organisation.component';
 
 describe('DeleteOrganisationComponent', () => {
@@ -56,6 +57,13 @@ describe('DeleteOrganisationComponent', () => {
       const orgForReview = PendingOrganisationsMockCollection2[0];
       component.onDeleteOrganisationHandler(orgForReview);
       expect(storeDispatchMock).toHaveBeenCalledWith(new DeletePendingOrganisation(orgForReview));
+    });
+
+    // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+    it('should dispatch a review organisation "delete" action', () => {
+      const orgForReview = ReviewOrganisationsMockCollection[0];
+      component.onDeleteOrganisationHandler(orgForReview);
+      expect(storeDispatchMock).toHaveBeenCalledWith(new DeleteReviewOrganisation(orgForReview));
     });
 
     it('should dispatch an (active) organisation "delete" action', () => {

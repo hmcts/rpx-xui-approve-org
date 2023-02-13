@@ -9,13 +9,15 @@ import { AddGlobalError, Go } from '../../../app/store';
 import {
   LoadPbaAccountsObj,
   PendingOrganisationsMockCollection1,
-  PendingOrganisationsMockCollectionObj
+  PendingOrganisationsMockCollectionObj,
+  ReviewOrganisationsMockCollection
 } from '../../mock/pending-organisation.mock';
 import { ErrorReport } from '../../models/errorReport.model';
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService, PbaAccountDetails, PendingOrganisationService } from '../../services';
 import * as fromActions from '../actions/organisations.actions';
 import { OrganisationEffects } from './organisation.effects';
+import { AppUtils } from '../../../app/utils/app-utils';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -29,7 +31,8 @@ describe('Organisation Effects', () => {
   const pendingOrganisationServiceMock = jasmine.createSpyObj('PendingOrganisationService', [
     'fetchPendingOrganisations',
     'approvePendingOrganisations',
-    'deletePendingOrganisations'
+    'deletePendingOrganisations',
+    'putPendingOrganisation'
   ]);
   const organisationServiceMock = jasmine.createSpyObj('OrganisationService', [
     'fetchOrganisations',
@@ -154,6 +157,103 @@ describe('Organisation Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.approvePendingOrgsSuccess$).toBeObservable(expected);
+    });
+  });
+
+  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  describe('deleteReviewOrganisation$', () => {
+    afterEach(() => {
+      pendingOrganisationServiceMock.putPendingOrganisation.calls.reset();
+    });
+
+    it('should return a success action', () => {
+      pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(of(true));
+
+      const reviewOrganisation = AppUtils.mapOrganisationsVm(ReviewOrganisationsMockCollection)[0]
+      const completionOrganisation = AppUtils.mapOrganisation({...reviewOrganisation, status: 'REVIEW'})
+      const action = new fromActions.DeleteReviewOrganisation(ReviewOrganisationsMockCollection[0]);
+      const completion = new fromActions.DeletePendingOrganisation(completionOrganisation);
+
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.deleteReviewOrganisation$).toBeObservable(expected);
+
+    });
+
+    it('should return a failure action when the HTTP status is 400', () => {
+      pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(throwError({
+        error: {
+          apiStatusCode: 400,
+        } as ErrorReport
+      }));
+      const action = new fromActions.DeleteReviewOrganisation(PendingOrganisationsMockCollectionObj);
+      const completion = new AddGlobalError({
+        header: 'Sorry, there is a problem with the organisation',
+        errors: [{
+          bodyText: 'Contact your support teams to delete this under review organisation.',
+          urlText: null,
+          url: null
+        }]
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.deleteReviewOrganisation$).toBeObservable(expected);
+    });
+
+    it('should return a failure action when the HTTP status is 404', () => {
+      pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(throwError({
+        error: {
+          apiStatusCode: 404,
+        } as ErrorReport
+      }));
+      const action = new fromActions.DeleteReviewOrganisation(PendingOrganisationsMockCollectionObj);
+      const completion = new AddGlobalError({
+        header: 'Sorry, there is a problem with the organisation',
+        errors: [{
+          bodyText: 'Contact your support teams to delete this under review organisation.',
+          urlText: null,
+          url: null
+        }]
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.deleteReviewOrganisation$).toBeObservable(expected);
+    });
+
+    it('should return a failure action when the HTTP status is 403', () => {
+      pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(throwError({
+        error: {
+          apiStatusCode: 403,
+        } as ErrorReport
+      }));
+      const action = new fromActions.DeleteReviewOrganisation(PendingOrganisationsMockCollectionObj);
+      const completion = new AddGlobalError({
+        header: 'Sorry, you\'re not authorised to perform this action',
+        errors: null
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.deleteReviewOrganisation$).toBeObservable(expected);
+    });
+
+    it('should return a failure action when the HTTP status is 500', () => {
+      pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(throwError({
+        error: {
+          apiStatusCode: 500,
+        } as ErrorReport
+      }));
+      const action = new fromActions.DeleteReviewOrganisation(PendingOrganisationsMockCollectionObj);
+      const completion = new AddGlobalError({
+        header: 'Sorry, there is a problem with the service',
+        errors: [{
+          bodyText: 'Try again later.',
+          urlText: null,
+          url: null
+        }]
+      });
+      actions$ = hot('-a', { a: action });
+      const expected = cold('-b', { b: completion });
+      expect(effects.deleteReviewOrganisation$).toBeObservable(expected);
     });
   });
 

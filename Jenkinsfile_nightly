@@ -48,8 +48,8 @@ withNightlyPipeline(type, product, component) {
     enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
-    after('checkout') {sh 'yarn cache clean'}
-    after('build') {
+    afterSuccess('checkout') {sh 'yarn cache clean'}
+    afterSuccess('build') {
         sh 'npm run build'
         publishHTML([
             allowMissing         : true,
@@ -69,11 +69,11 @@ withNightlyPipeline(type, product, component) {
         ])
     }
 
-    after('fortify-scan') {
+    afterSuccess('fortify-scan') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
-    after('fullFunctionalTest') {
+    afterSuccess('fullFunctionalTest') {
 
         publishHTML([
         allowMissing         : true,
@@ -94,7 +94,7 @@ withNightlyPipeline(type, product, component) {
         ])
     }
 
-    after('mutationTest') {
+    afterSuccess('mutationTest') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -105,7 +105,7 @@ withNightlyPipeline(type, product, component) {
         ])
     }
 
-    after('crossBrowserTest') {
+    afterSuccess('crossBrowserTest') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -116,7 +116,7 @@ withNightlyPipeline(type, product, component) {
       ])
     }
 
-    after('securityScan') {
+    afterSuccess('securityScan') {
             publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

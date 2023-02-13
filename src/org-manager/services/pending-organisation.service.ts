@@ -33,5 +33,10 @@ export class PendingOrganisationService {
   public putReviewOrganisation(payload: Organisation): Observable<Response> {
     return this.http.put<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`, payload);
   }
+
+  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  public putPendingOrganisation(payload: Organisation): Observable<Response> {
+    return this.http.put<Response>(`${this.organisationsUrl}${payload.organisationIdentifier}`, payload);
+  }
 }
 

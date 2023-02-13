@@ -23,6 +23,9 @@ export enum OrgActionTypes {
   NAV_TO_DELETE_ORGANISATION = '[Pending Organisations] Navigate to Delete an Organisation',
   NAV_TO_REVIEW_ORGANISATION = '[Pending Organisations] Navigate to Review an Organisation',
   DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
+  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  DELETE_REVIEW_ORGANISATION = '[Review Organisations] Delete Review Organisation',
+
   DELETE_PENDING_ORGANISATION_SUCCESS = '[Pending Organisations] Delete Pending Organisation Success',
   DELETE_PENDING_ORGANISATION_FAIL = '[Pending Organisations] Delete Pending Organisation Fail',
   DELETE_ORGANISATION = '[Organisations] Delete Organisation',
@@ -221,6 +224,12 @@ export class UpdateOrganisationsSearchString implements Action {
   constructor(public payload: string) {}
 }
 
+// TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+export class DeleteReviewOrganisation implements Action {
+  public readonly type = OrgActionTypes.DELETE_REVIEW_ORGANISATION;
+  constructor(public payload: OrganisationVM) { }
+}
+
 export type OrganisationsActions =
     | LoadPendingOrganisations
     | LoadPendingOrganisationsSuccess
@@ -252,4 +261,6 @@ export type OrganisationsActions =
     | UpdateOrganisationsSearchString
     | PutReviewOrganisation
     | PutReviewOrganisationSuccess
-    | PutReviewOrganisationFail;
+    | PutReviewOrganisationFail
+    // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+    | DeleteReviewOrganisation;
