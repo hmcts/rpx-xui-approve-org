@@ -76,9 +76,9 @@ describe('OrganisationDetailsInfoComponent', () => {
       expect(adressContent).toContain('13 Berryfield drive, Finglas');
       const mailContent = fixture.debugElement.nativeElement.querySelector('div.govuk-caption-m').textContent;
       expect(mailContent).toContain('glen@byrne.com');
-      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[5].textContent;
+      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[6].textContent;
       expect(pbaNumber).toContain('101010');
-      const accountName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[6].textContent;
+      const accountName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[7].textContent;
       expect(accountName).toContain('RAY NIXON BROWN');
     });
 

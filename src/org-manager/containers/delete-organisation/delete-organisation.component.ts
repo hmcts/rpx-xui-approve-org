@@ -4,7 +4,7 @@ import {Store} from '@ngrx/store';
 import {Go} from '../../../app/store/actions';
 import {OrganisationVM} from '../../../org-manager/models/organisation';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import {DeleteOrganisation, DeletePendingOrganisation} from '../../store/actions/organisations.actions';
+import {DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation} from '../../store/actions/organisations.actions';
 
 @Component({
   selector: 'app-org-pending-delete',
@@ -30,7 +30,12 @@ export class DeleteOrganisationComponent {
   public onDeleteOrganisationHandler(orgForReview: OrganisationVM) {
     if (orgForReview.status === 'PENDING') {
       this.store.dispatch(new DeletePendingOrganisation(orgForReview));
-    } else {
+    }
+    // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+    else if (orgForReview.status === 'REVIEW') {
+      this.store.dispatch(new DeleteReviewOrganisation(orgForReview));
+    }
+    else {
       this.store.dispatch(new DeleteOrganisation(orgForReview));
     }
     // TODO: What should happen if the organisation status is neither "PENDING" nor "ACTIVE"? Is that even possible?
