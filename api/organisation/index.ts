@@ -174,7 +174,9 @@ function filterOrganisations(orgs: any, searchFilter: string): any[] {
   return orgs.filter((org: any) => {
     if (org) {
       for (const field of TEXT_FIELDS_TO_CHECK) {
-        if (textFieldMatches(org, field, searchFilter)) {
+        if (field === 'postCode' && postCodeMatches(org, searchFilter)) {
+          return true;
+        } else if (textFieldMatches(org, field, searchFilter)) {
           return true;
         }
       }
@@ -196,6 +198,12 @@ function filterOrganisations(orgs: any, searchFilter: string): any[] {
     }
     return false;
   });
+}
+
+function postCodeMatches(org: any, filter: string): boolean {
+  return org['contactInformation'].map(({postCode}) => {
+    return postCode && postCode.split(' ').join('').toLowerCase()
+  }).some(element => element && element.indexOf(filter.split(' ').join('')) >= 0);
 }
 
 function createPaginatedResponse(paginationParameters: any, filteredOrganisations: any) {
