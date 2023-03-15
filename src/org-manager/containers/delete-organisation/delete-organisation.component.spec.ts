@@ -15,7 +15,7 @@ import {
   ReviewedOrganisationMockCollection,
   ReviewOrganisationsMockCollection,
 } from '../../mock/pending-organisation.mock';
-import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation } from '../../store/actions';
+import { DeleteOrganisation, DeletePendingOrganisation } from '../../store/actions';
 import { DeleteOrganisationComponent } from './delete-organisation.component';
 
 describe('DeleteOrganisationComponent', () => {
