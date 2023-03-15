@@ -206,38 +206,6 @@ function postCodeMatches(org: any, filter: string): boolean {
   }).some(element => element && element.indexOf(filter.split(' ').join('')) >= 0);
 }
 
-function filterOrganisations(orgs: any, searchFilter: string): any[] {
-  const TEXT_FIELDS_TO_CHECK = ['name', 'postCode', 'sraId', 'admin'];
-  if (!orgs) { return []; }
-  if (!searchFilter || searchFilter === '') { return orgs; }
-  searchFilter = searchFilter.toLowerCase();
-  return orgs.filter((org: any) => {
-    if (org) {
-      for (const field of TEXT_FIELDS_TO_CHECK) {
-        if (textFieldMatches(org, field, searchFilter)) {
-          return true;
-        }
-      }
-      if (org.pbaNumber) {
-        for (const pbaNumber of org.pbaNumber) {
-          if (pbaNumber.toLowerCase().includes(searchFilter)) {
-            return true;
-          }
-        }
-      }
-      if (org.dxNumber && org.dxNumber.length > 0) {
-        const dxNumber = org.dxNumber[0];
-        if (dxNumber) {
-          const matchesDxNumber = dxNumber.dxNumber && dxNumber.dxNumber.toLowerCase().includes(searchFilter);
-          const matchesDxExchange = dxNumber.dxExchange && dxNumber.dxExchange.toLowerCase().includes(searchFilter);
-          return matchesDxNumber || matchesDxExchange;
-        }
-      }
-    }
-    return false;
-  });
-}
-
 function createPaginatedResponse(paginationParameters: any, filteredOrganisations: any) {
   const startIndex = (paginationParameters.page_number - 1) * paginationParameters.page_size;
   let endIndex = startIndex + paginationParameters.page_size;
