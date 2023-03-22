@@ -35,7 +35,7 @@ Run `yarn lint` to execute all linting across both Angular and Node layers. Note
 is run on the build pipelines.
 Run `yarn lint:node` to execute note linting.
 
-# Branches, Environment and Deployment methods used
+# Branches, Environment and Deployment methods used1
 
 ```javascript
  |---------------------------------------|
