@@ -27,7 +27,6 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
     try {
         const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId, req.query.page)
         const response = await req.http.get(organisationsUri)
-        logger.info('Organisations response' + response.data)
 
         if (response.data.organisations) {
             res.send(response.data.organisations)
@@ -104,9 +103,7 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
   const response = await req.http.get(url);
   const chunkSize = 500;
   const total_records = response.headers.total_records;
-  logger.info('Active Organisation count: ' + total_records);
   const counts = Math.floor(total_records / chunkSize) + 1;
-  console.log('counts:', counts);
   const organisationPromises = new Array<AxiosPromise<any>>();
   for (let i = 1; i <= counts; i++) {
     organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
@@ -135,7 +132,6 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
     }
     throw error;
   }
-  console.log('total active orgs count', allActiveOrgs.length);
   return allActiveOrgs;
 }
 
