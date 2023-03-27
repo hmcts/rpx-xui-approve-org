@@ -7,12 +7,10 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class QuickLinksComponent implements OnInit {
   public organisationNameEncoded: string;
-  @Input() sraId?: string;
-  @Input() organisationName?: string
+  @Input() public sraId?: string;
+  @Input() public organisationName?: string;
 
-  constructor() { }
-
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.organisationNameEncoded = encodeURIComponent(this.organisationName);
   }
 }

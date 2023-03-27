@@ -34,11 +34,12 @@ export const MOCK_ROUTES: Routes = [
 ];
 const organisationMockService = jasmine.createSpyObj('organisationService', ['organisationSearchStringChange', 'setOrganisationSearchString', 'resetPaginationParameters']);
 organisationMockService.organisationSearchStringChange.and.returnValue(of(''));
-describe('HomeComponent', () => {
 
+describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
   let router: Router;
+
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -56,7 +57,7 @@ describe('HomeComponent', () => {
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
 
@@ -100,5 +101,4 @@ describe('HomeComponent', () => {
     component.submitSearch(SEARCH_STRING);
     expect(organisationMockService.setOrganisationSearchString).toHaveBeenCalledWith(SEARCH_STRING);
   });
-
 });

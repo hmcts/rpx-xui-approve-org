@@ -1,9 +1,9 @@
+import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../services/auth/auth.guard';
-import { CaseWorkerRefDataHomeComponent } from './containers/caseworker-ref-home/caseworker-ref-home.component';
-import { ModuleWithProviders } from '@angular/core';
 import { UploadInfoDetailsComponent } from './components/upload-info-details/upload-info-details.component';
 import { UploadInfoPartialSuccessComponent } from './components/upload-info-partial-success/upload-info-partial-success';
+import { CaseWorkerRefDataHomeComponent } from './containers/caseworker-ref-home/caseworker-ref-home.component';
 
 export const ROUTES: Routes = [
   {

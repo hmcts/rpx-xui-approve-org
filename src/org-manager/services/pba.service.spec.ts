@@ -1,9 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-
 import { environment } from '../../environments/environment';
 import { PbaService } from './pba.service';
-
 import createSpyObj = jasmine.createSpyObj;
 
 describe('PbaService', () => {
@@ -21,7 +19,7 @@ describe('PbaService', () => {
         { provide: HttpClient, useValue: httpClient }
       ]
     });
-    service = TestBed.get(PbaService);
+    service = TestBed.inject(PbaService);
   });
 
   describe('getPBAsByStatus', () => {
@@ -30,6 +28,7 @@ describe('PbaService', () => {
       service.getPBAsByStatus(STATUS);
       expect(httpClient.get).toHaveBeenCalledWith(`${PBA_URL}/status/${STATUS}`);
     });
+
     it('should allow a nonsense status and pass it on to a get request', () => {
       const STATUS = 'bob';
       service.getPBAsByStatus(STATUS);
