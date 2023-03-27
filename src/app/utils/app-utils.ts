@@ -9,7 +9,6 @@ import { GlobalError } from '../store/reducers/app.reducer';
  *
  */
 export class AppUtils {
-
   public static mapOrganisations(obj: Organisation[]): OrganisationVM[] {
     const organisationModel: OrganisationVM[] = [];
     obj.forEach((apiOrg) => {
@@ -114,11 +113,10 @@ export class AppUtils {
       url: `/organisation-details/${orgId}`
     }];
 
-    const globalError = {
+    return  {
       header: 'Sorry, there is a problem with the service',
       errors: errorMessages
     };
-    return globalError;
   }
 
   public static get400Error(orgId: string): GlobalError {
@@ -127,11 +125,10 @@ export class AppUtils {
       urlText: 'Refresh and go back',
       url: `/organisation-details/${orgId}`
     };
-    const globalError = {
+    return  {
       header: 'Sorry, there is a problem',
       errors: [errorMessage]
     };
-    return globalError;
   }
 
   public static get404Error(orgId: string): GlobalError {
@@ -146,11 +143,10 @@ export class AppUtils {
       url: `/organisation-details/${orgId}`
     }];
 
-    const globalError = {
+    return  {
       header: 'Sorry, there is a problem with this account',
       errors: errorMessages
     };
-    return globalError;
   }
 
   // Util method to return Navitems
@@ -162,7 +158,7 @@ export class AppUtils {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
       }
     });
-    return roleNavItems.sort((a, b) => (a.orderId > b.orderId) ? 1 : (a.orderId < b.orderId) ? -1 : 0)
+    return roleNavItems.sort((a, b) => (a.orderId > b.orderId) ? 1 : (a.orderId < b.orderId) ? -1 : 0);
   }
 
   // Helper method to take the roles
@@ -174,11 +170,9 @@ export class AppUtils {
       // we get the roles in this format before decoding 'j%3A%5B%22prd-admin%22%5D'
       // after deconding we get it in format 'j:["prd-admin"]'
       if (roles.length === 2) {
-         const returnVal = JSON.parse(roles[1]);
-         return returnVal;
+         return  JSON.parse(roles[1]);
       }
     }
     return [];
   }
-
 }

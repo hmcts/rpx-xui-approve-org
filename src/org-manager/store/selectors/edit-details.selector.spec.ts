@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 import { select, Store, StoreModule } from '@ngrx/store';
-import * as fromSelectors from './edit-details.selectors';
 import { reducers } from '../index';
-import {initialState, EditDetailsState} from '../reducers/edit-details.reducer';
+import { EditDetailsState, initialState } from '../reducers/edit-details.reducer';
+import * as fromSelectors from './edit-details.selectors';
 
 describe('Edit Details selectors', () => {
   let store: Store<EditDetailsState>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -13,7 +14,7 @@ describe('Edit Details selectors', () => {
         StoreModule.forFeature('orgState', reducers),
       ],
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   });
 
@@ -71,5 +72,4 @@ describe('Edit Details selectors', () => {
       expect(result).toEqual({items: [], isFormValid: true});
     });
   });
-
 });

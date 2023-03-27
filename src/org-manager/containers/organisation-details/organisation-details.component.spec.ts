@@ -98,7 +98,7 @@ describe('OrganisationDetailsComponent', () => {
     view: 'View',
     pbaNumber: ['PBA1234567'],
     dxNumber: [123456],
-  }
+  };
 
   beforeEach((() => {
     TestBed.configureTestingModule({
@@ -136,11 +136,11 @@ describe('OrganisationDetailsComponent', () => {
         },
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
-    mockedOrganisationService = TestBed.get(OrganisationService);
-    mockedPbaAccountDetails = TestBed.get(PbaAccountDetails);
-    mockedUserApprovalGuard = TestBed.get(UserApprovalGuard);
-    mockedPBARouter = TestBed.get(Router);
+    store = TestBed.inject(Store);
+    mockedOrganisationService = TestBed.inject(OrganisationService);
+    mockedPbaAccountDetails = TestBed.inject(PbaAccountDetails);
+    mockedUserApprovalGuard = TestBed.inject(UserApprovalGuard);
+    mockedPBARouter = TestBed.inject(Router);
     spyOn(mockedUserApprovalGuard, 'isUserApprovalRole').and.returnValue(true);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
     spyOn(mockedOrganisationService, 'getOrganisationUsers').and.returnValue(of(MOCKED_USERS));
@@ -203,7 +203,7 @@ describe('OrganisationDetailsComponent', () => {
       email: 'test@mail.com',
       status: 'valid',
       resendInvite: false
-    }
+    };
     component.onShowUserDetails(user);
     expect(store.dispatch).toHaveBeenCalled();
   });
