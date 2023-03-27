@@ -5,7 +5,7 @@ import { of } from 'rxjs';
 import { BackLinkComponent } from 'src/org-manager/components';
 import * as fromRoot from '../../../app/store/reducers';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import { ActiveOrganisationMockCollection, ReviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
+import { activeOrganisationMockCollection, reviewedOrganisationMockCollection } from '../../mock/pending-organisation.mock';
 import { ApproveOrganisationComponent } from './approve-organisation.component';
 
 describe('ApproveOrganisationComponent', () => {
@@ -14,8 +14,8 @@ describe('ApproveOrganisationComponent', () => {
     let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
     let storePipeMock: any;
     let storeDispatchMock: any;
-    const reviewedOrganisationsDummy = ReviewedOrganisationMockCollection;
-    const activeOrganisationsDummy = ActiveOrganisationMockCollection;
+    const reviewedOrganisationsDummy = reviewedOrganisationMockCollection;
+    const activeOrganisationsDummy = activeOrganisationMockCollection;
 
     beforeEach((() => {
         TestBed.configureTestingModule({

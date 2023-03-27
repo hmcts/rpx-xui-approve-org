@@ -11,7 +11,6 @@ const config = {
 };
 
 describe('UserApprovalGuard', () => {
-
   let cookieService: CookieService;
   let userApprovalGuard: UserApprovalGuard;
 
@@ -26,8 +25,8 @@ describe('UserApprovalGuard', () => {
       ]
     });
 
-    cookieService = TestBed.get(CookieService);
-    userApprovalGuard = TestBed.get(UserApprovalGuard);
+    cookieService = TestBed.inject(CookieService);
+    userApprovalGuard = TestBed.inject(UserApprovalGuard);
   });
 
   it('isUserApprovalRole should be true when it has xui-approver-userdata role', () => {
@@ -46,5 +45,4 @@ describe('UserApprovalGuard', () => {
     expect(userApprovalGuard.canActivate()).toBeFalsy();
     expect(userApprovalGuard.redirectToPendingOrgs).toHaveBeenCalled();
   });
-
 });

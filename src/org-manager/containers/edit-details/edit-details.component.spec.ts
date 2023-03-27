@@ -92,9 +92,9 @@ describe('EditDetailsComponent', () => {
         CUSTOM_ELEMENTS_SCHEMA
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
-    updatePbaServices = TestBed.get(UpdatePbaServices);
-    mockedOrganisationService = TestBed.get(OrganisationService);
+    store = TestBed.inject(Store);
+    updatePbaServices = TestBed.inject(UpdatePbaServices);
+    mockedOrganisationService = TestBed.inject(OrganisationService);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
     fixture = TestBed.createComponent(EditDetailsComponent);
     component = fixture.componentInstance;

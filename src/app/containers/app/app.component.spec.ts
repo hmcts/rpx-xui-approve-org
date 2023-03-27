@@ -13,7 +13,6 @@ import * as fromRoot from '../../store';
 import { HeaderComponent } from '../header/header.component';
 import { AppComponent } from './app.component';
 
-
 const windowMock: Window = { gtag: () => { } } as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
@@ -90,7 +89,7 @@ describe('AppComponent', () => {
         { provide: Title, useValue: titleService }
       ],
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.debugElement.componentInstance;
 
@@ -179,6 +178,3 @@ describe('AppComponent', () => {
     });
   });
 });
-
-
-
