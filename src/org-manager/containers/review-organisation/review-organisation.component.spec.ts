@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import * as fromRoot from '../../../app/store/reducers';
@@ -12,6 +12,7 @@ describe('ReviewOrganisationComponent', () => {
   let storePipeMock: any;
   let storeDispatchMock: any;
   let router;
+
   beforeEach((() => {
     router = jasmine.createSpyObj('router', ['navigate', 'getCurrentNavigation']);
     TestBed.configureTestingModule({
@@ -27,7 +28,7 @@ describe('ReviewOrganisationComponent', () => {
         ReviewOrganisationComponent
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     storePipeMock = spyOn(store, 'pipe');
     storeDispatchMock =  jasmine.createSpyObj('Store', ['pipe', 'select', 'dispatch']);
     component = new ReviewOrganisationComponent(storeDispatchMock, router);
