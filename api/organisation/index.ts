@@ -1,3 +1,4 @@
+import { AxiosPromise } from 'axios';
 import { NextFunction, Response, Router } from 'express'
 import { getConfigValue } from '../configuration'
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references'
@@ -53,20 +54,86 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
 async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     let responseData = null;
-    const organisationsUri = getOrganisationUri(req.query.status, null, null, null);
-    const response = await req.http.get(organisationsUri);
-    logger.info('Organisation paging response' + response.data);
-
-    if (response.data.organisations) {
-      const filteredOrganisations = filterOrganisations(response.data.organisations, req.body.searchRequest.search_filter);
-      responseData = createPaginatedResponse(req.body.searchRequest.pagination_parameters, filteredOrganisations);
+    const status = req.query.status;
+    const pageNumber = req.body.searchRequest.pagination_parameters.page_number;
+    const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+    let response = null;
+    let organisationsUri;
+    if (!req.body.searchRequest.search_filter || req.body.searchRequest.search_filter === '') {
+      organisationsUri = getOrganisationPagingUri(status, pageNumber, pageSize);
+      response = await req.http.get(organisationsUri);
+      const organisationsList = response.data.organisations;
+      responseData = response && response.data && response.data.organisations ?
+        { organisations: organisationsList, total_records: response.headers.total_records } :
+        { organisations: [], total_records: 0 };
     } else {
-      responseData = { organisations: [], total_records: 0 };
+      if (status && status === 'ACTIVE') {
+        response = await getActiveOrganisations(req);
+      } else {
+        organisationsUri = getOrganisationUri(status, null, null, null);
+        response = await req.http.get(organisationsUri);
+      }
+      let organisations;
+      if (response && response.data && response.data.organisations) {
+        organisations = response.data.organisations;
+      } else {
+        organisations = response;
+      }
+
+      if (organisations) {
+        const filteredOrganisations = filterOrganisations(organisations, req.body.searchRequest.search_filter);
+        responseData = createPaginatedResponse(req.body.searchRequest.pagination_parameters, filteredOrganisations);
+      } else {
+        responseData = { organisations: [], total_records: 0 };
+      }
     }
     res.send(responseData);
   } catch (error) {
     logError(res, error);
   }
+}
+
+function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any>  {
+  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
+  const promise = req.http.get(url).catch(err => err);
+  return promise;
+}
+
+async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
+  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
+  const response = await req.http.get(url);
+  const chunkSize = 500;
+  const total_records = response.headers.total_records;
+  const counts = Math.floor(total_records / chunkSize) + 1;
+  const organisationPromises = new Array<AxiosPromise<any>>();
+  for (let i = 1; i <= counts; i++) {
+    organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
+  }
+  const allActiveOrgs = [];
+  try {
+    await Promise.all(organisationPromises).catch(err => err).then(organisations => {
+      organisations.forEach(organisation=> {
+        if (organisation.data.organisations) {
+          organisation.data.organisations.forEach(org => {
+            allActiveOrgs.push(org);
+          })
+        }
+      })
+    })
+  } catch (error) {
+    logger.error(error);
+    if (error.message) {
+      logger.error('Error message: ' + error.message);
+    }
+    if (error.stack) {
+      logger.error('Error stack: ' + error.stack);
+    }
+    if (error.code) {
+      logger.error('Error code: ' + error.code);
+    }
+    throw error;
+  }
+  return allActiveOrgs;
 }
 
 function getOrganisationUri(status, organisationId, usersOrgId, pageNumber): string {
@@ -82,6 +149,10 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber): str
     url = `${url}/${usersOrgId}/users?size=50&page=${pageNumber}`;
   }
   return url;
+}
+
+function getOrganisationPagingUri(status, pageNumber, size): string {
+  return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=${status}`;
 }
 
 async function handlePutOrganisationRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
