@@ -51,7 +51,7 @@ describe('OrganisationService', () => {
         { provide: environment, useValue: mockEnvironment },
       ]
     });
-    organisationService = TestBed.get(OrganisationService);
+    organisationService = TestBed.inject(OrganisationService);
     organisationService.orgActiveUrl = mockEnvironment.orgActiveUrl;
     organisationService.singleOrgUrl = mockEnvironment.singleOrgUrl;
     organisationService.orgUsersUrl = mockEnvironment.orgUsersUrl;

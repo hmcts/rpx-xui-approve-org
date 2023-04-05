@@ -11,7 +11,6 @@ import { OrganisationListComponent } from './../organisation-list/organisation-l
   styleUrls: [ '../organisation-list/organisation-list.component.scss' ]
 })
 export class PendingOrganisationsComponent extends OrganisationListComponent implements OnInit {
-
   constructor(
     protected router: Router,
     protected ref: ChangeDetectorRef,
@@ -23,7 +22,7 @@ export class PendingOrganisationsComponent extends OrganisationListComponent imp
   }
 
   public ngOnInit(): void {
-    this.view = 'NEW'
+    this.view = 'NEW';
     super.ngOnInit();
   }
 }

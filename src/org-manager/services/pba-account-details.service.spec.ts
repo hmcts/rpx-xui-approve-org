@@ -22,9 +22,8 @@ describe('PbaAccountDetails', () => {
         { provide: environment, useValue: mockEnviroment },
       ]
     });
-    pbaAccountDetails = TestBed.get(PbaAccountDetails);
+    pbaAccountDetails = TestBed.inject(PbaAccountDetails);
     pbaAccountDetails.updatePbaUrl = mockEnviroment.updatePbaUrl;
-
   });
 
   it('should get organisation user list', () => {
