@@ -1,8 +1,12 @@
-import { PendingOrganisationsMockCollection1, PendingOrganisationsMockCollectionObj, ReviewOrganisationsMockCollection } from '../../mock/pending-organisation.mock';
+import {
+  pendingOrganisationsMockCollection1,
+  pendingOrganisationsMockCollectionObj,
+  reviewOrganisationsMockCollection
+} from '../../mock/pending-organisation.mock';
 import * as fromOrganisation from './organisations.actions';
 
 describe('PendingOrganisationActions actions', () => {
-  const payload = PendingOrganisationsMockCollection1;
+  const payload = pendingOrganisationsMockCollection1;
 
   describe('LoadPendingOrganisations actions GROUP', () => {
     // Init state
@@ -43,10 +47,10 @@ describe('PendingOrganisationActions actions', () => {
     // Success
     describe('ApprovePendingOrganisationsSuccess', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.ApprovePendingOrganisationsSuccess(PendingOrganisationsMockCollectionObj);
+        const action = new fromOrganisation.ApprovePendingOrganisationsSuccess(pendingOrganisationsMockCollectionObj);
         expect({ ...action }).toEqual({
           type: fromOrganisation.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS,
-          payload: PendingOrganisationsMockCollectionObj
+          payload: pendingOrganisationsMockCollectionObj
         });
       });
     });
@@ -67,20 +71,20 @@ describe('PendingOrganisationActions actions', () => {
   describe('PutReviewOrganisation actions GROUP', () => {
     describe('PutReviewOrganisation', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.PutReviewOrganisation(PendingOrganisationsMockCollectionObj);
+        const action = new fromOrganisation.PutReviewOrganisation(pendingOrganisationsMockCollectionObj);
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.PUT_REVIEW_ORGANISATION,
-          payload: PendingOrganisationsMockCollectionObj
+          payload: pendingOrganisationsMockCollectionObj
         });
       });
     });
 
     describe('PutReviewOrganisationSuccess', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.PutReviewOrganisationSuccess(PendingOrganisationsMockCollectionObj);
+        const action = new fromOrganisation.PutReviewOrganisationSuccess(pendingOrganisationsMockCollectionObj);
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS,
-          payload: PendingOrganisationsMockCollectionObj
+          payload: pendingOrganisationsMockCollectionObj
         });
       });
     });
@@ -100,10 +104,10 @@ describe('PendingOrganisationActions actions', () => {
     // Initial action
     describe('DeletePendingOrganisation', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.DeletePendingOrganisation(PendingOrganisationsMockCollectionObj);
+        const action = new fromOrganisation.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.DELETE_PENDING_ORGANISATION,
-          payload: PendingOrganisationsMockCollectionObj
+          payload: pendingOrganisationsMockCollectionObj
         });
       });
     });
@@ -111,10 +115,10 @@ describe('PendingOrganisationActions actions', () => {
     // Success
     describe('DeletePendingOrganisationSuccess', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.DeletePendingOrganisationSuccess(PendingOrganisationsMockCollectionObj);
+        const action = new fromOrganisation.DeletePendingOrganisationSuccess(pendingOrganisationsMockCollectionObj);
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS,
-          payload: PendingOrganisationsMockCollectionObj
+          payload: pendingOrganisationsMockCollectionObj
         });
       });
     });
@@ -132,10 +136,10 @@ describe('PendingOrganisationActions actions', () => {
 
     describe('NavigateToDeleteOrganisation ', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.NavigateToDeleteOrganisation(PendingOrganisationsMockCollectionObj);
+        const action = new fromOrganisation.NavigateToDeleteOrganisation(pendingOrganisationsMockCollectionObj);
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.NAV_TO_DELETE_ORGANISATION,
-          payload: PendingOrganisationsMockCollectionObj
+          payload: pendingOrganisationsMockCollectionObj
         });
       });
     });
@@ -146,10 +150,10 @@ describe('PendingOrganisationActions actions', () => {
     // Initial action
     describe('DeleteReviewOrganisation', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.DeleteReviewOrganisation(ReviewOrganisationsMockCollection[0]);
+        const action = new fromOrganisation.DeleteReviewOrganisation(reviewOrganisationsMockCollection[0]);
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.DELETE_REVIEW_ORGANISATION,
-          payload: ReviewOrganisationsMockCollection[0]
+          payload: reviewOrganisationsMockCollection[0]
         });
       });
     });
@@ -159,10 +163,10 @@ describe('PendingOrganisationActions actions', () => {
     // Initial action
     describe('DeleteOrganisation', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.DeleteOrganisation(PendingOrganisationsMockCollectionObj);
+        const action = new fromOrganisation.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.DELETE_ORGANISATION,
-          payload: PendingOrganisationsMockCollectionObj
+          payload: pendingOrganisationsMockCollectionObj
         });
       });
     });
@@ -170,10 +174,10 @@ describe('PendingOrganisationActions actions', () => {
     // Success
     describe('DeleteOrganisationSuccess', () => {
       it('should create an action', () => {
-        const action = new fromOrganisation.DeleteOrganisationSuccess(PendingOrganisationsMockCollectionObj);
+        const action = new fromOrganisation.DeleteOrganisationSuccess(pendingOrganisationsMockCollectionObj);
         expect({ ...action}).toEqual({
           type: fromOrganisation.OrgActionTypes.DELETE_ORGANISATION_SUCCESS,
-          payload: PendingOrganisationsMockCollectionObj
+          payload: pendingOrganisationsMockCollectionObj
         });
       });
     });

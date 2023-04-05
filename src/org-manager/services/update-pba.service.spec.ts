@@ -5,7 +5,6 @@ import createSpyObj = jasmine.createSpyObj;
 import { UpdatePbaServices } from './update-pba.services';
 
 describe('UpdatePbaServices', () => {
-
   let httpClient: HttpClient;
   let updatePbaServices: UpdatePbaServices;
 
@@ -23,9 +22,8 @@ describe('UpdatePbaServices', () => {
         { provide: environment, useValue: mockEnviroment },
       ]
     });
-    updatePbaServices = TestBed.get(UpdatePbaServices);
+    updatePbaServices = TestBed.inject(UpdatePbaServices);
     updatePbaServices.updatePbaUrl = mockEnviroment.updatePbaUrl;
-
   });
 
   it('should get organisation user list', () => {

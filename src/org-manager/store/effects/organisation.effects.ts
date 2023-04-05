@@ -93,7 +93,6 @@ export class OrganisationEffects {
     ofType(pendingOrgActions.OrgActionTypes.PUT_REVIEW_ORGANISATION),
     map((action: pendingOrgActions.PutReviewOrganisation) => action.payload),
     switchMap(organisation => {
-
       let pendingOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
       pendingOrganisation = {...pendingOrganisation, status: 'REVIEW'};
       return this.pendingOrgService.putReviewOrganisation(pendingOrganisation).pipe(
@@ -120,7 +119,7 @@ export class OrganisationEffects {
       return this.pendingOrgService.putPendingOrganisation(reviewOrganisation).pipe(
         take(1),
         map(response => {
-          const pendingOrganisation = AppUtils.mapOrganisation({...reviewOrganisation, status: 'REVIEW'})
+          const pendingOrganisation = AppUtils.mapOrganisation({...reviewOrganisation, status: 'REVIEW'});
           return new pendingOrgActions.DeletePendingOrganisation(pendingOrganisation);
         }),
         catchError(errorReport => {
@@ -152,7 +151,6 @@ export class OrganisationEffects {
     ofType(pendingOrgActions.OrgActionTypes.DELETE_PENDING_ORGANISATION),
     map((action: pendingOrgActions.DeletePendingOrganisation) => action.payload),
     switchMap(organisation => {
-
       const pendingOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
 
       return this.pendingOrgService.deletePendingOrganisations(pendingOrganisation).pipe(
@@ -207,7 +205,6 @@ export class OrganisationEffects {
     ofType(fromActions.OrgActionTypes.DELETE_ORGANISATION),
     map((action: fromActions.DeleteOrganisation) => action.payload),
     switchMap(organisation => {
-
       const activeOrganisation = AppUtils.mapOrganisationsVm([organisation])[0];
 
       return this.organisationService.deleteOrganisation(activeOrganisation).pipe(
@@ -350,11 +347,10 @@ export class OrganisationEffects {
       urlText: null,
       url: null
     };
-    const globalError = {
+    return {
       header: 'Sorry, there is a problem with the organisation',
       errors: [errorMessage]
     };
-    return globalError;
   }
 
   public static get400GenericError(status: string): GlobalError {
@@ -363,19 +359,17 @@ export class OrganisationEffects {
       urlText: null,
       url: null
     };
-    const globalError = {
+    return {
       header: 'Sorry, there is a problem with the organisation',
       errors: [errorMessage]
     };
-    return globalError;
   }
 
   public static get403Error(): GlobalError {
-    const globalError = {
+    return {
       header: 'Sorry, you\'re not authorised to perform this action',
       errors: null
     };
-    return globalError;
   }
 
   public static get500Error(): GlobalError {
@@ -384,10 +378,9 @@ export class OrganisationEffects {
       urlText: null,
       url: null
     };
-    const globalError = {
+    return {
       header: 'Sorry, there is a problem with the service',
       errors: [errorMessage]
     };
-    return globalError;
   }
 }
