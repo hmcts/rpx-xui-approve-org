@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { UsersService } from 'src/org-manager/services';
-import { ActivatedRoute, Router } from '@angular/router';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
