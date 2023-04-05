@@ -5,7 +5,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
-
 import { of } from 'rxjs';
 import * as fromRoot from '../../../app/store';
 import { OrganisationService } from '../../services/organisation.service';
@@ -53,7 +52,6 @@ const MOCKED_ORGANISATION = {
 };
 
 describe('NewPBAsComponent', () => {
-
   let component: NewPBAsComponent;
   let fixture: ComponentFixture<NewPBAsComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
@@ -82,13 +80,12 @@ describe('NewPBAsComponent', () => {
         PbaAccountDetails
       ]
     }).compileComponents();
-    mockedOrganisationService = TestBed.get(OrganisationService);
+    mockedOrganisationService = TestBed.inject(OrganisationService);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(NewPBAsComponent);
     component = fixture.componentInstance;
-
   }));
 
   it('should have a component', () => {
@@ -127,5 +124,4 @@ describe('NewPBAsComponent', () => {
     const result = component.newPBAs.get('test');
     expect(result).toEqual('test value NEW');
   });
-
 });

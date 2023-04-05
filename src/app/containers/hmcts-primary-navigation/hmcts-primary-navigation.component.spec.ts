@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-
 import { CookieService } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation.component';
@@ -10,7 +9,8 @@ describe('HmctsPrimaryNavigationComponent', () => {
   let component: HmctsPrimaryNavigationComponent;
   let fixture: ComponentFixture<HmctsPrimaryNavigationComponent>;
   const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
-  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled'])
+  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HmctsPrimaryNavigationComponent ],
@@ -50,7 +50,7 @@ describe('HmctsPrimaryNavigationComponent', () => {
         featureName: ''
       },
       orderId: 0
-    }
+    };
     navItem.feature.isfeatureToggleable = false;
     const result$ = component.isFeatureNavEnabled$(navItem);
     result$.subscribe(result => expect(result).toBeTruthy());
@@ -67,7 +67,7 @@ describe('HmctsPrimaryNavigationComponent', () => {
       },
       orderId: 0
     };
-    featureToggleService.isEnabled.and.returnValue(of(false))
+    featureToggleService.isEnabled.and.returnValue(of(false));
     const result$ = component.isFeatureNavEnabled$(navItem);
     result$.subscribe(result => expect(result).toBeFalsy());
   });

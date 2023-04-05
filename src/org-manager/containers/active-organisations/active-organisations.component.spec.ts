@@ -34,7 +34,7 @@ describe('Active Organisation', () => {
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(ActiveOrganisationsComponent);
     component = fixture.componentInstance;

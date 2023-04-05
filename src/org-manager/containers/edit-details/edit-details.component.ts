@@ -16,6 +16,7 @@ import { OrganisationService } from '../../services/organisation.service';
 import { UpdatePbaServices } from '../../services/update-pba.services';
 import * as fromStore from '../../store';
 import { PBANumberModel } from '../pending-pbas/models';
+
 @Component({
   selector: 'app-change-details',
   templateUrl: './edit-details.component.html'
@@ -141,8 +142,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
   public get getPBANumbers(): string[] {
     const { value } = this.changePbaFG;
-    const result = Object.keys(value).map(key => value[key]).filter(item => item !== '');
-    return result;
+    return Object.keys(value).map(key => value[key]).filter(item => item !== '');
   }
 
   public addPbaFormItem(inputsName: string) {
@@ -204,7 +204,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
         paymentAccountUpdated.forEach(paymentAccount => {
           if (data.errorDescription && data.errorDescription.indexOf(paymentAccount) > -1) {
-            const errorKey = formControlsKeys.find((key) => this.fPba[key].value === paymentAccount)
+            const errorKey = formControlsKeys.find((key) => this.fPba[key].value === paymentAccount);
 
             formControlsWithError.push(errorKey);
           }

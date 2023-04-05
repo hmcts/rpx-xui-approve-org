@@ -1,5 +1,5 @@
-import { initialState, reducer } from './edit-details.reducer';
 import * as fromActions from '../actions/edit-details.actions';
+import { initialState, reducer } from './edit-details.reducer';
 
 describe('Edit Details Reducer', () => {
   describe('Edit PBA ', () => {

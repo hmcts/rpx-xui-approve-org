@@ -4,7 +4,6 @@ import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuickLinksComponent } from '..';
-
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationAddressComponent } from '../organisation-address';
 import { OrganisationDetailsInfoComponent } from './organisation-details-info.component';
@@ -35,7 +34,7 @@ describe('OrganisationDetailsInfoComponent', () => {
       status: 'Deleted',
       effective_date: '2019-12-22T19:30:55.000Z'
     }]
-  }
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -57,7 +56,6 @@ describe('OrganisationDetailsInfoComponent', () => {
   });
 
   describe('approveOrganisation', () => {
-
     it('should show heading and titles', () => {
       const headingContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
       expect(headingContent).toContain('Approve organisation');
@@ -116,14 +114,12 @@ describe('OrganisationDetailsInfoComponent', () => {
     });
 
     it('should call approveEvent.emit if there is organisation data.', () => {
-
       spyOn(component.approveEvent, 'emit').and.callThrough();
       component.approveOrganisation(mockOrgData);
       expect(component.approveEvent.emit).toHaveBeenCalledWith(mockOrgData);
     });
 
     it('should NOT call approveEvent.emit if there is no organisation data.', () => {
-
       spyOn(component.approveEvent, 'emit').and.callThrough();
       component.approveOrganisation(null);
       expect(component.approveEvent.emit).toHaveBeenCalledTimes(0);
@@ -131,16 +127,13 @@ describe('OrganisationDetailsInfoComponent', () => {
   });
 
   describe('deleteOrganisation', () => {
-
     it('should call deleteEvent.emit if there is organisation data.', () => {
-
       spyOn(component.deleteEvent, 'emit').and.callThrough();
       component.deleteOrganisation(mockOrgData);
       expect(component.deleteEvent.emit).toHaveBeenCalledWith(mockOrgData);
     });
 
     it('should NOT call deleteEvent.emit if there is no orgnisation data.', () => {
-
       spyOn(component.deleteEvent, 'emit').and.callThrough();
       component.deleteOrganisation(null);
       expect(component.deleteEvent.emit).toHaveBeenCalledTimes(0);

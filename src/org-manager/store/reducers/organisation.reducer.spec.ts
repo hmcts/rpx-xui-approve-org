@@ -5,8 +5,7 @@ import * as fromActions from '../actions';
 import { initialState, reducer } from './organisation.reducer';
 
 describe('Organisation Reducer', () => {
-
-  const pendingOrganisationsMock: OrganisationVM[] = fromMock.PendingOrganisationsMockCollection1;
+  const pendingOrganisationsMock: OrganisationVM[] = fromMock.pendingOrganisationsMockCollection1;
 
   describe('undefined action', () => {
     it('should return the default state', () => {
@@ -29,7 +28,6 @@ describe('Organisation Reducer', () => {
       const action = new fromActions.LoadActiveOrganisation();
       const state = reducer(initialState, action);
       expect(state.activeOrganisations).toEqual({ orgEntities: {}, loaded: false, loading: true, searchString: '' });
-
     });
   });
 
@@ -75,9 +73,9 @@ describe('Organisation Reducer', () => {
 
   describe('LOAD_PBA_ACCOUNT_NAME_SUCCESS action', () => {
     it('should update the state with account details', () => {
-      const action = new fromActions.LoadPbaAccountDetailsSuccess({ orgId: '12345', data: fromMock.LoadPbaAccountsObj });
+      const action = new fromActions.LoadPbaAccountDetailsSuccess({ orgId: '12345', data: fromMock.loadPbaAccountsObj });
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations.orgEntities).toEqual({ 12345: { isAccLoaded: true, accountDetails: fromMock.LoadPbaAccountsObj } } as any);
+      expect(state.pendingOrganisations.orgEntities).toEqual({ 12345: { isAccLoaded: true, accountDetails: fromMock.loadPbaAccountsObj } } as any);
     });
   });
 
