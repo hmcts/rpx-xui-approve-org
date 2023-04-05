@@ -6,18 +6,18 @@ import { of, throwError } from 'rxjs';
 import { NotificationBannerType } from 'src/models/notification-banner-type.enum';
 import { LoggerService } from '../../../app/services/logger.service';
 import { AddGlobalError, Go } from '../../../app/store';
+import { AppUtils } from '../../../app/utils/app-utils';
 import {
-  LoadPbaAccountsObj,
-  PendingOrganisationsMockCollection1,
-  PendingOrganisationsMockCollectionObj,
-  ReviewOrganisationsMockCollection
+  loadPbaAccountsObj,
+  pendingOrganisationsMockCollection1,
+  pendingOrganisationsMockCollectionObj,
+  reviewOrganisationsMockCollection
 } from '../../mock/pending-organisation.mock';
 import { ErrorReport } from '../../models/errorReport.model';
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService, PbaAccountDetails, PendingOrganisationService } from '../../services';
 import * as fromActions from '../actions/organisations.actions';
 import { OrganisationEffects } from './organisation.effects';
-import { AppUtils } from '../../../app/utils/app-utils';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -45,7 +45,7 @@ describe('Organisation Effects', () => {
     'getAccountDetails',
   ]);
 
-  const payload: OrganisationVM[] = PendingOrganisationsMockCollection1;
+  const payload: OrganisationVM[] = pendingOrganisationsMockCollection1;
   const mockedLoggerService = jasmine.createSpyObj('mockedLoggerService', ['trace', 'info', 'debug', 'log', 'warn', 'error', 'fatal']);
 
   beforeEach(() => {
@@ -77,7 +77,7 @@ describe('Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(OrganisationEffects);
+    effects = TestBed.inject(OrganisationEffects);
   });
 
   xdescribe('approvePendingOrganisations$', () => {
@@ -121,7 +121,7 @@ describe('Organisation Effects', () => {
 
   describe('loadPbaAccountDetails$', () => {
     it('should return LoadPbaAccountDetailsSuccess', () => {
-      const payload0 = LoadPbaAccountsObj;
+      const payload0 = loadPbaAccountsObj;
       getAccountDetailsServiceMock.getAccountDetails.and.returnValue(of(payload0));
       const action = new fromActions.LoadPbaAccountsDetails({pbas: 'PBA0088487', orgId: '12345'});
       const completion = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: payload0});
@@ -169,15 +169,14 @@ describe('Organisation Effects', () => {
     it('should return a success action', () => {
       pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(of(true));
 
-      const reviewOrganisation = AppUtils.mapOrganisationsVm(ReviewOrganisationsMockCollection)[0]
-      const completionOrganisation = AppUtils.mapOrganisation({...reviewOrganisation, status: 'REVIEW'})
-      const action = new fromActions.DeleteReviewOrganisation(ReviewOrganisationsMockCollection[0]);
+      const reviewOrganisation = AppUtils.mapOrganisationsVm(reviewOrganisationsMockCollection)[0];
+      const completionOrganisation = AppUtils.mapOrganisation({...reviewOrganisation, status: 'REVIEW'});
+      const action = new fromActions.DeleteReviewOrganisation(reviewOrganisationsMockCollection[0]);
       const completion = new fromActions.DeletePendingOrganisation(completionOrganisation);
 
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.deleteReviewOrganisation$).toBeObservable(expected);
-
     });
 
     it('should return a failure action when the HTTP status is 400', () => {
@@ -186,7 +185,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 400,
         } as ErrorReport
       }));
-      const action = new fromActions.DeleteReviewOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteReviewOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the organisation',
         errors: [{
@@ -206,7 +205,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 404,
         } as ErrorReport
       }));
-      const action = new fromActions.DeleteReviewOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteReviewOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the organisation',
         errors: [{
@@ -226,7 +225,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 403,
         } as ErrorReport
       }));
-      const action = new fromActions.DeleteReviewOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteReviewOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, you\'re not authorised to perform this action',
         errors: null
@@ -242,7 +241,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 500,
         } as ErrorReport
       }));
-      const action = new fromActions.DeleteReviewOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteReviewOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the service',
         errors: [{
@@ -260,8 +259,8 @@ describe('Organisation Effects', () => {
   describe('deletePendingOrg$', () => {
     it('should return a success action', () => {
       pendingOrganisationServiceMock.deletePendingOrganisations.and.returnValue(of(true));
-      const action = new fromActions.DeletePendingOrganisation(PendingOrganisationsMockCollectionObj);
-      const completion = new fromActions.DeletePendingOrganisationSuccess(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
+      const completion = new fromActions.DeletePendingOrganisationSuccess(pendingOrganisationsMockCollectionObj);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.deletePendingOrg$).toBeObservable(expected);
@@ -273,7 +272,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 400,
         } as ErrorReport
       }));
-      const action = new fromActions.DeletePendingOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the organisation',
         errors: [{
@@ -293,7 +292,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 404,
         } as ErrorReport
       }));
-      const action = new fromActions.DeletePendingOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the organisation',
         errors: [{
@@ -313,7 +312,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 403,
         } as ErrorReport
       }));
-      const action = new fromActions.DeletePendingOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, you\'re not authorised to perform this action',
         errors: null
@@ -329,7 +328,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 500,
         } as ErrorReport
       }));
-      const action = new fromActions.DeletePendingOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the service',
         errors: [{
@@ -417,8 +416,8 @@ describe('Organisation Effects', () => {
   describe('deleteOrganisation$', () => {
     it('should return a success action', () => {
       organisationServiceMock.deleteOrganisation.and.returnValue(of(true));
-      const action = new fromActions.DeleteOrganisation(PendingOrganisationsMockCollectionObj);
-      const completion = new fromActions.DeleteOrganisationSuccess(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
+      const completion = new fromActions.DeleteOrganisationSuccess(pendingOrganisationsMockCollectionObj);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.deleteOrganisation$).toBeObservable(expected);
@@ -430,7 +429,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 400,
         } as ErrorReport
       }));
-      const action = new fromActions.DeleteOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the organisation',
         errors: [{
@@ -450,7 +449,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 404,
         } as ErrorReport
       }));
-      const action = new fromActions.DeleteOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the organisation',
         errors: [{
@@ -470,7 +469,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 403,
         } as ErrorReport
       }));
-      const action = new fromActions.DeleteOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, you\'re not authorised to perform this action',
         errors: null
@@ -486,7 +485,7 @@ describe('Organisation Effects', () => {
           apiStatusCode: 500,
         } as ErrorReport
       }));
-      const action = new fromActions.DeleteOrganisation(PendingOrganisationsMockCollectionObj);
+      const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
       const completion = new AddGlobalError({
         header: 'Sorry, there is a problem with the service',
         errors: [{

@@ -2,13 +2,13 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
-import {of, throwError} from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { LoggerService } from 'src/app/services/logger.service';
+import { AddGlobalError, Go } from 'src/app/store';
+import { ErrorReport } from 'src/org-manager/models/errorReport.model';
 import { UsersService } from 'src/org-manager/services';
 import * as fromActions from '../actions/users.actions';
 import * as fromEffects from './users.effects';
-import { AddGlobalError, Go } from 'src/app/store';
-import { ErrorReport } from 'src/org-manager/models/errorReport.model';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -46,10 +46,8 @@ describe('Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(fromEffects.UsersEffects);
-
+    effects = TestBed.inject(fromEffects.UsersEffects);
   });
-
 
   describe('Users Effects$', () => {
     it('should showUserDetails  action', () => {

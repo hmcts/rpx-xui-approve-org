@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { combineLatest, Observable, Subscription } from 'rxjs';
-import { OrganisationService } from '../../services';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
+import { combineLatest, Observable, Subscription } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
+import { OrganisationService } from '../../services';
+
 @Component({
   selector: 'app-home-component',
   templateUrl: './home.component.html',
@@ -67,5 +68,4 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.notificationBanners = null;
     }
   }
-
 }

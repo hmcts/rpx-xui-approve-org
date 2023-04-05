@@ -27,6 +27,7 @@ const organisationState = {
 
 describe('Organisation selectors', () => {
   let store: Store<organisationState>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -34,7 +35,7 @@ describe('Organisation selectors', () => {
         StoreModule.forFeature('orgState', reducers),
       ],
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   });
 
