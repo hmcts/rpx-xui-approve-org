@@ -1,5 +1,5 @@
+import { OrgManagerConstants } from '../../org-manager.constants';
 import * as fromActions from '../actions/edit-details.actions';
-import {OrgManagerConstants} from '../../org-manager.constants';
 
 export interface EditDetailsState {
   pba: {
