@@ -5,12 +5,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { OrganisationAddressComponent } from '../../components/organisation-address';
 import { OrganisationService } from '../../services';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { PendingOrganisationsComponent } from './pending-organisations.component';
 
 describe('PendingOrganisationComponent', () => {
   let component: PendingOrganisationsComponent;
   let fixture: ComponentFixture<PendingOrganisationsComponent>;
+
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [

@@ -1,12 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PBAAccountApprovalComponent } from '..';
-import { OrganisationAddressComponent } from '../organisation-address';
-
 import { OrganisationVM } from '../../models/organisation';
+import { OrganisationAddressComponent } from '../organisation-address';
 import { NewPBAsInfoComponent } from './new-pbas-info.component';
 
 describe('NewPBAsInfoComponent', () => {
@@ -38,7 +37,7 @@ describe('NewPBAsInfoComponent', () => {
     }]
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, ReactiveFormsModule, FormsModule, RouterTestingModule.withRoutes([])],
       declarations: [NewPBAsInfoComponent, OrganisationAddressComponent, PBAAccountApprovalComponent],
@@ -94,5 +93,4 @@ describe('NewPBAsInfoComponent', () => {
     component.setNewPBA({ name: testName, value: testValue });
     expect(component.newPBA.emit).toHaveBeenCalledWith({ name: testName, value: testValue });
   });
-
 });

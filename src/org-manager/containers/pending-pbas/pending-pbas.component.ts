@@ -9,10 +9,9 @@ import SortField from '../../../models/common/sort-field.model';
 import { SearchPBARequest, SortParameter } from '../../../models/dtos';
 import { SessionStorageService } from '../../../shared/services/session-storage.service';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../shared/utils/handle-fatal-errors';
-
+import { DrillDownSearch } from '../../models/DrillDownSearch';
 import { OrganisationService, PbaService } from '../../services';
 import { PBANumberModel, RenderableOrganisation } from './models';
-import { DrillDownSearch } from '../../models/DrillDownSearch';
 
 @Component({
   selector: 'app-pending-pbas',
@@ -145,7 +144,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.organisationSearchSubscription) {
       this.organisationSearchSubscription.unsubscribe();
-    };
+    }
 
     if (this.resetPaginationSubscription) {
       this.resetPaginationSubscription.unsubscribe();

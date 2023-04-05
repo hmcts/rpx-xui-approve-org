@@ -1,6 +1,6 @@
+import { AppConstants } from 'src/app/app.constants';
 import * as fromActions from '../actions/users.actions';
 import { initialState, reducer } from './users.reducer';
-import { AppConstants } from 'src/app/app.constants';
 
 describe('Users Reducer', () => {
   describe('Reinvite User ', () => {
@@ -70,6 +70,5 @@ describe('Users Reducer', () => {
         expect(state.errorHeader).toEqual('Sorry, there is a problem with the service.');
       });
     });
-
   });
 });

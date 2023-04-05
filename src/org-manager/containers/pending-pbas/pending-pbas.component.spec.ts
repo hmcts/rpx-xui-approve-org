@@ -5,10 +5,8 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-
 import { OrganisationService, PbaService } from '../../services';
 import { PendingPBAsComponent } from './pending-pbas.component';
-
 
 describe('PendingPBAsComponent', () => {
   let component: PendingPBAsComponent;
@@ -36,7 +34,7 @@ describe('PendingPBAsComponent', () => {
 
     fixture = TestBed.createComponent(PendingPBAsComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
   });
 
   describe('getReceivedDate', () => {
@@ -58,15 +56,13 @@ describe('PendingPBAsComponent', () => {
         name: 'test',
         pbaNumbers: [{pbaNumber}],
         receivedDate: dateEarliest
-      }]
+      }];
       expect(receivedDate).toEqual(dateEarliest);
     });
 
     it('should return pagenumber', () => {
       component.onPaginationHandler(3);
       expect(component.pagination.page_number).toEqual(3);
-    })
-
+    });
   });
-
 });
