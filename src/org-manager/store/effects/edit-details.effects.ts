@@ -10,13 +10,13 @@ import * as fromActions from '../actions';
 @Injectable()
 export class EditDetailsEffects {
   constructor(
-    private actions$: Actions,
-    private updatePbaServices: UpdatePbaServices,
-    private loggerService: LoggerService
+    private readonly actions$: Actions,
+    private readonly updatePbaServices: UpdatePbaServices,
+    private readonly loggerService: LoggerService
   ) { }
 
   @Effect()
-  submitPBA$ = this.actions$.pipe(
+  public submitPBA$ = this.actions$.pipe(
     ofType(fromActions.SUBMIT_PBA),
     map((action: fromActions.SubmitPba) => action.payload),
     switchMap((body) => {
@@ -31,10 +31,10 @@ export class EditDetailsEffects {
   );
 
   @Effect()
-  submitPbaSuccess$ = this.actions$.pipe(
-      ofType(fromActions.SUBMIT_PBA_SUCCESS),
-      map(() => {
-        return new fromRood.Back();
-      }),
+  public submitPbaSuccess$ = this.actions$.pipe(
+    ofType(fromActions.SUBMIT_PBA_SUCCESS),
+    map(() => {
+      return new fromRood.Back();
+    }),
   );
 }
