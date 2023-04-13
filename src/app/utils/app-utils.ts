@@ -42,6 +42,9 @@ export class AppUtils {
     if (apiOrg.dateReceived){
       organisationVm.dateReceived = apiOrg.dateReceived;
     }
+    if (apiOrg.dateApproved){
+      organisationVm.dateApproved = apiOrg.dateApproved;
+    }
     return organisationVm;
   }
 
