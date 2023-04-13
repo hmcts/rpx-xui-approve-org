@@ -1,4 +1,4 @@
-const FooterData =  {
+const footerData =  {
   heading: 'Help',
   email: {
     address: 'service-desk@hmcts.gov.uk',
@@ -12,7 +12,7 @@ const FooterData =  {
   }
 };
 
-const FooterDataNavigation = {
+const footerDataNavigation = {
   items: [
     { text: 'Accessibility', href: 'accessibility', target: '_blank'},
     { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
@@ -33,9 +33,7 @@ const environmentNames = {
 
 const xuiApprovalRole = 'xui-approver-userdata';
 
-
 const userRoles = [
-
   { role: 'pui-organisation-manager', roleType: 'manageOrganisations'},
   { role: 'pui-user-manager', roleType: 'manageUsers' },
   { role: 'pui-case-manager', roleType: 'manageCases'}
@@ -99,26 +97,27 @@ const featureNames = {
   caseworkerDetails: 'ao-case-worker-details'
 };
 
-export const navItemsArray = [{
-  text: 'Organisations',
-  href: '/pending-organisations',
-  active: true,
-  feature: {
-    isfeatureToggleable: false,
-    featureName: null
+export const navItemsArray = [
+  {
+    text: 'Organisations',
+    href: '/pending-organisations',
+    active: true,
+    feature: {
+      isfeatureToggleable: false,
+      featureName: null
+    },
+    orderId: 0
   },
-  orderId: 0
-},
-{
-  text: 'Staff details',
-  href: '/caseworker-details',
-  active: false,
-  feature: {
-    isfeatureToggleable: false,
-    featureName: featureNames.caseworkerDetails
-  },
-  orderId: 1
-}
+  {
+    text: 'Staff details',
+    href: '/caseworker-details',
+    active: false,
+    feature: {
+      isfeatureToggleable: false,
+      featureName: featureNames.caseworkerDetails
+    },
+    orderId: 1
+  }
 ];
 
 const roleBasedNav = {
@@ -127,8 +126,8 @@ const roleBasedNav = {
 };
 
 export class AppConstants {
-  public static FOOTER_DATA = FooterData;
-  public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
+  public static FOOTER_DATA = footerData;
+  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
   public static ENVIRONMENT_NAMES = environmentNames;
   public static USER_ROLES = userRoles;
   public static XUI_APPROVAL_ROLE = xuiApprovalRole;

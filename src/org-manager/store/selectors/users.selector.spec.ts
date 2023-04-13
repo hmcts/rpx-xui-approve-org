@@ -6,6 +6,7 @@ import * as fromSelectors from './users.selectors';
 
 describe('Edit Details selectors', () => {
   let store: Store<UsersState>;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -13,7 +14,7 @@ describe('Edit Details selectors', () => {
         StoreModule.forFeature('orgState', reducers),
       ],
     });
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   });
 

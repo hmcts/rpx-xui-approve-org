@@ -1,9 +1,8 @@
-import {AppUtils} from './app-utils';
-import { Organisation, OrganisationVM, OrganisationAddress, OrganisationUser } from 'src/org-manager/models/organisation';
 import { User } from '@hmcts/rpx-xui-common-lib';
+import { Organisation, OrganisationAddress, OrganisationUser, OrganisationVM } from 'src/org-manager/models/organisation';
+import { AppUtils } from './app-utils';
 
 describe('AppUtils', () => {
-
   it('should map organisation', () => {
     const orgAddress: [OrganisationAddress] = [{
       addressLine1: 'Line1',
@@ -38,6 +37,7 @@ describe('AppUtils', () => {
     expect(organisationVM[0].organisationId).toEqual(organisations[0].organisationIdentifier);
     expect(organisationVM[0].name).toEqual(organisations[0].name);
   });
+
   it('should map organisation VM', () => {
     const organisationVM: [OrganisationVM] = [{
       organisationId: 'Id',
@@ -103,7 +103,7 @@ describe('AppUtils', () => {
   it('should return 404 error org url', () => {
     expect(AppUtils.get404Error('dummy').errors[1].url).toEqual('/organisation-details/dummy');
   });
- });
+});
 
 describe('getNavItemsBasedOnRole', () => {
   it('user with role1', () => {
@@ -123,62 +123,62 @@ describe('getNavItemsBasedOnRole', () => {
     const userRoles = ['role1', 'role2', 'role3'];
     const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
     expect(navItems).toEqual([navItem]);
-   });
+  });
 
   it('user with roles in order', () => {
     const navItem1 = {
-        text: 'text1',
-        href: 'href1',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature1'
-        },
-        orderId: 1
+      text: 'text1',
+      href: 'href1',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature1'
+      },
+      orderId: 1
     };
     const navItem2 = {
-        text: 'text2',
-        href: 'href2',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature2'
-        },
-        orderId: 2
+      text: 'text2',
+      href: 'href2',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature2'
+      },
+      orderId: 2
     };
     const navItem3 = {
-        text: 'text3',
-        href: 'href3',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature3'
-        },
-        orderId: 3
+      text: 'text3',
+      href: 'href3',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature3'
+      },
+      orderId: 3
     };
     const roleBasedNav = {
-          role1: navItem1,
-          role2: navItem2,
-          role3: navItem3
+      role1: navItem1,
+      role2: navItem2,
+      role3: navItem3
     };
     const userRoles = ['role1', 'role2', 'role3'];
     const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
     expect(navItems).toEqual([navItem1, navItem2, navItem3]);
-   });
+  });
 
   it('user with no roles', () => {
     const navItem = {
-        text: 'text1',
-        href: 'href1',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature1'
-        },
-        orderId: 0
+      text: 'text1',
+      href: 'href1',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature1'
+      },
+      orderId: 0
     };
     const roleBasedNav = {
-        role4: navItem
+      role4: navItem
     };
     const userRoles = ['role1', 'role2', 'role3'];
     const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
@@ -188,23 +188,27 @@ describe('getNavItemsBasedOnRole', () => {
 
 describe('getRoles', () => {
   it('user with roles', () => {
-      const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
-      expect(roles).toEqual(['prd-admin', 'prd-aac-system', 'xui-approver-userdata', 'cwd-admin']);
-    });
+    const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%2C%22prd-aac-system%22%2C%22xui-approver-userdata%22%2C%22cwd-admin%22%5D');
+    expect(roles).toEqual(['prd-admin', 'prd-aac-system', 'xui-approver-userdata', 'cwd-admin']);
+  });
+
   it('user with no roles', () => {
     const roles = AppUtils.getRoles('j%3A%5B%5D');
     expect(roles).toEqual([]);
   });
+
   it('user with just one role', () => {
     const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%5D');
     expect(roles).toEqual(['prd-admin']);
   });
+
   it('user with no roles', () => {
     const roles = AppUtils.getRoles('');
     expect(roles).toEqual([]);
-  })
+  });
+
   it('incorrect format roles', () => {
     const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%5D%3A%5B%22test%22%5D');
     expect(roles).toEqual([]);
-  })
+  });
 });

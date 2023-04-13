@@ -1,23 +1,22 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { hot, cold } from 'jasmine-marbles';
 import { provideMockActions } from '@ngrx/effects/testing';
-import * as fromEffects from './edit-details.effects';
-import * as fromActions from '../actions/edit-details.actions';
-import { UpdatePbaServices} from 'src/org-manager/services';
+import { cold, hot } from 'jasmine-marbles';
+import { of, throwError } from 'rxjs';
 import { LoggerService } from 'src/app/services/logger.service';
-import {EditDetailsEffects} from './edit-details.effects';
-import {of, throwError} from 'rxjs';
+import { UpdatePbaServices} from 'src/org-manager/services';
+import * as fromActions from '../actions/edit-details.actions';
+import * as fromEffects from './edit-details.effects';
 
 export class LoggerServiceMock {
-  error(err) {
+  public error(err) {
     return err;
   }
 }
 
 describe('Organisation Effects', () => {
   let actions$;
-  let effects: EditDetailsEffects;
+  let effects: fromEffects.EditDetailsEffects;
   const updatePbaServicesMock = jasmine.createSpyObj('UpdatePbaServices', [
     'updatePba',
   ]);
@@ -45,8 +44,7 @@ describe('Organisation Effects', () => {
       ]
     });
 
-    effects = TestBed.get(EditDetailsEffects);
-
+    effects = TestBed.inject(fromEffects.EditDetailsEffects);
   });
 
   describe('Edit Details Effects ', () => {
@@ -59,7 +57,6 @@ describe('Organisation Effects', () => {
       const expected = cold('-b', {b: completion});
       expect(effects.submitPBA$).toBeObservable(expected);
     });
-
 
     it('should submit PBA Fail', () => {
       updatePbaServicesMock.updatePba.and.returnValue(throwError(''));

@@ -212,5 +212,5 @@
   "resolutions": {
     "lodash": "^4.17.19"
   },
-  "packageManager": "yarn@3.4.1"
+  "packageManager": "yarn@3.5.0"
 }
