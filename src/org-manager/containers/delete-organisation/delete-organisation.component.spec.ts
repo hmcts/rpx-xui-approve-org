@@ -2,15 +2,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import * as fromRoot from '../../../app/store/reducers';
-import { BackLinkComponent } from '../../../org-manager/components';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import { OrganisationAddressComponent } from '../../components/organisation-address';
+import { BackLinkComponent, OrganisationAddressComponent } from '../../components';
 import {
   pendingOrganisationsMockCollection2,
   pendingOrganisationsMockCollectionObj,
   reviewOrganisationsMockCollection,
 } from '../../mock/pending-organisation.mock';
-import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation } from '../../store/actions';
+import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation } from '../../store';
 import { DeleteOrganisationComponent } from './delete-organisation.component';
 
 describe('DeleteOrganisationComponent', () => {
