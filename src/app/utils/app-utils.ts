@@ -39,6 +39,12 @@ export class AppUtils {
       organisationVm.county = apiOrg.contactInformation[0].county;
     }
     organisationVm.sraId = apiOrg.sraId;
+    if (apiOrg.dateReceived){
+      organisationVm.dateReceived = apiOrg.dateReceived;
+    }
+    if (apiOrg.dateApproved){
+      organisationVm.dateApproved = apiOrg.dateApproved;
+    }
     return organisationVm;
   }
 
