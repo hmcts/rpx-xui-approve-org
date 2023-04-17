@@ -31,9 +31,16 @@ describe('AppUtils', () => {
       },
       paymentAccount: [{}],
       pendingPaymentAccount: [{}],
-      contactInformation: orgAddress
+      contactInformation: orgAddress,
+      dateReceived: '01/01/2023',
+      dateApproved: '12/01/2023'
   }];
     const organisationVM = AppUtils.mapOrganisations(organisations);
+    expect(organisationVM[0].adminEmail).toEqual(organisations[0].superUser.email);
+    expect(organisationVM[0].admin).toEqual(`${organisations[0].superUser.firstName} ${organisations[0].superUser.lastName}`);
+    expect(organisationVM[0].dxNumber[0].dxNumber).toEqual(organisations[0].contactInformation[0].dxAddress[0].dxNumber);
+    expect(organisationVM[0].dateReceived).toEqual(organisations[0].dateReceived);
+    expect(organisationVM[0].dateApproved).toEqual(organisations[0].dateApproved);
     expect(organisationVM[0].organisationId).toEqual(organisations[0].organisationIdentifier);
     expect(organisationVM[0].name).toEqual(organisations[0].name);
   });
@@ -89,7 +96,9 @@ describe('AppUtils', () => {
       ['manageOrganisations']: 'No'
 
     }];
+    const userDetails = AppUtils.mapUsers(mockUser);
     expect(AppUtils.mapUsers(mockUser)).toEqual(mockUserResult);
+    expect(userDetails[0].email).toEqual(mockUser[0].email);
   });
 
   it('should return 500 error org url', () => {
@@ -164,6 +173,7 @@ describe('getNavItemsBasedOnRole', () => {
     const userRoles = ['role1', 'role2', 'role3'];
     const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);
     expect(navItems).toEqual([navItem1, navItem2, navItem3]);
+    expect(navItems[0].orderId).toEqual(1);
   });
 
   it('user with no roles', () => {
