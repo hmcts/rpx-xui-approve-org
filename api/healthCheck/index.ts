@@ -1,11 +1,11 @@
-import * as express from 'express'
-import { healthEndpoints } from '../configuration/health'
-import * as log4jui from '../lib/log4jui'
+import * as express from 'express';
+import { healthEndpoints } from '../configuration/health';
+import * as log4jui from '../lib/log4jui';
 
-export const router = express.Router({ mergeParams: true })
-const logger = log4jui.getLogger('outgoing')
+export const router = express.Router({ mergeParams: true });
+const logger = log4jui.getLogger('outgoing');
 
-router.get('/', healthCheckRoute)
+router.get('/', healthCheckRoute);
 
 /*
     Any feature that requires a health check
@@ -17,11 +17,11 @@ router.get('/', healthCheckRoute)
 
 // TODO: set actual check values and set healthcheckguard on front end
 const healthCheckEndpointDictionary = {
-    '/organisation': ['rdProfessionalApi'],
-    '/register-org/register/check': ['rdProfessionalApi'],
-    '/users': ['rdProfessionalApi'],
-    '/users/invite-user': ['rdProfessionalApi'],
-}
+  '/organisation': ['rdProfessionalApi'],
+  '/register-org/register/check': ['rdProfessionalApi'],
+  '/users': ['rdProfessionalApi'],
+  '/users/invite-user': ['rdProfessionalApi']
+};
 
 /*
     Health check endpoints are retrieved from
@@ -35,40 +35,39 @@ const healthCheckEndpointDictionary = {
 */
 
 function getPromises(path, req): any[] {
-    const Promises = []
-    if (healthCheckEndpointDictionary[path]) {
-        healthCheckEndpointDictionary[path].forEach(endpoint => {
-            // TODO: Have health config for this.
-            console.log('healthEndpoints')
-            console.log(healthEndpoints()[endpoint])
-            Promises.push(req.get(healthEndpoints()[endpoint]))
-        })
-    }
-    return Promises
+  const Promises = [];
+  if (healthCheckEndpointDictionary[path]) {
+    healthCheckEndpointDictionary[path].forEach((endpoint) => {
+      // TODO: Have health config for this.
+      console.log('healthEndpoints');
+      console.log(healthEndpoints()[endpoint]);
+      Promises.push(req.get(healthEndpoints()[endpoint]));
+    });
+  }
+  return Promises;
 }
 
 async function healthCheckRoute(req, res) {
+  try {
+    const path = req.query.path;
+    let PromiseArr = [];
+    let response = { healthState: true };
 
-    try {
-        const path = req.query.path
-        let PromiseArr = []
-        let response = { healthState: true }
-
-        if (path !== '') {
-            PromiseArr = getPromises(path, req)
-        }
-
-        // comment out following block to bypass actual check
-        await Promise.all(PromiseArr).then().catch(() => {
-            response = { healthState: false }
-        })
-
-        logger.info('response::', response)
-        res.send(response)
-    } catch (error) {
-        console.log(error)
-        logger.info('error', { healthState: false })
-        res.status(error.status).send({ healthState: false })
+    if (path !== '') {
+      PromiseArr = getPromises(path, req);
     }
+
+    // comment out following block to bypass actual check
+    await Promise.all(PromiseArr).then().catch(() => {
+      response = { healthState: false };
+    });
+
+    logger.info('response::', response);
+    res.send(response);
+  } catch (error) {
+    console.log(error);
+    logger.info('error', { healthState: false });
+    res.status(error.status).send({ healthState: false });
+  }
 }
-export default router
+export default router;

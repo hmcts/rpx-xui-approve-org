@@ -123,13 +123,17 @@ export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Res
 
 function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?: DrillDownSearch[]): any[] {
   const TEXT_FIELDS_TO_CHECK = ['organisationName', 'superUser.email'];
-  if (!orgs) { return []; }
-  if ((!searchFilter || searchFilter === '') && (!drilldownFilters || !drilldownFilters.length)) { return orgs; }
+  if (!orgs) {
+    return [];
+  }
+  if ((!searchFilter || searchFilter === '') && (!drilldownFilters || !drilldownFilters.length)) {
+    return orgs;
+  }
   searchFilter = searchFilter.toLowerCase();
 
   let drilldownFilterRelevent: string[];
   if (drilldownFilters && drilldownFilters.length) {
-    drilldownFilterRelevent = drilldownFilters.filter(x => x.field_name === 'pbaPendings').map(y => y.search_filter);
+    drilldownFilterRelevent = drilldownFilters.filter((x) => x.field_name === 'pbaPendings').map((y) => y.search_filter);
   }
 
   return orgs.filter((org: any) => {
@@ -141,9 +145,8 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
       }
       if (org.pbaNumbers) {
         for (const pba of org.pbaNumbers) {
-
           if (pba.pbaNumber.toLowerCase().includes(searchFilter) || (drilldownFilterRelevent &&
-            drilldownFilterRelevent.filter(pnumber => pba.pbaNumber.toLowerCase().includes(pnumber.toLowerCase())).length)) {
+            drilldownFilterRelevent.filter((pnumber) => pba.pbaNumber.toLowerCase().includes(pnumber.toLowerCase())).length)) {
             return true;
           } else if (drilldownFilterRelevent && drilldownFilterRelevent.length) {
             return multipleFilter(org, drilldownFilterRelevent, TEXT_FIELDS_TO_CHECK);
@@ -175,7 +178,7 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
 
 function multipleFilter(org, drilldownFilterRelevent: string[], TEXT_FIELDS_TO_CHECK: string[]): boolean {
   let returnValue: boolean = false;
-  drilldownFilterRelevent.forEach(searchItem => {
+  drilldownFilterRelevent.forEach((searchItem) => {
     for (const field of TEXT_FIELDS_TO_CHECK) {
       if (textFieldMatches(org, field, searchItem.toLowerCase())) {
         returnValue = true;

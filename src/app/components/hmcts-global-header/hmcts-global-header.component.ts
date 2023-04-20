@@ -16,7 +16,7 @@ export class HmctsGlobalHeaderComponent {
   @Output() public navigate = new EventEmitter<string>();
 
   public userValue: any;
-  constructor(public store: Store<fromRoot.State>) { }
+  constructor(public store: Store<fromRoot.State>) {}
 
   public onEmitEvent(index) {
     this.navigate.emit(this.navigation.items[index].emit);

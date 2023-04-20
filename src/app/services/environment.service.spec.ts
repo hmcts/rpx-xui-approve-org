@@ -27,10 +27,11 @@ const environmentConfig: EnvironmentConfig = {
 };
 
 describe('EnvironmentService', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockedHttpClient;
 
   beforeEach(() => {
-    mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', {get: of(environmentConfig)});
+    mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', { get: of(environmentConfig) });
 
     TestBed.configureTestingModule({
       providers: [EnvironmentService],

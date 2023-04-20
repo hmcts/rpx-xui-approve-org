@@ -1,5 +1,5 @@
 
-export function getErrorResponse(req, res) {
+export function getErrorResponse(req) {
   const fileName = req.files[0].originalname;
   switch (fileName) {
     //this is for 400 error
@@ -69,30 +69,29 @@ export function getErrorResponse(req, res) {
   }
 }
 
-export function getPartialSuccess(req, res) {
+export function getPartialSuccess(req) {
   if (req.files[0].originalname === 'fileName-200-partial.xlsx') {
     const errorDetails = [];
-    for (let i = 0; i < 5 ; i ++) {
+    for (let i = 0; i < 5; i ++) {
       errorDetails.push({
-        "row_id": i + 1,
-        "field_in_error": "primary location " + i + 1,
-        "error_description": "Primary base location must not be empty " + i + 1
+        'row_id': i + 1,
+        'field_in_error': 'primary location ' + i + 1,
+        'error_description': 'Primary base location must not be empty ' + i + 1
       });
     }
 
-    const partialResponse = {
-      message: "Request completed with partial success. Some records failed during validation and were ignored.",
-      message_details: "3 record(s) failed validation, 1 record(s) uploaded, and 0 record(s) suspended",
+    return {
+      message: 'Request completed with partial success. Some records failed during validation and were ignored.',
+      message_details: '3 record(s) failed validation, 1 record(s) uploaded, and 0 record(s) suspended',
       error_details: errorDetails
     };
-    return partialResponse;
   }
   return null;
 }
 
 export function getSuccess() {
   return {
-    message: "Request Completed Successfully",
-    message_details: "2 record(s) uploaded and 0 record(s) marked as suspended"
+    message: 'Request Completed Successfully',
+    message_details: '2 record(s) uploaded and 0 record(s) marked as suspended'
   };
 }

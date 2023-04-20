@@ -3,7 +3,6 @@
 
 const { SpecReporter } = require('jasmine-spec-reporter');
 
-
 exports.config = {
   allScriptsTimeout: 11000,
   specs: [
@@ -19,13 +18,10 @@ exports.config = {
   framework: 'mocha',
   mochaOpts: {
     reporter: 'test/accessibility/reporter/customReporter.js',
-        // reporter: 'spec',
+    // reporter: 'spec',
 
     timeout: 240000
   },
-  onPrepare() {
-
-  },
-  onComplete(){
-  }
+  onPrepare() {},
+  onComplete(){}
 };

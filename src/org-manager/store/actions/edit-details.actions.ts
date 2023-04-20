@@ -8,22 +8,22 @@ export const CLEAR_PBA_ERRORS = '[Edit Details] Clear PBA Errors';
 
 export class DispatchSaveValidation implements Action {
   public readonly type = DISPATCH_SAVE_PBA_VALIDATION;
-  constructor(public payload: {isInvalid: object, errorMsg: any[]}) { }
+  constructor(public payload: {isInvalid: object, errorMsg: any[]}) {}
 }
 
 export class SubmitPba implements Action {
   public readonly type = SUBMIT_PBA;
-  constructor(public payload: {paymentAccounts: string[]; orgId: string}) { }
+  constructor(public payload: {paymentAccounts: string[]; orgId: string}) {}
 }
 
 export class SubmitPbaSuccess implements Action {
   public readonly type = SUBMIT_PBA_SUCCESS;
-  constructor(public payload: {paymentAccounts: string[], orgId: string}) { }
+  constructor(public payload: {paymentAccounts: string[], orgId: string}) {}
 }
 
 export class SubmitPbaFailure implements Action {
   public readonly type = SUBMIT_PBA_FAILURE;
-  constructor(public payload: Error) { }
+  constructor(public payload: Error) {}
 }
 
 export class ClearPbaErrors implements Action {

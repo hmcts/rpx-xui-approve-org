@@ -1,6 +1,5 @@
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
 import 'zone.js/dist/zone-testing';
-// tslint:disable-next-line: ordered-imports
 import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
@@ -22,12 +21,12 @@ jasmine.getEnv().beforeAll(() => {
 });
 
 jasmine.getEnv().beforeEach(() => {
- initTestScheduler();
+  initTestScheduler();
 });
 
 jasmine.getEnv().afterEach(() => {
- getTestScheduler().flush();
- resetTestScheduler();
+  getTestScheduler().flush();
+  resetTestScheduler();
 });
 
 // Then we find all the tests.

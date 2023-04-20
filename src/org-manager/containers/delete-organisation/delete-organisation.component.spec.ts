@@ -7,7 +7,7 @@ import { BackLinkComponent, OrganisationAddressComponent } from '../../component
 import {
   pendingOrganisationsMockCollection2,
   pendingOrganisationsMockCollectionObj,
-  reviewOrganisationsMockCollection,
+  reviewOrganisationsMockCollection
 } from '../../mock/pending-organisation.mock';
 import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation } from '../../store';
 import { DeleteOrganisationComponent } from './delete-organisation.component';
@@ -16,6 +16,7 @@ describe('DeleteOrganisationComponent', () => {
   let component: DeleteOrganisationComponent;
   let fixture: ComponentFixture<DeleteOrganisationComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storePipeMock: any;
   let storeDispatchMock: any;
 
@@ -25,8 +26,8 @@ describe('DeleteOrganisationComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers),
-        }),
+          feature: combineReducers(fromOrganisationPendingStore.reducers)
+        })
       ],
       declarations: [
         BackLinkComponent,

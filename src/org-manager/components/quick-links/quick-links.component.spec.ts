@@ -9,10 +9,10 @@ describe('BackLinkComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterModule, RouterTestingModule.withRoutes([]) ],
-      declarations: [ BackLinkComponent ]
+      imports: [RouterModule, RouterTestingModule.withRoutes([])],
+      declarations: [BackLinkComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

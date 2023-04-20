@@ -11,8 +11,8 @@ describe('Edit Details selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('orgState', reducers),
-      ],
+        StoreModule.forFeature('orgState', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -21,9 +21,8 @@ describe('Edit Details selectors', () => {
   describe('getEditDetailsState', () => {
     it('should return initial state', () => {
       let result;
-      store.pipe(select(fromSelectors.getEditDetailsState)).subscribe(value => {
+      store.pipe(select(fromSelectors.getEditDetailsState)).subscribe((value) => {
         result = value;
-
       });
       expect(result).toEqual(initialState);
     });
@@ -32,9 +31,8 @@ describe('Edit Details selectors', () => {
   describe('getPbaFromErrors', () => {
     it('should return error messages', () => {
       let result;
-      store.pipe(select(fromSelectors.getPbaFromErrors)).subscribe(value => {
+      store.pipe(select(fromSelectors.getPbaFromErrors)).subscribe((value) => {
         result = value;
-
       });
       expect(result).toEqual(initialState.pba.errorMessages);
     });
@@ -43,9 +41,8 @@ describe('Edit Details selectors', () => {
   describe('getServerErrors', () => {
     it('should return server error messages', () => {
       let result;
-      store.pipe(select(fromSelectors.getServerErrors)).subscribe(value => {
+      store.pipe(select(fromSelectors.getServerErrors)).subscribe((value) => {
         result = value;
-
       });
       expect(result).toEqual(initialState.pba.serverError);
     });
@@ -54,9 +51,8 @@ describe('Edit Details selectors', () => {
   describe('getIsFormValid', () => {
     it('should return is form valid boolen', () => {
       let result;
-      store.pipe(select(fromSelectors.getIsFormValid)).subscribe(value => {
+      store.pipe(select(fromSelectors.getIsFormValid)).subscribe((value) => {
         result = value;
-
       });
       expect(result).toEqual(initialState.pba.isFormValid);
     });
@@ -65,11 +61,10 @@ describe('Edit Details selectors', () => {
   describe('getPbaHeaderErrors', () => {
     it('should return errors headers', () => {
       let result;
-      store.pipe(select(fromSelectors.getPbaHeaderErrors)).subscribe(value => {
+      store.pipe(select(fromSelectors.getPbaHeaderErrors)).subscribe((value) => {
         result = value;
-
       });
-      expect(result).toEqual({items: [], isFormValid: true});
+      expect(result).toEqual({ items: [], isFormValid: true });
     });
   });
 });
