@@ -25,8 +25,8 @@ describe('App Effects', () => {
       providers: [
         fromAppEffects.AppEffects,
         provideMockActions(() => actions$),
-        {provide: LogOutKeepAliveService, useValue: mockKeepAliveService},
-        {provide: UserService, useValue: mockUserService}
+        { provide: LogOutKeepAliveService, useValue: mockKeepAliveService },
+        { provide: UserService, useValue: mockUserService }
       ]
     });
     effects = TestBed.inject(fromAppEffects.AppEffects);
@@ -52,7 +52,7 @@ describe('App Effects', () => {
       const action = new Logout();
       const completion = '/api/logout';
       actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
+      cold('-b', { b: completion });
       expect(effects.logout$).toBeTruthy();
     });
   });
@@ -69,7 +69,7 @@ describe('App Effects', () => {
     it('should sign out successfully', () => {
       const action = new SignedOutSuccess();
       const completion = new Go({
-          path: ['/signed-out']
+        path: ['/signed-out']
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -84,7 +84,7 @@ describe('App Effects', () => {
         path: ['auth/keepalive']
       });
       actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
+      cold('-b', { b: completion });
       expect(effects.keepAlive$).toBeTruthy();
     });
   });
@@ -92,8 +92,8 @@ describe('App Effects', () => {
   describe('get users$', () => {
     const payload = {
       email: 'puisuperuser@mailnesia.com',
-        orgId: '1',
-        roles: [
+      orgId: '1',
+      roles: [
         'pui-case-manager',
         'pui-user-manager',
         'pui-finance-manager',

@@ -12,7 +12,6 @@ import { PbaService } from '../../services';
   templateUrl: './new-pbas-confirm.component.html'
 })
 export class NewPBAsConfirmComponent implements OnInit, OnDestroy {
-
   @Input() public org: OrganisationVM;
   @Input() public formControls: FormControl[];
   @Input() public newPBAs: Map<string, string>;
@@ -22,8 +21,7 @@ export class NewPBAsConfirmComponent implements OnInit, OnDestroy {
   constructor(
     private readonly router: Router,
     private readonly pbaService: PbaService
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     window.scrollTo(0, 0);
@@ -53,7 +51,7 @@ export class NewPBAsConfirmComponent implements OnInit, OnDestroy {
               notificationBanners: [{
                 bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'PBA numbers updated'
               }
-              ],
+              ]
             }
           });
         },
@@ -64,7 +62,7 @@ export class NewPBAsConfirmComponent implements OnInit, OnDestroy {
             handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
           }
           window.scrollTo(0, 0);
-        }});
+        } });
   }
 
   public ngOnDestroy(): void {

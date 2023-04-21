@@ -1,9 +1,9 @@
 export default [{
-    event: 'continue',
-    states: [
-        {
-            result: '.',
-            state: 'check',
-        },
-    ],
-}]
+  event: 'continue',
+  states: [
+    {
+      result: '.',
+      state: 'check'
+    }
+  ]
+}];

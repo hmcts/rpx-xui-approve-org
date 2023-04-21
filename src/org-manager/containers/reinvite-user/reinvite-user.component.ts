@@ -1,13 +1,12 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
 import { Actions, ofType } from '@ngrx/effects';
-import {select, Store} from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
-import {AppConstants} from '../../../app/app.constants';
+import { AppConstants } from '../../../app/app.constants';
 import * as fromRoot from '../../../app/store';
 import * as fromStore from '../../store';
-
 
 /*
 * User Form entry mediator component
@@ -16,12 +15,12 @@ import * as fromStore from '../../store';
 
 @Component({
   selector: 'app-prd-reinvite-user-component',
-  templateUrl: './reinvite-user.component.html',
+  templateUrl: './reinvite-user.component.html'
 })
 export class ReinviteUserComponent implements OnInit, OnDestroy {
-
   constructor(private readonly store: Store<fromStore.OrganisationRootState>,
-              private readonly actions$: Actions) { }
+              private readonly actions$: Actions) {}
+
   public inviteUserForm: FormGroup;
   public organisationId$: Observable<string>;
 
@@ -34,7 +33,7 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
     firstName: ['Enter first name'],
     lastName: ['Enter last name'],
     email: ['Enter email address', 'Email must contain at least the @ character'],
-    roles: ['You must select at least one action'],
+    roles: ['You must select at least one action']
   };
 
   public ngOnInit(): void {
@@ -53,7 +52,7 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
       }, checkboxesBeCheckedValidator())
     });
 
-    this.getSelectedUserSub = this.store.pipe(select(fromStore.getSelectedUserSelector)).subscribe(pendingUser => {
+    this.getSelectedUserSub = this.store.pipe(select(fromStore.getSelectedUserSelector)).subscribe((pendingUser) => {
       if (pendingUser) {
         this.inviteUserForm.controls.firstName.setValue(pendingUser.firstName);
         this.inviteUserForm.controls.lastName.setValue(pendingUser.lastName);
@@ -73,14 +72,16 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
   }
 
   // convenience getter for easy access to form fields
-  public get f() { return this.inviteUserForm.controls; }
+  public get f() {
+    return this.inviteUserForm.controls;
+  }
 
   public onSubmit(orgId: string) {
     this.showWarningMessage = false;
     this.dispatchValidationAction();
     if (this.inviteUserForm.valid) {
       let value = this.inviteUserForm.getRawValue();
-      const permissions = Object.keys(value.roles).filter(key => {
+      const permissions = Object.keys(value.roles).filter((key) => {
         if (value.roles[key]) {
           return key;
         }
@@ -97,7 +98,7 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
         resendInvite: true,
         roles
       };
-      this.store.dispatch(new fromStore.SubmitReinviteUser({organisationId: orgId, form: value}));
+      this.store.dispatch(new fromStore.SubmitReinviteUser({ organisationId: orgId, form: value }));
     }
   }
 
@@ -109,9 +110,9 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
         lastName: [(this.f.lastName.errors && this.f.lastName.errors.required)],
         email: [
           (this.f.email.errors && this.f.email.errors.required),
-          (this.f.email.errors && this.f.email.errors.email),
+          (this.f.email.errors && this.f.email.errors.email)
         ],
-        roles: [(this.f.roles.errors && this.f.roles.errors.requireOneCheckboxToBeChecked)],
+        roles: [(this.f.roles.errors && this.f.roles.errors.requireOneCheckboxToBeChecked)]
       },
       errorMessages: this.errorMessages,
       isSubmitted: true

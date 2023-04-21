@@ -27,7 +27,7 @@ export const getActiveOrganisation = createSelector(
 
 export const getActiveOrganisationArray = createSelector(
   getActiveOrganisation,
-  (orgState) => Object.keys(orgState).map(id => orgState[id])
+  (orgState) => Object.keys(orgState).map((id) => orgState[id])
 );
 
 export const getActiveLoaded = createSelector(
@@ -58,14 +58,13 @@ export const getPendingOrganisations = createSelector(
 
 export const getPendingOrganisationsArray = createSelector(
   getPendingOrganisations,
-  (orgEntities) => Object.keys(orgEntities).map(orgId => orgEntities[orgId])
+  (orgEntities) => Object.keys(orgEntities).map((orgId) => orgEntities[orgId])
 );
 
 export const getPendingLoaded = createSelector(
   getPendingOrganisationsState,
   (orgState) => orgState.loaded
 );
-
 
 export const getPendingSearchString = createSelector(
   getPendingOrganisationsState,
@@ -81,7 +80,7 @@ export const getErrorMessage = createSelector(
 export const getActiveByOrgIds = createSelector(
   getActiveOrganisationState,
   (active: { orgEntities: { [id: string]: OrganisationVM } }, props: { orgIds: string[] }) => {
-    return props.orgIds.map(orgId => active.orgEntities[orgId]).filter(val => val !== undefined);
+    return props.orgIds.map((orgId) => active.orgEntities[orgId]).filter((val) => val !== undefined);
   }
 );
 
@@ -90,10 +89,9 @@ export const getActiveAndPending = createSelector(
   getPendingOrganisationsState,
   fromRoot.getRouterState,
   (active, pending, router) =>
-      (active.orgEntities[router.state.params.orgId]) ||
+    (active.orgEntities[router.state.params.orgId]) ||
       (pending.orgEntities[router.state.params.orgId]
-    ));
-
+      ));
 
 export const getPbaNumber = createSelector(
   fromRoot.getRouterState,
@@ -103,7 +101,7 @@ export const getPbaNumber = createSelector(
 export const getAllLoaded = createSelector(
   getActiveLoaded,
   getPendingLoaded,
-  (activeLoaded, pendingLoaded) =>  activeLoaded && pendingLoaded
+  (activeLoaded, pendingLoaded) => activeLoaded && pendingLoaded
 );
 
 export const getOrganisationForReview = createSelector(
@@ -113,12 +111,12 @@ export const getOrganisationForReview = createSelector(
 
 export const pendingOrganisationsCount = createSelector(
   getPendingOrganisationsArray,
-  (orgArr) =>  orgArr ? orgArr.length : 0
+  (orgArr) => orgArr ? orgArr.length : 0
 );
 
 export const activeOrganisationsCount = createSelector(
   getActiveOrganisationArray,
-  (orgArr) =>  orgArr ? orgArr.length : 0
+  (orgArr) => orgArr ? orgArr.length : 0
 );
 
 export const getOrganisationUsersList = createSelector(

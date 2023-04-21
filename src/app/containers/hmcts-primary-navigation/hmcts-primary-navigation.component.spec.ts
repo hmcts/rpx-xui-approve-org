@@ -13,16 +13,16 @@ describe('HmctsPrimaryNavigationComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ HmctsPrimaryNavigationComponent ],
+      declarations: [HmctsPrimaryNavigationComponent],
       imports: [
         RouterTestingModule
       ],
       providers: [
         { provide: CookieService, useValue: cookieService },
-        { provide: FeatureToggleService, useValue: featureToggleService}
+        { provide: FeatureToggleService, useValue: featureToggleService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -53,7 +53,7 @@ describe('HmctsPrimaryNavigationComponent', () => {
     };
     navItem.feature.isfeatureToggleable = false;
     const result$ = component.isFeatureNavEnabled$(navItem);
-    result$.subscribe(result => expect(result).toBeTruthy());
+    result$.subscribe((result) => expect(result).toBeTruthy());
   });
 
   it('isFeatureNavEnabled$ isfeatureToggleable true but feature is not enabled', () => {
@@ -69,6 +69,6 @@ describe('HmctsPrimaryNavigationComponent', () => {
     };
     featureToggleService.isEnabled.and.returnValue(of(false));
     const result$ = component.isFeatureNavEnabled$(navItem);
-    result$.subscribe(result => expect(result).toBeFalsy());
+    result$.subscribe((result) => expect(result).toBeFalsy());
   });
 });

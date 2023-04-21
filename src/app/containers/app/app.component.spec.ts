@@ -13,7 +13,8 @@ import * as fromRoot from '../../store';
 import { HeaderComponent } from '../header/header.component';
 import { AppComponent } from './app.component';
 
-const windowMock: Window = { gtag: () => { } } as any;
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const windowMock: Window = { gtag: () => {} } as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
 const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
@@ -87,7 +88,7 @@ describe('AppComponent', () => {
         { provide: EnvironmentService, useValue: environmentMockService },
         { provide: CookieService, useValue: cookieService },
         { provide: Title, useValue: titleService }
-      ],
+      ]
     }).compileComponents();
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(AppComponent);
@@ -116,7 +117,7 @@ describe('AppComponent', () => {
   it('should dispatch modal1', () => {
     component.dispatchModal(undefined, true);
     expect(store.dispatch).toHaveBeenCalledWith(new SetModal({
-      session : {
+      session: {
         countdown: '0',
         isVisible: true
       }
@@ -132,7 +133,7 @@ describe('AppComponent', () => {
   it('should call the title service with value', () => {
     component.setTitleIfPresent(testRoute);
     fixture.detectChanges();
-    expect(titleService.setTitle).toHaveBeenCalledWith(`Test - HM Courts & Tribunals Service - GOV.UK`);
+    expect(titleService.setTitle).toHaveBeenCalledWith('Test - HM Courts & Tribunals Service - GOV.UK');
   });
 
   it('should call the dispatchSessionAction with modal', () => {
@@ -155,7 +156,7 @@ describe('AppComponent', () => {
       component.onStaySignedIn();
 
       expect(store.dispatch).toHaveBeenCalledWith(new SetModal({
-        session : {
+        session: {
           isVisible: false
         }
       }));

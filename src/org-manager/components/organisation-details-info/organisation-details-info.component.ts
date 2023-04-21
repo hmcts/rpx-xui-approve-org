@@ -11,7 +11,6 @@ import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './mo
   templateUrl: './organisation-details-info.component.html'
 })
 export class OrganisationDetailsInfoComponent implements OnInit {
-
   @Input() public org: OrganisationVM;
   @Input() public orgDeletable: boolean;
   @Output() public approveEvent: EventEmitter<OrganisationVM> = new EventEmitter();
@@ -29,7 +28,7 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     this.registrationRequest = [
       { request: RequestType.APPROVE_REQUEST, checked: false },
       { request: RequestType.REJECT_REQUEST, checked: false },
-      { request: RequestType.REVIEW_REQUEST, checked: false },
+      { request: RequestType.REVIEW_REQUEST, checked: false }
     ];
   }
 
@@ -42,7 +41,7 @@ export class OrganisationDetailsInfoComponent implements OnInit {
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
-      radioSelected: new FormControl(null, Validators.required),
+      radioSelected: new FormControl(null, Validators.required)
     });
   }
 

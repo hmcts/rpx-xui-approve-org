@@ -11,29 +11,29 @@ export default {
               {
                 hiddenAccessibilityText: 'some hidden text',
                 text: 'Yes',
-                value: 'nextUrl',
+                value: 'nextUrl'
               },
               {
                 hiddenAccessibilityText: 'some hidden text',
                 text: 'No',
-                value: 'dontHaveDX',
-              },
-            ],
-          },
-        },
-      ],
+                value: 'dontHaveDX'
+              }
+            ]
+          }
+        }
+      ]
     },
     {
       hiddenInput: {
         control: 'nextUrl',
-        value: 'organisation-dx',
-      },
+        value: 'organisation-dx'
+      }
     },
     {
       hiddenInput: {
         control: 'dontHaveDX',
-        value: 'name',
-      },
+        value: 'name'
+      }
     },
     {
       button: {
@@ -41,11 +41,11 @@ export default {
         control: 'createButton',
         onEvent: 'continue',
         type: 'submit',
-        value: 'Continue',
-      },
-    },
+        value: 'Continue'
+      }
+    }
   ],
-  header: "Do you have a DX reference for your main office?",
+  header: 'Do you have a DX reference for your main office?',
   idPrefix: 'tbc',
   name: 'name',
   validationHeaderErrorMessages: [
@@ -53,13 +53,13 @@ export default {
       controlId: 'firstName',
       href: '/register/organisation-address',
       text: 'Enter first name',
-      validationLevel: 'formControl',
+      validationLevel: 'formControl'
     },
     {
       controlId: 'lastName',
       href: '/register/organisation-address',
       text: 'Enter Last Name',
-      validationLevel: 'formControl',
-    },
-  ],
-}
+      validationLevel: 'formControl'
+    }
+  ]
+};
