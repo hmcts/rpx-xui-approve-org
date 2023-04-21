@@ -5,48 +5,50 @@ import { FooterComponent } from './footer.component';
 
 describe('FooterComponent', () => {
   @Component({
-    selector: `app-host-dummy-component`,
-    template: `<app-footer></app-footer>`
+    selector: 'app-host-dummy-component',
+    template: '<app-footer></app-footer>'
   })
   class TestDummyHostComponent {
     @ViewChild(FooterComponent)
     public footerComponent: FooterComponent;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let testHostComponent: TestDummyHostComponent;
   let testHostFixture: ComponentFixture<TestDummyHostComponent>;
   let component: FooterComponent;
   let fixture: ComponentFixture<FooterComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let element: DebugElement;
   const footerData = {
     heading: 'Help',
     email: {
-        address: 'service-desk@hmcts.gov.uk',
-        text: 'service-desk@hmcts.gov.uk'
+      address: 'service-desk@hmcts.gov.uk',
+      text: 'service-desk@hmcts.gov.uk'
     },
     phone: {
-        text: '0207 633 4140'
+      text: '0207 633 4140'
     },
     opening: {
-        text: 'Monday to Friday, 8am to 6pm (excluding public holidays)'
+      text: 'Monday to Friday, 8am to 6pm (excluding public holidays)'
     }
   };
 
   const footerDataNavigation = {
-  items: [
-      { text: 'Accessibility', href: 'accessibility', target: '_blank'},
+    items: [
+      { text: 'Accessibility', href: 'accessibility', target: '_blank' },
       { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
       { text: 'Cookies', href: 'cookies', target: '_blank' },
       { text: 'Privacy policy', href: 'privacy-policy', target: '_blank' }
-      ]
+    ]
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [
-          RouterTestingModule
+        RouterTestingModule
       ],
-      declarations: [ FooterComponent, TestDummyHostComponent ],
+      declarations: [FooterComponent, TestDummyHostComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();

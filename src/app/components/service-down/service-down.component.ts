@@ -11,21 +11,22 @@ import * as fromAppStore from '../../../app/store';
 export class ServiceDownComponent implements OnInit, OnDestroy {
   public currentError: GlobalError;
   private subscription: Subscription;
-  constructor(private readonly store: Store<fromAppStore.State>) {
-  }
+  constructor(private readonly store: Store<fromAppStore.State>) {}
+
   public ngOnDestroy(): void {
     this.store.dispatch(new fromAppStore.ClearGlobalError());
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
   }
+
   public ngOnInit(): void {
     this.currentError = {
       errors: [{ bodyText: 'Try again later.', urlText: null, url: null }],
       header: 'Sorry, there is a problem with the service'
     };
     this.subscription = this.store.pipe(select(fromAppStore.getCurrentError))
-      .subscribe(error => {
+      .subscribe((error) => {
         if (error) {
           this.currentError = error;
         }

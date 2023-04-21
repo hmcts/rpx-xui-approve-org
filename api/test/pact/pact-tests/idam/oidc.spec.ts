@@ -5,39 +5,36 @@ import { PactTestSetup } from '../settings/provider.mock';
 
 const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
 
-describe("OpenId Connect API", async() => {
-
-
+describe('OpenId Connect API', async() => {
   // Setup the provider
   before(async () => {
-    await new Promise(resolve => setTimeout(resolve, 3000));
-   })
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+  });
 
-   // Write Pact when all tests done
-  afterAll(() => pactSetUp.provider.finalize())
-
+  // Write Pact when all tests done
+  afterAll(() => pactSetUp.provider.finalize());
 
   describe('when a request to .well-known endpoint is made', () => {
     before(async() => {
-    await pactSetUp.provider.setup()
-    pactSetUp.provider.addInteraction({
+      await pactSetUp.provider.setup();
+      pactSetUp.provider.addInteraction({
         state: '.well-known endpoint',
         uponReceiving: 'a request for configuration',
         withRequest: {
           method: 'GET',
-          path: "/o/.well-known/openid-configuration",
+          path: '/o/.well-known/openid-configuration'
         },
         willRespondWith: {
           status: 200,
-          headers: {'Content-Type': 'application/json'},
-          body: mockResponse,
+          headers: { 'Content-Type': 'application/json' },
+          body: mockResponse
         }
-      })
-    })
-    afterEach(() => pactSetUp.provider.verify())
+      });
+    });
+    afterEach(() => pactSetUp.provider.verify());
 
     it('returns a json configuration', async () => {
-      const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`
+      const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`;
 
       // @ts-ignore
       const issuer = oidc.configure({
@@ -53,10 +50,9 @@ describe("OpenId Connect API", async() => {
         sessionKey: 'xui-approve-org',
         tokenEndpointAuthMethod: 'client_secret_post',
         tokenURL: `${oidcUrl}/token`,
-        useRoutes: false,
-      })
-      assert.isDefined(issuer, 'issuer exists')
-    })
-  })
-
-})
+        useRoutes: false
+      });
+      assert.isDefined(issuer, 'issuer exists');
+    });
+  });
+});

@@ -11,8 +11,7 @@ export class PendingOrganisationService {
   public orgPendingUrl = environment.orgPendingUrl;
   public organisationsUrl = environment.organisationsUrl;
 
-  constructor(private readonly http: HttpClient) {
-  }
+  constructor(private readonly http: HttpClient) {}
 
   public fetchPendingOrganisations(): Observable<Organisation[]> {
     return this.http.get<Organisation[]>(this.orgPendingUrl);

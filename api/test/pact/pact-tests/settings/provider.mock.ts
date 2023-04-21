@@ -7,16 +7,15 @@ export interface PactTestSetupConfig {
 }
 
 export class PactTestSetup {
-
   provider: Pact;
   port: number;
 
   constructor(config: PactTestSetupConfig) {
     this.provider = new Pact({
-      consumer: "xui_approveorg",
-      dir: path.resolve(process.cwd(), "api/test/pact/pacts"),
-      log: path.resolve(process.cwd(), "api/test/pact/logs", "mockserver-integration.log"),
-      pactfileWriteMode: "merge",
+      consumer: 'xui_approveorg',
+      dir: path.resolve(process.cwd(), 'api/test/pact/pacts'),
+      log: path.resolve(process.cwd(), 'api/test/pact/logs', 'mockserver-integration.log'),
+      pactfileWriteMode: 'merge',
       port: this.port,
       provider: config.provider,
       spec: 2

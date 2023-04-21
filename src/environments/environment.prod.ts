@@ -27,6 +27,6 @@ export const environment = {
       idamWeb: 'https://hmcts-access.service.gov.uk',
       indexUrl: '/',
       oauthCallbackUrl: '/oauth2/callback'
-      }
+    }
   }
 };

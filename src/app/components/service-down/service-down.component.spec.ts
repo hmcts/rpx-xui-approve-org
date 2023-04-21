@@ -3,7 +3,6 @@ import * as fromAppStore from '../../../app/store';
 import { ServiceDownComponent } from './service-down.component';
 
 describe('ServiceDownComponent', () => {
-
   let component: ServiceDownComponent;
   let userStoreSpyObject;
 

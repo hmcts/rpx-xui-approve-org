@@ -4,7 +4,4 @@ import { Component } from '@angular/core';
   selector: 'app-hmcts-not-authorised',
   templateUrl: './not-authorised.component.html'
 })
-export class NotAuthorisedComponent {
-  constructor() {
-  }
-}
+export class NotAuthorisedComponent {}

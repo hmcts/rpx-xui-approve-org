@@ -10,7 +10,7 @@ const pbaInputFeed = [
       id: 'pba1',
       type: 'text',
       classes: ''
-    },
+    }
   },
   {
     config: {
@@ -64,5 +64,4 @@ export class PBAConfig {
   public type: string;
   public classes: string;
 }
-
 

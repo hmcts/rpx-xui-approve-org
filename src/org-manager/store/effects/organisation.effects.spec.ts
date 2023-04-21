@@ -42,7 +42,7 @@ describe('Organisation Effects', () => {
   ]);
 
   const getAccountDetailsServiceMock = jasmine.createSpyObj('PbaAccountDetails', [
-    'getAccountDetails',
+    'getAccountDetails'
   ]);
 
   const payload: OrganisationVM[] = pendingOrganisationsMockCollection1;
@@ -54,11 +54,11 @@ describe('Organisation Effects', () => {
       providers: [
         {
           provide: OrganisationService,
-          useValue: organisationServiceMock,
+          useValue: organisationServiceMock
         },
         {
           provide: PendingOrganisationService,
-          useValue: pendingOrganisationServiceMock,
+          useValue: pendingOrganisationServiceMock
         },
         OrganisationEffects,
         provideMockActions(() => actions$),
@@ -123,8 +123,8 @@ describe('Organisation Effects', () => {
     it('should return LoadPbaAccountDetailsSuccess', () => {
       const payload0 = loadPbaAccountsObj;
       getAccountDetailsServiceMock.getAccountDetails.and.returnValue(of(payload0));
-      const action = new fromActions.LoadPbaAccountsDetails({pbas: 'PBA0088487', orgId: '12345'});
-      const completion = new fromActions.LoadPbaAccountDetailsSuccess({orgId: '12345', data: payload0});
+      const action = new fromActions.LoadPbaAccountsDetails({ pbas: 'PBA0088487', orgId: '12345' });
+      const completion = new fromActions.LoadPbaAccountDetailsSuccess({ orgId: '12345', data: payload0 });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadPbaAccountDetails$).toBeObservable(expected);
@@ -150,9 +150,9 @@ describe('Organisation Effects', () => {
         path: ['/organisation/pending'],
         extras: {
           state: {
-            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration approved' }],
-          },
-        },
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration approved' }]
+          }
+        }
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -170,7 +170,7 @@ describe('Organisation Effects', () => {
       pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(of(true));
 
       const reviewOrganisation = AppUtils.mapOrganisationsVm(reviewOrganisationsMockCollection)[0];
-      const completionOrganisation = AppUtils.mapOrganisation({...reviewOrganisation, status: 'REVIEW'});
+      const completionOrganisation = AppUtils.mapOrganisation({ ...reviewOrganisation, status: 'REVIEW' });
       const action = new fromActions.DeleteReviewOrganisation(reviewOrganisationsMockCollection[0]);
       const completion = new fromActions.DeletePendingOrganisation(completionOrganisation);
 
@@ -182,7 +182,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 400', () => {
       pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(throwError({
         error: {
-          apiStatusCode: 400,
+          apiStatusCode: 400
         } as ErrorReport
       }));
       const action = new fromActions.DeleteReviewOrganisation(pendingOrganisationsMockCollectionObj);
@@ -202,7 +202,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 404', () => {
       pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(throwError({
         error: {
-          apiStatusCode: 404,
+          apiStatusCode: 404
         } as ErrorReport
       }));
       const action = new fromActions.DeleteReviewOrganisation(pendingOrganisationsMockCollectionObj);
@@ -222,7 +222,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 403', () => {
       pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(throwError({
         error: {
-          apiStatusCode: 403,
+          apiStatusCode: 403
         } as ErrorReport
       }));
       const action = new fromActions.DeleteReviewOrganisation(pendingOrganisationsMockCollectionObj);
@@ -238,7 +238,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 500', () => {
       pendingOrganisationServiceMock.putPendingOrganisation.and.returnValue(throwError({
         error: {
-          apiStatusCode: 500,
+          apiStatusCode: 500
         } as ErrorReport
       }));
       const action = new fromActions.DeleteReviewOrganisation(pendingOrganisationsMockCollectionObj);
@@ -269,7 +269,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 400', () => {
       pendingOrganisationServiceMock.deletePendingOrganisations.and.returnValue(throwError({
         error: {
-          apiStatusCode: 400,
+          apiStatusCode: 400
         } as ErrorReport
       }));
       const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
@@ -289,7 +289,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 404', () => {
       pendingOrganisationServiceMock.deletePendingOrganisations.and.returnValue(throwError({
         error: {
-          apiStatusCode: 404,
+          apiStatusCode: 404
         } as ErrorReport
       }));
       const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
@@ -309,7 +309,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 403', () => {
       pendingOrganisationServiceMock.deletePendingOrganisations.and.returnValue(throwError({
         error: {
-          apiStatusCode: 403,
+          apiStatusCode: 403
         } as ErrorReport
       }));
       const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
@@ -325,7 +325,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 500', () => {
       pendingOrganisationServiceMock.deletePendingOrganisations.and.returnValue(throwError({
         error: {
-          apiStatusCode: 500,
+          apiStatusCode: 500
         } as ErrorReport
       }));
       const action = new fromActions.DeletePendingOrganisation(pendingOrganisationsMockCollectionObj);
@@ -350,9 +350,9 @@ describe('Organisation Effects', () => {
         path: ['/organisation/pending'],
         extras: {
           state: {
-            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration put under review' }],
-          },
-        },
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration put under review' }]
+          }
+        }
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -367,9 +367,9 @@ describe('Organisation Effects', () => {
         path: ['/organisation/pending'],
         extras: {
           state: {
-            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration rejected' }],
-          },
-        },
+            notificationBanners: [{ bannerType: NotificationBannerType.SUCCESS, bannerMessage: 'Registration rejected' }]
+          }
+        }
       });
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
@@ -426,7 +426,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 400', () => {
       organisationServiceMock.deleteOrganisation.and.returnValue(throwError({
         error: {
-          apiStatusCode: 400,
+          apiStatusCode: 400
         } as ErrorReport
       }));
       const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
@@ -446,7 +446,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 404', () => {
       organisationServiceMock.deleteOrganisation.and.returnValue(throwError({
         error: {
-          apiStatusCode: 404,
+          apiStatusCode: 404
         } as ErrorReport
       }));
       const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
@@ -466,7 +466,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 403', () => {
       organisationServiceMock.deleteOrganisation.and.returnValue(throwError({
         error: {
-          apiStatusCode: 403,
+          apiStatusCode: 403
         } as ErrorReport
       }));
       const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
@@ -482,7 +482,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when the HTTP status is 500', () => {
       organisationServiceMock.deleteOrganisation.and.returnValue(throwError({
         error: {
-          apiStatusCode: 500,
+          apiStatusCode: 500
         } as ErrorReport
       }));
       const action = new fromActions.DeleteOrganisation(pendingOrganisationsMockCollectionObj);
@@ -528,7 +528,7 @@ describe('Organisation Effects', () => {
     it('should return a failure action when there is an error', () => {
       organisationServiceMock.getOrganisationDeletableStatus.and.returnValue(throwError({
         error: {
-          apiStatusCode: 500,
+          apiStatusCode: 500
         } as ErrorReport
       }));
       const action = new fromActions.GetOrganisationDeletableStatus('abc123');

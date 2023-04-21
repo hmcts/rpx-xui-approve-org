@@ -25,11 +25,10 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET,
+  SESSION_SECRET
 } from './references';
 
 export const uiConfig = (): UIConfig => {
-
   const configEnv = getEnvironment();
 
   return {
@@ -37,10 +36,10 @@ export const uiConfig = (): UIConfig => {
     cookies: {
       roles: getConfigValue(COOKIE_ROLES),
       token: getConfigValue(COOKIE_TOKEN),
-      userId: getConfigValue(COOKIES_USERID),
+      userId: getConfigValue(COOKIES_USERID)
     } as UIConfigCookies,
     exceptionOptions: {
-      maxLines: getConfigValue(MAX_LINES),
+      maxLines: getConfigValue(MAX_LINES)
     } as UIConfigExceptionOptions,
     health: healthEndpoints() as UIConfigServices,
     idamClient: getConfigValue(IDAM_CLIENT),
@@ -62,7 +61,7 @@ export const uiConfig = (): UIConfig => {
       idamWeb: getConfigValue(SERVICES_IDAM_WEB),
       iss: getConfigValue(SERVICES_ISS_PATH),
       rdProfessionalApi: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH),
-      s2s: getConfigValue(SERVICE_S2S_PATH),
+      s2s: getConfigValue(SERVICE_S2S_PATH)
     } as UIConfigServices,
     sessionSecret: getConfigValue(SESSION_SECRET),
     launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID)

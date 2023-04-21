@@ -1,5 +1,5 @@
-import * as express from 'express'
-import {getConfigValue, showFeature} from './configuration'
+import * as express from 'express';
+import { getConfigValue, showFeature } from './configuration';
 import {
   COOKIE_TOKEN,
   COOKIES_USERID,
@@ -19,16 +19,15 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_RD_PROFESSIONAL_API_PATH,
   SESSION_SECRET
-} from './configuration/references'
+} from './configuration/references';
 
-const router = express.Router({ mergeParams: true })
+const router = express.Router({ mergeParams: true });
 
 router.get('/', (req, res) => {
   res.status(200).send({
     allowConfigMutations: process.env.ALLOW_CONFIG_MUTATIONS,
     nodeConfigEnv: process.env.NODE_CONFIG_ENV,
     // 1st set
-    // tslint:disable-next-line:object-literal-sort-keys
     idamClient: getConfigValue(IDAM_CLIENT),
     maxLogLine: getConfigValue(MAX_LOG_LINE),
     microService: getConfigValue(MICROSERVICE),
@@ -50,8 +49,8 @@ router.get('/', (req, res) => {
     // 5th set
     featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
-    featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
-  })
-})
+    featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED)
+  });
+});
 
-export default router
+export default router;

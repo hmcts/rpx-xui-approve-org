@@ -32,7 +32,7 @@ export class ApproveOrganisationComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.serverResponseMessages$ = this.store.pipe(select(fromStore.getErrorMessage), tap(message => {
+    this.serverResponseMessages$ = this.store.pipe(select(fromStore.getErrorMessage), tap((message) => {
       if (message) {
         this.disabled = true;
       }

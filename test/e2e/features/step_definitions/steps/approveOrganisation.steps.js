@@ -11,40 +11,38 @@ const loginPage = require('../../pageObjects/loginLogoutObjects');
 const CucumberReporter = require('../../../support/CucumberReporter');
 
 async function waitForElement(el) {
-    await browser.wait(result => {
-        return element(by.className(el)).isPresent();
-    }, 600000);
+  await browser.wait((result) => {
+    return element(by.className(el)).isPresent();
+  }, 600000);
 }
 
 defineSupportCode(function ({ Given, When, Then }) {
-
-    When(/^I navigate to EUI Approve Organisation Url$/, { timeout: 600 * 1000 }, async function () {
-        await browser.get(config.config.baseUrl) ;
-        if (!process.env.TEST_URL.includes('demo')){ //Do not delete cookies for demo env.
-          await browser.driver.manage()
-            .deleteAllCookies();
-          await browser.refresh();
-        }
-        const world = this;
-      if ( (await browser.getCurrentUrl()).startsWith('https://login.microsoftonline.com/')) {
-        await loginPage.microsoftSignIn();
-      }
-      await browserWaits.retryForPageLoad(loginPage.emailAddress,async (message) => {
-        world.attach('Retry reloading page. '+message);
-      });
-      await browserWaits.waitForElement(loginPage.emailAddress);
+  When(/^I navigate to EUI Approve Organisation Url$/, { timeout: 600 * 1000 }, async function () {
+    await browser.get(config.config.baseUrl);
+    if (!process.env.TEST_URL.includes('demo')){ //Do not delete cookies for demo env.
+      await browser.driver.manage()
+        .deleteAllCookies();
+      await browser.refresh();
+    }
+    const world = this;
+    if ((await browser.getCurrentUrl()).startsWith('https://login.microsoftonline.com/')) {
+      await loginPage.microsoftSignIn();
+    }
+    await browserWaits.retryForPageLoad(loginPage.emailAddress, async (message) => {
+      world.attach('Retry reloading page. '+message);
     });
+    await browserWaits.waitForElement(loginPage.emailAddress);
+  });
 
-    Then(/^I Check the active Organisation banner appear$/, async function () {
+  Then(/^I Check the active Organisation banner appear$/, async function () {
+    CucumberReporter.AddMessage('Started step');
+    await browserWaits.waitForBrowserReadyState(120);
+    await browser.sleep(LONG_DELAY);
+    CucumberReporter.AddMessage('Completed LONG DALAY');
 
-      CucumberReporter.AddMessage("Started step");
-      await browserWaits.waitForBrowserReadyState(120);
-      await browser.sleep(LONG_DELAY);
-      CucumberReporter.AddMessage("Completed LONG DALAY");
-
-      await browserWaits.waitForElement(bannerPage.approveorgBanner);
-      await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
-    });
+    await browserWaits.waitForElement(bannerPage.approveorgBanner);
+    await expect(bannerPage.approveorgBanner.isDisplayed()).to.eventually.be.true;
+  });
 
   // Then(/^I Verify the Check Now Link$/, async function () {
   //   browser.sleep(AMAZING_DELAY);
@@ -104,6 +102,4 @@ defineSupportCode(function ({ Given, When, Then }) {
     await expect(bannerPage.deleteOrganisationWarning.isDisplayed()).to.eventually.be.true;
     await bannerPage.deleteOrganisationWarning.click();
   });
-
-
 });

@@ -1,66 +1,66 @@
-import { AxiosResponse } from 'axios'
-import * as express from 'express'
-import * as otp from 'otp'
-import { http } from '../lib/http'
-import * as log4jui from '../lib/log4jui'
-import { getHealth, getInfo } from '../lib/util'
+import { AxiosResponse } from 'axios';
+import * as express from 'express';
+import * as otp from 'otp';
+import { http } from '../lib/http';
+import * as log4jui from '../lib/log4jui';
+import { getHealth, getInfo } from '../lib/util';
 
-import { EnhancedRequest } from 'models/enhanced-request.interface'
-import { getConfigValue } from '../configuration'
-import { MICROSERVICE, S2S_SECRET, SERVICE_S2S_PATH } from '../configuration/references'
+import { EnhancedRequest } from 'models/enhanced-request.interface';
+import { getConfigValue } from '../configuration';
+import { MICROSERVICE, S2S_SECRET, SERVICE_S2S_PATH } from '../configuration/references';
 
-const url = getConfigValue(SERVICE_S2S_PATH)
+const url = getConfigValue(SERVICE_S2S_PATH);
 
-const s2sSecretUnTrimmed = getConfigValue(S2S_SECRET)
-const microservice = getConfigValue(MICROSERVICE)
-const s2sSecret = s2sSecretUnTrimmed.trim()
+const s2sSecretUnTrimmed = getConfigValue(S2S_SECRET);
+const microservice = getConfigValue(MICROSERVICE);
+const s2sSecret = s2sSecretUnTrimmed.trim();
 
-const logger = log4jui.getLogger('service auth')
+const logger = log4jui.getLogger('service auth');
 
 // TODO: process.env should all be located in configuration
 export async function postS2SLease() {
-  let response: AxiosResponse<any>
+  let response: AxiosResponse<any>;
 
   const axiosInstance = http({
     session: {
       auth: {
-        token: '',
-      },
-    },
-  } as unknown as express.Request)
+        token: ''
+      }
+    }
+  } as unknown as express.Request);
 
   try {
-    const oneTimePassword = otp({secret: s2sSecret}).totp()
-    logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword)
+    const oneTimePassword = otp({ secret: s2sSecret }).totp();
+    logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword);
     response = await axiosInstance.post(`${url}/lease`, {
       microservice,
-      oneTimePassword,
-    })
-    logger.info('Generated from secret: ' + response)
+      oneTimePassword
+    });
+    logger.info('Generated from secret: ' + response);
   } catch (error) {
-    logger.error(error)
-    logger.error('Some error adn')
+    logger.error(error);
+    logger.error('Some error adn');
     if (error.message) {
-      logger.error('Error message: ' + error.message)
+      logger.error('Error message: ' + error.message);
     }
     if (error.stack) {
-      logger.error('Error stack: ' + error.stack)
+      logger.error('Error stack: ' + error.stack);
     }
     if (error.code) {
-      logger.error('Error code: ' + error.code)
+      logger.error('Error code: ' + error.code);
     }
 
-    throw error
+    throw error;
   }
-  return response.data
+  return response.data;
 }
-export const router = express.Router({ mergeParams: true })
+export const router = express.Router({ mergeParams: true });
 
-router.get('/health', (req: EnhancedRequest, res, next) => {
-    res.status(200).send(getHealth(url, req))
-})
+router.get('/health', (req: EnhancedRequest, res) => {
+  res.status(200).send(getHealth(url, req));
+});
 
-router.get('/info', (req: EnhancedRequest, res, next) => {
-    res.status(200).send(getInfo(url, req))
-})
-export default router
+router.get('/info', (req: EnhancedRequest, res) => {
+  res.status(200).send(getInfo(url, req));
+});
+export default router;

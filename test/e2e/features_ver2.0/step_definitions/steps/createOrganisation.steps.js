@@ -8,7 +8,7 @@ const { defineSupportCode } = require('cucumber');
 const CreateOrganisationFlow = require('../../flows/create-org.flow');
 
 defineSupportCode(function ({ Given, When, Then }) {
-  let createOrganisationFlow = new CreateOrganisationFlow();
+  const createOrganisationFlow = new CreateOrganisationFlow();
 
   Given(/^I register a new organisation$/, async function () {
     await createOrganisationFlow.navigateToRegisterOrg();
@@ -23,5 +23,4 @@ defineSupportCode(function ({ Given, When, Then }) {
     await createOrganisationFlow.checkSummaryAndSubmit();
     await createOrganisationFlow.checkOrgCreationSuccessful();
   });
-
 });

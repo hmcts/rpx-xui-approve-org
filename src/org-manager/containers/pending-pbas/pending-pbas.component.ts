@@ -15,7 +15,7 @@ import { PBANumberModel, RenderableOrganisation } from './models';
 
 @Component({
   selector: 'app-pending-pbas',
-  templateUrl: './pending-pbas.component.html',
+  templateUrl: './pending-pbas.component.html'
 })
 export class PendingPBAsComponent implements OnInit, OnDestroy {
   public static PENDING_STATUS: string = 'pending';
@@ -35,7 +35,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     protected loadingService: LoadingService,
     private readonly sessionStorageService: SessionStorageService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     this.loadPendingPBAs();
@@ -47,7 +47,7 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
     });
 
     this.organisationSearchSubscription = this.organisationService.organisationSearchStringChange().subscribe(
-      searchString => {
+      (searchString) => {
         this.sortedBy = {
           fieldName: 'organisationId',
           order: SortOrder.ASC
@@ -58,20 +58,20 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
         this.performSearchPagination('active', searchString).pipe(
           take(1)).subscribe({
           next: (result: any) => {
-              this.loadingService.unregister(loadingToken);
-              this.orgsWithPendingPBAs = [];
-              result.organisations.forEach(renderableOrganisation => {
-                this.orgsWithPendingPBAs.push({
-                  organisationId: renderableOrganisation.organisationIdentifier ? renderableOrganisation.organisationIdentifier : '',
-                  admin: `${renderableOrganisation.superUser.firstName} ${renderableOrganisation.superUser.lastName}`,
-                  name: renderableOrganisation ? renderableOrganisation.organisationName : '',
-                  pbaNumbers: renderableOrganisation ? renderableOrganisation.pbaNumbers : [],
-                  adminEmail: renderableOrganisation.superUser ? renderableOrganisation.superUser.email : '',
+            this.loadingService.unregister(loadingToken);
+            this.orgsWithPendingPBAs = [];
+            result.organisations.forEach((renderableOrganisation) => {
+              this.orgsWithPendingPBAs.push({
+                organisationId: renderableOrganisation.organisationIdentifier ? renderableOrganisation.organisationIdentifier : '',
+                admin: `${renderableOrganisation.superUser.firstName} ${renderableOrganisation.superUser.lastName}`,
+                name: renderableOrganisation ? renderableOrganisation.organisationName : '',
+                pbaNumbers: renderableOrganisation ? renderableOrganisation.pbaNumbers : [],
+                adminEmail: renderableOrganisation.superUser ? renderableOrganisation.superUser.email : ''
 
-                } as RenderableOrganisation);
-              });
-              this.pendingPBAsCount = result.total_records;
-              this.pbasLoaded = true;
+              } as RenderableOrganisation);
+            });
+            this.pendingPBAsCount = result.total_records;
+            this.pbasLoaded = true;
           },
           error: (error: any) => {
             this.loadingService.unregister(loadingToken);

@@ -5,12 +5,10 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class UsersService {
-
   public orgUsersUrl = environment.organisationUsersUrl;
   public reinviteUserUrl = environment.reinviteUserUrl;
   public orgUsersUrlWithoutRole = environment.organisationUsersUrlWithoutRole;
-  constructor(private readonly http: HttpClient) {
-  }
+  constructor(private readonly http: HttpClient) {}
 
   public getOrganisationUsers(payload): Observable<any> {
     return this.http.get<any>(this.orgUsersUrl + payload);
@@ -23,5 +21,4 @@ export class UsersService {
   public getAllUsersList(orgId): Observable<any> {
     return this.http.get<any>(this.orgUsersUrlWithoutRole + orgId);
   }
-
 }

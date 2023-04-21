@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
 
 @Component({
   selector: 'app-prd-upload-info-detail',
-  templateUrl: './upload-info-details.component.html',
+  templateUrl: './upload-info-details.component.html'
 })
 
 export class UploadInfoDetailsComponent {

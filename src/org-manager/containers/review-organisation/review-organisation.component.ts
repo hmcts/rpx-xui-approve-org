@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import {Store} from '@ngrx/store';
-import {Go} from '../../../app/store/actions';
-import {OrganisationVM} from '../../../org-manager/models/organisation';
+import { Store } from '@ngrx/store';
+import { Go } from '../../../app/store/actions';
+import { OrganisationVM } from '../../../org-manager/models/organisation';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 
 @Component({
