@@ -24,7 +24,6 @@ export async function handleGet(path: string, req: EnhancedRequest): Promise<Axi
     exists(e, 'message') ? logger.error(e.message) : logger.error('Error in GET response');
     throw e;
   }
-
 }
 
 /**
@@ -44,7 +43,6 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest)
     exists(e, 'message') ? logger.error(e.message) : logger.error('Error in POST response');
     throw e;
   }
-
 }
 
 /**

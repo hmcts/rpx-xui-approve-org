@@ -30,7 +30,6 @@ export function reducer(
   action: fromActions.UsersAction
 ): UsersState {
   switch (action.type) {
-
     case fromActions.SHOW_USER_DETAILS: {
       return {
         ...initialState,
@@ -51,7 +50,7 @@ export function reducer(
       const errorMessages = {
         serverResponse: {
           messages: [
-            action.payload.error.apiStatusCode === 409 && AppConstants.ERROR_MESSAGE_MAPPINGS ? AppConstants.ERROR_MESSAGE_MAPPINGS[1] :  action.payload.error.message
+            action.payload.error.apiStatusCode === 409 && AppConstants.ERROR_MESSAGE_MAPPINGS ? AppConstants.ERROR_MESSAGE_MAPPINGS[1] : action.payload.error.message
           ]
         }
       };
@@ -78,7 +77,7 @@ export function reducer(
         isFormValid: false,
         errorHeader: '',
         reinviteSuccessEmail: null,
-        errorMessages,
+        errorMessages
       };
     }
 
@@ -87,14 +86,13 @@ export function reducer(
       const formErrorIsInvalid = action.payload.isInvalid;
 
       const errorMessages = Object.keys(formErrorIsInvalid).reduce((acc, key) => {
-
         const objArr = (k): any[] => {
           return formErrorIsInvalid[k].map((item, i) => {
-              return item ? errorMessagesPayload[k][i] : '';
+            return item ? errorMessagesPayload[k][i] : '';
           });
         };
 
-        const isInvalid = objArr(key).filter(item => item.length);
+        const isInvalid = objArr(key).filter((item) => item.length);
 
         acc[key] = {
           messages: objArr(key),
@@ -102,10 +100,9 @@ export function reducer(
         };
 
         return acc;
-
-        }, {});
+      }, {});
       const isFormValid = !Object.keys(errorMessages)
-        .filter(key => errorMessages[key].isInvalid).length;
+        .filter((key) => errorMessages[key].isInvalid).length;
 
       return {
         ...state,

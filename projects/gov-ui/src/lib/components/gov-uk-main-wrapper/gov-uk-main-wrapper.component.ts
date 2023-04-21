@@ -43,7 +43,7 @@ export class GovUkMainWrapperComponent {
     this.errors = value;
   };
 
-  constructor( private location: Location) { }
+  constructor( private location: Location) {}
   public onGoBack() {
     this.location.back();
   }

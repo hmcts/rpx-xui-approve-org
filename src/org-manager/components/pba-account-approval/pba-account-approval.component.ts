@@ -5,7 +5,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './pba-account-approval.component.html'
 })
 export class PBAAccountApprovalComponent {
-
   @Input() public accountName: string;
   @Input() public organisationId: string;
   @Input() public pbaNumber: string;

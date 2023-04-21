@@ -11,12 +11,12 @@ describe('AppUtils', () => {
       county: 'Middlesex',
       postCode: 'org.postCode',
       dxAddress: [
-          {
-              dxNumber: '1111111111111',
-              dxExchange: 'DX Exchange 1'
-          }
-              ]
-      }
+        {
+          dxNumber: '1111111111111',
+          dxExchange: 'DX Exchange 1'
+        }
+      ]
+    }
     ];
     const organisations: [Organisation] = [{
       organisationIdentifier: '9VR9JLM',
@@ -24,17 +24,17 @@ describe('AppUtils', () => {
       status: 'PENDING',
       sraId: 'SRA1234560123',
       superUser: {
-          userIdentifier: '1fab0a19-e83a-436e-8ceb-e43ab487c6ed',
-          firstName: 'Vam',
-          lastName: 'Shi',
-          email: 'vam@ff.com'
+        userIdentifier: '1fab0a19-e83a-436e-8ceb-e43ab487c6ed',
+        firstName: 'Vam',
+        lastName: 'Shi',
+        email: 'vam@ff.com'
       },
       paymentAccount: [{}],
       pendingPaymentAccount: [{}],
       contactInformation: orgAddress,
       dateReceived: '01/01/2023',
       dateApproved: '12/01/2023'
-  }];
+    }];
     const organisationVM = AppUtils.mapOrganisations(organisations);
     expect(organisationVM[0].adminEmail).toEqual(organisations[0].superUser.email);
     expect(organisationVM[0].admin).toEqual(`${organisations[0].superUser.firstName} ${organisations[0].superUser.lastName}`);
@@ -117,17 +117,17 @@ describe('AppUtils', () => {
 describe('getNavItemsBasedOnRole', () => {
   it('user with role1', () => {
     const navItem = {
-        text: 'text1',
-        href: 'href1',
-        active: false,
-        feature: {
-          isfeatureToggleable: true,
-          featureName: 'feature1'
-        },
-        orderId: 0
+      text: 'text1',
+      href: 'href1',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature1'
+      },
+      orderId: 0
     };
     const roleBasedNav = {
-          role1: navItem
+      role1: navItem
     };
     const userRoles = ['role1', 'role2', 'role3'];
     const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, userRoles);

@@ -32,8 +32,8 @@ describe('App Reducer', () => {
       const action = new fromActions.ClearGlobalError();
       const state = appReducer.reducer(appReducer.initialState, action);
       const expectedState = {
-          ...appReducer.initialState,
-          globalError: null
+        ...appReducer.initialState,
+        globalError: null
       };
       expect(state).toEqual(expectedState);
     });

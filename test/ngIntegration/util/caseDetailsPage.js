@@ -1,22 +1,20 @@
 const BrowserWaits = require('../../e2e/support/customWaits');
 
 class CaseDetailsPage {
-
   constructor() {
     this.ccdCaseDetailsContainer = $('exui-case-details-home');
     this.exuiAlert = $('exui-alert');
 
     this.caseTitle = $('.title');
     this.eventTriggerContainer = $('ccd-event-trigger');
-
-
   }
+
   async amOnPage() {
     try {
       await this.waitForPage();
       return true;
     } catch (err) {
-      console.log("Case details page is not displayed.", err);
+      console.log('Case details page is not displayed.', err);
       return false;
     }
   }
@@ -33,9 +31,8 @@ class CaseDetailsPage {
   async getAlertMessageText() {
     if (await this.isAlertMessageDisplayed()) {
       return await this.exuiAlert.getText();
-    } else {
-      throw new error("Alert/notification  message is not displayed or disappeared.");
     }
+    throw new error('Alert/notification  message is not displayed or disappeared.');
   }
 
   async isCaseTitleDisplayed() {
@@ -56,7 +53,7 @@ class CaseDetailsPage {
   async GetEvents() {
     const isTriggerElementDisplayed = this.isEventTriggerDisplayed();
     if (!isTriggerElementDisplayed) {
-      throw new Error("Event trigger element not displayed");
+      throw new Error('Event trigger element not displayed');
     }
     const eventsCount = await this.eventTriggerContainer.$$('option').count();
     const events = [];
@@ -67,21 +64,21 @@ class CaseDetailsPage {
   }
 
   async selectNextStepEvent(eventName) {
-    await await this.eventTriggerContainer.$(`option[title = ${eventName}]`).click()
+    await await this.eventTriggerContainer.$(`option[title = ${eventName}]`).click();
   }
 
   async isEventTriggetGoButtonEnabled() {
     await this.amOnPage();
     return this.eventTriggerContainer.$('button').isEnabled();
   }
+
   async clickEventTriggerGoButton() {
     await this.amOnPage();
     if (await isEventTriggetGoButtonEnabled()) {
       return this.eventTriggerContainer.$('button').click();
-    } else {
-      throw new error("Event trigger Go button not enabled");
     }
+    throw new error('Event trigger Go button not enabled');
   }
 }
 
-module.exports = new CaseDetailsPage(); 
+module.exports = new CaseDetailsPage();

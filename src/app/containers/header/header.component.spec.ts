@@ -14,7 +14,7 @@ describe('HeaderComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('app', reducers),
+        StoreModule.forFeature('app', reducers)
       ],
       declarations: [
         HeaderComponent
@@ -50,8 +50,8 @@ describe('HeaderComponent', () => {
         active: false,
         orderId: 1,
         feature: {
-            isfeatureToggleable: false,
-            featureName: 'string'
+          isfeatureToggleable: false,
+          featureName: 'string'
         }
       };
 
