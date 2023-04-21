@@ -35,7 +35,7 @@ describe('Organisation Reducer', () => {
     it('should update the state.pendingOrganisations', () => {
       const action = new fromActions.LoadPendingOrganisationsSuccess(pendingOrganisationsMock);
       const state = reducer(initialState, action);
-      expect(state.pendingOrganisations.orgEntities['ByrneLimited']).toBeDefined();
+      expect(state.pendingOrganisations.orgEntities.ByrneLimited).toBeDefined();
     });
   });
 

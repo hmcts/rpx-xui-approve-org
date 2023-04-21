@@ -4,7 +4,6 @@ import { select, Store } from '@ngrx/store';
 import { Title } from '@angular/platform-browser';
 import { Event, Router, RoutesRecognized } from '@angular/router';
 import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
-// tslint:disable-next-line: no-duplicate-imports
 import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { CookieService } from 'ngx-cookie';
 import { combineLatest, Observable } from 'rxjs';
@@ -20,7 +19,6 @@ import * as fromRoot from '../../store';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
   public identityBar$: Observable<string[]>;
   public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
   public mainContentId = 'content';
@@ -41,7 +39,7 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.environmentService.getEnv$().subscribe(env => {
+    this.environmentService.getEnv$().subscribe((env) => {
       if (env.oidcEnabled) {
         this.store.dispatch(new fromRoot.GetUserDetails());
       }
@@ -56,7 +54,7 @@ export class AppComponent implements OnInit {
     // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
 
     this.idleStart();
-    this.idleService.appStateChanges().subscribe(value => {
+    this.idleService.appStateChanges().subscribe((value) => {
       this.dispatchSessionAction(value);
     });
   }
@@ -84,12 +82,12 @@ export class AppComponent implements OnInit {
 
   public idleStart() {
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
-    const userIdleSession$ =  this.store.pipe(select(fromRoot.getUserIdleTime));
-    const userTimeOut$ =  this.store.pipe(select(fromRoot.getUserTimeOut));
+    const userIdleSession$ = this.store.pipe(select(fromRoot.getUserIdleTime));
+    const userTimeOut$ = this.store.pipe(select(fromRoot.getUserTimeOut));
     combineLatest([
-      route$.pipe(first(value => typeof value === 'string' )),
-      userIdleSession$.pipe(filter(value => !isNaN(value)), take(1)),
-      userTimeOut$.pipe(filter(value => !isNaN(value)), take(1))
+      route$.pipe(first((value) => typeof value === 'string')),
+      userIdleSession$.pipe(filter((value) => !isNaN(value)), take(1)),
+      userTimeOut$.pipe(filter((value) => !isNaN(value)), take(1))
     ]).subscribe(([routes, idleMilliseconds, timeout]) => {
       const isSignedOut: boolean = routes.indexOf('signed-out') !== -1;
       if (timeout && idleMilliseconds && !isSignedOut) {
@@ -116,7 +114,7 @@ export class AppComponent implements OnInit {
 
   public onStaySignedIn() {
     const payload = {
-      session : {
+      session: {
         isVisible: false
       }
     };

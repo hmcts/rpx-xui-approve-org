@@ -63,11 +63,11 @@ describe('NewPBAsComponent', () => {
         HttpClientTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers),
+          feature: combineReducers(fromOrganisationPendingStore.reducers)
         }),
         ExuiCommonLibModule,
         RouterTestingModule,
-        CookieModule.forRoot(),
+        CookieModule.forRoot()
       ],
       declarations: [
         NewPBAsComponent

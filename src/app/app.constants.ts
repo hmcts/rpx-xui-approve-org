@@ -1,4 +1,4 @@
-const footerData =  {
+const footerData = {
   heading: 'Help',
   email: {
     address: 'service-desk@hmcts.gov.uk',
@@ -14,7 +14,7 @@ const footerData =  {
 
 const footerDataNavigation = {
   items: [
-    { text: 'Accessibility', href: 'accessibility', target: '_blank'},
+    { text: 'Accessibility', href: 'accessibility', target: '_blank' },
     { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
     { text: 'Cookies', href: 'cookies', target: '_blank' },
     { text: 'Privacy policy', href: 'privacy-policy', target: '_blank' }
@@ -34,9 +34,9 @@ const environmentNames = {
 const xuiApprovalRole = 'xui-approver-userdata';
 
 const userRoles = [
-  { role: 'pui-organisation-manager', roleType: 'manageOrganisations'},
+  { role: 'pui-organisation-manager', roleType: 'manageOrganisations' },
   { role: 'pui-user-manager', roleType: 'manageUsers' },
-  { role: 'pui-case-manager', roleType: 'manageCases'}
+  { role: 'pui-case-manager', roleType: 'manageCases' }
 ];
 
 const ccdRoles = [
@@ -63,8 +63,6 @@ const superUserRoles = [
   ...ccdRoles
 ];
 
-
-
 export const errorMessageMappings = {
   1: 'A user with this email address already exists',
   2: 'Something went wrong, ensure you have entered all the fields below',
@@ -76,7 +74,7 @@ export const errorMessageMappings = {
   8: 'Dx number can not be null',
   9: 'Sorry, there is a problem with the service. Try again later',
   10: 'This SRA number has already been used. Enter a different SRA number.',
-  11: 'This PBA number has already been used. Enter a different PBA number.',
+  11: 'This PBA number has already been used. Enter a different PBA number.'
 };
 
 export const apiErrors = {
@@ -89,7 +87,7 @@ export const apiErrors = {
   7: 'dx_number',
   8: 'DxAddress',
   10: 'SRA_ID Invalid or already exists',
-  11: 'PBA_NUMBER Invalid or already exists',
+  11: 'PBA_NUMBER Invalid or already exists'
 };
 
 const featureNames = {

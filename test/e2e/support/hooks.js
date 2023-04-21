@@ -15,9 +15,7 @@ const targetJson = `${jsonReports}/cucumber_report.json`;
 // var targetXML = xmlReports + "/cucumber_report.xml";
 const { Given, When, Then } = require('cucumber');
 
-const CucumberReportLog = require("./CucumberReporter");
-
-
+const CucumberReportLog = require('./CucumberReporter');
 
 // defineSupportCode(function({After }) {
 //     registerHandler("BeforeFeature", { timeout: 500 * 1000 }, function() {
@@ -94,56 +92,51 @@ const CucumberReportLog = require("./CucumberReporter");
 
 // });
 
+defineSupportCode(({ Before, After }) => {
+  Before(function (scenario, done) {
+    const world = this;
+    CucumberReportLog.setScenarioWorld(this);
+    done();
+  });
 
-defineSupportCode(({ Before,After }) => {
-    Before(function (scenario, done) {
-        const world = this;
-        CucumberReportLog.setScenarioWorld(this);
-        done();
-    });
+  After(async function (scenario) {
+    const world = this;
+    try {
+      if (scenario.result.status === 'failed') {
+        await prinrBrowserLogs();
+        const stream = await browser.takeScreenshot();
+        const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+        world.attach(decodedImage, 'image/png');
+      } else {
+        await clearBrowserLogs();
+      }
+    } catch (err){
+      CucumberReportLog.AddMessage('Error in after hooks. see err details : '+err);
+    }
 
-    After(async function (scenario) {
-        const world = this;
-        try{
-            if (scenario.result.status === 'failed') {
-                await prinrBrowserLogs();
-                const stream = await browser.takeScreenshot();
-                const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-                world.attach(decodedImage, 'image/png');
-            } else {
-                await clearBrowserLogs();
-            }
-        }catch(err){
-            CucumberReportLog.AddMessage("Error in after hooks. see err details : "+err);
-        }
-       
-        await Promise.all(getCookieCleanupPromises());
-
-    });
-}); 
+    await Promise.all(getCookieCleanupPromises());
+  });
+});
 
 async function prinrBrowserLogs(){
-    let browserLog = await browser.manage().logs().get('browser');
-    let browserErrorLogs = []
-    for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
-        if (browserLog[browserLogCounter].level.value > 900) {
-            browserErrorLogs.push(browserLog[browserLogCounter]);
-        }
+  const browserLog = await browser.manage().logs().get('browser');
+  const browserErrorLogs = [];
+  for (let browserLogCounter = 0; browserLogCounter < browserLog.length; browserLogCounter++) {
+    if (browserLog[browserLogCounter].level.value > 900) {
+      browserErrorLogs.push(browserLog[browserLogCounter]);
     }
-    CucumberReportLog.AddJson(browserErrorLogs); 
+  }
+  CucumberReportLog.AddJson(browserErrorLogs);
 }
 
 async function clearBrowserLogs() {
-    let browserLog = await browser.manage().logs().get('browser');
-   ;
+  const browserLog = await browser.manage().logs().get('browser');
 }
 
-
 function getCookieCleanupPromises(){
-
-    var cookiesStorageDeletionPromises = [];
-    cookiesStorageDeletionPromises.push(browser.executeScript('window.localStorage.clear()'));
-    cookiesStorageDeletionPromises.push(browser.executeScript('window.sessionStorage.clear()'));
-    cookiesStorageDeletionPromises.push(browser.driver.manage().deleteAllCookies());
-    return cookiesStorageDeletionPromises;
+  const cookiesStorageDeletionPromises = [];
+  cookiesStorageDeletionPromises.push(browser.executeScript('window.localStorage.clear()'));
+  cookiesStorageDeletionPromises.push(browser.executeScript('window.sessionStorage.clear()'));
+  cookiesStorageDeletionPromises.push(browser.driver.manage().deleteAllCookies());
+  return cookiesStorageDeletionPromises;
 }

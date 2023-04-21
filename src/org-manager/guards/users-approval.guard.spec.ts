@@ -1,6 +1,6 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { CookieModule, CookieService} from 'ngx-cookie';
+import { CookieModule, CookieService } from 'ngx-cookie';
 import { environment } from 'src/environments/environment';
 import { UserApprovalGuard } from './users-approval.guard';
 
@@ -18,7 +18,7 @@ describe('UserApprovalGuard', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        CookieModule.forRoot(),
+        CookieModule.forRoot()
       ],
       providers: [
         { provide: environment, useValue: config }

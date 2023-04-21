@@ -3,7 +3,6 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import _ from 'lodash';
-import { element } from 'protractor';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import * as fromRoot from '../../../app/store';
@@ -48,7 +47,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder) {
     this.errorHeader = new ErrorHeader();
     this.errorHeader.items = [];
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       this.orgId = params.orgId ? params.orgId : '';
     });
     this.changePbaFG = new FormGroup({
@@ -56,14 +55,19 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  public underscore(): any { return _;  }
-  public get fPba() { return this.changePbaFG.controls; }
+  public underscore(): any {
+    return _;
+  }
+
+  public get fPba() {
+    return this.changePbaFG.controls;
+  }
 
   public ngOnInit(): void {
     this.getOrgs();
     this.getErrorMsgs();
 
-    this.changePbaFG.valueChanges.subscribe((x) => {
+    this.changePbaFG.valueChanges.subscribe(() => {
       this.duplicateValidator();
       this.charactorLengthValidator();
     });
@@ -79,15 +83,15 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
   private getOrgs(): void {
     this.organisationService.getSingleOrganisation({ id: this.orgId })
-      .pipe(take(1), map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
-      .subscribe(value => {
+      .pipe(take(1), map((apiOrg) => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe((value) => {
         this.orgDetails$ = of(value);
         if (value) {
           this.orgId = value.organisationId;
           this.pbaNumbers = [];
           value.status === 'ACTIVE' ?
-          value.pbaNumber.forEach(number => this.pbaNumbers.push(number as string)) :
-          value.pendingPaymentAccount.forEach(number => this.pbaNumbers.push(number as string));
+            value.pbaNumber.forEach((number) => this.pbaNumbers.push(number as string)) :
+            value.pendingPaymentAccount.forEach((number) => this.pbaNumbers.push(number as string));
           this.createPbaForm();
           this.saveDisabled = !value.pbaNumber;
           this.orgDetails$ = of(value);
@@ -102,7 +106,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
   public get currentPaymentAccounts(): PBANumberModel[] {
     return this.organisationDetails.paymentAccount
-      .filter(pba => !this.organisationDetails.pendingRemovePaymentAccount.includes(pba));
+      .filter((pba) => !this.organisationDetails.pendingRemovePaymentAccount.includes(pba));
   }
 
   private getErrorMsgs() {
@@ -119,7 +123,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
   public remove(data: PBAConfig) {
     this.changePbaFG.removeControl(data.name);
-    this.pbaInputs = this.pbaInputs.filter(input => input.id !== data.id);
+    this.pbaInputs = this.pbaInputs.filter((input) => input.id !== data.id);
 
     this.errorHeader.items = this.errorHeader.items.filter((item) => item.id !== data.name);
 
@@ -142,7 +146,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
   public get getPBANumbers(): string[] {
     const { value } = this.changePbaFG;
-    return Object.keys(value).map(key => value[key]).filter(item => item !== '');
+    return Object.keys(value).map((key) => value[key]).filter((item) => item !== '');
   }
 
   public addPbaFormItem(inputsName: string) {
@@ -160,8 +164,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         });
       });
 
-      this.subscriptions = this.changePbaFG.valueChanges.subscribe(value => {
-        const pba: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+      this.subscriptions = this.changePbaFG.valueChanges.subscribe((value) => {
+        const pba: string[] = Object.keys(value).map((key) => value[key]).filter((item) => item !== '');
         const isNewPba = JSON.stringify(this.pbaNumbers) === JSON.stringify(pba);
         this.saveDisabled = !isNewPba;
       });
@@ -184,11 +188,11 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     const duplicationValidation = this.duplicateValidator();
     const characterValidation = this.charactorLengthValidator();
     const { value } = this.changePbaFG;
-    const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+    const paymentAccounts: string[] = Object.keys(value).map((key) => value[key]).filter((item) => item !== '');
     const paymentAccountUpdated: string[] = [];
 
     isValid = duplicationValidation && characterValidation;
-    paymentAccounts.forEach(paymentAccount => {
+    paymentAccounts.forEach((paymentAccount) => {
       if (typeof paymentAccount === 'string') {
         paymentAccountUpdated.push(paymentAccount.toString());
       }
@@ -199,10 +203,10 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`/organisation-details/${this.orgId}`);
       }, (error) => {
         const data = error.error;
-        const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
+        const formControlsKeys = Object.keys(this.fPba).filter((control) => control !== 'pbaNumbers');
         const formControlsWithError = [];
 
-        paymentAccountUpdated.forEach(paymentAccount => {
+        paymentAccountUpdated.forEach((paymentAccount) => {
           if (data.errorDescription && data.errorDescription.indexOf(paymentAccount) > -1) {
             const errorKey = formControlsKeys.find((key) => this.fPba[key].value === paymentAccount);
 
@@ -227,7 +231,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
               }
             } else {
               const isInvalidPba = data.errorMessage.indexOf('3 :');
-              const errorHeaderMessage = isInvalidPba > -1 ? OrgManagerConstants.PBA_ERROR_VALID_PBA_MESSAGE :  OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
+              const errorHeaderMessage = isInvalidPba > -1 ? OrgManagerConstants.PBA_ERROR_VALID_PBA_MESSAGE : OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
               this.errorHeader.items.push({
                 id: controlName, message: [errorHeaderMessage]
               });
@@ -235,19 +239,19 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
                 [controlName]: { messages: [errorHeaderMessage], isInvalid: true },
                 ...this.errorInline
               };
-              this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage]}], isFormValid: false });
+              this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage] }], isFormValid: false });
               this.pbaError$ = of(this.errorInline);
             }
           } else {
             const errorHeaderMessage = OrgManagerConstants.PBA_SERVER_ERROR_MESSAGE;
             this.errorHeader.isFromValid = false;
             this.errorHeader.items.push({
-              id: controlName, message: [errorHeaderMessage]});
+              id: controlName, message: [errorHeaderMessage] });
             this.errorInline = {
               [controlName]: { messages: [errorHeaderMessage], isInvalid: true },
               ...this.errorInline
             };
-            this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage]}], isFormValid: false });
+            this.pbaErrorsHeader$ = of({ header: 'There is a problem.', items: [{ id: controlName, message: [errorHeaderMessage] }], isFormValid: false });
             this.pbaError$ = of(this.errorInline);
           }
         });
@@ -256,7 +260,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public pbaDepiction(errorDescription: string) {
-    let result: string  = '';
+    let result: string = '';
     const errorParts = errorDescription.split(':');
     if (errorParts.length === 0) {
       result = errorParts[0];
@@ -282,38 +286,38 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public duplicateValidator(): boolean {
     let validation = true;
     const { value } = this.changePbaFG;
-    const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+    const paymentAccounts: string[] = Object.keys(value).map((key) => value[key]).filter((item) => item !== '');
     let paymentAccountsClone = [...paymentAccounts];
     paymentAccountsClone = this.underscore().uniq(paymentAccountsClone);
     const duplicates = [];
     const paymentAccountComparables = [...paymentAccounts];
 
     paymentAccountsClone.forEach((paymentAccount) => {
-      const duplicateResult = paymentAccountComparables.filter(paymentAccountComparable => paymentAccountComparable === paymentAccount);
+      const duplicateResult = paymentAccountComparables.filter((paymentAccountComparable) => paymentAccountComparable === paymentAccount);
       if (duplicateResult.length > 1) {
-          duplicates.push(paymentAccount);
-        }
+        duplicates.push(paymentAccount);
+      }
     });
 
     if (!duplicates.length) {
-      const payAccounts = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+      const payAccounts = Object.keys(value).map((key) => value[key]).filter((item) => item !== '');
       for (let index = 0; index < payAccounts.length; index++) {
-        const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
+        const formControlsKeys = Object.keys(this.fPba).filter((control) => control !== 'pbaNumbers');
         const errorKey = formControlsKeys.find((key) => this.fPba[key].value === payAccounts[index]);
 
         if (this.errorInline[errorKey]) {
-          if (this.errorInline[errorKey].messages.filter(message => message.indexOf('has been entered more than once') > -1).length) {
-            this.errorInline[errorKey].messages = this.errorInline[`pba${index}`].messages.filter(message => message.indexOf('has been entered more than once') === -1);
+          if (this.errorInline[errorKey].messages.filter((message) => message.indexOf('has been entered more than once') > -1).length) {
+            this.errorInline[errorKey].messages = this.errorInline[`pba${index}`].messages.filter((message) => message.indexOf('has been entered more than once') === -1);
           }
           if (!this.errorInline[errorKey].messages.length) {
             delete this.errorInline[errorKey];
           }
         }
 
-        if (this.errorHeader.items.filter(x => x.id === errorKey).length) {
-          const items = this.errorHeader.items.filter(x => x.id === errorKey);
-          if (items[0].message.filter(m => m.indexOf('has been entered more than once') > -1).length) {
-            items[0].message = items[0].message.filter(m => m.indexOf('has been entered more than once') === -1);
+        if (this.errorHeader.items.filter((x) => x.id === errorKey).length) {
+          const items = this.errorHeader.items.filter((x) => x.id === errorKey);
+          if (items[0].message.filter((m) => m.indexOf('has been entered more than once') > -1).length) {
+            items[0].message = items[0].message.filter((m) => m.indexOf('has been entered more than once') === -1);
           }
 
           if (!items[0].message.length) {
@@ -323,18 +327,18 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       }
     }
 
-    duplicates.forEach(payment => {
+    duplicates.forEach((payment) => {
       validation = false;
       for (let index = 0; index < paymentAccountComparables.length; index++) {
-        const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
+        const formControlsKeys = Object.keys(this.fPba).filter((control) => control !== 'pbaNumbers');
         const errorKeys = formControlsKeys.filter((key) => this.fPba[key].value === paymentAccountComparables[index]);
         const lastDuplicateErrorKey = errorKeys[errorKeys.length - 1];
         const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_ENTERED_MORE_THAN_ONCE_HEADER_MESSAGE[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, payment);
         const errorMessage = OrgManagerConstants.PBA_ERROR_ENTERED_MORE_THAN_ONCE_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, payment);
         if (paymentAccountComparables[index] === payment) {
-          if (this.errorHeader.items.filter(x => x.id === lastDuplicateErrorKey).length) {
-            const pbaResult = this.errorHeader.items.filter(x => x.id === lastDuplicateErrorKey);
-            const messageResult = pbaResult[0].message.filter(message => message === errorHeaderMessage);
+          if (this.errorHeader.items.filter((x) => x.id === lastDuplicateErrorKey).length) {
+            const pbaResult = this.errorHeader.items.filter((x) => x.id === lastDuplicateErrorKey);
+            const messageResult = pbaResult[0].message.filter((message) => message === errorHeaderMessage);
             if (!messageResult.length) {
               pbaResult[0].message.push(errorHeaderMessage);
             }
@@ -345,15 +349,15 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
           if (!this.errorInline[lastDuplicateErrorKey]) {
             this.errorInline[lastDuplicateErrorKey] = { messages: [errorMessage], isInvalid: true };
           } else {
-            if (!this.errorInline[lastDuplicateErrorKey].messages.filter(message => message === errorMessage).length) {
+            if (!this.errorInline[lastDuplicateErrorKey].messages.filter((message) => message === errorMessage).length) {
               this.errorInline[lastDuplicateErrorKey].messages.push(errorMessage);
             }
             this.errorInline[lastDuplicateErrorKey].inInvalid = true;
           }
         } else {
           if (this.errorInline[lastDuplicateErrorKey]) {
-            if (this.errorInline[lastDuplicateErrorKey].messages.filter(message => message === errorMessage).length) {
-              this.errorInline[lastDuplicateErrorKey].messages = this.errorInline[`pba${index}`].messages.filter(message => message !== errorMessage);
+            if (this.errorInline[lastDuplicateErrorKey].messages.filter((message) => message === errorMessage).length) {
+              this.errorInline[lastDuplicateErrorKey].messages = this.errorInline[`pba${index}`].messages.filter((message) => message !== errorMessage);
             }
 
             if (!this.errorInline[lastDuplicateErrorKey].messages.length) {
@@ -375,11 +379,11 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   public charactorLengthValidator(): boolean {
     let validation = true;
     const { value } = this.changePbaFG;
-    const paymentAccounts: string[] = Object.keys(value).map(key => value[key]).filter(item => item !== '');
+    const paymentAccounts: string[] = Object.keys(value).map((key) => value[key]).filter((item) => item !== '');
     const paymentAccountsWrapper = [...paymentAccounts];
 
     for (const item of paymentAccountsWrapper) {
-      const formControlsKeys = Object.keys(this.fPba).filter(control => control !== 'pbaNumbers');
+      const formControlsKeys = Object.keys(this.fPba).filter((control) => control !== 'pbaNumbers');
       const errorKeys = formControlsKeys.filter((key) => this.fPba[key].value === item);
       const errorHeaderMessage = OrgManagerConstants.PBA_ERROR_MESSAGES[0].replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, item);
       const errorMessage = OrgManagerConstants.PBA_ERROR_MESSAGE.replace(OrgManagerConstants.PBA_MESSAGE_PLACEHOLDER, item);
@@ -392,9 +396,9 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
               isNaN(Number(item.substring(3))))) {
           validation = false;
 
-          if (this.errorHeader.items.filter(x => x.id === eKey).length) {
-            const pbaResult = this.errorHeader.items.filter(x => x.id === eKey);
-            const messageResult = pbaResult[0].message.filter(message => message === errorHeaderMessage);
+          if (this.errorHeader.items.filter((x) => x.id === eKey).length) {
+            const pbaResult = this.errorHeader.items.filter((x) => x.id === eKey);
+            const messageResult = pbaResult[0].message.filter((message) => message === errorHeaderMessage);
             if (!messageResult.length) {
               pbaResult[0].message.push(errorHeaderMessage);
             }
@@ -407,15 +411,15 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
             this.errorInline[eKey] = { messages: [errorMessage], isInvalid: true };
             this.errorInline[eKey].inInvalid = true;
           } else {
-            if (!this.errorInline[eKey].messages.filter(message => message === errorMessage).length) {
+            if (!this.errorInline[eKey].messages.filter((message) => message === errorMessage).length) {
               this.errorInline[eKey].messages.push(errorMessage);
             }
             this.errorInline[eKey].inInvalid = true;
           }
         } else {
           if (this.errorInline[eKey]) {
-            if (this.errorInline[eKey].messages.filter(message => message === errorMessage).length) {
-              this.errorInline[eKey].messages = this.errorInline[eKey].messages.filter(message => message !== errorMessage);
+            if (this.errorInline[eKey].messages.filter((message) => message === errorMessage).length) {
+              this.errorInline[eKey].messages = this.errorInline[eKey].messages.filter((message) => message !== errorMessage);
             }
 
             if (!this.errorInline[eKey].messages.length) {
@@ -423,10 +427,10 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
             }
           }
 
-          if (this.errorHeader.items.filter(x => x.id === eKey).length) {
-            const items = this.errorHeader.items.filter(x => x.id === eKey);
-            if (items[0].message.filter(m => m.indexOf('for example PBA1234567') > -1).length) {
-              items[0].message = items[0].message.filter(m => m.indexOf('for example PBA1234567') === -1);
+          if (this.errorHeader.items.filter((x) => x.id === eKey).length) {
+            const items = this.errorHeader.items.filter((x) => x.id === eKey);
+            if (items[0].message.filter((m) => m.indexOf('for example PBA1234567') > -1).length) {
+              items[0].message = items[0].message.filter((m) => m.indexOf('for example PBA1234567') === -1);
             }
 
             if (!items[0].message.length) {

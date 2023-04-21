@@ -35,7 +35,7 @@ export class HmctsErrorSummaryComponent implements AfterViewInit, OnChanges {
 
   messages: object[];
 
-  constructor(@Inject(DOCUMENT) private document) { }
+  constructor(@Inject(DOCUMENT) private document) {}
 
   ngAfterViewInit(): void {
     this.scrollTo('errorSummary');
