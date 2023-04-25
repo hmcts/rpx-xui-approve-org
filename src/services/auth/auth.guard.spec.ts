@@ -25,19 +25,20 @@ const config = {
 };
 
 const router = {
-  navigate: () => { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  navigate: () => {}
 };
 
 const cookieService = {
-  get: key => {
+  get: (key) => {
     return cookieService[key];
   },
   set: (key, value) => {
     cookieService[key] = value;
   },
-  removeAll: () => { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  removeAll: () => {}
 };
-
 
 class HttpClientMock {
   public get() {
@@ -52,6 +53,7 @@ class MockAuthService {
     return of(this.authenticated);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public loginRedirect() {}
 }
 
@@ -79,7 +81,6 @@ describe('AuthService', () => {
     expect(gurad).toBeTruthy();
   }));
 
-
   it('should exist', inject([AuthGuard], (guard: AuthGuard) => {
     expect(guard.canActivate).toBeDefined();
   }));
@@ -88,13 +89,13 @@ describe('AuthService', () => {
     it('should return true when authenticated', inject([AuthGuard], (guard: AuthGuard) => {
       service.authenticated = true;
 
-      guard.canActivate().subscribe(result => expect(result).toBeTruthy());
+      guard.canActivate().subscribe((result) => expect(result).toBeTruthy());
     }));
 
     it('should return false when unauthenticated', inject([AuthGuard], (guard: AuthGuard) => {
       service.authenticated = false;
 
-      guard.canActivate().subscribe(result => expect(result).toBeFalsy());
+      guard.canActivate().subscribe((result) => expect(result).toBeFalsy());
     }));
   });
 });

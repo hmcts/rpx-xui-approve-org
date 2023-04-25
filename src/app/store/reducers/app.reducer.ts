@@ -1,7 +1,6 @@
 import { UserModel } from '../../../models/user.model';
 import * as fromAction from '../actions';
 
-
 export interface ErrorMessage {
   bodyText: string;
   urlText: string;
@@ -53,13 +52,13 @@ export function reducer(
         ...state,
         userDetails,
         loaded: true,
-        loading: false,
+        loading: false
       };
     }
     case fromAction.SET_MODAL: {
       return {
         ...state,
-        modal: {...action.payload}
+        modal: { ...action.payload }
       };
     }
 

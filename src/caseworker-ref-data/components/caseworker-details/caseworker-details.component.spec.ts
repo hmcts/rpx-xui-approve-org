@@ -27,7 +27,7 @@ describe('CaseWorkerDetailsComponent', () => {
     const fileList = {
       0: file,
       length: 1,
-      item: (index: number) => file
+      item: () => file
     };
     component.onSubmit({ files: fileList });
     expect(caseWorkerRefDataService.postFile).toHaveBeenCalled();
@@ -46,7 +46,7 @@ describe('CaseWorkerDetailsComponent', () => {
     const fileList = {
       0: file,
       length: 1,
-      item: (index: number) => file
+      item: () => file
     };
     component.onSubmit({ files: fileList });
     expect(caseWorkerRefDataService.postFile).toHaveBeenCalled();
@@ -65,7 +65,7 @@ describe('CaseWorkerDetailsComponent', () => {
     const fileList = {
       0: file,
       length: 0,
-      item: (index: number) => null
+      item: () => null
     };
     component.onSubmit({ files: fileList });
     expect(caseWorkerRefDataService.postFile).not.toHaveBeenCalled();
@@ -89,7 +89,7 @@ describe('CaseWorkerDetailsComponent', () => {
     const fileList = {
       0: file,
       length: 1,
-      item: (index: number) => file
+      item: () => file
     };
     component.onSubmit({ files: fileList });
     expect(caseWorkerRefDataService.postFile).toHaveBeenCalled();

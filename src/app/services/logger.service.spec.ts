@@ -1,4 +1,4 @@
-import {LoggerService} from './logger.service';
+import { LoggerService } from './logger.service';
 
 describe('Logger service', () => {
   const mockedMonitoringService = jasmine.createSpyObj('mockedMonitoringService', ['logEvent', 'logException']);
@@ -7,11 +7,11 @@ describe('Logger service', () => {
   const mockedCookieService = jasmine.createSpyObj('mockedCookieService', ['get']);
   const mockedCryptoWrapper = jasmine.createSpyObj('mockedCryptoWrapper', ['encrypt', 'decrypt']);
   const mockJwtDecodeWrapper = jasmine.createSpyObj('mockJwtDecodeWrapper', ['decode']);
-  const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', {get: { cookies: { token: 'test' } }});
+  const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', { get: { cookies: { token: 'test' } } });
 
   let service: LoggerService;
 
-  beforeEach( () => {
+  beforeEach(() => {
     service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
       mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
   });

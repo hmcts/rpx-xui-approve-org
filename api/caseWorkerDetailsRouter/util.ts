@@ -47,7 +47,7 @@ export interface File {
 export const multipartFormData = 'multipart/form-data';
 
 export function getContentType(contentType: string, formData: FormData) {
-  return `${contentType}; boundary=${formData.getBoundary()}`
+  return `${contentType}; boundary=${formData.getBoundary()}`;
 }
 
 export function getFormData(file: File): FormData {
@@ -58,7 +58,7 @@ export function getFormData(file: File): FormData {
 
 export function getHeaders(formData: FormData): any {
   return {
-    headers:  {'Content-Type': getContentType(multipartFormData, formData)}
+    headers: { 'Content-Type': getContentType(multipartFormData, formData) }
   };
 }
 

@@ -40,7 +40,7 @@ describe('UploadInfoPartialSuccessComponent', () => {
       TestBed.configureTestingModule({
         declarations: [UploadInfoPartialSuccessComponent],
         providers: [
-          { provide: Router, useValue: { getCurrentNavigation: () => ({ extras: { state: response } })} }
+          { provide: Router, useValue: { getCurrentNavigation: () => ({ extras: { state: response } }) } }
         ]
       })
         .compileComponents();

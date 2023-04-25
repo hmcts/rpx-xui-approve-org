@@ -19,7 +19,7 @@ describe('UpdatePbaServices', () => {
       providers: [
         UpdatePbaServices,
         { provide: HttpClient, useValue: httpClient },
-        { provide: environment, useValue: mockEnviroment },
+        { provide: environment, useValue: mockEnviroment }
       ]
     });
     updatePbaServices = TestBed.inject(UpdatePbaServices);

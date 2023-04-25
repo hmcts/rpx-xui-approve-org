@@ -14,11 +14,11 @@ describe('BackLinkComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterModule, RouterTestingModule.withRoutes([]) ],
-      declarations: [ BackLinkComponent ],
-      providers: [ provideMockStore() ]
+      imports: [RouterModule, RouterTestingModule.withRoutes([])],
+      declarations: [BackLinkComponent],
+      providers: [provideMockStore()]
     })
-    .compileComponents();
+      .compileComponents();
     mockStore = TestBed.inject(MockStore);
   }));
 
@@ -41,7 +41,7 @@ describe('BackLinkComponent', () => {
       component.currentUrl = 'active-organisation';
       component.onGoBack();
 
-      expect(mockStore.dispatch).toHaveBeenCalledWith(new fromRoot.Go({path: ['/pending-organisations']}));
+      expect(mockStore.dispatch).toHaveBeenCalledWith(new fromRoot.Go({ path: ['/pending-organisations'] }));
     });
 
     it('should dispatch route to back', () => {

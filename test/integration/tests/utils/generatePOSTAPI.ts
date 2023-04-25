@@ -6,7 +6,6 @@ const mainURL = process.env.TEST_URL || 'https://localhost:3000';
 const LOG_REQUEST_ERROR_DETAILS = false;
 
 export async function generatePOSTAPIRequest(method, subURL, payload) {
-
   try {
     const cookie = await authenticateAndGetcookies(mainURL);
     const xxsrfcookie = await xxsrftoken();
@@ -35,7 +34,7 @@ export async function generatePOSTAPIRequest(method, subURL, payload) {
     //   options.body = params.body;
     // }
 
-   // console.log('OPTIONS: ', method, mainURL + subURL, options);
+    // console.log('OPTIONS: ', method, mainURL + subURL, options);
     const response = await fetch(url, options);
     const data = await response.json();
     const headers = response.headers;
@@ -45,10 +44,8 @@ export async function generatePOSTAPIRequest(method, subURL, payload) {
       statusText: response.statusText,
       data
     };
-
   } catch (error) {
     console.log(error);
   }
-
- }
+}
 

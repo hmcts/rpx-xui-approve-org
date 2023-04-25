@@ -9,55 +9,48 @@ const config = require('../../../config/conf.js');
 const EC = protractor.ExpectedConditions;
 const browserWaits = require('../../../support/customWaits');
 
-
 async function waitForElement(el) {
-  await browser.wait(result => {
+  await browser.wait((result) => {
     return element(by.className(el)).isPresent();
   }, 600000);
 }
 
-async function loginattemptCheckAndRelogin(username,password,world){
-
+async function loginattemptCheckAndRelogin(username, password, world){
   let loginAttemptRetryCounter = 1;
 
-  while(loginAttemptRetryCounter < 3){
-
-    try{
-        await browserWaits.waitForstalenessOf(loginPage.emailAddress,5);
-        break;
-      }catch(err){
-        let emailFieldValue = await loginPage.getEmailFieldValue();
-        if (!emailFieldValue.includes(username)){
-          if(loginAttemptRetryCounter === 1){
-            firstAttemptFailedLogins++;
-          }
-          if(loginAttemptRetryCounter === 2){
-            secondAttemptFailedLogins++;
-          }
-
-          console.log(err+" email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt "+loginAttemptRetryCounter);
-          world.attach(err +" email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt "+loginAttemptRetryCounter);
-          await loginPage.loginWithCredentials(username, password);
-          loginAttemptRetryCounter++;
+  while (loginAttemptRetryCounter < 3){
+    try {
+      await browserWaits.waitForstalenessOf(loginPage.emailAddress, 5);
+      break;
+    } catch (err){
+      const emailFieldValue = await loginPage.getEmailFieldValue();
+      if (!emailFieldValue.includes(username)){
+        if (loginAttemptRetryCounter === 1){
+          firstAttemptFailedLogins++;
         }
+        if (loginAttemptRetryCounter === 2){
+          secondAttemptFailedLogins++;
+        }
+
+        console.log(err+' email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt '+loginAttemptRetryCounter);
+        world.attach(err +' email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt '+loginAttemptRetryCounter);
+        await loginPage.loginWithCredentials(username, password);
+        loginAttemptRetryCounter++;
       }
+    }
   }
-  console.log("ONE ATTEMPT:  EUI-1856 issue occured / total logins => "+firstAttemptFailedLogins+" / "+loginAttempts);
-  world.attach("ONE ATTEMPT:  EUI-1856 issue occured / total logins => "+firstAttemptFailedLogins+" / "+loginAttempts);
+  console.log('ONE ATTEMPT:  EUI-1856 issue occured / total logins => '+firstAttemptFailedLogins+' / '+loginAttempts);
+  world.attach('ONE ATTEMPT:  EUI-1856 issue occured / total logins => '+firstAttemptFailedLogins+' / '+loginAttempts);
 
-  console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => "+secondAttemptFailedLogins+" / "+loginAttempts);
-  world.attach("TWO ATTEMPT: EUI-1856 issue occured / total logins => "+secondAttemptFailedLogins+" / "+loginAttempts);
-
-
+  console.log('TWO ATTEMPT: EUI-1856 issue occured / total logins => '+secondAttemptFailedLogins+' / '+loginAttempts);
+  world.attach('TWO ATTEMPT: EUI-1856 issue occured / total logins => '+secondAttemptFailedLogins+' / '+loginAttempts);
 }
 
 let loginAttempts = 0;
 let firstAttemptFailedLogins = 0;
 let secondAttemptFailedLogins = 0;
 
-
 defineSupportCode(function ({ Given, When, Then }) {
-
   When(/^I navigate to approve organisation Url$/, { timeout: 600 * 1000 }, async function () {
     await browser.get(config.config.baseUrl);
     await browser.driver.manage()
@@ -76,7 +69,6 @@ defineSupportCode(function ({ Given, When, Then }) {
       .oneOf(['Incorrect email or password', 'There is a problem with your account login details']);
   });
 
-
   Then(/^I am on Idam login page$/, { timeout: 600 * 1000 }, async function () {
     await waitForElement('heading-large');
     await expect(loginPage.signinTitle.isDisplayed()).to.eventually.be.true;
@@ -86,27 +78,21 @@ defineSupportCode(function ({ Given, When, Then }) {
       .equal('Sign in');
     await expect(loginPage.emailAddress.isDisplayed()).to.eventually.be.true;
     await expect(loginPage.password.isDisplayed()).to.eventually.be.true;
-
   });
 
-
   When(/^I enter an valid email-address and password to login$/, async function () {
-    await loginPage.emailAddress.sendKeys(this.config.username);          //replace username and password
+    await loginPage.emailAddress.sendKeys(this.config.username); //replace username and password
     await loginPage.password.sendKeys(this.config.password);
     // browser.sleep(SHORT_DELAY);
     await loginPage.signinBtn.click();
     browser.sleep(SHORT_DELAY);
     loginAttempts++;
-    await loginattemptCheckAndRelogin(this.config.username,this.config.password,this);
-
+    await loginattemptCheckAndRelogin(this.config.username, this.config.password, this);
   });
-
 
   When(/^I enter an Invalid email-address and password to login$/, async function () {
     await loginPage.givenIAmUnauthenticatedUser();
-
   });
-
 
   Given(/^I should be redirected to the Idam login page$/, async function () {
     await browserWaits.waitForElement(loginPage.signinTitle);
@@ -117,7 +103,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     browser.sleep(LONG_DELAY);
   });
 
-
   Then(/^I select the sign out link$/, async function () {
     browser.sleep(SHORT_DELAY);
     await expect(loginPage.signOutlink.isDisplayed()).to.eventually.be.true;
@@ -125,7 +110,6 @@ defineSupportCode(function ({ Given, When, Then }) {
     await loginPage.signOutlink.click();
     browser.sleep(SHORT_DELAY);
   });
-
 
   Then(/^I should be redirected to approve organisation dashboard page$/, async function () {
     browser.sleep(SHORT_DELAY);
@@ -136,18 +120,16 @@ defineSupportCode(function ({ Given, When, Then }) {
       .to
       .eventually
       .equal('Approve organisation');
-
   });
 
   Given(/^I am logged into approve organisation with HMCTS admin$/, async function () {
     await loginPage.loginWithCredentials(this.config.username, this.config.password);
     browser.sleep(SHORT_DELAY);
     loginAttempts++;
-    await loginattemptCheckAndRelogin(this.config.username,this.config.password,this);
+    await loginattemptCheckAndRelogin(this.config.username, this.config.password, this);
   });
 
   Given(/^I am logged into approve organisation with CWD admin$/, async function () {
-
     await loginPage.loginWithCredentials('cwd_admin@mailinator.com', 'Welcome01');
     browser.sleep(SHORT_DELAY);
     loginAttempts++;
@@ -157,15 +139,15 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I am logged into approve organisation with approver prd admin$/, async function () {
     await loginPage.loginWithCredentials(config.config.params.approver_username, config.config.params.approver_password);
     browser.sleep(LONG_DELAY);
-   loginAttempts++;
-    await loginattemptCheckAndRelogin(config.config.params.approver_username,config.config.params.approver_password,this);
+    loginAttempts++;
+    await loginattemptCheckAndRelogin(config.config.params.approver_username, config.config.params.approver_password, this);
   });
 
   Given(/^I am logged into approve organisation with non approver prd admin$/, async function () {
     await loginPage.loginWithCredentials(this.config.username, this.config.password);
     browser.sleep(LONG_DELAY);
     loginAttempts++;
-    await loginattemptCheckAndRelogin(this.config.username,this.config.password,this);
+    await loginattemptCheckAndRelogin(this.config.username, this.config.password, this);
 
     // await browserWaits.waitForElement(headerPage.signOut);
   });
@@ -173,8 +155,7 @@ defineSupportCode(function ({ Given, When, Then }) {
   Given(/^I am logged into approve organisation with FR judge details$/, async function () {
     await loginPage.loginWithCredentials(this.config.username, this.config.password);
     loginAttempts++;
-    await loginattemptCheckAndRelogin(this.config.username,this.config.password,this);
-
+    await loginattemptCheckAndRelogin(this.config.username, this.config.password, this);
   });
 
   Given(/^I navigate to approve organisation Url direct link$/, { timeout: 600 * 1000 }, async function () {
@@ -195,6 +176,5 @@ defineSupportCode(function ({ Given, When, Then }) {
       .equal('Sign in');
     browser.sleep(LONG_DELAY);
   });
-
 });
 

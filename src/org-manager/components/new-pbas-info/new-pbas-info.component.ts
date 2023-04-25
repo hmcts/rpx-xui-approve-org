@@ -8,7 +8,6 @@ import { OrganisationVM } from '../../models/organisation';
   templateUrl: './new-pbas-info.component.html'
 })
 export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
-
   @Input() public org: OrganisationVM;
   @Input() public newPBAs: Map<string, string>;
   @Output() public submitForm = new EventEmitter();
@@ -24,7 +23,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({});
-    this.org.pendingPaymentAccount.forEach(p => this.formGroup.addControl(p, this.fb.control('', Validators.required)));
+    this.org.pendingPaymentAccount.forEach((p) => this.formGroup.addControl(p, this.fb.control('', Validators.required)));
     this.formSub = this.formGroup.valueChanges.subscribe(() => {
       this.submitted = false;
 
@@ -42,7 +41,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
   public onSubmitForm(): void {
     this.submitted = true;
     if (this.formGroup.valid) {
-        this.submitForm.emit();
+      this.submitForm.emit();
     }
   }
 
