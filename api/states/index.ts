@@ -1,30 +1,29 @@
-import * as express from 'express'
-import * as log4jui from '../lib/log4jui'
-import { makeOrganisationPayload } from '../lib/payloadBuilder'
-import { process } from '../lib/stateEngine'
-import { Store } from '../lib/store'
-import { asyncReturnOrError } from '../lib/util'
-import * as rdProfessional from '../services/rdProfessional'
-import mapping from './mapping'
-import templates from './templates'
+import * as express from 'express';
+import * as log4jui from '../lib/log4jui';
+import { makeOrganisationPayload } from '../lib/payloadBuilder';
+import { process } from '../lib/stateEngine';
+import { Store } from '../lib/store';
+import { asyncReturnOrError } from '../lib/util';
+import * as rdProfessional from '../services/rdProfessional';
+import mapping from './mapping';
+import templates from './templates';
 
-const logger = log4jui.getLogger('states')
-const ERROR400 = 400
+const logger = log4jui.getLogger('states');
+const ERROR400 = 400;
 
 /**
  * registerOrganisation
  */
 async function registerOrganisation(req, res) {
+  const organisationPayload = makeOrganisationPayload(req.body.fromValues);
 
-    const organisationPayload = makeOrganisationPayload(req.body.fromValues)
-
-    return await asyncReturnOrError(
-        rdProfessional.postOrganisation(organisationPayload, req),
-        'Error registering organisation',
-        res,
-        logger,
-        false
-    )
+  return await asyncReturnOrError(
+    rdProfessional.postOrganisation(organisationPayload, req),
+    'Error registering organisation',
+    res,
+    logger,
+    false
+  );
 }
 
 /**
@@ -39,26 +38,25 @@ async function registerOrganisation(req, res) {
  * @param res
  */
 async function payload(req, res) {
+  logger.info('Posting to Reference Data (Professional) service');
+  const result = await registerOrganisation(req, res);
+  logger.info('Posted to Reference Data (Professional) service', result);
 
-    logger.info('Posting to Reference Data (Professional) service')
-    const result = await registerOrganisation(req, res)
-    logger.info('Posted to Reference Data (Professional) service', result)
+  if (result) {
+    return 'registration-confirmation';
+  }
 
-    if (result) {
-        return 'registration-confirmation'
-    }
-
-    res.status(ERROR400).send('Error registering organisation')
-    return null
+  res.status(ERROR400).send('Error registering organisation');
+  return null;
 }
 
 async function handleStateRoute(req, res) {
-    process(req, res, mapping, payload, templates, new Store(req))
+  process(req, res, mapping, payload, templates, new Store(req));
 }
 
-export const router = express.Router({ mergeParams: true })
+export const router = express.Router({ mergeParams: true });
 
-router.get('/states/:jurId/:caseTypeId/:caseId/:stateId', handleStateRoute)
-router.post('/states/:jurId/:caseTypeId/:caseId/:stateId', handleStateRoute)
+router.get('/states/:jurId/:caseTypeId/:caseId/:stateId', handleStateRoute);
+router.post('/states/:jurId/:caseTypeId/:caseId/:stateId', handleStateRoute);
 
-export default router
+export default router;

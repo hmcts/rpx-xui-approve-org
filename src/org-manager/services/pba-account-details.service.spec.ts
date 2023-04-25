@@ -19,7 +19,7 @@ describe('PbaAccountDetails', () => {
       providers: [
         PbaAccountDetails,
         { provide: HttpClient, useValue: httpClient },
-        { provide: environment, useValue: mockEnviroment },
+        { provide: environment, useValue: mockEnviroment }
       ]
     });
     pbaAccountDetails = TestBed.inject(PbaAccountDetails);

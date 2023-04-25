@@ -14,10 +14,10 @@ describe('Users Reducer', () => {
 
     describe('SHOW_USER_DETAILS action', () => {
       it('should assigned correct pending user and organisation id', () => {
-        const payload = {userDetails: { fullName: 'name name', email: 'email@email.com', status: 'Pending'}, orgId: 'id', isSuperUser: false};
+        const payload = { userDetails: { fullName: 'name name', email: 'email@email.com', status: 'Pending' }, orgId: 'id', isSuperUser: false };
         const action = new fromActions.ShowUserDetails(payload);
         const state = reducer(initialState, action);
-        expect(state.selectedUser).toEqual({ fullName: 'name name', email: 'email@email.com', status: 'Pending'});
+        expect(state.selectedUser).toEqual({ fullName: 'name name', email: 'email@email.com', status: 'Pending' });
         expect(state.organisationId).toEqual('id');
         expect(state.isSuperUser).toEqual(false);
       });
@@ -25,7 +25,7 @@ describe('Users Reducer', () => {
 
     describe('SUBMIT_REINVITE_USER_SUCCESS action', () => {
       it('should assigned correct pending user and organisation id', () => {
-        const payload = {successEmail: 'test@email.com'};
+        const payload = { successEmail: 'test@email.com' };
         const action = new fromActions.SubmitReinviteUserSucces(payload);
         const state = reducer(initialState, action);
         expect(state.reinviteSuccessEmail).toEqual('test@email.com');
@@ -53,12 +53,12 @@ describe('Users Reducer', () => {
 
     describe('SUBMIT_REINVITE_USER_ERROR action', () => {
       it('should return form error messages', () => {
-        const payload = {error: {apiStatusCode: 400, message: 'error'}};
+        const payload = { error: { apiStatusCode: 400, message: 'error' } };
         const action = new fromActions.SubmitReinviteUserError(payload);
         const errorMessages = {
           serverResponse: {
             messages: [
-              payload.error.apiStatusCode === 409 && AppConstants.ERROR_MESSAGE_MAPPINGS ? AppConstants.ERROR_MESSAGE_MAPPINGS[1] :  payload.error.message
+              payload.error.apiStatusCode === 409 && AppConstants.ERROR_MESSAGE_MAPPINGS ? AppConstants.ERROR_MESSAGE_MAPPINGS[1] : payload.error.message
             ]
           }
         };

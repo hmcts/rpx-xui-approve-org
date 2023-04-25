@@ -5,7 +5,7 @@ import {Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
   templateUrl: './gov-uk-checkbox.component.html',
 })
 export class GovUkCheckboxComponent {
-  constructor() { }
+  constructor() {}
 
   @Output() valueChange = new EventEmitter();
   checkboxInputArray: Array<any>;

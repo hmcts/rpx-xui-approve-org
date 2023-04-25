@@ -26,14 +26,14 @@ describe('OrganisationService', () => {
       postCode: 'string',
       dxAddress: [{
         dxNumber: 'string',
-        dxExchange: 'string',
-      }],
+        dxExchange: 'string'
+      }]
     }],
     superUser: {
       userIdentifier: '',
       firstName: 'string',
       lastName: 'string;',
-      email: 'string',
+      email: 'string'
     },
     status: 'string;',
     name: 'string;',
@@ -48,7 +48,7 @@ describe('OrganisationService', () => {
       providers: [
         OrganisationService,
         { provide: HttpClient, useValue: httpClient },
-        { provide: environment, useValue: mockEnvironment },
+        { provide: environment, useValue: mockEnvironment }
       ]
     });
     organisationService = TestBed.inject(OrganisationService);
@@ -64,7 +64,7 @@ describe('OrganisationService', () => {
   });
 
   it('should get single organisation', () => {
-    organisationService.getSingleOrganisation({id: 'dummy'});
+    organisationService.getSingleOrganisation({ id: 'dummy' });
     expect(httpClient.get).toHaveBeenCalledWith(`${mockEnvironment.singleOrgUrl}dummy`);
   });
 

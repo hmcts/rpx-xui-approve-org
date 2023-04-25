@@ -1,5 +1,5 @@
 import { generateToken } from '../../../../api/auth/serviceToken';
-import {authenticateAndGetcookies} from './getCookie';
+import { authenticateAndGetcookies } from './getCookie';
 import { getauthToken } from './getToken';
 
 const fetch = require('node-fetch');
@@ -33,7 +33,7 @@ export async function generateregPOSTAPIRequest(method, subURL, payload) {
     //   options.body = params.body;
     // }
 
-   // console.log('OPTIONS: ', method, mainURL + subURL, options);
+    // console.log('OPTIONS: ', method, mainURL + subURL, options);
     const response = await fetch(url, options);
     const data = await response.json();
     const headers = response.headers;
@@ -43,10 +43,8 @@ export async function generateregPOSTAPIRequest(method, subURL, payload) {
       statusText: response.statusText,
       data
     };
-
   } catch (error) {
     console.log(error);
   }
-
- }
+}
 

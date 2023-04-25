@@ -9,12 +9,12 @@ export const ROUTES: Routes = [
   {
     path: '',
     component: CaseWorkerRefDataHomeComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard]
   },
   {
     path: 'upload-success',
     component: UploadInfoDetailsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard]
   },
   {
     path: 'partial-success',

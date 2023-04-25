@@ -11,8 +11,8 @@ describe('Edit Details selectors', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        StoreModule.forFeature('orgState', reducers),
-      ],
+        StoreModule.forFeature('orgState', reducers)
+      ]
     });
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
@@ -21,9 +21,8 @@ describe('Edit Details selectors', () => {
   describe('getUsersState', () => {
     it('should return initial state', () => {
       let result;
-      store.pipe(select(fromSelectors.getUsersState)).subscribe(value => {
+      store.pipe(select(fromSelectors.getUsersState)).subscribe((value) => {
         result = value;
-
       });
       expect(result).toEqual(initialState);
     });
@@ -32,7 +31,7 @@ describe('Edit Details selectors', () => {
   describe('getPendingUserSelector', () => {
     it('should return pending user', () => {
       let result;
-      store.pipe(select(fromSelectors.getSelectedUserSelector)).subscribe(value => {
+      store.pipe(select(fromSelectors.getSelectedUserSelector)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialState.selectedUser);
@@ -42,7 +41,7 @@ describe('Edit Details selectors', () => {
   describe('getUsersOrganisationIdSelector', () => {
     it('should return organisation Id', () => {
       let result;
-      store.pipe(select(fromSelectors.getOrganisationIdSelector)).subscribe(value => {
+      store.pipe(select(fromSelectors.getOrganisationIdSelector)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialState.organisationId);
@@ -52,7 +51,7 @@ describe('Edit Details selectors', () => {
   describe('getIsSuperUserSelector', () => {
     it('should return super user', () => {
       let result;
-      store.pipe(select(fromSelectors.getIsSuperUserSelector)).subscribe(value => {
+      store.pipe(select(fromSelectors.getIsSuperUserSelector)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialState.isSuperUser);
@@ -62,7 +61,7 @@ describe('Edit Details selectors', () => {
   describe('getInviteUserErrorMessageSelector', () => {
     it('should return errorMessages', () => {
       let result;
-      store.pipe(select(fromSelectors.getInviteUserErrorMessageSelector)).subscribe(value => {
+      store.pipe(select(fromSelectors.getInviteUserErrorMessageSelector)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialState.errorMessages);
@@ -72,7 +71,7 @@ describe('Edit Details selectors', () => {
   describe('getInviteUserIsFormValidSelector', () => {
     it('should return isFormValid', () => {
       let result;
-      store.pipe(select(fromSelectors.getInviteUserIsFormValidSelector)).subscribe(value => {
+      store.pipe(select(fromSelectors.getInviteUserIsFormValidSelector)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialState.isFormValid);
@@ -82,7 +81,7 @@ describe('Edit Details selectors', () => {
   describe('getInviteUserErrorHeaderSelector', () => {
     it('should return error Header', () => {
       let result;
-      store.pipe(select(fromSelectors.getInviteUserErrorHeaderSelector)).subscribe(value => {
+      store.pipe(select(fromSelectors.getInviteUserErrorHeaderSelector)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual(initialState.errorHeader);
@@ -92,7 +91,7 @@ describe('Edit Details selectors', () => {
   describe('getGetInviteUserErrorsArray', () => {
     it('should return user form array', () => {
       let result;
-      store.pipe(select(fromSelectors.getGetInviteUserErrorsArray)).subscribe(value => {
+      store.pipe(select(fromSelectors.getGetInviteUserErrorsArray)).subscribe((value) => {
         result = value;
       });
       expect(result).toEqual({

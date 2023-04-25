@@ -1,7 +1,6 @@
 import * as fromApp from './app.actions';
 
 describe('App Actions', () => {
-
   describe('Logout', () => {
     it('should create an action', () => {
       const action = new fromApp.Logout();
@@ -56,5 +55,4 @@ describe('App Actions', () => {
       });
     });
   });
-
 });

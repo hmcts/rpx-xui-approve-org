@@ -6,8 +6,8 @@ import * as log4jui from '../lib/log4jui';
 import { shorten, valueOrNull } from '../lib/util';
 
 const exceptionOptions = {
-  maxLines: 1,
-}
+  maxLines: 1
+};
 
 export function requestInterceptor(request) {
   const logger = log4jui.getLogger('MOCK: outgoing');

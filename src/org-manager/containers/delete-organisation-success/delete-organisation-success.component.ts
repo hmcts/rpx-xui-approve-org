@@ -9,7 +9,7 @@ import { getOrganisationForReview } from '../../store/selectors';
   selector: 'app-delete-success',
   templateUrl: './delete-organisation-success.component.html'
 })
-export class DeleteOrganisationSuccessComponent  implements OnInit {
+export class DeleteOrganisationSuccessComponent implements OnInit {
   public orgForReview: OrganisationVM | null;
 
   constructor(public store: Store<fromOrganisationPendingStore.OrganisationRootState>) {}
@@ -20,7 +20,6 @@ export class DeleteOrganisationSuccessComponent  implements OnInit {
 
   public addOrganisationForReviewSubscribe() {
     this.store.pipe(select(getOrganisationForReview), take(1)).subscribe((org: OrganisationVM) => {
-
       this.orgForReview = org;
     });
   }

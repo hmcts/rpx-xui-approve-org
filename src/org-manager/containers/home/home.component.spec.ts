@@ -13,9 +13,9 @@ import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
 
 @Component({
-  template: `<div>Bob</div>`
+  template: '<div>Bob</div>'
 })
-export class MockComponent { }
+export class MockComponent {}
 
 export const MOCK_ROUTES: Routes = [
   {
@@ -97,7 +97,7 @@ describe('HomeComponent', () => {
   });
 
   it('should perform a search when the search form is submitted', () => {
-    const SEARCH_STRING = `Bob's Solicitors`;
+    const SEARCH_STRING = 'Bob\'s Solicitors';
     component.submitSearch(SEARCH_STRING);
     expect(organisationMockService.setOrganisationSearchString).toHaveBeenCalledWith(SEARCH_STRING);
   });
