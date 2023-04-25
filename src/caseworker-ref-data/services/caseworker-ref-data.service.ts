@@ -6,7 +6,7 @@ import { CaseWorkerRefDataUploadResponse } from '../models/caseworker-ref-data.m
 @Injectable()
 export class CaseWorkerRefDataService {
   public static url = '/api/caseworkerdetails';
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
   public postFile(formData: FormData): Observable<any> {
     return this.http.post<CaseWorkerRefDataUploadResponse>(CaseWorkerRefDataService.url, formData);
   }

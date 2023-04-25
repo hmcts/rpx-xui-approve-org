@@ -23,7 +23,7 @@ const config = {
 };
 
 const router = {
-  navigate: () => { }
+  navigate: () => {}
 };
 
 const expiredJwt = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOj`
@@ -39,9 +39,8 @@ const cookieService = {
   set: (key, value) => {
     cookieService[key] = value;
   },
-  removeAll: () => { }
+  removeAll: () => {}
 };
-
 
 class HttpClientMock {
 

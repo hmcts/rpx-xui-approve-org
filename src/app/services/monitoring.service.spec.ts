@@ -7,7 +7,7 @@ describe('Monitoring service', () => {
   const mockedConfig = new MonitorConfig();
 
   beforeEach(() => {
-    mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', {get: of({key: 'Some Value'})});
+    mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', { get: of({ key: 'Some Value' }) });
     mockedAppInsights = jasmine.createSpyObj('mockedAppInsights', ['downloadAndSetup', 'trackException', 'trackEvent', 'trackPageView']);
   });
 

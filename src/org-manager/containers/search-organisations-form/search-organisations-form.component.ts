@@ -17,7 +17,7 @@ export class SearchOrganisationsFormComponent implements OnInit, OnDestroy {
   constructor(
     protected organisationService: OrganisationService,
     private readonly sessionStorageService: SessionStorageService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     this.searchOrgForm = new FormGroup({
@@ -25,7 +25,7 @@ export class SearchOrganisationsFormComponent implements OnInit, OnDestroy {
     });
 
     this.subscription = this.organisationService.organisationSearchStringChange().subscribe(
-      searchString => {
+      (searchString) => {
         this.searchOrgForm.controls.search.setValue(searchString);
       }
     );

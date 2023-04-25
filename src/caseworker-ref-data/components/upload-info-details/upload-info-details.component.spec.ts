@@ -42,7 +42,7 @@ describe('UploadInfoDetailsComponent', () => {
       TestBed.configureTestingModule({
         declarations: [UploadInfoDetailsComponent],
         providers: [
-          { provide: Router, useValue: { getCurrentNavigation: () => ({ extras: { state: response } })} }
+          { provide: Router, useValue: { getCurrentNavigation: () => ({ extras: { state: response } }) } }
         ],
         imports: [RouterTestingModule]
       })

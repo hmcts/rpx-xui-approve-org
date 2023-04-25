@@ -11,37 +11,36 @@ export const SUBMIT_REINVITE_USER_ERROR_CODE_429 = '[Users] Submit Reinvite User
 
 export class ShowUserDetails implements Action {
   public readonly type = SHOW_USER_DETAILS;
-  constructor(public payload) { }
+  constructor(public payload) {}
 }
 
 export class ReinvitePendingUser implements Action {
   public readonly type = REINVITE_PENDING_USER;
-  constructor() { }
 }
 
 export class SubmitReinviteUser implements Action {
   public readonly type = SUBMIT_REINVITE_USER;
-  constructor(public payload) { }
+  constructor(public payload) {}
 }
 
 export class SubmitReinviteUserSucces implements Action {
   public readonly type = SUBMIT_REINVITE_USER_SUCCESS;
-  constructor(public payload) { }
+  constructor(public payload) {}
 }
 
 export class SubmitReinviteUserError implements Action {
   public readonly type = SUBMIT_REINVITE_USER_ERROR;
-  constructor(public payload) { }
+  constructor(public payload) {}
 }
 
 export class UpdateErrorMessages implements Action {
   public readonly type = UPDATE_ERROR_MESSAGES;
-  constructor(public payload) { }
+  constructor(public payload) {}
 }
 
 export class SubmitReinviteUserErrorCode429 implements Action {
   public readonly type = SUBMIT_REINVITE_USER_ERROR_CODE_429;
-  constructor(public payload) { }
+  constructor(public payload) {}
 }
 
 export type UsersAction =

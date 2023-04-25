@@ -10,7 +10,6 @@ export function setHeaders(req: EnhancedRequest): any {
   const headers: any = {};
 
   if (req.headers) {
-
     if (req.headers['content-type']) {
       headers['content-type'] = req.headers['content-type'];
     }

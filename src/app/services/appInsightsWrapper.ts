@@ -9,8 +9,10 @@ export abstract class AbstractAppInsights implements Microsoft.ApplicationInsigh
   public abstract startTrackPage(name?: string);
   public abstract stopTrackPage(name?: string, url?: string, properties?: { [name: string]: string; },
                                 measurements?: { [name: string]: number; });
+
   public abstract trackPageView(name?: string, url?: string, properties?: { [name: string]: string; },
                                 measurements?: { [name: string]: number; }, duration?: number);
+
   public abstract startTrackEvent(name: string);
   public abstract stopTrackEvent(name: string, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; });
   public abstract trackEvent(name: string, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; });
@@ -24,6 +26,7 @@ export abstract class AbstractAppInsights implements Microsoft.ApplicationInsigh
 
   public abstract trackMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number,
                               properties?: { [name: string]: string; });
+
   public abstract trackTrace(message: string, properties?: { [name: string]: string; }, severityLevel?: AI.SeverityLevel) ;
   public abstract flush();
   public abstract setAuthenticatedUserContext(authenticatedUserId: string, accountId?: string, storeInCookie?: boolean);
@@ -47,7 +50,7 @@ export class AppInsightsWrapper implements AbstractAppInsights {
   }
 
   public trackPageView(name?: string, url?: string, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; },
-                       duration?: number) {
+    duration?: number) {
     AppInsights.trackPageView(name, url, properties, measurements, duration);
   }
 
@@ -64,12 +67,12 @@ export class AppInsightsWrapper implements AbstractAppInsights {
   }
 
   public trackDependency(id: string, method: string, absoluteUrl: string, pathName: string, totalTime: number, success: boolean,
-                         resultCode: number, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; }) {
+    resultCode: number, properties?: { [name: string]: string; }, measurements?: { [name: string]: number; }) {
     AppInsights.trackDependency(id, method, absoluteUrl, pathName, totalTime, success, resultCode, properties, measurements);
   }
 
   public trackException(exception: Error, handledAt?: string, properties?: { [name: string]: string; },
-                        measurements?: { [name: string]: number; }, severityLevel?: AI.SeverityLevel) {
+    measurements?: { [name: string]: number; }, severityLevel?: AI.SeverityLevel) {
     AppInsights.trackException(exception, handledAt, properties, measurements, severityLevel);
   }
 

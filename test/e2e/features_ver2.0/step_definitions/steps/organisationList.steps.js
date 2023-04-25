@@ -10,7 +10,6 @@ const organisationListPage = require('../../pageObjects/organisationListPage');
 const CucumberReporter = require('../../../support/CucumberReporter');
 
 defineSupportCode(function ({ setWorldConstructor, Given, When, Then }) {
-
   When(/^I navigate to EUI Approve Organisation Url$/, { timeout: 600 * 1000 }, async function () {
     await browser.get(config.config.baseUrl);
     if (!process.env.TEST_URL.includes('demo')) { //Do not delete cookies for demo env.
@@ -29,10 +28,9 @@ defineSupportCode(function ({ setWorldConstructor, Given, When, Then }) {
   });
 
   Then(/^I Check the home page title appear$/, async function () {
-
-    CucumberReporter.AddMessage("Started step");
+    CucumberReporter.AddMessage('Started step');
     //await browserWaits.waitForBrowserReadyState(120);
-    CucumberReporter.AddMessage("Completed LONG DELAY");
+    CucumberReporter.AddMessage('Completed LONG DELAY');
     await browserWaits.waitForElement(organisationListPage.homePageHeading);
     await expect(organisationListPage.homePageHeading.isDisplayed()).to.eventually.be.true;
   });
@@ -44,11 +42,10 @@ defineSupportCode(function ({ setWorldConstructor, Given, When, Then }) {
   When('I click first organization view link', { timeout: 600 * 1000 }, async function () {
     // await organisationListPage.waitForOrgListToDisplay();
     await organisationListPage.clickViewOnFirstOrganisation();
-
   });
 
   Then('I get a registration {string} confirmation', async function (decision) {
-    let decisionStatement = {
+    const decisionStatement = {
       'accepted': 'Registration approved',
       'rejected': 'Registration rejected',
       'under_review': 'Registration put under review'
@@ -63,13 +60,12 @@ defineSupportCode(function ({ setWorldConstructor, Given, When, Then }) {
   });
 
   Then('I can see the orgainsation listed', async function () {
-    let rowContent = await organisationListPage.orgTable.getRowContent(1);
-    expect(rowContent['Organisation'].split('\n')[0])
-      .to.equal(organisationListPage.orgDetails['Organisation'].split('\n')[0]);
+    const rowContent = await organisationListPage.orgTable.getRowContent(1);
+    expect(rowContent.Organisation.split('\n')[0])
+      .to.equal(organisationListPage.orgDetails.Organisation.split('\n')[0]);
   });
 
   When('I select {string} tab', async function (tabName) {
     await organisationListPage.selectTab(tabName);
   });
-
 });

@@ -26,14 +26,14 @@ describe('PendingOrganisationService', () => {
       postCode: 'string',
       dxAddress: [{
         dxNumber: 'string',
-        dxExchange: 'string',
-      }],
+        dxExchange: 'string'
+      }]
     }],
     superUser: {
       userIdentifier: '',
       firstName: 'string',
       lastName: 'string;',
-      email: 'string',
+      email: 'string'
     },
     status: 'string;',
     name: 'string;',
@@ -63,7 +63,7 @@ describe('PendingOrganisationService', () => {
   });
 
   it('should get single organisation', () => {
-    pendingOrganisationService.getSingleOrganisation({id: 'dummy'});
+    pendingOrganisationService.getSingleOrganisation({ id: 'dummy' });
     expect(httpClient.get).toHaveBeenCalledWith(`${mockEnvironment.singleOrgUrl}dummy`);
   });
 

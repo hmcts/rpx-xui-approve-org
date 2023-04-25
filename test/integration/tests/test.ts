@@ -1,8 +1,7 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import * as Mocha from 'mocha';
 import * as tunnel from '../../../api/lib/tunnel';
-import {config} from '../config';
-
+import { config } from '../config';
 
 if (config.proxy) {
   tunnel.init();
@@ -11,14 +10,14 @@ if (config.proxy) {
 // tunnel.init();
 
 const mocha = new Mocha({
-     ui: 'tdd',
-    // reporter: 'spec',
-   // bail: 'yes',
-    reporter: 'mochawesome',
-    reporterOptions: {
-        reportDir: 'reports/tests/api_functional/',
-        reportName: 'XUI_AO_Integration_tests'
-    }
+  ui: 'tdd',
+  // reporter: 'spec',
+  // bail: 'yes',
+  reporter: 'mochawesome',
+  reporterOptions: {
+    reportDir: 'reports/tests/api_functional/',
+    reportName: 'XUI_AO_Integration_tests'
+  }
 });
 
 mocha.addFile('test/integration/tests/get_Pending_Organisations.ts');
@@ -31,7 +30,6 @@ mocha.addFile('test/integration/tests/Approve_Pending_Organisations.ts');
 mocha.addFile('test/integration/tests/post_Update_PBA.ts');
 // mocha.addFile('test/integration/tests/Delete_Active_Organisations.ts');
 
-
-mocha.run( (failures) => {
-    process.exitCode = failures ? 1 : 0; // exit with non-zero status if there were failures
+mocha.run((failures) => {
+  process.exitCode = failures ? 1 : 0; // exit with non-zero status if there were failures
 });

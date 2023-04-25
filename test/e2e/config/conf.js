@@ -1,6 +1,6 @@
-const chai            = require('chai');
-const chaiAsPromised  = require('chai-as-promised');
-const minimist        = require('minimist');
+const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
+const minimist = require('minimist');
 
 chai.use(chaiAsPromised);
 
@@ -31,7 +31,7 @@ const localConfig = [
   {
     browserName: 'chrome',
     acceptInsecureCerts: true,
-    chromeOptions: { args: ['--headless1','--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
+    chromeOptions: { args: ['--headless1', '--no-sandbox', '--disable-dev-shm-usage', '--disable-setuid-sandbox', '--no-zygote '] },
     proxy: {
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
@@ -56,7 +56,7 @@ const config = {
   //   '../features/**/recentEvents.feature',
   // ],
   baseUrl: process.env.TEST_URL || 'http://localhost:3000',
-  registerOrgUrl: process.env.REGISTER_ORG_URL  || 'https://manage-org.aat.platform.hmcts.net/',
+  registerOrgUrl: process.env.REGISTER_ORG_URL || 'https://manage-org.aat.platform.hmcts.net/',
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000',
     targetEnv: argv.env || 'local',
@@ -66,8 +66,8 @@ const config = {
     password: 'Monday01',
     approver_username: 'vamshiadminuser@mailnesia.com',
     approver_password: 'Testing123',
-    cwdAdmin: "cwd_admin@mailinator.com",
-    cwdAdmPass: "Welcome01",
+    cwdAdmin: 'cwd_admin@mailinator.com',
+    cwdAdmPass: 'Welcome01',
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
@@ -114,8 +114,6 @@ const config = {
     }
   ]
 
-
 };
-
 
 exports.config = config;

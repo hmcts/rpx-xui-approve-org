@@ -9,6 +9,7 @@ import { ReviewOrganisationComponent } from './review-organisation.component';
 describe('ReviewOrganisationComponent', () => {
   let component: ReviewOrganisationComponent;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storePipeMock: any;
   let storeDispatchMock: any;
   let router;
@@ -20,8 +21,8 @@ describe('ReviewOrganisationComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers),
-        }),
+          feature: combineReducers(fromOrganisationPendingStore.reducers)
+        })
       ],
       declarations: [
         BackLinkComponent,
@@ -30,14 +31,12 @@ describe('ReviewOrganisationComponent', () => {
     }).compileComponents();
     store = TestBed.inject(Store);
     storePipeMock = spyOn(store, 'pipe');
-    storeDispatchMock =  jasmine.createSpyObj('Store', ['pipe', 'select', 'dispatch']);
+    storeDispatchMock = jasmine.createSpyObj('Store', ['pipe', 'select', 'dispatch']);
     component = new ReviewOrganisationComponent(storeDispatchMock, router);
   }));
-
 
   it('should dispatch fromRoot.Back action on goBack', () => {
     component.onPutReviewOrganisation();
     expect(storeDispatchMock.dispatch).toHaveBeenCalled();
   });
-
 });

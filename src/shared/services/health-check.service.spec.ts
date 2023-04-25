@@ -8,7 +8,7 @@ describe('HealthCheckService', () => {
   const mockedValue = 'dummy';
   const storeSubjectMock = new BehaviorSubject(mockedValue);
   const mockedStore = {
-    pipe: () => storeSubjectMock.asObservable(),
+    pipe: () => storeSubjectMock.asObservable()
   };
 
   const httpClientMock = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);

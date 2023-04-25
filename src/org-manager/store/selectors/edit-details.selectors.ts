@@ -1,6 +1,5 @@
-import {createSelector} from '@ngrx/store';
+import { createSelector } from '@ngrx/store';
 
-import * as fromRoot from '../../../app/store';
 import * as fromOrganisation from '../reducers';
 import * as fromEditDetails from '../reducers/edit-details.reducer';
 
@@ -28,7 +27,7 @@ export const getPbaHeaderErrors = createSelector(
   getPbaFromErrors,
   getIsFormValid,
   (pbaFormErrors, isFormValid) => {
-    const items = Object.keys(pbaFormErrors).map(key => {
+    const items = Object.keys(pbaFormErrors).map((key) => {
       if (key) {
         return {
           id: key,
