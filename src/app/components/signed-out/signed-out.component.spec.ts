@@ -1,7 +1,6 @@
 import { SignedOutComponent } from './signed-out.component';
 
 describe('SignedOutComponent', () => {
-
   let component: SignedOutComponent;
 
   beforeEach(() => {

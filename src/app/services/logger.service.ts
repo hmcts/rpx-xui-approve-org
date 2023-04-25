@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { NGXLogger } from 'ngx-logger';
 import { CryptoWrapper } from './cryptoWrapper';
-import {EnvironmentService} from './environment.service';
+import { EnvironmentService } from './environment.service';
 import { JwtDecodeWrapper } from './jwtDecodeWrapper';
 import { MonitoringService } from './monitoring.service';
 
@@ -27,36 +27,42 @@ export class LoggerService implements ILoggerService {
               private readonly envService: EnvironmentService
   ) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public trace(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.trace(formattedMessage);
     this.monitoringService.logEvent(message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public debug(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.debug(formattedMessage);
     this.monitoringService.logEvent(message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public info(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.info(formattedMessage);
     this.monitoringService.logEvent(message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public log(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.log(formattedMessage);
     this.monitoringService.logEvent(message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public warn(message: any, ...additional: any[]): void {
     const formattedMessage = this.getMessage(message);
     this.ngxLogger.warn(formattedMessage);
     this.monitoringService.logEvent(message);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public error(message: any, ...additional: any[]): void {
     this.ngxLogger.error(message);
     const formattedMessage = this.getMessage(message);
@@ -64,6 +70,7 @@ export class LoggerService implements ILoggerService {
     this.monitoringService.logException(error);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public fatal(message: any, ...additional: any[]): void {
     this.ngxLogger.fatal(message);
     const formattedMessage = this.getMessage(message);
@@ -79,9 +86,8 @@ export class LoggerService implements ILoggerService {
       if (jwtData) {
         const userIdEncrypted = this.cryptoWrapper.encrypt(jwtData.sub);
         return `User - ${userIdEncrypted.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
-      } else {
-        return `Message - ${message}, Timestamp - ${Date.now()}`;
       }
+      return `Message - ${message}, Timestamp - ${Date.now()}`;
     }
   }
 }

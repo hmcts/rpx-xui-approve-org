@@ -44,103 +44,100 @@ export enum OrgActionTypes {
 
 export class LoadPendingOrganisations implements Action {
   public readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS;
-    constructor() { }
 }
 
 export class ClearErrors implements Action {
   public readonly type = OrgActionTypes.CLEAR_ERRORS;
-  constructor() { }
 }
 
 export class LoadPendingOrganisationsSuccess implements Action {
   public readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS;
 
-  constructor(public payload: OrganisationVM[]) { }
+  constructor(public payload: OrganisationVM[]) {}
 }
 
 export class LoadPendingOrganisationsFail implements Action {
   public readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
-  constructor(public payload: any) { } // TODO change type it needs to change in the service used
+  constructor(public payload: any) {} // TODO change type it needs to change in the service used
 }
 
 export class AddReviewOrganisations implements Action {
   public readonly type = OrgActionTypes.ADD_REVIEW_ORGANISATIONS;
 
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class DisplayErrorMessageOrganisations implements Action {
   public readonly type = OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
 
-  constructor(public payload: any) { } // TODO change type it needs to change in the service used
+  constructor(public payload: any) {} // TODO change type it needs to change in the service used
 }
 
 export class ApprovePendingOrganisations implements Action {
   public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class ApprovePendingOrganisationsSuccess implements Action {
   public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class ApprovePendingOrganisationsFail implements Action {
   public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
-  constructor(public payload: any) { } // TODO change type it needs to change in the service used
+  constructor(public payload: any) {} // TODO change type it needs to change in the service used
 }
 
 export class PutReviewOrganisation implements Action {
   public readonly type = OrgActionTypes.PUT_REVIEW_ORGANISATION;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class PutReviewOrganisationSuccess implements Action {
   public readonly type = OrgActionTypes.PUT_REVIEW_ORGANISATION_SUCCESS;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class PutReviewOrganisationFail implements Action {
   public readonly type = OrgActionTypes.PUT_REVIEW_ORGANISATION_FAIL;
-  constructor(public payload: any) { }
+  constructor(public payload: any) {}
 }
 
 export class NavigateToDeleteOrganisation implements Action {
   public readonly type = OrgActionTypes.NAV_TO_DELETE_ORGANISATION;
 
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class NavigateToReviewOrganisation implements Action {
   public readonly type = OrgActionTypes.NAV_TO_REVIEW_ORGANISATION;
 
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class DeletePendingOrganisation implements Action {
   public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class DeletePendingOrganisationSuccess implements Action {
   public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class DeletePendingOrganisationFail implements Action {
   public readonly type = OrgActionTypes.DELETE_PENDING_ORGANISATION_FAIL;
-  constructor() { }
 }
 
 export class DeleteOrganisation implements Action {
   public readonly type = OrgActionTypes.DELETE_ORGANISATION;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export class DeleteOrganisationSuccess implements Action {
   public readonly type = OrgActionTypes.DELETE_ORGANISATION_SUCCESS;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 // Load Active Organisation Action
@@ -185,8 +182,7 @@ export class LoadPbaAccountDetailsFail implements Action {
 
 export class LoadOrganisationUsers implements Action {
   public readonly type = OrgActionTypes.LOAD_ORGANISATION_USERS;
-  constructor(public payload: {orgId: string, pageNo: number}) {
-  }
+  constructor(public payload: {orgId: string, pageNo: number}) {}
 }
 
 export class LoadOrganisationUsersSuccess implements Action {
@@ -201,22 +197,21 @@ export class LoadOrganisationUsersFail implements Action {
 
 export class ResetOrganisationUsers implements Action {
   public readonly type = OrgActionTypes.RESET_ORGANISATION_USERS;
-  constructor() { }
 }
 
 export class ShowOrganisationDetailsUserTab implements Action {
   public readonly type = OrgActionTypes.SHOW_ORGANISATION_DETAILS_USER_TAB;
-  constructor(public payload: {orgId: string; showUserTab: boolean}) { }
+  constructor(public payload: {orgId: string; showUserTab: boolean}) {}
 }
 
 export class GetOrganisationDeletableStatus implements Action {
   public readonly type = OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS;
-  constructor(public payload: string) { }
+  constructor(public payload: string) {}
 }
 
 export class GetOrganisationDeletableStatusSuccess implements Action {
   public readonly type = OrgActionTypes.GET_ORGANISATION_DELETABLE_STATUS_SUCCESS;
-  constructor(public payload: boolean) { }
+  constructor(public payload: boolean) {}
 }
 
 export class UpdateOrganisationsSearchString implements Action {
@@ -227,40 +222,40 @@ export class UpdateOrganisationsSearchString implements Action {
 // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
 export class DeleteReviewOrganisation implements Action {
   public readonly type = OrgActionTypes.DELETE_REVIEW_ORGANISATION;
-  constructor(public payload: OrganisationVM) { }
+  constructor(public payload: OrganisationVM) {}
 }
 
 export type OrganisationsActions =
-    | LoadPendingOrganisations
-    | LoadPendingOrganisationsSuccess
-    | LoadPendingOrganisationsFail
-    | AddReviewOrganisations
-    | NavigateToDeleteOrganisation
-    | NavigateToReviewOrganisation
-    | DeletePendingOrganisationSuccess
-    | DeleteOrganisationSuccess
-    | DisplayErrorMessageOrganisations
-    | ApprovePendingOrganisations
-    | ApprovePendingOrganisationsSuccess
-    | ApprovePendingOrganisationsFail
-    | ClearErrors
-    | LoadActiveOrganisation
-    | LoadActiveOrganisationSuccess
-    | LoadActiveOrganisationFail
-    | UpdateActiveOrganisationsSearchString
-    | UpdatePendingOrganisationsSearchString
-    | LoadPbaAccountsDetails
-    | LoadPbaAccountDetailsSuccess
-    | LoadPbaAccountDetailsFail
-    | LoadOrganisationUsers
-    | LoadOrganisationUsersSuccess
-    | LoadOrganisationUsersFail
-    | ResetOrganisationUsers
-    | ShowOrganisationDetailsUserTab
-    | GetOrganisationDeletableStatusSuccess
-    | UpdateOrganisationsSearchString
-    | PutReviewOrganisation
-    | PutReviewOrganisationSuccess
-    | PutReviewOrganisationFail
-    // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
-    | DeleteReviewOrganisation;
+  | LoadPendingOrganisations
+  | LoadPendingOrganisationsSuccess
+  | LoadPendingOrganisationsFail
+  | AddReviewOrganisations
+  | NavigateToDeleteOrganisation
+  | NavigateToReviewOrganisation
+  | DeletePendingOrganisationSuccess
+  | DeleteOrganisationSuccess
+  | DisplayErrorMessageOrganisations
+  | ApprovePendingOrganisations
+  | ApprovePendingOrganisationsSuccess
+  | ApprovePendingOrganisationsFail
+  | ClearErrors
+  | LoadActiveOrganisation
+  | LoadActiveOrganisationSuccess
+  | LoadActiveOrganisationFail
+  | UpdateActiveOrganisationsSearchString
+  | UpdatePendingOrganisationsSearchString
+  | LoadPbaAccountsDetails
+  | LoadPbaAccountDetailsSuccess
+  | LoadPbaAccountDetailsFail
+  | LoadOrganisationUsers
+  | LoadOrganisationUsersSuccess
+  | LoadOrganisationUsersFail
+  | ResetOrganisationUsers
+  | ShowOrganisationDetailsUserTab
+  | GetOrganisationDeletableStatusSuccess
+  | UpdateOrganisationsSearchString
+  | PutReviewOrganisation
+  | PutReviewOrganisationSuccess
+  | PutReviewOrganisationFail
+  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  | DeleteReviewOrganisation;

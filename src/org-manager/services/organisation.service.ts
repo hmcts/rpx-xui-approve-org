@@ -7,7 +7,6 @@ import { Organisation } from '../models/organisation';
 
 @Injectable()
 export class OrganisationService {
-
   public singleOrgUrl = environment.singleOrgUrl;
   public orgActiveUrl = environment.orgActiveUrl;
   public orgPendingUrl = environment.orgPendingUrl;
@@ -15,8 +14,7 @@ export class OrganisationService {
   public organisationsUrl = environment.organisationsUrl;
   private readonly organisationSearchString: Subject<string> = new Subject<string>();
   private readonly resetPagination: Subject<boolean> = new Subject<boolean>();
-  constructor(private readonly http: HttpClient) {
-  }
+  constructor(private readonly http: HttpClient) {}
 
   public organisationSearchStringChange(): Observable<string> {
     return this.organisationSearchString.asObservable();
@@ -60,5 +58,4 @@ export class OrganisationService {
   public searchOrganisationWithPagination(body: { searchRequest: SearchOrganisationRequest, view: string }): Observable<Organisation[]> {
     return this.http.post<Organisation[]>(body.view === 'NEW' ? this.orgPendingUrl : this.orgActiveUrl, body);
   }
-
 }

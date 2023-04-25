@@ -109,27 +109,27 @@ export const ROUTES: Routes = [
   {
     path: 'change/:fields/:orgId',
     component: EditDetailsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard]
   },
   {
     path: 'change/:fields/:orgId/:id',
     component: EditDetailsComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard]
   },
   {
     path: 'user-details',
     component: UserDetailsComponent,
-    canActivate: [AuthGuard, UserApprovalGuard],
+    canActivate: [AuthGuard, UserApprovalGuard]
   },
   {
     path: 'reinvite-user',
     component: ReinviteUserComponent,
-    canActivate: [AuthGuard, UserApprovalGuard],
+    canActivate: [AuthGuard, UserApprovalGuard]
   },
   {
     path: 'reinvite-user-success',
     component: ReinviteUserSuccessComponent,
-    canActivate: [AuthGuard, UserApprovalGuard],
+    canActivate: [AuthGuard, UserApprovalGuard]
   }
 ];
 

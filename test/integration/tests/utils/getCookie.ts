@@ -11,17 +11,16 @@ const userNameCSSSelector = '#username';
 const passwordCSSSelector = '#password';
 
 let userCookie = '';
-export async function  authenticateAndGetcookies(url)  {
-  console.log( 'Getting Cookie details...');
-  if (userCookie !== '')
-  {
+export async function authenticateAndGetcookies(url) {
+  console.log('Getting Cookie details...');
+  if (userCookie !== '') {
     return userCookie;
   }
   const browser = await puppeteer.launch(getPuppeteerLaunchOptions(url));
 
   const page = await browser.newPage();
   await page.goto(url);
-  console.log( 'Loading...');
+  console.log('Loading...');
 
   // try {
   //   await page.waitForSelector('#username', { visible: true });
@@ -49,7 +48,7 @@ export async function  authenticateAndGetcookies(url)  {
       await page.waitForSelector('.hmcts-header__navigation', { visible: true, timeout: 30000 });
       isLoginSuccess = true;
     } catch (error) {
-      const usernameInput = await page.$eval(userNameCSSSelector , element => element.value);
+      const usernameInput = await page.$eval(userNameCSSSelector, (element) => element.value);
       if (usernameInput === '') {
         loginRetryCounter++;
         console.log(`Login error :  ${error.message}`);
@@ -79,7 +78,6 @@ export async function  authenticateAndGetcookies(url)  {
     if (cookie.name === 'ao-webapp') {
       webappCookie = `ao-webapp= ${cookie.value}`;
     }
-
   });
   const finalCookie = `${roles};${webappCookie};${xsrfCookie}`;
   await browser.close();
@@ -87,7 +85,7 @@ export async function  authenticateAndGetcookies(url)  {
   return finalCookie;
 }
 
-export async function xxsrftoken()  {
+export async function xxsrftoken() {
   return xxsrfCookie;
 }
 

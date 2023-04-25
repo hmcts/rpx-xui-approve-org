@@ -1,4 +1,4 @@
-import {createSelector} from '@ngrx/store';
+import { createSelector } from '@ngrx/store';
 import * as fromOrganisation from '../reducers';
 import * as fromUsers from '../reducers/users.reducer';
 
@@ -37,7 +37,6 @@ export const getInviteUserErrorHeaderSelector = createSelector(
   fromUsers.getInviteUserErrorHeader
 );
 
-
 export const getInviteSuccessEmailSelector = createSelector(
   getUsersState,
   fromUsers.getInviteSuccessEmail
@@ -48,7 +47,7 @@ export const getGetInviteUserErrorsArray = createSelector(
   getInviteUserIsFormValidSelector,
   getInviteUserErrorHeaderSelector,
   (obj, isFormValid, header) => {
-    const items = Object.keys(obj).map(key => {
+    const items = Object.keys(obj).map((key) => {
       if (key) {
         return {
           id: key,
