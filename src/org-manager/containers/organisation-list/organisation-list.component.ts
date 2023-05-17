@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
@@ -35,8 +35,7 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
     protected organisationService: OrganisationService,
     protected loadingService: LoadingService,
     protected sessionStorageService: SessionStorageService
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.loadOrganisations();
@@ -48,7 +47,7 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
     });
 
     this.organisationSearchSubscription = this.organisationService.organisationSearchStringChange().subscribe(
-      searchString => {
+      (searchString) => {
         this.sortedBy = {
           fieldName: 'organisationId',
           order: SortOrder.ASC
@@ -58,13 +57,13 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
         this.showSpinner$ = this.loadingService.isLoading;
 
         const loadingToken = this.loadingService.register();
-        this.performSearchPagination(searchString).pipe(take(1)).subscribe(result => {
+        this.performSearchPagination(searchString).pipe(take(1)).subscribe((result) => {
           this.loadingService.unregister(loadingToken);
           this.organisations = AppUtils.mapOrganisations(result.organisations);
           this.organisationCount = result.total_records;
           this.organisationsLoaded = true;
           this.ref.detectChanges();
-        }, error => {
+        }, (error) => {
           this.loadingService.unregister(loadingToken);
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         });

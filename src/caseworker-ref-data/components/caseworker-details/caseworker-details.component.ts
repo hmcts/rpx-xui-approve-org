@@ -6,15 +6,14 @@ import { CaseWorkerRefDataService } from '../../services/caseworker-ref-data.ser
 
 @Component({
   selector: 'app-prd-caseworker-details',
-  templateUrl: './caseworker-details.component.html',
+  templateUrl: './caseworker-details.component.html'
 })
 export class CaseWorkerDetailsComponent {
-
   public errorDesc: string;
 
   public constructor(
     private readonly caseWorkerRefDataService: CaseWorkerRefDataService,
-    private readonly router: Router) { }
+    private readonly router: Router) {}
 
   public onSubmit(inputElement: any) {
     const formData = new FormData();
@@ -31,17 +30,16 @@ export class CaseWorkerDetailsComponent {
         this.router.navigate(['/caseworker-details/upload-success'], { state: response });
       }
     },
-      errorResponse => {
-        // Upload errors - EUI-3014
-        this.showUploadErrors(errorResponse);
-      });
+    (errorResponse) => {
+      // Upload errors - EUI-3014
+      this.showUploadErrors(errorResponse);
+    });
   }
 
   /**
    * Sort out the actual errors returned via the API
    */
   public showUploadErrors(errorResponse: any): void {
-
     // redirect to the correct page as is necessary
     const handledStatus = handleFatalErrors(errorResponse.status, this.router);
 
@@ -51,5 +49,4 @@ export class CaseWorkerDetailsComponent {
     }
   }
 }
-
 

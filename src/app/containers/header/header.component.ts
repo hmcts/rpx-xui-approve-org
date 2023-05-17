@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit {
               private readonly cookieService: CookieService) {}
 
   public ngOnInit(): void {
-    this.store.pipe(select(fromRoot.getRouterState)).subscribe(rootState => {
+    this.store.pipe(select(fromRoot.getRouterState)).subscribe((rootState) => {
       if (rootState) {
         this.updateNavItems(rootState.state.url);
       }
@@ -55,7 +55,7 @@ export class HeaderComponent implements OnInit {
 
   public updateNavItems(url): void {
     if (this.navItems) {
-      this.navItems = this.navItems.map(item => {
+      this.navItems = this.navItems.map((item) => {
         return {
           ...item,
           active: item.href === url

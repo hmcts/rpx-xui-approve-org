@@ -5,7 +5,6 @@ import { PbaService } from './pba.service';
 import createSpyObj = jasmine.createSpyObj;
 
 describe('PbaService', () => {
-
   const PBA_URL: string = environment.pbaUrl;
   let httpClient: HttpClient;
   let service: PbaService;

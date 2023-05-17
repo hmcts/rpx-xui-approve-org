@@ -39,6 +39,12 @@ export class AppUtils {
       organisationVm.county = apiOrg.contactInformation[0].county;
     }
     organisationVm.sraId = apiOrg.sraId;
+    if (apiOrg.dateReceived){
+      organisationVm.dateReceived = apiOrg.dateReceived;
+    }
+    if (apiOrg.dateApproved){
+      organisationVm.dateApproved = apiOrg.dateApproved;
+    }
     return organisationVm;
   }
 
@@ -54,7 +60,7 @@ export class AppUtils {
           townCity: org.townCity,
           county: org.county,
           dxAddress: org.dxNumber
-          }],
+        }],
         superUser: {
           userIdentifier: org.admin,
           firstName: org.admin,
@@ -100,7 +106,6 @@ export class AppUtils {
     return users;
   }
 
-
   public static get500Error(orgId: string): GlobalError {
     const errorMessages = [{
       bodyText: 'Try again later.',
@@ -113,7 +118,7 @@ export class AppUtils {
       url: `/organisation-details/${orgId}`
     }];
 
-    return  {
+    return {
       header: 'Sorry, there is a problem with the service',
       errors: errorMessages
     };
@@ -125,7 +130,7 @@ export class AppUtils {
       urlText: 'Refresh and go back',
       url: `/organisation-details/${orgId}`
     };
-    return  {
+    return {
       header: 'Sorry, there is a problem',
       errors: [errorMessage]
     };
@@ -143,7 +148,7 @@ export class AppUtils {
       url: `/organisation-details/${orgId}`
     }];
 
-    return  {
+    return {
       header: 'Sorry, there is a problem with this account',
       errors: errorMessages
     };
@@ -153,7 +158,7 @@ export class AppUtils {
   // based on user's role
   public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
     let roleNavItems: NavItem [] = new Array<NavItem>();
-    userRoles.forEach(role => {
+    userRoles.forEach((role) => {
       if (roleBasedNav.hasOwnProperty(role)) {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
       }
@@ -170,7 +175,7 @@ export class AppUtils {
       // we get the roles in this format before decoding 'j%3A%5B%22prd-admin%22%5D'
       // after deconding we get it in format 'j:["prd-admin"]'
       if (roles.length === 2) {
-         return  JSON.parse(roles[1]);
+        return JSON.parse(roles[1]);
       }
     }
     return [];

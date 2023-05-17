@@ -14,17 +14,17 @@ import * as spreview from './environments/spreview.config';
 import * as sprod from './environments/sprod.config';
 
 const configs = {
-    aat,
-    demo,
-    docker,
-    ldocker,
-    local,
-    mock,
-    preview,
-    prod,
-    saat,
-    spreview,
-    sprod,
+  aat,
+  demo,
+  docker,
+  ldocker,
+  local,
+  mock,
+  preview,
+  prod,
+  saat,
+  spreview,
+  sprod
 };
 
 export const configEnv = process ? process.env.PUI_ENV || 'local' : 'local';
@@ -33,9 +33,9 @@ export const config = { ...application, ...configs[configEnv].default };
 export default { ...config };
 
 if (process) {
-    config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY || 'AAAAAAAAAAAAAAAA';
+  config.appInsightsInstrumentationKey = process.env.APPINSIGHTS_INSTRUMENTATIONKEY || 'AAAAAAAAAAAAAAAA';
 }
 
 if (configEnv === 'local') {
-    config.protocol = 'http';
+  config.protocol = 'http';
 }

@@ -16,50 +16,50 @@ export class UsersEffects {
     private readonly actions$: Actions,
     private readonly usersService: UsersService,
     private readonly loggerService: LoggerService
-  ) { }
+  ) {}
 
   @Effect()
   public showUserDetails$ = this.actions$.pipe(
-    ofType(fromActions.SHOW_USER_DETAILS),
-    map(() => {
-      return new fromRoot.Go({ path: ['/user-details'] });
-    })
-  );
+      ofType(fromActions.SHOW_USER_DETAILS),
+      map(() => {
+        return new fromRoot.Go({ path: ['/user-details'] });
+      })
+    );
 
   @Effect()
   public reinviteUser$ = this.actions$.pipe(
-    ofType(fromActions.REINVITE_PENDING_USER),
-    map(() => {
-      return new fromRoot.Go({ path: ['/reinvite-user'] });
-    })
-  );
+      ofType(fromActions.REINVITE_PENDING_USER),
+      map(() => {
+        return new fromRoot.Go({ path: ['/reinvite-user'] });
+      })
+    );
 
   @Effect()
   public submitReinviteUser$ = this.actions$.pipe(
-    ofType(fromActions.SUBMIT_REINVITE_USER),
-    map((action: fromActions.SubmitReinviteUser) => action.payload),
-    switchMap((payload) => {
-      console.log('form=> ');
-      console.log(payload.form);
-      return this.usersService.inviteUser(payload.organisationId, payload.form).pipe(
-          map(response => new fromActions.SubmitReinviteUserSucces({...response, successEmail: payload.form.email})),
+      ofType(fromActions.SUBMIT_REINVITE_USER),
+      map((action: fromActions.SubmitReinviteUser) => action.payload),
+      switchMap((payload) => {
+        console.log('form=> ');
+        console.log(payload.form);
+        return this.usersService.inviteUser(payload.organisationId, payload.form).pipe(
+          map((response) => new fromActions.SubmitReinviteUserSucces({ ...response, successEmail: payload.form.email })),
           tap(() => this.loggerService.info('User Reinvited')),
-          catchError(errorReport => {
+          catchError((errorReport) => {
             this.loggerService.error(errorReport.message);
             const action = UsersEffects.getErrorAction(errorReport.error, payload.organisationId);
             return of(action);
           })
-          );
+        );
       })
-  );
+    );
 
   @Effect()
   public confirmUser$ = this.actions$.pipe(
-    ofType(fromActions.SUBMIT_REINVITE_USER_SUCCESS),
-    map(() => {
-      return new fromRoot.Go({ path: ['/reinvite-user-success'] });
-    })
-  );
+      ofType(fromActions.SUBMIT_REINVITE_USER_SUCCESS),
+      map(() => {
+        return new fromRoot.Go({ path: ['/reinvite-user-success'] });
+      })
+    );
 
   public static getErrorAction(error: ErrorReport, orgId: string): Action {
     switch (error.apiStatusCode) {
@@ -76,7 +76,7 @@ export class UsersEffects {
       case 500:
         return new fromRoot.AddGlobalError(AppUtils.get500Error(orgId));
       default:
-          return new fromActions.SubmitReinviteUserError(error);
+        return new fromActions.SubmitReinviteUserError(error);
     }
   }
 }

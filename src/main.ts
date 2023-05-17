@@ -9,9 +9,9 @@ if (environment.production) {
   enableProdMode();
 }
 
-fetch('/api/environment/config').then(async response => {
-let config = await response.json();
-config = config || {};
-platformBrowserDynamic([{ provide: ENVIRONMENT_CONFIG, useValue: config }]).bootstrapModule(AppModule)
-  .catch(err => console.log(err));
+fetch('/api/environment/config').then(async (response) => {
+  let config = await response.json();
+  config = config || {};
+  platformBrowserDynamic([{ provide: ENVIRONMENT_CONFIG, useValue: config }]).bootstrapModule(AppModule)
+    .catch((err) => console.log(err));
 });

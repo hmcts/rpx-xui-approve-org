@@ -9,8 +9,12 @@ export class FilterOrganisationsPipe implements PipeTransform {
   private static readonly TEXT_FIELDS_TO_CHECK = ['name', 'postCode', 'sraId', 'admin'];
 
   public transform(orgs: OrganisationVM[], searchFilter: string): OrganisationVM[] {
-    if (!orgs) { return []; }
-    if (!searchFilter || searchFilter === '') { return orgs; }
+    if (!orgs) {
+      return [];
+    }
+    if (!searchFilter || searchFilter === '') {
+      return orgs;
+    }
     searchFilter = searchFilter.toLowerCase();
     return orgs.filter((org: OrganisationVM) => {
       if (org) {

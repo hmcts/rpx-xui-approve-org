@@ -7,11 +7,10 @@ const CreateOrganisationObject = require('../../pageObjects/createOrganisationOb
 const ChangePbaPage = require('../../pageObjects/changePbaPage');
 
 defineSupportCode(function ({ Given, When, Then, And }) {
-
   Then('I see {string} on organisation details page', { timeout: 600 * 1000 }, async function (orgDetailsHeader) {
     await browserWaits.waitForElement(organisationDetails.heading);
     expect(organisationDetails.heading.getText()).to.eventually.equal(orgDetailsHeader);
-    let orgDetailsKeys = [
+    const orgDetailsKeys = [
       'Name',
       'SRA ID',
       'Administrator',
@@ -19,9 +18,8 @@ defineSupportCode(function ({ Given, When, Then, And }) {
       'DX',
       'PBA number'
     ];
-    let orgDetails = await organisationDetails.getOrgDetails();
+    const orgDetails = await organisationDetails.getOrgDetails();
     expect(Object.keys(orgDetails)).to.include.all.members(orgDetailsKeys);
-
   });
 
   When(/^I select approve organisation$/, async function () {
@@ -41,13 +39,12 @@ defineSupportCode(function ({ Given, When, Then, And }) {
   });
 
   Then('I validate PBA details for PBA {int}', async function (count) {
-    let orgDetails = await organisationDetails.getOrgDetails();
-    let expectedOrgData = CreateOrganisationObject.getOrgData();
+    const orgDetails = await organisationDetails.getOrgDetails();
+    const expectedOrgData = CreateOrganisationObject.getOrgData();
     expect(orgDetails['PBA number']).to.include(expectedOrgData['pba_' + count]);
   });
 
   Then('I navigate to change PBA page for PBA {int}', async function(count) {
     await organisationDetails.clickChangePba(count);
   });
-
 });

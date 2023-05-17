@@ -19,7 +19,7 @@ import {Component, Directive, Input} from '@angular/core';
   `
 })
 export class HmctsBannerComponent {
-  constructor() { }
+  constructor() {}
   @Input() type: string
   @Input() message: string;
 }

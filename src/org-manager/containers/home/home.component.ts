@@ -7,7 +7,7 @@ import { OrganisationService } from '../../services';
 
 @Component({
   selector: 'app-home-component',
-  templateUrl: './home.component.html',
+  templateUrl: './home.component.html'
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public readonly tabs = [
@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     { url: '/organisation/pbas', label: 'New PBAs' },
     { url: '/organisation/active', label: 'Active organisations' }
   ];
+
   public showSpinner$: Observable<boolean>;
   public searchString: string = '';
   public activeRoute: string;
@@ -24,13 +25,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     protected organisationService: OrganisationService,
     private readonly loadingService: LoadingService,
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     this.setupRouteState();
     // Watch for changes to the route to set the appropriate tab.
     this.routeSubscription = this.router.events.subscribe({
-      next: event => {
+      next: (event) => {
         if (event instanceof NavigationEnd) {
           this.setupRouteState();
         }
@@ -41,7 +42,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.loadingService.isLoading
     ]);
 
-    this.showSpinner$ = libServices$.pipe(delay(0), map(states => states.reduce((c, s) => c || s, false)));
+    this.showSpinner$ = libServices$.pipe(delay(0), map((states) => states.reduce((c, s) => c || s, false)));
   }
 
   public ngOnDestroy(): void {

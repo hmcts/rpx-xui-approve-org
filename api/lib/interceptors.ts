@@ -1,80 +1,80 @@
-import * as exceptionFormatter from 'exception-formatter'
-import { getConfigValue } from '../configuration'
-import { MAX_LOG_LINE } from '../configuration/references'
-import * as log4jui from './log4jui'
-import {exists, getTrackRequestObj, shorten, valueOrNull} from './util'
+import * as exceptionFormatter from 'exception-formatter';
+import { getConfigValue } from '../configuration';
+import { MAX_LOG_LINE } from '../configuration/references';
+import * as log4jui from './log4jui';
+import { exists, getTrackRequestObj, shorten, valueOrNull } from './util';
 
 const exceptionOptions = {
-  maxLines: 1,
-}
+  maxLines: 1
+};
 
 export function requestInterceptor(request) {
-  const logger = log4jui.getLogger('outgoing')
+  const logger = log4jui.getLogger('outgoing');
 
-  const url = shorten(request.url, getConfigValue(MAX_LOG_LINE))
-  logger.info(`${request.method.toUpperCase()} to ${url}`)
+  const url = shorten(request.url, getConfigValue(MAX_LOG_LINE));
+  logger.info(`${request.method.toUpperCase()} to ${url}`);
   //add timings to requests
-  request.metadata = {startTime: new Date()}
+  request.metadata = { startTime: new Date() };
 
-  return request
+  return request;
 }
 
 export function successInterceptor(response) {
-  response.config.metadata.endTime = new Date()
-  response.duration = response.config.metadata.endTime - response.config.metadata.startTime
+  response.config.metadata.endTime = new Date();
+  response.duration = response.config.metadata.endTime - response.config.metadata.startTime;
 
-  const logger = log4jui.getLogger('return')
+  const logger = log4jui.getLogger('return');
 
-  const url = shorten(response.config.url, getConfigValue(MAX_LOG_LINE))
+  const url = shorten(response.config.url, getConfigValue(MAX_LOG_LINE));
 
   logger.trackRequest({
     duration: response.duration,
     name: `Service ${response.config.method.toUpperCase()} call`,
     resultCode: response.status,
     success: true,
-    url: response.config.url,
-  })
+    url: response.config.url
+  });
 
-  logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} (${response.duration})`)
-  return response
+  logger.info(`Success on ${response.config.method.toUpperCase()} to ${url} (${response.duration})`);
+  return response;
 }
 
 export function errorInterceptor(error) {
-  const errorConfig = error.config
+  const errorConfig = error.config;
   if (errorConfig && errorConfig.metadata) {
-    errorConfig.metadata.endTime = new Date()
-    error.duration = errorConfig.metadata.endTime - errorConfig.metadata.startTime
+    errorConfig.metadata.endTime = new Date();
+    error.duration = errorConfig.metadata.endTime - errorConfig.metadata.startTime;
   }
 
-  const logger = log4jui.getLogger('return')
+  const logger = log4jui.getLogger('return');
 
-  let url = ''
+  let url = '';
   if (errorConfig.url) {
-    url = shorten(errorConfig.url, getConfigValue(MAX_LOG_LINE))
+    url = shorten(errorConfig.url, getConfigValue(MAX_LOG_LINE));
   }
 
   // application insights logging
-  logger.trackRequest(getTrackRequestObj(error))
+  logger.trackRequest(getTrackRequestObj(error));
 
   if (errorConfig.method && error.response) {
-    let data = valueOrNull(error, 'response.data.details')
+    let data = valueOrNull(error, 'response.data.details');
     if (!data) {
-      data = valueOrNull(error, 'response.status') ? JSON.stringify(error.response.data, null, 2) : null
+      data = valueOrNull(error, 'response.status') ? JSON.stringify(error.response.data, null, 2) : null;
       logger.error(`Error on ${errorConfig.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
-            ${exceptionFormatter(data, exceptionOptions)}`)
+            ${exceptionFormatter(data, exceptionOptions)}`);
     } else {
       logger.error(`Error on ${errorConfig.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
-            ${JSON.stringify(data)}`)
+            ${JSON.stringify(data)}`);
     }
   }
 
   if (!exists(error, 'request')) {
-    error.request = {url}
+    error.request = { url };
   }
 
   if (!exists(error, 'response')) {
-    error.response = {url, 'message': 'No api response'}
+    error.response = { url, 'message': 'No api response' };
   }
 
-  return Promise.reject(error.response)
+  return Promise.reject(error.response);
 }

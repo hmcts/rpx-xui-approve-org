@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Optional } from '@angular/core';
 import { AppInsights } from 'applicationinsights-js';
-import { AbstractAppInsights} from './appInsightsWrapper';
+import { AbstractAppInsights } from './appInsightsWrapper';
 
 export interface IMonitoringService {
   logPageView(name?: string, url?: string, properties?: any,
@@ -48,21 +48,20 @@ export class MonitorConfig implements Microsoft.ApplicationInsights.IConfig {
 
 @Injectable()
 export class MonitoringService implements IMonitoringService {
-
   constructor(private readonly http: HttpClient,
               @Optional() private config?: MonitorConfig,
               @Optional() private readonly appInsights?: AbstractAppInsights
   ){
-      if (!appInsights) {
+    if (!appInsights) {
       this.appInsights = AppInsights;
     }
   }
 
   public logPageView(name?: string,
-                     url?: string,
-                     properties?: any,
-                     measurements?: any,
-                     duration?: number) {
+    url?: string,
+    properties?: any,
+    measurements?: any,
+    duration?: number) {
     this.send(() => {
       this.appInsights.trackPageView(name, url, properties, measurements, duration);
     });
@@ -84,8 +83,9 @@ export class MonitoringService implements IMonitoringService {
     if (this.config && this.config.instrumentationKey) {
       func();
     } else {
-      this.http.get('/api/monitoring-tools').subscribe(it => {
+      this.http.get('/api/monitoring-tools').subscribe((it) => {
         this.config = {
+          // eslint-disable-next-line dot-notation
           instrumentationKey: it['key']
         };
         if (!this.appInsights.config) {
