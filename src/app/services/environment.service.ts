@@ -8,14 +8,13 @@ import { EnvironmentConfig } from 'src/models/environmentConfig.model';
   providedIn: 'root'
 })
 export class EnvironmentService {
-
   private data: EnvironmentConfig;
 
   private readonly config$ = this.http.get<EnvironmentConfig>('/api/environment/config')
-    .pipe<EnvironmentConfig>( shareReplay<EnvironmentConfig>(1) );
+    .pipe<EnvironmentConfig>(shareReplay<EnvironmentConfig>(1));
 
   constructor(private readonly http: HttpClient) {
-    this.config$.subscribe( config => {
+    this.config$.subscribe((config) => {
       this.data = config;
     });
   }

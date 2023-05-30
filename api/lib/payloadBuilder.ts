@@ -1,4 +1,4 @@
-import {OrganisationPayload} from '../interfaces/organisationPayload'
+import { OrganisationPayload } from '../interfaces/organisationPayload';
 
 /**
  * makeOrganisationPayload
@@ -16,28 +16,28 @@ import {OrganisationPayload} from '../interfaces/organisationPayload'
  * @return
  */
 export function makeOrganisationPayload(stateValues): OrganisationPayload {
-    return {
-        address: {
-            addressLine1: stateValues.officeAddressOne,
-            addressLine2: stateValues.officeAddressTwo,
-            county: stateValues.county,
-            houseNoBuildingName: 'Remove property on api fix @see comments',
-            postcode: stateValues.postcode,
-            townCity: stateValues.townOrCity,
-        },
-        name: stateValues.orgName,
-        pbaAccounts: [
-            {
-                pbaNumber: stateValues.PBAnumber1,
-            },
-            {
-                pbaNumber: stateValues.PBAnumber2,
-            },
-        ],
-        superUser: {
-            email: stateValues.emailAddress,
-            firstName: stateValues.firstName,
-            lastName: stateValues.lastName,
-        },
+  return {
+    address: {
+      addressLine1: stateValues.officeAddressOne,
+      addressLine2: stateValues.officeAddressTwo,
+      county: stateValues.county,
+      houseNoBuildingName: 'Remove property on api fix @see comments',
+      postcode: stateValues.postcode,
+      townCity: stateValues.townOrCity
+    },
+    name: stateValues.orgName,
+    pbaAccounts: [
+      {
+        pbaNumber: stateValues.PBAnumber1
+      },
+      {
+        pbaNumber: stateValues.PBAnumber2
+      }
+    ],
+    superUser: {
+      email: stateValues.emailAddress,
+      firstName: stateValues.firstName,
+      lastName: stateValues.lastName
     }
+  };
 }

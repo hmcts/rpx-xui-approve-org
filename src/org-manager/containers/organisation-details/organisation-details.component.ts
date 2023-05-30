@@ -44,20 +44,20 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     public readonly pbaAccountDetails: PbaAccountDetails,
     private readonly userService: UsersService,
     private readonly organisationService: OrganisationService) {
-      this.route.params.subscribe(params => {
-        this.orgId = params.orgId ? params.orgId : '';
-      });
-    }
+    this.route.params.subscribe((params) => {
+      this.orgId = params.orgId ? params.orgId : '';
+    });
+  }
 
   public ngOnInit(): void {
     this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
     if (this.isXuiApproverUserdata) {
-      this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe(value => this.showUsers = value);
+      this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe((value) => this.showUsers = value);
     }
 
     this.organisationService.getSingleOrganisation({ id: this.orgId })
-      .pipe(take(1), map(apiOrg => AppUtils.mapOrganisation(apiOrg)))
-      .subscribe(organisationVM => {
+      .pipe(take(1), map((apiOrg) => AppUtils.mapOrganisation(apiOrg)))
+      .subscribe((organisationVM) => {
         this.organisationId = organisationVM.organisationId;
         this.organisationAdminEmail = organisationVM.adminEmail;
         this.showUserNavigation = organisationVM.status === 'ACTIVE' ? true : false;
@@ -66,32 +66,25 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           this.isActiveOrg = true;
           if (this.isXuiApproverUserdata) {
             this.showUserNavigation = true;
-            this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber - 1}));
+            this.store.dispatch(new fromStore.LoadOrganisationUsers({ orgId: this.organisationId, pageNo: this.currentPageNumber - 1 }));
           }
-          this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe(value => this.organisationDeletable = value);
+          this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe((value) => this.organisationDeletable = value);
         }
 
         let ids: string;
 
         if (organisationVM.pendingPaymentAccount && organisationVM.pendingPaymentAccount.length) {
-          organisationVM.pendingPaymentAccount.forEach(pbaNumber => {
+          organisationVM.pendingPaymentAccount.forEach((pbaNumber) => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
-          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
+          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe((accountResponse) => {
             organisationVM.accountDetails = accountResponse;
           });
         } else if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
-          organisationVM.pbaNumber.forEach(pbaNumber => {
+          organisationVM.pbaNumber.forEach((pbaNumber) => {
             ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
           });
-          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
-            organisationVM.accountDetails = accountResponse;
-          });
-        } else if (organisationVM.pendingPaymentAccount && organisationVM.pendingPaymentAccount.length) {
-          organisationVM.pendingPaymentAccount.forEach(pbaNumber => {
-            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
-          });
-          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe(accountResponse => {
+          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe((accountResponse) => {
             organisationVM.accountDetails = accountResponse;
           });
         }
@@ -100,15 +93,15 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           try {
             this.getAllUsers(organisationVM.organisationId);
             this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId, this.currentPageNumber - 1).pipe(
-              map(data => {
+              map((data) => {
                 const orgUserListModel = {
                   users: AppUtils.mapUsers(data.users),
-                  isError: false,
+                  isError: false
                 } as OrganisationUserListModel;
                 return orgUserListModel;
               }));
-            } catch (error) {
-          }
+            // eslint-disable-next-line no-empty
+          } catch (error) {}
         }
 
         this.orgs$ = of(organisationVM);
@@ -116,14 +109,14 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getAllUsers(orgId: string) {
-    return this.userService.getAllUsersList(orgId).subscribe((userList => {
+    return this.userService.getAllUsersList(orgId).subscribe(((userList) => {
       this.pageTotalSize = userList.users.length;
     }));
   }
 
   public pageChange(pageNumber: number) {
     this.currentPageNumber = pageNumber;
-    this.store.dispatch(new fromStore.LoadOrganisationUsers({orgId: this.organisationId, pageNo: this.currentPageNumber - 1}));
+    this.store.dispatch(new fromStore.LoadOrganisationUsers({ orgId: this.organisationId, pageNo: this.currentPageNumber - 1 }));
     this.userLists$ = this.store.pipe(select(fromStore.getOrganisationUsersList));
   }
 

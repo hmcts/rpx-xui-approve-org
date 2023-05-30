@@ -19,7 +19,7 @@ async function caseWorkerDetailsRoute(req: any, res: express.Response): Promise<
   const baseCaseWorkerUrl = getConfigValue(SERVICE_CASE_WORKER_PATH);
   const uploadUrl = getUploadFileUrl(baseCaseWorkerUrl);
   try {
-    const {status, data} = await req.http.post(uploadUrl, formData, headers);
+    const { status, data } = await req.http.post(uploadUrl, formData, headers);
     res.status(status);
     res.send(data);
   } catch (error) {

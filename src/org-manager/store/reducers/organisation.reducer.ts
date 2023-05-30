@@ -1,4 +1,4 @@
-import {OrganisationUserListModel, OrganisationVM} from 'src/org-manager/models/organisation';
+import { OrganisationUserListModel, OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromActions from '../actions';
 
 export interface OrganisationState {
@@ -23,12 +23,12 @@ export interface OrganisationState {
 }
 
 export const initialState: OrganisationState = {
-  activeOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
-  pendingOrganisations: {orgEntities: {}, loaded: false, loading: false, searchString: ''},
-  organisationUsersList: {users: null, isError: false},
+  activeOrganisations: { orgEntities: {}, loaded: false, loading: false, searchString: '' },
+  pendingOrganisations: { orgEntities: {}, loaded: false, loading: false, searchString: '' },
+  organisationUsersList: { users: null, isError: false },
   errorMessage: '',
   orgForReview: null,
-  showOrganisationDetailsUserTab: {orgId: null, showUserTab: false},
+  showOrganisationDetailsUserTab: { orgId: null, showUserTab: false },
   organisationDeletable: false,
   searchString: ''
 };
@@ -38,7 +38,6 @@ export function reducer(
   action: fromActions.OrganisationsActions | fromActions.EditDetailsActions
 ): OrganisationState {
   switch (action.type) {
-
     case fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS: {
       const activeOrganisations = {
         orgEntities: {},
@@ -57,7 +56,7 @@ export function reducer(
           ...entities,
           [org.organisationId]: org
         };
-      }, {...state.activeOrganisations.orgEntities});
+      }, { ...state.activeOrganisations.orgEntities });
       const activeOrganisations = {
         orgEntities,
         loaded: true,
@@ -73,22 +72,21 @@ export function reducer(
     case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_SUCCESS: {
       return {
         ...state,
-        organisationUsersList: {users: action.payload, isError: false}
+        organisationUsersList: { users: action.payload, isError: false }
       };
     }
 
     case fromActions.OrgActionTypes.LOAD_ORGANISATION_USERS_FAIL: {
       return {
         ...state,
-        organisationUsersList: {users: null, isError: true}
+        organisationUsersList: { users: null, isError: true }
       };
     }
-
 
     case fromActions.OrgActionTypes.RESET_ORGANISATION_USERS: {
       return {
         ...state,
-        organisationUsersList: {users: null, isError: false}
+        organisationUsersList: { users: null, isError: false }
       };
     }
 
@@ -118,7 +116,7 @@ export function reducer(
           ...entities,
           [org.organisationId]: org
         };
-      }, {...state.pendingOrganisations.orgEntities});
+      }, { ...state.pendingOrganisations.orgEntities });
 
       const pendingOrganisations = {
         orgEntities,
@@ -163,7 +161,7 @@ export function reducer(
     case fromActions.OrgActionTypes.DELETE_PENDING_ORGANISATION_SUCCESS: {
       const deletedOrganisation = action.payload;
       const pendingEntities = {
-        ...state.pendingOrganisations.orgEntities,
+        ...state.pendingOrganisations.orgEntities
       };
 
       if (pendingEntities.hasOwnProperty(deletedOrganisation.organisationId)) {
@@ -185,7 +183,7 @@ export function reducer(
     case fromActions.OrgActionTypes.DELETE_ORGANISATION_SUCCESS: {
       const deletedOrganisation = action.payload;
       const activeEntities = {
-        ...state.activeOrganisations.orgEntities,
+        ...state.activeOrganisations.orgEntities
       };
 
       if (activeEntities.hasOwnProperty(deletedOrganisation.organisationId)) {
@@ -212,7 +210,7 @@ export function reducer(
       };
 
       if (pendingEntities.hasOwnProperty(reviewOrg.organisationId)) {
-        pendingEntities[reviewOrg.organisationId] = {...pendingEntities[reviewOrg.organisationId], status: 'REVIEW'};
+        pendingEntities[reviewOrg.organisationId] = { ...pendingEntities[reviewOrg.organisationId], status: 'REVIEW' };
       }
       const pendingOrganisations = {
         ...state.pendingOrganisations,
@@ -228,7 +226,7 @@ export function reducer(
     }
 
     case fromActions.OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_SUCCESS: {
-      const approvedOrg =  {
+      const approvedOrg = {
         ...action.payload,
         status: 'ACTIVE'
       };
@@ -244,7 +242,7 @@ export function reducer(
       };
 
       const pendingEntities = {
-        ...state.pendingOrganisations.orgEntities,
+        ...state.pendingOrganisations.orgEntities
       };
 
       if (pendingEntities.hasOwnProperty(approvedOrg.organisationId)) {
@@ -273,7 +271,7 @@ export function reducer(
     }
 
     case fromActions.SUBMIT_PBA_SUCCESS: {
-      const {paymentAccounts, orgId} = action.payload;
+      const { paymentAccounts, orgId } = action.payload;
 
       const pbaNumber = [...paymentAccounts];
       const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
@@ -281,37 +279,36 @@ export function reducer(
       const entity = {
         ...state[orgType].orgEntities[orgId],
         pbaNumber,
-        isAccLoaded: false,
+        isAccLoaded: false
       } as OrganisationVM;
 
       const orgEntities = {
-       ...state[orgType].orgEntities,
-       [orgId]: entity
+        ...state[orgType].orgEntities,
+        [orgId]: entity
       };
       // TODO create helper function instead of duplicating code
       if (orgType === 'activeOrganisations') {
         const activeOrganisations = {
-         ...state[orgType],
-         orgEntities
-        };
-        return {
-          ...state,
-         activeOrganisations
-        };
-      } else {
-        const pendingOrganisations = {
           ...state[orgType],
           orgEntities
         };
         return {
           ...state,
-          pendingOrganisations
+          activeOrganisations
         };
       }
+      const pendingOrganisations = {
+        ...state[orgType],
+        orgEntities
+      };
+      return {
+        ...state,
+        pendingOrganisations
+      };
     }
     case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME: {
-      const {orgId} = action.payload;
-      const accountDetails =  [{account_name: 'loading...'}];
+      const { orgId } = action.payload;
+      const accountDetails = [{ account_name: 'loading...' }];
       const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
       const entity = {
         ...state[orgType].orgEntities[orgId],
@@ -333,16 +330,15 @@ export function reducer(
           ...state,
           activeOrganisations
         };
-      } else {
-        const pendingOrganisations = {
-          ...state[orgType],
-          orgEntities
-        };
-        return {
-          ...state,
-          pendingOrganisations
-        };
       }
+      const pendingOrganisations = {
+        ...state[orgType],
+        orgEntities
+      };
+      return {
+        ...state,
+        pendingOrganisations
+      };
     }
 
     case fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_SUCCESS:
@@ -350,8 +346,8 @@ export function reducer(
       const payload = action.payload;
       const orgId = payload.orgId;
       const errorData = [
-        {account_name: 'There is a problem retrieving the account name. Try again later'},
-        {account_name: 'There is a problem retrieving the account name. Try again later'}
+        { account_name: 'There is a problem retrieving the account name. Try again later' },
+        { account_name: 'There is a problem retrieving the account name. Try again later' }
       ];
       const orgType = state.activeOrganisations.orgEntities[orgId] ? 'activeOrganisations' : 'pendingOrganisations';
       const accountDetails = !(action.type === fromActions.OrgActionTypes.LOAD_PBA_ACCOUNT_NAME_FAIL) ? payload.data : errorData;
@@ -374,16 +370,15 @@ export function reducer(
           ...state,
           activeOrganisations
         };
-      } else {
-        const pendingOrganisations = {
-          ...state[orgType],
-          orgEntities
-        };
-        return {
-          ...state,
-          pendingOrganisations
-        };
       }
+      const pendingOrganisations = {
+        ...state[orgType],
+        orgEntities
+      };
+      return {
+        ...state,
+        pendingOrganisations
+      };
     }
 
     case fromActions.OrgActionTypes.UPDATE_ACTIVE_ORGANISATIONS_SEARCH_STRING: {
@@ -435,7 +430,6 @@ export function reducer(
         organisationDeletable
       };
     }
-
 
     case fromActions.OrgActionTypes.UPDATE_ORGANISATIONS_SEARCH_STRING: {
       return {

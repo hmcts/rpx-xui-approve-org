@@ -7,7 +7,7 @@ import { ENVIRONMENT, PROTOCOL } from './references';
 /**
  * Allows us to integrate the Azure key-vault flex volume, so that we are able to access Node configuration values.
  */
-propertiesVolume.addTo(config)
+propertiesVolume.addTo(config);
 
 /**
  * Get Environment
@@ -18,7 +18,7 @@ propertiesVolume.addTo(config)
  * @see Readme
  * @returns {string} ie. - development / preview / aat / ithc, prod
  */
-export const getEnvironment = () => process.env.NODE_CONFIG_ENV
+export const getEnvironment = () => process.env.NODE_CONFIG_ENV;
 
 /**
  * Get Configuration Value
@@ -30,9 +30,9 @@ export const getEnvironment = () => process.env.NODE_CONFIG_ENV
  * @see references.ts
  * @param reference - ie. 'services.ccdDefApi'
  */
- export const getConfigValue = <T = string>(reference: string): T => config.get<T>(reference)
+export const getConfigValue = <T = string>(reference: string): T => config.get<T>(reference);
 
- /**
+/**
   * Show Feature
   *
   * Helper method for config feature toggling
@@ -40,7 +40,7 @@ export const getEnvironment = () => process.env.NODE_CONFIG_ENV
   * @param feature
   * @return boolean
   */
- export const showFeature = (feature: string): boolean => config.get<boolean>(`feature.${feature}`)
+export const showFeature = (feature: string): boolean => config.get<boolean>(`feature.${feature}`);
 
 /**
  * Generate Environment Check Text
@@ -48,7 +48,7 @@ export const getEnvironment = () => process.env.NODE_CONFIG_ENV
  * We generate text to be used for debugging purposes, so as the person attempting to initialise the application knows
  * what the NODE_CONFIG_ENV is set as and what config file is being used.
  */
-export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore we are using the ${config.get<string>(ENVIRONMENT)} config.`
+export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.env.NODE_CONFIG_ENV} therefore we are using the ${config.get<string>(ENVIRONMENT)} config.`;
 
 /**
  * Get Protocol
@@ -57,4 +57,4 @@ export const environmentCheckText = () => `NODE_CONFIG_ENV is set as ${process.e
  *
  * @returns {string | string}
  */
-export const getProtocol = () => getEnvironment() === DEVELOPMENT ? HTTP : getConfigValue(PROTOCOL)
+export const getProtocol = () => getEnvironment() === DEVELOPMENT ? HTTP : getConfigValue(PROTOCOL);

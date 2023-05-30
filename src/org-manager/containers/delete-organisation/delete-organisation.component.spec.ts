@@ -2,21 +2,21 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import * as fromRoot from '../../../app/store/reducers';
-import { BackLinkComponent } from '../../../org-manager/components';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
-import { OrganisationAddressComponent } from '../../components/organisation-address';
+import { BackLinkComponent, OrganisationAddressComponent } from '../../components';
 import {
   pendingOrganisationsMockCollection2,
   pendingOrganisationsMockCollectionObj,
-  reviewOrganisationsMockCollection,
+  reviewOrganisationsMockCollection
 } from '../../mock/pending-organisation.mock';
-import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation } from '../../store/actions';
+import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation } from '../../store';
 import { DeleteOrganisationComponent } from './delete-organisation.component';
 
 describe('DeleteOrganisationComponent', () => {
   let component: DeleteOrganisationComponent;
   let fixture: ComponentFixture<DeleteOrganisationComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storePipeMock: any;
   let storeDispatchMock: any;
 
@@ -26,8 +26,8 @@ describe('DeleteOrganisationComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers),
-        }),
+          feature: combineReducers(fromOrganisationPendingStore.reducers)
+        })
       ],
       declarations: [
         BackLinkComponent,

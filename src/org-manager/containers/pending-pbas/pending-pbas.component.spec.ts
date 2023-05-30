@@ -11,6 +11,7 @@ import { PendingPBAsComponent } from './pending-pbas.component';
 describe('PendingPBAsComponent', () => {
   let component: PendingPBAsComponent;
   let fixture: ComponentFixture<PendingPBAsComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   const pbaServiceSpy = jasmine.createSpyObj('PbaService', ['setPBAStatus', 'searchPbasWithPagination']);
 
@@ -29,7 +30,7 @@ describe('PendingPBAsComponent', () => {
       declarations: [
         PendingPBAsComponent
       ],
-       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PendingPBAsComponent);
@@ -54,7 +55,7 @@ describe('PendingPBAsComponent', () => {
         admin: 'test',
         adminEmail: 'test@test.com',
         name: 'test',
-        pbaNumbers: [{pbaNumber}],
+        pbaNumbers: [{ pbaNumber }],
         receivedDate: dateEarliest
       }];
       expect(receivedDate).toEqual(dateEarliest);

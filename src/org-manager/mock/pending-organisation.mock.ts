@@ -120,7 +120,7 @@ export const pendingOrganisationsMockCollection1: OrganisationVM[] = [
     dxNumber: [{}],
     postCode: ''
   }
-  ];
+];
 
 export const pendingOrganisationsMockCollectionObj: OrganisationVM = {
   name: 'Glen Byrne',
@@ -138,52 +138,52 @@ export const pendingOrganisationsMockCollectionObj: OrganisationVM = {
   dxNumber: [{}],
   postCode: ''
 
-  };
+};
 
 export const loadPbaAccountsObj = [{
-    account_number: 'PBA0088487',
-    account_name: 'RAY NIXON BROWN',
-    credit_limit: 5000,
-    available_balance: 5000,
-    status: 'Deleted',
-    effective_date: '2019-12-22T19:30:55.000Z'
+  account_number: 'PBA0088487',
+  account_name: 'RAY NIXON BROWN',
+  credit_limit: 5000,
+  available_balance: 5000,
+  status: 'Deleted',
+  effective_date: '2019-12-22T19:30:55.000Z'
 }];
 
 export const orgStatePending = {
- activeOrganisations: {
-   orgEntities: {},
-   loaded: false,
-   loading: false,
-   searchString: ''
- },
- pendingOrganisations: {
-   orgEntities: {
-     ByrneLimited: {
-       name: 'Glen Byrne',
-       organisationId: 'ByrneLimited',
-       addressLine1: '13 Berryfield drive, Finglas',
-       addressLine2: '',
-       townCity: '',
-       county: '',
-       postCode: '',
-       pbaNumber: ['101010'],
-       admin: 'Glen Byrne',
-       status: 'ACTIVE',
-       view: 'View',
-       adminEmail: 'glen@byrne.com',
-       dxNumber: [{}]
-     }
-     },
-   loaded: true,
-   loading: false,
-   searchString: ''
- },
- errorMessage: '',
- orgForReview: null,
- organisationUsersList: { users: null, isError: false },
- showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false},
- organisationDeletable: false,
- searchString: ''
+  activeOrganisations: {
+    orgEntities: {},
+    loaded: false,
+    loading: false,
+    searchString: ''
+  },
+  pendingOrganisations: {
+    orgEntities: {
+      ByrneLimited: {
+        name: 'Glen Byrne',
+        organisationId: 'ByrneLimited',
+        addressLine1: '13 Berryfield drive, Finglas',
+        addressLine2: '',
+        townCity: '',
+        county: '',
+        postCode: '',
+        pbaNumber: ['101010'],
+        admin: 'Glen Byrne',
+        status: 'ACTIVE',
+        view: 'View',
+        adminEmail: 'glen@byrne.com',
+        dxNumber: [{}]
+      }
+    },
+    loaded: true,
+    loading: false,
+    searchString: ''
+  },
+  errorMessage: '',
+  orgForReview: null,
+  organisationUsersList: { users: null, isError: false },
+  showOrganisationDetailsUserTab: { orgId: null, showUserTab: false },
+  organisationDeletable: false,
+  searchString: ''
 };
 
 export const orgStateActive = {
@@ -218,7 +218,7 @@ export const orgStateActive = {
   errorMessage: '',
   orgForReview: null,
   organisationUsersList: { users: null, isError: false },
-  showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false},
+  showOrganisationDetailsUserTab: { orgId: null, showUserTab: false },
   organisationDeletable: false,
   searchString: ''
 };

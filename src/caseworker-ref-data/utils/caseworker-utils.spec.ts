@@ -34,17 +34,17 @@ describe('CaseWorkerUtils', () => {
     // should get correct redirect for 500
     const serviceDown = handleFatalErrors(500, mockRouter);
     expect(serviceDown).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.ServiceDown ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.ServiceDown]);
 
     // correct redirect for 401
     const unAuthorised = handleFatalErrors(401, mockRouter);
     expect(unAuthorised).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
 
     // correct redirect for 403
     const isForbidden = handleFatalErrors(403, mockRouter);
     expect(isForbidden).toEqual(0);
-    expect(mockRouter.navigate).toHaveBeenCalledWith([ REDIRECTS.NotAuthorised ]);
+    expect(mockRouter.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised]);
   });
 
   it('should allow setting a fatal redirect', async () => {

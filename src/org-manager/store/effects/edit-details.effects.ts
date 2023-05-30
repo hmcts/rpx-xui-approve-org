@@ -13,28 +13,28 @@ export class EditDetailsEffects {
     private readonly actions$: Actions,
     private readonly updatePbaServices: UpdatePbaServices,
     private readonly loggerService: LoggerService
-  ) { }
+  ) {}
 
   @Effect()
   public submitPBA$ = this.actions$.pipe(
-    ofType(fromActions.SUBMIT_PBA),
-    map((action: fromActions.SubmitPba) => action.payload),
-    switchMap((body) => {
-      return this.updatePbaServices.updatePba(body).pipe(
-        map(() => new fromActions.SubmitPbaSuccess(body)),
-        catchError((error: Error) => {
-          this.loggerService.error(error);
-          return of(new fromActions.SubmitPbaFailure(error));
-        })
-      );
-    })
-  );
+      ofType(fromActions.SUBMIT_PBA),
+      map((action: fromActions.SubmitPba) => action.payload),
+      switchMap((body) => {
+        return this.updatePbaServices.updatePba(body).pipe(
+          map(() => new fromActions.SubmitPbaSuccess(body)),
+          catchError((error: Error) => {
+            this.loggerService.error(error);
+            return of(new fromActions.SubmitPbaFailure(error));
+          })
+        );
+      })
+    );
 
   @Effect()
   public submitPbaSuccess$ = this.actions$.pipe(
-    ofType(fromActions.SUBMIT_PBA_SUCCESS),
-    map(() => {
-      return new fromRood.Back();
-    }),
-  );
+      ofType(fromActions.SUBMIT_PBA_SUCCESS),
+      map(() => {
+        return new fromRood.Back();
+      }),
+    );
 }

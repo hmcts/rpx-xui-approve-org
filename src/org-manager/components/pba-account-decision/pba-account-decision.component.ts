@@ -5,13 +5,8 @@ import { Component, Input } from '@angular/core';
   templateUrl: './pba-account-decision.component.html'
 })
 export class PBAAccountDecisionComponent {
-
   @Input() public accountName: string;
   @Input() public decision: string;
   @Input() public organisationId: string;
   @Input() public pbaNumber: string;
-
-  constructor() {
-
-  }
 }

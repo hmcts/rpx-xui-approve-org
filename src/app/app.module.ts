@@ -46,22 +46,22 @@ export const metaReducers: MetaReducer<any>[] = !config.production
   : [];
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
-    return envConfig.launchDarklyClientId || '';
-  }
+  return envConfig.launchDarklyClientId || '';
+}
 
 @NgModule({
   declarations: [
     AppComponent,
     ...fromComponents.components,
-    ...fromContainers.containers,
+    ...fromContainers.containers
   ],
   imports: [
     BrowserModule,
     CookieModule.forRoot(),
     RouterModule.forRoot(ROUTES, {
-    anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload',
-    relativeLinkResolution: 'legacy'
-}),
+      anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload',
+      relativeLinkResolution: 'legacy'
+    }),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
     SharedModule,
@@ -82,9 +82,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     LogOutKeepAliveService,
     { provide: RouterStateSerializer, useClass: CustomSerializer },
     AuthService,
-    { provide: AbstractAppInsights, useClass: AppInsightsWrapper},
+    { provide: AbstractAppInsights, useClass: AppInsightsWrapper },
     CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
-    {provide: ErrorHandler, useClass: DefaultErrorHandler},
+    { provide: ErrorHandler, useClass: DefaultErrorHandler },
     {
       provide: APP_INITIALIZER,
       useFactory: initApplication,
@@ -95,4 +95,4 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -17,6 +17,7 @@ describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
   let fixture: ComponentFixture<EditDetailsComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let updatePbaServices: any;
   let mockedOrganisationService: any;
 
@@ -66,7 +67,7 @@ describe('EditDetailsComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers),
+          feature: combineReducers(fromOrganisationPendingStore.reducers)
         }),
         ExuiCommonLibModule,
         RouterTestingModule,
@@ -83,10 +84,10 @@ describe('EditDetailsComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             params: of({
-              orgId: 'orgTestId',
-            }),
-          },
-        },
+              orgId: 'orgTestId'
+            })
+          }
+        }
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
@@ -100,7 +101,8 @@ describe('EditDetailsComponent', () => {
     component = fixture.componentInstance;
     spyOn(component, 'duplicateValidator').and.callThrough();
     spyOn(component, 'underscore').and.returnValue({
-      uniq: (_) => ['PBA1234567', 'PBA1234567'] });
+      uniq: () => ['PBA1234567', 'PBA1234567']
+    });
 
     fixture.detectChanges();
   }));
