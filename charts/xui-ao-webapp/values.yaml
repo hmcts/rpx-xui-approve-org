@@ -15,7 +15,7 @@ nodejs:
   memoryRequests: 512Mi
   memoryLimits: 2048Mi
   autoscaling:        # Default is false
-    enabled: false 
+    enabled: false
     minReplicas: 2
     maxReplicas: 8    # Required setting
     targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
@@ -72,11 +72,12 @@ nodejs:
         - ao-s2s-client-secret
         - ao-idam-client-secret
         - appinsights-instrumentationkey-ao
-        - ao-webapp-redis-connection-string
+        - name: ao-webapp-redis6-connection-string
+          alias: ao-webapp-redis-connection-string
         - launch-darkly-client-id
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
 
 idam-pr:
-  enabled: false 
+  enabled: false
