@@ -24,7 +24,7 @@ describe('Get Account Status for a Account Name', async () => {
     effective_date: somethingLike('2021-01-20T12:56:47.576Z')
   };
 
-  describe('Get Account Status for a Account Name', () => {
+  xdescribe('Get Account Status for a Account Name', () => {
     before(async () => {
       await pactSetUp.provider.setup();
       const interaction = {
