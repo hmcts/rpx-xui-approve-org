@@ -33,6 +33,7 @@ import {
 import * as log4jui from './lib/log4jui';
 import * as tunnel from './lib/tunnel';
 import routes from './routes';
+import { idamCheck } from './idamCheck';
 
 export const app = express();
 
@@ -336,3 +337,5 @@ app.use(attach); // its called in routes.ts - no need to call it here
  *
  */
 app.use('/api', csrfProtection, routes);
+
+new Promise(idamCheck).then(() => 'IDAM is up and running');
