@@ -31,7 +31,7 @@ describe('Update the PBA for an organisation', async () => {
           }
         },
         willRespondWith: {
-          status: 201
+          status: 200
         }
       };
       // @ts-ignore
