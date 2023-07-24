@@ -189,10 +189,7 @@ mark.comment {
 //   }
 //
 //   table td::before {
-//     /*
-//     * aria-label has no advantage, it won't be read inside a table
-//     content: attr(aria-label);
-//     */
+//     __<<ngThemingMigrationEscapedComment8>>__
 //     content: attr(data-label);
 //     float: left;
 //     font-weight: bold;
