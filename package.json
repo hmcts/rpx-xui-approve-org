@@ -95,7 +95,7 @@
     "crypto-js": "^3.1.9-1",
     "csurf": "^1.11.0",
     "dotenv-extended": "^2.7.1",
-    "ejs": "^2.6.1",
+    "ejs": "~3.1.7",
     "exception-formatter": "^1.0.7",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
@@ -213,7 +213,10 @@
     "webpack-node-externals": "^1.7.2"
   },
   "resolutions": {
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.8",
+    "loader-utils": "~2.0.3",
+    "async": "~3.2.2"
   },
   "packageManager": "yarn@3.5.0"
 }
