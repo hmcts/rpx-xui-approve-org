@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/caseworker-ref-data/utils/caseworker-utils';
@@ -13,7 +13,7 @@ import { PbaService } from '../../services';
 })
 export class NewPBAsConfirmComponent implements OnInit, OnDestroy {
   @Input() public org: OrganisationVM;
-  @Input() public formControls: FormControl[];
+  @Input() public formControls: UntypedFormControl[];
   @Input() public newPBAs: Map<string, string>;
   private subscription: Subscription;
   public isInactiveOrgError: boolean = false;

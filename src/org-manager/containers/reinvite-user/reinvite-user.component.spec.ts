@@ -1,4 +1,4 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
 import * as fromRoot from '../../../app/store';
 import { ReinviteUserComponent } from './reinvite-user.component';
@@ -12,15 +12,15 @@ describe('ReinviteUserComponent', () => {
     const actionSpy = jasmine.createSpyObj('actionSpy', ['pipe']);
     component = new ReinviteUserComponent(userStoreSpyObject, actionSpy);
 
-    component.inviteUserForm = new FormGroup({
-      firstName: new FormControl('first', Validators.required),
-      lastName: new FormControl('last', Validators.required),
-      email: new FormControl('test@email.com', [Validators.email, Validators.required]),
-      roles: new FormGroup({
-        'pui-case-manager': new FormControl(''),
-        'pui-user-manager': new FormControl(''),
-        'pui-organisation-manager': new FormControl(''),
-        'pui-finance-manager': new FormControl('')
+    component.inviteUserForm = new UntypedFormGroup({
+      firstName: new UntypedFormControl('first', Validators.required),
+      lastName: new UntypedFormControl('last', Validators.required),
+      email: new UntypedFormControl('test@email.com', [Validators.email, Validators.required]),
+      roles: new UntypedFormGroup({
+        'pui-case-manager': new UntypedFormControl(''),
+        'pui-user-manager': new UntypedFormControl(''),
+        'pui-organisation-manager': new UntypedFormControl(''),
+        'pui-finance-manager': new UntypedFormControl('')
       }, checkboxesBeCheckedValidator())
     });
   });

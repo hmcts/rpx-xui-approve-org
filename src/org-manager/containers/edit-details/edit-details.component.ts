@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import _ from 'lodash';
@@ -21,7 +21,7 @@ import { PBANumberModel } from '../pending-pbas/models';
   templateUrl: './edit-details.component.html'
 })
 export class EditDetailsComponent implements OnInit, OnDestroy {
-  public changePbaFG: FormGroup;
+  public changePbaFG: UntypedFormGroup;
   public pbaInputs: PBAConfig[] = [];
   public pbaError$: Observable<object>;
   public pbaErrorsHeader$: Observable<any>;
@@ -44,13 +44,13 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
     private readonly organisationService: OrganisationService,
     private readonly router: Router,
     private readonly route: ActivatedRoute,
-    private readonly fb: FormBuilder) {
+    private readonly fb: UntypedFormBuilder) {
     this.errorHeader = new ErrorHeader();
     this.errorHeader.items = [];
     this.route.params.subscribe((params) => {
       this.orgId = params.orgId ? params.orgId : '';
     });
-    this.changePbaFG = new FormGroup({
+    this.changePbaFG = new UntypedFormGroup({
       pbaNumbers: this.fb.array([])
     });
   }
@@ -100,8 +100,8 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
-  public get pbaFormArrayNumbers(): FormArray {
-    return this.changePbaFG.get('pbaNumbers') as FormArray;
+  public get pbaFormArrayNumbers(): UntypedFormArray {
+    return this.changePbaFG.get('pbaNumbers') as UntypedFormArray;
   }
 
   public get currentPaymentAccounts(): PBANumberModel[] {
@@ -150,7 +150,7 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
   }
 
   public addPbaFormItem(inputsName: string) {
-    this.changePbaFG.addControl(inputsName, new FormControl(''));
+    this.changePbaFG.addControl(inputsName, new UntypedFormControl(''));
   }
 
   public createPbaForm(): void {
