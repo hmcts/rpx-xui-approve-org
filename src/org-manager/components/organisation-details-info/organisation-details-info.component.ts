@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './models/organisation-details';
 
@@ -17,14 +17,14 @@ export class OrganisationDetailsInfoComponent implements OnInit {
   @Output() public deleteEvent: EventEmitter<OrganisationVM> = new EventEmitter();
   @Output() public reviewEvent: EventEmitter<OrganisationVM> = new EventEmitter();
 
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
   private readonly genericError = 'There is a problem';
   private readonly radioSelectedControlName = 'radioSelected';
   public readonly registrationRequest: DisplayedRequest[];
 
-  constructor(private readonly fb: FormBuilder) {
+  constructor(private readonly fb: UntypedFormBuilder) {
     this.registrationRequest = [
       { request: RequestType.APPROVE_REQUEST, checked: false },
       { request: RequestType.REJECT_REQUEST, checked: false },
@@ -41,7 +41,7 @@ export class OrganisationDetailsInfoComponent implements OnInit {
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({
-      radioSelected: new FormControl(null, Validators.required)
+      radioSelected: new UntypedFormControl(null, Validators.required)
     });
   }
 

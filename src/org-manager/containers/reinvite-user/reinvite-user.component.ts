@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
@@ -21,7 +21,7 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store<fromStore.OrganisationRootState>,
               private readonly actions$: Actions) {}
 
-  public inviteUserForm: FormGroup;
+  public inviteUserForm: UntypedFormGroup;
   public organisationId$: Observable<string>;
 
   public errors$: Observable<any>;
@@ -40,15 +40,15 @@ export class ReinviteUserComponent implements OnInit, OnDestroy {
     this.errors$ = this.store.pipe(select(fromStore.getInviteUserErrorMessageSelector));
     this.errorsArray$ = this.store.pipe(select(fromStore.getGetInviteUserErrorsArray));
 
-    this.inviteUserForm = new FormGroup({
-      firstName: new FormControl('', Validators.required),
-      lastName: new FormControl('', Validators.required),
-      email: new FormControl('', [Validators.email, Validators.required]),
-      roles: new FormGroup({
-        'pui-case-manager': new FormControl(''),
-        'pui-user-manager': new FormControl(''),
-        'pui-organisation-manager': new FormControl(''),
-        'pui-finance-manager': new FormControl('')
+    this.inviteUserForm = new UntypedFormGroup({
+      firstName: new UntypedFormControl('', Validators.required),
+      lastName: new UntypedFormControl('', Validators.required),
+      email: new UntypedFormControl('', [Validators.email, Validators.required]),
+      roles: new UntypedFormGroup({
+        'pui-case-manager': new UntypedFormControl(''),
+        'pui-user-manager': new UntypedFormControl(''),
+        'pui-organisation-manager': new UntypedFormControl(''),
+        'pui-finance-manager': new UntypedFormControl('')
       }, checkboxesBeCheckedValidator())
     });
 
