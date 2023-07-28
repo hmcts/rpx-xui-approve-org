@@ -5,6 +5,15 @@
   },
   "version": 1,
   "newProjectRoot": "projects",
+  "build": {
+    "options": {
+      "stylePreprocessorOptions": {
+        "includePaths": [
+          "./node_modules"
+        ]
+      }
+    }
+  },
   "projects": {
     "organisation-manager": {
       "root": "",

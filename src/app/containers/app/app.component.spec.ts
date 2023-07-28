@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+//import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, fakeAsync, flush, TestBed, waitForAsync } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 import { RoutesRecognized } from '@angular/router';
@@ -35,7 +35,7 @@ describe('AppComponent', () => {
         queryParams: {},
         fragment: '',
         outlet: '',
-        component: '',
+        component: null,
         routeConfig: {},
         root: null,
         parent: null,
@@ -43,15 +43,17 @@ describe('AppComponent', () => {
         children: [],
         pathFromRoot: [],
         paramMap: null,
-        queryParamMap: null
+        queryParamMap: null,
+        title: ''
       },
+      title: '',
       data: { title: 'Test' },
       url: [],
       params: {},
       queryParams: {},
       fragment: '',
       outlet: '',
-      component: '',
+      component: null,
       routeConfig: {},
       root: null,
       parent: null,
