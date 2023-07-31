@@ -15,19 +15,22 @@ getTestBed().initTestEnvironment(
   platformBrowserDynamicTesting()
 );
 
+console.log('--------*******------------------');
+console.log(jasmine.getEnv());
+
 // configure matchers for jasmine-marbles
-jasmine.getEnv().beforeAll(() => {
-  return addMatchers();
-});
+//jasmine.getEnv().beforeAll(() => {
+//  return addMatchers();
+//});
 
-jasmine.getEnv().beforeEach(() => {
-  initTestScheduler();
-});
+//jasmine.getEnv().beforeEach(() => {
+//  initTestScheduler();
+//});
 
-jasmine.getEnv().afterEach(() => {
-  getTestScheduler().flush();
-  resetTestScheduler();
-});
+//jasmine.getEnv().afterEach(() => {
+//  getTestScheduler().flush();
+//  resetTestScheduler();
+//});
 
 // Then we find all the tests.
 console.log('--------------------------');
