@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
@@ -73,7 +74,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       disableConsoleLogging: false
     }),
     ExuiCommonLibModule,
-    NgIdleKeepaliveModule.forRoot()
+    NgIdleKeepaliveModule.forRoot(),
+    HttpClientModule
   ],
   providers: [
     NGXLogger,
