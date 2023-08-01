@@ -1,4 +1,4 @@
-@smoke @Ignore
+@smoke
 Feature: Validate App is up and running after deployment
 
     Scenario: Redirect to idam login page on accessing application URL
