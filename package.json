@@ -5,7 +5,6 @@
     "node": ">=12.13.0"
   },
   "scripts": {
-    "audit": "yarn npm audit --recursive --environment production --json > yarn-audit-known-issues",
     "build": "yarn build:prod && yarn build:node",
     "build:docker": "docker build . -t rpx-xui-approve-org",
     "build:ng": "ng build",
