@@ -11,11 +11,13 @@ import { NotificationBannerComponent } from '../../components';
 import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Component({
   template: '<div>Bob</div>'
 })
-export class MockComponent {}
+export class MockComponent { }
 
 export const MOCK_ROUTES: Routes = [
   {
@@ -35,6 +37,8 @@ export const MOCK_ROUTES: Routes = [
 const organisationMockService = jasmine.createSpyObj('organisationService', ['organisationSearchStringChange', 'setOrganisationSearchString', 'resetPaginationParameters']);
 organisationMockService.organisationSearchStringChange.and.returnValue(of(''));
 
+const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation']);
+
 describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
@@ -51,6 +55,7 @@ describe('HomeComponent', () => {
       ],
       declarations: [HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent],
       providers: [
+        { provide: RpxTranslationService, useValue: translationMockService },
         { provide: OrganisationService, useValue: organisationMockService }
       ]
     }).compileComponents();

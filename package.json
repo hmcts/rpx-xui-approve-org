@@ -125,7 +125,7 @@
     "path": "^0.12.7",
     "protractor-screenshot-utils": "^1.0.6",
     "redis": "^3.0.2",
-    "rpx-xui-translation": "1.0.0-NodeAndNgUpgrades-02",
+    "rpx-xui-translation": "0.1.6",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "session-file-store": "^1.2.0",
@@ -216,7 +216,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "resolutions": {
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "rpx-xui-translation": "0.1.6"
   },
   "packageManager": "yarn@3.6.1"
 }
