@@ -9353,6 +9353,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dexie@npm:^3.2.2":
+  version: 3.2.4
+  resolution: "dexie@npm:3.2.4"
+  checksum: 4e5294a954118b6862c864b8c3970904a1733daebcd919488624520696411e2e81ed1bceeac3634c5c15a21e37ce4b8502ed41c4edfbc5ba3f5925c34d56497b
+  languageName: node
+  linkType: hard
+
 "di@npm:^0.0.1":
   version: 0.0.1
   resolution: "di@npm:0.0.1"
@@ -15237,6 +15244,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"luxon@npm:^2.4.0":
+  version: 2.5.2
+  resolution: "luxon@npm:2.5.2"
+  checksum: d8b671ffd2ff0b438af862ac11082a81b3aedd9f8b6a4ca636f944224f8dd381125cd4d274ca0a8aedcaf2cfca0fc2ca96fe4cc1b16a28b7af701afb95c0bff8
+  languageName: node
+  linkType: hard
+
 "magic-string@npm:0.29.0":
   version: 0.29.0
   resolution: "magic-string@npm:0.29.0"
@@ -17333,6 +17347,7 @@ __metadata:
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.6
     redis: ^3.0.2
+    rpx-xui-translation: 1.0.0-NodeAndNgUpgrades-02
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     session-file-store: ^1.2.0
@@ -19828,6 +19843,20 @@ __metadata:
   bin:
     rollup: dist/bin/rollup
   checksum: 6a2bf167b3587d4df709b37d149ad0300692cc5deb510f89ac7bdc77c8738c9546ae3de9322b0968e1ed2b0e984571f5f55aae28fa7de4cfcb1bc5402a4e2be6
+  languageName: node
+  linkType: hard
+
+"rpx-xui-translation@npm:1.0.0-NodeAndNgUpgrades-02":
+  version: 1.0.0-NodeAndNgUpgrades-02
+  resolution: "rpx-xui-translation@npm:1.0.0-NodeAndNgUpgrades-02"
+  dependencies:
+    dexie: ^3.2.2
+    luxon: ^2.4.0
+    tslib: ^2.0.0
+  peerDependencies:
+    "@angular/common": ^9.1.13
+    "@angular/core": ^9.1.13
+  checksum: 8d9bc8272ef8dc13a04a2edbee11e9805036978449ddeb087acbd7b792dd35582344941a521ca8bde986671b1267624dfaf70fcc89abbef926b93b06e2bf6621
   languageName: node
   linkType: hard
 
