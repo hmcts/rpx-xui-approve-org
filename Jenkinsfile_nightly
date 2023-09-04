@@ -17,7 +17,7 @@ def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
-def vault = "rpx",
+def vault = "rpx"
 def fortifyVaultName = "rpx-aat"
 
 def secrets = [
