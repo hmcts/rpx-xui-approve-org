@@ -14,7 +14,7 @@ properties([
 @Library("Infrastructure")
 
 def type      = "nodejs"
-def product   = "xui"
+def product   = "rpx"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 def vault = "rpx"
