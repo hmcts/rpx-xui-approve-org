@@ -18,7 +18,6 @@ def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 def vault = "rpx"
-def fortifyVaultName = "rpx-aat"
 
 def secrets = [
   'rpx-${env}': [
@@ -44,7 +43,7 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     // enableSecurityScan()
-    enableFortifyScan()
+    enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(60)
     enableMutationTest()
     enableCrossBrowserTest()
