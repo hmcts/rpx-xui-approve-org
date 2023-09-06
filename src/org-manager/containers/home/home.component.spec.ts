@@ -37,7 +37,7 @@ export const MOCK_ROUTES: Routes = [
 const organisationMockService = jasmine.createSpyObj('organisationService', ['organisationSearchStringChange', 'setOrganisationSearchString', 'resetPaginationParameters']);
 organisationMockService.organisationSearchStringChange.and.returnValue(of(''));
 
-const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation']);
+const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
 describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
