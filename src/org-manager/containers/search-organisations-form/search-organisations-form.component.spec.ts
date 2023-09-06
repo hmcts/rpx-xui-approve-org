@@ -9,7 +9,7 @@ import { RpxTranslationService } from 'rpx-xui-translation';
 describe('SearchOrganisationsFormComponent', () => {
   let component: SearchOrganisationsFormComponent;
   let fixture: ComponentFixture<SearchOrganisationsFormComponent>;
-  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation']);
+  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

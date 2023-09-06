@@ -99,7 +99,7 @@ describe('OrganisationDetailsComponent', () => {
     pbaNumber: ['PBA1234567'],
     dxNumber: [123456]
   };
-  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation']);
+  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
   beforeEach((() => {
     TestBed.configureTestingModule({
