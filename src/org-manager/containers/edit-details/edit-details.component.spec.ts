@@ -61,7 +61,7 @@ describe('EditDetailsComponent', () => {
     ]
   };
 
-  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation']);
+  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
   beforeEach((() => {
     TestBed.configureTestingModule({
