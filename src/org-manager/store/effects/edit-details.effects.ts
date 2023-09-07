@@ -10,31 +10,31 @@ import * as fromActions from '../actions';
 @Injectable()
 export class EditDetailsEffects {
   constructor(
-    private actions$: Actions,
-    private updatePbaServices: UpdatePbaServices,
-    private loggerService: LoggerService
-  ) { }
+    private readonly actions$: Actions,
+    private readonly updatePbaServices: UpdatePbaServices,
+    private readonly loggerService: LoggerService
+  ) {}
 
   @Effect()
-  submitPBA$ = this.actions$.pipe(
-    ofType(fromActions.SUBMIT_PBA),
-    map((action: fromActions.SubmitPba) => action.payload),
-    switchMap((body) => {
-      return this.updatePbaServices.updatePba(body).pipe(
-        map(() => new fromActions.SubmitPbaSuccess(body)),
-        catchError((error: Error) => {
-          this.loggerService.error(error);
-          return of(new fromActions.SubmitPbaFailure(error));
-        })
-      );
-    })
-  );
+  public submitPBA$ = this.actions$.pipe(
+      ofType(fromActions.SUBMIT_PBA),
+      map((action: fromActions.SubmitPba) => action.payload),
+      switchMap((body) => {
+        return this.updatePbaServices.updatePba(body).pipe(
+          map(() => new fromActions.SubmitPbaSuccess(body)),
+          catchError((error: Error) => {
+            this.loggerService.error(error);
+            return of(new fromActions.SubmitPbaFailure(error));
+          })
+        );
+      })
+    );
 
   @Effect()
-  submitPbaSuccess$ = this.actions$.pipe(
+  public submitPbaSuccess$ = this.actions$.pipe(
       ofType(fromActions.SUBMIT_PBA_SUCCESS),
       map(() => {
         return new fromRood.Back();
       }),
-  );
+    );
 }

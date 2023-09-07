@@ -5,14 +5,17 @@ describe('CaseWorkerDetailsComponent', () => {
   let component: CaseWorkerDetailsComponent;
   let caseWorkerRefDataService;
   let router;
+
   beforeEach(() => {
     caseWorkerRefDataService = jasmine.createSpyObj('caseWorkerRefDataService', ['postFile']);
-    router = jasmine.createSpyObj('router', ['navigate'])
+    router = jasmine.createSpyObj('router', ['navigate']);
     component = new CaseWorkerDetailsComponent(caseWorkerRefDataService, router);
   });
+
   it('is Truthy', () => {
     expect(component).toBeTruthy();
   });
+
   it('onSubmit success', () => {
     const response = {
       message: 'message',
@@ -24,11 +27,11 @@ describe('CaseWorkerDetailsComponent', () => {
     const fileList = {
       0: file,
       length: 1,
-      item: (index: number) => file
+      item: () => file
     };
     component.onSubmit({ files: fileList });
     expect(caseWorkerRefDataService.postFile).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/caseworker-details/upload-success'], { state: response })
+    expect(router.navigate).toHaveBeenCalledWith(['/caseworker-details/upload-success'], { state: response });
   });
 
   it('onSubmit failure to upload', () => {
@@ -43,7 +46,7 @@ describe('CaseWorkerDetailsComponent', () => {
     const fileList = {
       0: file,
       length: 1,
-      item: (index: number) => file
+      item: () => file
     };
     component.onSubmit({ files: fileList });
     expect(caseWorkerRefDataService.postFile).toHaveBeenCalled();
@@ -62,7 +65,7 @@ describe('CaseWorkerDetailsComponent', () => {
     const fileList = {
       0: file,
       length: 0,
-      item: (index: number) => null
+      item: () => null
     };
     component.onSubmit({ files: fileList });
     expect(caseWorkerRefDataService.postFile).not.toHaveBeenCalled();
@@ -86,10 +89,10 @@ describe('CaseWorkerDetailsComponent', () => {
     const fileList = {
       0: file,
       length: 1,
-      item: (index: number) => file
+      item: () => file
     };
     component.onSubmit({ files: fileList });
     expect(caseWorkerRefDataService.postFile).toHaveBeenCalled();
-    expect(router.navigate).toHaveBeenCalledWith(['/caseworker-details/partial-success'], { state: response })
+    expect(router.navigate).toHaveBeenCalledWith(['/caseworker-details/partial-success'], { state: response });
   });
 });

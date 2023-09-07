@@ -13,9 +13,9 @@ import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
 
 @Component({
-  template: `<div>Bob</div>`
+  template: '<div>Bob</div>'
 })
-export class MockComponent { }
+export class MockComponent {}
 
 export const MOCK_ROUTES: Routes = [
   {
@@ -34,11 +34,12 @@ export const MOCK_ROUTES: Routes = [
 ];
 const organisationMockService = jasmine.createSpyObj('organisationService', ['organisationSearchStringChange', 'setOrganisationSearchString', 'resetPaginationParameters']);
 organisationMockService.organisationSearchStringChange.and.returnValue(of(''));
-describe('HomeComponent', () => {
 
+describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
   let component: HomeComponent;
   let router: Router;
+
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -56,7 +57,7 @@ describe('HomeComponent', () => {
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     fixture.detectChanges();
   }));
 
@@ -96,9 +97,8 @@ describe('HomeComponent', () => {
   });
 
   it('should perform a search when the search form is submitted', () => {
-    const SEARCH_STRING = `Bob's Solicitors`;
+    const SEARCH_STRING = 'Bob\'s Solicitors';
     component.submitSearch(SEARCH_STRING);
     expect(organisationMockService.setOrganisationSearchString).toHaveBeenCalledWith(SEARCH_STRING);
   });
-
 });

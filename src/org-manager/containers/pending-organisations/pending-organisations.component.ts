@@ -8,10 +8,9 @@ import { OrganisationListComponent } from './../organisation-list/organisation-l
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-organisations.component.html',
-  styleUrls: [ '../organisation-list/organisation-list.component.scss' ]
+  styleUrls: ['../organisation-list/organisation-list.component.scss']
 })
 export class PendingOrganisationsComponent extends OrganisationListComponent implements OnInit {
-
   constructor(
     protected router: Router,
     protected ref: ChangeDetectorRef,
@@ -23,7 +22,7 @@ export class PendingOrganisationsComponent extends OrganisationListComponent imp
   }
 
   public ngOnInit(): void {
-    this.view = 'NEW'
+    this.view = 'NEW';
     super.ngOnInit();
   }
 }

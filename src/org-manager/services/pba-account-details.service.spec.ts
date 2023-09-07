@@ -19,12 +19,11 @@ describe('PbaAccountDetails', () => {
       providers: [
         PbaAccountDetails,
         { provide: HttpClient, useValue: httpClient },
-        { provide: environment, useValue: mockEnviroment },
+        { provide: environment, useValue: mockEnviroment }
       ]
     });
-    pbaAccountDetails = TestBed.get(PbaAccountDetails);
+    pbaAccountDetails = TestBed.inject(PbaAccountDetails);
     pbaAccountDetails.updatePbaUrl = mockEnviroment.updatePbaUrl;
-
   });
 
   it('should get organisation user list', () => {

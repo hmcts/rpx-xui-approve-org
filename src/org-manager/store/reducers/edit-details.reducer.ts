@@ -1,5 +1,5 @@
+import { OrgManagerConstants } from '../../org-manager.constants';
 import * as fromActions from '../actions/edit-details.actions';
-import {OrgManagerConstants} from '../../org-manager.constants';
 
 export interface EditDetailsState {
   pba: {
@@ -23,20 +23,20 @@ export function reducer(
 ): EditDetailsState {
   switch (action.type) {
     case fromActions.DISPATCH_SAVE_PBA_VALIDATION: {
-      const {isInvalid, errorMsg} = action.payload;
+      const { isInvalid, errorMsg } = action.payload;
 
       const errorMessages = Object.keys(isInvalid).reduce((acc, key) => {
         const hasErrors = isInvalid[key].filter((item) => item !== null).length;
         if (hasErrors) {
-            acc[key] = {
-              messages: [errorMsg[0]],
-              isInvalid: !!hasErrors
-            };
-            return acc;
-        } else { return acc; }
+          acc[key] = {
+            messages: [errorMsg[0]],
+            isInvalid: !!hasErrors
+          };
+          return acc;
+        } return acc;
       }, {});
-      const isFormValid = !Object.keys(errorMessages).filter(key => errorMessages[key].isInvalid).length;
-      const pba =  {
+      const isFormValid = !Object.keys(errorMessages).filter((key) => errorMessages[key].isInvalid).length;
+      const pba = {
         ...state.pba,
         errorMessages,
         isFormValid
@@ -73,7 +73,8 @@ export function reducer(
       };
     }
 
-    case fromActions.SUBMIT_PBA_FAILURE : {
+    case fromActions.SUBMIT_PBA_FAILURE: {
+      // eslint-disable-next-line dot-notation
       const status = action.payload['status'];
       const isServerError = OrgManagerConstants.STATUS_CODES.serverErrors.includes(status);
 
@@ -94,8 +95,9 @@ export function reducer(
         };
       }
       const id = {
-          messages: action.payload['error'].apiError.errorDescription,
-          isFormValid: false
+        // eslint-disable-next-line dot-notation
+        messages: action.payload['error'].apiError.errorDescription,
+        isFormValid: false
       };
       const errorMessages = {
         ...state.pba.errorMessages,

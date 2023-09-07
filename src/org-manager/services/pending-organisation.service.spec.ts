@@ -2,9 +2,9 @@ import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { environment } from 'src/environments/environment';
 import createSpyObj = jasmine.createSpyObj;
+import { OrganisationService } from '.';
 import { Organisation } from '../models/organisation';
 import { PendingOrganisationService } from './pending-organisation.service';
-import { OrganisationService } from '.';
 
 describe('PendingOrganisationService', () => {
   let httpClient: HttpClient;
@@ -26,14 +26,14 @@ describe('PendingOrganisationService', () => {
       postCode: 'string',
       dxAddress: [{
         dxNumber: 'string',
-        dxExchange: 'string',
-      }],
+        dxExchange: 'string'
+      }]
     }],
     superUser: {
       userIdentifier: '',
       firstName: 'string',
       lastName: 'string;',
-      email: 'string',
+      email: 'string'
     },
     status: 'string;',
     name: 'string;',
@@ -51,11 +51,10 @@ describe('PendingOrganisationService', () => {
         { provide: environment, useValue: mockEnvironment }
       ]
     });
-    pendingOrganisationService = TestBed.get(PendingOrganisationService);
+    pendingOrganisationService = TestBed.inject(PendingOrganisationService);
     pendingOrganisationService.orgPendingUrl = mockEnvironment.orgPendingUrl;
     pendingOrganisationService.singleOrgUrl = mockEnvironment.singleOrgUrl;
     pendingOrganisationService.organisationsUrl = mockEnvironment.organisationsUrl;
-
   });
 
   it('should fetch pending organisations', () => {
@@ -64,7 +63,7 @@ describe('PendingOrganisationService', () => {
   });
 
   it('should get single organisation', () => {
-    pendingOrganisationService.getSingleOrganisation({id: 'dummy'});
+    pendingOrganisationService.getSingleOrganisation({ id: 'dummy' });
     expect(httpClient.get).toHaveBeenCalledWith(`${mockEnvironment.singleOrgUrl}dummy`);
   });
 

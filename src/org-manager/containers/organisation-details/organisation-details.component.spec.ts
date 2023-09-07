@@ -18,8 +18,7 @@ import { OrganisationDetailsComponent } from './organisation-details.component';
   selector: 'app-mock',
   template: ''
 })
-class MockComponent {
-}
+class MockComponent {}
 
 describe('OrganisationDetailsComponent', () => {
   const MOCKED_ORGANISATION = {
@@ -97,15 +96,15 @@ describe('OrganisationDetailsComponent', () => {
     name: 'Glen Byrne',
     view: 'View',
     pbaNumber: ['PBA1234567'],
-    dxNumber: [123456],
-  }
+    dxNumber: [123456]
+  };
 
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers),
+          feature: combineReducers(fromOrganisationPendingStore.reducers)
         }),
         HttpClientTestingModule,
         ExuiCommonLibModule,
@@ -130,17 +129,17 @@ describe('OrganisationDetailsComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             params: of({
-              orgId: 'orgTestId',
-            }),
-          },
-        },
+              orgId: 'orgTestId'
+            })
+          }
+        }
       ]
     }).compileComponents();
-    store = TestBed.get(Store);
-    mockedOrganisationService = TestBed.get(OrganisationService);
-    mockedPbaAccountDetails = TestBed.get(PbaAccountDetails);
-    mockedUserApprovalGuard = TestBed.get(UserApprovalGuard);
-    mockedPBARouter = TestBed.get(Router);
+    store = TestBed.inject(Store);
+    mockedOrganisationService = TestBed.inject(OrganisationService);
+    mockedPbaAccountDetails = TestBed.inject(PbaAccountDetails);
+    mockedUserApprovalGuard = TestBed.inject(UserApprovalGuard);
+    mockedPBARouter = TestBed.inject(Router);
     spyOn(mockedUserApprovalGuard, 'isUserApprovalRole').and.returnValue(true);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
     spyOn(mockedOrganisationService, 'getOrganisationUsers').and.returnValue(of(MOCKED_USERS));
@@ -159,14 +158,14 @@ describe('OrganisationDetailsComponent', () => {
 
   it('on go back to active org when the organisation is active', () => {
     component.isActiveOrg = true;
-    const response = new fromRoot.Go({ path: ['/active-organisation'] });
+    // const response = new fromRoot.Go({ path: ['/active-organisation'] });
     component.onGoBack();
     expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
   });
 
   it('on go back to pending org when the organisation is not active', () => {
     component.isActiveOrg = false;
-    const response = new fromRoot.Go({ path: ['/pending-organisations'] });
+    // const response = new fromRoot.Go({ path: ['/pending-organisations'] });
     component.onGoBack();
     expect(mockedPBARouter.navigateByUrl).toHaveBeenCalled();
   });
@@ -203,7 +202,7 @@ describe('OrganisationDetailsComponent', () => {
       email: 'test@mail.com',
       status: 'valid',
       resendInvite: false
-    }
+    };
     component.onShowUserDetails(user);
     expect(store.dispatch).toHaveBeenCalled();
   });

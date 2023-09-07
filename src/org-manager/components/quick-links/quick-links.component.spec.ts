@@ -1,18 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BackLinkComponent } from '..';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BackLinkComponent } from '..';
 
 describe('BackLinkComponent', () => {
   let component: BackLinkComponent;
   let fixture: ComponentFixture<BackLinkComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterModule, RouterTestingModule.withRoutes([]) ],
-      declarations: [ BackLinkComponent ]
+      imports: [RouterModule, RouterTestingModule.withRoutes([])],
+      declarations: [BackLinkComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -24,5 +24,4 @@ describe('BackLinkComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

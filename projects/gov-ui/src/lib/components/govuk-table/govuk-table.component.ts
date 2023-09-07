@@ -18,7 +18,7 @@ export class GovukTableComponent implements OnInit {
 
     @Input() columnConfig: GovukTableColumnConfig[];
 
-    constructor(private fb: FormBuilder) { }
+    constructor(private fb: FormBuilder) {}
     ngOnInit(): void {
     this.inputForm = this.fb.group({
       checkedInput: this.fb.array([])

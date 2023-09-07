@@ -1,6 +1,6 @@
-import { inject, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
-import { CookieModule, CookieService} from 'ngx-cookie';
+import { CookieModule, CookieService } from 'ngx-cookie';
 import { environment } from 'src/environments/environment';
 import { UserApprovalGuard } from './users-approval.guard';
 
@@ -11,7 +11,6 @@ const config = {
 };
 
 describe('UserApprovalGuard', () => {
-
   let cookieService: CookieService;
   let userApprovalGuard: UserApprovalGuard;
 
@@ -19,15 +18,15 @@ describe('UserApprovalGuard', () => {
     TestBed.configureTestingModule({
       imports: [
         StoreModule.forRoot({}),
-        CookieModule.forRoot(),
+        CookieModule.forRoot()
       ],
       providers: [
         { provide: environment, useValue: config }
       ]
     });
 
-    cookieService = TestBed.get(CookieService);
-    userApprovalGuard = TestBed.get(UserApprovalGuard);
+    cookieService = TestBed.inject(CookieService);
+    userApprovalGuard = TestBed.inject(UserApprovalGuard);
   });
 
   it('isUserApprovalRole should be true when it has xui-approver-userdata role', () => {
@@ -46,5 +45,4 @@ describe('UserApprovalGuard', () => {
     expect(userApprovalGuard.canActivate()).toBeFalsy();
     expect(userApprovalGuard.redirectToPendingOrgs).toHaveBeenCalled();
   });
-
 });

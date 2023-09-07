@@ -5,11 +5,13 @@ import { AppUtils } from 'src/app/utils/app-utils';
 
 @Component({
   selector: 'app-redirect',
-  template: ``
+  template: ''
 })
-
 export class RedirectComponent implements OnInit {
-  constructor(private readonly cookieService: CookieService, private router: Router) { }
+  constructor(private readonly cookieService: CookieService,
+              private readonly router: Router
+  ) {}
+
   public ngOnInit() {
     const encodedRoles = this.cookieService.getObject('roles');
     const url = this.getRedirectUrl(encodedRoles);

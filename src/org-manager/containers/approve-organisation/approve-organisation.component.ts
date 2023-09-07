@@ -1,21 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import {Observable} from 'rxjs';
-import {tap} from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Go } from 'src/app/store';
 import { OrganisationVM } from 'src/org-manager/models/organisation';
 import * as fromOrganisationPendingStore from '../../../org-manager/store';
 import * as fromStore from '../../store/';
-import { Go } from 'src/app/store';
 
 @Component({
-    selector: 'app-org-pending-approve',
-    templateUrl: './approve-organisation.component.html'
+  selector: 'app-org-pending-approve',
+  templateUrl: './approve-organisation.component.html'
 })
 export class ApproveOrganisationComponent implements OnInit {
-    public orgForReview: OrganisationVM | null;
-    public serverResponseMessages$: Observable<any>;
-    public disabled = true;
+  public orgForReview: OrganisationVM | null;
+  public serverResponseMessages$: Observable<any>;
+  public disabled = true;
+
   constructor(
       private readonly router: Router,
       public store: Store<fromOrganisationPendingStore.OrganisationRootState>
@@ -31,7 +32,7 @@ export class ApproveOrganisationComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.serverResponseMessages$ = this.store.pipe(select(fromStore.getErrorMessage), tap(message => {
+    this.serverResponseMessages$ = this.store.pipe(select(fromStore.getErrorMessage), tap((message) => {
       if (message) {
         this.disabled = true;
       }
@@ -39,7 +40,7 @@ export class ApproveOrganisationComponent implements OnInit {
   }
 
   public onApproveOrganisations() {
-      this.store.dispatch(new fromOrganisationPendingStore.ApprovePendingOrganisations(this.orgForReview));
-      this.disabled = false;
+    this.store.dispatch(new fromOrganisationPendingStore.ApprovePendingOrganisations(this.orgForReview));
+    this.disabled = false;
   }
 }

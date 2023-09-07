@@ -32,8 +32,8 @@ function toPBA(pbaNumber: string): PBANumberModel {
 function filterByStatus(orgs: OrganisationModel[], status: string): OrganisationModel[] {
   if (orgs) {
     const filtered: OrganisationModel[] = [];
-    orgs.forEach(org => {
-      const pbaNumbers = (org.pbaNumbers || []).filter(pbaNumber => pbaNumber.status === status);
+    orgs.forEach((org) => {
+      const pbaNumbers = (org.pbaNumbers || []).filter((pbaNumber) => pbaNumber.status === status);
       if (pbaNumbers.length > 0) {
         filtered.push({
           ...org,
@@ -70,33 +70,33 @@ const MOCK_PBAS = {
 };
 
 const MOCK_ORGS = {
-  '13NGXCM': { status: 'active', pbas: [ '1111111', '4444444', '5555555' ] },
-  'FSHKY34': { status: 'active', pbas: [ '6666666', '7777777', '8888888', '9999999' ] },
-  'MW6LH3X': { status: 'active', pbas: [ '2222222', '3333333' ] }
+  '13NGXCM': { status: 'active', pbas: ['1111111', '4444444', '5555555'] },
+  'FSHKY34': { status: 'active', pbas: ['6666666', '7777777', '8888888', '9999999'] },
+  'MW6LH3X': { status: 'active', pbas: ['2222222', '3333333'] }
 };
 
 export const init = () => {
   const mock = new MockAdapter(httpMock);
 
   const GET_BY_STATUS_URL = '/refdata/internal/v1/organisations/pba';
-  const ALL_ORGS = [ toOrg('13NGXCM'), toOrg('MW6LH3X'), toOrg('FSHKY34') ];
+  const ALL_ORGS = [toOrg('13NGXCM'), toOrg('MW6LH3X'), toOrg('FSHKY34')];
 
   // Set up the various scenarios to be mocked.
   // Get PBAs by status.
   mock.onGet(new RegExp(`${GET_BY_STATUS_URL}/pending`)).reply(() => {
     const response = filterByStatus(ALL_ORGS, 'pending');
-    return [ 200, response ];
+    return [200, response];
   });
 
   mock.onGet(new RegExp(`${GET_BY_STATUS_URL}/empty`)).reply(() => {
-    return [ 200, [] ];
+    return [200, []];
   });
 
   /**
    * Simulated errors.
    */
   mock.onGet(new RegExp(`${GET_BY_STATUS_URL}/400`)).reply(() => {
-    return [ 400, {
+    return [400, {
       errorDescription: 'PBA status is not valid',
       errorMessage: 'PBA status is not valid',
       timestamp: getTimestamp()
@@ -105,7 +105,7 @@ export const init = () => {
   mock.onGet(new RegExp(`${GET_BY_STATUS_URL}/401`)).reply(401);
   mock.onGet(new RegExp(`${GET_BY_STATUS_URL}/403`)).reply(403);
   mock.onGet(new RegExp(`${GET_BY_STATUS_URL}/500`)).reply(() => {
-    return [ 500, {
+    return [500, {
       errorDescription: 'I played with your heart, got lost in the game',
       errorMessage: 'Oops, I did it again',
       timestamp: getTimestamp()

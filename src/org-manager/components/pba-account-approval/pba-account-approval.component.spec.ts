@@ -1,15 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
 import { PBAAccountApprovalComponent } from './pba-account-approval.component';
 
 describe('NewPBAsInfoComponent', () => {
   let component: PBAAccountApprovalComponent;
   let fixture: ComponentFixture<PBAAccountApprovalComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, ReactiveFormsModule, FormsModule, RouterTestingModule.withRoutes([])],
       declarations: [PBAAccountApprovalComponent]

@@ -24,7 +24,7 @@ import { MonitoringService } from './services/monitoring.service';
   selector: 'app-mock-root',
   template: '<router-outlet></router-outlet>'
 })
-class AppMockComponent { }
+class AppMockComponent {}
 
 class AuthServiceMock {
   public authenticated: boolean = true;
@@ -33,6 +33,7 @@ class AuthServiceMock {
     return of(this.authenticated);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public loginRedirect(): void {}
 }
 
@@ -43,17 +44,21 @@ class RoleGuardMock {
     return of(this.activate);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public loginRedirect(): void {}
 }
 
-const windowMock: Window = { gtag: () => { } } as any;
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const windowMock: Window = { gtag: () => {} } as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
 const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
 const titleService = jasmine.createSpyObj('titleService', ['setTitle', 'getTitle']);
 
 describe('AppRoutes', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let component: AppMockComponent;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let location: Location;
   let router: Router;
   let fixture;
@@ -77,7 +82,7 @@ describe('AppRoutes', () => {
         LoggerConfig,
         LoggerService,
         MonitoringService,
-        { provide: AuthService, useValue: authServiceMock},
+        { provide: AuthService, useValue: authServiceMock },
         { provide: RoleGuard, useValue: roleGuardMock },
         {
           provide: windowToken,

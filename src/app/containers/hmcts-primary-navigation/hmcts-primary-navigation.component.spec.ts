@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-
 import { CookieService } from 'ngx-cookie';
 import { of } from 'rxjs';
 import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation.component';
@@ -10,19 +9,20 @@ describe('HmctsPrimaryNavigationComponent', () => {
   let component: HmctsPrimaryNavigationComponent;
   let fixture: ComponentFixture<HmctsPrimaryNavigationComponent>;
   const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
-  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled'])
+  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ HmctsPrimaryNavigationComponent ],
+      declarations: [HmctsPrimaryNavigationComponent],
       imports: [
         RouterTestingModule
       ],
       providers: [
         { provide: CookieService, useValue: cookieService },
-        { provide: FeatureToggleService, useValue: featureToggleService}
+        { provide: FeatureToggleService, useValue: featureToggleService }
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -50,10 +50,10 @@ describe('HmctsPrimaryNavigationComponent', () => {
         featureName: ''
       },
       orderId: 0
-    }
+    };
     navItem.feature.isfeatureToggleable = false;
     const result$ = component.isFeatureNavEnabled$(navItem);
-    result$.subscribe(result => expect(result).toBeTruthy());
+    result$.subscribe((result) => expect(result).toBeTruthy());
   });
 
   it('isFeatureNavEnabled$ isfeatureToggleable true but feature is not enabled', () => {
@@ -67,8 +67,8 @@ describe('HmctsPrimaryNavigationComponent', () => {
       },
       orderId: 0
     };
-    featureToggleService.isEnabled.and.returnValue(of(false))
+    featureToggleService.isEnabled.and.returnValue(of(false));
     const result$ = component.isFeatureNavEnabled$(navItem);
-    result$.subscribe(result => expect(result).toBeFalsy());
+    result$.subscribe((result) => expect(result).toBeFalsy());
   });
 });

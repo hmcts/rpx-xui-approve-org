@@ -1,4 +1,4 @@
-const FooterData =  {
+const footerData = {
   heading: 'Help',
   email: {
     address: 'service-desk@hmcts.gov.uk',
@@ -12,9 +12,9 @@ const FooterData =  {
   }
 };
 
-const FooterDataNavigation = {
+const footerDataNavigation = {
   items: [
-    { text: 'Accessibility', href: 'accessibility', target: '_blank'},
+    { text: 'Accessibility', href: 'accessibility', target: '_blank' },
     { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
     { text: 'Cookies', href: 'cookies', target: '_blank' },
     { text: 'Privacy policy', href: 'privacy-policy', target: '_blank' }
@@ -33,12 +33,10 @@ const environmentNames = {
 
 const xuiApprovalRole = 'xui-approver-userdata';
 
-
 const userRoles = [
-
-  { role: 'pui-organisation-manager', roleType: 'manageOrganisations'},
+  { role: 'pui-organisation-manager', roleType: 'manageOrganisations' },
   { role: 'pui-user-manager', roleType: 'manageUsers' },
-  { role: 'pui-case-manager', roleType: 'manageCases'}
+  { role: 'pui-case-manager', roleType: 'manageCases' }
 ];
 
 const ccdRoles = [
@@ -53,7 +51,9 @@ const ccdRoles = [
   'caseworker-publiclaw',
   'caseworker-ia-legalrep-solicitor',
   'caseworker-publiclaw-solicitor',
-  'caseworker-civil-solicitor'
+  'caseworker-civil-solicitor',
+  'caseworker-employment',
+  'caseworker-employment-legalrep-solicitor'
 ];
 
 const superUserRoles = [
@@ -62,8 +62,6 @@ const superUserRoles = [
   'pui-case-manager',
   ...ccdRoles
 ];
-
-
 
 export const errorMessageMappings = {
   1: 'A user with this email address already exists',
@@ -76,7 +74,7 @@ export const errorMessageMappings = {
   8: 'Dx number can not be null',
   9: 'Sorry, there is a problem with the service. Try again later',
   10: 'This SRA number has already been used. Enter a different SRA number.',
-  11: 'This PBA number has already been used. Enter a different PBA number.',
+  11: 'This PBA number has already been used. Enter a different PBA number.'
 };
 
 export const apiErrors = {
@@ -89,7 +87,7 @@ export const apiErrors = {
   7: 'dx_number',
   8: 'DxAddress',
   10: 'SRA_ID Invalid or already exists',
-  11: 'PBA_NUMBER Invalid or already exists',
+  11: 'PBA_NUMBER Invalid or already exists'
 };
 
 const featureNames = {
@@ -97,26 +95,27 @@ const featureNames = {
   caseworkerDetails: 'ao-case-worker-details'
 };
 
-export const navItemsArray = [{
-  text: 'Organisations',
-  href: '/pending-organisations',
-  active: true,
-  feature: {
-    isfeatureToggleable: false,
-    featureName: null
+export const navItemsArray = [
+  {
+    text: 'Organisations',
+    href: '/pending-organisations',
+    active: true,
+    feature: {
+      isfeatureToggleable: false,
+      featureName: null
+    },
+    orderId: 0
   },
-  orderId: 0
-},
-{
-  text: 'Staff details',
-  href: '/caseworker-details',
-  active: false,
-  feature: {
-    isfeatureToggleable: false,
-    featureName: featureNames.caseworkerDetails
-  },
-  orderId: 1
-}
+  {
+    text: 'Staff details',
+    href: '/caseworker-details',
+    active: false,
+    feature: {
+      isfeatureToggleable: false,
+      featureName: featureNames.caseworkerDetails
+    },
+    orderId: 1
+  }
 ];
 
 const roleBasedNav = {
@@ -125,8 +124,8 @@ const roleBasedNav = {
 };
 
 export class AppConstants {
-  public static FOOTER_DATA = FooterData;
-  public static FOOTER_DATA_NAVIGATION = FooterDataNavigation;
+  public static FOOTER_DATA = footerData;
+  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
   public static ENVIRONMENT_NAMES = environmentNames;
   public static USER_ROLES = userRoles;
   public static XUI_APPROVAL_ROLE = xuiApprovalRole;

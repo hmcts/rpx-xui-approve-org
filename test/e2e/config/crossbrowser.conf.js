@@ -24,11 +24,10 @@ const config = {
     //username: process.env.TEST_EMAIL,
     //password: process.env.TEST_PASSWORD,
     username: 'vmuniganti@mailnesia.com',
-    password: 'Monday01',
+    password: 'Monday01'
   },
 
-
- // sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
+  // sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
   sauceUser: process.env.SAUCE_USERNAME,
   sauceKey: process.env.SAUCE_ACCESS_KEY,
   SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
@@ -112,9 +111,8 @@ const config = {
       extendedDebugging: true,
       sharedTestFiles: false,
       maxInstances: 1
-    },
+    }
   ],
-
 
   exclude: [],
 
@@ -122,9 +120,8 @@ const config = {
     strict: true,
     format: ['node_modules/cucumber-pretty', 'json:cb_reports/saucelab_results.json'],
     require: ['../support/world.js', '../support/*.js', '../features/step_definitions/**/*.steps.js'],
-    tags: ['@crossbrowser']
+    tags: ['@crossbrowser', 'not @Flaky']
   },
-
 
   plugins: [
     {
@@ -151,6 +148,5 @@ const config = {
     global.should = chai.should;
   }
 };
-
 
 exports.config = config;

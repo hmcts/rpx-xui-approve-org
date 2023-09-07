@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -8,7 +8,6 @@ import { AppUtils } from '../../../app/utils/app-utils';
 import { Organisation, OrganisationAddress } from '../../models/organisation';
 import { PbaService } from '../../services';
 import { OrganisationAddressComponent } from '../organisation-address';
-
 import { NewPBAsConfirmComponent } from './new-pbas-confirm.component';
 
 describe('NewPBAsConfirmComponent', () => {
@@ -17,9 +16,9 @@ describe('NewPBAsConfirmComponent', () => {
   const pbaServiceSpy = jasmine.createSpyObj('PbaService', ['setPBAStatus']);
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [RouterModule, ReactiveFormsModule , RouterTestingModule.withRoutes([])],
+      imports: [RouterModule, ReactiveFormsModule, RouterTestingModule.withRoutes([])],
       declarations: [NewPBAsConfirmComponent, OrganisationAddressComponent, PBAAccountApprovalComponent, PBAAccountDecisionComponent],
       providers: [
         { provide: PbaService, useValue: pbaServiceSpy },
@@ -118,8 +117,8 @@ describe('NewPBAsConfirmComponent', () => {
       contactInformation: orgAddress
     };
     component.org = AppUtils.mapOrganisation(organisations);
-    pbaServiceSpy.setPBAStatus.and.returnValue(throwError({status: 400, error:
-      { errorDescription : 'The requested Organisation is not \'Active\''}}));
+    pbaServiceSpy.setPBAStatus.and.returnValue(throwError({ status: 400, error:
+      { errorDescription: 'The requested Organisation is not \'Active\'' } }));
 
     component.confirmPBAs();
     expect(pbaServiceSpy.setPBAStatus).toHaveBeenCalled();
@@ -162,8 +161,8 @@ describe('NewPBAsConfirmComponent', () => {
       contactInformation: orgAddress
     };
     component.org = AppUtils.mapOrganisation(organisations);
-    pbaServiceSpy.setPBAStatus.and.returnValue(throwError({status: 404, error:
-      { errorDescription : 'There is a problem'}}));
+    pbaServiceSpy.setPBAStatus.and.returnValue(throwError({ status: 404, error:
+      { errorDescription: 'There is a problem' } }));
 
     component.confirmPBAs();
     expect(pbaServiceSpy.setPBAStatus).toHaveBeenCalled();

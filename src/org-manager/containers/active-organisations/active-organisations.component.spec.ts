@@ -13,6 +13,7 @@ import { ActiveOrganisationsComponent } from './active-organisations.component';
 describe('Active Organisation', () => {
   let component: ActiveOrganisationsComponent;
   let fixture: ComponentFixture<ActiveOrganisationsComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromStore.OrganisationRootState>;
 
   beforeEach((() => {
@@ -30,11 +31,11 @@ describe('Active Organisation', () => {
         OrganisationAddressComponent
       ],
       providers: [
-        [ OrganisationService ]
+        [OrganisationService]
       ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
-    store = TestBed.get(Store);
+    store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(ActiveOrganisationsComponent);
     component = fixture.componentInstance;

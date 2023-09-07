@@ -1,9 +1,7 @@
 const BrowserWaits = require('../../e2e/support/customWaits');
 
-
 class CaseEdit {
-
-  checkYourAnswersPageElement = $(".check-your-answers");
+  checkYourAnswersPageElement = $('.check-your-answers');
   continueBtn = $('ccd-case-edit .form > .form-group button[type = "submit"]');
   submitBtn = $('ccd-case-edit-submit form > .form-group button[type = "submit"]');
 
@@ -22,8 +20,8 @@ class CaseEdit {
   }
 
   async selectRadioYesOrNo(fieldId, value) {
-    let toSelect = value ? 'Yes' : 'No';
-    let inputToSelect = $(`#${fieldId} input[id$='${toSelect}']`);
+    const toSelect = value ? 'Yes' : 'No';
+    const inputToSelect = $(`#${fieldId} input[id$='${toSelect}']`);
     await inputToSelect.click();
   }
 
@@ -34,13 +32,11 @@ class CaseEdit {
 
   async waitForChecYourAnswersPage() {
     await BrowserWaits.waitForElement(this.checkYourAnswersPageElement);
-
   }
 
   async isCheckYourAnswersPagePresent() {
     return await this.checkYourAnswersPageElement.isPresent();
   }
-
 }
 
-module.exports = new CaseEdit(); 
+module.exports = new CaseEdit();

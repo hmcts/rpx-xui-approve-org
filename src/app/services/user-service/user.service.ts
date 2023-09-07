@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {UserInterface} from '../../../models/user.model';
+import { UserInterface } from '../../../models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,6 @@ import {UserInterface} from '../../../models/user.model';
 export class UserService {
   constructor(private readonly http: HttpClient) {}
   public getUserDetails(): Observable<UserInterface> {
-    return this.http.get<UserInterface>(`/api/user/details`);
+    return this.http.get<UserInterface>('/api/user/details');
   }
 }

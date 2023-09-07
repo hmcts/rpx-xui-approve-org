@@ -1,10 +1,10 @@
 class NewPBAModel {
-  pbaNumber: string;
-  status: string;
-  statusMessage: string;
+  public pbaNumber: string;
+  public status: string;
+  public statusMessage: string;
 }
 
 export interface ConfirmNewPBAModel {
-  newPBAs: NewPBAModel[]
+  newPBAs: NewPBAModel[];
   orgId: string;
 }

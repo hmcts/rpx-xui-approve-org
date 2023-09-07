@@ -32,8 +32,6 @@ export class HmctsPrimaryNavigationComponent {
     ];
 
     isUserLoggedIn: boolean;
-    constructor(private route: ActivatedRoute) {
-
-    }
+    constructor(private route: ActivatedRoute) {}
 
 }

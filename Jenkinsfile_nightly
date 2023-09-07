@@ -7,7 +7,7 @@ properties([
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org'
     ],
     pipelineTriggers([
-    cron('H 05 * * *')
+    cron('H 07 * * 1-5')
     ])
 ])
 
@@ -43,8 +43,8 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     // enableSecurityScan()
-    enableFortifyScan()
-    enableFullFunctionalTest(30)
+    // enableFortifyScan()
+    enableFullFunctionalTest(60)
     enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'

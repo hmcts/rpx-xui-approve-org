@@ -13,12 +13,12 @@ export const ROUTES: Routes = [
     path: '',
     component: RedirectComponent,
     canActivate: [AuthGuard],
-    pathMatch: 'full',
+    pathMatch: 'full'
   },
   {
     path: 'caseworker-details',
     canActivate: [AuthGuard, RoleGuard],
-    loadChildren: () => import('../caseworker-ref-data/caseworker-ref-data.module').then(m => m.CaseWorkerRefDataModule),
+    loadChildren: () => import('../caseworker-ref-data/caseworker-ref-data.module').then((m) => m.CaseWorkerRefDataModule),
     data: {
       needsRole: ['cwd-admin'],
       roleMatching: RoleMatching.ALL
@@ -32,7 +32,7 @@ export const ROUTES: Routes = [
   {
     path: 'organisation',
     canActivate: [AuthGuard, RoleGuard],
-    loadChildren: () => import('../org-manager/org-manager.module').then(m => m.OrgManagerModule),
+    loadChildren: () => import('../org-manager/org-manager.module').then((m) => m.OrgManagerModule),
     data: {
       needsRole: ['prd-admin'],
       roleMatching: RoleMatching.ALL
@@ -91,6 +91,6 @@ export const ROUTES: Routes = [
     path: '**',
     redirectTo: 'home',
     pathMatch: 'full'
-  },
+  }
 ];
 

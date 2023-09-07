@@ -1,7 +1,7 @@
 import { SingleOrgSummary } from '../../org-manager/models/single-org-summary';
 import { OrganisationSummary, OrganisationVM } from '../models/organisation';
 
-export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
+export const pendingOrganisationsMockCollection2: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'Byrne Limited',
@@ -52,7 +52,7 @@ export const PendingOrganisationsMockCollection2: OrganisationVM[] = [
   }
 ];
 
-export const ReviewOrganisationsMockCollection: OrganisationVM[] = [
+export const reviewOrganisationsMockCollection: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'Byrne Limited',
@@ -103,7 +103,7 @@ export const ReviewOrganisationsMockCollection: OrganisationVM[] = [
   }
 ];
 
-export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
+export const pendingOrganisationsMockCollection1: OrganisationVM[] = [
   {
     name: 'Glen Byrne',
     organisationId: 'ByrneLimited',
@@ -120,9 +120,9 @@ export const PendingOrganisationsMockCollection1: OrganisationVM[] = [
     dxNumber: [{}],
     postCode: ''
   }
-  ];
+];
 
-export const PendingOrganisationsMockCollectionObj: OrganisationVM = {
+export const pendingOrganisationsMockCollectionObj: OrganisationVM = {
   name: 'Glen Byrne',
   organisationId: 'ByrneLimited',
   addressLine1: '13 Berryfield drive, Finglas',
@@ -138,52 +138,52 @@ export const PendingOrganisationsMockCollectionObj: OrganisationVM = {
   dxNumber: [{}],
   postCode: ''
 
-  };
+};
 
-export const LoadPbaAccountsObj = [{
-    account_number: 'PBA0088487',
-    account_name: 'RAY NIXON BROWN',
-    credit_limit: 5000,
-    available_balance: 5000,
-    status: 'Deleted',
-    effective_date: '2019-12-22T19:30:55.000Z'
+export const loadPbaAccountsObj = [{
+  account_number: 'PBA0088487',
+  account_name: 'RAY NIXON BROWN',
+  credit_limit: 5000,
+  available_balance: 5000,
+  status: 'Deleted',
+  effective_date: '2019-12-22T19:30:55.000Z'
 }];
 
 export const orgStatePending = {
- activeOrganisations: {
-   orgEntities: {},
-   loaded: false,
-   loading: false,
-   searchString: ''
- },
- pendingOrganisations: {
-   orgEntities: {
-     ByrneLimited: {
-       name: 'Glen Byrne',
-       organisationId: 'ByrneLimited',
-       addressLine1: '13 Berryfield drive, Finglas',
-       addressLine2: '',
-       townCity: '',
-       county: '',
-       postCode: '',
-       pbaNumber: ['101010'],
-       admin: 'Glen Byrne',
-       status: 'ACTIVE',
-       view: 'View',
-       adminEmail: 'glen@byrne.com',
-       dxNumber: [{}]
-     }
-     },
-   loaded: true,
-   loading: false,
-   searchString: ''
- },
- errorMessage: '',
- orgForReview: null,
- organisationUsersList: { users: null, isError: false },
- showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false},
- organisationDeletable: false,
- searchString: ''
+  activeOrganisations: {
+    orgEntities: {},
+    loaded: false,
+    loading: false,
+    searchString: ''
+  },
+  pendingOrganisations: {
+    orgEntities: {
+      ByrneLimited: {
+        name: 'Glen Byrne',
+        organisationId: 'ByrneLimited',
+        addressLine1: '13 Berryfield drive, Finglas',
+        addressLine2: '',
+        townCity: '',
+        county: '',
+        postCode: '',
+        pbaNumber: ['101010'],
+        admin: 'Glen Byrne',
+        status: 'ACTIVE',
+        view: 'View',
+        adminEmail: 'glen@byrne.com',
+        dxNumber: [{}]
+      }
+    },
+    loaded: true,
+    loading: false,
+    searchString: ''
+  },
+  errorMessage: '',
+  orgForReview: null,
+  organisationUsersList: { users: null, isError: false },
+  showOrganisationDetailsUserTab: { orgId: null, showUserTab: false },
+  organisationDeletable: false,
+  searchString: ''
 };
 
 export const orgStateActive = {
@@ -218,12 +218,12 @@ export const orgStateActive = {
   errorMessage: '',
   orgForReview: null,
   organisationUsersList: { users: null, isError: false },
-  showOrganisationDetailsUserTab:  {orgId: null, showUserTab: false},
+  showOrganisationDetailsUserTab: { orgId: null, showUserTab: false },
   organisationDeletable: false,
   searchString: ''
 };
 
-export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [
+export const pendingOrganisationsMockSummaryCollection1: OrganisationSummary[] = [
   {
     name: 'GlenByrne',
     organisationId: 'ByrneLimited',
@@ -242,7 +242,7 @@ export const PendingOrganisationsMockSummaryCollection1: OrganisationSummary[] =
   }
 ];
 
-export const ReviewedOrganisationMockCollection: OrganisationVM[] = [{
+export const reviewedOrganisationMockCollection: OrganisationVM[] = [{
   name: 'dummy 1',
   organisationId: 'dummy 1',
   addressLine1: 'dummy 1',
@@ -258,7 +258,7 @@ export const ReviewedOrganisationMockCollection: OrganisationVM[] = [{
   postCode: ''
 }];
 
-export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
+export const activeOrganisationMockCollection: OrganisationVM[] = [{
   name: 'dummy 1',
   organisationId: 'dummy 1',
   addressLine1: 'dummy 1',
@@ -274,7 +274,7 @@ export const ActiveOrganisationMockCollection: OrganisationVM[] = [{
   postCode: ''
 }];
 
-export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
+export const reviewedOrganisationFromGovTableMockCollection: any[] = [{
   input: {
     name: 'dummy 1',
     organisationId: 'dummy 1',
@@ -289,8 +289,7 @@ export const ReviewedOrganisationFromGovTableMockCollection: any[] = [{
   }
 }];
 
-
-export const SingleOrgSummaryMock: SingleOrgSummary = {
+export const singleOrgSummaryMock: SingleOrgSummary = {
   status: 'Active',
   effective_date: '22/10/2022',
   dx_exchange: '',

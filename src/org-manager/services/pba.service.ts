@@ -19,11 +19,10 @@ export class PbaService {
   }
 
   public setPBAStatus(body: any): Observable<ConfirmNewPBAModel> {
-     return this.http.put<ConfirmNewPBAModel>(`${this.pbaStatusUrl}`, body);
+    return this.http.put<ConfirmNewPBAModel>(`${this.pbaStatusUrl}`, body);
   }
 
   public searchPbasWithPagination(body: { searchRequest: SearchPBARequest, view: string }): Observable<any> {
     return this.http.post<any[]>(`${this.pbaStatusUrl}/${body.view}`, body);
   }
-
 }

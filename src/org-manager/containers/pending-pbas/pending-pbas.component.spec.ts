@@ -5,14 +5,13 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
-
 import { OrganisationService, PbaService } from '../../services';
 import { PendingPBAsComponent } from './pending-pbas.component';
-
 
 describe('PendingPBAsComponent', () => {
   let component: PendingPBAsComponent;
   let fixture: ComponentFixture<PendingPBAsComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   const pbaServiceSpy = jasmine.createSpyObj('PbaService', ['setPBAStatus', 'searchPbasWithPagination']);
 
@@ -31,12 +30,12 @@ describe('PendingPBAsComponent', () => {
       declarations: [
         PendingPBAsComponent
       ],
-       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PendingPBAsComponent);
     component = fixture.componentInstance;
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
   });
 
   describe('getReceivedDate', () => {
@@ -56,17 +55,15 @@ describe('PendingPBAsComponent', () => {
         admin: 'test',
         adminEmail: 'test@test.com',
         name: 'test',
-        pbaNumbers: [{pbaNumber}],
+        pbaNumbers: [{ pbaNumber }],
         receivedDate: dateEarliest
-      }]
+      }];
       expect(receivedDate).toEqual(dateEarliest);
     });
 
     it('should return pagenumber', () => {
       component.onPaginationHandler(3);
       expect(component.pagination.page_number).toEqual(3);
-    })
-
+    });
   });
-
 });

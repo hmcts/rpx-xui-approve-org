@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
@@ -10,7 +10,6 @@ import SortField from '../../../models/common/sort-field.model';
 import { SearchOrganisationRequest, SortParameter } from '../../../models/dtos';
 import { SessionStorageService } from '../../../shared/services/session-storage.service';
 import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../shared/utils/handle-fatal-errors';
-
 import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services';
 
@@ -18,7 +17,6 @@ import { OrganisationService } from '../../services';
   template: ''
 })
 export abstract class OrganisationListComponent implements OnInit, OnDestroy {
-
   public searchString: string = '';
   public sortedBy: SortField;
   public pagination: PaginationParameter;
@@ -37,21 +35,19 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
     protected organisationService: OrganisationService,
     protected loadingService: LoadingService,
     protected sessionStorageService: SessionStorageService
-  ) {
-  }
+  ) {}
 
   public ngOnInit(): void {
     this.loadOrganisations();
   }
 
   private loadOrganisations(): void {
-
     this.resetPaginationSubscription = this.organisationService.paginationParametersReset().subscribe(() => {
       this.resetPaginationParameters();
     });
 
     this.organisationSearchSubscription = this.organisationService.organisationSearchStringChange().subscribe(
-      searchString => {
+      (searchString) => {
         this.sortedBy = {
           fieldName: 'organisationId',
           order: SortOrder.ASC
@@ -61,13 +57,13 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
         this.showSpinner$ = this.loadingService.isLoading;
 
         const loadingToken = this.loadingService.register();
-        this.performSearchPagination(searchString).pipe(take(1)).subscribe(result => {
+        this.performSearchPagination(searchString).pipe(take(1)).subscribe((result) => {
           this.loadingService.unregister(loadingToken);
           this.organisations = AppUtils.mapOrganisations(result.organisations);
           this.organisationCount = result.total_records;
           this.organisationsLoaded = true;
           this.ref.detectChanges();
-        }, error => {
+        }, (error) => {
           this.loadingService.unregister(loadingToken);
           handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
         });
@@ -116,7 +112,7 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     if (this.organisationSearchSubscription) {
       this.organisationSearchSubscription.unsubscribe();
-    };
+    }
 
     if (this.resetPaginationSubscription) {
       this.resetPaginationSubscription.unsubscribe();

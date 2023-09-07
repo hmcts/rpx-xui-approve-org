@@ -1,13 +1,13 @@
-import * as healthcheck from '@hmcts/nodejs-healthcheck'
-import { AuthOptions, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib'
-import * as bodyParser from 'body-parser'
-import * as cookieParser from 'cookie-parser'
-import * as csurf from 'csurf'
-import * as express from 'express'
-import * as helmet from 'helmet'
-import { attach } from './auth'
-import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration'
-import { ERROR_NODE_CONFIG_ENV } from './configuration/constants'
+import * as healthcheck from '@hmcts/nodejs-healthcheck';
+import { AuthOptions, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
+import * as csurf from 'csurf';
+import * as express from 'express';
+import * as helmet from 'helmet';
+import { attach } from './auth';
+import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration';
+import { ERROR_NODE_CONFIG_ENV } from './configuration/constants';
 import {
   APP_INSIGHTS_KEY, COOKIE_TOKEN, COOKIES_USERID, FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
@@ -29,75 +29,76 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH, SESSION_SECRET
-} from './configuration/references'
-import * as log4jui from './lib/log4jui'
-import * as tunnel from './lib/tunnel'
-import routes from './routes'
+} from './configuration/references';
+import * as log4jui from './lib/log4jui';
+import * as tunnel from './lib/tunnel';
+import routes from './routes';
+import { idamCheck } from './idamCheck';
 
-export const app = express()
+export const app = express();
 
-export const logger = log4jui.getLogger('server')
+export const logger = log4jui.getLogger('server');
 
-export const csrfProtection = csurf()
+export const csrfProtection = csurf();
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
  * this application.
  */
 if (!getEnvironment()) {
-  console.log(ERROR_NODE_CONFIG_ENV)
+  console.log(ERROR_NODE_CONFIG_ENV);
 }
 
 /**
  * TODO: Implement a logger on the Node layer.
  */
-console.log(environmentCheckText())
+console.log(environmentCheckText());
 
 // TODO: Testing that we can get the environment variables on AAT from the .yaml file
-console.log('ENV PRINT')
-console.log(process.env.NODE_CONFIG_ENV)
-console.log('process.env.ALLOW_CONFIG_MUTATIONS')
-console.log(process.env.ALLOW_CONFIG_MUTATIONS)
+console.log('ENV PRINT');
+console.log(process.env.NODE_CONFIG_ENV);
+console.log('process.env.ALLOW_CONFIG_MUTATIONS');
+console.log(process.env.ALLOW_CONFIG_MUTATIONS);
 
 // 1st set
-console.log(getConfigValue(IDAM_CLIENT))
-console.log(getConfigValue(MAX_LOG_LINE))
-console.log(getConfigValue(MICROSERVICE))
-console.log(getConfigValue(MAX_LINES))
-console.log(getConfigValue(NOW))
+console.log(getConfigValue(IDAM_CLIENT));
+console.log(getConfigValue(MAX_LOG_LINE));
+console.log(getConfigValue(MICROSERVICE));
+console.log(getConfigValue(MAX_LINES));
+console.log(getConfigValue(NOW));
 
 // 2nd set
-console.log(getConfigValue(COOKIE_TOKEN))
-console.log(getConfigValue(COOKIES_USERID))
+console.log(getConfigValue(COOKIE_TOKEN));
+console.log(getConfigValue(COOKIES_USERID));
 
-console.log(getConfigValue(OAUTH_CALLBACK_URL))
-console.log(getConfigValue(PROTOCOL))
+console.log(getConfigValue(OAUTH_CALLBACK_URL));
+console.log(getConfigValue(PROTOCOL));
 
 // 3rd set
-console.log(getConfigValue(SERVICES_IDAM_API_PATH))
-console.log(getConfigValue(SERVICES_IDAM_WEB))
-console.log(getConfigValue(SERVICE_S2S_PATH))
-console.log(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH))
+console.log(getConfigValue(SERVICES_IDAM_API_PATH));
+console.log(getConfigValue(SERVICES_IDAM_WEB));
+console.log(getConfigValue(SERVICE_S2S_PATH));
+console.log(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH));
 
-console.log('Secure Cookie is:')
-console.log(showFeature(FEATURE_SECURE_COOKIE_ENABLED))
-console.log('App Insights enabled:')
-console.log(showFeature(FEATURE_APP_INSIGHTS_ENABLED))
-console.log('Proxy enabled:')
-console.log(showFeature(FEATURE_PROXY_ENABLED))
-console.log('Terms and Conditions enabled:')
-console.log('Helmet enabled:')
-console.log(showFeature(FEATURE_HELMET_ENABLED))
+console.log('Secure Cookie is:');
+console.log(showFeature(FEATURE_SECURE_COOKIE_ENABLED));
+console.log('App Insights enabled:');
+console.log(showFeature(FEATURE_APP_INSIGHTS_ENABLED));
+console.log('Proxy enabled:');
+console.log(showFeature(FEATURE_PROXY_ENABLED));
+console.log('Terms and Conditions enabled:');
+console.log('Helmet enabled:');
+console.log(showFeature(FEATURE_HELMET_ENABLED));
 
 if (showFeature(FEATURE_HELMET_ENABLED)) {
-  console.log('Helmet enabled')
-  app.use(helmet(getConfigValue(HELMET)))
-  app.use(helmet.noSniff())
-  app.use(helmet.frameguard({ action: 'deny' }))
-  app.use(helmet.referrerPolicy({ policy: ['origin'] }))
-  app.use(helmet.hidePoweredBy())
-  app.use(helmet.hsts({ maxAge: 28800000 }))
-  app.use(helmet.xssFilter())
+  console.log('Helmet enabled');
+  app.use(helmet(getConfigValue(HELMET)));
+  app.use(helmet.noSniff());
+  app.use(helmet.frameguard({ action: 'deny' }));
+  app.use(helmet.referrerPolicy({ policy: ['origin'] }));
+  app.use(helmet.hidePoweredBy());
+  app.use(helmet.hsts({ maxAge: 28800000 }));
+  app.use(helmet.xssFilter());
   app.use(helmet.contentSecurityPolicy({
     directives: {
       connectSrc: [
@@ -105,13 +106,13 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '*.gov.uk',
         'dc.services.visualstudio.com',
         '*.launchdarkly.com',
-        'www.google-analytics.com',
+        'www.google-analytics.com'
       ],
-      defaultSrc: [`'self'`],
+      defaultSrc: ['\'self\''],
       fontSrc: ['\'self\'', 'https://fonts.gstatic.com', 'data:'],
-      formAction: [`'none'`],
-      frameAncestors: [`'self'`],
-      frameSrc: [`'self'`],
+      formAction: ['\'none\''],
+      frameAncestors: ['\'self\''],
+      frameSrc: ['\'self\''],
       imgSrc: [
         '\'self\'',
         'data:',
@@ -121,7 +122,7 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         'http://stats.g.doubleclick.net/',
         'http://ssl.gstatic.com/',
         'http://www.gstatic.com/',
-        'https://fonts.gstatic.com',
+        'https://fonts.gstatic.com'
       ],
       mediaSrc: ['\'self\''],
       scriptSrc: [
@@ -130,55 +131,55 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
         '\'unsafe-eval\'',
         'www.google-analytics.com',
         'www.googletagmanager.com',
-        'az416426.vo.msecnd.net',
+        'az416426.vo.msecnd.net'
       ],
       styleSrc: [
         '\'self\'',
         '\'unsafe-inline\'',
         'https://fonts.googleapis.com',
         'https://fonts.gstatic.com',
-        'http://tagmanager.google.com/',
-      ],
-    },
-  }))
+        'http://tagmanager.google.com/'
+      ]
+    }
+  }));
   app.use((req, res, next) => {
-    res.setHeader('X-Robots-Tag', 'noindex')
-    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate')
-    next()
-  })
+    res.setHeader('X-Robots-Tag', 'noindex');
+    res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+    next();
+  });
   app.get('/robots.txt', (req, res) => {
-    res.type('text/plain')
-    res.send('User-agent: *\nDisallow: /')
-  })
+    res.type('text/plain');
+    res.send('User-agent: *\nDisallow: /');
+  });
   app.get('/sitemap.xml', (req, res) => {
-    res.type('text/xml')
-    res.send('User-agent: *\nDisallow: /')
-  })
-  app.disable('x-powered-by')
-  app.disable('X-Powered-By')
+    res.type('text/xml');
+    res.send('User-agent: *\nDisallow: /');
+  });
+  app.disable('x-powered-by');
+  app.disable('X-Powered-By');
 }
 
-console.log('OIDC enabled:')
-console.log(showFeature(FEATURE_OIDC_ENABLED))
+console.log('OIDC enabled:');
+console.log(showFeature(FEATURE_OIDC_ENABLED));
 
-console.log('SERVICES_ISS_PATH:')
-console.log(getConfigValue(SERVICES_ISS_PATH))
+console.log('SERVICES_ISS_PATH:');
+console.log(getConfigValue(SERVICES_ISS_PATH));
 
 if (showFeature(FEATURE_OIDC_ENABLED)) {
-  console.log('OIDC enabled')
+  console.log('OIDC enabled');
 }
 
-const secret = getConfigValue(IDAM_SECRET)
-const idamClient = getConfigValue(IDAM_CLIENT)
-const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB)
-const issuerUrl = getConfigValue(SERVICES_ISS_PATH)
-const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH)
+const secret = getConfigValue(IDAM_SECRET);
+const idamClient = getConfigValue(IDAM_CLIENT);
+const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB);
+const issuerUrl = getConfigValue(SERVICES_ISS_PATH);
+const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH);
 
-const s2sSecret = getConfigValue(S2S_SECRET)
+const s2sSecret = getConfigValue(S2S_SECRET);
 
-const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`
-const authorizationUrl = `${idamWebUrl}/login`
-console.log('tokenUrl', tokenUrl)
+const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`;
+const authorizationUrl = `${idamWebUrl}/login`;
+console.log('tokenUrl', tokenUrl);
 
 //TODO: we can move these out into proper config at some point to tidy up even further
 const options: AuthOptions = {
@@ -196,67 +197,67 @@ const options: AuthOptions = {
   sessionKey: 'xui-approve-org',
   tokenEndpointAuthMethod: 'client_secret_post',
   tokenURL: tokenUrl,
-  useRoutes: true,
-}
+  useRoutes: true
+};
 
 const baseStoreOptions = {
   cookie: {
     httpOnly: true,
     maxAge: 1800000,
-    secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
+    secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
   },
   name: 'ao-webapp',
   resave: false,
   saveUninitialized: false,
-  secret: getConfigValue(SESSION_SECRET),
-}
+  secret: getConfigValue(SESSION_SECRET)
+};
 
 const redisStoreOptions = {
   redisStore: { ...baseStoreOptions, ...{
-      redisStoreOptions: {
-        redisCloudUrl: getConfigValue(REDISCLOUD_URL),
-        redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-        redisTtl: getConfigValue(REDIS_TTL),
-      },
-    },
-  },
-}
+    redisStoreOptions: {
+      redisCloudUrl: getConfigValue(REDISCLOUD_URL),
+      redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
+      redisTtl: getConfigValue(REDIS_TTL)
+    }
+  }
+  }
+};
 
 const fileStoreOptions = {
   fileStore: { ...baseStoreOptions, ...{
-      fileStoreOptions: {
-        filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
-      },
-    },
-  },
-}
+    fileStoreOptions: {
+      filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
+    }
+  }
+  }
+};
 
 const nodeLibOptions = {
   auth: {
     s2s: {
       microservice: getConfigValue(MICROSERVICE),
       s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
-      s2sSecret: s2sSecret.trim(),
-    },
+      s2sSecret: s2sSecret.trim()
+    }
   },
-  session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions,
-}
+  session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
+};
 
-const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2'
-nodeLibOptions.auth[type] = options
+const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
+nodeLibOptions.auth[type] = options;
 
-app.use(bodyParser.json({ limit: '5mb' }))
-app.use(bodyParser.urlencoded({limit: '5mb', extended: true}))
-app.use(cookieParser(getConfigValue(SESSION_SECRET)))
-app.use(xuiNode.configure(nodeLibOptions))
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
+app.use(cookieParser(getConfigValue(SESSION_SECRET)));
+app.use(xuiNode.configure(nodeLibOptions));
 
-tunnel.init()
+tunnel.init();
 
 function healthcheckConfig(msUrl) {
   return healthcheck.web(`${msUrl}/health`, {
     deadline: 6000,
-    timeout: 6000,
-  })
+    timeout: 6000
+  });
 }
 
 const healthChecks = {
@@ -265,29 +266,29 @@ const healthChecks = {
     idamApi: healthcheckConfig(getConfigValue(SERVICES_IDAM_API_PATH)),
     idamWeb: healthcheckConfig(getConfigValue(SERVICES_IDAM_WEB)),
     rdProfessionalApi: healthcheckConfig(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)),
-    redis: () => ({status: 'UP'}),
-    s2s: healthcheckConfig(getConfigValue(SERVICE_S2S_PATH)),
-  },
-}
+    redis: () => ({ status: 'UP' }),
+    s2s: healthcheckConfig(getConfigValue(SERVICE_S2S_PATH))
+  }
+};
 
 if (showFeature(FEATURE_REDIS_ENABLED)) {
   xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
-    console.log('REDIS EVENT FIRED!!')
-    app.locals.redisClient = redisClient
+    console.log('REDIS EVENT FIRED!!');
+    app.locals.redisClient = redisClient;
     healthChecks.checks = {
       ...healthChecks.checks, ...{
         redis: healthcheck.raw(() => {
-          return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down()
-        }),
-      },
-    }
-  })
+          return app.locals.redisClient.connected ? healthcheck.up() : healthcheck.down();
+        })
+      }
+    };
+  });
   xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {
-    logger.error('redis Client error is', error)
-  })
+    logger.error('redis Client error is', error);
+  });
 }
 
-healthcheck.addTo(app, healthChecks)
+healthcheck.addTo(app, healthChecks);
 
 /**
  * Open Routes
@@ -296,12 +297,11 @@ healthcheck.addTo(app, healthChecks)
  */
 
 app.get('/external/ping', (req, res) => {
-  console.log('Pong')
+  console.log('Pong');
   res.send({
     allowConfigMutations: process.env.ALLOW_CONFIG_MUTATIONS,
     nodeConfigEnv: process.env.NODE_CONFIG_ENV,
     // 1st set
-    // tslint:disable-next-line:object-literal-sort-keys
     idamClient: getConfigValue(IDAM_CLIENT),
     maxLogLine: getConfigValue(MAX_LOG_LINE),
     microService: getConfigValue(MICROSERVICE),
@@ -323,17 +323,19 @@ app.get('/external/ping', (req, res) => {
     // 5th set
     featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
-    featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED),
-  })
-})
+    featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED)
+  });
+});
 
 /**
  * We are attaching authentication to all subsequent routes.
  */
-app.use(attach) // its called in routes.ts - no need to call it here
+app.use(attach); // its called in routes.ts - no need to call it here
 
 /**
  * Secure Routes
  *
  */
-app.use('/api', csrfProtection, routes)
+app.use('/api', csrfProtection, routes);
+
+new Promise(idamCheck).then(() => 'IDAM is up and running');
