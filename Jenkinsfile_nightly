@@ -44,7 +44,7 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     // enableSecurityScan()
     enableFortifyScan()
-   // enableFullFunctionalTest(60)
+    enableFullFunctionalTest(60)
     enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
