@@ -216,7 +216,8 @@
     "webpack-node-externals": "^1.7.2"
   },
   "resolutions": {
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "@babel/types": "7.22.17"
   },
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@3.5.0"
 }
