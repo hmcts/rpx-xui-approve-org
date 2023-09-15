@@ -1,6 +1,9 @@
 {
   "name": "organisation-manager",
   "version": "0.0.0",
+  "workspaces": [
+    "api"
+  ],
   "engines": {
     "node": ">=18.17.0"
   },
@@ -218,5 +221,5 @@
   "resolutions": {
     "lodash": "^4.17.19"
   },
-  "packageManager": "yarn@3.6.1"
+  "packageManager": "yarn@4.0.0-rc.50"
 }
