@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../shared/services/session-storage.service';
 import { OrganisationService } from '../../services';
@@ -13,15 +13,15 @@ export class SearchOrganisationsFormComponent implements OnInit, OnDestroy {
   @Input() public searchString: string;
   @Output() public submitForm = new EventEmitter();
   private subscription: Subscription;
-  public searchOrgForm: UntypedFormGroup;
+  public searchOrgForm: FormGroup;
   constructor(
     protected organisationService: OrganisationService,
     private readonly sessionStorageService: SessionStorageService
   ) {}
 
   public ngOnInit(): void {
-    this.searchOrgForm = new UntypedFormGroup({
-      search: new UntypedFormControl(this.searchString)
+    this.searchOrgForm = new FormGroup({
+      search: new FormControl(this.searchString)
     });
 
     this.subscription = this.organisationService.organisationSearchStringChange().subscribe(
