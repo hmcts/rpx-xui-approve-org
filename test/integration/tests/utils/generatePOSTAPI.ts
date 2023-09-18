@@ -6,6 +6,7 @@ const mainURL = process.env.TEST_URL || 'https://localhost:3000';
 const LOG_REQUEST_ERROR_DETAILS = false;
 
 export async function generatePOSTAPIRequest(method, subURL, payload) {
+  console.log('testing -----', method, subURL, payload);
   try {
     const cookie = await authenticateAndGetcookies(mainURL);
     const xxsrfcookie = await xxsrftoken();
