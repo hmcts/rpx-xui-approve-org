@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { OrganisationVM } from '../../models/organisation';
 @Component({
@@ -15,7 +15,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public formGroup: any;
   public submitted = false;
   public formSub: Subscription;
-  constructor(private readonly fb: UntypedFormBuilder) {}
+  constructor(private readonly fb: FormBuilder) {}
 
   public ngAfterViewInit(): void {
     this.submitted = false;

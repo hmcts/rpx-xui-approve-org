@@ -1,6 +1,6 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PBAAccountApprovalComponent } from '..';
@@ -51,8 +51,8 @@ describe('NewPBAsInfoComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NewPBAsInfoComponent);
     component = fixture.componentInstance;
-    component.formGroup = new UntypedFormGroup({
-      PBA0101012: new UntypedFormControl('PBA0101012', Validators.required)
+    component.formGroup = new FormGroup({
+      PBA0101012: new FormControl('PBA0101012', Validators.required)
     });
     component.org = mockOrgData;
     const map = new Map();
@@ -62,8 +62,8 @@ describe('NewPBAsInfoComponent', () => {
 
   it('should create', () => {
     fixture.detectChanges();
-    component.formGroup = new UntypedFormGroup({
-      PBA0101012: new UntypedFormControl('PBA0101012', Validators.required)
+    component.formGroup = new FormGroup({
+      PBA0101012: new FormControl('PBA0101012', Validators.required)
     });
     expect(component).toBeTruthy();
   });
