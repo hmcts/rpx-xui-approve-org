@@ -105,7 +105,7 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
   const chunkSize = 500;
   const total_records = response.headers.total_records;
   const counts = Math.floor(total_records / chunkSize) + 1;
-  const organisationPromises = new Array<AxiosPromise<any>>();
+  const organisationPromises = [];
   for (let i = 1; i <= counts; i++) {
     organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
   }

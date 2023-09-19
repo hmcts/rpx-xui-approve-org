@@ -16,7 +16,7 @@ async function handleAddressRoute(req, res) {
   }
   const accountNames = req.query.accountNames.split(',');
   const accounts = [];
-  const accountPromises = new Array<AxiosPromise<any>>();
+  const accountPromises = [];
   accountNames.forEach((accountName: string) => accountPromises.push(getAccount(accountName, req)));
 
   try {
