@@ -1,6 +1,6 @@
 'use strict';
 
-const { When, Then } = require('cucumber');
+const { When, Then } = require('@cucumber/cucumber');
 const { MID_DELAY } = require('../../../support/constants');
 const config = require('../../../config/conf.js');
 const browserWaits = require('../../../support/customWaits');

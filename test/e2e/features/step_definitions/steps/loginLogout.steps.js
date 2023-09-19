@@ -3,7 +3,7 @@
 const loginPage = require('../../pageObjects/loginLogoutObjects');
 const headerPage = require('../../pageObjects/headerPage');
 
-const { Given, When, Then } = require('cucumber');
+const { Given, When, Then } = require('@cucumber/cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const config = require('../../../config/conf.js');
 const EC = protractor.ExpectedConditions;

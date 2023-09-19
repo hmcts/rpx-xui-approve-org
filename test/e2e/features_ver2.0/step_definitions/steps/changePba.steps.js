@@ -1,6 +1,6 @@
 'use strict';
 
-const { When } = require('cucumber');
+const { When } = require('@cucumber/cucumber');
 const { SHORT_DELAY } = require('../../../support/constants');
 const CreateOrganisationObject = require('../../pageObjects/createOrganisationObjects');
 const changePbaPage = require('../../pageObjects/changePbaPage');

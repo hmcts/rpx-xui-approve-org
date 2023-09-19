@@ -4,7 +4,7 @@
   https://github.com/hmcts/rpx-xui-manage-organisations/blob/master/test/e2e/features/step_definitions/createOrganisation.steps.js
 */
 
-const { Given } = require('cucumber');
+const { Given } = require('@cucumber/cucumber');
 const CreateOrganisationFlow = require('../../flows/create-org.flow');
 
 const createOrganisationFlow = new CreateOrganisationFlow();

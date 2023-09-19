@@ -1,6 +1,6 @@
 'use strict';
 
-const { When, Then } = require('cucumber');
+const { When, Then } = require('@cucumber/cucumber');
 const browserWaits = require('../../../support/customWaits');
 const confirmDecisionPage = require('../../pageObjects/confirmDecisionPage');
 

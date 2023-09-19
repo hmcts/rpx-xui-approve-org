@@ -1,5 +1,5 @@
 'use strict';
-const { Then } = require('cucumber');
+const { Then } = require('@cucumber/cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const EC = protractor.ExpectedConditions;
 const browserWaits = require('../../../support/customWaits');
