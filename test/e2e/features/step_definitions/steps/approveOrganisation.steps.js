@@ -16,9 +16,9 @@ async function waitForElement(el) {
   }, 600000);
 }
 
-Given(function () {
-  // Given step implementation
-});
+// Given(function () {
+//   // Given step implementation
+// });
 
 When(/^I navigate to EUI Approve Organisation Url$/, { timeout: 600 * 1000 }, async function () {
   await browser.get(config.config.baseUrl);
