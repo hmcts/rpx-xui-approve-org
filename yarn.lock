@@ -540,25 +540,25 @@ __metadata:
   linkType: hard
 
 "@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.7.5":
-  version: 7.22.19
-  resolution: "@babel/core@npm:7.22.19"
+  version: 7.22.20
+  resolution: "@babel/core@npm:7.22.20"
   dependencies:
     "@ampproject/remapping": "npm:^2.2.0"
     "@babel/code-frame": "npm:^7.22.13"
     "@babel/generator": "npm:^7.22.15"
     "@babel/helper-compilation-targets": "npm:^7.22.15"
-    "@babel/helper-module-transforms": "npm:^7.22.19"
+    "@babel/helper-module-transforms": "npm:^7.22.20"
     "@babel/helpers": "npm:^7.22.15"
     "@babel/parser": "npm:^7.22.16"
     "@babel/template": "npm:^7.22.15"
-    "@babel/traverse": "npm:^7.22.19"
+    "@babel/traverse": "npm:^7.22.20"
     "@babel/types": "npm:^7.22.19"
     convert-source-map: "npm:^1.7.0"
     debug: "npm:^4.1.0"
     gensync: "npm:^1.0.0-beta.2"
     json5: "npm:^2.2.3"
     semver: "npm:^6.3.1"
-  checksum: 7d2291a321cd3695c98e436d042caf3cfe680c4a7df0df636ab01df9e7a9772b29446656b1f19b54eb914865ad6ad92c34f89cfd5b03d5ac9bb02c8f109beb98
+  checksum: 76c50fccfbbf780914fc4f93defa4ad9d66fef50fcec828503f68f5bc0f0293d66e35c36d081db383d56ced80db9b9b96ca32c33744765a77786cc0d9ae16e73
   languageName: node
   linkType: hard
 
@@ -751,7 +751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-module-transforms@npm:^7.13.14, @babel/helper-module-transforms@npm:^7.19.0, @babel/helper-module-transforms@npm:^7.20.11, @babel/helper-module-transforms@npm:^7.22.15, @babel/helper-module-transforms@npm:^7.22.19, @babel/helper-module-transforms@npm:^7.22.5, @babel/helper-module-transforms@npm:^7.22.9":
+"@babel/helper-module-transforms@npm:^7.13.14, @babel/helper-module-transforms@npm:^7.19.0, @babel/helper-module-transforms@npm:^7.20.11, @babel/helper-module-transforms@npm:^7.22.15, @babel/helper-module-transforms@npm:^7.22.20, @babel/helper-module-transforms@npm:^7.22.5, @babel/helper-module-transforms@npm:^7.22.9":
   version: 7.22.20
   resolution: "@babel/helper-module-transforms@npm:7.22.20"
   dependencies:
@@ -1967,7 +1967,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.13.15, @babel/traverse@npm:^7.19.3, @babel/traverse@npm:^7.20.12, @babel/traverse@npm:^7.22.15, @babel/traverse@npm:^7.22.19":
+"@babel/traverse@npm:^7.13.15, @babel/traverse@npm:^7.19.3, @babel/traverse@npm:^7.20.12, @babel/traverse@npm:^7.22.15, @babel/traverse@npm:^7.22.20":
   version: 7.22.20
   resolution: "@babel/traverse@npm:7.22.20"
   dependencies:
@@ -6940,9 +6940,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001426, caniuse-lite@npm:^1.0.30001449, caniuse-lite@npm:^1.0.30001517, caniuse-lite@npm:^1.0.30001520":
-  version: 1.0.30001535
-  resolution: "caniuse-lite@npm:1.0.30001535"
-  checksum: 6154c47b7c0f3c40c9c7dbad521bd734e4b68ceab6190feb18ad026722dfcad52f24edecb219aa398e779016bc36a8b1ec46787aaa22362c717cacba1644a164
+  version: 1.0.30001538
+  resolution: "caniuse-lite@npm:1.0.30001538"
+  checksum: c37f3cc5f8f6a1beff714c641a437f9f2593fe319aec1848ccbbbba4a7cc875886fc07f903a490254bba7d294a8aaa2ee0fc87a71b8d61de35fafb7514a194ef
   languageName: node
   linkType: hard
 
@@ -15944,13 +15944,13 @@ __metadata:
   linkType: hard
 
 "postcss@npm:^8.2.14, postcss@npm:^8.3.7, postcss@npm:^8.4.16, postcss@npm:^8.4.19":
-  version: 8.4.29
-  resolution: "postcss@npm:8.4.29"
+  version: 8.4.30
+  resolution: "postcss@npm:8.4.30"
   dependencies:
     nanoid: "npm:^3.3.6"
     picocolors: "npm:^1.0.0"
     source-map-js: "npm:^1.0.2"
-  checksum: cfde0096125a9d962d7acc4380922b4cf6af87b98cca78e89fdaa8da92d687b34344c6410d42723bcc154b5c66cc496aed8005c3884cea55a773a1cbc4774e70
+  checksum: e7c22d1d0511942f40d278e19f39a54d6e8c268f2119289fa488ed880800563a3946daf8e9c8694f4d8124d38b0061a3707f45cc8ae2a31a6e3f20cf44d3c436
   languageName: node
   linkType: hard
 
@@ -17768,9 +17768,9 @@ __metadata:
   linkType: hard
 
 "spdx-license-ids@npm:^3.0.0":
-  version: 3.0.13
-  resolution: "spdx-license-ids@npm:3.0.13"
-  checksum: 6328c516e958ceee80362dc657a58cab01c7fdb4667a1a4c1a3e91d069983977f87971340ee857eb66f65079b5d8561e56dc91510802cd7bebaae7632a6aa7fa
+  version: 3.0.14
+  resolution: "spdx-license-ids@npm:3.0.14"
+  checksum: a61570fd9cfd1ae2fcbb9cc5f0d4ee34bfaeb7d233b0975f186d7981ef053373f59eb1a98f801ec66df2846c8171b374afc3790345b91865547a033403150c6e
   languageName: node
   linkType: hard
 
