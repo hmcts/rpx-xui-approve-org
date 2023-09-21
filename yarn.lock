@@ -4720,6 +4720,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testim/chrome-version@npm:^1.1.3":
+  version: 1.1.4
+  resolution: "@testim/chrome-version@npm:1.1.4"
+  checksum: faaed16b6b2384a4b0c1d2265e52e66db6c48601ceb9bd895b3b7d12df4e62916ed2b30653321fbc1239388ecdeaaa46c50c802c3f7287171b7d93d392a8014a
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -6605,6 +6612,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.4.0":
+  version: 1.5.0
+  resolution: "axios@npm:1.5.0"
+  dependencies:
+    follow-redirects: "npm:^1.15.0"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 128433020b1fe9a460121735016f377adc6109a1f62b61795b1a80704de0a70affb0d580c8abd057e28af5f343cb4fb9a17a0b2512ea7f314578bbe492851a23
+  languageName: node
+  linkType: hard
+
 "axobject-query@npm:2.0.2":
   version: 2.0.2
   resolution: "axobject-query@npm:2.0.2"
@@ -7490,6 +7508,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chromedriver@npm:^117.0.1":
+  version: 117.0.1
+  resolution: "chromedriver@npm:117.0.1"
+  dependencies:
+    "@testim/chrome-version": "npm:^1.1.3"
+    axios: "npm:^1.4.0"
+    compare-versions: "npm:^6.0.0"
+    extract-zip: "npm:^2.0.1"
+    https-proxy-agent: "npm:^5.0.1"
+    proxy-from-env: "npm:^1.1.0"
+    tcp-port-used: "npm:^1.0.1"
+  bin:
+    chromedriver: bin/chromedriver
+  checksum: 7d11f1261048508dd3ef6b3959efcc9346534965843db6a5e4d03ce465fce9f716dbf8bc0285eabd31f7d46a53e2e52c7fa4d13c54680c7139f460520362c62b
+  languageName: node
+  linkType: hard
+
 "ci-info@npm:^1.5.0":
   version: 1.6.0
   resolution: "ci-info@npm:1.6.0"
@@ -7866,6 +7901,13 @@ __metadata:
   version: 1.0.1
   resolution: "commondir@npm:1.0.1"
   checksum: 4620bc4936a4ef12ce7dfcd272bb23a99f2ad68889a4e4ad766c9f8ad21af982511934d6f7050d4a8bde90011b1c15d56e61a1b4576d9913efbf697a20172d6c
+  languageName: node
+  linkType: hard
+
+"compare-versions@npm:^6.0.0":
+  version: 6.1.0
+  resolution: "compare-versions@npm:6.1.0"
+  checksum: 20f349e7f8ad784704c68265f4e660e2abbe2c3d5c75793184fccb85f0c5c0263260e01fdd4488376f6b74b0f069e16c9684463f7316b075716fb1581eb36b77
   languageName: node
   linkType: hard
 
@@ -8541,6 +8583,18 @@ __metadata:
   dependencies:
     ms: "npm:2.0.0"
   checksum: f5fd4b1390dd3b03a78aa30133a4b4db62acc3e6cd86af49f114bf7f7bd57c41a5c5c2eced2ad2c8190d70c60309f2dd5782feeaa0704dbaa5697890e3c5ad07
+  languageName: node
+  linkType: hard
+
+"debug@npm:4.3.1":
+  version: 4.3.1
+  resolution: "debug@npm:4.3.1"
+  dependencies:
+    ms: "npm:2.1.2"
+  peerDependenciesMeta:
+    supports-color:
+      optional: true
+  checksum: 37b9f90428b65e59eb47f74435a9fc73dcb46b3550e838c0037ac05910f689bd59fd1d4a51154c1df3471a2f3e5926af8880cbe9f9f3b68beb7b2f8197a26f4a
   languageName: node
   linkType: hard
 
@@ -9951,7 +10005,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"extract-zip@npm:^2.0.0":
+"extract-zip@npm:^2.0.0, extract-zip@npm:^2.0.1":
   version: 2.0.1
   resolution: "extract-zip@npm:2.0.1"
   dependencies:
@@ -10308,6 +10362,16 @@ __metadata:
     debug:
       optional: true
   checksum: 8be0d39919770054812537d376850ccde0b4762b0501c440bd08724971a078123b55f57704f2984e0664fecc0c86adea85add63295804d9dce401cd9604c91d3
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.15.0":
+  version: 1.15.3
+  resolution: "follow-redirects@npm:1.15.3"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 60d98693f4976892f8c654b16ef6d1803887a951898857ab0cdc009570b1c06314ad499505b7a040ac5b98144939f8597766e5e6a6859c0945d157b473aa6f5f
   languageName: node
   linkType: hard
 
@@ -11616,6 +11680,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ip-regex@npm:^4.1.0":
+  version: 4.3.0
+  resolution: "ip-regex@npm:4.3.0"
+  checksum: 7ff904b891221b1847f3fdf3dbb3e6a8660dc39bc283f79eb7ed88f5338e1a3d1104b779bc83759159be266249c59c2160e779ee39446d79d4ed0890dfd06f08
+  languageName: node
+  linkType: hard
+
 "ip@npm:^2.0.0":
   version: 2.0.0
   resolution: "ip@npm:2.0.0"
@@ -11924,6 +11995,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"is-url@npm:^1.2.4":
+  version: 1.2.4
+  resolution: "is-url@npm:1.2.4"
+  checksum: 100e74b3b1feab87a43ef7653736e88d997eb7bd32e71fd3ebc413e58c1cbe56269699c776aaea84244b0567f2a7d68dfaa512a062293ed2f9fdecb394148432
+  languageName: node
+  linkType: hard
+
 "is-what@npm:^3.14.1":
   version: 3.14.1
   resolution: "is-what@npm:3.14.1"
@@ -11944,6 +12022,17 @@ __metadata:
   dependencies:
     is-docker: "npm:^2.0.0"
   checksum: 20849846ae414997d290b75e16868e5261e86ff5047f104027026fd61d8b5a9b0b3ade16239f35e1a067b3c7cc02f70183cb661010ed16f4b6c7c93dad1b19d8
+  languageName: node
+  linkType: hard
+
+"is2@npm:^2.0.6":
+  version: 2.0.9
+  resolution: "is2@npm:2.0.9"
+  dependencies:
+    deep-is: "npm:^0.1.3"
+    ip-regex: "npm:^4.1.0"
+    is-url: "npm:^1.2.4"
+  checksum: ac229ce8fc1a6c1218af84c4168567ade917362efbb3400f35c7d20c3f7f0e44e350df2855a03f1480d9bb4575928efb6a66f9c98aafabcadc83aa5a3f7e48d6
   languageName: node
   linkType: hard
 
@@ -15408,6 +15497,7 @@ __metadata:
     base-64: "npm:^0.1.0"
     chai: "npm:^4.3.8"
     chai-as-promised: "npm:7.1.1"
+    chromedriver: "npm:^117.0.1"
     codelyzer: "npm:^6.0.0"
     config: "npm:^3.2.5"
     connect-redis: "npm:^4.0.4"
@@ -18598,6 +18688,16 @@ __metadata:
   version: 3.2.29
   resolution: "tcomb@npm:3.2.29"
   checksum: 99304558951c4d45b471f625cc241d02699690229ee04fb97d24258be6dba217def465ea18dca19acdbf7790c7d12a261955b4910f7c68be3d0b4fe875b9d0c6
+  languageName: node
+  linkType: hard
+
+"tcp-port-used@npm:^1.0.1":
+  version: 1.0.2
+  resolution: "tcp-port-used@npm:1.0.2"
+  dependencies:
+    debug: "npm:4.3.1"
+    is2: "npm:^2.0.6"
+  checksum: bbacbcbe15504a274e3da7bdba0973f16f6950ee68c7a71238ff6fd5d55a113518757df98c5842177a3ad6ded7dd38bd822bd6494a0a2728aa8d7f4776c1ba22
   languageName: node
   linkType: hard
 
