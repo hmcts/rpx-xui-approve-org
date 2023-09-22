@@ -46,7 +46,7 @@
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ng": "ng test",
     "test:ng:watch": "ng test --watch",
-    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && yarn test:ngIntegrationMockEnv && protractor ./test/ngIntegration/config/protractor-cucumber.conf.js",
+    "test:ngIntegration": "webdriver-manager update --versions.chrome 2.40 && yarn test:ngIntegrationMockEnv && ng e2e --webdriver-update=false --protractor-config=./test/ngIntegration/config/protractor-cucumber.conf.js",
     "test:ngIntegrationMockEnv": "node -e 'require(`./test/nodeMock/availablePortFinder.js`).configureTestProxyPort()'",
     "test:node": "cd api && yarn test",
     "test:node:watch": "cd api && yarn test:watch",
