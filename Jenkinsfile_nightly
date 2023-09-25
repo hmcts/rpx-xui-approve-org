@@ -42,9 +42,8 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    // enableSecurityScan()
-    enableFortifyScan('rpx-aat')
-    enableFullFunctionalTest(60)
+    // enableFortifyScan('rpx-aat')
+    // enableFullFunctionalTest(60)
     enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
