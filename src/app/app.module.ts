@@ -41,6 +41,7 @@ import { EnvironmentConfig } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 import { EnvironmentService } from './services/environment.service';
 import { LogOutKeepAliveService } from './services/keep-alive/keep-alive.service';
+import { RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -93,8 +94,10 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       deps: [EnvironmentService],
       multi: true
     },
-    { provide: FeatureToggleService, useClass: LaunchDarklyService }
+    { provide: FeatureToggleService, useClass: LaunchDarklyService },
+    RpxTranslationService,
+    RpxTranslationConfig
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
