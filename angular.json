@@ -5,15 +5,6 @@
   },
   "version": 1,
   "newProjectRoot": "projects",
-  "build": {
-    "options": {
-      "stylePreprocessorOptions": {
-        "includePaths": [
-          "./node_modules"
-        ]
-      }
-    }
-  },
   "projects": {
     "organisation-manager": {
       "root": "",
@@ -31,6 +22,11 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./node_modules"
+              ]
+            },
             "assets": [
               "src/favicon.ico",
               "src/assets",
