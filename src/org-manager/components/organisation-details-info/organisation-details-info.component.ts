@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
+import { OrganisationVM, Regulator } from '../../models/organisation';
+import { RegulatorType, RegulatoryType } from '../../models/regulator-type.enum';
 import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './models/organisation-details';
 
 /**
@@ -20,6 +21,15 @@ export class OrganisationDetailsInfoComponent implements OnInit {
   public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
+  public regulatorType = RegulatorType;
+  public regulatoryTypeEnum = RegulatoryType;
+  // TODO: Remove below when API available
+  public serviceToAccess: string;
+  public companyRegistrationNumber: string;
+  public organisationType: string;
+  public regulators: Regulator[];
+  public individualRegulators: Regulator[];
+
   private readonly genericError = 'There is a problem';
   private readonly radioSelectedControlName = 'radioSelected';
   public readonly registrationRequest: DisplayedRequest[];
@@ -43,6 +53,8 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required)
     });
+    // TODO: Remove when API data available
+    this.mockMissingDataTillNewVersionOfApiIsReady();
   }
 
   public onSubmit(): void {
@@ -109,5 +121,35 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     if (data) {
       this.reviewEvent.emit(data);
     }
+  }
+
+  // TODO: Delete the below method during the implementation of the below ticket
+  // https://tools.hmcts.net/jira/browse/EUI-8869 which deals with the integration/mapping data
+  // once the updated version of the API is available and provides the missing information
+  private mockMissingDataTillNewVersionOfApiIsReady(): void {
+    this.serviceToAccess = 'Civil';
+    this.companyRegistrationNumber = '12345678';
+    this.organisationType = 'IT and communications';
+    this.regulators = [
+      {
+        regulatorType: 'Solicitor Regulation Authority (SRA)',
+        organisationRegistrationNumber: '11223344'
+      },
+      {
+        regulatorType: 'Other',
+        regulatorName: 'Other regulatory organisation',
+        organisationRegistrationNumber: '12341234'
+      },
+      {
+        regulatorType: 'Charted Institute of Legal Executives',
+        organisationRegistrationNumber: '43214321'
+      }
+    ];
+    this.individualRegulators = [
+      {
+        regulatorType: 'Individual',
+        organisationRegistrationNumber: '11223354'
+      }
+    ];
   }
 }

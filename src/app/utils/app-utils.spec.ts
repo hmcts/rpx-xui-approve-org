@@ -60,7 +60,9 @@ describe('AppUtils', () => {
       pbaNumber: [{}],
       dxNumber: [{}],
       sraId: null,
-      postCode: 'postcode'
+      postCode: 'postcode',
+      firstName: 'Test',
+      lastName: 'User'
     }];
     const organisations = AppUtils.mapOrganisationsVm(organisationVM);
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId);

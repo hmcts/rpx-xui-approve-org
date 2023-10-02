@@ -88,6 +88,8 @@ describe('OrganisationDetailsComponent', () => {
     organisationId: '123',
     status: 'valid',
     admin: 'Glen Byrne',
+    firstName: 'Glen',
+    lastName: 'Byrne',
     adminEmail: 'test@mail.com',
     addressLine1: 'AddressLine1',
     addressLine2: 'AddressLine2',
