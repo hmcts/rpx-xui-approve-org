@@ -24,6 +24,8 @@ export class AppUtils {
     if (apiOrg.superUser) {
       organisationVm.adminEmail = apiOrg.superUser.email;
       organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
+      organisationVm.firstName = apiOrg.superUser.firstName;
+      organisationVm.lastName = apiOrg.superUser.lastName;
     }
     organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;
@@ -45,6 +47,11 @@ export class AppUtils {
     if (apiOrg.dateApproved){
       organisationVm.dateApproved = apiOrg.dateApproved;
     }
+    // TODO: Once real API ready, add apiOrg details
+    // organisationVm.serviceToAccess = apiOrg.serviceToAccess;
+    // organisationVm.companyRegistrationNumber = apiOrg.companyRegistrationNumber;
+    // organisationvm.organisationType = apiOrg.organisationType;
+    // organisatioVm.regulators = apiOrg.regulators;
     return organisationVm;
   }
 

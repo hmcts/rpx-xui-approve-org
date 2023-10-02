@@ -14,6 +14,8 @@ describe('NewPBAsInfoComponent', () => {
 
   const mockOrgData: OrganisationVM = {
     name: 'Glen Byrne',
+    firstName: 'Glen',
+    lastName: 'Byrne',
     organisationId: 'ByrneLimited',
     addressLine1: '13 Berryfield drive, Finglas',
     addressLine2: '',

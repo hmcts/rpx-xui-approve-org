@@ -16,7 +16,9 @@ export const pendingOrganisationsMockCollection2: OrganisationVM[] = [
     view: 'View',
     adminEmail: 'glen@byrne.com',
     dxNumber: [{ dxNumber: 'BOB', dxExchange: 'Roberts' }],
-    postCode: 'PC1 ABC'
+    postCode: 'PC1 ABC',
+    firstName: 'Test',
+    lastName: 'User'
   },
   {
     name: 'Siofra Moley',
@@ -32,7 +34,9 @@ export const pendingOrganisationsMockCollection2: OrganisationVM[] = [
     view: 'View',
     adminEmail: 'siofra@moley.com',
     dxNumber: [{}],
-    postCode: 'PC2 XYZ'
+    postCode: 'PC2 XYZ',
+    firstName: 'Test',
+    lastName: 'User2'
   },
   {
     name: 'Odd Name',
@@ -48,7 +52,9 @@ export const pendingOrganisationsMockCollection2: OrganisationVM[] = [
     view: 'View',
     adminEmail: 'odd@hades.com',
     dxNumber: null,
-    postCode: 'PC3 ODD'
+    postCode: 'PC3 ODD',
+    firstName: 'Test',
+    lastName: 'User3'
   }
 ];
 
@@ -67,7 +73,9 @@ export const reviewOrganisationsMockCollection: OrganisationVM[] = [
     view: 'View',
     adminEmail: 'glen@byrne.com',
     dxNumber: [{ dxNumber: 'BOB', dxExchange: 'Roberts' }],
-    postCode: 'PC1 ABC'
+    postCode: 'PC1 ABC',
+    firstName: 'Test',
+    lastName: 'User'
   },
   {
     name: 'Siofra Moley',
@@ -83,7 +91,9 @@ export const reviewOrganisationsMockCollection: OrganisationVM[] = [
     view: 'View',
     adminEmail: 'siofra@moley.com',
     dxNumber: [{}],
-    postCode: 'PC2 XYZ'
+    postCode: 'PC2 XYZ',
+    firstName: 'Test',
+    lastName: 'User2'
   },
   {
     name: 'Odd Name',
@@ -99,7 +109,9 @@ export const reviewOrganisationsMockCollection: OrganisationVM[] = [
     view: 'View',
     adminEmail: 'odd@hades.com',
     dxNumber: null,
-    postCode: 'PC3 ODD'
+    postCode: 'PC3 ODD',
+    firstName: 'Test',
+    lastName: 'User3'
   }
 ];
 
@@ -118,7 +130,9 @@ export const pendingOrganisationsMockCollection1: OrganisationVM[] = [
     view: 'View',
     adminEmail: 'glen@byrne.com',
     dxNumber: [{}],
-    postCode: ''
+    postCode: '',
+    firstName: 'Test',
+    lastName: 'User'
   }
 ];
 
@@ -136,7 +150,9 @@ export const pendingOrganisationsMockCollectionObj: OrganisationVM = {
   view: 'View',
   adminEmail: 'glen@byrne.com',
   dxNumber: [{}],
-  postCode: ''
+  postCode: '',
+  firstName: 'Test',
+  lastName: 'User'
 
 };
 
@@ -238,7 +254,9 @@ export const pendingOrganisationsMockSummaryCollection1: OrganisationSummary[] =
     adminEmail: 'glen@byrne.com',
     routerLink: '/pending-organisations/organisation/101010/',
     dxNumber: [{}],
-    postCode: ''
+    postCode: '',
+    firstName: 'Test',
+    lastName: 'User'
   }
 ];
 
@@ -255,7 +273,9 @@ export const reviewedOrganisationMockCollection: OrganisationVM[] = [{
   view: 'dummy 1',
   adminEmail: 'dummy 1',
   dxNumber: [{}],
-  postCode: ''
+  postCode: '',
+  firstName: 'Test',
+  lastName: 'User'
 }];
 
 export const activeOrganisationMockCollection: OrganisationVM[] = [{
@@ -271,7 +291,9 @@ export const activeOrganisationMockCollection: OrganisationVM[] = [{
   view: 'dummy 1',
   adminEmail: 'dummy 1',
   dxNumber: [{}],
-  postCode: ''
+  postCode: '',
+  firstName: 'Test',
+  lastName: 'User'
 }];
 
 export const reviewedOrganisationFromGovTableMockCollection: any[] = [{

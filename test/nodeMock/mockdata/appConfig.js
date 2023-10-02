@@ -22,7 +22,7 @@ class AppConfigMock{
       },
       'idamClient': 'xuiaowebapp',
       'indexUrl': '/',
-      'iss': 'https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts',
+      'iss': 'https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/realms/root/realms/hmcts',
       'logging': 'debug',
       'maxLogLine': 80,
       'microservice': 'xui_webapp',
@@ -37,7 +37,7 @@ class AppConfigMock{
         'feeAndPayApi': 'http://payment-api-aat.service.core-compute-aat.internal',
         'idamApi': 'https://idam-api.aat.platform.hmcts.net',
         'idamWeb': 'https://idam-web-public.aat.platform.hmcts.net',
-        'iss': 'https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts',
+        'iss': 'https://forgerock-am.service.core-compute-idam-aat.internal:8443/openam/oauth2/realms/root/realms/hmcts',
         'rdProfessionalApi': 'http://rd-professional-api-aat.service.core-compute-aat.internal',
         's2s': 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
       },
