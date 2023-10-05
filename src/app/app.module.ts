@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
@@ -40,6 +41,7 @@ import { EnvironmentConfig } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 import { EnvironmentService } from './services/environment.service';
 import { LogOutKeepAliveService } from './services/keep-alive/keep-alive.service';
+import { RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -59,8 +61,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     BrowserModule,
     CookieModule.forRoot(),
     RouterModule.forRoot(ROUTES, {
-      anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload',
-      relativeLinkResolution: 'legacy'
+      anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'
+      //relativeLinkResolution: 'legacy'
     }),
     StoreModule.forRoot(reducers, { metaReducers }),
     EffectsModule.forRoot(effects),
@@ -73,7 +75,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       disableConsoleLogging: false
     }),
     ExuiCommonLibModule,
-    NgIdleKeepaliveModule.forRoot()
+    NgIdleKeepaliveModule.forRoot(),
+    HttpClientModule
   ],
   providers: [
     NGXLogger,
@@ -91,8 +94,10 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       deps: [EnvironmentService],
       multi: true
     },
-    { provide: FeatureToggleService, useClass: LaunchDarklyService }
+    { provide: FeatureToggleService, useClass: LaunchDarklyService },
+    RpxTranslationService,
+    RpxTranslationConfig
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
