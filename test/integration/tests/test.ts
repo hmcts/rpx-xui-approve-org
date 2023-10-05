@@ -31,5 +31,5 @@ mocha.addFile('test/integration/tests/post_Update_PBA.ts');
 // mocha.addFile('test/integration/tests/Delete_Active_Organisations.ts');
 
 mocha.run((failures) => {
-  process.exitCode = failures ? 1 : 0; // exit with non-zero status if there were failures
+  process.exit(failures ? 1 : 0); // exit with non-zero status if there were failures
 });

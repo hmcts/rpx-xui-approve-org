@@ -1,19 +1,19 @@
 'use strict';
-const Cucumber = require('cucumber');
-const { defineSupportCode } = require('cucumber');
+const Cucumber = require('@cucumber/cucumber');
+const { Before, After } = require('@cucumber/cucumber');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const conf = require('../config/conf').config;
 // const conf = require('../config/saucelabs.conf').config;
 const reporter = require('cucumber-html-reporter');
-const report = require('cucumber-html-report');
+// const report = require('cucumber-html-report');
 
 const jsonReports = `${process.cwd()}/reports/json`;
 const htmlReports = `${process.cwd()}/reports/html`;
 // var xmlReports = process.cwd() + "/reports/xml";
 const targetJson = `${jsonReports}/cucumber_report.json`;
 // var targetXML = xmlReports + "/cucumber_report.xml";
-const { Given, When, Then } = require('cucumber');
+const { Given, When, Then } = require('@cucumber/cucumber');
 
 const CucumberReportLog = require('./CucumberReporter');
 
@@ -92,31 +92,30 @@ const CucumberReportLog = require('./CucumberReporter');
 
 // });
 
-defineSupportCode(({ Before, After }) => {
-  Before(function (scenario, done) {
-    const world = this;
-    CucumberReportLog.setScenarioWorld(this);
-    done();
-  });
-
-  After(async function (scenario) {
-    const world = this;
-    try {
-      if (scenario.result.status === 'failed') {
-        await prinrBrowserLogs();
-        const stream = await browser.takeScreenshot();
-        const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
-        world.attach(decodedImage, 'image/png');
-      } else {
-        await clearBrowserLogs();
-      }
-    } catch (err){
-      CucumberReportLog.AddMessage('Error in after hooks. see err details : '+err);
-    }
-
-    await Promise.all(getCookieCleanupPromises());
-  });
+Before(function (scenario, done) {
+  const world = this;
+  CucumberReportLog.setScenarioWorld(this);
+  done();
 });
+
+After(async function (scenario) {
+  const world = this;
+  try {
+    if (scenario.result.status === 'failed') {
+      await prinrBrowserLogs();
+      const stream = await browser.takeScreenshot();
+      const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+      world.attach(decodedImage, 'image/png');
+    } else {
+      await clearBrowserLogs();
+    }
+  } catch (err){
+    CucumberReportLog.AddMessage('Error in after hooks. see err details : '+err);
+  }
+
+  await Promise.all(getCookieCleanupPromises());
+});
+
 
 async function prinrBrowserLogs(){
   const browserLog = await browser.manage().logs().get('browser');
