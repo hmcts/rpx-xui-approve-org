@@ -4,16 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from './search-organisations-form.component';
+import { RpxTranslationService } from 'rpx-xui-translation';
 
 describe('SearchOrganisationsFormComponent', () => {
   let component: SearchOrganisationsFormComponent;
   let fixture: ComponentFixture<SearchOrganisationsFormComponent>;
+  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SearchOrganisationsFormComponent],
       imports: [FormsModule, ReactiveFormsModule, ExuiCommonLibModule, HttpClientTestingModule],
-      providers: [OrganisationService]
+      providers: [OrganisationService, { provide: RpxTranslationService, useValue: translationMockService }]
     })
       .compileComponents();
   }));

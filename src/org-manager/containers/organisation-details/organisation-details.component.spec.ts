@@ -13,12 +13,13 @@ import { OrganisationService, PbaAccountDetails, UsersService } from 'src/org-ma
 import * as fromRoot from '../../../app/store';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
+import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   selector: 'app-mock',
   template: ''
 })
-class MockComponent {}
+class MockComponent { }
 
 describe('OrganisationDetailsComponent', () => {
   const MOCKED_ORGANISATION = {
@@ -98,6 +99,7 @@ describe('OrganisationDetailsComponent', () => {
     pbaNumber: ['PBA1234567'],
     dxNumber: [123456]
   };
+  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
   beforeEach((() => {
     TestBed.configureTestingModule({
@@ -125,6 +127,7 @@ describe('OrganisationDetailsComponent', () => {
       ],
       providers: [
         OrganisationService, PbaAccountDetails, UserApprovalGuard, UsersService,
+        { provide: RpxTranslationService, useValue: translationMockService },
         {
           provide: ActivatedRoute,
           useValue: {

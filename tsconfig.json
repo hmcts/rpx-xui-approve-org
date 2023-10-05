@@ -10,6 +10,7 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "target": "es6",
     "importHelpers": true,
     "typeRoots": [
@@ -34,5 +35,5 @@
     "compilerOptions": {
       "module": "commonjs"
     }
-  },
+  }
 }
