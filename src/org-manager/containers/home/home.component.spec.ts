@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import { Router, Routes } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { NotificationBannerComponent } from '../../components';
 import { OrganisationService } from '../../services';
@@ -34,6 +35,7 @@ export const MOCK_ROUTES: Routes = [
 ];
 const organisationMockService = jasmine.createSpyObj('organisationService', ['organisationSearchStringChange', 'setOrganisationSearchString', 'resetPaginationParameters']);
 organisationMockService.organisationSearchStringChange.and.returnValue(of(''));
+const rpxTranslateMock = jasmine.createSpyObj('RpxTranslationService', ['getTranslation']);
 
 describe('HomeComponent', () => {
   let fixture: ComponentFixture<HomeComponent>;
@@ -51,7 +53,11 @@ describe('HomeComponent', () => {
       ],
       declarations: [HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent],
       providers: [
-        { provide: OrganisationService, useValue: organisationMockService }
+        { provide: OrganisationService, useValue: organisationMockService },
+        {
+          provide: RpxTranslationService,
+          useValue: rpxTranslateMock
+        }
       ]
     }).compileComponents();
 

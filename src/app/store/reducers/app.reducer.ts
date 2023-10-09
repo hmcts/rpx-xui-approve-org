@@ -1,6 +1,11 @@
 import { UserModel } from '../../../models/user.model';
 import * as fromAction from '../actions';
 
+export interface AppFeatureFlag {
+  featureName: string;
+  isEnabled: boolean;
+}
+
 export interface ErrorMessage {
   bodyText: string;
   urlText: string;
@@ -9,16 +14,17 @@ export interface ErrorMessage {
 
 export interface GlobalError {
   header: string;
-  errors: ErrorMessage [];
+  errors: ErrorMessage[];
 }
 
 export interface AppState {
   pageTitle: string;
   userDetails: UserModel | null;
-  modal: {[id: string]: {isVisible?: boolean; countdown?: string}};
+  modal: { [id: string]: { isVisible?: boolean; countdown?: string } };
   loaded: boolean;
   loading: boolean;
   globalError: GlobalError;
+  featureFlags: AppFeatureFlag[];
 }
 
 export const initialState: AppState = {
@@ -32,7 +38,8 @@ export const initialState: AppState = {
   },
   loaded: false,
   loading: false,
-  globalError: null
+  globalError: null,
+  featureFlags: []
 };
 
 export function reducer(
@@ -46,6 +53,11 @@ export function reducer(
         ...initialState
       };
     }
+    case fromAction.LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS:
+      return {
+        ...state,
+        featureFlags: action.payload
+      };
     case fromAction.GET_USER_DETAILS_SUCCESS: {
       const userDetails = new UserModel(action.payload);
       return {
@@ -85,3 +97,4 @@ export const getPageTitle = (state: AppState) => state.pageTitle;
 export const getUserDetails = (state: AppState) => state.userDetails;
 export const getModal = (state: AppState) => state.modal;
 export const getGlobalError = (state: AppState) => state.globalError;
+export const getFeatureFlag = (state: AppState) => state.featureFlags;

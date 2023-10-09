@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { UsersService } from 'src/org-manager/services';
+import { AppConstants } from '../../../app/app.constants';
+import { UsersService } from '../../../org-manager/services';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
@@ -31,6 +32,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationDeletable = false;
   public currentPageNumber: number = 1;
   public pageTotalSize: number;
+  public newRegisterOrg = false;
   private getShowOrgDetailsSubscription: Subscription;
   private readonly getAllLoadedSubscription: Subscription;
   private readonly getOrganisationDeletableSubscription: Subscription;
@@ -43,7 +45,8 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     public readonly pbaAccountDetails: PbaAccountDetails,
     private readonly userService: UsersService,
-    private readonly organisationService: OrganisationService) {
+    private readonly organisationService: OrganisationService,
+    private readonly featureToggleService: FeatureToggleService) {
     this.route.params.subscribe((params) => {
       this.orgId = params.orgId ? params.orgId : '';
     });
@@ -54,6 +57,10 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     if (this.isXuiApproverUserdata) {
       this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe((value) => this.showUsers = value);
     }
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.newRegisterOrg, undefined).subscribe((newRegisterOrgFeature) => {
+      this.newRegisterOrg = newRegisterOrgFeature;
+      // for testing - console.log(this.newRegisterOrg, 'register org')
+    })
 
     this.organisationService.getSingleOrganisation({ id: this.orgId })
       .pipe(take(1), map((apiOrg) => AppUtils.mapOrganisation(apiOrg)))
