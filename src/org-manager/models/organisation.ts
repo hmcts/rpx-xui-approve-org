@@ -93,8 +93,8 @@ export class OrganisationVM {
   public organisationId: string;
   public status: string;
   public admin: string;
-  public firstName: string;
-  public lastName: string;
+  public firstName?: string;
+  public lastName?: string;
   public adminEmail: string;
   public addressLine1: string;
   public addressLine2: string;
