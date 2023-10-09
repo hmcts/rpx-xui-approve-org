@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
-import { MetaReducer, StoreModule } from '@ngrx/store';
+import { MetaReducer, Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { storeFreeze } from 'ngrx-store-freeze';
 import { CookieModule } from 'ngx-cookie';
@@ -88,7 +88,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     {
       provide: APP_INITIALIZER,
       useFactory: initApplication,
-      deps: [EnvironmentService],
+      deps: [Store, EnvironmentService],
       multi: true
     },
     { provide: FeatureToggleService, useClass: LaunchDarklyService }

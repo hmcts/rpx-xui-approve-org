@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
 
 import { SharedModule } from '../shared/shared.module';
 import * as fromComponents from './components';
@@ -25,7 +26,7 @@ import { effects, reducers } from './store';
   ],
   exports: [...fromContainers.containers],
   declarations: [...fromContainers.containers, ...fromComponents.components, ...fromPipes.pipes],
-  providers: [...fromServices.services]
+  providers: [RpxTranslationService, RpxTranslationConfig, ...fromServices.services]
 })
 
 export class OrgManagerModule {
