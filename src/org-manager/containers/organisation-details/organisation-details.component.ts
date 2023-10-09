@@ -60,7 +60,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.newRegisterOrg, undefined).subscribe((newRegisterOrgFeature) => {
       this.newRegisterOrg = newRegisterOrgFeature;
       // for testing - console.log(this.newRegisterOrg, 'register org')
-    })
+    });
 
     this.organisationService.getSingleOrganisation({ id: this.orgId })
       .pipe(take(1), map((apiOrg) => AppUtils.mapOrganisation(apiOrg)))
