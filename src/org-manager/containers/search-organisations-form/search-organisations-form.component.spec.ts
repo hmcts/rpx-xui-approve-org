@@ -10,16 +10,13 @@ import { SearchOrganisationsFormComponent } from './search-organisations-form.co
 describe('SearchOrganisationsFormComponent', () => {
   let component: SearchOrganisationsFormComponent;
   let fixture: ComponentFixture<SearchOrganisationsFormComponent>;
-  const rpxTranslateMock = jasmine.createSpyObj('RpxTranslationService', ['getTranslation']);
+  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SearchOrganisationsFormComponent],
       imports: [FormsModule, ReactiveFormsModule, ExuiCommonLibModule, HttpClientTestingModule],
-      providers: [OrganisationService, {
-        provide: RpxTranslationService,
-        useValue: rpxTranslateMock
-      }]
+      providers: [OrganisationService, { provide: RpxTranslationService, useValue: translationMockService }]
     })
       .compileComponents();
   }));

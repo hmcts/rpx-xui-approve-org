@@ -164,7 +164,7 @@ export class AppUtils {
   // Util method to return Navitems
   // based on user's role
   public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
-    let roleNavItems: NavItem [] = new Array<NavItem>();
+    let roleNavItems: NavItem [] = [];
     userRoles.forEach((role) => {
       if (roleBasedNav.hasOwnProperty(role)) {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];

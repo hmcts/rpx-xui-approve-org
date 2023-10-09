@@ -5,9 +5,6 @@ import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
-import { addMatchers, getTestScheduler, initTestScheduler, resetTestScheduler } from 'jasmine-marbles';
-
-declare const require: any;
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
@@ -15,21 +12,3 @@ getTestBed().initTestEnvironment(
   platformBrowserDynamicTesting()
 );
 
-// configure matchers for jasmine-marbles
-jasmine.getEnv().beforeAll(() => {
-  return addMatchers();
-});
-
-jasmine.getEnv().beforeEach(() => {
-  initTestScheduler();
-});
-
-jasmine.getEnv().afterEach(() => {
-  getTestScheduler().flush();
-  resetTestScheduler();
-});
-
-// Then we find all the tests.
-const context = require.context('./', true, /\.spec\.ts$/);
-// And load the modules.
-context.keys().map(context);

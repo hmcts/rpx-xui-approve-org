@@ -20,7 +20,7 @@ import { OrganisationDetailsComponent } from './organisation-details.component';
   selector: 'app-mock',
   template: ''
 })
-class MockComponent {}
+class MockComponent { }
 
 describe('OrganisationDetailsComponent', () => {
   const MOCKED_ORGANISATION = {
@@ -103,7 +103,7 @@ describe('OrganisationDetailsComponent', () => {
     pbaNumber: ['PBA1234567'],
     dxNumber: [123456]
   };
-  const rpxTranslateMock = jasmine.createSpyObj('RpxTranslationService', ['getTranslation']);
+  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
   beforeEach((() => {
     TestBed.configureTestingModule({
@@ -131,6 +131,7 @@ describe('OrganisationDetailsComponent', () => {
       ],
       providers: [
         OrganisationService, PbaAccountDetails, UserApprovalGuard, UsersService,
+        { provide: RpxTranslationService, useValue: translationMockService },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -138,10 +139,6 @@ describe('OrganisationDetailsComponent', () => {
               orgId: 'orgTestId'
             })
           }
-        },
-        {
-          provide: RpxTranslationService,
-          useValue: rpxTranslateMock
         }
       ]
     }).compileComponents();

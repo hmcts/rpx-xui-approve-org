@@ -7,8 +7,8 @@ $path: "";
 $jui-assets-path : "";
 
 $govuk-global-styles: true;
-@import "~govuk-frontend/govuk/all";
-@import "~@hmcts/frontend/all";
+@import "govuk-frontend/govuk/all";
+@import "@hmcts/frontend/all";
 @import "./assets/sass/application";
 
 .stay-signed-in-button {
