@@ -18752,20 +18752,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:^0.1.1":
-  version: 0.1.8
-  resolution: "rpx-xui-translation@npm:0.1.8"
-  dependencies:
-    dexie: ^3.2.2
-    luxon: ^2.4.0
-    tslib: ^1.10.0
-  peerDependencies:
-    "@angular/common": ^9.1.13
-    "@angular/core": ^9.1.13
-  checksum: 24893242255be711e7a67dcf18b79f28d2f34598eaa9116bcb0495134a7a87c15cb604a4665c1b995927ca3203884ed89c8e74b86ee89e61939d8ef8467436b6
-  languageName: node
-  linkType: hard
-
 "run-async@npm:^2.4.0":
   version: 2.4.1
   resolution: "run-async@npm:2.4.1"
