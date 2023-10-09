@@ -7,7 +7,7 @@ import * as fromSelectors from './store/selectors/app.selectors';
 
 export function initApplication(store: Store<fromApp.State>, environmentService: EnvironmentService): VoidFunction {
   return () => new Promise((resolve) => {
-/*     store.dispatch(new fromApp.StartAppInitilizer());
+    /* store.dispatch(new fromApp.StartAppInitilizer());
     store.dispatch(new fromApp.LoadFeatureToggleConfig([
       AppConstants.FEATURE_NAMES.newRegisterOrg]));
     store.pipe(
