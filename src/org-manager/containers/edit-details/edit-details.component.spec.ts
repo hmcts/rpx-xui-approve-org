@@ -13,7 +13,6 @@ import { UpdatePbaServices } from '../../../org-manager/services';
 import { OrganisationService } from '../../services/organisation.service';
 import * as fromOrganisationPendingStore from '../../store';
 import { EditDetailsComponent } from './edit-details.component';
-import { RpxTranslationService } from 'rpx-xui-translation';
 
 describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
@@ -22,7 +21,6 @@ describe('EditDetailsComponent', () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let updatePbaServices: any;
   let mockedOrganisationService: any;
-  const rpxTranslateMock = jasmine.createSpyObj('RpxTranslationService', ['getTranslation']);
 
   const MOCKED_ORGANISATION = {
     name: 'KapilgI2qEnW67CPGZrHvbTxt JainqyXJo07tRocHYtq2Ci0o',
@@ -86,10 +84,6 @@ describe('EditDetailsComponent', () => {
         OrganisationService,
         { provide: RpxTranslationService, useValue: translationMockService },
         { provide: UpdatePbaServices },
-        {
-          provide: RpxTranslationService,
-          useValue: rpxTranslateMock
-        },
         {
           provide: ActivatedRoute,
           useValue: {

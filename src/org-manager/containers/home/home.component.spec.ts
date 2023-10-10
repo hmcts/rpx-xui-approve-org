@@ -12,7 +12,6 @@ import { NotificationBannerComponent } from '../../components';
 import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
-import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Component({
   template: '<div>Bob</div>'
@@ -36,7 +35,6 @@ export const MOCK_ROUTES: Routes = [
 ];
 const organisationMockService = jasmine.createSpyObj('organisationService', ['organisationSearchStringChange', 'setOrganisationSearchString', 'resetPaginationParameters']);
 organisationMockService.organisationSearchStringChange.and.returnValue(of(''));
-const rpxTranslateMock = jasmine.createSpyObj('RpxTranslationService', ['getTranslation']);
 
 const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
 
