@@ -33,7 +33,7 @@ describe('AppUtils', () => {
       pendingPaymentAccount: [{}],
       contactInformation: orgAddress,
       dateReceived: '01/01/2023',
-      dateApproved: '12/01/2023',
+      dateApproved: '12/01/2023'
     }];
     const organisationVM = AppUtils.mapOrganisations(organisations);
     expect(organisationVM[0].adminEmail).toEqual(organisations[0].superUser.email);
