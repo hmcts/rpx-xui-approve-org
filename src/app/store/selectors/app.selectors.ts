@@ -37,8 +37,3 @@ export const getCurrentError = createSelector(
   getAppState,
   fromAppFeature.getGlobalError
 );
-
-export const getFeatureFlag = createSelector(
-  getAppState,
-  (state) => state.featureFlags
-);
