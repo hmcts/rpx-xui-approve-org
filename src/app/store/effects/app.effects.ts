@@ -66,38 +66,10 @@ export class AppEffects {
     );
 
   @Effect()
-  public featureToggleConfig = this.actions$.pipe(
-      ofType(appActions.LOAD_FEATURE_TOGGLE_CONFIG),
-      map((action: appActions.LoadFeatureToggleConfig) => action.payload),
-      switchMap((featureNames: string[]) => {
-        return combineLatest(this.getObservable(featureNames)).pipe(
-          map((feature) => this.getFeaturesPayload(feature, featureNames))
-        );
-      }
-      )
-    );
-
-  @Effect()
   public addGlobalErrorEffect$ = this.actions$.pipe(
       ofType(appActions.APP_ADD_GLOBAL_ERROR),
       map(() => {
         return new routerAction.Go({ path: ['/service-down'] });
       })
     );
-
-  public getFeaturesPayload(features: boolean[], featureNames: string[]): appActions.LoadFeatureToggleConfigSuccess {
-    const result: AppFeatureFlag[] = features.map((isEnabled, i) => {
-      return { isEnabled, featureName: featureNames[i] };
-    });
-    return new appActions.LoadFeatureToggleConfigSuccess(result);
-  }
-
-  public getObservable(featureNames: string[]): Observable<boolean>[] {
-    let observables = new Array<Observable<boolean>>();
-    featureNames.forEach((featureName) => {
-      const observable = this.featureToggleService.isEnabled(featureName);
-      observables = [...observables, observable];
-    });
-    return observables;
-  }
 }

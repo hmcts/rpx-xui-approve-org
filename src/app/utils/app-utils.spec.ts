@@ -33,7 +33,7 @@ describe('AppUtils', () => {
       pendingPaymentAccount: [{}],
       contactInformation: orgAddress,
       dateReceived: '01/01/2023',
-      dateApproved: '12/01/2023'
+      dateApproved: '12/01/2023',
     }];
     const organisationVM = AppUtils.mapOrganisations(organisations);
     expect(organisationVM[0].adminEmail).toEqual(organisations[0].superUser.email);
@@ -43,6 +43,8 @@ describe('AppUtils', () => {
     expect(organisationVM[0].dateApproved).toEqual(organisations[0].dateApproved);
     expect(organisationVM[0].organisationId).toEqual(organisations[0].organisationIdentifier);
     expect(organisationVM[0].name).toEqual(organisations[0].name);
+    expect(organisationVM[0].firstName).toEqual(organisations[0].superUser.firstName);
+    expect(organisationVM[0].lastName).toEqual(organisations[0].superUser.lastName);
   });
 
   it('should map organisation VM', () => {
