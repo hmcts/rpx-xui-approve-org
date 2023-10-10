@@ -2,14 +2,13 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 
 import { HttpErrorResponse } from '@angular/common/http';
-import { combineLatest, Observable, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { UserInterface } from '../../../models/user.model';
 import { LogOutKeepAliveService } from '../../services/keep-alive/keep-alive.service';
 import { UserService } from '../../services/user-service/user.service';
 import * as routerAction from '../../store/actions/router.action';
 import * as appActions from '../actions';
-import { AppFeatureFlag } from '../reducers/app.reducer';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 
 @Injectable()
@@ -17,8 +16,7 @@ export class AppEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly logOutService: LogOutKeepAliveService,
-    private readonly userService: UserService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly userService: UserService
   ) { }
 
   @Effect({ dispatch: false })

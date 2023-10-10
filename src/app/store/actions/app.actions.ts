@@ -11,46 +11,16 @@ export const APP_ADD_GLOBAL_ERROR = '[APP] Add Global Error';
 export const APP_ADD_GLOBAL_ERROR_SUCCESS = '[APP] Add Global Error Success';
 export const APP_CLEAR_GLOBAL_ERROR = '[APP] Clear Global Error';
 
-export const LOAD_FEATURE_TOGGLE_CONFIG = '[App] Load Feature Toggle Config';
-export const LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS = '[App] Load Feature Toggle Config Success';
-export const LOAD_FEATURE_TOGGLE_CONFIG_FAIL = '[App] Load Feature Toggle Config Fail';
-
 export const LOGOUT = '[App] Logout';
-
-export const START_APP_INITIALIZER = '[App] Start App initializer';
-export const FINISH_APP_INITIALIZER = '[App] Finish Start App initializer';
 
 export class Logout implements Action {
   public readonly type = LOGOUT;
-}
-
-export class StartAppInitilizer implements Action {
-  public readonly type = START_APP_INITIALIZER;
-}
-
-export class FinishAppInitilizer implements Action {
-  public readonly type = FINISH_APP_INITIALIZER;
 }
 
 export const SIGNED_OUT = '[App] Signed Out'; // used by session management
 export const SIGNED_OUT_SUCCESS = '[App] Signed Out Success'; // used by session management
 export const KEEP_ALIVE = '[App] Keep Alive';
 export const SET_MODAL = '[APP] Set Modal';
-
-export class LoadFeatureToggleConfig implements Action {
-  constructor(public payload: any) {}
-  public readonly type = LOAD_FEATURE_TOGGLE_CONFIG;
-}
-
-export class LoadFeatureToggleConfigSuccess implements Action {
-  public readonly type = LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS;
-  constructor(public payload: any) {}
-}
-
-export class LoadFeatureToggleConfigFail implements Action {
-  public readonly type = LOAD_FEATURE_TOGGLE_CONFIG_FAIL;
-  constructor(public payload: any) {}
-}
 
 export class GetUserDetails implements Action {
   public readonly type = GET_USER_DETAILS;
@@ -103,9 +73,6 @@ export type appActions =
   | SignedOutSuccess
   | KeepAlive
   | SetModal
-  | LoadFeatureToggleConfig
-  | LoadFeatureToggleConfigSuccess
-  | LoadFeatureToggleConfigFail
   | Logout
   | AddGlobalError
   | ClearGlobalError

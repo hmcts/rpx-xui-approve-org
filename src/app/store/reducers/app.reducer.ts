@@ -53,11 +53,6 @@ export function reducer(
         ...initialState
       };
     }
-    case fromAction.LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS:
-      return {
-        ...state,
-        featureFlags: action.payload
-      };
     case fromAction.GET_USER_DETAILS_SUCCESS: {
       const userDetails = new UserModel(action.payload);
       return {
