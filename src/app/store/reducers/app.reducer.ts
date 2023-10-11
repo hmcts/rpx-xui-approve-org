@@ -92,4 +92,3 @@ export const getPageTitle = (state: AppState) => state.pageTitle;
 export const getUserDetails = (state: AppState) => state.userDetails;
 export const getModal = (state: AppState) => state.modal;
 export const getGlobalError = (state: AppState) => state.globalError;
-export const getFeatureFlag = (state: AppState) => state.featureFlags;
