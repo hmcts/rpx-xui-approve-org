@@ -1,5 +1,5 @@
 import { User } from '@hmcts/rpx-xui-common-lib';
-import { Organisation, OrganisationAddress, OrganisationUser, OrganisationVM } from 'src/org-manager/models/organisation';
+import { Organisation, OrganisationAddress, OrganisationUser, OrganisationVM } from '../../org-manager/models/organisation';
 import { AppUtils } from './app-utils';
 
 describe('AppUtils', () => {
