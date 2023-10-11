@@ -24,8 +24,6 @@ export class AppUtils {
     if (apiOrg.superUser) {
       organisationVm.adminEmail = apiOrg.superUser.email;
       organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
-      organisationVm.firstName = apiOrg.superUser.firstName;
-      organisationVm.lastName = apiOrg.superUser.lastName;
     }
     organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;
