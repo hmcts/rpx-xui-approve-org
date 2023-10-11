@@ -55,6 +55,10 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     });
     // TODO: Remove when API data available
     this.mockMissingDataTillNewVersionOfApiIsReady();
+    // TODO: use first name and last name within model
+    // done this way to avoid temporary test coverage problem
+    this.org.firstName = this.org.admin.split(' ')[0];
+    this.org.lastName = this.org.admin.split(' ')[1];
   }
 
   public onSubmit(): void {
