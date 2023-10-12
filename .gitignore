@@ -75,3 +75,7 @@ stryker.log
 !.yarn/versions
 /.angular/
 *.html
+src/coverage/Chrome Headless 117.0.5938.149 (Mac OS 10.15.7)/base.css
+*.js
+*.png
+src/coverage/Chrome Headless 117.0.5938.149 (Mac OS 10.15.7)/prettify.css
