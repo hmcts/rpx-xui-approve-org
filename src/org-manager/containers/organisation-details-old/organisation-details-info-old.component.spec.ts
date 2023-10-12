@@ -3,19 +3,17 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { QuickLinksComponent } from '..';
 import { OrganisationVM } from '../../models/organisation';
-import { OrganisationAddressComponent } from '../organisation-address';
-import { OrganisationDetailsInfoComponent } from './organisation-details-info.component';
+import { OrganisationDetailsInfoOldComponent } from './organisation-details-info-old.component';
+import { QuickLinksOldComponent } from '../../components/quick-links-old/quick-links-old.component';
+import { OrganisationAddressComponent } from '../../../org-manager/components';
 
 describe('OrganisationDetailsInfoComponent', () => {
-  let component: OrganisationDetailsInfoComponent;
-  let fixture: ComponentFixture<OrganisationDetailsInfoComponent>;
+  let component: OrganisationDetailsInfoOldComponent;
+  let fixture: ComponentFixture<OrganisationDetailsInfoOldComponent>;
 
   const mockOrgData: OrganisationVM = {
-    name: 'Corp Plc',
-    firstName: 'Glen',
-    lastName: 'Byrne',
+    name: 'Glen Byrne',
     organisationId: 'ByrneLimited',
     addressLine1: '13 Berryfield drive, Finglas',
     addressLine2: '',
@@ -41,13 +39,13 @@ describe('OrganisationDetailsInfoComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, RouterTestingModule.withRoutes([]), ReactiveFormsModule],
-      declarations: [OrganisationDetailsInfoComponent, OrganisationAddressComponent, QuickLinksComponent]
+      declarations: [OrganisationDetailsInfoOldComponent, OrganisationAddressComponent, QuickLinksOldComponent]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OrganisationDetailsInfoComponent);
+    fixture = TestBed.createComponent(OrganisationDetailsInfoOldComponent);
     component = fixture.componentInstance;
     component.org = mockOrgData;
     fixture.detectChanges();
@@ -66,19 +64,19 @@ describe('OrganisationDetailsInfoComponent', () => {
       titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[1].nativeElement.textContent;
       expect(titleContent).toContain('Organisation details');
       titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[2].nativeElement.textContent;
-      expect(titleContent).toContain('Administrator details');
+      expect(titleContent).toContain('PBAs');
     });
 
     it('should show organisation details', () => {
       const nameContent = fixture.debugElement.nativeElement.querySelector('dd.govuk-summary-list__value').textContent;
-      expect(nameContent).toContain('Corp Plc');
+      expect(nameContent).toContain('Glen Byrne');
       const adressContent = fixture.debugElement.nativeElement.querySelector('app-org-address').textContent;
       expect(adressContent).toContain('13 Berryfield drive, Finglas');
-      const mailContent = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[11].textContent;
+      const mailContent = fixture.debugElement.nativeElement.querySelector('div.govuk-caption-m').textContent;
       expect(mailContent).toContain('glen@byrne.com');
-      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[3].textContent;
+      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[6].textContent;
       expect(pbaNumber).toContain('101010');
-      const accountName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[4].textContent;
+      const accountName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[7].textContent;
       expect(accountName).toContain('RAY NIXON BROWN');
     });
 
