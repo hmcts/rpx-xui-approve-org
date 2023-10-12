@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
-​
+
 import { Title } from '@angular/platform-browser';
 import { Event, Router, RoutesRecognized } from '@angular/router';
 import { FeatureToggleService, GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
@@ -13,7 +13,7 @@ import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../../../models/environme
 import { EnvironmentService } from '../../services/environment.service';
 import * as fromRoot from '../../store';
 import { AppUtils } from '../../utils/app-utils';
-​
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,9 +21,9 @@ import { AppUtils } from '../../utils/app-utils';
 })
 export class AppComponent implements OnInit {
   public identityBar$: Observable<string[]>;
-  public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
+  public modalData$: Observable<{ isVisible?: boolean; countdown?: string }>;
   public mainContentId = 'content';
-​
+
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleAnalyticsService: GoogleAnalyticsService,
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
       this.setTitleIfPresent(data);
     });
   }
-​
+
   public ngOnInit() {
     this.environmentService.getEnv$().subscribe((env) => {
       if (env.oidcEnabled) {
@@ -51,19 +51,19 @@ export class AppComponent implements OnInit {
         this.roleService.roles = AppUtils.getRoles(encodedRoles);
       }
     });
-​
+
     this.featureService.initialize({ anonymous: true }, this.environmentConfig.launchDarklyClientId);
-​
+
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));
     // this.identityBar$ = this.store.pipe(select(fromSingleFeeAccountStore.getSingleFeeAccountData));
-​
+
     this.idleStart();
     this.idleService.appStateChanges().subscribe((value) => {
       this.dispatchSessionAction(value);
     });
   }
-​
+
   public dispatchSessionAction(value) {
     switch (value.type) {
       case 'modal': {
@@ -84,7 +84,7 @@ export class AppComponent implements OnInit {
       }
     }
   }
-​
+
   public idleStart() {
     const route$ = this.store.pipe(select(fromRoot.getRouterUrl));
     const userIdleSession$ = this.store.pipe(select(fromRoot.getUserIdleTime));
@@ -106,7 +106,7 @@ export class AppComponent implements OnInit {
       }
     });
   }
-​
+
   public dispatchModal(countdown = '0', isVisible): void {
     const modalConfig: any = {
       session: {
@@ -116,7 +116,7 @@ export class AppComponent implements OnInit {
     };
     this.store.dispatch(new fromRoot.SetModal(modalConfig));
   }
-​
+
   public onStaySignedIn() {
     const payload = {
       session: {
@@ -125,13 +125,13 @@ export class AppComponent implements OnInit {
     };
     this.store.dispatch(new fromRoot.SetModal(payload));
   }
-​
+
   public onNavigate(event): void {
     if (event === 'sign-out') {
       return this.store.dispatch(new fromRoot.Logout());
     }
   }
-​
+
   public setTitleIfPresent(data: Event) {
     if (data instanceof RoutesRecognized) {
       let child = data.state.root;
@@ -144,7 +144,7 @@ export class AppComponent implements OnInit {
       }
     }
   }
-​
+
   // the fragment attribute in Angular is good however it only scrolls to the anchor tag
   // focussing is not currently supported by the Angular RouterModule and fragment hence this workaround
   public onFocusMainContent() {

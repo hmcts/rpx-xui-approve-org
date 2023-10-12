@@ -11,7 +11,7 @@ const footerData = {
     text: 'Monday to Friday, 8am to 6pm (excluding public holidays)'
   }
 };
-​
+
 const footerDataNavigation = {
   items: [
     { text: 'Accessibility', href: 'accessibility', target: '_blank' },
@@ -20,7 +20,7 @@ const footerDataNavigation = {
     { text: 'Privacy policy', href: 'privacy-policy', target: '_blank' }
   ]
 };
-​
+
 const environmentNames = {
   aat: 'aat',
   localhost: 'localhost',
@@ -30,15 +30,15 @@ const environmentNames = {
   perftest: 'perftest',
   prod: 'prod'
 };
-​
+
 const xuiApprovalRole = 'xui-approver-userdata';
-​
+
 const userRoles = [
   { role: 'pui-organisation-manager', roleType: 'manageOrganisations' },
   { role: 'pui-user-manager', roleType: 'manageUsers' },
   { role: 'pui-case-manager', roleType: 'manageCases' }
 ];
-​
+
 const ccdRoles = [
   'caseworker',
   'caseworker-divorce',
@@ -55,14 +55,14 @@ const ccdRoles = [
   'caseworker-employment',
   'caseworker-employment-legalrep-solicitor'
 ];
-​
+
 const superUserRoles = [
   'pui-organisation-manager',
   'pui-user-manager',
   'pui-case-manager',
   ...ccdRoles
 ];
-​
+
 export const errorMessageMappings = {
   1: 'A user with this email address already exists',
   2: 'Something went wrong, ensure you have entered all the fields below',
@@ -76,7 +76,7 @@ export const errorMessageMappings = {
   10: 'This SRA number has already been used. Enter a different SRA number.',
   11: 'This PBA number has already been used. Enter a different PBA number.'
 };
-​
+
 export const apiErrors = {
   1: 'email_address',
   2: 'Validation failed',
@@ -89,13 +89,13 @@ export const apiErrors = {
   10: 'SRA_ID Invalid or already exists',
   11: 'PBA_NUMBER Invalid or already exists'
 };
-​
+
 const featureNames = {
   // note this is the only place where caseworker referred to as case-worker (due to feature settings)
   caseworkerDetails: 'ao-case-worker-details',
   newRegisterOrg: 'mo-new-register-org'
 };
-​
+
 export const navItemsArray = [
   {
     text: 'Organisations',
@@ -118,12 +118,12 @@ export const navItemsArray = [
     orderId: 1
   }
 ];
-​
+
 const roleBasedNav = {
   'prd-admin': navItemsArray[0],
   'cwd-admin': navItemsArray[1]
 };
-​
+
 export class AppConstants {
   public static FOOTER_DATA = footerData;
   public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
