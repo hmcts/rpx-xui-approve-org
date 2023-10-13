@@ -57,7 +57,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     if (this.isXuiApproverUserdata) {
       this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe((value) => this.showUsers = value);
     }
-    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.newRegisterOrg, undefined).subscribe((newRegisterOrgFeature) => {
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.newRegisterOrg, false).subscribe((newRegisterOrgFeature) => {
       this.newRegisterOrg = newRegisterOrgFeature;
     });
 
