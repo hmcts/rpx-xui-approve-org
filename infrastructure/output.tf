@@ -3,6 +3,6 @@ output "microserviceName" {
 }
 
 output "appInsightsInstrumentationKey" {
-  value = azurerm_application_insights.appinsights.instrumentation_key
+  value     = azurerm_application_insights.appinsights.instrumentation_key
   sensitive = true
 }
