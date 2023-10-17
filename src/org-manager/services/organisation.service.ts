@@ -37,8 +37,8 @@ export class OrganisationService {
     return organisations$;
   }
 
-  public getSingleOrganisation(payload): Observable<Organisation> {
-    const params = new HttpParams().append('organisationId', payload.id).append('version', payload.version);
+  public getSingleOrganisation(payload: {id: string, version?: string}): Observable<Organisation> {
+    const params = new HttpParams().append('organisationId', payload.id).append('version', payload.version? payload.version : 'v1');
     return this.http.get<Organisation>(this.singleOrgUrl, { params });
   }
 
