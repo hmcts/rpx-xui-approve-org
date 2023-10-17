@@ -25,9 +25,10 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
   } else {
     // used to load either an individual organisation or organisation user
     try {
-      const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId, req.query.page);
+      const version = req.query.version ? req.query.version as string : undefined;
+      const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId, req.query.page, version);
       const response = await req.http.get(organisationsUri);
-      logger.info('Organisations response' + response.data);
+      logger.info('Organisations response', JSON.stringify(response.data));
 
       if (response.data.organisations) {
         res.send(response.data.organisations);
@@ -136,8 +137,8 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
   return allActiveOrgs;
 }
 
-function getOrganisationUri(status, organisationId, usersOrgId, pageNumber): string {
-  let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`;
+function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, version = 'v1'): string {
+  let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/${version}/organisations`;
 
   if (status) {
     url = `${url}?status=${status}`;

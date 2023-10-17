@@ -25,7 +25,7 @@ export class AppUtils {
       organisationVm.adminEmail = apiOrg.superUser.email;
       organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
     }
-    organisationVm.organisationType = apiOrg.organisationType;
+    organisationVm.organisationType = apiOrg.orgType;
     organisationVm.companyRegistrationNumber = apiOrg.companyNumber;
     organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;

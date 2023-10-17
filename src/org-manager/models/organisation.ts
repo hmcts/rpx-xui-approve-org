@@ -84,7 +84,7 @@ export interface Organisation {
   pendingPaymentAccount: any[];
   dateReceived?: string;
   dateApproved?: string;
-  organisationType?: string;
+  orgType?: string;
   companyRegistrationNumber?: string;
   regulators?: Regulator[];
   individualRegulators?: Regulator[];

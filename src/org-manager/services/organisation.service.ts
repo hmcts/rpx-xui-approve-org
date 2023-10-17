@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -38,7 +38,8 @@ export class OrganisationService {
   }
 
   public getSingleOrganisation(payload): Observable<Organisation> {
-    return this.http.get<Organisation>(`${this.singleOrgUrl}${payload.id}`);
+    const params = new HttpParams().append('organisationId', payload.id).append('version', payload.version);
+    return this.http.get<Organisation>(this.singleOrgUrl, { params });
   }
 
   public getOrganisationUsers(orgId, pageNo): Observable<any> {
