@@ -73,6 +73,7 @@ export interface DxAddress {
 }
 
 export interface Organisation {
+  companyNumber?: string;
   sraId?: string;
   organisationIdentifier: string;
   contactInformation: OrganisationAddress[];
