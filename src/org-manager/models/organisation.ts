@@ -73,6 +73,7 @@ export interface DxAddress {
 }
 
 export interface Organisation {
+  companyNumber?: string;
   sraId?: string;
   organisationIdentifier: string;
   contactInformation: OrganisationAddress[];
@@ -83,7 +84,7 @@ export interface Organisation {
   pendingPaymentAccount: any[];
   dateReceived?: string;
   dateApproved?: string;
-  organisationType?: string;
+  orgType?: string;
   companyRegistrationNumber?: string;
   regulators?: Regulator[];
   individualRegulators?: Regulator[];

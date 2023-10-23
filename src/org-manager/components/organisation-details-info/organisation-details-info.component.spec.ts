@@ -74,7 +74,8 @@ describe('OrganisationDetailsInfoComponent', () => {
       expect(nameContent).toContain('Corp Plc');
       const adressContent = fixture.debugElement.nativeElement.querySelector('app-org-address').textContent;
       expect(adressContent).toContain('13 Berryfield drive, Finglas');
-      const mailContent = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[11].textContent;
+      const elements = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+      const mailContent = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[9].textContent;
       expect(mailContent).toContain('glen@byrne.com');
       const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[3].textContent;
       expect(pbaNumber).toContain('101010');

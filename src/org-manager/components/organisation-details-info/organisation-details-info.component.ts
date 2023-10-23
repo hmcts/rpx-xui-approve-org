@@ -53,12 +53,10 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required)
     });
-    // TODO: Remove when API data available
-    this.mockMissingDataTillNewVersionOfApiIsReady();
-    // TODO: use first name and last name within model
-    // done this way to avoid temporary test coverage problem
     this.org.firstName = this.org.admin.split(' ')[0];
     this.org.lastName = this.org.admin.split(' ')[1];
+    this.companyRegistrationNumber = this.org.companyRegistrationNumber;
+    this.organisationType = this.org.organisationType;
   }
 
   public onSubmit(): void {
@@ -125,35 +123,5 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     if (data) {
       this.reviewEvent.emit(data);
     }
-  }
-
-  // TODO: Delete the below method during the implementation of the below ticket
-  // https://tools.hmcts.net/jira/browse/EUI-8869 which deals with the integration/mapping data
-  // once the updated version of the API is available and provides the missing information
-  private mockMissingDataTillNewVersionOfApiIsReady(): void {
-    this.serviceToAccess = 'Civil';
-    this.companyRegistrationNumber = '12345678';
-    this.organisationType = 'IT and communications';
-    this.regulators = [
-      {
-        regulatorType: 'Solicitor Regulation Authority (SRA)',
-        organisationRegistrationNumber: '11223344'
-      },
-      {
-        regulatorType: 'Other',
-        regulatorName: 'Other regulatory organisation',
-        organisationRegistrationNumber: '12341234'
-      },
-      {
-        regulatorType: 'Charted Institute of Legal Executives',
-        organisationRegistrationNumber: '43214321'
-      }
-    ];
-    this.individualRegulators = [
-      {
-        regulatorType: 'Individual',
-        organisationRegistrationNumber: '11223354'
-      }
-    ];
   }
 }
