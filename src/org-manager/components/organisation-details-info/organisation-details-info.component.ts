@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { OrganisationVM, Regulator } from '../../models/organisation';
 import { RegulatorType, RegulatoryType } from '../../models/regulator-type.enum';
@@ -11,7 +11,7 @@ import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './mo
   selector: 'app-org-details-info',
   templateUrl: './organisation-details-info.component.html'
 })
-export class OrganisationDetailsInfoComponent implements OnInit {
+export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   @Input() public org: OrganisationVM;
   @Input() public orgDeletable: boolean;
   @Output() public approveEvent: EventEmitter<OrganisationVM> = new EventEmitter();
@@ -24,7 +24,7 @@ export class OrganisationDetailsInfoComponent implements OnInit {
   public regulatorType = RegulatorType;
   public regulatoryTypeEnum = RegulatoryType;
   // TODO: Remove below when API available
-  public serviceToAccess: string;
+  public serviceList: string = '';
   public companyRegistrationNumber: string;
   public organisationType: string;
   public regulators: Regulator[];
@@ -53,10 +53,25 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required)
     });
+    this.setOrganisationDisplay();
+  }
+
+  public ngOnChanges(): void {
+    this.setOrganisationDisplay();
+  }
+
+  private setOrganisationDisplay(): void {
     this.org.firstName = this.org.admin.split(' ')[0];
     this.org.lastName = this.org.admin.split(' ')[1];
     this.companyRegistrationNumber = this.org.companyRegistrationNumber;
     this.organisationType = this.org.organisationType;
+    if (!this.org.servicesToAccess || this.org.servicesToAccess.length === 0) {
+      return;
+    }
+    this.serviceList = this.org.servicesToAccess[0].value;
+    for (let i = 1; i < this.org.servicesToAccess.length; i++) {
+      this.serviceList = this.serviceList.concat(`, ${this.org.servicesToAccess[i].value}`);
+    }
   }
 
   public onSubmit(): void {
