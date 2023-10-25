@@ -82,7 +82,7 @@
     "@ngrx/store": "^15.2.1",
     "@ngrx/store-devtools": "^15.2.1",
     "@nguniversal/express-engine": "^15.2.1",
-    "@rxweb/reactive-form-validators": "2.1.2",
+    "@rxweb/reactive-form-validators": "2.1.8",
     "@types/crypto-js": "^3.1.43",
     "@types/express-session": "^1.17.0",
     "@types/multer": "^1.4.5",
