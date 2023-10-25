@@ -2978,17 +2978,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/nodejs-logging@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "@hmcts/nodejs-logging@npm:3.0.1"
-  dependencies:
-    moment: "npm:^2.19.3"
-    on-finished: "npm:^2.3.0"
-    winston: "npm:^2.4.1"
-  checksum: f61628a122e1a51a059e64fc0c30c546cc15f6c87e54238b32cc1767954913529e574a33d7a11dfa58917a45c50d8aaaa32c216371bf313cb07f403255d0b58c
-  languageName: node
-  linkType: hard
-
 "@hmcts/nodejs-logging@npm:^3.0.1":
   version: 3.0.4
   resolution: "@hmcts/nodejs-logging@npm:3.0.4"
@@ -3000,14 +2989,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/properties-volume@npm:^0.0.13":
-  version: 0.0.13
-  resolution: "@hmcts/properties-volume@npm:0.0.13"
+"@hmcts/nodejs-logging@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "@hmcts/nodejs-logging@npm:4.0.4"
   dependencies:
-    "@hmcts/nodejs-logging": "npm:^3.0.0"
-    lodash: "npm:^4.17.11"
-    path: "npm:^0.12.7"
-  checksum: 7046728d3b3f3ba2290d933bc8c7cf3eec84cd03f8bf8b66d380caf328f436e32ea8774331c9910110e9318c3129c22ec8dc9c785169430462fd20cccfe742cd
+    moment: ^2.29.4
+    on-finished: ^2.3.0
+    winston: ^2.4.5
+  checksum: 4a21f0beb02e2796ca4a3daa37845bbb8698bd3c5b1c0d2023fec37a7143d1e53cf5e8a9ef9083398ac61f04f429bb48484a570fff2ab1d47db53f14b2b35b26
+  languageName: node
+  linkType: hard
+
+"@hmcts/properties-volume@npm:^0.0.14":
+  version: 0.0.14
+  resolution: "@hmcts/properties-volume@npm:0.0.14"
+  dependencies:
+    "@hmcts/nodejs-logging": ^4.0.4
+    lodash: ^4.17.11
+    path: ^0.12.7
+  checksum: 3859effd7c1579f151a050e85514ca73a341ae9a6be9246e8f3995cf86eafceecac8f64fba38281b3c20f518f1dae744428dbf5c3d6a33782d493dcb3995aeec
   languageName: node
   linkType: hard
 
@@ -6559,13 +6559,6 @@ __metadata:
   version: 3.2.0
   resolution: "async@npm:3.2.0"
   checksum: 6739fae769e6c9f76b272558f118ef041d45c979c573a8fe93f8cfbc32eb9c92da032e9effe6bbcc9b1131292cde6c4a9e61a442894aa06a262addd8dd3adda1
-  languageName: node
-  linkType: hard
-
-"async@npm:~1.0.0":
-  version: 1.0.0
-  resolution: "async@npm:1.0.0"
-  checksum: 04d4e57806b1a46b1635a3d821a9bcc06f893d6828a0468ceb494d1857b565754cbbaed22529aef79749dbbe7cf5080bfdb346b54be0e9cd35c41d7ef8d7911f
   languageName: node
   linkType: hard
 
@@ -16328,7 +16321,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": 7.0.0-NodeAndNgUpgrades.1
     "@hmcts/frontend": 0.0.41-alpha
     "@hmcts/nodejs-healthcheck": 1.7.0
-    "@hmcts/properties-volume": ^0.0.13
+    "@hmcts/properties-volume": ^0.0.14
     "@hmcts/rpx-xui-common-lib": 2.0.0-NodeAndNgUpgrades-03
     "@hmcts/rpx-xui-node-lib": 2.25.12
     "@ng-idle/core": ^11.0.3
@@ -22225,20 +22218,6 @@ __metadata:
     readable-stream: "npm:^2.3.7"
     triple-beam: "npm:^1.2.0"
   checksum: 953d78d152b355962d97697c3ccdc26fda6be017a0e1e555729e218d1269aa32a60e9ff16eb7a72c6403f733e88bab664b259feae3857667b54ff8e2f149fa52
-  languageName: node
-  linkType: hard
-
-"winston@npm:^2.4.1":
-  version: 2.4.5
-  resolution: "winston@npm:2.4.5"
-  dependencies:
-    async: "npm:~1.0.0"
-    colors: "npm:1.0.x"
-    cycle: "npm:1.0.x"
-    eyes: "npm:0.1.x"
-    isstream: "npm:0.1.x"
-    stack-trace: "npm:0.0.x"
-  checksum: aba54cae4c97df6f01c6ad98b5ecbf79eaa79326b5f99c379063e91a9bd6dd961b2958768d850546b7a54ef159ecc67bcaf08a6fec4029592be7436d955460f0
   languageName: node
   linkType: hard
 
