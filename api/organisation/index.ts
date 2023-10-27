@@ -36,7 +36,7 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
         res.send(response.data);
       }
     } catch (error) {
-      console.log(JSON.stringify(error));
+      console.log(JSON.stringify(error.message));
       logError(res, error);
     }
   }
