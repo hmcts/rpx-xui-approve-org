@@ -27,6 +27,7 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
     try {
       const version = req.query.version ? req.query.version as string : undefined;
       const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId, req.query.page, version);
+      console.log(organisationsUri, 'organisationUrl');
       const response = await req.http.get(organisationsUri);
       logger.info('Organisations response', JSON.stringify(response.data));
 
@@ -36,6 +37,7 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
         res.send(response.data);
       }
     } catch (error) {
+      console.log(JSON.stringify(error.message));
       logError(res, error);
     }
   }
