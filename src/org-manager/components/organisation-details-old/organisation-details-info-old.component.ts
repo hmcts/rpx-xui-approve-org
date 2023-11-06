@@ -1,17 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { OrganisationVM, Regulator } from '../../models/organisation';
-import { RegulatorType, RegulatoryType } from '../../models/regulator-type.enum';
-import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './models/organisation-details';
+import { OrganisationVM } from '../../../org-manager/models/organisation';
+import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from '../../components/organisation-details-info/models/organisation-details';
 
 /**
  * Bootstraps Organisation Details
  */
 @Component({
-  selector: 'app-org-details-info',
-  templateUrl: './organisation-details-info.component.html'
+  selector: 'app-org-details-info-old',
+  templateUrl: './organisation-details-info-old.component.html'
 })
-export class OrganisationDetailsInfoComponent implements OnInit {
+export class OrganisationDetailsInfoOldComponent implements OnInit {
   @Input() public org: OrganisationVM;
   @Input() public orgDeletable: boolean;
   @Output() public approveEvent: EventEmitter<OrganisationVM> = new EventEmitter();
@@ -21,15 +20,6 @@ export class OrganisationDetailsInfoComponent implements OnInit {
   public formGroup: FormGroup;
   public submitted = false;
   public errorMessage: ErrorMessage;
-  public regulatorType = RegulatorType;
-  public regulatoryTypeEnum = RegulatoryType;
-  // TODO: Remove below when API available
-  public serviceToAccess: string;
-  public companyRegistrationNumber: string;
-  public organisationType: string;
-  public regulators: Regulator[];
-  public individualRegulators: Regulator[];
-
   private readonly genericError = 'There is a problem';
   private readonly radioSelectedControlName = 'radioSelected';
   public readonly registrationRequest: DisplayedRequest[];
@@ -53,10 +43,6 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required)
     });
-    this.org.firstName = this.org.admin.split(' ')[0];
-    this.org.lastName = this.org.admin.split(' ')[1];
-    this.companyRegistrationNumber = this.org.companyRegistrationNumber;
-    this.organisationType = this.org.organisationType;
   }
 
   public onSubmit(): void {

@@ -73,6 +73,7 @@ export interface DxAddress {
 }
 
 export interface Organisation {
+  companyNumber?: string;
   sraId?: string;
   organisationIdentifier: string;
   contactInformation: OrganisationAddress[];
@@ -83,12 +84,18 @@ export interface Organisation {
   pendingPaymentAccount: any[];
   dateReceived?: string;
   dateApproved?: string;
+  orgType?: string;
+  companyRegistrationNumber?: string;
+  regulators?: Regulator[];
+  individualRegulators?: Regulator[];
 }
 
 export class OrganisationVM {
   public organisationId: string;
   public status: string;
   public admin: string;
+  public firstName?: string;
+  public lastName?: string;
   public adminEmail: string;
   public addressLine1: string;
   public addressLine2: string;
@@ -105,8 +112,19 @@ export class OrganisationVM {
   public accountDetails?: object;
   public dateReceived?: string;
   public dateApproved?: string;
+  public serviceToAccess?: string;
+  public organisationType?: string;
+  public companyRegistrationNumber?: string;
+  public regulators?: Regulator[];
+  public individualRegulators?: Regulator[];
 }
 
 export interface OrganisationSummary extends OrganisationVM {
   routerLink: string;
+}
+
+export interface Regulator {
+  regulatorType: string;
+  regulatorName?: string;
+  organisationRegistrationNumber?: string;
 }
