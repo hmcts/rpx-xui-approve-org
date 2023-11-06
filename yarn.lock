@@ -4917,10 +4917,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^0.0.36":
-  version: 0.0.36
-  resolution: "@types/config@npm:0.0.36"
-  checksum: 2b593127a679d51b7a0d8c039ab8ddee0b0fb227fda3be77a82e28d2f28e5cb8122127511dd177e1b2173357fdfce64045e6b4177530d6f68dfe47082206bf4c
+"@types/config@npm:^0.0.41":
+  version: 0.0.41
+  resolution: "@types/config@npm:0.0.41"
+  checksum: 528eb5e5d60c48cf82a2b0988ee1e5e088472698ad25944131b0ba87b2e3bb0989f3b4d45edb9d49eefcc8bf158c267905c386aaec15857b9fb24be449c3f27c
   languageName: node
   linkType: hard
 
@@ -16349,7 +16349,7 @@ __metadata:
     "@stryker-mutator/typescript": ^4.0.0
     "@types/applicationinsights-js": ^1.0.9
     "@types/chai": ^4.3.6
-    "@types/config": ^0.0.36
+    "@types/config": ^0.0.41
     "@types/cookie-parser": ^1.4.2
     "@types/crypto-js": ^3.1.43
     "@types/csurf": ^1.11.0
