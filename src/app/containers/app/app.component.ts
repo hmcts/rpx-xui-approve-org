@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 
 import { Title } from '@angular/platform-browser';
 import { Event, Router, RoutesRecognized } from '@angular/router';
-import { GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
 import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { CookieService } from 'ngx-cookie';
 import { combineLatest, Observable } from 'rxjs';
 import { filter, first, take } from 'rxjs/operators';
-import { EnvironmentService } from 'src/app/services/environment.service';
-import { AppUtils } from 'src/app/utils/app-utils';
 import { environment as config } from '../../../environments/environment';
+import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../../../models/environmentConfig.model';
+import { EnvironmentService } from '../../services/environment.service';
 import * as fromRoot from '../../store';
+import { AppUtils } from '../../utils/app-utils';
 
 @Component({
   selector: 'app-root',
@@ -20,14 +21,16 @@ import * as fromRoot from '../../store';
 })
 export class AppComponent implements OnInit {
   public identityBar$: Observable<string[]>;
-  public modalData$: Observable<{isVisible?: boolean; countdown?: string}>;
+  public modalData$: Observable<{ isVisible?: boolean; countdown?: string }>;
   public mainContentId = 'content';
 
   constructor(
     private readonly store: Store<fromRoot.State>,
     private readonly googleAnalyticsService: GoogleAnalyticsService,
     private readonly idleService: ManageSessionServices,
+    @Inject(ENVIRONMENT_CONFIG) private readonly environmentConfig: EnvironmentConfig,
     private readonly environmentService: EnvironmentService,
+    private readonly featureService: FeatureToggleService,
     private readonly roleService: RoleService,
     private readonly cookieService: CookieService,
     private readonly router: Router,
@@ -48,6 +51,8 @@ export class AppComponent implements OnInit {
         this.roleService.roles = AppUtils.getRoles(encodedRoles);
       }
     });
+
+    this.featureService.initialize({ anonymous: true }, this.environmentConfig.launchDarklyClientId);
 
     this.googleAnalyticsService.init(config.googleAnalyticsKey);
     this.modalData$ = this.store.pipe(select(fromRoot.getModalSessionData));

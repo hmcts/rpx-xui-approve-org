@@ -9,7 +9,7 @@ export const environment = {
   googleAnalyticsKey: 'UA-124734893-6',
   serviceDeskEmail: 'DCD-ITServiceDesk@hmcts.net',
   serviceDeskTel: '0300 3030686',
-  singleOrgUrl: 'api/organisations?organisationId=',
+  singleOrgUrl: 'api/organisations',
   organisationUsersUrl: 'api/organisations?usersOrgId=',
   organisationUsersUrlWithoutRole: 'api/allUserListWithoutRoles?usersOrgId=',
   orgActiveUrl: 'api/organisations?status=ACTIVE',

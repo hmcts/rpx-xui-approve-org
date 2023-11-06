@@ -74,3 +74,4 @@ stryker.log
 !.yarn/sdks
 !.yarn/versions
 /.angular/
+src/coverage/*
