@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from '@hmcts/rpx-xui-common-lib';
+import { FeatureToggleService, User } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Observable, of, Subscription } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { UsersService } from 'src/org-manager/services';
+import { AppConstants } from '../../../app/app.constants';
+import { UsersService } from '../../../org-manager/services';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
@@ -31,6 +32,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationDeletable = false;
   public currentPageNumber: number = 1;
   public pageTotalSize: number;
+  public newRegisterOrg = false;
   private getShowOrgDetailsSubscription: Subscription;
   private readonly getAllLoadedSubscription: Subscription;
   private readonly getOrganisationDeletableSubscription: Subscription;
@@ -43,7 +45,8 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     public readonly pbaAccountDetails: PbaAccountDetails,
     private readonly userService: UsersService,
-    private readonly organisationService: OrganisationService) {
+    private readonly organisationService: OrganisationService,
+    private readonly featureToggleService: FeatureToggleService) {
     this.route.params.subscribe((params) => {
       this.orgId = params.orgId ? params.orgId : '';
     });
@@ -54,58 +57,59 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     if (this.isXuiApproverUserdata) {
       this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe((value) => this.showUsers = value);
     }
+    this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.newRegisterOrg, false).subscribe((newRegisterOrgFeature) => {
+      this.newRegisterOrg = newRegisterOrgFeature;
+      this.organisationService.getSingleOrganisation({ id: this.orgId, version: newRegisterOrgFeature ? 'v2' : 'v1' })
+        .pipe(take(1), map((apiOrg) => AppUtils.mapOrganisation(apiOrg)))
+        .subscribe((organisationVM) => {
+          this.organisationId = organisationVM.organisationId;
+          this.organisationAdminEmail = organisationVM.adminEmail;
+          this.showUserNavigation = organisationVM.status === 'ACTIVE' ? true : false;
 
-    this.organisationService.getSingleOrganisation({ id: this.orgId })
-      .pipe(take(1), map((apiOrg) => AppUtils.mapOrganisation(apiOrg)))
-      .subscribe((organisationVM) => {
-        this.organisationId = organisationVM.organisationId;
-        this.organisationAdminEmail = organisationVM.adminEmail;
-        this.showUserNavigation = organisationVM.status === 'ACTIVE' ? true : false;
-
-        if (organisationVM.status === 'ACTIVE') {
-          this.isActiveOrg = true;
-          if (this.isXuiApproverUserdata) {
-            this.showUserNavigation = true;
-            this.store.dispatch(new fromStore.LoadOrganisationUsers({ orgId: this.organisationId, pageNo: this.currentPageNumber - 1 }));
+          if (organisationVM.status === 'ACTIVE') {
+            this.isActiveOrg = true;
+            if (this.isXuiApproverUserdata) {
+              this.showUserNavigation = true;
+              this.store.dispatch(new fromStore.LoadOrganisationUsers({ orgId: this.organisationId, pageNo: this.currentPageNumber - 1 }));
+            }
+            this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe((value) => this.organisationDeletable = value);
           }
-          this.organisationService.getOrganisationDeletableStatus(this.organisationId).subscribe((value) => this.organisationDeletable = value);
-        }
 
-        let ids: string;
+          let ids: string;
 
-        if (organisationVM.pendingPaymentAccount && organisationVM.pendingPaymentAccount.length) {
-          organisationVM.pendingPaymentAccount.forEach((pbaNumber) => {
-            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
-          });
-          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe((accountResponse) => {
-            organisationVM.accountDetails = accountResponse;
-          });
-        } else if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
-          organisationVM.pbaNumber.forEach((pbaNumber) => {
-            ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
-          });
-          this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe((accountResponse) => {
-            organisationVM.accountDetails = accountResponse;
-          });
-        }
+          if (organisationVM.pendingPaymentAccount && organisationVM.pendingPaymentAccount.length) {
+            organisationVM.pendingPaymentAccount.forEach((pbaNumber) => {
+              ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+            });
+            this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe((accountResponse) => {
+              organisationVM.accountDetails = accountResponse;
+            });
+          } else if (organisationVM.pbaNumber && organisationVM.pbaNumber.length) {
+            organisationVM.pbaNumber.forEach((pbaNumber) => {
+              ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
+            });
+            this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe((accountResponse) => {
+              organisationVM.accountDetails = accountResponse;
+            });
+          }
 
-        if (organisationVM.status === 'ACTIVE' && organisationVM.organisationId) {
-          try {
-            this.getAllUsers(organisationVM.organisationId);
-            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId, this.currentPageNumber - 1).pipe(
-              map((data) => {
-                const orgUserListModel = {
-                  users: AppUtils.mapUsers(data.users),
-                  isError: false
-                } as OrganisationUserListModel;
-                return orgUserListModel;
-              }));
-            // eslint-disable-next-line no-empty
-          } catch (error) {}
-        }
-
-        this.orgs$ = of(organisationVM);
-      });
+          if (organisationVM.status === 'ACTIVE' && organisationVM.organisationId) {
+            try {
+              this.getAllUsers(organisationVM.organisationId);
+              this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId, this.currentPageNumber - 1).pipe(
+                map((data) => {
+                  const orgUserListModel = {
+                    users: AppUtils.mapUsers(data.users),
+                    isError: false
+                  } as OrganisationUserListModel;
+                  return orgUserListModel;
+                }));
+              // eslint-disable-next-line no-empty
+            } catch (error) {}
+          }
+          this.orgs$ = of(organisationVM);
+        });
+    });
   }
 
   private getAllUsers(orgId: string) {
