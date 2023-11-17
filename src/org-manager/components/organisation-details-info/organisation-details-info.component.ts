@@ -23,8 +23,6 @@ export class OrganisationDetailsInfoComponent implements OnInit {
   public errorMessage: ErrorMessage;
   public regulatorType = RegulatorType;
   public regulatoryTypeEnum = RegulatoryType;
-  // TODO: Remove below when API available
-  public serviceToAccess: string;
   public companyRegistrationNumber: string;
   public organisationType: string;
   public regulators: Regulator[];

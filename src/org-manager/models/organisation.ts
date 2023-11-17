@@ -88,6 +88,7 @@ export interface Organisation {
   companyRegistrationNumber?: string;
   regulators?: Regulator[];
   individualRegulators?: Regulator[];
+  orgAttributes?: {key: string, value: string}[];
 }
 
 export class OrganisationVM {
@@ -112,7 +113,7 @@ export class OrganisationVM {
   public accountDetails?: object;
   public dateReceived?: string;
   public dateApproved?: string;
-  public serviceToAccess?: string;
+  public orgAttributes?: string[];
   public organisationType?: string;
   public companyRegistrationNumber?: string;
   public regulators?: Regulator[];
