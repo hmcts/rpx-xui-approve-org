@@ -113,7 +113,7 @@ export class OrganisationVM {
   public accountDetails?: object;
   public dateReceived?: string;
   public dateApproved?: string;
-  public orgAttributes?: string[];
+  public servicesToAccess?: {key: string, value: string}[];
   public organisationType?: string;
   public companyRegistrationNumber?: string;
   public regulators?: Regulator[];

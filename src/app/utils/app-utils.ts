@@ -29,7 +29,7 @@ export class AppUtils {
     organisationVm.companyRegistrationNumber = apiOrg.companyNumber;
     organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;
-    organisationVm.orgAttributes = apiOrg.orgAttributes?.map((attribute) => attribute.value);
+    organisationVm.servicesToAccess = apiOrg.orgAttributes;
     organisationVm.organisationId = apiOrg.organisationIdentifier;
     organisationVm.view = 'View';
     organisationVm.status = apiOrg.status;
@@ -42,6 +42,7 @@ export class AppUtils {
       organisationVm.county = apiOrg.contactInformation[0].county;
     }
     organisationVm.sraId = apiOrg.sraId;
+    organisationVm.servicesToAccess = apiOrg.orgAttributes;
     if (apiOrg.dateReceived){
       organisationVm.dateReceived = apiOrg.dateReceived;
     }
@@ -73,7 +74,8 @@ export class AppUtils {
         status: 'ACTIVE',
         name: org.name,
         paymentAccount: org.pbaNumber,
-        pendingPaymentAccount: org.pendingPaymentAccount
+        pendingPaymentAccount: org.pendingPaymentAccount,
+        orgAttributes: org.servicesToAccess
       };
       organisations.push(organisation);
     });
