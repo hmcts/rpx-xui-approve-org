@@ -23,8 +23,7 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   public errorMessage: ErrorMessage;
   public regulatorType = RegulatorType;
   public regulatoryTypeEnum = RegulatoryType;
-  // TODO: Remove below when API available
-  public serviceList: string = '';
+  public serviceList: string[];
   public companyRegistrationNumber: string;
   public organisationType: string;
   public regulators: Regulator[];
@@ -68,10 +67,10 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
     if (!this.org.servicesToAccess || this.org.servicesToAccess.length === 0) {
       return;
     }
-    this.serviceList = this.org.servicesToAccess[0].value;
-    for (let i = 1; i < this.org.servicesToAccess.length; i++) {
-      this.serviceList = this.serviceList.concat(`, ${this.org.servicesToAccess[i].value}`);
-    }
+    this.serviceList = [];
+    this.org.servicesToAccess.forEach((services) => {
+      this.serviceList.push(services.value);
+    });
   }
 
   public onSubmit(): void {

@@ -29,6 +29,7 @@ export class AppUtils {
     organisationVm.companyRegistrationNumber = apiOrg.companyNumber;
     organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;
+    organisationVm.servicesToAccess = apiOrg.orgAttributes;
     organisationVm.organisationId = apiOrg.organisationIdentifier;
     organisationVm.view = 'View';
     organisationVm.status = apiOrg.status;

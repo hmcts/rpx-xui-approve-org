@@ -88,7 +88,7 @@ export interface Organisation {
   companyRegistrationNumber?: string;
   regulators?: Regulator[];
   individualRegulators?: Regulator[];
-  orgAttributes: {key: string, value: string}[];
+  orgAttributes?: {key: string, value: string}[];
 }
 
 export class OrganisationVM {
