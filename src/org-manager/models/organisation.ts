@@ -113,9 +113,9 @@ export class OrganisationVM {
   public accountDetails?: object;
   public dateReceived?: string;
   public dateApproved?: string;
-  public servicesToAccess?: {key: string, value: string}[];
-  public organisationType?: string;
-  public companyRegistrationNumber?: string;
+  public orgAttributes?: {key: string, value: string}[];
+  public orgType?: string;
+  public companyNumber?: string;
   public regulators?: Regulator[];
   public individualRegulators?: Regulator[];
 }

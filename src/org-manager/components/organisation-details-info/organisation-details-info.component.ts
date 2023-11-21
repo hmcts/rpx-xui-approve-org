@@ -23,10 +23,9 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   public errorMessage: ErrorMessage;
   public regulatorType = RegulatorType;
   public regulatoryTypeEnum = RegulatoryType;
-  // TODO: Remove below when API available
-  public serviceList: string = '';
-  public companyRegistrationNumber: string;
-  public organisationType: string;
+  public services: string = '';
+  public companyNumber: string;
+  public orgType: string;
   public regulators: Regulator[];
   public individualRegulators: Regulator[];
 
@@ -63,14 +62,26 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   private setOrganisationDisplay(): void {
     this.org.firstName = this.org.admin.split(' ')[0];
     this.org.lastName = this.org.admin.split(' ')[1];
-    this.companyRegistrationNumber = this.org.companyRegistrationNumber;
-    this.organisationType = this.org.organisationType;
-    if (!this.org.servicesToAccess || this.org.servicesToAccess.length === 0) {
+    this.companyNumber = this.org.companyNumber;
+    this.orgType = this.org.orgType;
+    if (!this.org.orgAttributes || this.org.orgAttributes.length === 0) {
       return;
     }
-    this.serviceList = this.org.servicesToAccess[0].value;
-    for (let i = 1; i < this.org.servicesToAccess.length; i++) {
-      this.serviceList = this.serviceList.concat(`, ${this.org.servicesToAccess[i].value}`);
+    for (let i = 0; i < this.org.orgAttributes.length; i++) {
+      const thisKey = this.org.orgAttributes[i].key;
+      if (!thisKey.includes('regulators') && !thisKey.includes('individualRegulators')) {
+        this.services = i === 0 ? this.org.orgAttributes[i].value : this.services.concat(`, ${this.org.orgAttributes[i].value}`);
+      }
+    }
+    this.regulators = [];
+    this.individualRegulators = [];
+    const regulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('regulators'));
+    const individualRegulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('individualRegulators'));
+    for (let i = 0; i < regulatorList.length; i++) {
+      this.regulators.push(JSON.parse(regulatorList[i].value));
+    }
+    for (let i = 0; i < individualRegulatorList.length; i++) {
+      this.individualRegulators.push(JSON.parse(individualRegulatorList[i].value));
     }
   }
 

@@ -25,8 +25,8 @@ export class AppUtils {
       organisationVm.adminEmail = apiOrg.superUser.email;
       organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
     }
-    organisationVm.organisationType = apiOrg.orgType;
-    organisationVm.companyRegistrationNumber = apiOrg.companyNumber;
+    organisationVm.orgType = apiOrg.orgType;
+    organisationVm.companyNumber = apiOrg.companyNumber;
     organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;
     organisationVm.organisationId = apiOrg.organisationIdentifier;
@@ -41,7 +41,7 @@ export class AppUtils {
       organisationVm.county = apiOrg.contactInformation[0].county;
     }
     organisationVm.sraId = apiOrg.sraId;
-    organisationVm.servicesToAccess = apiOrg.orgAttributes;
+    organisationVm.orgAttributes = apiOrg.orgAttributes;
     if (apiOrg.dateReceived){
       organisationVm.dateReceived = apiOrg.dateReceived;
     }
@@ -74,7 +74,7 @@ export class AppUtils {
         name: org.name,
         paymentAccount: org.pbaNumber,
         pendingPaymentAccount: org.pendingPaymentAccount,
-        orgAttributes: org.servicesToAccess
+        orgAttributes: org.orgAttributes
       };
       organisations.push(organisation);
     });
