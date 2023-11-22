@@ -23,9 +23,9 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   public errorMessage: ErrorMessage;
   public regulatorType = RegulatorType;
   public regulatoryTypeEnum = RegulatoryType;
-  public services: string = '';
   public companyNumber: string;
   public orgType: string;
+  public serviceList: string[];
   public regulators: Regulator[];
   public individualRegulators: Regulator[];
 
@@ -67,12 +67,6 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
     if (!this.org.orgAttributes || this.org.orgAttributes.length === 0) {
       return;
     }
-    for (let i = 0; i < this.org.orgAttributes.length; i++) {
-      const thisKey = this.org.orgAttributes[i].key;
-      if (!thisKey.includes('regulators') && !thisKey.includes('individualRegulators')) {
-        this.services = i === 0 ? this.org.orgAttributes[i].value : this.services.concat(`, ${this.org.orgAttributes[i].value}`);
-      }
-    }
     this.regulators = [];
     this.individualRegulators = [];
     const regulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('regulators'));
@@ -83,6 +77,13 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
     for (let i = 0; i < individualRegulatorList.length; i++) {
       this.individualRegulators.push(JSON.parse(individualRegulatorList[i].value));
     }
+    this.serviceList = [];
+    this.org.orgAttributes.forEach((services) => {
+      if (!services.key.includes('regulators') && !services.key.includes('individualRegulators')) {
+        this.serviceList.push(services.value);
+      }
+      this.serviceList.push(services.value);
+    });
   }
 
   public onSubmit(): void {

@@ -69,7 +69,9 @@
             Service to access
           </dt>
           <dd class="govuk-summary-list__value">
-            {{services}}
+            <div *ngFor="let service of serviceList">
+              {{service}}
+            </div>
           </dd>
           <dd class="govuk-summary-list__actions">
           </dd>
