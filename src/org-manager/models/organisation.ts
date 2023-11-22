@@ -85,7 +85,6 @@ export interface Organisation {
   dateReceived?: string;
   dateApproved?: string;
   orgType?: string;
-  companyRegistrationNumber?: string;
   regulators?: Regulator[];
   individualRegulators?: Regulator[];
   orgAttributes?: {key: string, value: string}[];

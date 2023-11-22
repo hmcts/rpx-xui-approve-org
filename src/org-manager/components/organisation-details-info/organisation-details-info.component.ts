@@ -82,7 +82,6 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
       if (!services.key.includes('regulators') && !services.key.includes('individualRegulators')) {
         this.serviceList.push(services.value);
       }
-      this.serviceList.push(services.value);
     });
   }
 
