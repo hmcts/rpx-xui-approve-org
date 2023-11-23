@@ -71,12 +71,12 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
     this.individualRegulators = [];
     const regulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('regulators'));
     const individualRegulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('individualRegulators'));
-    for (let i = 0; i < regulatorList.length; i++) {
-      this.regulators.push(JSON.parse(regulatorList[i].value));
-    }
-    for (let i = 0; i < individualRegulatorList.length; i++) {
-      this.individualRegulators.push(JSON.parse(individualRegulatorList[i].value));
-    }
+    regulatorList.map((regulator) => {
+      this.regulators.push(JSON.parse(regulator.value));
+    });
+    individualRegulatorList.map((regulator) => {
+      this.individualRegulators.push(JSON.parse(regulator.value));
+    });
     this.serviceList = [];
     this.org.orgAttributes.forEach((services) => {
       if (!services.key.includes('regulators') && !services.key.includes('individualRegulators')) {
