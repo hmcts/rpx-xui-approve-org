@@ -23,9 +23,9 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   public errorMessage: ErrorMessage;
   public regulatorType = RegulatorType;
   public regulatoryTypeEnum = RegulatoryType;
+  public companyNumber: string;
+  public orgType: string;
   public serviceList: string[];
-  public companyRegistrationNumber: string;
-  public organisationType: string;
   public regulators: Regulator[];
   public individualRegulators: Regulator[];
 
@@ -62,14 +62,26 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   private setOrganisationDisplay(): void {
     this.org.firstName = this.org.admin.split(' ')[0];
     this.org.lastName = this.org.admin.split(' ')[1];
-    this.companyRegistrationNumber = this.org.companyRegistrationNumber;
-    this.organisationType = this.org.organisationType;
-    if (!this.org.servicesToAccess || this.org.servicesToAccess.length === 0) {
+    this.companyNumber = this.org.companyNumber;
+    this.orgType = this.org.orgType;
+    if (!this.org.orgAttributes || this.org.orgAttributes.length === 0) {
       return;
     }
+    this.regulators = [];
+    this.individualRegulators = [];
+    const regulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('regulators'));
+    const individualRegulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('individualRegulators'));
+    regulatorList.map((regulator) => {
+      this.regulators.push(JSON.parse(regulator.value));
+    });
+    individualRegulatorList.map((regulator) => {
+      this.individualRegulators.push(JSON.parse(regulator.value));
+    });
     this.serviceList = [];
-    this.org.servicesToAccess.forEach((services) => {
-      this.serviceList.push(services.value);
+    this.org.orgAttributes.forEach((services) => {
+      if (!services.key.includes('regulators') && !services.key.includes('individualRegulators')) {
+        this.serviceList.push(services.value);
+      }
     });
   }
 
