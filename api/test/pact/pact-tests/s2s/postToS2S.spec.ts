@@ -1,67 +1,64 @@
-import { postLease } from '../../../pactUtil';
+import { expect } from 'chai';
+import { S2SResponse } from '../../../pactFixtures';
+import { postS2SLease } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
-const { string } = Matchers;
-
-const s2sResponseSecret = 'someMicroServiceToken';
+import { Matchers } from '@pact-foundation/pact';
+const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 's2s_auth', port: 8000 });
 
-const payload = {
-  'microservice': 'rpx_xui_approve-org',
-  'oneTimePassword': '784467'
-};
+describe('S2S Auth API', () => {
+  describe('post S2S lease', () => {
+    const mockRequest = {
+      microservice: 'xui-webapp', oneTimePassword: 'exPassword'
+    };
 
-describe('s2s API lease', async () => {
-  before(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-  });
+    const mockResponse = {
+      token: somethingLike('ABCDEF123')
+    };
 
-  describe('POST  /lease', () => {
     before(async () => {
       await pactSetUp.provider.setup();
       const interaction = {
-        state: 'microservice with valid credentials',
-        uponReceiving: 'a request for a token for a microservice',
+        state: 'Generate S2S token',
+        uponReceiving: 'The url, the password and microservice',
         withRequest: {
           method: 'POST',
-          path: '/lease',
-          body: payload,
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json;charset=utf-8',
+            'ServiceAuthorization': 'ServiceAuthToken'
+          },
+          path: '/lease',
+          body: mockRequest
         },
         willRespondWith: {
-          status: 200,
           headers: {
-            'Content-Type': 'text/plain;charset=ISO-8859-1'
+            'Content-Type': 'application/json'
           },
-          body: string(s2sResponseSecret)
+          status: 200,
+          body: mockResponse
         }
       };
       // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      pactSetUp.provider.addInteraction(interaction).then(() => {});
+      pactSetUp.provider.addInteraction(interaction);
     });
 
-    it('Returns the token from S2S Service', async () => {
-      const taskUrl = `${pactSetUp.provider.mockService.baseUrl}/lease  `;
-      const response = postLease(taskUrl, payload);
-
-      response.then((axiosResponse) => {
-        try {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const idamResponse: string = axiosResponse.data;
-        } catch (e) {
-          console.log('error occurred in asserting response...' + e);
-        }
-      }).then(() => {
+    it('returns the correct response', async () => {
+      const s2sUrl: string = `${pactSetUp.provider.mockService.baseUrl}/lease`;
+      try {
+        const resp = await postS2SLease(s2sUrl, mockRequest);
+        assertResponse(resp.data);
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
-      }).finally(() => {
+      } catch (e) {
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
-      });
+        throw new Error(e);
+      }
     });
   });
 });
+
+function assertResponse(dto: S2SResponse) {
+  expect(dto.token).to.be.equal('ABCDEF123');
+}
