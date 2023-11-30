@@ -36,6 +36,9 @@ export async function generatePOSTAPIRequest(method, subURL, payload) {
 
     // console.log('OPTIONS: ', method, mainURL + subURL, options);
     const response = await fetch(url, options);
+    console.log('************** Response  **********************')
+    console.log(response)
+    console.log('************************************')
     const data = await response.json();
     const headers = response.headers;
     return {
