@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService, User } from '@hmcts/rpx-xui-common-lib';
-import { select, Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
+import { Store, select } from '@ngrx/store';
+import { Observable, Subscription, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
-import { UsersService } from '../../../org-manager/services';
 import { AppUtils } from '../../../app/utils/app-utils';
+import { UsersService } from '../../../org-manager/services';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services/organisation.service';
