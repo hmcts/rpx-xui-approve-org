@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { OrganisationVM, Regulator } from '../../models/organisation';
 import { RegulatorType, RegulatoryType } from '../../models/regulator-type.enum';
@@ -11,7 +11,7 @@ import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './mo
   selector: 'app-org-details-info',
   templateUrl: './organisation-details-info.component.html'
 })
-export class OrganisationDetailsInfoComponent implements OnInit {
+export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   @Input() public org: OrganisationVM;
   @Input() public orgDeletable: boolean;
   @Output() public approveEvent: EventEmitter<OrganisationVM> = new EventEmitter();
@@ -23,10 +23,9 @@ export class OrganisationDetailsInfoComponent implements OnInit {
   public errorMessage: ErrorMessage;
   public regulatorType = RegulatorType;
   public regulatoryTypeEnum = RegulatoryType;
-  // TODO: Remove below when API available
-  public serviceToAccess: string;
-  public companyRegistrationNumber: string;
-  public organisationType: string;
+  public companyNumber: string;
+  public orgType: string;
+  public serviceList: string[];
   public regulators: Regulator[];
   public individualRegulators: Regulator[];
 
@@ -53,10 +52,37 @@ export class OrganisationDetailsInfoComponent implements OnInit {
     this.formGroup = this.fb.group({
       radioSelected: new FormControl(null, Validators.required)
     });
+    this.setOrganisationDisplay();
+  }
+
+  public ngOnChanges(): void {
+    this.setOrganisationDisplay();
+  }
+
+  private setOrganisationDisplay(): void {
     this.org.firstName = this.org.admin.split(' ')[0];
     this.org.lastName = this.org.admin.split(' ')[1];
-    this.companyRegistrationNumber = this.org.companyRegistrationNumber;
-    this.organisationType = this.org.organisationType;
+    this.companyNumber = this.org.companyNumber;
+    this.orgType = this.org.orgType;
+    if (!this.org.orgAttributes || this.org.orgAttributes.length === 0) {
+      return;
+    }
+    this.regulators = [];
+    this.individualRegulators = [];
+    const regulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('regulators'));
+    const individualRegulatorList = this.org.orgAttributes.filter((orgAttribute) => orgAttribute.key.includes('individualRegulators'));
+    regulatorList.map((regulator) => {
+      this.regulators.push(JSON.parse(regulator.value));
+    });
+    individualRegulatorList.map((regulator) => {
+      this.individualRegulators.push(JSON.parse(regulator.value));
+    });
+    this.serviceList = [];
+    this.org.orgAttributes.forEach((services) => {
+      if (!services.key.includes('regulators') && !services.key.includes('individualRegulators')) {
+        this.serviceList.push(services.value);
+      }
+    });
   }
 
   public onSubmit(): void {

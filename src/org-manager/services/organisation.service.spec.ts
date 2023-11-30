@@ -38,7 +38,8 @@ describe('OrganisationService', () => {
     status: 'string;',
     name: 'string;',
     pendingPaymentAccount: [{}],
-    paymentAccount: [{}]
+    paymentAccount: [{}],
+    orgAttributes: [{ key: 'AAA7', value: 'Damages' }]
   };
 
   beforeEach(() => {
