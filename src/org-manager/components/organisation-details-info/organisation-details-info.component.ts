@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { LovRefDataModel } from '../../../shared/models/lovRefData.model';
 import { OrganisationVM, Regulator } from '../../models/organisation';
 import { RegulatorType, RegulatoryType } from '../../models/regulator-type.enum';
 import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './models/organisation-details';
@@ -14,6 +15,7 @@ import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './mo
 export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   @Input() public org: OrganisationVM;
   @Input() public orgDeletable: boolean;
+  @Input() public orgTypes: LovRefDataModel[];
   @Output() public approveEvent: EventEmitter<OrganisationVM> = new EventEmitter();
   @Output() public deleteEvent: EventEmitter<OrganisationVM> = new EventEmitter();
   @Output() public reviewEvent: EventEmitter<OrganisationVM> = new EventEmitter();
@@ -25,6 +27,7 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   public regulatoryTypeEnum = RegulatoryType;
   public companyNumber: string;
   public orgType: string;
+  public orgTypeDescription: string;
   public serviceList: string[];
   public regulators: Regulator[];
   public individualRegulators: Regulator[];
@@ -64,6 +67,9 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
     this.org.lastName = this.org.admin.split(' ')[1];
     this.companyNumber = this.org.companyNumber;
     this.orgType = this.org.orgType;
+    if (this.orgTypes?.length > 0) {
+      this.setOrgTypeDescription();
+    }
     if (!this.org.orgAttributes || this.org.orgAttributes.length === 0) {
       return;
     }
@@ -112,6 +118,16 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
         this.reviewOrganisation(this.org);
         break;
     }
+  }
+
+  private setOrgTypeDescription(): void {
+    const nonOtherOrgType = this.orgTypes.find((orgType) => orgType.key === this.orgType);
+    this.orgTypeDescription = nonOtherOrgType ? nonOtherOrgType.value_en : `Other: ${this.getOrgTypeOther()}`;
+  }
+
+  private getOrgTypeOther(): string {
+    const otherOrgTypes = this.orgTypes.find((orgType) => orgType.key === 'OTHER');
+    return otherOrgTypes.child_nodes.find((orgType) => orgType.key === this.orgType).value_en;
   }
 
   public onChange(): void {

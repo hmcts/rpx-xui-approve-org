@@ -34,6 +34,7 @@ export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi';
 export const SERVICES_FEE_AND_PAY_PATH = 'services.feeAndPayApi';
 export const SERVICE_S2S_PATH = 'services.s2s';
 export const SERVICE_CASE_WORKER_PATH = 'services.caseworkerApi';
+export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
 
 export const SESSION_SECRET = 'sessionSecret';
 
