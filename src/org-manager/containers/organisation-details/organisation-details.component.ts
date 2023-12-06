@@ -40,7 +40,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   private getShowOrgDetailsSubscription: Subscription;
   private readonly getAllLoadedSubscription: Subscription;
   private readonly getOrganisationDeletableSubscription: Subscription;
-  private orgTypeSubscription: Subscription;
+  public orgTypeSubscription: Subscription;
   public orgId: string;
 
   constructor(
