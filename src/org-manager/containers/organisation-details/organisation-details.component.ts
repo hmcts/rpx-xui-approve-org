@@ -40,6 +40,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   private getShowOrgDetailsSubscription: Subscription;
   private readonly getAllLoadedSubscription: Subscription;
   private readonly getOrganisationDeletableSubscription: Subscription;
+  private orgTypeSubscription: Subscription;
   public orgId: string;
 
   constructor(
@@ -115,7 +116,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           this.orgs$ = of(organisationVM);
         });
       if (this.newRegisterOrg) {
-        this.lovRefDataService.getListOfValues(this.CATEGORY_ORGANISATION_TYPE, true).subscribe((orgTypes) => {
+        this.orgTypeSubscription = this.lovRefDataService.getListOfValues(this.CATEGORY_ORGANISATION_TYPE, true).subscribe((orgTypes) => {
           this.organisationTypes = orgTypes;
         });
       }
@@ -193,6 +194,10 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
     if (this.getOrganisationDeletableSubscription) {
       this.getOrganisationDeletableSubscription.unsubscribe();
+    }
+
+    if (this.orgTypeSubscription) {
+      this.orgTypeSubscription.unsubscribe();
     }
 
     // Update the "organisation deletable" status in the store manually to false (to avoid the "Delete" button being
