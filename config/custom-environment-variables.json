@@ -27,7 +27,10 @@
     "rdProfessionalApi": "RD_PROFESSIONAL_API_SERVICE",
     "feeAndPayApi": "FEE_AND_PAY_API",
     "s2s": "S2S_SERVICE",
-    "caseworkerApi": "CASE_WORKER_API_SERVICE"
+    "caseworkerApi": "CASE_WORKER_API_SERVICE",
+    "prd": {
+      "commondataApi": "SERVICES_PRD_COMMONDATA_API"
+    }
   },
   "userTimeoutInSeconds": "USER_TIMEOUT_IN_SECONDS",
   "iss": "ISS_SERVICE",
