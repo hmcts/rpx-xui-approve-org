@@ -7,7 +7,7 @@ import { ExuiCommonLibModule, FeatureToggleService, User } from '@hmcts/rpx-xui-
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../../org-manager/guards';
@@ -220,5 +220,22 @@ describe('OrganisationDetailsComponent', () => {
     component.pageChange(2);
     expect(component.currentPageNumber).toEqual(2);
     expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  describe('ngOnDestroy', () => {
+    it('should unsubscribe from observables when subscribed', () => {
+      component.orgTypeSubscription = new Observable().subscribe();
+      const componentOrgTypeSubscriptionUnsubscribeSpy = spyOn(component.orgTypeSubscription, 'unsubscribe');
+      component.ngOnDestroy();
+      expect(componentOrgTypeSubscriptionUnsubscribeSpy).toHaveBeenCalled();
+    });
+
+    it('should not unsubscribe from observables when not subscribed', () => {
+      component.orgTypeSubscription = new Observable().subscribe();
+      const componentOrgTypeSubscriptionUnsubscribeSpy = spyOn(component.orgTypeSubscription, 'unsubscribe');
+      component.orgTypeSubscription = undefined;
+      component.ngOnDestroy();
+      expect(componentOrgTypeSubscriptionUnsubscribeSpy).not.toHaveBeenCalled();
+    });
   });
 });

@@ -44,22 +44,12 @@
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
-        <div *ngIf="org.dxNumber[0]?.dxNumber" class="govuk-summary-list__row govuk-summary-list__row--no-border">
+        <div *ngIf="org.dxNumber[0]?.dxNumber" class="govuk-summary-list__row govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
             DX reference
           </dt>
           <dd class="govuk-summary-list__value">
-            {{org.dxNumber[0]?.dxNumber}}
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div *ngIf="org.dxNumber[0]?.dxExchange" class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <dt class="govuk-summary-list__key">
-            DX Exchange
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {{org.dxNumber[0]?.dxExchange}}
+            {{org.dxNumber[0]?.dxNumber}}<span *ngIf="org.dxNumber[0]?.dxExchange">, {{org.dxNumber[0]?.dxExchange}}</span>
           </dd>
           <dd class="govuk-summary-list__actions">
           </dd>
@@ -135,7 +125,7 @@
             Organisation type
           </dt>
           <dd class="govuk-summary-list__value">
-            {{orgType}}
+            {{orgTypeDescription}}
           </dd>
           <dd class="govuk-summary-list__actions">
           </dd>

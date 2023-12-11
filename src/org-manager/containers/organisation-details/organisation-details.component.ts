@@ -7,6 +7,8 @@ import { map, take } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UsersService } from '../../../org-manager/services';
+import { LovRefDataModel } from '../../../shared/models/lovRefData.model';
+import { LovRefDataService } from '../../../shared/services/lov-ref-data.service';
 import { UserApprovalGuard } from '../../guards/users-approval.guard';
 import { OrganisationUserListModel, OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services/organisation.service';
@@ -21,6 +23,7 @@ import * as fromStore from '../../store';
   templateUrl: './organisation-details.component.html'
 })
 export class OrganisationDetailsComponent implements OnInit, OnDestroy {
+  public readonly CATEGORY_ORGANISATION_TYPE = 'OrgType';
   public orgs$: Observable<OrganisationVM>;
   public userLists$: Observable<OrganisationUserListModel>;
   public showUsers = false;
@@ -33,9 +36,11 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public currentPageNumber: number = 1;
   public pageTotalSize: number;
   public newRegisterOrg = false;
+  public organisationTypes: LovRefDataModel[];
   private getShowOrgDetailsSubscription: Subscription;
   private readonly getAllLoadedSubscription: Subscription;
   private readonly getOrganisationDeletableSubscription: Subscription;
+  public orgTypeSubscription: Subscription;
   public orgId: string;
 
   constructor(
@@ -46,6 +51,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     public readonly pbaAccountDetails: PbaAccountDetails,
     private readonly userService: UsersService,
     private readonly organisationService: OrganisationService,
+    private readonly lovRefDataService: LovRefDataService,
     private readonly featureToggleService: FeatureToggleService) {
     this.route.params.subscribe((params) => {
       this.orgId = params.orgId ? params.orgId : '';
@@ -109,6 +115,11 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           }
           this.orgs$ = of(organisationVM);
         });
+      if (this.newRegisterOrg) {
+        this.orgTypeSubscription = this.lovRefDataService.getListOfValues(this.CATEGORY_ORGANISATION_TYPE, true).subscribe((orgTypes) => {
+          this.organisationTypes = orgTypes;
+        });
+      }
     });
   }
 
@@ -183,6 +194,10 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
     if (this.getOrganisationDeletableSubscription) {
       this.getOrganisationDeletableSubscription.unsubscribe();
+    }
+
+    if (this.orgTypeSubscription) {
+      this.orgTypeSubscription.unsubscribe();
     }
 
     // Update the "organisation deletable" status in the store manually to false (to avoid the "Delete" button being
