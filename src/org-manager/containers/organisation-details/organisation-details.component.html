@@ -49,7 +49,7 @@
             </ng-template>
           </ng-container>
           <ng-template #showOrgDetails>
-            <app-org-details-info *ngIf="newRegisterOrg" [org]="data.org" [orgDeletable]="organisationDeletable" (approveEvent)="approveOrganisation($event)"
+            <app-org-details-info *ngIf="newRegisterOrg" [org]="data.org" [orgDeletable]="organisationDeletable" [orgTypes]="organisationTypes" (approveEvent)="approveOrganisation($event)"
               (deleteEvent)="deleteOrganisation($event)" (reviewEvent)="reviewOrganisation($event)">
             </app-org-details-info>
             <app-org-details-info-old *ngIf="!newRegisterOrg" [org]="data.org" [orgDeletable]="organisationDeletable" (approveEvent)="approveOrganisation($event)"
