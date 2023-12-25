@@ -1,3 +1,4 @@
+@functional_enabled
 Feature: Search Organisation
 
     Background:

@@ -4,11 +4,24 @@ const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants'
 const browserWaits = require('../../support/customWaits');
 
 function OrganisationPage(){
-  this.statusBadge = element(by.css('.hmcts-badge'));
+
+  this.container = $('app-org-details-info')
   this.subNavigations = element(by.css('.hmcts-sub-navigation'));
   this.organisationDetailsTab = this.subNavigations.element(by.xpath('//app-org-details//a[contains(text(),"Organisation details")]'));
   this.usersTab = this.subNavigations.element(by.xpath('//app-org-details//a[contains(text(),"Users")]'));
+
+  this.statusBadge = element(by.css('.hmcts-badge'));
+  
   this.h1Header = element(by.css('#content h1'));
+
+  this.approveOptionLegend = $('.govuk-fieldset legend')
+  this.approveOption = element(by.xpath(`//div//label[contains(text(),'Approve it')]/../input`))
+  this.rejectOption = element(by.xpath(`//div//label[contains(text(),'Reject it')]/../input`))
+  this.placeUnderreviewOption = element(by.xpath(`//div//label[contains(text(),'Place registration under review pending further investigation')]/../input`))
+  this.submitButton = element(by.xpath(`//button[contains(text(),'Submit')]`))
+
+  this.deleteOrgButton = element(by.xpath(`//button[contains(text(),'Delete organisation')]`))
+
 
   this.organisationDetailsContainer = $('.govuk-check-your-answers');
 
@@ -37,6 +50,12 @@ function OrganisationPage(){
   this.clickOrganisationdetaulsTab = async function () {
     await this.organisationDetailsTab.click();
   };
+
+  this.getOrgDetailsFieldValue = async function(field, value){
+    const fieldWithValue = element(by.xpath(`//div[contains(@class,'govuk-summary-list__row')]/dt[contains(text(),'${field}')]/../dd`))
+    const val = await fieldWithValue.getText();
+    return val;
+  }
 
   this.validateOrganisationDetailsDisplayed = async function(){
     expect(await this.h1Header.getText()).to.equal('Organisation details');

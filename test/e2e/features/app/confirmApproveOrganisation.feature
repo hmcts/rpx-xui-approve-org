@@ -1,3 +1,4 @@
+@functional_enabled @functional_debug
 Feature: Confirmation Screen
 
   Background:
