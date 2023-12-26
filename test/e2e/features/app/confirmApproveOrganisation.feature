@@ -1,16 +1,22 @@
 @functional_enabled @functional_debug
-Feature: Confirmation Screen
+Feature: Organisation Decison workflow
 
   Background:
     When I navigate to EUI Approve Organisation Url
     Given I am logged into approve organisation with HMCTS admin
     Then I should be redirected to approve organisation dashboard page
-    Then I search with organisation name and validate results
+    When I search for organisation with input "test"
 
 
-  Scenario: Verify the confirmation screen of Approve Organisation
+  Scenario Outline: Verify the confirmation screen of Approve Organisation
     Then I click first organization view link
-    Then I Select the Organisation and click Activate
-    Then I approve the selected Organisations button
-    Then I see the Confirmation screen of Organisations
-    Then I click to Back to Organisations link
+    Then I validate pending organisation details page
+    When I select option "<selectOption>" for pending organisation and submit
+    Then I see pending organisation decision "<decision>" confirm page
+    When I click confirm in pending organisation decision confirm page
+    Then I see organisations list page with messge banner ""
+    Examples:
+      | selectOption       | decision |bannerMessage|
+      | Approve it | Approve the organisation | Registration approved |
+      | Reject it | Reject the registration | Registration rejected |
+      | Place registration under review pending further investigation | Put the registration on hold |  |

@@ -1,4 +1,4 @@
-@functional_enabled
+
 Feature: Verify access to User tab for prd admin users
     Scenario: Verify access to active Organisation User tab for approver user
         When I navigate to EUI Approve Organisation Url
