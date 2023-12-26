@@ -5,7 +5,6 @@ const sessionService = require('./index')
 const userApiData = require('../userApiData')
 const mockApiData = require('../mockApiData')
 
-const roleAssignmentService = require('../roleAssignments/index')
 
 router.get('/session/files', (req, res) => {
     res.send(sessionService.getSessionFiles())
@@ -32,13 +31,6 @@ router.post('/session/user/info', async (req, res) => {
 
 
 
-
-router.post('/session/user/roleAssignments', async (req, res) => {
-    const newRoleAssignmentsInSession = await sessionService.updateAuthSessionWithRoleAssignments(req.body.auth, req.body.roleAssignments)
-    res.send(newRoleAssignmentsInSession)
-})
-
-
 router.post('/session/userApiData', async (req, res) => {
     await userApiData.setUserData(req.body.auth, req.body.apiMethod, req.body.apiResponse)
     res.send({ status: 'success' })
@@ -50,10 +42,6 @@ router.get('/session/userApiData', async (req, res) => {
 })
 
 
-router.post('/session/getUserRolesAndRoleAssignments', async (req, res) => {
-    const data = roleAssignmentService.getServiceUsersRolesAssignments(req.body.auth)
-    res.send(data)
-})
 
 router.post('/session/user/sessionData', async (req, res) => {
     res.send(userApiData.getUserSessionData(req.body.auth))

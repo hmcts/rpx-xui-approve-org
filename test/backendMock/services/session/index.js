@@ -5,7 +5,6 @@ const axios = require('axios')
 
 const session = require('./sampleSession.json')
 
-const roleAssignmentsService = require('../roleAssignments/index')
 
 class MockSessionService {
     constructor(mode) {
@@ -90,29 +89,7 @@ class MockSessionService {
         return authSessionFile;
     }
 
-    async waitForSessionWithRoleAssignments(auth) {
-
-        let counter = 0;
-        while (counter < 20) {
-            await sleepForSeconds(2)
-            const sessionFile = await this.getSessionFileAuth(auth);
-            let sessionJson = await fs.readFileSync(sessionFile, 'utf8');
-            sessionJson = JSON.parse(sessionJson);
-
-            if (sessionJson.roleAssignmentResponse) {
-                break;
-            } else if (counter > 15) {
-                throw ('Session not updated with actual role assignments')
-            }
-            counter++;
-        }
-
-
-
-    }
-
     async updateAuthSessionWithRoles(auth, roles) {
-        await this.waitForSessionWithRoleAssignments(auth)
         const sessionFile = await this.getSessionFileAuth(auth);
         let sessionJson = await fs.readFileSync(sessionFile);
 
@@ -124,7 +101,6 @@ class MockSessionService {
 
 
     async updateAuthSessionWithUserInfo(auth, userInfo) {
-        await this.waitForSessionWithRoleAssignments(auth)
         const sessionFile = await this.getSessionFileAuth(auth);
         let sessionJson = await fs.readFileSync(sessionFile);
 
@@ -132,29 +108,6 @@ class MockSessionService {
 
         sessionJson.passport.user.userinfo = userInfo;
         await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
-    }
-
-    async updateAuthSessionWithRoleAssignments(auth, roleAssignments) {
-        await this.waitForSessionWithRoleAssignments(auth)
-
-        const sessionFile = await this.getSessionFileAuth(auth);
-
-        roleAssignmentsService.serviceUsersRoleAssignments.push(...roleAssignments)
-        let sessionJson = await fs.readFileSync(sessionFile);
-
-        roleAssignmentsService.addRoleAssigmemntsToSession(auth,roleAssignments)
-        sessionJson = JSON.parse(sessionJson)
-        if (sessionJson.roleAssignmentResponse) {
-            sessionJson.roleAssignmentResponse.push(...roleAssignments)
-        } else {
-            sessionJson.roleAssignmentResponse = roleAssignments;
-        }
-
-        await fs.writeFileSync(sessionFile, JSON.stringify(sessionJson, null, 2), 'utf8');
-
-        sessionJson = await fs.readFileSync(sessionFile, 'utf-8');
-        sessionJson = JSON.parse(sessionJson)
-        return sessionJson.roleAssignmentResponse;
     }
 
     async getSessionRolesAndRoleAssignments(auth) {

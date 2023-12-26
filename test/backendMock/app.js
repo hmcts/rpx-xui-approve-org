@@ -12,6 +12,9 @@ const sessionRoutes = require('./services/session/routes')
 const idamOpenId = require('./services/idam/routes')
 
 const userApiData = require('./services/userApiData');
+
+const refDataRoutes = require('./services/refData/route')
+
 class MockApp {
 
     constructor() {
@@ -65,14 +68,10 @@ class MockApp {
         })
 
         app.use('/client', sessionRoutes)
-
         app.use('/', idamOpenId)
+
+        app.use('/refdata/internal', refDataRoutes)
        
-
-        app.get('/activity/cases/:caseId/activity', (req,res) => {
-            res.send({})
-        })
-
         // await this.stopServer();
         this.server = await app.listen(8080);
 
