@@ -44,7 +44,7 @@ const functional_output_dir = path.resolve(`${__dirname}/../../functional-output
 
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/cucumber-codecept-${testType}`)
 
-const tags = process.env.DEBUG ? 'functional_debug' : 'fullFunctional'
+const tags = process.env.DEBUG ? 'functional_debug' : 'functional_enabled'
 
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)^(?!.*@${pipelineBranch === 'preview' ? 'AAT_only' : 'preview_only'})`
 console.log(grepTags)
