@@ -14,7 +14,7 @@ describe('Delete Organisation', function () {
     MockApp.init();
   });
   afterEach(async function (done) {
-    await MockApp.stopServer();
+    // await MockApp.stopServer();
     done();
   });
 
@@ -24,10 +24,10 @@ describe('Delete Organisation', function () {
 
   ['PENDING', 'ACTIVE'].forEach((state) => {
     xit(state+' Org Delete registration request Page', async function () {
-      MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
-        res.send({ 'organisationDeletable': true });
-      });
-      await MockApp.startServer();
+      // MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
+      //   res.send({ 'organisationDeletable': true });
+      // });
+      // await MockApp.startServer();
       const actions = [];
 
       if (state === 'ACTIVE'){
@@ -50,10 +50,10 @@ describe('Delete Organisation', function () {
 
     // organisation-detail-component and  app-org-details-info page is changed so this test need to be modified
     xit(state+' Org Delete success page', async function () {
-      MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
-        res.send({ 'organisationDeletable': true });
-      });
-      await MockApp.startServer();
+      // MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
+      //   res.send({ 'organisationDeletable': true });
+      // });
+      // await MockApp.startServer();
       const actions = [];
       // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
       if (state === 'ACTIVE') {
@@ -96,42 +96,42 @@ describe('Delete Organisation', function () {
     actions.push(...PallyActions.waitForPageWithCssLocator('app-service-down h1'));
     // pending, organisation-detail-component and  app-org-details-info page is changed so this test may need to be modified for fix
     xit(state + ' Org Delete error 400 404 page', async function () {
-      MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
-        res.status(400).send('Organisation id is missing');
-      });
-      MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
-        res.send({ 'organisationDeletable': true });
-      });
-      await MockApp.startServer();
+      // MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
+      //   res.status(400).send('Organisation id is missing');
+      // });
+      // MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
+      //   res.send({ 'organisationDeletable': true });
+      // });
+      // await MockApp.startServer();
       await pa11ytest(this, actions);
     });
     // pending, organisation-detail-component and  app-org-details-info page is changed so this test may need to be modified for fix
     xit(state + ' Org Delete error 403 page', async function () {
-      MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
-        res.status(403).send({
-          apiError: 'Mock error message', apiStatusCode: 403,
-          message: 'handlePutOrganisationRoute error'
-        });
-      });
-      MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
-        res.send({ 'organisationDeletable': true });
-      });
-      await MockApp.startServer();
+      // MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
+      //   res.status(403).send({
+      //     apiError: 'Mock error message', apiStatusCode: 403,
+      //     message: 'handlePutOrganisationRoute error'
+      //   });
+      // });
+      // MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
+      //   res.send({ 'organisationDeletable': true });
+      // });
+      // await MockApp.startServer();
       await pa11ytest(this, actions);
     });
 
     // pending, organisation-detail-component and  app-org-details-info page is changed so this test may need to be modified for fix
     xit(state + ' Org Delete error page', async function () {
-      MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
-        res.status(500).send({
-          apiError: 'Mock error message', apiStatusCode: 500,
-          message: 'handlePutOrganisationRoute error'
-        });
-      });
-      MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
-        res.send({ 'organisationDeletable': true });
-      });
-      await MockApp.startServer();
+      // MockApp.onDelete('/api/organisations/:orgId', (req, res) => {
+      //   res.status(500).send({
+      //     apiError: 'Mock error message', apiStatusCode: 500,
+      //     message: 'handlePutOrganisationRoute error'
+      //   });
+      // });
+      // MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
+      //   res.send({ 'organisationDeletable': true });
+      // });
+      // await MockApp.startServer();
       await pa11ytest(this, actions);
     });
   });

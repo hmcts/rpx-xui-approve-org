@@ -7,8 +7,8 @@ function OrganisationPage(){
 
   this.container = $('app-org-details-info')
   this.subNavigations = element(by.css('.hmcts-sub-navigation'));
-  this.organisationDetailsTab = this.subNavigations.element(by.xpath('//app-org-details//a[contains(text(),"Organisation details")]'));
-  this.usersTab = this.subNavigations.element(by.xpath('//app-org-details//a[contains(text(),"Users")]'));
+  this.organisationDetailsTab = element(by.xpath('//app-org-details//a[contains(text(),"Organisation details")]'));
+  this.usersTab = element(by.xpath('//app-org-details//a[contains(text(),"Users")]'));
 
   this.statusBadge = element(by.css('.hmcts-badge'));
   
@@ -23,7 +23,7 @@ function OrganisationPage(){
   this.deleteOrgButton = element(by.xpath(`//button[contains(text(),'Delete organisation')]`))
 
 
-  this.organisationDetailsContainer = $('.govuk-check-your-answers');
+  this.organisationDetailsContainer = $('.govuk-summary-list');
 
   this.organisationDetailsFields = ['Name', 'Address'];
 

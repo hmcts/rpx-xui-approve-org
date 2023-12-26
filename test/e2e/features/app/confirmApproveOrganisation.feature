@@ -1,4 +1,4 @@
-@functional_enabled @functional_debug
+@functional_enabled
 Feature: Organisation Decison workflow
 
   Background:
@@ -14,7 +14,7 @@ Feature: Organisation Decison workflow
     When I select option "<selectOption>" for pending organisation and submit
     Then I see pending organisation decision "<decision>" confirm page
     When I click confirm in pending organisation decision confirm page
-    Then I see organisations list page with messge banner ""
+    Then I see organisations list page with messge banner "<bannerMessage>"
     Examples:
       | selectOption       | decision |bannerMessage|
       | Approve it | Approve the organisation | Registration approved |

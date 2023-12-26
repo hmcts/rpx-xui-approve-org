@@ -14,12 +14,12 @@ describe('Footer links', function () {
     MockApp.init();
   });
   afterEach(async function (done) {
-    await MockApp.stopServer();
+    // await MockApp.stopServer();
     done();
   });
 
   it('Accessibility Page', async function () {
-    await MockApp.startServer();
+    // await MockApp.startServer();
     const actions = [];
     // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'accessibility',));
@@ -28,7 +28,7 @@ describe('Footer links', function () {
   });
 
   it('terms and Conditions page', async function () {
-    await MockApp.startServer();
+    // await MockApp.startServer();
     const actions = [];
     // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'terms-and-conditions',));
@@ -37,7 +37,7 @@ describe('Footer links', function () {
   });
 
   it('Cookies Page', async function () {
-    await MockApp.startServer();
+    // await MockApp.startServer();
     const actions = [];
     // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'cookies',));
@@ -46,7 +46,7 @@ describe('Footer links', function () {
   });
 
   it('Privacy policy page', async function () {
-    await MockApp.startServer();
+    // await MockApp.startServer();
     const actions = [];
     // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'privacy-policy',));

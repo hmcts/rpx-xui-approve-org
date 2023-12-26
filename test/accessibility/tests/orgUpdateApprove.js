@@ -19,37 +19,47 @@ describe('Pa11y Accessibility tests', function () {
   });
 
   it('Pending oraganisations page', async function () {
-    await MockApp.startServer();
+    // await MockApp.startServer();
     const actions = [];
     // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
-    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'pending-organisations',));
+    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation/pending',));
     actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
     await pa11ytest(this, actions);
   });
 
   it('Active oraganisations page', async function () {
-    await MockApp.startServer();
+    // await MockApp.startServer();
     const actions = [];
     // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
-    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'active-organisation',));
+    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation/active',));
     actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
     await pa11ytest(this, actions);
   });
 
-  it('Pending Org Details Page: organisation-details/XXXX', async function () {
-    await MockApp.startServer();
-
+  it('Active oraganisation details page', async function () {
+    // await MockApp.startServer();
     const actions = [];
     // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
-    actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
-    actions.push(...PallyActions.clickElement('td>a'));
+    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/ACT123',));
     actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
-
     await pa11ytest(this, actions);
   });
+
+
+  it('Pending oraganisation details page', async function () {
+    // await MockApp.startServer();
+    const actions = [];
+    // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
+    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/PEN123',));
+    actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
+    await pa11ytest(this, actions);
+  });
+
+ 
+
 
   xit('Pending Org Confirm approval Page: /approve-organisations', async function () {
-    await MockApp.startServer();
+    // await MockApp.startServer();
 
     const actions = [];
     // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));

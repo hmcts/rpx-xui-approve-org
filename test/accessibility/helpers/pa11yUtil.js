@@ -75,7 +75,7 @@ async function pa11ytestRunner(test, actions, timeoutVal) {
   });
   const page = await browser.newPage();
   await page.setCookie(...cookies);
-  await page.goto('http://localhost:4200/');
+  await page.goto('http://localhost:3000/');
 
   let result;
   try {

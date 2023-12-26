@@ -29,7 +29,6 @@ async function loginattemptCheckAndRelogin(username, password, world){
         }
 
         console.log(err+' email field is still present with empty value indicating  Login page reloaded due to EUI-1856 : Login re attempt '+loginAttemptRetryCounter);
-        world.attach(err +' email field is still present with empty value indicating Login page reloaded due to EUI-1856 : Login re attempt '+loginAttemptRetryCounter);
         await loginPage.loginWithCredentials(username, password);
         loginAttemptRetryCounter++;
       }

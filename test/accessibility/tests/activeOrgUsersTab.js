@@ -14,19 +14,19 @@ describe('Pa11y Accessibility tests', function () {
     MockApp.init();
   });
   afterEach(async function (done) {
-    await MockApp.stopServer();
+    // await MockApp.stopServer();
     done();
   });
 
   it('Active Organisation with Users tab', async function () {
-    MockApp.onGet('/auth/isAuthenticated', (req, res) => {
-      res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
-      res.send(true);
-    });
-    await MockApp.startServer();
+    // MockApp.onGet('/auth/isAuthenticated', (req, res) => {
+    //   res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
+    //   res.send(true);
+    // });
+    // await MockApp.startServer();
 
     const actions = [];
-    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/FNTFJSY'));
+    actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/ACT123'));
     actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
     // actions.push(...PallyActions.clickElement('.hmcts-sub-navigation li:nth-of-type(2) a'));
 
@@ -36,11 +36,11 @@ describe('Pa11y Accessibility tests', function () {
   // becaouse of organisation-details page changed this E2E test need to updated , at the moment it prevents building so deactivated
   // when new e2e test is fixed then test can be activated
   xit('Active Organisation with Pending Users details page', async function () {
-    MockApp.onGet('/auth/isAuthenticated', (req, res) => {
-      res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
-      res.send(true);
-    });
-    await MockApp.startServer();
+    // MockApp.onGet('/auth/isAuthenticated', (req, res) => {
+    //   res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
+    //   res.send(true);
+    // });
+    // await MockApp.startServer();
 
     const actions = [];
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/FNTFJSY'));
@@ -55,11 +55,11 @@ describe('Pa11y Accessibility tests', function () {
 
   // becaouse of AO changes this e2e test should be updated , at this stage it s decativated till to e2e update
   xit('Active Organisation with Pending User invite user page', async function () {
-    MockApp.onGet('/auth/isAuthenticated', (req, res) => {
-      res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
-      res.send(true);
-    });
-    await MockApp.startServer();
+    // MockApp.onGet('/auth/isAuthenticated', (req, res) => {
+    //   res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
+    //   res.send(true);
+    // });
+    // await MockApp.startServer();
 
     const actions = [];
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/FNTFJSY'));
@@ -76,11 +76,11 @@ describe('Pa11y Accessibility tests', function () {
   });
 
   xit('Active Organisation with Pending User invite user Error', async function () {
-    MockApp.onGet('/auth/isAuthenticated', (req, res) => {
-      res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
-      res.send(true);
-    });
-    await MockApp.startServer();
+    // MockApp.onGet('/auth/isAuthenticated', (req, res) => {
+    //   res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
+    //   res.send(true);
+    // });
+    // await MockApp.startServer();
     const actions = [];
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/FNTFJSY'));
     actions.push(...PallyActions.waitForPageWithCssLocator('app-org-details-info'));
@@ -97,11 +97,11 @@ describe('Pa11y Accessibility tests', function () {
   });
 
   xit('Active Organisation with Pending User invite user Success', async function () {
-    MockApp.onGet('/auth/isAuthenticated', (req, res) => {
-      res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
-      res.send(true);
-    });
-    await MockApp.startServer();
+    // MockApp.onGet('/auth/isAuthenticated', (req, res) => {
+    //   res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
+    //   res.send(true);
+    // });
+    // await MockApp.startServer();
 
     const actions = [];
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/FNTFJSY'));
@@ -121,20 +121,20 @@ describe('Pa11y Accessibility tests', function () {
   });
 
   xit('Active Organisation with Pending User invite user error already invite', async function () {
-    MockApp.onGet('/auth/isAuthenticated', (req, res) => {
-      res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
-      res.send(true);
-    });
+    // MockApp.onGet('/auth/isAuthenticated', (req, res) => {
+    //   res.cookie('roles', 'j:["xui-approver-userdata", "prd-admin"]');
+    //   res.send(true);
+    // });
 
-    MockApp.onPost('/api/reinviteUser', (req, res) => {
-      res.status(429).send({
-        'apiError': '10 : The request was last made less than 60 minutes ago. Please try after some time',
-        'apiStatusCode': 429,
-        'message': '429 10 : The request was last made less than 60 minutes ago. Please try after some time'
-      });
-    });
+    // MockApp.onPost('/api/reinviteUser', (req, res) => {
+    //   res.status(429).send({
+    //     'apiError': '10 : The request was last made less than 60 minutes ago. Please try after some time',
+    //     'apiStatusCode': 429,
+    //     'message': '429 10 : The request was last made less than 60 minutes ago. Please try after some time'
+    //   });
+    // });
 
-    await MockApp.startServer();
+    // await MockApp.startServer();
 
     const actions = [];
     actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation-details/FNTFJSY'));
