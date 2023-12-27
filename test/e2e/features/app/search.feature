@@ -25,5 +25,6 @@ Feature: Organisations List page
         Examples:
             | Tab                  | Header               | SearchField | SearchInput |
             | New registrations | New registrations | Organisation | EXUI |
-            | Active organisations | Active organisations | Organisation | EXUI |
+            | Active organisations | Active organisations | Organisation | test |
+            | New registrations | New registrations | Address | SE15TY |
 

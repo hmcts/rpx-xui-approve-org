@@ -6,6 +6,8 @@ const browserWaits = require('../../support/customWaits');
 function OrganisationPage(){
 
   this.container = $('app-org-details-info')
+  this.backLink = $('.govuk-back-link')
+
   this.subNavigations = element(by.css('.hmcts-sub-navigation'));
   this.organisationDetailsTab = element(by.xpath('//app-org-details//a[contains(text(),"Organisation details")]'));
   this.usersTab = element(by.xpath('//app-org-details//a[contains(text(),"Users")]'));

@@ -17,6 +17,12 @@ Then('I click first organization view link', async function(){
   await organisationList.clickViewOnFirstOrganisation();
 });
 
+Then('I click last organization view link', async function () {
+  browser.sleep(LONG_DELAY);
+  // await organisationList.waitForOrgListToDisplay();
+  await organisationList.clickViewOnLastOrganisation();
+});
+
 Then('I Select the Organisation and click Activate', async function () {
   // await waitForElement(bannerPage.approveorgBanner);
   // await expect(bannerPage.approveorgBanner.isDisplayed()).to.be.true;

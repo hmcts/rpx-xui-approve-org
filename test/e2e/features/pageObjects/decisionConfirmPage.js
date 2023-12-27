@@ -4,7 +4,7 @@ class DecisionConformPage{
 
     constructor(){
         this.header = element(by.xpath(`//h1[contains(text(),'Confirm your decision')]`))
-
+        this.backLink = $('.govuk-back-link')
         this.orgName = element(by.xpath(`//dt[contains(text(),'Name')]/../dd`))
         this.decision = element(by.xpath(`//dt[contains(text(),'Decision')]/../dd`))
 

@@ -1,19 +1,18 @@
-@functional_enabled
+@functional_enabled @functional_debug
 Feature: Delete Organisation
 
   Background:
     When I navigate to EUI Approve Organisation Url
     Given I am logged into approve organisation with HMCTS admin
-    Then I should be redirected to approve organisation dashboard page
 
 
-@all_deprecated @fullfunctional_deprecated
   Scenario: Verify Delete active organisation
-
+    When I click sub navigation tab "New registrations" in organisation list page
+    Then I see Organisations list page with sub navigation page "New registrations"
     When I search for organisation with input "test"
     Then I validate search results field "Organisation" contains "test"
 
-    Then I click first organization view link
+    Then I click last organization view link
     Then I see organisation details page with registration status "PENDING"
 
     Then I validate pending organisation details page

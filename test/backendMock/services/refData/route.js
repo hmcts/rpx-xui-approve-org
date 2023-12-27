@@ -11,7 +11,9 @@ const userApiData = require('../userApiData')
 router.get('/v1/organisations', (req, res) => {
     const queryKeys = Object.keys(req.query)
     if (queryKeys.includes('status')){
+       
         res.header({ total_records: 500 }).send(service.getOrganisationsWithStatus(req.query.status, req.query.page, req.query.size))
+
     }else{
         res.send(service.getOrganisationWithStatus(req.query.id))
     }
@@ -21,7 +23,10 @@ router.get('/v1/organisations', (req, res) => {
 router.get('/v2/organisations', (req, res) => {
     const queryKeys = Object.keys(req.query)
     if (queryKeys.includes('status')) {
+       
         res.header({ total_records: 500 }).send(service.getOrganisationsWithStatus(req.query.status, req.query.page, req.query.size))
+
+        
     } else {
         res.send(service.getOrganisationWithStatus(req.query.id))
     }

@@ -210,25 +210,14 @@ class BrowserWaits {
   }
 
   async waitForSpinnerToDissappear() {
-    let status = true
+    const spinner = $('div.spinner-inner-container .spinner')
+    let spinnerDisplayStatus = await spinner.isDisplayed();
     let counter = 0;
     do {
-      status = await $("div.spinner-container").isPresent();
-      CucumberReporter.AddMessage(`waiting for spinner to disappear`);
-
-      await this.waitForSeconds(2)
-      counter++; null
-    }
-    while (status && counter < 10)
-    CucumberReporter.AddMessage(status ? `spinner closed` : 'spinner still displayed');
-
-    // const isSpinnerPresent = await $("div.spinner-container").isPresent();
-
-    // await this.waitForCondition(async () => {
-    //     const isSpinnerPresent = await $("div.spinner-container").isPresent();
-    //     CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
-    //     return !isSpinnerPresent;
-    // }, 'Spinner is still displayed after waiting ');
+      await browser.sleep(3)
+      spinnerDisplayStatus = await spinner.isDisplayed();
+      counter++;
+    } while (spinnerDisplayStatus || counter < 20)
   }
 
   __getCallingFunctionName() {

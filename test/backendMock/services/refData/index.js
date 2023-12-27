@@ -5,7 +5,6 @@ class RefDataMock{
     constructor(){
         this.organisations = []
 
-        this.setupOrganisationsData();
     }
 
     setupOrganisationsData(){

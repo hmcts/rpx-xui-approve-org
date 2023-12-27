@@ -47,8 +47,11 @@ Then('I click users details tab', async function () {
 });
 
 Then('I see organisation details page with registration status {string}' , async function(status){
-  await browserWaits.waitForElement(organisationPage.organisationDetailsContainer) 
-  expect(await organisationPage.getOrganisationStatus()).to.includes(status)
+  await browserWaits.retryWithActionCallback(async () => {
+    await browserWaits.waitForElement(organisationPage.organisationDetailsContainer)
+    expect(await organisationPage.getOrganisationStatus()).to.includes(status)
+  })
+  
 })
 
 Then('I validate pending organisation details page', async function(){
@@ -92,10 +95,16 @@ When('I click confirm in pending organisation decision confirm page', async func
   await decisionpage.confirmButton.click()
 });
 
+When('I click back link from confirm decision page', async function () {
+  await decisionpage.backLink.click()
+});
+
 Then('I validate active organisation details page displayed', async function(){
-  expect(await organisationPage.subNavigations.isDisplayed(),'Subnavigations not displayed').to.be.true
-  expect(await organisationPage.statusBadge.getText()).to.includes('ACTIVE')
-})
+  await browserWaits.retryWithActionCallback(async () => {
+    expect(await organisationPage.subNavigations.isDisplayed(), 'Subnavigations not displayed').to.be.true
+    expect(await organisationPage.statusBadge.getText()).to.includes('ACTIVE')
+  });
+});
 
 When('I click sub navigation tab {string} in organisation details page', async function (tabLabel) {
   if (tabLabel.includes('Organisation details')){
@@ -123,4 +132,8 @@ When('I click Delete organisation button organisation decision confirm page', as
 
 Then('I see confirmation page with message containing {string}' , async function(message){
   expect(await $('.govuk-panel--confirmation').getText()).to.includes(message)
+})
+
+When('I click back link in organisation details page' , async function(){
+  await organisationPage.backLink.click()
 })

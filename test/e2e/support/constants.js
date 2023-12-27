@@ -1,6 +1,13 @@
 module.exports = {
-  LONG_DELAY: 25,
-  AMAZING_DELAY: 20,
-  MID_DELAY: 15,
-  SHORT_DELAY: 6
+  LONG_DELAY: 8,
+  AMAZING_DELAY: 15,
+  MID_DELAY: 6,
+  SHORT_DELAY: 4,
+
+  LOG_LEVELS: {
+    Debug: 0,
+    Info: 1,
+    Warn: 2,
+    Error: 3
+  }
 };

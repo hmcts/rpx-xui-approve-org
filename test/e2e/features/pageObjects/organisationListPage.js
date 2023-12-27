@@ -2,6 +2,7 @@
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const browserWaits = require('../../support/customWaits');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
 
 function OrganisationListPage() {
   this.rows = element.all(by.css('.govuk-table tr'));
@@ -53,9 +54,11 @@ function OrganisationListPage() {
     await this.waitForOrgListToDisplay();
     const organisations = await this.getOrganisations()
     // const searchWithName = await this.getOrgNameFromRow(1);
+    reportLogger.AddMessage(JSON.stringify(organisations, null,2))
     const orgsFieldValues = organisations.map(org => org[searchField])
     for (const value of orgsFieldValues){
-      expect(value).includes(searchInput);
+      reportLogger.AddMessage(`${value} includes ${searchInput}`)
+      expect(value.toLowerCase()).includes(searchInput.toLowerCase());
     }
   };
 
@@ -89,20 +92,41 @@ function OrganisationListPage() {
       org['Administrator'] = await row.$('td:nth-of-type(3)').getText();
       org['Date received'] = await row.$('td:nth-of-type(4)').getText();
       org['Status'] = await row.$('td:nth-of-type(5)').getText();
-      
+
+      organisationsList.push(org)
 
     }
     return organisationsList;
   }
 
   this.waitForOrgListToDisplay = async function() {
+    await browserWaits.waitForSpinnerToDissappear()
     await browserWaits.waitForElement(this.rows.get(0));
   };
 
   this.clickViewOnFirstOrganisation = async function () {
     const viewLink = element(by.xpath(`//table//a[contains(text(),'View')]`))
+    reportLogger.AddMessage(await viewLink.getAttribute('href'))
     await viewLink.click();
   };
+
+  this.clickViewOnLastOrganisation = async function () {
+    const viewLinks = element.all(by.xpath(`//table//a[contains(text(),'View')]`));
+    const linksCount = await viewLinks.count()
+    const lastLink = viewLinks.get(linksCount - 1)
+    reportLogger.AddMessage(await lastLink.getAttribute('href'))
+    await lastLink.click();
+  };
+
+  this.waitForSpinnerToDisappear = async function(){
+    const spinner = $('div.spinner-inner-container .spinner')
+    let spinnerDisplayStatus = await spinner.isDisplayed();
+    do{
+      await browser.sleep(3)
+      spinnerDisplayStatus = await spinner.isDisplayed();
+    } while (spinnerDisplayStatus)
+
+  }
 }
 
 module.exports = new OrganisationListPage();
