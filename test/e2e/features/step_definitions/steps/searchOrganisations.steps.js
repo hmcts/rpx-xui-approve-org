@@ -32,3 +32,7 @@ Then('I see Organisations list page with sub navigation page {string}', async fu
 Then('I see organisations list page with messge banner {string}', async function (message) {
   expect(await organisationListPage.banner.getText()).to.includes(message)
 })
+
+Then(' I click confirm in pending organisation decision confirm page to see success banner message {string}', async function(message){
+  expect(await organisationListPage.banner.getText()).to.includes(message)
+})

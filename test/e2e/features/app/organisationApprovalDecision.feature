@@ -14,6 +14,7 @@ Feature: Organisation Decison workflow
     When I select option "<selectOption>" for pending organisation and submit
     Then I see pending organisation decision "<decision>" confirm page
     When I click confirm in pending organisation decision confirm page
+    Then I click confirm in pending organisation decision confirm page to see success banner message "<bannerMessage>"
     Then I see organisations list page with messge banner "<bannerMessage>"
     Examples:
       | selectOption       | decision |bannerMessage|

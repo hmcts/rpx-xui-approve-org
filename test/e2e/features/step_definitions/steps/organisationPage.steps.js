@@ -3,6 +3,7 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../
 const browserWaits = require('../../../support/customWaits');
 const organisationPage = require('../../pageObjects/organisationPage');
 const decisionpage = require('../../pageObjects/decisionConfirmPage')
+const organisationListPage = require('../../pageObjects/organisationListPage')
 
 Then('I am on organisation page', async function () {
   await browserWaits.waitForElement(organisationPage.statusBadge);
@@ -94,6 +95,16 @@ Then('I see pending organisation decision {string} confirm page', async function
 When('I click confirm in pending organisation decision confirm page', async function(){
   await decisionpage.confirmButton.click()
 });
+
+
+Then(' I click confirm in pending organisation decision confirm page to see success banner message {string}', async function (message) {
+  await browserWaits.retryWithActionCallback(async () => {
+    await decisionpage.confirmButton.click()
+    expect(await organisationListPage.banner.getText()).to.includes(message)
+  })
+  
+})
+
 
 When('I click back link from confirm decision page', async function () {
   await decisionpage.backLink.click()

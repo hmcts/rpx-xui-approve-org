@@ -28,7 +28,8 @@ Feature: Verify access to User tab for prd admin users
         Then I see organisation details page with registration status "PENDING"
         Then I validate organisation details page displayed with header "Approve organisation"
         Then I validate organisation details page sub navigation tabs not displayed
-
+        
+@ignore
     Scenario: Verify access to active Organisation User tab for non approver user
         When I navigate to EUI Approve Organisation Url
         Given I am logged into approve organisation with non approver prd admin

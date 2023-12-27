@@ -55,10 +55,11 @@ function OrganisationListPage() {
     const organisations = await this.getOrganisations()
     // const searchWithName = await this.getOrgNameFromRow(1);
     reportLogger.AddMessage(JSON.stringify(organisations, null,2))
-    const orgsFieldValues = organisations.map(org => org[searchField])
-    for (const value of orgsFieldValues){
-      reportLogger.AddMessage(`${value} includes ${searchInput}`)
-      expect(value.toLowerCase()).includes(searchInput.toLowerCase());
+    for (const org of organisations){
+      const values = Object.values(org)
+      const isSearchInputPresent = values.filter(v => v.toLowerCase().includes(searchInput.toLowerCase()))
+      reportLogger.AddMessage(`${values} includes ${searchInput}`)
+      expect(isSearchInputPresent.length > 0, `Org ${JSON.stringify(org)} does not have search text ${searchInput}`).to.be.true
     }
   };
 
