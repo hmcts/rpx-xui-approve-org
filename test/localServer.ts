@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, '../dist/organisation-manager'), { i
  */
 app.use('/*', (req, res) => {
     console.time(`GET: ${req.originalUrl}`);
-    res.render('../index', {
+    res.render('../dist/organisation-manager/index', {
         providers: [{ provide: 'REQUEST', useValue: req }, { provide: 'RESPONSE', useValue: res }],
         req,
         res

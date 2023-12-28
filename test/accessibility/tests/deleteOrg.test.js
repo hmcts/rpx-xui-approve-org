@@ -10,8 +10,7 @@ const MockApp = require('../../nodeMock/app');
 
 describe('Delete Organisation', function () {
   beforeEach(function () {
-    pa11yTestUserRoles(['prd-admin']);
-    MockApp.init();
+    
   });
   afterEach(async function (done) {
     // await MockApp.stopServer();

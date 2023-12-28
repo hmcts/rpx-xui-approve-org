@@ -17,9 +17,25 @@ let page = null;
 
 let sessionCookies = [];
 
+async function login(page, email, pass){
+  const emailAddress = 'input#username';
+  const password ='[id=\'password\']';
+  const signinBtn ='input.button';
+  // const signOutlink = element(by.xpath('//a[@class=\'hmcts-header__navigation-link\']'));
+  // const failure_error_heading = element(by.css('[id=\'validation-error-summary-heading\']'));
+  const dashboard_header = 'a.hmcts-header__link'; 
+
+  await page.goto("http://localhost:3000/");
+  await page.waitForSelector(emailAddress)
+  await page.type(emailAddress, email)
+  await page.type(password, pass)
+  await page.click(signinBtn);
+  await page.waitForSelector(dashboard_header)
+}
+
 async function initBrowser() {
-  idamLogin.withCredentials('vmuniganti@mailnesia.com', 'Monday01')
-  await idamLogin.do()
+  // idamLogin.withCredentials('vmuniganti@mailnesia.com', 'Monday01')
+  // await idamLogin.do()
 
   testBrowser = await puppeteer.launch({
     ignoreHTTPSErrors: false,
@@ -31,15 +47,16 @@ async function initBrowser() {
   });
 
   page = await testBrowser.newPage();
+  await login(page, 'vmuniganti@mailnesia.com', 'Monday01')
   // await page.goto("http://localhost:3000/");
 
-  await page.goto("http://localhost:3000/get-help");
-  const cookies = idamLogin.xuiCallbackResponse.details.setCookies;
-  sessionCookies = cookies;
-  for (let cookie of cookies) {
-    await page.setCookie({ name: cookie.name, value: cookie.value })
-  }
-  await page.goto("http://localhost:3000/");
+  // await page.goto("http://localhost:3000/terms-and-conditions");
+  // const cookies = idamLogin.xuiCallbackResponse.details.setCookies;
+  // sessionCookies = cookies;
+  // for (let cookie of cookies) {
+  //   await page.setCookie({ name: cookie.name, value: cookie.value })
+  // }
+  // await page.goto("http://localhost:3000/");
 
 }
 

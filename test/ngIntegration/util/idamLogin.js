@@ -54,7 +54,7 @@ class IdamLogin{
             await this.getUserDetails()
 
 
-            this.authToken = this.userDetailsResponse.details.data.userInfo.token
+            // this.authToken = this.userDetailsResponse.details.data.userInfo.token
 
         }catch(err){
             reportLogger.AddMessage('************* Login error *************')

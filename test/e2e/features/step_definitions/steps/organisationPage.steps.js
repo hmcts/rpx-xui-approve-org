@@ -97,7 +97,7 @@ When('I click confirm in pending organisation decision confirm page', async func
 });
 
 
-Then(' I click confirm in pending organisation decision confirm page to see success banner message {string}', async function (message) {
+Then('I click confirm in pending organisation decision confirm page to see success banner message {string}', async function (message) {
   await browserWaits.retryWithActionCallback(async () => {
     await decisionpage.confirmButton.click()
     expect(await organisationListPage.banner.getText()).to.includes(message)

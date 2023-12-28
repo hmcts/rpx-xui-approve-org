@@ -1,7 +1,7 @@
 const conf = {
   headless: true,
   failTestOna11yIssues: false,
-  reportPath: 'reports/tests/a11y/',
+  reportPath: 'functional-output/codecept-a11y/',
   appName: 'Approve Organisation',
   baseUrl1: 'https://administer-orgs.aat.platform.hmcts.net/',
   baseUrl: 'http://localhost:3000/',
