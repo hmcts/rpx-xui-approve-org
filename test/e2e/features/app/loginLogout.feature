@@ -1,8 +1,11 @@
+@functional_enabled
 Feature: Login
 
   Background:
     When I navigate to EUI Approve Organisation Url
-  @fullfunctional
+
+
+@fullfunctional 
   Scenario: un-authenticated user login
     Then I am on Idam login page
     When I enter an Invalid email-address and password to login
