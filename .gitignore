@@ -75,3 +75,4 @@ stryker.log
 !.yarn/versions
 /.angular/
 src/coverage/*
+/functional-output
