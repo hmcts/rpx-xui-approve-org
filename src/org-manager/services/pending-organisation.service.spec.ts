@@ -38,7 +38,8 @@ describe('PendingOrganisationService', () => {
     status: 'string;',
     name: 'string;',
     paymentAccount: [{}],
-    pendingPaymentAccount: [{}]
+    pendingPaymentAccount: [{}],
+    orgAttributes: []
   };
 
   beforeEach(() => {
