@@ -7,6 +7,7 @@ import healthCheck from './healthCheck';
 import getappInsightsInstrumentationKey from './monitoring-tools';
 import organisationRouter from './organisation';
 import pbaAccounts from './pbaAccounts';
+import getLovRefDataRouter from './prd/lov';
 import reinviteUserRouter from './reinviteUser';
 import stateRouter from './states';
 import pbaRouter from './updatePba/routes';
@@ -28,5 +29,6 @@ router.use('/monitoring-tools', getappInsightsInstrumentationKey);
 router.use('/reinviteUser', reinviteUserRouter);
 router.use('/caseworkerdetails', caseWorkerDetailsRouter);
 router.use('/allUserListWithoutRoles', allUserListWithoutRolesRouter);
+router.use('/getLovRefData', getLovRefDataRouter);
 
 export default router;

@@ -83,3 +83,7 @@ export interface AccountDetailsResponse {
   credit_limit: number;
   status: string;
 }
+
+export interface S2SResponse {
+  token?: string;
+}
