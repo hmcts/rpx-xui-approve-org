@@ -8,8 +8,8 @@ suite('Approve Org -> Get Organisation Users details', function() {
     .then((response) => {
       response.status.should.be.eql(200);
       console.log(response.data.users[0].email);
-      response.data.users[0].firstName.should.be.eql('Vamshi');
-      response.data.users[0].lastName.should.be.eql('Muniganti');
+      response.data.users[0].firstName.should.be.eql('Jason');
+      response.data.users[0].lastName.should.be.eql('Lee');
       response.data.users[0].idamStatus.should.be.eql('PENDING');
     }));
 });
