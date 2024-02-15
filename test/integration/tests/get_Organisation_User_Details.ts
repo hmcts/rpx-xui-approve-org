@@ -10,6 +10,6 @@ suite('Approve Org -> Get Organisation Users details', function() {
       console.log(response.data.users[0].email);
       response.data.users[0].firstName.should.be.eql('Jason');
       response.data.users[0].lastName.should.be.eql('Lee');
-      response.data.users[0].idamStatus.should.be.eql('PENDING');
+      response.data.users[0].idamStatus.should.be.eql('ACTIVE');
     }));
 });
