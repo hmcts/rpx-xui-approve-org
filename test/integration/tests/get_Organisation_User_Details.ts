@@ -8,8 +8,9 @@ suite('Approve Org -> Get Organisation Users details', function() {
     .then((response) => {
       response.status.should.be.eql(200);
       console.log(response.data.users[0].email);
-      response.data.users[0].firstName.should.be.eql('Jason');
-      response.data.users[0].lastName.should.be.eql('Lee');
-      response.data.users[0].idamStatus.should.be.eql('ACTIVE');
+      const user = response.data.users.findIndex((idamUser) => idamUser.email ==='xuiapitestuser@mailnesia.com');
+      response.data.users[user].lastName.should.be.eql('Lee');
+      response.data.users[user].firstName.should.be.eql('Jason');
+      response.data.users[user].idamStatus.should.be.eql('ACTIVE');
     }));
 });
