@@ -13,7 +13,9 @@ describe('OrganisationDetailsInfoComponent', () => {
   let fixture: ComponentFixture<OrganisationDetailsInfoComponent>;
 
   const mockOrgData: OrganisationVM = {
-    name: 'Glen Byrne',
+    name: 'Corp Plc',
+    firstName: 'Glen',
+    lastName: 'Byrne',
     organisationId: 'ByrneLimited',
     addressLine1: '13 Berryfield drive, Finglas',
     addressLine2: '',
@@ -64,19 +66,20 @@ describe('OrganisationDetailsInfoComponent', () => {
       titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[1].nativeElement.textContent;
       expect(titleContent).toContain('Organisation details');
       titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[2].nativeElement.textContent;
-      expect(titleContent).toContain('PBAs');
+      expect(titleContent).toContain('Administrator details');
     });
 
     it('should show organisation details', () => {
       const nameContent = fixture.debugElement.nativeElement.querySelector('dd.govuk-summary-list__value').textContent;
-      expect(nameContent).toContain('Glen Byrne');
+      expect(nameContent).toContain('Corp Plc');
       const adressContent = fixture.debugElement.nativeElement.querySelector('app-org-address').textContent;
       expect(adressContent).toContain('13 Berryfield drive, Finglas');
-      const mailContent = fixture.debugElement.nativeElement.querySelector('div.govuk-caption-m').textContent;
+      const elements = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
+      const mailContent = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[9].textContent;
       expect(mailContent).toContain('glen@byrne.com');
-      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[6].textContent;
+      const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[3].textContent;
       expect(pbaNumber).toContain('101010');
-      const accountName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[7].textContent;
+      const accountName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[4].textContent;
       expect(accountName).toContain('RAY NIXON BROWN');
     });
 

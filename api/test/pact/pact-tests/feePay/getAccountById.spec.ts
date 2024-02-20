@@ -5,7 +5,7 @@ import { PactTestSetup } from '../settings/provider.mock';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, like } = Matchers;
-const pactSetUp = new PactTestSetup({ provider: 'payment_accounts', port: 8000 });
+const pactSetUp = new PactTestSetup({ provider: 'payment_creditAccountPayment', port: 8000 });
 
 describe('Get Account Status for a Account Name', async () => {
   before(async () => {

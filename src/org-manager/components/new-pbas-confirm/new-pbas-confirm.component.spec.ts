@@ -72,7 +72,8 @@ describe('NewPBAsConfirmComponent', () => {
       },
       paymentAccount: [{}],
       pendingPaymentAccount: [{}],
-      contactInformation: orgAddress
+      contactInformation: orgAddress,
+      orgAttributes: [{ key: 'AAA7', value: 'Damages' }]
     };
     component.org = AppUtils.mapOrganisation(organisations);
 
@@ -114,7 +115,8 @@ describe('NewPBAsConfirmComponent', () => {
       },
       paymentAccount: [{}],
       pendingPaymentAccount: [{}],
-      contactInformation: orgAddress
+      contactInformation: orgAddress,
+      orgAttributes: [{ key: 'AAA7', value: 'Damages' }]
     };
     component.org = AppUtils.mapOrganisation(organisations);
     pbaServiceSpy.setPBAStatus.and.returnValue(throwError({ status: 400, error:
@@ -158,7 +160,8 @@ describe('NewPBAsConfirmComponent', () => {
       },
       paymentAccount: [{}],
       pendingPaymentAccount: [{}],
-      contactInformation: orgAddress
+      contactInformation: orgAddress,
+      orgAttributes: [{ key: 'AAA7', value: 'Damages' }]
     };
     component.org = AppUtils.mapOrganisation(organisations);
     pbaServiceSpy.setPBAStatus.and.returnValue(throwError({ status: 404, error:

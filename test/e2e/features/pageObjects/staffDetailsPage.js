@@ -1,5 +1,4 @@
 
-const { $ } = require('protractor');
 const browserWaits = require('../../support/customWaits');
 
 function StaffDetailsPage(){

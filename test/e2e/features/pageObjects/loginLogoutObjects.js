@@ -2,6 +2,7 @@
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
+const reportLogger = require('../../../codeceptCommon/reportLogger')
 
 function loginLogoutObjects() {
   this.emailAddress = element(by.css('input#username'));
@@ -46,6 +47,7 @@ function loginLogoutObjects() {
   };
 
   this.loginWithCredentials = async function (username, password) {
+    reportLogger.AddMessage(`Login ${username}/${password}`)
     await BrowserWaits.waitForElement(this.emailAddress);
     await this.enterUrEmail(username);
     await this.enterPassword(password);

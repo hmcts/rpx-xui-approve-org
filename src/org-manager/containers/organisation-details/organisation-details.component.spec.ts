@@ -3,17 +3,18 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ExuiCommonLibModule, User } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService, User } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
-import { of } from 'rxjs';
-import { UserApprovalGuard } from 'src/org-manager/guards';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
-import { OrganisationService, PbaAccountDetails, UsersService } from 'src/org-manager/services';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { Observable, of } from 'rxjs';
+
 import * as fromRoot from '../../../app/store';
+import { UserApprovalGuard } from '../../../org-manager/guards';
+import { OrganisationVM } from '../../../org-manager/models/organisation';
+import { OrganisationService, PbaAccountDetails, UsersService } from '../../../org-manager/services';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
-import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
   selector: 'app-mock',
@@ -85,10 +86,13 @@ describe('OrganisationDetailsComponent', () => {
   let mockedPbaAccountDetails: any;
   let mockedUserApprovalGuard: any;
   let mockedPBARouter: any;
+  let featureToggleServiceMock: any;
   const organisationVM: OrganisationVM = {
     organisationId: '123',
     status: 'valid',
     admin: 'Glen Byrne',
+    firstName: 'Glen',
+    lastName: 'Byrne',
     adminEmail: 'test@mail.com',
     addressLine1: 'AddressLine1',
     addressLine2: 'AddressLine2',
@@ -143,6 +147,7 @@ describe('OrganisationDetailsComponent', () => {
     mockedPbaAccountDetails = TestBed.inject(PbaAccountDetails);
     mockedUserApprovalGuard = TestBed.inject(UserApprovalGuard);
     mockedPBARouter = TestBed.inject(Router);
+    featureToggleServiceMock = TestBed.inject(FeatureToggleService);
     spyOn(mockedUserApprovalGuard, 'isUserApprovalRole').and.returnValue(true);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
     spyOn(mockedOrganisationService, 'getOrganisationUsers').and.returnValue(of(MOCKED_USERS));
@@ -150,6 +155,7 @@ describe('OrganisationDetailsComponent', () => {
     spyOn(mockedPbaAccountDetails, 'getAccountDetails').and.returnValue(of(MOCKED_ACCOUNTS));
     spyOn(mockedPBARouter, 'navigateByUrl').and.returnValue(of(MOCKED_ACCOUNTS));
     spyOn(store, 'dispatch').and.callThrough();
+    spyOn(featureToggleServiceMock, 'getValue').and.returnValue(of(true));
     fixture = TestBed.createComponent(OrganisationDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -214,5 +220,22 @@ describe('OrganisationDetailsComponent', () => {
     component.pageChange(2);
     expect(component.currentPageNumber).toEqual(2);
     expect(store.dispatch).toHaveBeenCalled();
+  });
+
+  describe('ngOnDestroy', () => {
+    it('should unsubscribe from observables when subscribed', () => {
+      component.orgTypeSubscription = new Observable().subscribe();
+      const componentOrgTypeSubscriptionUnsubscribeSpy = spyOn(component.orgTypeSubscription, 'unsubscribe');
+      component.ngOnDestroy();
+      expect(componentOrgTypeSubscriptionUnsubscribeSpy).toHaveBeenCalled();
+    });
+
+    it('should not unsubscribe from observables when not subscribed', () => {
+      component.orgTypeSubscription = new Observable().subscribe();
+      const componentOrgTypeSubscriptionUnsubscribeSpy = spyOn(component.orgTypeSubscription, 'unsubscribe');
+      component.orgTypeSubscription = undefined;
+      component.ngOnDestroy();
+      expect(componentOrgTypeSubscriptionUnsubscribeSpy).not.toHaveBeenCalled();
+    });
   });
 });
