@@ -1,10 +1,8 @@
 'use strict';
 
 const bannerPage = require('../../pageObjects/approveOrganisationObjects');
-const { Then } = require('@cucumber/cucumber');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
-const config = require('../../../config/conf.js');
-const EC = protractor.ExpectedConditions;
+const config = require('../../../config/conf_old.js');
 let address = '';
 let administrator = ''; let orgName = '';
 
@@ -14,7 +12,7 @@ async function waitForElement(el) {
   }, 600000);
 }
 
-Then(/^I Select the Organisation and get the details and click Activate$/, async function () {
+Then('I Select the Organisation and get the details and click Activate', async function () {
   await bannerPage.selectCheckBox.click();
   browser.sleep(MID_DELAY);
   orgName= await bannerPage.orgName.getText();
@@ -23,16 +21,16 @@ Then(/^I Select the Organisation and get the details and click Activate$/, async
   browser.sleep(MID_DELAY);
   administrator = await bannerPage.administratorText.getText();
   browser.sleep(MID_DELAY);
-  await expect(bannerPage.activate_button.isDisplayed()).to.eventually.be.true;
+  await expect(await bannerPage.activate_button.isDisplayed()).to.be.true;
   await bannerPage.activate_button.click();
   browser.sleep(MID_DELAY);
 });
 
-Then(/^I review the Organisation Details such as Organisation Name and Address$/, { timeout: 600 * 1000 }, async function () {
+Then('I review the Organisation Details such as Organisation Name and Address', async function () {
   await waitForElement('govuk-heading-xl');
   browser.sleep(MID_DELAY);
-  await expect(bannerPage.approve_button.isDisplayed()).to.eventually.be.true;
-  await expect(bannerPage.approve_button.getText())
+  await expect(await bannerPage.approve_button.isDisplayed()).to.be.true;
+  await expect(await bannerPage.approve_button.getText())
     .to
     .eventually
     .equal('Approve organisatons');
@@ -42,21 +40,18 @@ Then(/^I review the Organisation Details such as Organisation Name and Address$/
   console.log(administrator);
 
   browser.sleep(MID_DELAY);
-  await expect(bannerPage.approveOrgName.getText())
+  await expect(await bannerPage.approveOrgName.getText())
     .to
-    .eventually
     .equal(orgName);
 
   browser.sleep(MID_DELAY);
-  await expect(bannerPage.approveAddress.getText())
+  await expect(await bannerPage.approveAddress.getText())
     .to
-    .eventually
     .equal(address);
 
   browser.sleep(MID_DELAY);
-  await expect(bannerPage.approveAdministratorText.getText())
+  await expect(await bannerPage.approveAdministratorText.getText())
     .to
-    .eventually
     .equal(administrator);
 });
 

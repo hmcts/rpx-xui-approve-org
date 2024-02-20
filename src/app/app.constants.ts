@@ -92,7 +92,8 @@ export const apiErrors = {
 
 const featureNames = {
   // note this is the only place where caseworker referred to as case-worker (due to feature settings)
-  caseworkerDetails: 'ao-case-worker-details'
+  caseworkerDetails: 'ao-case-worker-details',
+  newRegisterOrg: 'mo-new-register-org'
 };
 
 export const navItemsArray = [
