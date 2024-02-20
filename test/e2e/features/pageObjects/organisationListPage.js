@@ -2,12 +2,31 @@
 
 const { SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const browserWaits = require('../../support/customWaits');
+const reportLogger = require('../../../codeceptCommon/reportLogger');
 
 function OrganisationListPage() {
   this.rows = element.all(by.css('.govuk-table tr'));
 
   this.searchInput = element(by.css('#search'));
   this.searchBtn = element(by.xpath('//button[@type = \'submit\' and contains(text(),\'Search\')]'));
+
+
+  this.newRegistrationsContainer = $('app-pending-overview-component')
+  this.newPBAContainer = $('app-pending-overview-component')
+  this.activeOrganisatiosnContainer = $('app-prd-org-overview-component')
+
+  this.containerHeader = $('.govuk-tabs h2.govuk-heading-l')
+
+  this.banner = $('.hmcts-banner__message')
+
+  this.getSubNavigationTabElement = function(tabLabel){
+    return element(by.xpath(`//ul[contains(@class,'govuk-tabs__list')]//a[contains(@class,'govuk-tabs__tab')][contains(text(),'${tabLabel}')]`))
+  }
+
+  this.clickSubNavigation = async function(tabLabel){
+    const e = this.getSubNavigationTabElement(tabLabel);
+    await e.click();
+  }
 
   this.getOrgCount = async function(){
     await this.waitForOrgListToDisplay();
@@ -21,7 +40,27 @@ function OrganisationListPage() {
     await this.searchInput.sendKeys(searchWithName);
     await this.searchBtn.click();
     browser.sleep(2000);
-    // await this.validateSearchResultsByName(searchWithName);
+    await this.validateSearchResultsByName(searchWithName);
+  };
+
+  this.searchOrg = async function (searchInput) {
+    await this.waitForOrgListToDisplay();
+    // const searchWithName = await this.getOrgNameFromRow(1);
+    await this.searchInput.sendKeys(searchInput);
+    await this.searchBtn.click();
+  };
+
+  this.validateSearchResults = async function (searchField,searchInput) {
+    await this.waitForOrgListToDisplay();
+    const organisations = await this.getOrganisations()
+    // const searchWithName = await this.getOrgNameFromRow(1);
+    reportLogger.AddMessage(JSON.stringify(organisations, null,2))
+    for (const org of organisations){
+      const values = Object.values(org)
+      const isSearchInputPresent = values.filter(v => v.toLowerCase().includes(searchInput.toLowerCase()))
+      reportLogger.AddMessage(`${values} includes ${searchInput}`)
+      expect(isSearchInputPresent.length > 0, `Org ${JSON.stringify(org)} does not have search text ${searchInput}`).to.be.true
+    }
   };
 
   this.getOrgNameFromRow = async function(rowNum){
@@ -41,18 +80,54 @@ function OrganisationListPage() {
     }
   };
 
+  this.getOrganisations = async function(){
+    const organisationsList = []
+    const rows = $('table.govuk-table tr.govuk-table__row.govuk-radios')
+    const rowsCount = await rows.count();
+
+    for(let rowCtr = 0; rowCtr < rowsCount; rowCtr++){
+      const org = {}
+      const row = await rows.get(rowCtr);
+      org['Organisation'] = await row.$('td:nth-of-type(1)').getText();
+      org['Address'] = await row.$('td:nth-of-type(2)').getText();
+      org['Administrator'] = await row.$('td:nth-of-type(3)').getText();
+      org['Date received'] = await row.$('td:nth-of-type(4)').getText();
+      org['Status'] = await row.$('td:nth-of-type(5)').getText();
+
+      organisationsList.push(org)
+
+    }
+    return organisationsList;
+  }
+
   this.waitForOrgListToDisplay = async function() {
+    await browserWaits.waitForSpinnerToDissappear()
     await browserWaits.waitForElement(this.rows.get(0));
   };
 
   this.clickViewOnFirstOrganisation = async function () {
-    browser.sleep(MID_DELAY);
-    const rowText = await this.rows.get(1).getText();
-    const viewLink = await this.rows.get(1).element(by.xpath('//a[contains(text(),\'View\')]'));
-    await browser.executeScript('arguments[0].scrollIntoView()', viewLink);
+    const viewLink = element(by.xpath(`//table//a[contains(text(),'View')]`))
+    reportLogger.AddMessage(await viewLink.getAttribute('href'))
     await viewLink.click();
-    await browserWaits.waitForElement(element(by.xpath('//h1[contains(text(),"Organisation details")]')));
   };
+
+  this.clickViewOnLastOrganisation = async function () {
+    const viewLinks = element.all(by.xpath(`//table//a[contains(text(),'View')]`));
+    const linksCount = await viewLinks.count()
+    const lastLink = viewLinks.get(linksCount - 1)
+    reportLogger.AddMessage(await lastLink.getAttribute('href'))
+    await lastLink.click();
+  };
+
+  this.waitForSpinnerToDisappear = async function(){
+    const spinner = $('div.spinner-inner-container .spinner')
+    let spinnerDisplayStatus = await spinner.isDisplayed();
+    do{
+      await browser.sleep(3)
+      spinnerDisplayStatus = await spinner.isDisplayed();
+    } while (spinnerDisplayStatus)
+
+  }
 }
 
 module.exports = new OrganisationListPage();

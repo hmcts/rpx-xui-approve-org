@@ -1,7 +1,6 @@
 'use strict';
 const path = require('path');
 
-const { When, Then } = require('@cucumber/cucumber');
 const staffDetailsPage = require('../../pageObjects/staffDetailsPage');
 
 Then('I see Staff details upload page displayed', async function () {

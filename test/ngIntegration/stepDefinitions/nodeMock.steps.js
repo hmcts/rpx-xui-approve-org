@@ -1,5 +1,4 @@
 
-const { Given, When } = require('@cucumber/cucumber');
 
 const MockApp = require('../../nodeMock/app');
 
