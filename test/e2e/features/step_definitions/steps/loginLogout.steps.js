@@ -101,7 +101,7 @@ Then('I select the sign out link', async function () {
 });
 
 Then('I should be redirected to approve organisation dashboard page', async function () {
-  browser.sleep(SHORT_DELAY);
+  browser.sleep(LONG_DELAY);
   // await browserWaits.waitForBrowserReadyState(120);
   await browserWaits.waitForElement(loginPage.dashboard_header);
   await expect(await loginPage.dashboard_header.isDisplayed()).to.be.true;
