@@ -70,7 +70,7 @@
     "@angular/material": "15.2.9",
     "@angular/platform-browser": "^15.2.9",
     "@angular/platform-browser-dynamic": "^15.2.9",
-    "@angular/platform-server": "15.2.9",
+    "@angular/platform-server": "15.2.10",
     "@angular/router": "^15.2.9",
     "@hmcts/ccd-case-ui-toolkit": "7.0.0-NodeAndNgUpgrades.1",
     "@hmcts/frontend": "0.0.41-alpha",
@@ -140,7 +140,7 @@
     "sonar-scanner": "3.1.0",
     "striptags": "^3.1.1",
     "tslib": "^2.6.1",
-    "zone.js": "~0.13.1"
+    "zone.js": "~0.14.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.2.9",
