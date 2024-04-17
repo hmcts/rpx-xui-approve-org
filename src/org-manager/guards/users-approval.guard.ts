@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+
 import { Store } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
 import { AppConstants } from 'src/app/app.constants';
@@ -10,7 +10,7 @@ import * as fromStore from '../store';
 @Injectable({
   providedIn: 'root'
 })
-export class UserApprovalGuard implements CanActivate {
+export class UserApprovalGuard  {
   constructor(
         private readonly cookieService: CookieService,
         private readonly store: Store<fromStore.OrganisationRootState>
