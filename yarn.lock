@@ -18809,7 +18809,7 @@ __metadata:
     protractor-multiple-cucumber-html-reporter-plugin: 1.8.0
     protractor-screenshot-utils: ^1.0.6
     redis: ^3.0.2
-    rpx-xui-translation: 1.0.0-NodeAndNgUpgrades-02
+    rpx-xui-translation: 1.0.2
     rxjs: ^7.8.1
     rxjs-compat: ^6.6.7
     session-file-store: ^1.2.0
@@ -21122,17 +21122,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.0.0-NodeAndNgUpgrades-02":
-  version: 1.0.0-NodeAndNgUpgrades-02
-  resolution: "rpx-xui-translation@npm:1.0.0-NodeAndNgUpgrades-02"
+"rpx-xui-translation@npm:1.0.2":
+  version: 1.0.2
+  resolution: "rpx-xui-translation@npm:1.0.2"
   dependencies:
     dexie: ^3.2.2
     luxon: ^2.4.0
     tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": ^9.1.13
-    "@angular/core": ^9.1.13
-  checksum: 8d9bc8272ef8dc13a04a2edbee11e9805036978449ddeb087acbd7b792dd35582344941a521ca8bde986671b1267624dfaf70fcc89abbef926b93b06e2bf6621
+    "@angular/common": ^15.2.9
+    "@angular/core": ^15.2.9
+  checksum: 305f4ae1d935de2f4d0874637a61863c1b5478872d335653f6986776fc274de9ebfe3728c04c8a386ff8b4d36fa1de8e444d000ad42f2a914bab3fb5989f28bc
   languageName: node
   linkType: hard
 
