@@ -27,7 +27,7 @@ import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
 import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
 import config from 'config';
-import { LoggerModule, NGXLogger, NGXLoggerHttpService, NgxLoggerLevel, NGXMapperService } from 'ngx-logger';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
 import { AuthService } from '../services/auth/auth.service';
 import { AbstractAppInsights, AppInsightsWrapper } from './services/appInsightsWrapper';
@@ -71,17 +71,13 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     OrgManagerModule,
     !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : [],
     LoggerModule.forRoot({
-      level: NgxLoggerLevel.TRACE,
-      disableConsoleLogging: false
+      level: NgxLoggerLevel.DEBUG
     }),
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
     HttpClientModule
   ],
   providers: [
-    NGXLogger,
-    NGXLoggerHttpService,
-    NGXMapperService,
     LogOutKeepAliveService,
     { provide: RouterStateSerializer, useClass: CustomSerializer },
     AuthService,
