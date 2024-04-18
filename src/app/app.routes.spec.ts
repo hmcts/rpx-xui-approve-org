@@ -52,7 +52,7 @@ class RoleGuardMock {
 const windowMock: Window = { gtag: () => {} } as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
-const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
+const cookieService = jasmine.createSpyObj('cookieSevice', ['get']);
 const titleService = jasmine.createSpyObj('titleService', ['setTitle', 'getTitle']);
 
 describe('AppRoutes', () => {

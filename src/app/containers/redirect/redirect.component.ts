@@ -13,7 +13,7 @@ export class RedirectComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    const encodedRoles = this.cookieService.getObject('roles');
+    const encodedRoles = this.cookieService.get('roles');
     const url = this.getRedirectUrl(encodedRoles);
     if (url) {
       this.router.navigate([url]);
