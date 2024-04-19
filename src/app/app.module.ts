@@ -71,7 +71,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     OrgManagerModule,
     !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : [],
     LoggerModule.forRoot({
-      level: NgxLoggerLevel.DEBUG
+      level: NgxLoggerLevel.TRACE,
+      disableConsoleLogging: false
     }),
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),

@@ -10,7 +10,7 @@ import * as fromStore from '../store';
 @Injectable({
   providedIn: 'root'
 })
-export class UserApprovalGuard  {
+export class UserApprovalGuard {
   constructor(
         private readonly cookieService: CookieService,
         private readonly store: Store<fromStore.OrganisationRootState>
