@@ -1,16 +1,16 @@
 apiVersion: v2
 name: xui-ao-webapp
 home: https://github.com/hmcts/rpx-xui-approve-org
-version: 0.2.27
+version: 0.2.28
 description: Expert UI
 maintainers:
   - name: HMCTS RPX XUI
 dependencies:
   - name: nodejs
-    version: 3.1.0
+    version: 3.0.0
     repository: 'https://hmctspublic.azurecr.io/helm/v1/repo/'
   - name: redis
-    version: 16.13.0
+    version: 16.13.2
     repository: "https://charts.bitnami.com/bitnami"
     condition: redis.enabled
   - name: idam-pr
