@@ -9,7 +9,7 @@ import { AppUtils } from 'src/app/utils/app-utils';
 })
 export class RedirectComponent implements OnInit {
   constructor(private readonly cookieService: CookieService,
-              private readonly router: Router
+            private readonly router: Router
   ) {}
 
   public ngOnInit() {
