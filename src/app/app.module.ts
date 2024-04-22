@@ -59,7 +59,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
   ],
   imports: [
     BrowserModule,
-    CookieModule.forRoot(),
+    CookieModule.withOptions(),
     RouterModule.forRoot(ROUTES, {
       anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'
       //relativeLinkResolution: 'legacy'
