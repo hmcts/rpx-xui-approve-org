@@ -20,7 +20,7 @@
             "outputPath": "dist/organisation-manager",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "src/tsconfig.app.json",
             "stylePreprocessorOptions": {
               "includePaths": [
@@ -65,31 +65,31 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "organisation-manager:build",
-            "proxyConfig": "./proxy.config.json"
+            "proxyConfig": "./proxy.config.json",
+            "buildTarget": "organisation-manager:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "organisation-manager:build:production"
+              "buildTarget": "organisation-manager:build:production"
             }
           }
         },
         "serveTest": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "organisation-manager:build",
-            "proxyConfig": "./proxyTest.config.json"
+            "proxyConfig": "./proxyTest.config.json",
+            "buildTarget": "organisation-manager:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "organisation-manager:build:production"
+              "buildTarget": "organisation-manager:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "organisation-manager:build"
+            "buildTarget": "organisation-manager:build"
           }
         },
         "test": {
