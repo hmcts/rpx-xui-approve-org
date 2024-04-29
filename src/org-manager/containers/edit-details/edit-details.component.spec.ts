@@ -12,6 +12,7 @@ import * as fromRoot from '../../../app/store';
 import { OrganisationService } from '../../services/organisation.service';
 import * as fromOrganisationPendingStore from '../../store';
 import { EditDetailsComponent } from './edit-details.component';
+import { RpxTranslationService } from 'rpx-xui-translation';
 
 describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
@@ -60,6 +61,8 @@ describe('EditDetailsComponent', () => {
     ]
   };
 
+  const translationMockService = jasmine.createSpyObj('translationMockService', ['translate', 'getTranslation$']);
+
   beforeEach((() => {
     TestBed.configureTestingModule({
       imports: [
@@ -79,6 +82,7 @@ describe('EditDetailsComponent', () => {
       ],
       providers: [
         OrganisationService,
+        { provide: RpxTranslationService, useValue: translationMockService },
         { provide: UpdatePbaServices },
         {
           provide: ActivatedRoute,

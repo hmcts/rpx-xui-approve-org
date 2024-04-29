@@ -25,8 +25,11 @@ export class AppUtils {
       organisationVm.adminEmail = apiOrg.superUser.email;
       organisationVm.admin = `${apiOrg.superUser.firstName} ${apiOrg.superUser.lastName}`;
     }
+    organisationVm.orgType = apiOrg.orgType;
+    organisationVm.companyNumber = apiOrg.companyNumber;
     organisationVm.pendingPaymentAccount = apiOrg.pendingPaymentAccount;
     organisationVm.pbaNumber = apiOrg.paymentAccount;
+    organisationVm.orgAttributes = apiOrg.orgAttributes;
     organisationVm.organisationId = apiOrg.organisationIdentifier;
     organisationVm.view = 'View';
     organisationVm.status = apiOrg.status;
@@ -39,6 +42,7 @@ export class AppUtils {
       organisationVm.county = apiOrg.contactInformation[0].county;
     }
     organisationVm.sraId = apiOrg.sraId;
+    organisationVm.orgAttributes = apiOrg.orgAttributes;
     if (apiOrg.dateReceived){
       organisationVm.dateReceived = apiOrg.dateReceived;
     }
@@ -70,7 +74,8 @@ export class AppUtils {
         status: 'ACTIVE',
         name: org.name,
         paymentAccount: org.pbaNumber,
-        pendingPaymentAccount: org.pendingPaymentAccount
+        pendingPaymentAccount: org.pendingPaymentAccount,
+        orgAttributes: org.orgAttributes
       };
       organisations.push(organisation);
     });
@@ -157,7 +162,7 @@ export class AppUtils {
   // Util method to return Navitems
   // based on user's role
   public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
-    let roleNavItems: NavItem [] = new Array<NavItem>();
+    let roleNavItems: NavItem [] = [];
     userRoles.forEach((role) => {
       if (roleBasedNav.hasOwnProperty(role)) {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
