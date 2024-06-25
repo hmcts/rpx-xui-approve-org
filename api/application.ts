@@ -213,10 +213,11 @@ const baseStoreOptions = {
 };
 
 console.log(`Redis URL is ${getConfigValue(REDISCLOUD_URL)}`);
+console.log(`Decoded is ${decodeURI(getConfigValue(REDISCLOUD_URL))}`);
 const redisStoreOptions = {
   redisStore: { ...baseStoreOptions, ...{
     redisStoreOptions: {
-      redisCloudUrl: getConfigValue(REDISCLOUD_URL),
+      redisCloudUrl: decodeURI(getConfigValue(REDISCLOUD_URL)),
       redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
       redisTtl: getConfigValue(REDIS_TTL)
     }
