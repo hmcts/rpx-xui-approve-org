@@ -16,6 +16,9 @@ nodejs:
         - ao-s2s-client-secret
         - ao-idam-client-secret
         - launch-darkly-client-id
+        - appinsights-instrumentationkey-ao
+        - name: ao-webapp-redis6-connection-string
+          alias: ao-webapp-redis-connection-string
   autoscaling:
     enabled: false
 redis:
