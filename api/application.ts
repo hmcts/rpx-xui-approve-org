@@ -212,6 +212,7 @@ const baseStoreOptions = {
   secret: getConfigValue(SESSION_SECRET)
 };
 
+console.log(`Redis URL is ${getConfigValue(REDISCLOUD_URL)}`);
 const redisStoreOptions = {
   redisStore: { ...baseStoreOptions, ...{
     redisStoreOptions: {
