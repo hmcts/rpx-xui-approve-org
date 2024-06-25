@@ -198,4 +198,3 @@ withPipeline(type, product, component) {
         ])
     }
 }
-
