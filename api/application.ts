@@ -212,10 +212,12 @@ const baseStoreOptions = {
   secret: getConfigValue(SESSION_SECRET)
 };
 
+console.log(`Redis URL is ${getConfigValue(REDISCLOUD_URL)}`);
+console.log(`Decoded is ${decodeURIComponent(getConfigValue(REDISCLOUD_URL))}`);
 const redisStoreOptions = {
   redisStore: { ...baseStoreOptions, ...{
     redisStoreOptions: {
-      redisCloudUrl: getConfigValue(REDISCLOUD_URL),
+      redisCloudUrl: decodeURIComponent(getConfigValue(REDISCLOUD_URL)),
       redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
       redisTtl: getConfigValue(REDIS_TTL)
     }
