@@ -3322,16 +3322,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.0.18-angular-upgrade-17":
-  version: 2.0.18-angular-upgrade-17
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.18-angular-upgrade-17"
+"@hmcts/rpx-xui-common-lib@npm:2.0.23":
+  version: 2.0.23
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.0.23"
   dependencies:
     tslib: ^2.0.0
   peerDependencies:
-    launchdarkly-js-client-sdk: ^2.15.2
+    launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: da0b44e4b6754adb2bb62821b39fb3f44d1ee8c898286f9c6c594b7a9169bbc75eec7c0492d33accbe3fbfa1b9135ce9fcc8f422846dc9ec6f0892fa11748df2
+  checksum: e5f24494b28cc99d6ae4cb1839a3191fb7a20a29d72ce67a7bdbc2a21854dabc6c2b5c08b7671b5538c6d68b7bb126eedc838330fc9c799483c0490754564b9b
   languageName: node
   linkType: hard
 
@@ -18423,7 +18423,7 @@ __metadata:
     "@hmcts/frontend": 0.0.41-alpha
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
-    "@hmcts/rpx-xui-common-lib": 2.0.18-angular-upgrade-17
+    "@hmcts/rpx-xui-common-lib": 2.0.23
     "@hmcts/rpx-xui-node-lib": 2.29.0
     "@ng-idle/core": ^14.0.0
     "@ng-idle/keepalive": ^14.0.0
