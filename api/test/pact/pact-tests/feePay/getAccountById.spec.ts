@@ -1,12 +1,13 @@
-import {expect} from 'chai';
-import {AccountDetailsResponse} from '../../../pactFixtures';
-import {getOperation} from '../../../pactUtil';
-import {PactTestSetup} from '../settings/provider.mock';
+import { expect } from 'chai';
+import { AccountDetailsResponse } from '../../../pactFixtures';
+import { getOperation } from '../../../pactUtil';
+import { PactTestSetup } from '../settings/provider.mock';
 
 const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, like } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'payment_creditAccountPayment', port: 8000 });
 
+// @ts-ignore
 describe('Get Account Status for a Account Name', async () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -26,9 +27,9 @@ describe('Get Account Status for a Account Name', async () => {
       status: somethingLike('Success'),
       status_histories: [
         {
-          "date_updated": somethingLike('2020-10-06T12:55:48.685+0000'),
-          "date_created": somethingLike('2020-10-06T12:54:48.585+0000'),
-          "status": somethingLike("success")
+          'date_updated': somethingLike('2020-10-06T12:55:48.685+0000'),
+          'date_created': somethingLike('2020-10-06T12:54:48.585+0000'),
+          'status': somethingLike('success')
         }
       ]
       // effective_date: somethingLike('2021-01-20T12:56:47.576Z')
