@@ -34,7 +34,10 @@ def secrets = [
     secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
     secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
     secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
-    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
+    secret('ao-s2s-client-secret', 'S2S_SECRET'),
+    secret('ao-idam-client-secret', 'IDAM_SECRET'),
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
+    secret('ao-webapp-redis6-connection-string', 'REDISCLOUD_URL'),
   ]
 ]
 
