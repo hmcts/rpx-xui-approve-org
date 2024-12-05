@@ -233,5 +233,5 @@
     "loader-utils": "~2.0.3",
     "async": "~3.2.2"
   },
-  "packageManager": "yarn@3.6.3"
+  "packageManager": "yarn@3.8.7"
 }
