@@ -8,6 +8,8 @@ import { ServiceDownComponent } from './components/service-down/service-down.com
 import { SignedOutComponent } from './components/signed-out/signed-out.component';
 import { RedirectComponent } from './containers';
 
+//dummy comment
+
 export const ROUTES: Routes = [
   {
     path: '',
