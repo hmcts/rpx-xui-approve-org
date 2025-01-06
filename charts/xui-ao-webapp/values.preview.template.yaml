@@ -15,6 +15,7 @@ nodejs:
       secrets:
         - ao-s2s-client-secret
         - ao-idam-client-secret
+        - appinsights-instrumentationkey-ao
         - name: launch-darkly-client-id-preview
           alias: launch-darkly-client-id
   autoscaling:
