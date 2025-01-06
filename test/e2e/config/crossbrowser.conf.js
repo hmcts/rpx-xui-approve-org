@@ -91,7 +91,8 @@ const config = {
     strict: true,
     format: ['json:cb_reports/saucelab_results.json'],
     require: ['../support/world.js', '../support/*.js', '../features/step_definitions/**/*.steps.js'],
-    tags: ['@crossbrowser', 'not @Flaky']
+    //tags: ['@crossbrowser', 'not @Flaky']
+    tags: ['@fullfunctional', 'not @Flaky', 'not @Ignore']
   },
 
   plugins: [
