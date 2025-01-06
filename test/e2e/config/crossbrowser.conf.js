@@ -7,33 +7,18 @@ const argv = minimist(process.argv.slice(2));
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
-
-  sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
-
-  host: 'ondemand.eu-central-1.saucelabs.com',
-  sauceRegion: 'eu',
-  port: 80,
-  sauceConnect: true,
   specs: ['../features/**/*.feature'],
-
-  baseUrl: (process.env.TEST_URL || 'http://localhost:3000/').replace('https', 'http'),
-
+  baseUrl: (process.env.TEST_URL || 'http://localhost:3000').replace('https', 'http'),
   params: {
-    serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
+    serverUrls: process.env.TEST_URL || 'http://localhost:3000',
     targetEnv: argv.env || 'local',
     //username: process.env.TEST_EMAIL,
     //password: process.env.TEST_PASSWORD,
     username: 'vmuniganti@mailnesia.com',
     password: 'Monday01'
   },
-
-  // sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
-  sauceUser: process.env.SAUCE_USERNAME,
-  sauceKey: process.env.SAUCE_ACCESS_KEY,
-  SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
-  allScriptsTimeout: 111000,
-
-  useAllAngular2AppRoots: true,
+  getPageTimeout: 120000,
+  allScriptsTimeout: 500000,
   multiCapabilities: [
     {
       browserName: 'chrome',
@@ -56,29 +41,6 @@ const config = {
       sharedTestFiles: false,
       maxInstances: 1
     },
-
-    // {
-    //   browserName: 'internet explorer',
-    //   platform: 'Windows 10',
-    //   version: '11.285',
-    //   name: 'IE-TEST',
-    //   tunnelIdentifier: 'reformtunnel',
-    //   extendedDebugging: true,
-    //   sharedTestFiles: false,
-    //   maxInstances: 1
-    // },
-
-    // {
-    //   browserName: 'safari',
-    //   platform: 'macOS 10.15',
-    //   version: '13.1',
-    //   name: 'Safari-TEST',
-    //   tunnelIdentifier: 'reformtunnel',
-    //   extendedDebugging: true,
-    //   sharedTestFiles: false,
-    //   maxInstances: 1
-    //
-    // },
 
     {
       browserName: 'MicrosoftEdge',
@@ -114,7 +76,16 @@ const config = {
     }
   ],
 
-  exclude: [],
+  onPrepare() {
+    const caps = browser.getCapabilities();
+    browser.manage()
+      .window()
+      .maximize();
+    browser.waitForAngularEnabled(false);
+    global.expect = chai.expect;
+    global.assert = chai.assert;
+    global.should = chai.should;
+  },
 
   cucumberOpts: {
     strict: true,
@@ -137,16 +108,21 @@ const config = {
     }
   ],
 
-  onPrepare() {
-    const caps = browser.getCapabilities();
-    browser.manage()
-      .window()
-      .maximize();
-    browser.waitForAngularEnabled(false);
-    global.expect = chai.expect;
-    global.assert = chai.assert;
-    global.should = chai.should;
-  }
+  sauceSeleniumAddress: 'ondemand.eu-central-1.saucelabs.com:443/wd/hub',
+
+  host: 'ondemand.eu-central-1.saucelabs.com',
+  sauceRegion: 'eu',
+  port: 80,
+  sauceConnect: true,
+
+  // sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
+  sauceUser: process.env.SAUCE_USERNAME,
+  sauceKey: process.env.SAUCE_ACCESS_KEY,
+  SAUCE_REST_ENDPOINT: 'https://eu-central-1.saucelabs.com/rest/v1/',
+
+  useAllAngular2AppRoots: true,
+
+  exclude: []
 };
 
 exports.config = config;
