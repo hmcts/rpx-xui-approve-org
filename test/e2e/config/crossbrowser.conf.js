@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 const minimist = require('minimist');
+const cucumberPretty = require('@cucumber/pretty-formatter');
 const argv = minimist(process.argv.slice(2));
 
 const config = {
@@ -89,9 +90,9 @@ const config = {
 
   cucumberOpts: {
     strict: true,
-    format: ['json:cb_reports/saucelab_results.json'],
-    require: ['../support/world.js', '../support/*.js', '../features/step_definitions/**/*.steps.js'],
-    tags: ['@crossbrowser', 'not @Flaky']
+    format: ['@cucumber/pretty-formatter', 'json:cb_reports/saucelab_results.json'],
+    require: ['../support/timeout.js', '../features/step_definitions/**/*.steps.js'],
+    tags: ['@crossbrowser']
     // tags: ['@fullfunctional', 'not @Flaky', 'not @Ignore']
   },
 
