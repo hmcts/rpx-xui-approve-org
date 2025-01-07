@@ -87,8 +87,8 @@ const config = {
 
   cucumberOpts: {
     strict: true,
-    // format: ['node_modules/cucumber-pretty'],
-    format: ['json:reports_json/results.json'],
+    format: ['node_modules/cucumber-pretty', 'json:reports_json/results.json'],
+    // format: ['json:reports_json/results.json'],
     tags: ['@fullfunctional', 'not @Flaky', 'not @Ignore'],
     require: [
       '../support/timeout.js',
