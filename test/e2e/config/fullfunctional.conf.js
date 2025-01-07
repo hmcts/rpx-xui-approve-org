@@ -1,6 +1,7 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const minimist = require('minimist');
+const cucumberPretty = require('@cucumber/pretty-formatter');
 
 chai.use(chaiAsPromised);
 
