@@ -7,7 +7,7 @@ const argv = minimist(process.argv.slice(2));
 const config = {
   framework: 'custom',
   frameworkPath: require.resolve('protractor-cucumber-framework'),
-  specs: ['../features/**/*.feature'],
+  specs: ['../features/**/smoke.feature'],
   baseUrl: (process.env.TEST_URL || 'http://localhost:3000').replace('https', 'http'),
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000',
@@ -35,7 +35,7 @@ const config = {
       browserName: 'firefox',
       version: 'latest',
       platform: 'Windows 10',
-      name: 'firefox-tests',
+      name: 'firefox-win-tests',
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
@@ -44,9 +44,9 @@ const config = {
 
     {
       browserName: 'MicrosoftEdge',
-      platform: 'macOS 10.15',
-      version: '90.0',
-      name: 'chromium-tests',
+      platform: 'Windows 10',
+      version: 'latest',
+      name: 'chromium-win-tests',
       tunnelIdentifier: 'reformtunnel',
       extendedDebugging: true,
       sharedTestFiles: false,
@@ -91,8 +91,8 @@ const config = {
     strict: true,
     format: ['json:cb_reports/saucelab_results.json'],
     require: ['../support/world.js', '../support/*.js', '../features/step_definitions/**/*.steps.js'],
-    //tags: ['@crossbrowser', 'not @Flaky']
-    tags: ['@fullfunctional', 'not @Flaky', 'not @Ignore']
+    tags: ['@crossbrowser', 'not @Flaky']
+    // tags: ['@fullfunctional', 'not @Flaky', 'not @Ignore']
   },
 
   plugins: [

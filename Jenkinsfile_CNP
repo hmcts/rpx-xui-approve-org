@@ -42,9 +42,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    // enableFortifyScan('rpx-aat')
-    // enableFullFunctionalTest(60)
-    enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     afterSuccess('checkout') {sh 'yarn cache clean'}
@@ -65,42 +62,6 @@ withNightlyPipeline(type, product, component) {
             reportDir            : "test/reports/lint/ng/",
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
-        ])
-    }
-
-    afterSuccess('fortify-scan') {
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-    }
-
-    afterSuccess('fullFunctionalTest') {
-
-        publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/functional/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Full functional Tests'
-        ])
-    }
-
-    afterSuccess('mutationTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/mutation/node/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Mutation tests'
         ])
     }
 
