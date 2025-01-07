@@ -5,6 +5,7 @@ const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../
 const config = require('../../../config/conf_old.js');
 const browserWaits = require('../../../support/customWaits');
 const loginPage = require('../../pageObjects/loginLogoutObjects');
+const { When, Then } = require('@cucumber/cucumber');
 
 const CucumberReporter = require('../../../support/CucumberReporter');
 

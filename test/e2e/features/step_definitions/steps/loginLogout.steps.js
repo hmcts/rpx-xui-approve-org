@@ -6,6 +6,7 @@ const headerPage = require('../../pageObjects/headerPage');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const config = require('../../../config/config');
 const browserWaits = require('../../../support/customWaits');
+const { Then, When, Given } = require('@cucumber/cucumber');
 
 async function waitForElement(el) {
   await browserWaits.waitForElement($(el))

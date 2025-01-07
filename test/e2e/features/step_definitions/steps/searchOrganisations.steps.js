@@ -1,7 +1,8 @@
 'use strict';
 
 const organisationListPage = require('../../pageObjects/organisationListPage');
-const browserWaits = require('../../../support/customWaits')
+const browserWaits = require('../../../support/customWaits');
+const { Then, When } = require('@cucumber/cucumber');
 Then('I search with organisation name and validate results', async function () {
   await organisationListPage.searchAndValidateByName();
 });
@@ -25,7 +26,7 @@ Then('I see Organisations list page with sub navigation page {string}', async fu
     const header = await organisationListPage.containerHeader.getText();
     expect(header).to.include(headerPage)
   })
-  
+
 });
 
 

@@ -1,4 +1,4 @@
-
+const { When } = require('@cucumber/cucumber');
 
 Given('I save page url with reference {string}', async function(ref){
     const pageUrl = await browser.getCurrentUrl()
