@@ -71,6 +71,10 @@ class Browser{
     }
 
     async get(url){
+      console.log('in Browser -> get()');
+      console.log('url --> ' + url);
+      console.log('getActor() --> ' + getActor());
+      console.log('getActor().amOnPage --> ' + getActor().amOnPage);
         await getActor().amOnPage(url);
     }
 
