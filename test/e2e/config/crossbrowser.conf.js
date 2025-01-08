@@ -21,10 +21,17 @@ const config = {
   params: {
     serverUrls: process.env.TEST_URL || 'http://localhost:3000/',
     targetEnv: argv.env || 'local',
-    //username: process.env.TEST_EMAIL,
-    //password: process.env.TEST_PASSWORD,
-    username: 'vmuniganti@mailnesia.com',
-    password: 'Monday01'
+    username: process.env.TEST_EMAIL,
+    password: process.env.TEST_PASSWORD,
+
+    approver_username: 'vamshiadminuser@mailnesia.com',
+    approver_password: 'Testing123',
+    cwdAdmin: 'cwd_admin@mailinator.com',
+    cwdAdmPass: 'Welcome01',
+    fr_judge_username: process.env.FR_EMAIL,
+    fr_judge_password: process.env.FR_PASSWORD,
+    sscs_username: process.env.SSCS_EMAIL,
+    sscs_password: process.env.SSCS_PASSWORD
   },
 
   // sauceProxy: 'http://proxyout.reform.hmcts.net:8080',  // Proxy for the REST API
