@@ -3,6 +3,8 @@ const helper = require('codeceptjs').helper;
 
 
 function getActor(){
+  console.log('in getActor()');
+  console.log('actor() --> ' + actor());
     return actor().retry({ retries: 3, minTimeout: 30 });
 }
 
@@ -34,6 +36,7 @@ class DriverManager{
     }
 
     async setCookies(cookies){
+      console.log('in DriverManager -> setCookies()');
         for(const cookie of cookies){
             await getActor().setCookie(cookie)
         }
@@ -55,6 +58,7 @@ class Browser{
     }
 
     get_I(){
+      console.log('in Browser -> get_I()');
         return getActor()
     }
 
@@ -79,7 +83,8 @@ class Browser{
     }
 
     async getCurrentUrl(){
-        return await getActor().grabCurrentUrl()
+      console.log('in Browser -> getCurrentUrl()');
+      return await getActor().grabCurrentUrl()
     }
 
     async refresh(){
@@ -89,6 +94,7 @@ class Browser{
 
 
     async handlePopups(){
+      console.log('in Browser -> handlePopups()');
         try{
             return getActor().cancelPopup();
         }catch(err){
@@ -98,6 +104,7 @@ class Browser{
     }
 
     async executeScript(fn, element){
+      console.log('in Browser -> executeScript()');
       if (element)
         return getActor().executeScript(fn, element.selector);
       else
@@ -105,6 +112,7 @@ class Browser{
     }
 
     async getBrowserLogs(){
+      console.log('in Browser -> getBrowserLogs()');
         return await getActor().grabBrowserLogs();
     }
 
@@ -134,6 +142,7 @@ class Browser{
     }
 
     async getAllWindowHandles() {
+      console.log('')
         return await getActor().grabAllWindowHandles();
     }
 }
