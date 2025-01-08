@@ -24,6 +24,7 @@ class CodeceptMochawesomeLog {
         let startPadding = basePad + maxSize + 1;
         for (let key of keys) {
             try {
+              console.log("in reportLogger FormatPrintJson");
                 browser.get_I().addMochawesomeContext(`${key.padEnd(startPadding)} : ${jsonObj[key]}`);
             }
             catch (err) {
@@ -36,6 +37,7 @@ class CodeceptMochawesomeLog {
 
     LogTestDataInput(message) {
         try {
+          console.log("in reportLogger LogTestDataInput");
             browser.get_I().addMochawesomeContext(`>>>>>>> [ Test data input ]: ${message}`);
 
         } catch (err) {
@@ -48,6 +50,7 @@ class CodeceptMochawesomeLog {
         // if (!this._isLevelEnabled(logLevel)) return;
 
         try {
+          console.log("in reportLogger AddMessage");
             // browser.get_I().addMochawesomeContext(this.getDate() + message);
             message = "=> " + message
             var buf = message.toString("binary")
@@ -62,6 +65,7 @@ class CodeceptMochawesomeLog {
     AddMessageToReportOnly(message, logLevel) {
         // if (!this._isLevelEnabled(logLevel)) return;
         try {
+          console.log("in reportLogger AddMessageToReportOnly");
             // browser.get_I().addMochawesomeContext(this.getDate() + message);
             browser.get_I().say(message)
 
@@ -77,6 +81,7 @@ class CodeceptMochawesomeLog {
         // if (!this._isLevelEnabled(logLevel)) return;
 
         try {
+            console.log("in reportLogger reportLogger AddJson");
             // browser.get_I().addMochawesomeContext(JSON.stringify(json, null, 2));
             browser.get_I().say(JSON.stringify(json, null, 2))
 
@@ -152,8 +157,8 @@ class CodeceptMochawesomeLog {
     }
 
     // _isLevelEnabled(msgLoglevel)`=== BDD)
-    //     msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;  
-    //     return msgLoglevel >= this.logLevel; 
+    //     msgLoglevel = msgLoglevel !== undefined ? msgLoglevel : LOG_LEVELS.Info;
+    //     return msgLoglevel >= this.logLevel;
     // }
 
 }
