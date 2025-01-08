@@ -20,7 +20,10 @@ async function waitForElement(el) {
 // });
 
 When('I navigate to EUI Approve Organisation Url', async function () {
+
   await browser.get(config.config.baseUrl);
+  CucumberReporter.AddMessage('in I navigate to EUI Approve Organisation Url. URL is: ' + config.config.baseUrl);
+  CucumberReporter.AddMessage('loginPage.emailAddress: ' + loginPage.emailAddress);
   await browserWaits.waitForElement(loginPage.emailAddress);
 });
 
