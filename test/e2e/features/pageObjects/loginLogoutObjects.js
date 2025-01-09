@@ -7,7 +7,7 @@ const reportLogger = require('../../../codeceptCommon/reportLogger')
 function loginLogoutObjects() {
   console.log('in loginLogoutObjects');
   console.log('emailAddress is: ' + element(by.css('input#username')));
-  this.emailAddress = element(by.css('input#username'));
+  this.emailAddress = element(by.css('[id=\'username\']'));
   console.log('emailAddress is: ' + this.emailAddress.getAttribute('value'));
   console.log('emailAddress is: ' + this.emailAddress.getAttribute('name'));
   console.log('password: ' + element(by.css('[id=\'password\']')));
