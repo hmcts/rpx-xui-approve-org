@@ -51,9 +51,11 @@ class CodeceptMochawesomeLog {
 
         try {
           console.log("in reportLogger AddMessage");
+          console.log('start of trace');
           console.trace();
+          console.log('end of trace');
 
-            // browser.get_I().addMochawesomeContext(this.getDate() + message);
+          // browser.get_I().addMochawesomeContext(this.getDate() + message);
             message = "=> " + message
             var buf = message.toString("binary")
             browser.get_I().say(buf)
