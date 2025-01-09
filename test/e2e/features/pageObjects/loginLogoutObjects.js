@@ -8,7 +8,8 @@ function loginLogoutObjects() {
   console.log('in loginLogoutObjects');
   console.log('emailAddress is: ' + element(by.css('input#username')));
   this.emailAddress = element(by.css('input#username'));
-  console.log('emailAddress is: ' + this.emailAddress.toString());
+  console.log('emailAddress is: ' + this.emailAddress.getAttribute('value'));
+  console.log('emailAddress is: ' + this.emailAddress.getAttribute('name'));
   console.log('password: ' + element(by.css('[id=\'password\']')));
   this.password = element(by.css('[id=\'password\']'));
   console.log('signinTitle: ' + element(by.css('h1.heading-large')));
