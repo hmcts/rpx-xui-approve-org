@@ -17,7 +17,8 @@ def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
-def vault = "rpx"
+
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def secrets = [
   'rpx-${env}': [
@@ -46,9 +47,13 @@ withNightlyPipeline(type, product, component) {
     // enableFullFunctionalTest(60)
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
-    afterSuccess('checkout') {sh 'yarn cache clean'}
+
+    afterSuccess('checkout') {
+            yarnBuilder.yarn('cache clean')
+    }
     afterSuccess('build') {
-        sh 'npm run build'
+        yarnBuilder.yarn('build')
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
