@@ -1,8 +1,11 @@
 // var EC = protractor.ExpectedConditions;
 
-
 const CucumberReporter = require('../../codeceptCommon/reportLogger');
 const BrowserLogs = require('./browserLogs');
+// trial start
+const { protractor } = require('protractor');
+const EC = protractor.ExpectedConditions;
+// trial end
 class BrowserWaits {
   constructor() {
     this.waitTime = 30000;
@@ -44,6 +47,12 @@ class BrowserWaits {
     await element.wait(this.waitTime / 1000)
     // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
 
+  }
+  async waitForElement(waitelement, customWait, message) {
+    console.log('in waitForElement');
+    console.log('browser type is: ' + browser.browserName);
+    console.log('waitelement is: ' + waitelement.toString());
+    await browser.wait(EC.visibilityOf(waitelement), customWait ? customWait : this.waitTime, 'Error : ' + waitelement.locator().toString() + (message ? ' => ' + message : '_'));
   }
 
   async waitForPresenceOfElement(element) {
@@ -234,4 +243,4 @@ class BrowserWaits {
   }
 }
 
-module.exports = new BrowserWaits(); 
+module.exports = new BrowserWaits();
