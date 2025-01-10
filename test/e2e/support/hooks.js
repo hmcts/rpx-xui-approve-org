@@ -104,7 +104,9 @@ After(async function (scenario) {
     if (scenario.result.status === 'failed') {
       await prinrBrowserLogs();
       const stream = await browser.takeScreenshot();
-      const decodedImage = new Buffer(stream.replace('data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+      const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+      // const decodedImage = new Buffer(stream.replace('data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+      //   =                         new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
       world.attach(decodedImage, 'image/png');
     } else {
       await clearBrowserLogs();
