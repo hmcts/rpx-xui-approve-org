@@ -20,7 +20,8 @@ async function waitForElement(el) {
 
 When('I navigate to EUI Approve Organisation Url', async function () {
   await browser.get(config.config.baseUrl);
-  await browserWaits.waitForElement(loginPage.emailAddress);
+  // await browserWaits.waitForElement(loginPage.emailAddress);
+  await browserWaits.waitForElement(loginPage.emailAddress, LONG_DELAY, 'Failed to find email address field');
 });
 
 Then('I Check the active Organisation banner appear', async function () {
