@@ -2,7 +2,7 @@
 
 const organisationListPage = require('../../pageObjects/organisationListPage');
 const browserWaits = require('../../../support/customWaits');
-const { When, Then } = require('cucumber');
+const { When, Then } = require('@cucumber/cucumber');
 
 Then('I search with organisation name and validate results', async function () {
   await organisationListPage.searchAndValidateByName();

@@ -4,7 +4,7 @@ const browserWaits = require('../../../support/customWaits');
 const organisationPage = require('../../pageObjects/organisationPage');
 const decisionpage = require('../../pageObjects/decisionConfirmPage');
 const organisationListPage = require('../../pageObjects/organisationListPage');
-const { When, Then } = require('cucumber');
+const { When, Then } = require('@cucumber/cucumber');
 
 Then('I am on organisation page', async function () {
   await browserWaits.waitForElement(organisationPage.statusBadge);
