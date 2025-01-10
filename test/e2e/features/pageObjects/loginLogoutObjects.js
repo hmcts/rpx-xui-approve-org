@@ -5,7 +5,7 @@ const BrowserWaits = require('../../support/customWaits');
 const reportLogger = require('../../../codeceptCommon/reportLogger')
 
 function loginLogoutObjects() {
-  this.emailAddress = element(by.css('input#username'));
+  this.emailAddress = element(by.css('[id=\'username\']'));
   this.password = element(by.css('[id=\'password\']'));
   this.signinTitle = element(by.css('h1.heading-large'));
   this.signinBtn = element(by.css('input.button'));
