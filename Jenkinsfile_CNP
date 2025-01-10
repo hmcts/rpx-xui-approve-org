@@ -27,17 +27,20 @@ def secrets = [
     secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
     secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
     secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
-    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
+    secret('ao-s2s-client-secret', 'S2S_SECRET'),
+    secret('ao-idam-client-secret', 'IDAM_SECRET'),
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
+    secret('ao-webapp-redis6-connection-string', 'REDISCLOUD_URL'),
   ]
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [ $class: 'AzureKeyVaultSecret',
-    secretType: 'Secret',
-    name: secretName,
-    version: '',
-    envVariable: envVar
-  ]
+    [ $class: 'AzureKeyVaultSecret',
+      secretType: 'Secret',
+      name: secretName,
+      version: '',
+      envVariable: envVar
+    ]
 }
 
 withNightlyPipeline(type, product, component) {
@@ -72,17 +75,6 @@ withNightlyPipeline(type, product, component) {
         ])
     }
 
-    afterSuccess('crossBrowserTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/crossbrowser/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Cross Browser Tests'
-      ])
-    }
-
     afterSuccess('fullFunctionalTest') {
 
         publishHTML([
@@ -102,5 +94,16 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Full functional Tests'
         ])
+    }
+
+    afterSuccess('crossBrowserTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/crossbrowser/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Cross Browser Tests'
+      ])
     }
 }
