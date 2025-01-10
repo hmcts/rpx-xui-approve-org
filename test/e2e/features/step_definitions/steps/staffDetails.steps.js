@@ -2,7 +2,7 @@
 const path = require('path');
 
 const staffDetailsPage = require('../../pageObjects/staffDetailsPage');
-const { When, Then } = require('cucumber');
+const { When, Then } = require('@cucumber/cucumber');
 
 Then('I see Staff details upload page displayed', async function () {
   expect(await staffDetailsPage.amOnPage(), 'Staff details upload page not displayed').to.be.true;
