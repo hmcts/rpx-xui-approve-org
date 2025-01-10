@@ -1,7 +1,7 @@
 'use strict';
 
 const headerPage = require('../../pageObjects/headerPage');
-const { When, Then } = require('cucumber');
+const { When, Then } = require('@cucumber/cucumber');
 
 When('I click navigation tab Staff details', async function () {
   await headerPage.clickTab('Staff details');

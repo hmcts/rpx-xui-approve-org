@@ -3,7 +3,7 @@
 const bannerPage = require('../../pageObjects/approveOrganisationObjects');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const config = require('../../../config/conf_old.js');
-const { Then } = require('cucumber');
+const { Then } = require('@cucumber/cucumber');
 let address = '';
 let administrator = ''; let orgName = '';
 
