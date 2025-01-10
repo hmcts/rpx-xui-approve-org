@@ -2,8 +2,9 @@
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const browserWaits = require('../../../support/customWaits');
 const organisationPage = require('../../pageObjects/organisationPage');
-const decisionpage = require('../../pageObjects/decisionConfirmPage')
-const organisationListPage = require('../../pageObjects/organisationListPage')
+const decisionpage = require('../../pageObjects/decisionConfirmPage');
+const organisationListPage = require('../../pageObjects/organisationListPage');
+const { When, Then } = require('cucumber');
 
 Then('I am on organisation page', async function () {
   await browserWaits.waitForElement(organisationPage.statusBadge);
@@ -52,7 +53,7 @@ Then('I see organisation details page with registration status {string}' , async
     await browserWaits.waitForElement(organisationPage.organisationDetailsContainer)
     expect(await organisationPage.getOrganisationStatus()).to.includes(status)
   })
-  
+
 })
 
 Then('I validate pending organisation details page', async function(){
@@ -65,7 +66,7 @@ Then('I validate pending organisation details page', async function(){
     expect(await organisationPage.placeUnderreviewOption.isDisplayed()).to.be.true
     expect(await organisationPage.submitButton.isDisplayed()).to.be.true
   })
-  
+
 })
 
 When('I select option {string} for pending organisation and submit', async function(option){
@@ -83,7 +84,7 @@ When('I select option {string} for pending organisation and submit', async funct
       throw Error(`Unknown option ${option}`)
   }
   await organisationPage.submitButton.click()
-  
+
 })
 
 Then('I see pending organisation decision {string} confirm page', async function(decision){
@@ -102,7 +103,7 @@ Then('I click confirm in pending organisation decision confirm page to see succe
     await decisionpage.confirmButton.click()
     expect(await organisationListPage.banner.getText()).to.includes(message)
   })
-  
+
 })
 
 

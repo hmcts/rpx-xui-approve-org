@@ -6,6 +6,7 @@ const organisationList = require('../../pageObjects/organisationListPage');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const config = require('../../../config/conf_old.js');
 const browserWaits = require('../../../support/customWaits');
+const { Then } = require('cucumber');
 
 async function waitForElement(el) {
   await $(`.${el}`).wait()
