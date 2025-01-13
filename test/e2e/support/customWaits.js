@@ -181,7 +181,7 @@ class BrowserWaits {
     while (retryCounter < 3) {
       try {
         console.log('in retryWithAction, element: ' + element.value);
-        await this.waitForElement(element, 15000);
+        await this.waitForElement2(element, 15000, 'retryWithAction calling waitForElement2');
         retryCounter += 3;
       } catch (err) {
         retryCounter += 1;
