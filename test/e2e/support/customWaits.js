@@ -41,14 +41,14 @@ class BrowserWaits {
 
   }
 
-  async waitForElement2(element, message, waitForSeconds) {
+  async waitForElement(element, message, waitForSeconds) {
     const startTime = Date.now();
     CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName() + " " + JSON.stringify(element.selector) + " at ");
     await element.wait(this.waitTime / 1000)
     // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
 
   }
-  async waitForElement(waitelement, customWait, message) {
+  async waitForElement2(waitelement, customWait, message) {
     console.log('in waitForElement');
     console.log('browser type is: ' + browser.browserName);
     console.log('waitelement is: ' + waitelement.toString());
