@@ -41,7 +41,7 @@ class BrowserWaits {
 
   }
 
-  async waitForElement(element, message, waitForSeconds) {
+  async waitForElement2(element, message, waitForSeconds) {
     const startTime = Date.now();
     CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName() + " " + JSON.stringify(element.selector) + " at ");
     await element.wait(this.waitTime / 1000)
@@ -174,6 +174,24 @@ class BrowserWaits {
     }
   }
 
+  async retryWithAction(element, action) {
+    console.log('in retryWithAction ;;;;;;;;;;');
+    let retryCounter = 0;
+
+    while (retryCounter < 3) {
+      try {
+        console.log('in retryWithAction, element: ' + element.value);
+        await this.waitForElement(element, 15000);
+        retryCounter += 3;
+      } catch (err) {
+        retryCounter += 1;
+        if (action) {
+          await action(retryCounter + '');
+        }
+        console.log(element.locator().toString() + ' .    Retry attempt with user action(s) : ' + retryCounter);
+      }
+    }
+  }
 
   async retryWithActionCallback(callback, actionMessage, retryTryAttempts) {
 

@@ -4,6 +4,7 @@ const bannerPage = require('../../pageObjects/approveOrganisationObjects');
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../../support/constants');
 const config = require('../../../config/conf_old.js');
 const browserWaits = require('../../../support/customWaits');
+const { browser } = require('protractor');
 const loginPage = require('../../pageObjects/loginLogoutObjects');
 const { When, Then } = require('@cucumber/cucumber');
 const CucumberReporter = require('../../../support/CucumberReporter');
@@ -19,9 +20,23 @@ async function waitForElement(el) {
 // });
 
 When('I navigate to EUI Approve Organisation Url', async function () {
+  const world = this;
+  console.log('I navigate to EUI Approve Organisation Url ;;;;;;;;;;;;;;');
+  await browser.driver.manage().deleteAllCookies();
+  console.log('deleted the browser cookies;;;;;;;;;;;;;;;;;;');
   await browser.get(config.config.baseUrl);
+  console.log('got base url ;;;;;;;;;;;;;;;;;;;;;;')
   // await browserWaits.waitForElement(loginPage.emailAddress);
-  await browserWaits.waitForElement(loginPage.emailAddress, LONG_DELAY, 'Failed to find email address field');
+  // await browserWaits.waitForElement(loginPage.emailAddress, LONG_DELAY, 'Failed to find email address field');
+  await browserWaits.retryWithAction(loginPage.emailAddress, async function (message) {
+    const stream = await browser.takeScreenshot();
+    const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+    world.attach(decodedImage, 'image/png');
+    await browser.get(config.config.baseUrl);
+  });
+  console.log('called retryWithAction ;;;;;;;;;;;;;');
+  await browserWaits.waitForElement2(loginPage.emailAddress, LONG_DELAY, 'IDAM login page Email Address input not present');
+  console.log('called waitForElement ;;;;;;;;;;;;;');
 });
 
 Then('I Check the active Organisation banner appear', async function () {
