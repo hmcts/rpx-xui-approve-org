@@ -46,10 +46,29 @@ class BrowserWaits {
     CucumberReporter.AddMessage("ELEMENT_WAIT: at " + this.__getCallingFunctionName() + " " + JSON.stringify(element.selector) + " at ");
     await element.wait(this.waitTime / 1000)
     // CucumberReporter.AddMessage("ELEMENT_FOUND: in sec " + (Date.now() - startTime) / 1000 + " "+ JSON.stringify(element.selector) );
-
   }
+
+  async retryWithAction(element, action) {
+    console.log('in retryWithAction ;;;;;;;;;;');
+    let retryCounter = 0;
+
+    while (retryCounter < 3) {
+      try {
+        console.log('in retryWithAction, element: ' + element.value);
+        await this.waitForElement2(element, 15000, 'retryWithAction calling waitForElement2');
+        retryCounter += 3;
+      } catch (err) {
+        retryCounter += 1;
+        if (action) {
+          await action(retryCounter + '');
+        }
+        console.log(element.locator().toString() + ' .    Retry attempt with user action(s) : ' + retryCounter);
+      }
+    }
+  }
+
   async waitForElement2(waitelement, customWait, message) {
-    console.log('in waitForElement');
+    console.log('in waitForElement2');
     console.log('browser type is: ' + browser.browserName);
     console.log('waitelement is: ' + waitelement.toString());
     await browser.wait(EC.visibilityOf(waitelement), customWait ? customWait : this.waitTime, 'Error : ' + waitelement.locator().toString() + (message ? ' => ' + message : '_'));
@@ -170,25 +189,6 @@ class BrowserWaits {
 
         await browser.refresh();
 
-      }
-    }
-  }
-
-  async retryWithAction(element, action) {
-    console.log('in retryWithAction ;;;;;;;;;;');
-    let retryCounter = 0;
-
-    while (retryCounter < 3) {
-      try {
-        console.log('in retryWithAction, element: ' + element.value);
-        await this.waitForElement2(element, 15000, 'retryWithAction calling waitForElement2');
-        retryCounter += 3;
-      } catch (err) {
-        retryCounter += 1;
-        if (action) {
-          await action(retryCounter + '');
-        }
-        console.log(element.locator().toString() + ' .    Retry attempt with user action(s) : ' + retryCounter);
       }
     }
   }
