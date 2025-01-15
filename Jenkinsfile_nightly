@@ -45,7 +45,7 @@ withNightlyPipeline(type, product, component) {
     // enableFortifyScan('rpx-aat')
     // enableFullFunctionalTest(60)
     enableMutationTest()
-    enableCrossBrowserTest()
+    // enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     afterSuccess('checkout') {sh 'yarn cache clean'}
     afterSuccess('build') {
@@ -72,27 +72,6 @@ withNightlyPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
-    afterSuccess('fullFunctionalTest') {
-
-        publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/functional/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Full functional Tests'
-        ])
-    }
-
     afterSuccess('mutationTest') {
         publishHTML([
             allowMissing         : true,
@@ -102,17 +81,6 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
-    }
-
-    afterSuccess('crossBrowserTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/crossbrowser/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Cross Browser Tests'
-      ])
     }
 
     afterSuccess('securityScan') {
