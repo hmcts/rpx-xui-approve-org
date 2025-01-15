@@ -200,6 +200,6 @@ function createPaginatedResponse(paginationParameters: any, filteredOrganisation
 
 function textFieldMatches(org: any, field: string, filter: string): boolean {
   const fieldDilimation = field.split('.');
-  const fieldValue = fieldDilimation.length > 1 ? org[fieldDilimation[0]][fieldDilimation[1]] : org[fieldDilimation[0]];
+  const fieldValue = fieldDilimation.length > 1 ? org[fieldDilimation[0]]?.[fieldDilimation[1]] ?? '' : org[fieldDilimation[0]] ?? '';
   return fieldValue && fieldValue.toLowerCase().includes(filter);
 }

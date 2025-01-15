@@ -9,7 +9,7 @@ import { ExuiCommonLibModule, ManageSessionServices, RoleGuard, windowToken } fr
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
-import { LoggerConfig } from 'ngx-logger';
+import { LoggerTestingModule } from 'ngx-logger/testing';
 import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/services/auth/auth.service';
 import { SharedModule } from 'src/shared/shared.module';
@@ -52,7 +52,7 @@ class RoleGuardMock {
 const windowMock: Window = { gtag: () => {} } as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
-const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
+const cookieService = jasmine.createSpyObj('cookieSevice', ['get']);
 const titleService = jasmine.createSpyObj('titleService', ['setTitle', 'getTitle']);
 
 describe('AppRoutes', () => {
@@ -75,11 +75,11 @@ describe('AppRoutes', () => {
         RouterTestingModule.withRoutes(ROUTES),
         EffectsModule.forRoot([]),
         ExuiCommonLibModule,
-        SharedModule
+        SharedModule,
+        LoggerTestingModule
       ],
       providers: [
         Location,
-        LoggerConfig,
         LoggerService,
         MonitoringService,
         { provide: AuthService, useValue: authServiceMock },

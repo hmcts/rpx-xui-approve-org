@@ -4,6 +4,7 @@ import { PBANumberModel } from '../containers/pending-pbas/models/pbaNumber.mode
 export interface OrganisationAddress {
   addressLine1: string;
   addressLine2: string;
+  addressLine3?: string;
   townCity: string;
   county: string;
   dxAddress: OrganisationDxAddress[];
@@ -99,6 +100,7 @@ export class OrganisationVM {
   public adminEmail: string;
   public addressLine1: string;
   public addressLine2: string;
+  public addressLine3?: string;
   public postCode?: string;
   public townCity: string;
   public county: string;
