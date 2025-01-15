@@ -18,7 +18,7 @@ data "azurerm_subnet" "core_infra_redis_subnet" {
 
 resource "azurerm_key_vault_secret" "redis6_connection_string" {
   name         = "${var.component}-redis6-connection-string"
-  value        = "redis://ignore:${urlencode(module.redis6-cache.access_key)}@${module.redis6-cache.host_name}:${module.redis6-cache.redis_port}?tls=true"
+  value        = "redis://${urlencode(module.redis6-cache.access_key)}@${module.redis6-cache.host_name}:${module.redis6-cache.redis_port}?tls=true"
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
@@ -34,6 +34,9 @@ module "redis6-cache" {
   business_area                 = "cft"
   private_endpoint_enabled      = true
   public_network_access_enabled = false
+  family                        = var.redis_family
+  capacity                      = var.redis_capacity
+  sku_name                      = var.redis_sku_name
 }
 
 module "application_insights" {

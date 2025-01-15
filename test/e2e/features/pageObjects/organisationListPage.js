@@ -112,6 +112,7 @@ function OrganisationListPage() {
   };
 
   this.clickViewOnLastOrganisation = async function () {
+    await browserWaits.waitForSpinnerToDissappear();
     const viewLinks = element.all(by.xpath(`//table//a[contains(text(),'View')]`));
     const linksCount = await viewLinks.count()
     const lastLink = viewLinks.get(linksCount - 1)

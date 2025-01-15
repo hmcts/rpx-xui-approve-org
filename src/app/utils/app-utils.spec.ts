@@ -7,6 +7,7 @@ describe('AppUtils', () => {
     const orgAddress: [OrganisationAddress] = [{
       addressLine1: 'Line1',
       addressLine2: 'Some Address1',
+      addressLine3: 'Some Address2',
       townCity: 'London',
       county: 'Middlesex',
       postCode: 'org.postCode',
@@ -45,6 +46,8 @@ describe('AppUtils', () => {
     expect(organisationVM[0].organisationId).toEqual(organisations[0].organisationIdentifier);
     expect(organisationVM[0].name).toEqual(organisations[0].name);
     expect(organisationVM[0].orgAttributes).toEqual([{ key: 'AAA7', value: 'Damages' }]);
+    expect(organisationVM[0].addressLine2).toEqual(organisations[0].contactInformation[0].addressLine2);
+    expect(organisationVM[0].addressLine3).toEqual(organisations[0].contactInformation[0].addressLine3);
   });
 
   it('should map organisation VM', () => {

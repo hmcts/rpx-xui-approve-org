@@ -37,6 +37,7 @@ export class AppUtils {
       organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
       organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
       organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
+      organisationVm.addressLine3 = apiOrg.contactInformation[0].addressLine3;
       organisationVm.postCode = apiOrg.contactInformation[0].postCode;
       organisationVm.townCity = apiOrg.contactInformation[0].townCity;
       organisationVm.county = apiOrg.contactInformation[0].county;

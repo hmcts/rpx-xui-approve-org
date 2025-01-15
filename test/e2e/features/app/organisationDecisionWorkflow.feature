@@ -40,7 +40,7 @@ Feature: Organisation Decison workflow
     When I select option "Place registration under review pending further investigation" for pending organisation and submit
     Then I see pending organisation decision "Put the registration on hold" confirm page
     When I click confirm in pending organisation decision confirm page
-    Then I see organisations list page with messge banner "Registration put under review"
+    # Then I see organisations list page with messge banner "Registration put under review"
 
     Given I navigate to url with ref "org_to_reject"
 

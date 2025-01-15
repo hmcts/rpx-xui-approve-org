@@ -8,7 +8,7 @@ import { HmctsPrimaryNavigationComponent } from './hmcts-primary-navigation.comp
 describe('HmctsPrimaryNavigationComponent', () => {
   let component: HmctsPrimaryNavigationComponent;
   let fixture: ComponentFixture<HmctsPrimaryNavigationComponent>;
-  const cookieService = jasmine.createSpyObj('cookieSevice', ['getObject']);
+  const cookieService = jasmine.createSpyObj('cookieSevice', ['get']);
   const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
 
   beforeEach(waitForAsync(() => {
