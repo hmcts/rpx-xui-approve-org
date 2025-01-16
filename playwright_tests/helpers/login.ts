@@ -3,6 +3,7 @@ import { config } from '../config/config';
 export async function signIn(page: any, user: string = 'base') {
   const { username, password } = config[user];
   await page.goto(config.baseUrl);
+  console.log('Signing in to: ' + config.baseUrl);
   await page.getByLabel('Email address').click();
   await page.getByLabel('Email address').fill(username);
   await page.getByLabel('Password').click();
