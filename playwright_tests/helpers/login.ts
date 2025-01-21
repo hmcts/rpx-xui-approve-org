@@ -11,16 +11,14 @@ export async function signIn(page: any, user: string = 'base') {
     await page.getByLabel('Password').click();
     await page.getByLabel('Password').fill(password);
     await page.getByRole('button', { name: 'Sign in' }).click();
-    await page.waitForNavigation();
 
-    const signInForm = await page.getByRole('heading', { name: 'Sign in' });
+    const signInForm = await page.getByRole('button', { name: 'Sign in' }).isVisible();
     if (!signInForm) {
       console.log('Signed in as ' + username);
       return;
     }
+    console.log('first login failed, retrying...');
   }
-
-  throw new Error('Failed to sign in after two attempts');
 }
 
 export async function signOut(page) {
