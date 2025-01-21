@@ -4,12 +4,23 @@ export async function signIn(page: any, user: string = 'base') {
   const { username, password } = config[user];
   console.log('signing in to: ' + config.baseUrl);
   await page.goto(config.baseUrl);
-  await page.getByLabel('Email address').click();
-  await page.getByLabel('Email address').fill(username);
-  await page.getByLabel('Password').click();
-  await page.getByLabel('Password').fill(password);
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  console.log('Signed in as ' + username);
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    await page.getByLabel('Email address').click();
+    await page.getByLabel('Email address').fill(username);
+    await page.getByLabel('Password').click();
+    await page.getByLabel('Password').fill(password);
+    await page.getByRole('button', { name: 'Sign in' }).click();
+    await page.waitForNavigation();
+
+    const signInForm = await page.getByRole('heading', { name: 'Sign in' });
+    if (!signInForm) {
+      console.log('Signed in as ' + username);
+      return;
+    }
+  }
+
+  throw new Error('Failed to sign in after two attempts');
 }
 
 export async function signOut(page) {
