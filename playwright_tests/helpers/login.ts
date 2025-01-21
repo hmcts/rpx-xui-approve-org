@@ -2,6 +2,7 @@ import { config } from '../config/config';
 
 export async function signIn(page: any, user: string = 'base') {
   const { username, password } = config[user];
+  console.log('signing in to: ' + config.baseUrl);
   await page.goto(config.baseUrl);
   await page.getByLabel('Email address').click();
   await page.getByLabel('Email address').fill(username);
