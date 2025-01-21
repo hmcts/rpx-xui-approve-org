@@ -12,8 +12,8 @@ export async function signIn(page: any, user: string = 'base') {
     await page.getByLabel('Password').fill(password);
     await page.getByRole('button', { name: 'Sign in' }).click();
 
-    const signInForm = await page.getByRole('button', { name: 'Sign in' }).isVisible();
-    if (!signInForm) {
+    const currentUrl = page.url();
+    if (!currentUrl.includes('idam')) {
       console.log('Signed in as ' + username);
       return;
     }
