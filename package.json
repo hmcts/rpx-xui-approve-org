@@ -42,7 +42,7 @@
     "test:crossbrowser": "yarn playwright install && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn test:api && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
-    "test:functional": "yarn test:api && yarn playwright install chromium  && npx playwright test -c playwright.config.ts && yarn run test:a11yInTest",
+    "test:functional": "yarn playwright install chromium  && npx playwright test -c playwright.config.ts && yarn run test:a11yInTest",
     "test:functional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/functional.conf.js --local",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ng": "ng test",
