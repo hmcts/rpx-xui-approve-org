@@ -1,7 +1,6 @@
 import { generateAPIRequest, timeout } from './utils';
 import { generatePOSTAPIRequest } from './utils';
 const should = require('chai').should();
-
 let org = '';
 
 suite('Approve Org -> Get Pending Organisation details', function() {
@@ -10,21 +9,12 @@ suite('Approve Org -> Get Pending Organisation details', function() {
   // console.log('response', response.headers.get('cache-control'))
     .then((response) => {
       response.status.should.be.eql(200);
-      org = response.data[0].organisationIdentifier;
-      console.log(`Pending Org  -- printing out the details ..... : ${JSON.stringify(org)}`);
+      org = response.data[1].organisationIdentifier;
+      console.log(`Pending Org: ${org}`);
     }));
-
-
-  test('Approve Org -> Delete Pending Organisation', () =>
-
-
-
-
-    generatePOSTAPIRequest('DELETE', `/api/organisations/${org}`, {})
-
+  test('Approve Org -> Delete Pending Organisation', () => generatePOSTAPIRequest('DELETE', `/api/organisations/${org}`, {})
   // console.log('response', response.headers.get('cache-control'))
-    .then( (response) => {
-      console.log('Approve Org -> Delete Pending Organisation', JSON.stringify(response));
+    .then((response) => {
       response.status.should.be.eql(200);
     }));
 });
