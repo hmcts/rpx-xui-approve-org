@@ -4934,7 +4934,7 @@ __metadata:
   version: 1.49.1
   resolution: "@playwright/test@npm:1.49.1"
   dependencies:
-    playwright: 1.49.1
+    playwright: "npm:1.49.1"
   bin:
     playwright: cli.js
   checksum: cdbd16df3d773dc8e522d79b4b961e25c2e1b1d4f3ec45eb711078ab5d11bca47caafe833e2be2f923328fbd012405a9ee31d9b449d184077598546a36847e69
@@ -12849,7 +12849,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@2.3.2#~builtin<compat/fsevents>":
+"fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
   resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
   dependencies:
@@ -19550,8 +19550,8 @@ __metadata:
   version: 1.49.1
   resolution: "playwright@npm:1.49.1"
   dependencies:
-    fsevents: 2.3.2
-    playwright-core: 1.49.1
+    fsevents: "npm:2.3.2"
+    playwright-core: "npm:1.49.1"
   dependenciesMeta:
     fsevents:
       optional: true
