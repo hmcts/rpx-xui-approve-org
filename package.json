@@ -39,7 +39,7 @@
     "test:coverage": "echo 'not implemented'",
     "test:coverage:ng": "ng test organisation-manager --code-coverage --watch",
     "test:coverage:node": "cd api && yarn coverage",
-    "test:crossbrowser": "yarn playwright install && npx playwright test -c playwright-nightly.config.ts",
+    "test:crossbrowser": "yarn playwright install && yarn playwright install-deps && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn test:api && webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js",
     "test:fullfunctional:local": "webdriver-manager update --versions.chrome 2.40 && protractor ./test/e2e/config/fullfunctional.conf.js --local",
     "test:functional": "yarn playwright install chromium  && npx playwright test -c playwright.config.ts && yarn run test:a11yInTest",
