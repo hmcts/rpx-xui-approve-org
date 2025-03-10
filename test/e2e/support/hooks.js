@@ -3,7 +3,7 @@ const Cucumber = require('@cucumber/cucumber');
 const { Before, After } = require('@cucumber/cucumber');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const conf = require('../config/conf').config;
+const conf = require('../config/config').config;
 // const conf = require('../config/saucelabs.conf').config;
 const reporter = require('cucumber-html-reporter');
 // const report = require('cucumber-html-report');
@@ -104,7 +104,9 @@ After(async function (scenario) {
     if (scenario.result.status === 'failed') {
       await prinrBrowserLogs();
       const stream = await browser.takeScreenshot();
-      const decodedImage = new Buffer(stream.replace('data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+      const decodedImage = new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+      // const decodedImage = new Buffer(stream.replace('data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
+      //   =                         new Buffer(stream.replace(/^data:image\/(png|gif|jpeg);base64,/, ''), 'base64');
       world.attach(decodedImage, 'image/png');
     } else {
       await clearBrowserLogs();
