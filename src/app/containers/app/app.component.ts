@@ -42,6 +42,7 @@ export class AppComponent implements OnInit {
   }
 
   public ngOnInit() {
+    console.log('starting application')
     this.environmentService.getEnv$().subscribe((env) => {
       if (env.oidcEnabled) {
         this.store.dispatch(new fromRoot.GetUserDetails());
