@@ -147,7 +147,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.3.5",
     "@angular-devkit/core": "^17.3.5",
-    "@angular/cli": "17.3.5",
+    "@angular/cli": "17.3.13",
     "@angular/compiler-cli": "^17.3.5",
     "@angular/language-service": "^17.3.5",
     "@cucumber/cucumber": "^9.5.1",
