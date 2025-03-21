@@ -232,7 +232,9 @@
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "loader-utils": "~2.0.3",
-    "async": "~3.2.2"
+    "async": "~3.2.2",
+    "@types/express": "^4.17.21",
+    "@types/express-serve-static-core": "^4.17.43"
   },
   "packageManager": "yarn@3.6.3"
 }
