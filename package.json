@@ -208,7 +208,7 @@
     "ngrx-store-freeze": "^0.2.4",
     "node-html-parser": "^6.1.11",
     "nodemon": "^2.0.19",
-    "pa11y": "^6.2.3",
+    "pa11y": "^8.0.0",
     "playwright": "^1.42",
     "portfinder": "^1.0.28",
     "protractor": "~7.0.0",
