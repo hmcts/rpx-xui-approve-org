@@ -7,6 +7,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike, like } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'payment_creditAccountPayment', port: 8000 });
 
+// @ts-ignore
 describe('Get Account Status for a Account Name', async () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -15,16 +16,26 @@ describe('Get Account Status for a Account Name', async () => {
   const accountId = 'PBA1234';
 
   const responsePaymentAccount =
-  {
-    account_number: somethingLike('PBA1234'),
-    account_name: somethingLike('account name'),
-    credit_limit: like(20000.00),
-    available_balance: like(20000.00),
-    status: somethingLike('Active'),
-    effective_date: somethingLike('2021-01-20T12:56:47.576Z')
-  };
+    {
+      account_number: somethingLike('PBA1234'),
+      account_name: somethingLike('account name'),
+      credit_limit: like(20000.00),
+      available_balance: like(20000.00),
+      customer_reference: like('customerRef'),
+      organisation_name: like('organisation'),
+      site_id: like('ABA3'),
+      status: somethingLike('Success'),
+      status_histories: [
+        {
+          'date_updated': somethingLike('2020-10-06T12:55:48.685+0000'),
+          'date_created': somethingLike('2020-10-06T12:54:48.585+0000'),
+          'status': somethingLike('success')
+        }
+      ]
+      // effective_date: somethingLike('2021-01-20T12:56:47.576Z')
+    };
 
-  xdescribe('Get Account Status for a Account Name', () => {
+  describe('Get Account Status for a Account Name', () => {
     before(async () => {
       await pactSetUp.provider.setup();
       const interaction = {
