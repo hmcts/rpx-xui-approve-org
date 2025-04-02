@@ -32,6 +32,22 @@ module.exports = defineConfig({
         headless: headlessMode,
         trace: 'on-first-retry'
       }
+    },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'],
+        screenshot: 'only-on-failure',
+        headless: headlessMode,
+        trace: 'off'
+      }
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'],
+        screenshot: 'only-on-failure',
+        headless: headlessMode,
+        trace: 'off'
+      }
     }
   ]
 });

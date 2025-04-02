@@ -30,10 +30,6 @@ app.use('/*', (req, res) => {
   console.timeEnd(`GET: ${req.originalUrl}`);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-  console.log('Unhandled Rejection with:\n' + reason);
-});
-
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => logger.info(`Local server up at ${port}`));
