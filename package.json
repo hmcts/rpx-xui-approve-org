@@ -232,7 +232,8 @@
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "loader-utils": "~2.0.3",
-    "async": "~3.2.2"
+    "async": "~3.2.2",
+    "semver": "~7.5.2"
   },
   "packageManager": "yarn@3.6.3"
 }
