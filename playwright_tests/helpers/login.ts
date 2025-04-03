@@ -5,7 +5,6 @@ export async function signIn(page: any, user: string = 'base') {
   console.log('signing in to: ' + config.baseUrl);
 
   await page.goto(config.baseUrl);
-  await page.waitForLoadState('domcontentloaded'); // Ensure page is loaded
 
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
@@ -14,9 +13,6 @@ export async function signIn(page: any, user: string = 'base') {
       await page.getByRole('textbox', { name: 'Email address' }).fill(username);
       await page.getByRole('textbox', { name: 'Password' }).fill(password);
       await page.getByRole('button', { name: 'Sign in' }).click();
-
-      // Wait for navigation after login attempt
-      await page.waitForLoadState('networkidle');
 
       // Verify login success
       if (!page.url().includes('idam')) {
