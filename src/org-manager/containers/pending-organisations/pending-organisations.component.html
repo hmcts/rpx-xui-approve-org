@@ -13,10 +13,10 @@
         <th class="govuk-table__header" scope="col">Administrator</th>
         <th class="govuk-table__header" scope="col">Date received</th>
         <th class="govuk-table__header" scope="col">Status</th>
-              <td class="govuk-table__header" scope="col"></td>
+        <td class="govuk-table__header" scope="col"></td>
       </tr>
       <tr class="govuk-table__row govuk-radios"
-        *ngFor="let org of organisations| paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
+        *ngFor="let org of organisations | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
         <td class="govuk-table__cell">
           {{org.name}}<br>
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
