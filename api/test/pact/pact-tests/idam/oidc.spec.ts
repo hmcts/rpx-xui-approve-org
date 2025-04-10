@@ -12,7 +12,7 @@ describe('OpenId Connect API', async() => {
   });
 
   // Write Pact when all tests done
-  afterAll(() => pactSetUp.provider.finalize());
+  after(async () => pactSetUp.provider.finalize());
 
   describe('when a request to .well-known endpoint is made', () => {
     before(async() => {
