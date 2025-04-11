@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
@@ -18,6 +18,7 @@ import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService, PbaAccountDetails, PendingOrganisationService } from '../../services';
 import * as fromActions from '../actions/organisations.actions';
 import { OrganisationEffects } from './organisation.effects';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -50,32 +51,34 @@ describe('Organisation Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         {
-          provide: OrganisationService,
-          useValue: organisationServiceMock
+            provide: OrganisationService,
+            useValue: organisationServiceMock
         },
         {
-          provide: PendingOrganisationService,
-          useValue: pendingOrganisationServiceMock
+            provide: PendingOrganisationService,
+            useValue: pendingOrganisationServiceMock
         },
         OrganisationEffects,
         provideMockActions(() => actions$),
         {
-          provide: LoggerService,
-          useClass: LoggerServiceMock
+            provide: LoggerService,
+            useClass: LoggerServiceMock
         },
         {
-          provide: LoggerService,
-          useValue: mockedLoggerService
+            provide: LoggerService,
+            useValue: mockedLoggerService
         },
         {
-          provide: PbaAccountDetails,
-          useValue: getAccountDetailsServiceMock
-        }
-      ]
-    });
+            provide: PbaAccountDetails,
+            useValue: getAccountDetailsServiceMock
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
 
     effects = TestBed.inject(OrganisationEffects);
   });

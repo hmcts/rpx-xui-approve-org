@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { OrganisationService, PbaService } from '../../services';
 import { PendingPBAsComponent } from './pending-pbas.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PendingPBAsComponent', () => {
   let component: PendingPBAsComponent;
@@ -18,20 +19,19 @@ describe('PendingPBAsComponent', () => {
   beforeEach(() => {
     router = jasmine.createSpyObj('router', ['navigate']);
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
-        ExuiCommonLibModule
-      ],
-      providers: [
-        { provide: PbaService, useValue: pbaServiceSpy },
-        OrganisationService
-      ],
-      declarations: [
+    declarations: [
         PendingPBAsComponent
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    }).compileComponents();
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [RouterTestingModule,
+        ExuiCommonLibModule],
+    providers: [
+        { provide: PbaService, useValue: pbaServiceSpy },
+        OrganisationService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(PendingPBAsComponent);
     component = fixture.componentInstance;

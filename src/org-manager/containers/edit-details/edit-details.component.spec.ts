@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -13,6 +13,7 @@ import { OrganisationService } from '../../services/organisation.service';
 import * as fromOrganisationPendingStore from '../../store';
 import { EditDetailsComponent } from './edit-details.component';
 import { RpxTranslationService } from 'rpx-xui-translation';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
@@ -65,38 +66,37 @@ describe('EditDetailsComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        RouterTestingModule,
+    declarations: [
+        EditDetailsComponent
+    ],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+    ],
+    imports: [RouterTestingModule,
         StoreModule.forRoot({
-          ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers)
+            ...fromRoot.reducers,
+            feature: combineReducers(fromOrganisationPendingStore.reducers)
         }),
         ExuiCommonLibModule,
         RouterTestingModule,
         FormsModule,
-        ReactiveFormsModule
-      ],
-      declarations: [
-        EditDetailsComponent
-      ],
-      providers: [
+        ReactiveFormsModule],
+    providers: [
         OrganisationService,
         { provide: RpxTranslationService, useValue: translationMockService },
         { provide: UpdatePbaServices },
         {
-          provide: ActivatedRoute,
-          useValue: {
-            params: of({
-              orgId: 'orgTestId'
-            })
-          }
-        }
-      ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ]
-    }).compileComponents();
+            provide: ActivatedRoute,
+            useValue: {
+                params: of({
+                    orgId: 'orgTestId'
+                })
+            }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
     store = TestBed.inject(Store);
     updatePbaServices = TestBed.inject(UpdatePbaServices);
     mockedOrganisationService = TestBed.inject(OrganisationService);

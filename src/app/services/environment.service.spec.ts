@@ -1,9 +1,10 @@
 import { inject, TestBed } from '@angular/core/testing';
 
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { EnvironmentConfig } from 'src/models/environmentConfig.model';
 import { EnvironmentService } from './environment.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const environmentConfig: EnvironmentConfig = {
   appInsightsInstrumentationKey: '123',
@@ -34,9 +35,9 @@ describe('EnvironmentService', () => {
     mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', { get: of(environmentConfig) });
 
     TestBed.configureTestingModule({
-      providers: [EnvironmentService],
-      imports: [HttpClientTestingModule]
-    });
+    imports: [],
+    providers: [EnvironmentService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
   });
 
   it('should be created', inject([EnvironmentService], (service: EnvironmentService) => {

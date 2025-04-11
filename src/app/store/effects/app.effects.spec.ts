@@ -1,5 +1,5 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule } from '@ngrx/store';
@@ -18,17 +18,16 @@ describe('App Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({}),
-        HttpClientTestingModule
-      ],
-      providers: [
+    imports: [StoreModule.forRoot({})],
+    providers: [
         fromAppEffects.AppEffects,
         provideMockActions(() => actions$),
         { provide: LogOutKeepAliveService, useValue: mockKeepAliveService },
-        { provide: UserService, useValue: mockUserService }
-      ]
-    });
+        { provide: UserService, useValue: mockUserService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     effects = TestBed.inject(fromAppEffects.AppEffects);
   });
 

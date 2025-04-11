@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { HttpClient, HttpHandler } from '@angular/common/http';
+import { HttpClient, HttpHandler, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   template: '<div>Bob</div>'
@@ -46,19 +46,18 @@ describe('HomeComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule.withRoutes(MOCK_ROUTES),
+    declarations: [HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent],
+    imports: [RouterTestingModule.withRoutes(MOCK_ROUTES),
         FormsModule,
         ReactiveFormsModule,
-        ExuiCommonLibModule,
-        HttpClientTestingModule
-      ],
-      declarations: [HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent],
-      providers: [
+        ExuiCommonLibModule],
+    providers: [
         { provide: RpxTranslationService, useValue: translationMockService },
-        { provide: OrganisationService, useValue: organisationMockService }
-      ]
-    }).compileComponents();
+        { provide: OrganisationService, useValue: organisationMockService },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;

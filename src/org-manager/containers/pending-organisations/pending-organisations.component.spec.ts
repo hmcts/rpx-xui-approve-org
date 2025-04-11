@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -6,6 +6,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { OrganisationAddressComponent } from '../../components/organisation-address';
 import { OrganisationService } from '../../services';
 import { PendingOrganisationsComponent } from './pending-organisations.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('PendingOrganisationComponent', () => {
   let component: PendingOrganisationsComponent;
@@ -13,20 +14,19 @@ describe('PendingOrganisationComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        HttpClientTestingModule,
-        ExuiCommonLibModule
-      ],
-      declarations: [
+    declarations: [
         PendingOrganisationsComponent,
         OrganisationAddressComponent
-      ],
-      providers: [
-        OrganisationService
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    }).compileComponents();
+    ],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    imports: [RouterTestingModule,
+        ExuiCommonLibModule],
+    providers: [
+        OrganisationService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(PendingOrganisationsComponent);
     component = fixture.componentInstance;
