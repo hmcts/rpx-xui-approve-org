@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { OrganisationVM } from '../../../org-manager/models/organisation';
 import { OrganisationService, PbaAccountDetails, UsersService } from '../../../org-manager/services';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   selector: 'app-mock',
@@ -107,28 +108,23 @@ describe('OrganisationDetailsComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({
-          ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers)
-        }),
-        HttpClientTestingModule,
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        CookieModule.forRoot(),
-        RouterTestingModule.withRoutes(
-          [
-            { path: 'active-organisation', component: MockComponent },
-            { path: 'pending-organisations', component: MockComponent }
-          ]
-        )
-      ],
       declarations: [
         OrganisationDetailsComponent, MockComponent
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
       ],
+      imports: [StoreModule.forRoot({
+        ...fromRoot.reducers,
+        feature: combineReducers(fromOrganisationPendingStore.reducers)
+      }),
+      ExuiCommonLibModule,
+      RouterTestingModule,
+      CookieModule.forRoot(),
+      RouterTestingModule.withRoutes([
+        { path: 'active-organisation', component: MockComponent },
+        { path: 'pending-organisations', component: MockComponent }
+      ])],
       providers: [
         OrganisationService, PbaAccountDetails, UserApprovalGuard, UsersService,
         { provide: RpxTranslationService, useValue: translationMockService },
@@ -139,7 +135,9 @@ describe('OrganisationDetailsComponent', () => {
               orgId: 'orgTestId'
             })
           }
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
     store = TestBed.inject(Store);
