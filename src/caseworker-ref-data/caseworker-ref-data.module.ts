@@ -10,9 +10,9 @@ import * as fromContainers from './containers';
 import * as fromServices from './services';
 
 @NgModule({ exports: [...fromContainers.containers],
-    declarations: [...fromContainers.containers, ...fromComponents.components], imports: [CommonModule,
-        caseWorkerRefDataRouting,
-        SharedModule,
-        ExuiCommonLibModule,
-        FormsModule], providers: [...fromServices.services, provideHttpClient(withInterceptorsFromDi())] })
+  declarations: [...fromContainers.containers, ...fromComponents.components], imports: [CommonModule,
+    caseWorkerRefDataRouting,
+    SharedModule,
+    ExuiCommonLibModule,
+    FormsModule], providers: [...fromServices.services, provideHttpClient(withInterceptorsFromDi())] })
 export class CaseWorkerRefDataModule {}

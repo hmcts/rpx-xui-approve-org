@@ -18,16 +18,16 @@ describe('App Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [StoreModule.forRoot({})],
-    providers: [
+      imports: [StoreModule.forRoot({})],
+      providers: [
         fromAppEffects.AppEffects,
         provideMockActions(() => actions$),
         { provide: LogOutKeepAliveService, useValue: mockKeepAliveService },
         { provide: UserService, useValue: mockUserService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
     effects = TestBed.inject(fromAppEffects.AppEffects);
   });
 

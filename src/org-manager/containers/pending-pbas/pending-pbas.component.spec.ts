@@ -19,19 +19,19 @@ describe('PendingPBAsComponent', () => {
   beforeEach(() => {
     router = jasmine.createSpyObj('router', ['navigate']);
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         PendingPBAsComponent
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
         ExuiCommonLibModule],
-    providers: [
+      providers: [
         { provide: PbaService, useValue: pbaServiceSpy },
         OrganisationService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PendingPBAsComponent);
     component = fixture.componentInstance;

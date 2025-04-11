@@ -108,38 +108,38 @@ describe('OrganisationDetailsComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         OrganisationDetailsComponent, MockComponent
-    ],
-    schemas: [
+      ],
+      schemas: [
         CUSTOM_ELEMENTS_SCHEMA
-    ],
-    imports: [StoreModule.forRoot({
-            ...fromRoot.reducers,
-            feature: combineReducers(fromOrganisationPendingStore.reducers)
-        }),
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        CookieModule.forRoot(),
-        RouterTestingModule.withRoutes([
-            { path: 'active-organisation', component: MockComponent },
-            { path: 'pending-organisations', component: MockComponent }
-        ])],
-    providers: [
+      ],
+      imports: [StoreModule.forRoot({
+        ...fromRoot.reducers,
+        feature: combineReducers(fromOrganisationPendingStore.reducers)
+      }),
+      ExuiCommonLibModule,
+      RouterTestingModule,
+      CookieModule.forRoot(),
+      RouterTestingModule.withRoutes([
+        { path: 'active-organisation', component: MockComponent },
+        { path: 'pending-organisations', component: MockComponent }
+      ])],
+      providers: [
         OrganisationService, PbaAccountDetails, UserApprovalGuard, UsersService,
         { provide: RpxTranslationService, useValue: translationMockService },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                params: of({
-                    orgId: 'orgTestId'
-                })
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({
+              orgId: 'orgTestId'
+            })
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
     store = TestBed.inject(Store);
     mockedOrganisationService = TestBed.inject(OrganisationService);
     mockedPbaAccountDetails = TestBed.inject(PbaAccountDetails);

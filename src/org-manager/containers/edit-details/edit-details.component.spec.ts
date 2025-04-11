@@ -66,37 +66,37 @@ describe('EditDetailsComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         EditDetailsComponent
-    ],
-    schemas: [
+      ],
+      schemas: [
         CUSTOM_ELEMENTS_SCHEMA
-    ],
-    imports: [RouterTestingModule,
+      ],
+      imports: [RouterTestingModule,
         StoreModule.forRoot({
-            ...fromRoot.reducers,
-            feature: combineReducers(fromOrganisationPendingStore.reducers)
+          ...fromRoot.reducers,
+          feature: combineReducers(fromOrganisationPendingStore.reducers)
         }),
         ExuiCommonLibModule,
         RouterTestingModule,
         FormsModule,
         ReactiveFormsModule],
-    providers: [
+      providers: [
         OrganisationService,
         { provide: RpxTranslationService, useValue: translationMockService },
         { provide: UpdatePbaServices },
         {
-            provide: ActivatedRoute,
-            useValue: {
-                params: of({
-                    orgId: 'orgTestId'
-                })
-            }
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({
+              orgId: 'orgTestId'
+            })
+          }
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
     store = TestBed.inject(Store);
     updatePbaServices = TestBed.inject(UpdatePbaServices);
     mockedOrganisationService = TestBed.inject(OrganisationService);

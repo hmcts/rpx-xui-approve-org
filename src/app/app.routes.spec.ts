@@ -69,25 +69,25 @@ describe('AppRoutes', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         AppMockComponent
-    ],
-    imports: [CommonModule,
+      ],
+      imports: [CommonModule,
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(ROUTES),
         EffectsModule.forRoot([]),
         ExuiCommonLibModule,
         SharedModule,
         LoggerTestingModule],
-    providers: [
+      providers: [
         Location,
         LoggerService,
         MonitoringService,
         { provide: AuthService, useValue: authServiceMock },
         { provide: RoleGuard, useValue: roleGuardMock },
         {
-            provide: windowToken,
-            useValue: windowMock
+          provide: windowToken,
+          useValue: windowMock
         },
         { provide: ManageSessionServices, useValue: idleMockService },
         { provide: EnvironmentService, useValue: environmentMockService },
@@ -98,8 +98,8 @@ describe('AppRoutes', () => {
         JwtDecodeWrapper,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     router = TestBed.inject(Router);
     location = TestBed.inject(Location);

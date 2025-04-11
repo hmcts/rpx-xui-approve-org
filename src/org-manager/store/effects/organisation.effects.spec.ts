@@ -51,34 +51,34 @@ describe('Organisation Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         {
-            provide: OrganisationService,
-            useValue: organisationServiceMock
+          provide: OrganisationService,
+          useValue: organisationServiceMock
         },
         {
-            provide: PendingOrganisationService,
-            useValue: pendingOrganisationServiceMock
+          provide: PendingOrganisationService,
+          useValue: pendingOrganisationServiceMock
         },
         OrganisationEffects,
         provideMockActions(() => actions$),
         {
-            provide: LoggerService,
-            useClass: LoggerServiceMock
+          provide: LoggerService,
+          useClass: LoggerServiceMock
         },
         {
-            provide: LoggerService,
-            useValue: mockedLoggerService
+          provide: LoggerService,
+          useValue: mockedLoggerService
         },
         {
-            provide: PbaAccountDetails,
-            useValue: getAccountDetailsServiceMock
+          provide: PbaAccountDetails,
+          useValue: getAccountDetailsServiceMock
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
 
     effects = TestBed.inject(OrganisationEffects);
   });

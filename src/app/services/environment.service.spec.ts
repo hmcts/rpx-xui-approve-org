@@ -35,9 +35,9 @@ describe('EnvironmentService', () => {
     mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', { get: of(environmentConfig) });
 
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [EnvironmentService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-});
+      imports: [],
+      providers: [EnvironmentService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    });
   });
 
   it('should be created', inject([EnvironmentService], (service: EnvironmentService) => {

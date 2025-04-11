@@ -19,22 +19,22 @@ describe('Active Organisation', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         ActiveOrganisationsComponent,
         OrganisationAddressComponent
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
         StoreModule.forRoot({
-            ...fromRoot.reducers
+          ...fromRoot.reducers
         }),
         ExuiCommonLibModule],
-    providers: [
+      providers: [
         [OrganisationService],
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
     store = TestBed.inject(Store);
 
     fixture = TestBed.createComponent(ActiveOrganisationsComponent);

@@ -14,19 +14,19 @@ describe('PendingOrganisationComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         PendingOrganisationsComponent,
         OrganisationAddressComponent
-    ],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    imports: [RouterTestingModule,
+      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
         ExuiCommonLibModule],
-    providers: [
+      providers: [
         OrganisationService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PendingOrganisationsComponent);
     component = fixture.componentInstance;

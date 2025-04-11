@@ -14,10 +14,10 @@ describe('SearchOrganisationsFormComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-    declarations: [SearchOrganisationsFormComponent],
-    imports: [FormsModule, ReactiveFormsModule, ExuiCommonLibModule],
-    providers: [OrganisationService, { provide: RpxTranslationService, useValue: translationMockService }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-})
+      declarations: [SearchOrganisationsFormComponent],
+      imports: [FormsModule, ReactiveFormsModule, ExuiCommonLibModule],
+      providers: [OrganisationService, { provide: RpxTranslationService, useValue: translationMockService }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+    })
       .compileComponents();
   }));
 

@@ -60,26 +60,26 @@ describe('NewPBAsComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-    declarations: [
+      declarations: [
         NewPBAsComponent
-    ],
-    schemas: [
+      ],
+      schemas: [
         CUSTOM_ELEMENTS_SCHEMA
-    ],
-    imports: [StoreModule.forRoot({
-            ...fromRoot.reducers,
-            feature: combineReducers(fromOrganisationPendingStore.reducers)
-        }),
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        CookieModule.forRoot()],
-    providers: [
+      ],
+      imports: [StoreModule.forRoot({
+        ...fromRoot.reducers,
+        feature: combineReducers(fromOrganisationPendingStore.reducers)
+      }),
+      ExuiCommonLibModule,
+      RouterTestingModule,
+      CookieModule.forRoot()],
+      providers: [
         OrganisationService,
         PbaAccountDetails,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
     mockedOrganisationService = TestBed.inject(OrganisationService);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
     store = TestBed.inject(Store);

@@ -46,18 +46,18 @@ describe('HomeComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-    declarations: [HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent],
-    imports: [RouterTestingModule.withRoutes(MOCK_ROUTES),
+      declarations: [HomeComponent, SearchOrganisationsFormComponent, MockComponent, NotificationBannerComponent],
+      imports: [RouterTestingModule.withRoutes(MOCK_ROUTES),
         FormsModule,
         ReactiveFormsModule,
         ExuiCommonLibModule],
-    providers: [
+      providers: [
         { provide: RpxTranslationService, useValue: translationMockService },
         { provide: OrganisationService, useValue: organisationMockService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-}).compileComponents();
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;

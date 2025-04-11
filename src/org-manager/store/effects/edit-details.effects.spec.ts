@@ -26,26 +26,26 @@ describe('Organisation Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-    imports: [],
-    providers: [
+      imports: [],
+      providers: [
         {
-            provide: UpdatePbaServices,
-            useValue: updatePbaServicesMock
+          provide: UpdatePbaServices,
+          useValue: updatePbaServicesMock
         },
         fromEffects.EditDetailsEffects,
         provideMockActions(() => actions$),
         {
-            provide: LoggerService,
-            useClass: LoggerServiceMock
+          provide: LoggerService,
+          useClass: LoggerServiceMock
         },
         {
-            provide: LoggerService,
-            useValue: mockedLoggerService
+          provide: LoggerService,
+          useValue: mockedLoggerService
         },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
-    ]
-});
+      ]
+    });
 
     effects = TestBed.inject(fromEffects.EditDetailsEffects);
   });
