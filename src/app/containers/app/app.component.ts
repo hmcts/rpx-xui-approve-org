@@ -36,6 +36,8 @@ export class AppComponent implements OnInit {
     private readonly router: Router,
     private readonly titleService: Title
   ) {
+    console.log('AppComponent');
+
     this.router.events.subscribe((data) => {
       this.setTitleIfPresent(data);
     });
