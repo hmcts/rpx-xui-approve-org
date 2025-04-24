@@ -3024,12 +3024,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.1.57-angular-upgrade-rc1":
-  version: 7.1.57-angular-upgrade-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.57-angular-upgrade-rc1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.1.72-angular-upgrade-rc1":
+  version: 7.1.72-angular-upgrade-rc1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.1.72-angular-upgrade-rc1"
   dependencies:
     tslib: ^2.3.0
-  checksum: 5f24b085c8c01db42a2a7b8b90d5b51f9e800c9925928e33479bf5a5933d923dcb2b7868ea0467ba1e19ae433e06205703ed297e6b7d34cbbf7d64eb35b2011f
+  checksum: 2ac9fd0571e5b981711c53d978394b1375b74d8239c7c38bcd3b942691d12bf4fa27d1dcc6c25fe673b8b81b90a18aef1a4d206212981dbce8f6387ad36473a8
   languageName: node
   linkType: hard
 
@@ -3086,30 +3086,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.6":
-  version: 2.30.6
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.6"
+"@hmcts/rpx-xui-node-lib@npm:2.30.0":
+  version: 2.30.0
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.0"
   dependencies:
-    "@hapi/joi": "npm:^17.1.1"
-    axios: "npm:^1.7.7"
-    caller-path: "npm:^3.0.0"
-    connect-redis: "npm:^4.0.4"
-    csurf: "npm:^1.11.0"
-    debug: "npm:^4.3.7"
-    deepmerge: "npm:^4.2.2"
-    express: "npm:^4.20.0"
-    express-session: "npm:^1.17.0"
-    jest-mock-axios: "npm:^4.7.3"
-    jest-ts-auto-mock: "npm:^2.1.0"
-    jwt-decode: "npm:^2.2.0"
-    openid-client: "npm:^3.10.0"
-    otplib: "npm:^12.0.1"
-    passport: "npm:^0.5.3"
-    passport-oauth2: "npm:^1.5.0"
-    redis: "npm:^3.0.2"
-    session-file-store: "npm:^1.5.0"
-    ts-auto-mock: "npm:^3.5.0"
-    ttypescript: "npm:^1.5.13"
+    "@hapi/joi": ^17.1.1
+    axios: ^1.7.7
+    caller-path: ^3.0.0
+    connect-redis: ^4.0.4
+    csurf: ^1.11.0
+    debug: ^4.3.7
+    deepmerge: ^4.2.2
+    express: ^4.20.0
+    express-session: ^1.17.0
+    jest-mock-axios: ^4.7.3
+    jest-ts-auto-mock: ^2.1.0
+    jwt-decode: ^2.2.0
+    openid-client: ^3.10.0
+    otplib: ^12.0.1
+    passport: ^0.5.3
+    passport-oauth2: ^1.5.0
+    redis: ^3.0.2
+    session-file-store: ^1.5.0
+    ts-auto-mock: ^3.5.0
+    ttypescript: ^1.5.13
   checksum: 6e11009c1fd4c511780c1098da06319a7b1fa7568544d6288b904b76faaf025e9373a55a79bae013032a3ddbde412b6a71f566bfa6557f8c59b7c6c7eb1ec190
   languageName: node
   linkType: hard
@@ -18093,7 +18093,7 @@ __metadata:
     "@angular/router": ^18.2.13
     "@angular/ssr": ^18.2.18
     "@cucumber/cucumber": ^9.5.1
-    "@hmcts/ccd-case-ui-toolkit": 7.1.57-angular-upgrade-rc1
+    "@hmcts/ccd-case-ui-toolkit": 7.1.72-angular-upgrade-rc1
     "@hmcts/frontend": 0.0.41-alpha
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
