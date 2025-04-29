@@ -63,8 +63,9 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   }
 
   private setOrganisationDisplay(): void {
-    this.org.firstName = this.org.admin.split(' ')[0];
-    this.org.lastName = this.org.admin.split(' ')[1];
+    // Note: ternary operator included only in case where firstname or lastname not known
+    this.org.firstName = this.org.firstName ? this.org.firstName : this.org.admin.split(' ')[0];
+    this.org.lastName = this.org.lastName ? this.org.lastName : this.org.admin.split(' ')[1];
     this.companyNumber = this.org.companyNumber;
     this.orgType = this.org.orgType;
     if (this.orgTypes?.length > 0) {
