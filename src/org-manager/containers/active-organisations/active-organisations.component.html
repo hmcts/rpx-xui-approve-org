@@ -4,7 +4,6 @@
     ({{organisationCount}}<span *ngIf="searchString"> found</span>)
   </ng-container>
 </h2>
-
 <ng-container *ngIf="organisationsLoaded">
   <table class="govuk-table active-organisations">
     <thead class="govuk-table__head">
@@ -13,9 +12,11 @@
         <th class="govuk-table__header" scope="col">Address</th>
         <th class="govuk-table__header" scope="col">Administrator</th>
         <th class="govuk-table__header" scope="col">Date approved</th>
+        <th class="govuk-table__header" scope="col">Status</th>
         <th class="govuk-table__header" scope="col"></th>
       </tr>
-      <tr class="govuk-table__row govuk-radios" *ngFor="let org of organisations | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
+      <tr class="govuk-table__row govuk-radios"
+        *ngFor="let org of organisations | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
         <td class="govuk-table__cell">
           {{org.name}}<br>
           <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
@@ -29,6 +30,9 @@
         </td>
         <td class="govuk-table__cell no-wrap">
           {{org.dateApproved | date:'dd/MM/yyyy'}}
+        </td>
+        <td class="govuk-table__cell no-wrap govuk-!-text-align-centre">
+          <span *ngIf="org.status=='ACTIVE'" class="govuk-tag govuk-tag--blue">ACTIVE</span>
         </td>
         <td class="govuk-table__cell no-wrap">
           <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
