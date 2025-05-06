@@ -5,7 +5,7 @@
     "api"
   ],
   "engines": {
-    "node": ">=18.17.0"
+    "node": ">=20.19.0"
   },
   "scripts": {
     "build": "export NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
@@ -79,7 +79,7 @@
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "2.0.23",
-    "@hmcts/rpx-xui-node-lib": "2.30.0",
+    "@hmcts/rpx-xui-node-lib": "2.30.6",
     "@ng-idle/core": "^14.0.0",
     "@ng-idle/keepalive": "^14.0.0",
     "@ngrx/effects": "^16.3.0",
@@ -118,7 +118,7 @@
     "json-stringify-safe": "^5.0.1",
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^2.2.0",
-    "launchdarkly-js-client-sdk": "^2.16.3",
+    "launchdarkly-js-client-sdk": "^3.3.0",
     "log4js": "^3.0.6",
     "multer": "^1.4.2",
     "ngx-cookie": "6.0.1",
@@ -174,7 +174,7 @@
     "@types/mocha": "^10.0.1",
     "@types/mochawesome": "^6.2.1",
     "@types/multer": "^1.4.5",
-    "@types/node": "^18.17.0",
+    "@types/node": "^20.10.0",
     "@types/passport": "^1.0.3",
     "@types/shortid": "0.0.29",
     "@types/sinon": "^7.0.13",
@@ -232,7 +232,12 @@
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "loader-utils": "~2.0.3",
-    "async": "~3.2.2"
+    "async": "~3.2.2",
+    "@types/express": "^4.17.21",
+    "@types/express-serve-static-core": "^4.17.43",
+    "nanoid": "^3.3.8",
+    "cross-spawn": "^6.0.6",
+    "semver": "~7.5.2"
   },
   "packageManager": "yarn@3.6.3"
 }
