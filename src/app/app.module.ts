@@ -1,7 +1,7 @@
 import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
@@ -41,7 +41,7 @@ import { EnvironmentConfig } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 import { EnvironmentService } from './services/environment.service';
 import { LogOutKeepAliveService } from './services/keep-alive/keep-alive.service';
-import { RpxTranslationConfig, RpxTranslationService } from 'rpx-xui-translation';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 
 export const metaReducers: MetaReducer<any>[] = !config.production
   ? [storeFreeze]
@@ -57,8 +57,8 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     ...fromComponents.components,
     ...fromContainers.containers
   ],
-  imports: [
-    BrowserModule,
+  bootstrap: [AppComponent],
+  imports: [BrowserModule,
     CookieModule.withOptions(),
     RouterModule.forRoot(ROUTES, {
       anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'
@@ -76,8 +76,14 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     }),
     ExuiCommonLibModule,
     NgIdleKeepaliveModule.forRoot(),
-    HttpClientModule
-  ],
+    RpxTranslationModule.forRoot({
+      baseUrl: '/api/translation',
+      debounceTimeMs: 300,
+      validity: {
+        days: 1
+      },
+      testMode: false
+    })],
   providers: [
     LogOutKeepAliveService,
     { provide: RouterStateSerializer, useClass: CustomSerializer },
@@ -92,9 +98,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       multi: true
     },
     { provide: FeatureToggleService, useClass: LaunchDarklyService },
-    RpxTranslationService,
-    RpxTranslationConfig
-  ],
-  bootstrap: [AppComponent]
+    provideHttpClient(withInterceptorsFromDi())
+  ]
 })
 export class AppModule { }
