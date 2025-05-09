@@ -5,8 +5,7 @@ import * as express from 'express';
 import * as path from 'path';
 import { createApp, logger } from './application';
 
-
-createApp().then(app => {
+createApp().then((app) => {
   console.log('WE ARE USING server.ts on the box.');
 
   /**

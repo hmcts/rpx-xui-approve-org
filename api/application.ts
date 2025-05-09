@@ -42,11 +42,10 @@ export const logger = log4jui.getLogger('server');
 
 export const csrfProtection = csurf();
 
-
 export async function createApp() {
   const app = express();
 
-    /**
+  /**
    * If there are no configuration properties found we highlight this to the person attempting to initialise
    * this application.
    */
@@ -138,7 +137,6 @@ export async function createApp() {
   const issuerUrl = getConfigValue(SERVICES_ISS_PATH);
   const idamApiPath = getConfigValue(SERVICES_IDAM_API_PATH);
   const clientServiceDetailsUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/api/v2/services/${idamClient}`;
-
 
   const s2sSecret = getConfigValue(S2S_SECRET);
 
@@ -245,9 +243,8 @@ export async function createApp() {
     }
   };
 
-
   options.serviceOverride = await getClientServiceDetails();
-  
+
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
   nodeLibOptions.auth[type] = options;
 
@@ -347,8 +344,4 @@ export async function createApp() {
 
   return app;
 }
-
-
-
-
 

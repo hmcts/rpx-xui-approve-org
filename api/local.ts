@@ -1,11 +1,9 @@
 import { createApp, logger } from './application';
 
+createApp().then((app) => {
+  const port = process.env.PORT || 3001;
 
+  console.log('WE ARE USING local.ts on the box.');
 
-createApp().then(app => {
-    const port = process.env.PORT || 3001;
-
-    console.log('WE ARE USING local.ts on the box.');
-
-    app.listen(port, () => logger.info(`Local server up at ${port}`)); 
+  app.listen(port, () => logger.info(`Local server up at ${port}`));
 });
