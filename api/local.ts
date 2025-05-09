@@ -1,7 +1,11 @@
-import { app, logger } from './application';
+import { createApp, logger } from './application';
 
-const port = process.env.PORT || 3001;
 
-console.log('WE ARE USING local.ts on the box.');
 
-app.listen(port, () => logger.info(`Local server up at ${port}`));
+createApp().then(app => {
+    const port = process.env.PORT || 3001;
+
+    console.log('WE ARE USING local.ts on the box.');
+
+    app.listen(port, () => logger.info(`Local server up at ${port}`)); 
+});

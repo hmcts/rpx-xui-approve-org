@@ -35,6 +35,7 @@ export const SERVICES_FEE_AND_PAY_PATH = 'services.feeAndPayApi';
 export const SERVICE_S2S_PATH = 'services.s2s';
 export const SERVICE_CASE_WORKER_PATH = 'services.caseworkerApi';
 export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
+export const SERVICES_IDAM_SERVICE_OVERRIDE = 'services.serviceOverride';
 
 export const SESSION_SECRET = 'sessionSecret';
 
@@ -44,6 +45,7 @@ export const S2S_SECRET = 'secrets.rpx.ao-s2s-client-secret';
 export const IDAM_SECRET = 'secrets.rpx.ao-idam-client-secret';
 export const APP_INSIGHTS_KEY = 'secrets.rpx.appinsights-instrumentationkey-ao';
 export const LAUNCH_DARKLY_CLIENT_ID = 'secrets.rpx.launch-darkly-client-id';
+
 
 // FEATURE TOGGLES
 export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled';
