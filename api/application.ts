@@ -156,7 +156,7 @@ export async function createApp() {
     issuerURL: issuerUrl,
     logoutURL: idamApiPath,
     responseTypes: ['code'],
-    scope: 'profile openid roles manage-user create-user',
+    scope: 'profile openid roles manage-user create-user view-service-provider',
     sessionKey: 'xui-approve-org',
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
@@ -212,7 +212,7 @@ export async function createApp() {
       grant_type: 'client_credentials',
       client_id: idamClient,
       client_secret: secret,
-      scope: 'profile roles view-service-provider'
+      scope: 'profile openid roles manage-user create-user view-service-provider'
     });
     try {
       const response = await axios.post(tokenUrl, data, {
