@@ -2,9 +2,9 @@ import * as healthcheck from '@hmcts/nodejs-healthcheck';
 import { AuthOptions, getContentSecurityPolicy, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as csurf from 'csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
+import csrf from '@dr.pogodin/csurf';
 import { attach } from './auth';
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration';
 import { ERROR_NODE_CONFIG_ENV } from './configuration/constants';
@@ -40,7 +40,7 @@ import axios from 'axios';
 
 export const logger = log4jui.getLogger('server');
 
-export const csrfProtection = csurf();
+export const csrfProtection = csrf();
 
 export async function createApp() {
   const app = express();
