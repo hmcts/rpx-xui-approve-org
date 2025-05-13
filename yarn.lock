@@ -2067,6 +2067,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.27.1":
+  version: 7.27.1
+  resolution: "@babel/runtime@npm:7.27.1"
+  checksum: 11339838a54783e5b14e04d94d7a4d032e9965c5823f3f687e41556fa40344ae7aeb57c535720b7a74ab3e8217def7834a6f1a665ee55bbb3befede141419913
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.12.13, @babel/template@npm:^7.23.9, @babel/template@npm:^7.25.0, @babel/template@npm:^7.25.9, @babel/template@npm:^7.26.9, @babel/template@npm:^7.27.0, @babel/template@npm:^7.3.3":
   version: 7.27.0
   resolution: "@babel/template@npm:7.27.0"
@@ -2463,6 +2470,21 @@ __metadata:
   version: 0.5.7
   resolution: "@discoveryjs/json-ext@npm:0.5.7"
   checksum: 2176d301cc258ea5c2324402997cf8134ebb212469c0d397591636cea8d3c02f2b3cf9fd58dcb748c7a0dade77ebdc1b10284fa63e608c033a1db52fddc69918
+  languageName: node
+  linkType: hard
+
+"@dr.pogodin/csurf@npm:^1.14.0":
+  version: 1.16.2
+  resolution: "@dr.pogodin/csurf@npm:1.16.2"
+  dependencies:
+    "@babel/runtime": ^7.27.1
+    cookie: ^1.0.2
+    cookie-signature: ^1.2.2
+    http-errors: ^2.0.0
+    rndm: 1.2.0
+    tsscmp: 1.0.6
+    uid-safe: 2.1.5
+  checksum: c366f6ffd603b7a7e47e796a9b2ab64e92913b6a1e0b48df377341f621452a175d02ffaf0aafc74c6547f28cd14689b39d820deee1d10d6ca798cba93a4c443b
   languageName: node
   linkType: hard
 
@@ -2998,26 +3020,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/address@npm:^4.0.1":
-  version: 4.1.0
-  resolution: "@hapi/address@npm:4.1.0"
-  dependencies:
-    "@hapi/hoek": ^9.0.0
-  checksum: 01e8257c9428be2a2a0441b24dcab2396a6ca20f53799fd921035b45f9f62a6014f1a0dfaf2dd10912a8b0098a9ba53c3f0863a67e7acbadddeb3d2785591cfc
-  languageName: node
-  linkType: hard
-
 "@hapi/bourne@npm:^2.0.0":
   version: 2.1.0
   resolution: "@hapi/bourne@npm:2.1.0"
   checksum: 0ce5a38bc46b1b649fc04c00763def978c99b2eba5013e512f492f4d0d806a6fc1d09f36524c2f8b45cc778d481a06c1f808392e08bc6ebd14abab4bfde07ca5
-  languageName: node
-  linkType: hard
-
-"@hapi/formula@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@hapi/formula@npm:2.0.0"
-  checksum: 902da057c53027d9356de15e53a8af9ea4795d3fb78c066668b36cfca54abd2d707860469618448e7de02eb8364ead86e53b839dbd363e1aeb65ee9a195e5fad
   languageName: node
   linkType: hard
 
@@ -3028,27 +3034,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/joi@npm:^17.1.1":
-  version: 17.1.1
-  resolution: "@hapi/joi@npm:17.1.1"
-  dependencies:
-    "@hapi/address": ^4.0.1
-    "@hapi/formula": ^2.0.0
-    "@hapi/hoek": ^9.0.0
-    "@hapi/pinpoint": ^2.0.0
-    "@hapi/topo": ^5.0.0
-  checksum: 803d77e19e26802860de22b8d1ae3435679844202703d20bfd6246a8c6aa00143ce48d0e8beecf55812334e8e89ac04b79301264d4a3f87c980eb0c0646b33ab
-  languageName: node
-  linkType: hard
-
-"@hapi/pinpoint@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "@hapi/pinpoint@npm:2.0.1"
-  checksum: 8a1bb399f7cf48948669fdc80dff83892ed56eb62eee2cca128fc8b0683733b16e274b395eddfae6154a698aa57c66a3905ceaa3119c59de29751d4601831057
-  languageName: node
-  linkType: hard
-
-"@hapi/topo@npm:^5.0.0, @hapi/topo@npm:^5.1.0":
+"@hapi/topo@npm:^5.1.0":
   version: 5.1.0
   resolution: "@hapi/topo@npm:5.1.0"
   dependencies:
@@ -3119,31 +3105,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.6":
-  version: 2.30.6
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.6"
+"@hmcts/rpx-xui-node-lib@npm:2.30.6-srt-22.4.25-rc1":
+  version: 2.30.6-srt-22.4.25-rc1
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.6-srt-22.4.25-rc1"
   dependencies:
-    "@hapi/joi": ^17.1.1
+    "@dr.pogodin/csurf": ^1.14.0
     axios: ^1.7.7
     caller-path: ^3.0.0
     connect-redis: ^4.0.4
-    csurf: ^1.11.0
     debug: ^4.3.7
     deepmerge: ^4.2.2
     express: ^4.20.0
     express-session: ^1.17.0
     jest-mock-axios: ^4.7.3
     jest-ts-auto-mock: ^2.1.0
+    joi: "^17.13.3 "
     jwt-decode: ^2.2.0
-    openid-client: ^3.10.0
+    openid-client: ^5.7.1
     otplib: ^12.0.1
-    passport: ^0.5.3
-    passport-oauth2: ^1.5.0
+    passport: ^0.7.0
+    passport-oauth2: ^1.8.0
     redis: ^3.0.2
     session-file-store: ^1.5.0
     ts-auto-mock: ^3.5.0
     ttypescript: ^1.5.13
-  checksum: 5672ce0f20990a71ccec14ceead9d2cc8c3bb1edc4e5ef3a8b1972cc00a17e9a8d024e68e4e4ef10bee28dc0e7c14a50c76d1a7160895905127eb15718237321
+  checksum: e4b1321350bc5a69ac902a04dd1fce7444a2135f4f7608d144575e0cde502604be099ea106fe97d69222eaf86508c21afc27ca1cbb80645d18170b31759bd617
   languageName: node
   linkType: hard
 
@@ -9463,6 +9449,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie-signature@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "cookie-signature@npm:1.2.2"
+  checksum: 1ad4f9b3907c9f3673a0f0a07c0a23da7909ac6c9204c5d80a0ec102fe50ccc45f27fdf496361840d6c132c5bb0037122c0a381f856d070183d1ebe3e5e041ff
+  languageName: node
+  linkType: hard
+
 "cookie@npm:0.4.0":
   version: 0.4.0
   resolution: "cookie@npm:0.4.0"
@@ -9481,6 +9474,13 @@ __metadata:
   version: 0.7.2
   resolution: "cookie@npm:0.7.2"
   checksum: 9bf8555e33530affd571ea37b615ccad9b9a34febbf2c950c86787088eb00a8973690833b0f8ebd6b69b753c62669ea60cec89178c1fb007bf0749abed74f93e
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "cookie@npm:1.0.2"
+  checksum: 2c5a6214147ffa7135ce41860c781de17e93128689b0d080d3116468274b3593b607bcd462ac210d3a61f081db3d3b09ae106e18d60b1f529580e95cf2db8a55
   languageName: node
   linkType: hard
 
@@ -13141,7 +13141,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-errors@npm:2.0.0":
+"http-errors@npm:2.0.0, http-errors@npm:^2.0.0":
   version: 2.0.0
   resolution: "http-errors@npm:2.0.0"
   dependencies:
@@ -14712,7 +14712,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:17.13.3":
+"joi@npm:17.13.3, joi@npm:^17.13.3 ":
   version: 17.13.3
   resolution: "joi@npm:17.13.3"
   dependencies:
@@ -14731,6 +14731,13 @@ __metadata:
   dependencies:
     "@panva/asn1.js": ^1.0.0
   checksum: d601afdc79b28ec1fc49bf089921943ac69b73312840c0e1d1dacb6fc3e9cf40d879a333652507177cc7f1cea0af1d36b2ca79f57e166297951e87abd2a96bac
+  languageName: node
+  linkType: hard
+
+"jose@npm:^4.15.9":
+  version: 4.15.9
+  resolution: "jose@npm:4.15.9"
+  checksum: 41abe1c99baa3cf8a78ebbf93da8f8e50e417b7a26754c4afa21865d87527b8ac2baf66de2c5f6accc3f7d7158658dae7364043677236ea1d07895b040097f15
   languageName: node
   linkType: hard
 
@@ -17784,7 +17791,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object-hash@npm:^2.0.1":
+"object-hash@npm:^2.0.1, object-hash@npm:^2.2.0":
   version: 2.2.0
   resolution: "object-hash@npm:2.2.0"
   checksum: 55ba841e3adce9c4f1b9b46b41983eda40f854e0d01af2802d3ae18a7085a17168d6b81731d43fdf1d6bcbb3c9f9c56d22c8fea992203ad90a38d7d919bc28f1
@@ -17812,7 +17819,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"oidc-token-hash@npm:^5.0.0":
+"oidc-token-hash@npm:^5.0.0, oidc-token-hash@npm:^5.0.3":
   version: 5.1.0
   resolution: "oidc-token-hash@npm:5.1.0"
   checksum: b1ac3bf07315b1e26a8a33da714d1adee58f4aa488a5680cee49adb58e3b7fd7b00be5acca86d93215de1ce1a7d53720cbc7eba8347124f251703ede3abdbcb6
@@ -17908,7 +17915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openid-client@npm:^3.10.0, openid-client@npm:^3.14.2":
+"openid-client@npm:^3.14.2":
   version: 3.15.10
   resolution: "openid-client@npm:3.15.10"
   dependencies:
@@ -17922,6 +17929,18 @@ __metadata:
     oidc-token-hash: ^5.0.0
     p-any: ^3.0.0
   checksum: d2ed6d33546aa87250a8127255db9dd1274d87900c5ed68cdf94af89fc4d083dc4b3220b2afff27f056d0eede28d0f680abffdbb35b4c1dadf0470af963ee906
+  languageName: node
+  linkType: hard
+
+"openid-client@npm:^5.7.1":
+  version: 5.7.1
+  resolution: "openid-client@npm:5.7.1"
+  dependencies:
+    jose: ^4.15.9
+    lru-cache: ^6.0.0
+    object-hash: ^2.2.0
+    oidc-token-hash: ^5.0.3
+  checksum: 497aad2c8a022cef112ade19ed88fba6c8ca0e79607ebe5efdcf75c4095d7924ca479085c1c94f689f6dbc9442c61aab3c2443eb347bcbc6ef51df68827c7c47
   languageName: node
   linkType: hard
 
@@ -18014,7 +18033,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.0.23
-    "@hmcts/rpx-xui-node-lib": 2.30.6
+    "@hmcts/rpx-xui-node-lib": 2.30.6-srt-22.4.25-rc1
     "@ng-idle/core": ^14.0.0
     "@ng-idle/keepalive": ^14.0.0
     "@ngrx/effects": ^16.3.0
@@ -18581,7 +18600,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport-oauth2@npm:^1.5.0":
+"passport-oauth2@npm:^1.8.0":
   version: 1.8.0
   resolution: "passport-oauth2@npm:1.8.0"
   dependencies:
@@ -18611,13 +18630,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport@npm:^0.5.3":
-  version: 0.5.3
-  resolution: "passport@npm:0.5.3"
+"passport@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "passport@npm:0.7.0"
   dependencies:
     passport-strategy: 1.x.x
     pause: 0.0.1
-  checksum: 5430b31b7e2066cff9954c8b151fb44479faf98ea7de210d4388961168a00990dbe52d3cc110d4b778650ebab7613ff4bdda5bbe1e297eb35298c6b83456f507
+    utils-merge: ^1.0.1
+  checksum: 5080b46df2df7a84f7ba4a8a20437ce71a1346fd27ab47b62df3251a666af9f3430d6c8a1beda3174f6a9d91edc823b57b88050d423a6cff9831848a2d97725c
   languageName: node
   linkType: hard
 
@@ -23056,7 +23076,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x":
+"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x, utils-merge@npm:^1.0.1":
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: c81095493225ecfc28add49c106ca4f09cdf56bc66731aa8dabc2edbbccb1e1bfe2de6a115e5c6a380d3ea166d1636410b62ef216bb07b3feb1cfde1d95d5080
