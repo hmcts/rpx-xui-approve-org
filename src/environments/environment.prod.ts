@@ -22,7 +22,7 @@ export const environment = {
   urls: {
     idam: {
       idamApiUrl: 'https://idam-api.platform.hmcts.net',
-      idamClientID: 'xuiaowebapp',
+      idamClientID: 'xuiaowebapp_passport_0_7',
       idamLoginUrl: 'https://hmcts-access.service.gov.uk',
       idamWeb: 'https://hmcts-access.service.gov.uk',
       indexUrl: '/',

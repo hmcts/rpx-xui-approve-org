@@ -4,7 +4,7 @@ export const application = {
     userId: '__userid__'
   },
   microservice: 'xui_webapp',
-  idamClient: 'xuiaowebapp',
+  idamClient: 'xuiaowebapp_passport_0_7',
   oauthCallbackUrl: '/oauth2/callback',
   protocol: 'https',
   logging: 'debug',
