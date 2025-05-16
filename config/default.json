@@ -39,7 +39,8 @@
     "secureCookieEnabled": true,
     "helmetEnabled": true,
     "redisEnabled": true,
-    "oidcEnabled": false
+    "oidcEnabled": false,
+    "queryIdamServiceOverride": true
   },
   "helmet": {
     "referrerPolicy": {

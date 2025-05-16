@@ -29,7 +29,8 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH, SESSION_SECRET,
-  SERVICES_IDAM_SERVICE_OVERRIDE
+  SERVICES_IDAM_SERVICE_OVERRIDE,
+  FEATURE_QUERY_IDAM_SERVICE_OVERRIDE
 } from './configuration/references';
 import * as log4jui from './lib/log4jui';
 import * as tunnel from './lib/tunnel';
@@ -243,7 +244,10 @@ export async function createApp() {
     }
   };
 
-  options.serviceOverride = await getClientServiceDetails();
+  if (showFeature(FEATURE_QUERY_IDAM_SERVICE_OVERRIDE)) {
+    logger.info('Querying IDAM service override');
+    options.serviceOverride = await getClientServiceDetails();
+  }
 
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
   nodeLibOptions.auth[type] = options;
