@@ -20,7 +20,7 @@ class AppConfigMock{
         'rdProfessionalApi': 'http://rd-professional-api-aat.service.core-compute-aat.internal/health',
         's2s': 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal/health'
       },
-      'idamClient': 'xuiaowebapp_passport_0_7',
+      'idamClient': 'xuiaowebapp',
       'indexUrl': '/',
       'iss': 'https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts',
       'logging': 'debug',
