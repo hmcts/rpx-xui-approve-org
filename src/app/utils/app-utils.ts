@@ -76,7 +76,10 @@ export class AppUtils {
         name: org.name,
         paymentAccount: org.pbaNumber,
         pendingPaymentAccount: org.pendingPaymentAccount,
-        orgAttributes: org.orgAttributes
+        orgAttributes: org.orgAttributes,
+        // EXUI-1762 - Ensure company number and org type sent in PUT
+        companyNumber: org.companyNumber,
+        orgType: org.orgType
       };
       organisations.push(organisation);
     });
