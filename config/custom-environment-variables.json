@@ -30,6 +30,10 @@
     "caseworkerApi": "CASE_WORKER_API_SERVICE",
     "prd": {
       "commondataApi": "SERVICES_PRD_COMMONDATA_API"
+    },
+    "serviceOverride": {
+      "__name": "SERVICES_IDAM_SERVICE_OVERRIDE",
+      "__format": "json"
     }
   },
   "userTimeoutInSeconds": "USER_TIMEOUT_IN_SECONDS",
@@ -68,6 +72,10 @@
     "oidcEnabled": {
       "__name": "FEATURE_OIDC_ENABLED",
       "__format":"json"
+    },
+    "queryIdamServiceOverride": {
+      "__name": "FEATURE_QUERY_IDAM_SERVICE_OVERRIDE",
+      "__format": "json"
     }
   },
   "helmet": {

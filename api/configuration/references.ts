@@ -35,6 +35,7 @@ export const SERVICES_FEE_AND_PAY_PATH = 'services.feeAndPayApi';
 export const SERVICE_S2S_PATH = 'services.s2s';
 export const SERVICE_CASE_WORKER_PATH = 'services.caseworkerApi';
 export const SERVICES_PRD_COMMONDATA_API = 'services.prd.commondataApi';
+export const SERVICES_IDAM_SERVICE_OVERRIDE = 'services.serviceOverride';
 
 export const SESSION_SECRET = 'sessionSecret';
 
@@ -52,6 +53,7 @@ export const FEATURE_PROXY_ENABLED = 'proxyEnabled';
 export const FEATURE_HELMET_ENABLED = 'helmetEnabled';
 export const FEATURE_REDIS_ENABLED = 'redisEnabled';
 export const FEATURE_OIDC_ENABLED = 'oidcEnabled';
+export const FEATURE_QUERY_IDAM_SERVICE_OVERRIDE = 'queryIdamServiceOverride';
 
 export const HELMET = 'helmet';
 
