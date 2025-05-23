@@ -74,7 +74,7 @@
     "@angular/platform-server": "17.3.5",
     "@angular/router": "^17.3.5",
     "@angular/ssr": "^17.3.5",
-    "@hmcts/ccd-case-ui-toolkit": "7.0.0-NodeAndNgUpgrades.1",
+    "@hmcts/ccd-case-ui-toolkit": "7.2.0",
     "@hmcts/frontend": "0.0.41-alpha",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
