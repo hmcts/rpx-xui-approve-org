@@ -12,6 +12,7 @@ if (environment.production) {
 fetch('/api/environment/config').then(async (response) => {
   let config = await response.json();
   config = config || {};
-  platformBrowserDynamic([{ provide: ENVIRONMENT_CONFIG, useValue: config }]).bootstrapModule(AppModule)
+  platformBrowserDynamic([{ provide: ENVIRONMENT_CONFIG, useValue: config }])
+    .bootstrapModule(AppModule)
     .catch((err) => console.log(err));
 });
