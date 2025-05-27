@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
@@ -18,6 +18,7 @@ import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService, PbaAccountDetails, PendingOrganisationService } from '../../services';
 import * as fromActions from '../actions/organisations.actions';
 import { OrganisationEffects } from './organisation.effects';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -50,7 +51,7 @@ describe('Organisation Effects', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [],
       providers: [
         {
           provide: OrganisationService,
@@ -73,7 +74,9 @@ describe('Organisation Effects', () => {
         {
           provide: PbaAccountDetails,
           useValue: getAccountDetailsServiceMock
-        }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     });
 
