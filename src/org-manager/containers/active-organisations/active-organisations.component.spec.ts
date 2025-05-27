@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -9,6 +9,7 @@ import * as fromStore from '../../../org-manager/store';
 import { OrganisationAddressComponent } from '../../components/organisation-address';
 import { OrganisationService } from '../../services';
 import { ActiveOrganisationsComponent } from './active-organisations.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('Active Organisation', () => {
   let component: ActiveOrganisationsComponent;
@@ -18,22 +19,21 @@ describe('Active Organisation', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        StoreModule.forRoot({
-          ...fromRoot.reducers
-        }),
-        HttpClientTestingModule,
-        ExuiCommonLibModule
-      ],
       declarations: [
         ActiveOrganisationsComponent,
         OrganisationAddressComponent
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [RouterTestingModule,
+        StoreModule.forRoot({
+          ...fromRoot.reducers
+        }),
+        ExuiCommonLibModule],
       providers: [
-        [OrganisationService]
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+        [OrganisationService],
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     }).compileComponents();
     store = TestBed.inject(Store);
 
