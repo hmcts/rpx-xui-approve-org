@@ -6087,13 +6087,13 @@ __metadata:
   linkType: hard
 
 "@types/express@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@types/express@npm:5.0.1"
+  version: 5.0.2
+  resolution: "@types/express@npm:5.0.2"
   dependencies:
-    "@types/body-parser": "npm:*"
-    "@types/express-serve-static-core": "npm:^5.0.0"
-    "@types/serve-static": "npm:*"
-  checksum: 189dd078679c5f748644c9dccf6b9666755d2fd37741ae5b7494129531b14d0366746a79191e1064060c2547daf7d342a02c48923730f20c8980c9ca7dfce1d2
+    "@types/body-parser": "*"
+    "@types/express-serve-static-core": ^5.0.0
+    "@types/serve-static": "*"
+  checksum: c6f73c75c2b62e293e5fadcfd7de61716e3d0c0eaecda082b1921c9c8e56ddc37c530c5d4d68404794b38c7e8f5b893719ffc04c6fba2efa2fb13223bfb0346b
   languageName: node
   linkType: hard
 
