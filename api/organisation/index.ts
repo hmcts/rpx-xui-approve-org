@@ -29,8 +29,6 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, 
       const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId, req.query.page, version);
       console.log(organisationsUri, 'organisationUrl');
       const response = await req.http.get(organisationsUri);
-      logger.info('Organisations response', JSON.stringify(response.data));
-
       if (response.data.organisations) {
         res.send(response.data.organisations);
       } else {
