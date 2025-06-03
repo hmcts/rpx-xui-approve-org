@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
@@ -9,17 +9,10 @@ import * as fromComponents from './components';
 import * as fromContainers from './containers';
 import * as fromServices from './services';
 
-@NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
+@NgModule({ exports: [...fromContainers.containers],
+  declarations: [...fromContainers.containers, ...fromComponents.components], imports: [CommonModule,
     caseWorkerRefDataRouting,
     SharedModule,
     ExuiCommonLibModule,
-    FormsModule
-  ],
-  exports: [...fromContainers.containers],
-  declarations: [...fromContainers.containers, ...fromComponents.components],
-  providers: [...fromServices.services]
-})
+    FormsModule], providers: [...fromServices.services, provideHttpClient(withInterceptorsFromDi())] })
 export class CaseWorkerRefDataModule {}
