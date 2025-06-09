@@ -65,11 +65,15 @@ describe('AppUtils', () => {
       pbaNumber: [{}],
       dxNumber: [{}],
       sraId: null,
-      postCode: 'postcode'
+      postCode: 'postcode',
+      companyNumber: '11223344',
+      orgType: 'BARR'
     }];
     const organisations = AppUtils.mapOrganisationsVm(organisationVM);
     expect(organisations[0].organisationIdentifier).toEqual(organisationVM[0].organisationId);
     expect(organisations[0].name).toEqual(organisationVM[0].name);
+    expect(organisations[0].companyNumber).toEqual(organisationVM[0].companyNumber);
+    expect(organisations[0].orgType).toEqual(organisationVM[0].orgType);
   });
 
   it('should string capitalised', () => {
