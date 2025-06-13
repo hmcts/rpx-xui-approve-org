@@ -463,67 +463,67 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:16.2.12":
-  version: 16.2.12
-  resolution: "@angular/material@npm:16.2.12"
+"@angular/material@npm:16.2.14":
+  version: 16.2.14
+  resolution: "@angular/material@npm:16.2.14"
   dependencies:
-    "@material/animation": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/auto-init": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/banner": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/base": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/button": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/card": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/checkbox": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/chips": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/circular-progress": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/data-table": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/density": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/dialog": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/dom": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/drawer": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/elevation": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/fab": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/feature-targeting": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/floating-label": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/form-field": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/icon-button": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/image-list": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/layout-grid": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/line-ripple": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/linear-progress": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/list": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/menu": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/menu-surface": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/notched-outline": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/radio": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/ripple": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/rtl": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/segmented-button": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/select": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/shape": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/slider": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/snackbar": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/switch": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/tab": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/tab-bar": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/tab-indicator": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/tab-scroller": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/textfield": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/theme": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/tooltip": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/top-app-bar": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/touch-target": "npm:15.0.0-canary.bc9ae6c9c.0"
-    "@material/typography": "npm:15.0.0-canary.bc9ae6c9c.0"
-    tslib: "npm:^2.3.0"
+    "@material/animation": 15.0.0-canary.bc9ae6c9c.0
+    "@material/auto-init": 15.0.0-canary.bc9ae6c9c.0
+    "@material/banner": 15.0.0-canary.bc9ae6c9c.0
+    "@material/base": 15.0.0-canary.bc9ae6c9c.0
+    "@material/button": 15.0.0-canary.bc9ae6c9c.0
+    "@material/card": 15.0.0-canary.bc9ae6c9c.0
+    "@material/checkbox": 15.0.0-canary.bc9ae6c9c.0
+    "@material/chips": 15.0.0-canary.bc9ae6c9c.0
+    "@material/circular-progress": 15.0.0-canary.bc9ae6c9c.0
+    "@material/data-table": 15.0.0-canary.bc9ae6c9c.0
+    "@material/density": 15.0.0-canary.bc9ae6c9c.0
+    "@material/dialog": 15.0.0-canary.bc9ae6c9c.0
+    "@material/dom": 15.0.0-canary.bc9ae6c9c.0
+    "@material/drawer": 15.0.0-canary.bc9ae6c9c.0
+    "@material/elevation": 15.0.0-canary.bc9ae6c9c.0
+    "@material/fab": 15.0.0-canary.bc9ae6c9c.0
+    "@material/feature-targeting": 15.0.0-canary.bc9ae6c9c.0
+    "@material/floating-label": 15.0.0-canary.bc9ae6c9c.0
+    "@material/form-field": 15.0.0-canary.bc9ae6c9c.0
+    "@material/icon-button": 15.0.0-canary.bc9ae6c9c.0
+    "@material/image-list": 15.0.0-canary.bc9ae6c9c.0
+    "@material/layout-grid": 15.0.0-canary.bc9ae6c9c.0
+    "@material/line-ripple": 15.0.0-canary.bc9ae6c9c.0
+    "@material/linear-progress": 15.0.0-canary.bc9ae6c9c.0
+    "@material/list": 15.0.0-canary.bc9ae6c9c.0
+    "@material/menu": 15.0.0-canary.bc9ae6c9c.0
+    "@material/menu-surface": 15.0.0-canary.bc9ae6c9c.0
+    "@material/notched-outline": 15.0.0-canary.bc9ae6c9c.0
+    "@material/radio": 15.0.0-canary.bc9ae6c9c.0
+    "@material/ripple": 15.0.0-canary.bc9ae6c9c.0
+    "@material/rtl": 15.0.0-canary.bc9ae6c9c.0
+    "@material/segmented-button": 15.0.0-canary.bc9ae6c9c.0
+    "@material/select": 15.0.0-canary.bc9ae6c9c.0
+    "@material/shape": 15.0.0-canary.bc9ae6c9c.0
+    "@material/slider": 15.0.0-canary.bc9ae6c9c.0
+    "@material/snackbar": 15.0.0-canary.bc9ae6c9c.0
+    "@material/switch": 15.0.0-canary.bc9ae6c9c.0
+    "@material/tab": 15.0.0-canary.bc9ae6c9c.0
+    "@material/tab-bar": 15.0.0-canary.bc9ae6c9c.0
+    "@material/tab-indicator": 15.0.0-canary.bc9ae6c9c.0
+    "@material/tab-scroller": 15.0.0-canary.bc9ae6c9c.0
+    "@material/textfield": 15.0.0-canary.bc9ae6c9c.0
+    "@material/theme": 15.0.0-canary.bc9ae6c9c.0
+    "@material/tooltip": 15.0.0-canary.bc9ae6c9c.0
+    "@material/top-app-bar": 15.0.0-canary.bc9ae6c9c.0
+    "@material/touch-target": 15.0.0-canary.bc9ae6c9c.0
+    "@material/typography": 15.0.0-canary.bc9ae6c9c.0
+    tslib: ^2.3.0
   peerDependencies:
     "@angular/animations": ^16.0.0 || ^17.0.0
-    "@angular/cdk": 16.2.12
+    "@angular/cdk": 16.2.14
     "@angular/common": ^16.0.0 || ^17.0.0
     "@angular/core": ^16.0.0 || ^17.0.0
     "@angular/forms": ^16.0.0 || ^17.0.0
     "@angular/platform-browser": ^16.0.0 || ^17.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 8cdc028b817b23b9baf8a56cc5db9d376fb9540895c9993547459596e7ce09df3772be79bf3db7d7e6f931e048be531763adda30af40edc7b860496bfab1fa9d
+  checksum: e90edd413f4fa57abd64895352418545b944cfa2887114ff7306640efffaf13e14e6ca357b959020471a9a377ca95bc41a56ac96624aa820f00310b6a3a519ab
   languageName: node
   linkType: hard
 
@@ -18086,7 +18086,7 @@ __metadata:
     "@angular/core": ^18.2.13
     "@angular/forms": ^18.2.13
     "@angular/language-service": ^18.2.13
-    "@angular/material": 16.2.12
+    "@angular/material": 16.2.14
     "@angular/platform-browser": ^18.2.13
     "@angular/platform-browser-dynamic": ^18.2.13
     "@angular/platform-server": 18.2.13
