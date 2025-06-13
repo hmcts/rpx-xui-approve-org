@@ -3086,9 +3086,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.0":
-  version: 2.30.0
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.0"
+"@hmcts/rpx-xui-node-lib@npm:2.30.7":
+  version: 2.30.7
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7"
   dependencies:
     "@hapi/joi": ^17.1.1
     axios: ^1.7.7
@@ -3099,18 +3099,16 @@ __metadata:
     deepmerge: ^4.2.2
     express: ^4.20.0
     express-session: ^1.17.0
-    jest-mock-axios: ^4.7.3
+    jest-mock-axios: ^4.8.0
     jest-ts-auto-mock: ^2.1.0
-    jwt-decode: ^2.2.0
+    jwt-decode: ^3.1.2
     openid-client: ^3.10.0
     otplib: ^12.0.1
     passport: ^0.5.3
     passport-oauth2: ^1.5.0
     redis: ^3.0.2
     session-file-store: ^1.5.0
-    ts-auto-mock: ^3.5.0
-    ttypescript: ^1.5.13
-  checksum: 6e11009c1fd4c511780c1098da06319a7b1fa7568544d6288b904b76faaf025e9373a55a79bae013032a3ddbde412b6a71f566bfa6557f8c59b7c6c7eb1ec190
+  checksum: c36471fe019ea81fbffdc4334d7a42570412f18417dfabaaf003569b10c3397e6cd3d78691b4a210234a44b997117b0ac0ec09c56f397bf36f181a16287827a3
   languageName: node
   linkType: hard
 
@@ -14440,7 +14438,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-mock-axios@npm:^4.7.3":
+"jest-mock-axios@npm:^4.8.0":
   version: 4.8.0
   resolution: "jest-mock-axios@npm:4.8.0"
   dependencies:
@@ -15195,6 +15193,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jwt-decode@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "jwt-decode@npm:3.1.2"
+  checksum: 20a4b072d44ce3479f42d0d2c8d3dabeb353081ba4982e40b83a779f2459a70be26441be6c160bfc8c3c6eadf9f6380a036fbb06ac5406b5674e35d8c4205eeb
+  languageName: node
+  linkType: hard
+
 "karma-chrome-launcher@npm:~3.1.0":
   version: 3.1.1
   resolution: "karma-chrome-launcher@npm:3.1.1"
@@ -15660,7 +15665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:4.17.21, lodash-es@npm:^4.17.21":
+"lodash-es@npm:^4.17.21":
   version: 4.17.21
   resolution: "lodash-es@npm:4.17.21"
   checksum: 05cbffad6e2adbb331a4e16fbd826e7faee403a1a04873b82b42c0f22090f280839f85b95393f487c1303c8a3d2a010048bf06151a6cbe03eee4d388fb0a12d2
@@ -16504,7 +16509,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"micromatch@npm:4.0.8, micromatch@npm:^4.0.0, micromatch@npm:^4.0.2, micromatch@npm:^4.0.4, micromatch@npm:^4.0.7, micromatch@npm:^4.0.8":
+"micromatch@npm:^4.0.0, micromatch@npm:^4.0.2, micromatch@npm:^4.0.4, micromatch@npm:^4.0.7, micromatch@npm:^4.0.8":
   version: 4.0.8
   resolution: "micromatch@npm:4.0.8"
   dependencies:
@@ -18098,7 +18103,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": 1.7.0
     "@hmcts/properties-volume": ^0.0.13
     "@hmcts/rpx-xui-common-lib": 2.1.0
-    "@hmcts/rpx-xui-node-lib": 2.30.0
+    "@hmcts/rpx-xui-node-lib": 2.30.7
     "@ng-idle/core": ^14.0.0
     "@ng-idle/keepalive": ^14.0.0
     "@ngrx/effects": ^16.3.0
@@ -20264,7 +20269,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:>=1.9.0, resolve@npm:^1.0.0, resolve@npm:^1.1.6, resolve@npm:^1.14.2, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.9.0":
+"resolve@npm:^1.0.0, resolve@npm:^1.1.6, resolve@npm:^1.14.2, resolve@npm:^1.20.0, resolve@npm:^1.22.1, resolve@npm:^1.9.0":
   version: 1.22.10
   resolution: "resolve@npm:1.22.10"
   dependencies:
@@ -20290,7 +20295,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A>=1.9.0#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.0.0#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.9.0#~builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.0.0#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.20.0#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#~builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.9.0#~builtin<compat/resolve>":
   version: 1.22.10
   resolution: "resolve@patch:resolve@npm%3A1.22.10#~builtin<compat/resolve>::version=1.22.10&hash=c3c19d"
   dependencies:
@@ -22377,18 +22382,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-auto-mock@npm:^3.5.0":
-  version: 3.7.4
-  resolution: "ts-auto-mock@npm:3.7.4"
-  dependencies:
-    lodash-es: "npm:4.17.21"
-    micromatch: "npm:4.0.8"
-  peerDependencies:
-    typescript: ^5.0.4
-  checksum: 8cd56dff46ed58a4370cb85e81a5013d77f8ff6a4ecce760ff693c35d48fc872ada6245c12369976e5eb55674f96cdf6c0ddf4090d45ee5e3ec1cc7aaf2bcdba
-  languageName: node
-  linkType: hard
-
 "ts-loader@npm:9.4.4":
   version: 9.4.4
   resolution: "ts-loader@npm:9.4.4"
@@ -22562,21 +22555,6 @@ __metadata:
   peerDependencies:
     typescript: ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
   checksum: 1843f4c1b2e0f975e08c4c21caa4af4f7f65a12ac1b81b3b8489366826259323feb3fc7a243123453d2d1a02314205a7634e048d4a8009921da19f99755cdc48
-  languageName: node
-  linkType: hard
-
-"ttypescript@npm:^1.5.13":
-  version: 1.5.15
-  resolution: "ttypescript@npm:1.5.15"
-  dependencies:
-    resolve: "npm:>=1.9.0"
-  peerDependencies:
-    ts-node: ">=8.0.2"
-    typescript: ">=3.2.2"
-  bin:
-    ttsc: bin/tsc
-    ttsserver: bin/tsserver
-  checksum: 0328578050f08f9d12e6732a9fe71e93cc693ed5e825aefb7f4ba142d4d3d6912caa59a723f775de89cd066c8e609665fd5a7ccfa3b69fb3456c7f24d695db90
   languageName: node
   linkType: hard
 
