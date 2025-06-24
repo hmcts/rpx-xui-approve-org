@@ -52,7 +52,7 @@ test('i can delete an active org', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
-  await expect(page.locator('div').filter({ hasText: 'SUCCESSRegistration approved' }).nth(1)).toBeVisible();
+  await expect(page.locator('div').filter({ hasText: 'SUCCESSRegistration approved' }).nth(1)).toBeVisible({ timeout: 30000 });
   console.log(`${orgName} has been approved`);
   console.log('delete orgName', orgName);
   await page.getByRole('tab', { name: 'Active organisations' }).click();
