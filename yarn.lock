@@ -18235,6 +18235,7 @@ __metadata:
     axios: ^1.10.0
     axios-mock-adapter: ^1.18.2
     base-64: ^0.1.0
+    braces: ^3.0.3
     chai: ^4.3.8
     chai-as-promised: 7.1.1
     codeceptjs: ^3.5.10
