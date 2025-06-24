@@ -7682,7 +7682,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.10.0, axios@npm:^1.7.7":
+"axios@npm:1.10.0, axios@npm:^1.10.0, axios@npm:^1.7.7":
   version: 1.10.0
   resolution: "axios@npm:1.10.0"
   dependencies:
@@ -7701,15 +7701,6 @@ __metadata:
     form-data: ^4.0.0
     proxy-from-env: ^1.1.0
   checksum: 85fc8ad7d968e43ea9da5513310637d29654b181411012ee14cc0a4b3662782e6c81ac25eea40b5684f86ed2d8a01fa6fc20b9b48c4da14ef4eaee848fea43bc
-  languageName: node
-  linkType: hard
-
-"axios@npm:^0.21.1":
-  version: 0.21.4
-  resolution: "axios@npm:0.21.4"
-  dependencies:
-    follow-redirects: ^1.14.0
-  checksum: 44245f24ac971e7458f3120c92f9d66d1fc695e8b97019139de5b0cc65d9b8104647db01e5f46917728edfc0cfd88eb30fc4c55e6053eef4ace76768ce95ff3c
   languageName: node
   linkType: hard
 
@@ -12150,7 +12141,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.0, follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.6":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.6":
   version: 1.15.9
   resolution: "follow-redirects@npm:1.15.9"
   peerDependenciesMeta:
@@ -18241,7 +18232,7 @@ __metadata:
     allure-js-commons: ^1.3.2
     applicationinsights: 1.7.2
     applicationinsights-js: ^1.0.20
-    axios: ^0.21.1
+    axios: ^1.10.0
     axios-mock-adapter: ^1.18.2
     base-64: ^0.1.0
     chai: ^4.3.8
