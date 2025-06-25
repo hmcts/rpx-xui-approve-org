@@ -12,6 +12,16 @@ test('i can approve a pending org', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
+  const serviceError = page.locator('#errorSummary');
+  if (await serviceError.isVisible({ timeout: 1000 })) {
+    const errorText = await serviceError.innerText();
+    throw new Error(`Service error after confirm: ${errorText}`);
+  }
+  // No error — wait for spinner if present
+  const spinner = page.locator('xuilib-loading-spinner');
+  if (await spinner.isVisible()) {
+    await spinner.waitFor({ state: 'detached', timeout: 5000 });
+  }
   const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
   await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
 });
@@ -26,6 +36,16 @@ test('i can reject a pending org', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
+  const serviceError = page.locator('#errorSummary');
+  if (await serviceError.isVisible({ timeout: 1000 })) {
+    const errorText = await serviceError.innerText();
+    throw new Error(`Service error after confirm: ${errorText}`);
+  }
+  // No error — wait for spinner if present
+  const spinner = page.locator('xuilib-loading-spinner');
+  if (await spinner.isVisible()) {
+    await spinner.waitFor({ state: 'detached', timeout: 5000 });
+  }
   const rejectDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration rejected/i });
   await expect(rejectDivs.first()).toBeVisible({ timeout: 5000 });
 });
@@ -40,6 +60,16 @@ test('i can place registration under review for a pending org', async ({ page })
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
+  const serviceError = page.locator('#errorSummary');
+  if (await serviceError.isVisible({ timeout: 1000 })) {
+    const errorText = await serviceError.innerText();
+    throw new Error(`Service error after confirm: ${errorText}`);
+  }
+  // No error — wait for spinner if present
+  const spinner = page.locator('xuilib-loading-spinner');
+  if (await spinner.isVisible()) {
+    await spinner.waitFor({ state: 'detached', timeout: 5000 });
+  }
   const underDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration put under/i });
   await expect(underDivs.first()).toBeVisible({ timeout: 5000 });
 });
@@ -55,6 +85,16 @@ test('i can delete an active org', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
+  const serviceError = page.locator('#errorSummary');
+  if (await serviceError.isVisible({ timeout: 1000 })) {
+    const errorText = await serviceError.innerText();
+    throw new Error(`Service error after confirm: ${errorText}`);
+  }
+  // No error — wait for spinner if present
+  const spinner = page.locator('xuilib-loading-spinner');
+  if (await spinner.isVisible()) {
+    await spinner.waitFor({ state: 'detached', timeout: 5000 });
+  }
   const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
   await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
   console.log(`${orgName} has been approved`);
