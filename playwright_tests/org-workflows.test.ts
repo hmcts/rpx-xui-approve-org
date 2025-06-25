@@ -12,7 +12,8 @@ test('i can approve a pending org', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
-  await expect(page.locator('div').filter({ hasText: 'SUCCESSRegistration approved' }).nth(1)).toBeVisible();
+  const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
+  await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
 });
 
 test('i can reject a pending org', async ({ page }) => {
@@ -25,7 +26,8 @@ test('i can reject a pending org', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
-  await expect(page.locator('div').filter({ hasText: 'SUCCESSRegistration rejected' }).nth(1)).toBeVisible();
+  const rejectDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration rejected/i });
+  await expect(rejectDivs.first()).toBeVisible({ timeout: 5000 });
 });
 
 test('i can place registration under review for a pending org', async ({ page }) => {
@@ -38,7 +40,8 @@ test('i can place registration under review for a pending org', async ({ page })
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
-  await expect(page.locator('div').filter({ hasText: 'SUCCESSRegistration put under' }).nth(1)).toBeVisible();
+  const underDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration put under/i });
+  await expect(underDivs.first()).toBeVisible({ timeout: 5000 });
 });
 
 test('i can delete an active org', async ({ page }) => {
@@ -52,7 +55,8 @@ test('i can delete an active org', async ({ page }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await page.getByRole('button', { name: 'Confirm' }).click();
-  await expect(page.locator('div').filter({ hasText: 'SUCCESSRegistration approved' }).nth(1)).toBeVisible({ timeout: 30000 });
+  const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
+  await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
   console.log(`${orgName} has been approved`);
   console.log('delete orgName', orgName);
   await page.getByRole('tab', { name: 'Active organisations' }).click();
