@@ -143,7 +143,6 @@
     "sonar-scanner": "3.1.0",
     "striptags": "^3.1.1",
     "tslib": "^2.6.1",
-    "xml2js": "^0.6.2",
     "zone.js": "~0.14.4"
   },
   "devDependencies": {
@@ -232,7 +231,10 @@
   },
   "overrides": {
     "selenium-webdriver": "^4.33.0",
-    "webdriver-manager": "^12.1.9"
+    "webdriver-manager": "^12.1.9",
+    "xml2js": "^0.6.2",
+    "dicer": "^0.3.1",
+    "brace-expansion": "^4.0.1"
   },
   "resolutions": {
     "lodash": "^4.17.21",
