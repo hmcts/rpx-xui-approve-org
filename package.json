@@ -230,6 +230,10 @@
     "webpack-dev-server": "^4.9.4",
     "webpack-node-externals": "^1.7.2"
   },
+  "overrides": {
+    "selenium-webdriver": "^4.33.0",
+    "webdriver-manager": "^12.1.9"
+  },
   "resolutions": {
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
