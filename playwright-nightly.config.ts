@@ -28,6 +28,7 @@ module.exports = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'],
+        actionTimeout: 15 * 1000,
         channel: 'chrome',
         headless: headlessMode,
         trace: 'on-first-retry'
@@ -36,6 +37,7 @@ module.exports = defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'],
+        actionTimeout: 15 * 1000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
         trace: 'off'
@@ -44,6 +46,7 @@ module.exports = defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'],
+        actionTimeout: 15 * 1000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
         trace: 'off'
