@@ -1,5 +1,5 @@
 import { CommonModule, DatePipe, Location } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
@@ -19,6 +19,7 @@ import { EnvironmentService } from './services/environment.service';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { LoggerService } from './services/logger.service';
 import { MonitoringService } from './services/monitoring.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   selector: 'app-mock-root',
@@ -68,16 +69,16 @@ describe('AppRoutes', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        CommonModule,
-        HttpClientTestingModule,
+      declarations: [
+        AppMockComponent
+      ],
+      imports: [CommonModule,
         StoreModule.forRoot({}),
         RouterTestingModule.withRoutes(ROUTES),
         EffectsModule.forRoot([]),
         ExuiCommonLibModule,
         SharedModule,
-        LoggerTestingModule
-      ],
+        LoggerTestingModule],
       providers: [
         Location,
         LoggerService,
@@ -94,10 +95,9 @@ describe('AppRoutes', () => {
         { provide: Title, useValue: titleService },
         DatePipe,
         CryptoWrapper,
-        JwtDecodeWrapper
-      ],
-      declarations: [
-        AppMockComponent
+        JwtDecodeWrapper,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
 
