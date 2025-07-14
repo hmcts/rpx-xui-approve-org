@@ -37,7 +37,7 @@
   "sessionSecret": "SESSION_SECRET",
   "secrets": {
     "rpx": {
-      "appinsights-instrumentationkey-ao": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "appinsights-connection-string-ao": "APPINSIGHTS_CONNECTION_STRING",
       "ao-s2s-client-secret": "S2S_SECRET",
       "ao-idam-client-secret": "IDAM_SECRET",
       "ao-webapp-redis-connection-string": "REDISCLOUD_URL",

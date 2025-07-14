@@ -70,7 +70,7 @@ nodejs:
       secrets:
         - ao-s2s-client-secret
         - ao-idam-client-secret
-        - appinsights-instrumentationkey-ao
+        - appinsights-connection-string-ao
         - name: ao-webapp-redis6-connection-string
           alias: ao-webapp-redis-connection-string
         - launch-darkly-client-id
