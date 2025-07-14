@@ -1,4 +1,4 @@
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,6 +11,7 @@ import { OrganisationService } from '../../services/organisation.service';
 import { PbaAccountDetails } from '../../services/pba-account-details.services';
 import * as fromOrganisationPendingStore from '../../store';
 import { NewPBAsComponent } from './new-pbas.component';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const MOCKED_ORGANISATION = {
   name: 'KapilgI2qEnW67CPGZrHvbTxt JainqyXJo07tRocHYtq2Ci0o',
@@ -59,25 +60,24 @@ describe('NewPBAsComponent', () => {
 
   beforeEach((() => {
     TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-        StoreModule.forRoot({
-          ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers)
-        }),
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        CookieModule.forRoot()
-      ],
       declarations: [
         NewPBAsComponent
       ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
       ],
+      imports: [StoreModule.forRoot({
+        ...fromRoot.reducers,
+        feature: combineReducers(fromOrganisationPendingStore.reducers)
+      }),
+      ExuiCommonLibModule,
+      RouterTestingModule,
+      CookieModule.forRoot()],
       providers: [
         OrganisationService,
-        PbaAccountDetails
+        PbaAccountDetails,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
     mockedOrganisationService = TestBed.inject(OrganisationService);
