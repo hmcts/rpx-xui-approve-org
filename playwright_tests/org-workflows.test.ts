@@ -70,6 +70,7 @@ test('i can delete an active org', async ({ page, userName }) => {
   const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
   await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
   await page.getByRole('tab', { name: 'Active organisations' }).click();
+  await page.waitForTimeout(5000);
   await page.getByLabel('Search').click();
   await page.getByLabel('Search').fill(orgName);
   await page.getByRole('button', { name: 'Search' }).click();
