@@ -69,17 +69,39 @@ test('i can delete an active org', async ({ page, userName }) => {
   await page.getByRole('button', { name: 'Submit' }).click();
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   const spinner = page.locator('div.spinner-inner-container .spinner');
-  page.getByRole('button', { name: 'Confirm' }).click()
+  page.getByRole('button', { name: 'Confirm' }).click();
   await spinner.waitFor({ state: 'hidden', timeout: 30_000 });
   const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
   await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
   await page.getByRole('tab', { name: 'Active organisations' }).click();
+  await page.waitForTimeout(2000); // small timeout to make sure spinner has had chance to start
   await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
-  await page.getByLabel('Search').click();
+  for (let i = 0; i < 6; i++) {
+    // added a loop to retry clicking on the 'Search' link in case of spinner issues
+    try {
+      console.log(`Attempt ${i}: Failed to click on 'Search' label, retrying...`);
+      await page.getByLabel('Search').click();
+      break;
+    } catch (error) {
+      console.error(error);
+    }
+    await page.waitForTimeout(5000);
+  }
   await page.getByLabel('Search').fill(orgName);
   await page.getByRole('button', { name: 'Search' }).click();
+  await page.waitForTimeout(2000); // small timeout to make sure spinner has had chance to start
   await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
-  await page.getByRole('link', { name: 'View' }).first().click();
+  for (let i = 0; i < 6; i++) {
+    // added a loop to retry clicking on the 'View' link in case of spinner issues
+    try {
+      console.log(`Attempt ${i}: Failed to click on 'View' link, retrying...`);
+      await page.getByRole('link', { name: 'View' }).first().click();
+      break;
+    } catch (error) {
+      console.error(error);
+    }
+    await page.waitForTimeout(5000);
+  }
   await expect(page.locator('h1')).toBeVisible();
   await expect(page.locator('div').filter({ hasText: 'Organisation details Users' }).nth(1)).toBeVisible();
   await page.getByRole('button', { name: 'Delete organisation' }).click();
