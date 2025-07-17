@@ -33,7 +33,7 @@ def secrets = [
     secret('ao-test-password', 'TEST_PASSWORD'),
     secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
     secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
-    secret('appinsights-instrumentationkey-ao', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
+    secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
     secret('ao-idam-client-secret', 'IDAM_SECRET'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),

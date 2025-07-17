@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "target": "es2020",
+    "target": "es2022",
+    "useDefineForClassFields": false,
     "types": [
       "jasmine",
       "node"

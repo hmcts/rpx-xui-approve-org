@@ -9,7 +9,7 @@ import { attach } from './auth';
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration';
 import { ERROR_NODE_CONFIG_ENV } from './configuration/constants';
 import {
-  APP_INSIGHTS_KEY, COOKIE_TOKEN, COOKIES_USERID, FEATURE_APP_INSIGHTS_ENABLED,
+  APP_INSIGHTS_CONNECTION_STRING, COOKIE_TOKEN, COOKIES_USERID, FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
   FEATURE_OIDC_ENABLED,
   FEATURE_PROXY_ENABLED,
@@ -277,7 +277,7 @@ app.get('/external/ping', (req, res) => {
     rdProfessionalApi: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH),
     // 4th set
     sessionSecret: getConfigValue(SESSION_SECRET),
-    appInsightKey: getConfigValue(APP_INSIGHTS_KEY),
+    appInsightsConnectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING),
     // 5th set
     featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),

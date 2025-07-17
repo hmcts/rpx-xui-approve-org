@@ -3,7 +3,7 @@ import { launchDarklyClientIdFactory } from './app.module';
 
 const environmentConfig: EnvironmentConfig = {
   launchDarklyClientId: null,
-  appInsightsInstrumentationKey: '',
+  appInsightsConnectionString: '',
   configEnv: '',
   cookies: undefined,
   exceptionOptions: undefined,
