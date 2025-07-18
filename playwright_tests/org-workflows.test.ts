@@ -79,7 +79,9 @@ test('i can delete an active org', async ({ page, userName }) => {
   for (let i = 0; i < 6; i++) {
     // added a loop to retry clicking on the 'Search' link in case of spinner issues
     try {
-      console.log(`Attempt ${i}: Failed to click on 'Search' label, retrying...`);
+      if (i !== 0) {
+        console.log(`Attempt ${i}: Failed to 'Search' label, retrying...`);
+      }
       await page.getByLabel('Search').click();
       break;
     } catch (error) {
@@ -94,7 +96,9 @@ test('i can delete an active org', async ({ page, userName }) => {
   for (let i = 0; i < 6; i++) {
     // added a loop to retry clicking on the 'View' link in case of spinner issues
     try {
-      console.log(`Attempt ${i}: Failed to click on 'View' link, retrying...`);
+      if (i !== 0) {
+        console.log(`Attempt ${i}: Failed to click on 'View' link, retrying...`);
+      }
       await page.getByRole('link', { name: 'View' }).first().click();
       break;
     } catch (error) {
