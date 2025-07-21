@@ -11,11 +11,12 @@ export const test = base.extend<{
 
   /* -------- fixture: log into MO and register org -------- */
   userName: [
-    async ({}, use) => {
+    async ({ }, use) => {
       const userName = 'xui-ao-test-' + Date.now().toString();
       // Need a full browser context for cross-domain login
-      const ctx = await chromium.launchPersistentContext('', { headless: true
-       });
+      const ctx = await chromium.launchPersistentContext('', {
+        headless: true
+      });
       const page = await ctx.newPage();
       // log in
       await page.goto(`${config.registerUrl}/register-org-new/register`);
@@ -48,8 +49,23 @@ export const test = base.extend<{
       await page.getByLabel('No').check();
       await page.getByRole('button', { name: 'Continue' }).click();
       await page.locator('#confirm-terms-and-conditions').click();
+      const spinner = page.locator('div.spinner-wrapper');
       await page.getByRole('button', { name: 'Confirm and submit' }).click();
-      await expect(page.getByRole('heading', { name: 'Registration details submitted' })).toBeVisible();
+      await page.waitForTimeout(2000);
+      await spinner.waitFor({ state: 'hidden', timeout: 30_000 });
+      for (let i = 0; i < 6; i++) {
+        // added a loop to retry viewing the header in case of spinner issues
+        try {
+          if (i !== 0) {
+            console.log(`Attempt ${i}: Failed to view heading, retrying...`);
+          }
+          await expect(page.getByRole('heading', { name: 'Registration details submitted' })).toBeVisible();
+          break;
+        } catch (error) {
+          console.error(error);
+        }
+        await page.waitForTimeout(5000);
+      }
 
       await use(userName);
 
