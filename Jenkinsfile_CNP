@@ -201,4 +201,3 @@ withPipeline(type, product, component) {
         ])
     }
 }
-
