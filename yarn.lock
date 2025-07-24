@@ -8315,7 +8315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.10.0, axios@npm:^1.10.0, axios@npm:^1.7.7":
+"axios@npm:1.10.0, axios@npm:^1.7.7":
   version: 1.10.0
   resolution: "axios@npm:1.10.0"
   dependencies:
@@ -8344,6 +8344,17 @@ __metadata:
     follow-redirects: "npm:^1.14.9"
     form-data: "npm:^4.0.0"
   checksum: 10/2efaf18dd0805f7bc772882bc86f004abd92d51007b54c5081f74db0d08ce3593e2c010261896d25a14318eeaa2e966fd825e34f810e8a3339dc64b9d177cf70
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.11.0":
+  version: 1.11.0
+  resolution: "axios@npm:1.11.0"
+  dependencies:
+    follow-redirects: "npm:^1.15.6"
+    form-data: "npm:^4.0.4"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 10/232df4af7a4e4e07baa84621b9cc4b0c518a757b4eacc7f635c0eb3642cb98dff347326739f24b891b3b4481b7b838c79a3a0c4819c9fbc1fc40232431b9c5dc
   languageName: node
   linkType: hard
 
@@ -18984,7 +18995,7 @@ __metadata:
     allure-js-commons: "npm:^1.3.2"
     applicationinsights: "npm:1.7.2"
     applicationinsights-js: "npm:^1.0.20"
-    axios: "npm:^1.10.0"
+    axios: "npm:^1.11.0"
     axios-mock-adapter: "npm:^1.18.2"
     base-64: "npm:^0.1.0"
     braces: "npm:^3.0.3"
