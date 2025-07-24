@@ -94,7 +94,7 @@
     "@types/passport": "^1.0.3",
     "applicationinsights": "1.7.2",
     "applicationinsights-js": "^1.0.20",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "axios-mock-adapter": "^1.18.2",
     "base-64": "^0.1.0",
     "braces": "^3.0.3",
