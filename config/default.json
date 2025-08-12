@@ -28,7 +28,7 @@
     "prd": {
       "commondataApi": "http://rd-commondata-api-prod.service.core-compute-prod.internal"
     },
-    "serviceOverride": false
+    "serviceOverride": true
   },
   "userTimeoutInSeconds": 28800,
   "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts",
@@ -39,8 +39,7 @@
     "secureCookieEnabled": true,
     "helmetEnabled": true,
     "redisEnabled": true,
-    "oidcEnabled": false,
-    "queryIdamServiceOverride": true
+    "oidcEnabled": false
   },
   "helmet": {
     "referrerPolicy": {
