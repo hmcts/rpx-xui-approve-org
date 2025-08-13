@@ -1,8 +1,8 @@
 import * as healthcheck from '@hmcts/nodejs-healthcheck';
 import { AuthOptions, getContentSecurityPolicy, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
+import csrf from '@dr.pogodin/csurf';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as csurf from 'csurf';
 import * as express from 'express';
 import * as helmet from 'helmet';
 import { attach } from './auth';
@@ -26,6 +26,7 @@ import {
   PROTOCOL, REDIS_KEY_PREFIX,
   REDIS_TTL, REDISCLOUD_URL, S2S_SECRET, SERVICE_S2S_PATH, SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
+  SERVICES_IDAM_SERVICE_OVERRIDE,
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH, SESSION_SECRET
@@ -39,7 +40,7 @@ export const app = express();
 
 export const logger = log4jui.getLogger('server');
 
-export const csrfProtection = csurf();
+export const csrfProtection = csrf();
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -155,7 +156,8 @@ const options: AuthOptions = {
   sessionKey: 'xui-approve-org',
   tokenEndpointAuthMethod: 'client_secret_post',
   tokenURL: tokenUrl,
-  useRoutes: true
+  useRoutes: true,
+  serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE)
 };
 
 const baseStoreOptions = {
