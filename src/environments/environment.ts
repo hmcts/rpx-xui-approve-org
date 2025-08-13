@@ -28,6 +28,7 @@ export const environment = {
   urls: {
     idam: {
       idamApiUrl: 'https://idam-api.ithc.platform.hmcts.net',
+      idamClientID: 'xuiaowebapp',
       idamLoginUrl: 'https://idam-web-public.ithc.platform.hmcts.net',
       indexUrl: '/',
       oauthCallbackUrl: 'oauth2/callback'

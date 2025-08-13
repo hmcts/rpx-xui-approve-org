@@ -27,8 +27,7 @@
     "caseworkerApi": "http://rd-caseworker-ref-api-prod.service.core-compute-prod.internal",
     "prd": {
       "commondataApi": "http://rd-commondata-api-prod.service.core-compute-prod.internal"
-    },
-    "serviceOverride": true
+    }
   },
   "userTimeoutInSeconds": 28800,
   "iss": "https://forgerock-am.service.core-compute-idam-prod.internal:8443/openam/oauth2/hmcts",
