@@ -166,7 +166,6 @@ exports.config = {
 
 async function setup() {
     await backendMockApp.startServer();
-    await applicationServer.initialize();
     await applicationServer.start()
 }
 
