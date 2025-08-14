@@ -16191,7 +16191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"launchdarkly-js-client-sdk@npm:^3.3.0":
+"launchdarkly-js-client-sdk@npm:3.8.1":
   version: 3.8.1
   resolution: "launchdarkly-js-client-sdk@npm:3.8.1"
   dependencies:
@@ -19039,7 +19039,7 @@ __metadata:
     karma-jasmine: "npm:~5.1.0"
     karma-jasmine-html-reporter: "npm:^2.1.0"
     karma-spec-reporter: "npm:0.0.34"
-    launchdarkly-js-client-sdk: "npm:^3.3.0"
+    launchdarkly-js-client-sdk: "npm:3.8.1"
     log4js: "npm:^3.0.6"
     mocha: "npm:^10.2.0"
     mochawesome: "npm:^7.1.3"
