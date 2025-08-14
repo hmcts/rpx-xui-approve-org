@@ -121,7 +121,7 @@
     "jwt-decode": "^2.2.0",
     "launchdarkly-js-client-sdk": "^3.3.0",
     "log4js": "^3.0.6",
-    "multer": "^2.0.1",
+    "multer": "^2.0.2",
     "ngx-cookie": "6.0.1",
     "ngx-cookie-service": "^17.0.0",
     "ngx-logger": "^5.0.12",
