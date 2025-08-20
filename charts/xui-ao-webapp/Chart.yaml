@@ -1,7 +1,7 @@
 apiVersion: v2
 name: xui-ao-webapp
 home: https://github.com/hmcts/rpx-xui-approve-org
-version: 0.2.31
+version: 0.2.32
 description: Expert UI
 maintainers:
   - name: HMCTS RPX XUI

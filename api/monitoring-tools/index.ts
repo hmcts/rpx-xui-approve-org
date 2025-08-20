@@ -1,14 +1,14 @@
 import * as express from 'express';
 import { getConfigValue } from '../configuration';
-import { APP_INSIGHTS_KEY } from '../configuration/references';
+import { APP_INSIGHTS_CONNECTION_STRING } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 
 const logger = log4jui.getLogger('monitoring-tools');
 
-async function handleInstrumentationKeyRoute(req, res) {
+async function handleConnectionStringRoute(req, res) {
   try {
-    logger.info('environmentConfig.appInsightsInstrumentationKey is ' + getConfigValue(APP_INSIGHTS_KEY));
-    res.send({ key: getConfigValue(APP_INSIGHTS_KEY) });
+    logger.info('environmentConfig.appInsightsConnectionString is ' + getConfigValue(APP_INSIGHTS_CONNECTION_STRING));
+    res.send({ connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING) });
   } catch (error) {
     const errReport = JSON.stringify({
       apiError: error,
@@ -21,6 +21,6 @@ async function handleInstrumentationKeyRoute(req, res) {
 
 export const router = express.Router({ mergeParams: true });
 
-router.get('/', handleInstrumentationKeyRoute);
+router.get('/', handleConnectionStringRoute);
 
 export default router;
