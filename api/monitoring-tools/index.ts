@@ -8,7 +8,7 @@ const logger = log4jui.getLogger('monitoring-tools');
 async function handleConnectionStringRoute(req, res) {
   try {
     logger.info('environmentConfig.appInsightsConnectionString is ' + getConfigValue(APP_INSIGHTS_CONNECTION_STRING));
-    res.send({ key: getConfigValue(APP_INSIGHTS_CONNECTION_STRING) });
+    res.send({ connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING) });
   } catch (error) {
     const errReport = JSON.stringify({
       apiError: error,
