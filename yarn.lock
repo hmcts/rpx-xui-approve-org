@@ -3549,12 +3549,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.0":
-  version: 7.2.0
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.0"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.37":
+  version: 7.2.37
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.37"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/c0d2ac4250ab46b2567b196d87ed90ee39fd47157df0032c91dc873fd0c5944a863f00cb8f90fa28095684aab6d5758fe5f982c856c57aea30d228bdf2a3f7e7
+  checksum: 10/151b1f08c11e473ad655a7a1d2bb132174e22b5c838e95d9ee4bc8376e606c9fe553077e5ad9c8aa99860f5ac8062d8bb1112c7a8e0e94574c9287f23e2afbbb
   languageName: node
   linkType: hard
 
@@ -20531,7 +20531,7 @@ __metadata:
     "@angular/router": "npm:^18.2.13"
     "@angular/ssr": "npm:^18.2.18"
     "@cucumber/cucumber": "npm:^9.5.1"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.0"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.37"
     "@hmcts/frontend": "npm:0.0.41-alpha"
     "@hmcts/nodejs-healthcheck": "npm:1.7.0"
     "@hmcts/properties-volume": "npm:^0.0.13"
