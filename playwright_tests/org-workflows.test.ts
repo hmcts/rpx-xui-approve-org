@@ -74,7 +74,7 @@ test('i can delete an active org', async ({ page, userName }) => {
   const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
   await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
   await page.getByRole('tab', { name: 'Active organisations' }).click();
-  await page.waitForTimeout(2000); // small timeout to make sure spinner has had chance to start
+  await page.waitForTimeout(5000); // small timeout to make sure spinner has had chance to start
   await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
   for (let i = 0; i < 6; i++) {
     // added a loop to retry clicking on the 'Search' link in case of spinner issues
