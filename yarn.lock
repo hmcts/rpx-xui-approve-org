@@ -15926,9 +15926,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^8.5.1":
-  version: 8.5.1
-  resolution: "jsonwebtoken@npm:8.5.1"
+"jsonwebtoken@npm:^9.0.0":
+  version: 9.0.2
+  resolution: "jsonwebtoken@npm:9.0.2"
   dependencies:
     jws: "npm:^3.2.2"
     lodash.includes: "npm:^4.3.0"
@@ -15939,8 +15939,8 @@ __metadata:
     lodash.isstring: "npm:^4.0.1"
     lodash.once: "npm:^4.0.0"
     ms: "npm:^2.1.1"
-    semver: "npm:^5.6.0"
-  checksum: 10/a7b52ea570f70bea183ceca970c003f223d9d3425d72498002e9775485c7584bfa3751d1c7291dbb59738074cba288effe73591b87bec5d467622ab3a156fdb6
+    semver: "npm:^7.5.4"
+  checksum: 10/6e9b6d879cec2b27f2f3a88a0c0973edc7ba956a5d9356b2626c4fddfda969e34a3832deaf79c3e1c6c9a525bc2c4f2c2447fa477f8ac660f0017c31a59ae96b
   languageName: node
   linkType: hard
 
@@ -17882,9 +17882,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "multer@npm:2.0.1"
+"multer@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "multer@npm:2.0.2"
   dependencies:
     append-field: "npm:^1.0.0"
     busboy: "npm:^1.6.0"
@@ -17893,7 +17893,7 @@ __metadata:
     object-assign: "npm:^4.1.1"
     type-is: "npm:^1.6.18"
     xtend: "npm:^4.0.2"
-  checksum: 10/cb0dda65ae37be40968fc1f9ea492bdb4c20bd189ce427e11e95d333837193544606b82ef6431f2acd3cd11156164f215bdeb46f47847d29b6bf3a36ac736a8f
+  checksum: 10/4bdcb07138cf72f93adc08a0dc27c058faab9f6721067a58f394fa546d73d11b7f100cdd66e733d649d184f9d1b402065f6888b31ec427409f056ee92c4367a6
   languageName: node
   linkType: hard
 
@@ -19030,7 +19030,7 @@ __metadata:
     jasmine-spec-reporter: "npm:~7.0.0"
     json-server: "npm:^0.14.2"
     json-stringify-safe: "npm:^5.0.1"
-    jsonwebtoken: "npm:^8.5.1"
+    jsonwebtoken: "npm:^9.0.0"
     jwt-decode: "npm:^2.2.0"
     karma: "npm:~6.4.0"
     karma-chrome-launcher: "npm:~3.1.0"
@@ -19045,7 +19045,7 @@ __metadata:
     mochawesome: "npm:^7.1.3"
     mochawesome-merge: "npm:^4.1.0"
     mochawesome-report-generator: "npm:^6.2.0"
-    multer: "npm:^2.0.1"
+    multer: "npm:^2.0.2"
     ng-packagr: "npm:^18.2.1"
     ngrx-store-freeze: "npm:^0.2.4"
     ngx-cookie: "npm:6.0.1"
