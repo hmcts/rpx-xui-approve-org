@@ -143,6 +143,7 @@
     "sonar-scanner": "3.1.0",
     "striptags": "^3.1.1",
     "tslib": "^2.6.1",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.14.4"
   },
   "devDependencies": {
@@ -243,7 +244,8 @@
     "webdriver-manager": "^12.1.9",
     "xml2js": "^0.6.2",
     "critters": "^0.0.25",
-    "form-data": "^4.0.4"
+    "form-data": "^4.0.4",
+    "xlsx": "^0.18.5"
   },
   "packageManager": "yarn@4.9.2"
 }
