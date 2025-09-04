@@ -10,10 +10,12 @@ import { EnvironmentConfig } from 'src/models/environmentConfig.model';
 export class EnvironmentService {
   private data: EnvironmentConfig;
 
-  private readonly config$ = this.http.get<EnvironmentConfig>('/api/environment/config')
-    .pipe<EnvironmentConfig>(shareReplay<EnvironmentConfig>(1));
+  private readonly config$: Observable<EnvironmentConfig>;
 
   constructor(private readonly http: HttpClient) {
+    this.config$ = this.http.get<EnvironmentConfig>('/api/environment/config')
+      .pipe<EnvironmentConfig>(shareReplay<EnvironmentConfig>(1));
+
     this.config$.subscribe((config) => {
       this.data = config;
     });
