@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "build": "NODE_ENV=production webpack --config ./webpack-node.config.js",
-    "coverage": "npx nyc mocha -r dotenv-extended/config",
+    "coverage": "npx nyc mocha --config test/.mocharc.json -r dotenv-extended/config",
     "lint": "npx tslint --project .",
     "watch": "nodemon --watch '**/*.ts' --exec ts-node -r dotenv-extended/config local.ts",
     "test": "mocha -r dotenv-extended/config",
@@ -23,8 +23,18 @@
       ".ts",
       ".tsx"
     ],
+    "include": [
+      "**/*"
+    ],
     "exclude": [
-      "**/*.d.ts"
+      "**/*.d.ts",
+      "**/*.spec.ts",
+      "**/*.test.ts",
+      "**/*Mock.ts",
+      "**/*mock.ts",
+      "**/*Mocks.ts",
+      "**/test/**",
+      "**/pact/**"
     ],
     "reporter": [
       "lcov",
