@@ -35,7 +35,7 @@ describe('auth/index', () => {
     sinon.stub(require('../lib/http'), 'http').callsFake(httpStub);
     const rpxXuiNodeLib = require('@hmcts/rpx-xui-node-lib');
     sinon.stub(rpxXuiNodeLib, 'xuiNode').value(xuiNodeStub);
-    
+
     if (!rpxXuiNodeLib.AUTH) {
       rpxXuiNodeLib.AUTH = authStub;
     } else {
@@ -101,7 +101,7 @@ describe('auth/index', () => {
         'auth.authenticate.success',
         sinon.match.func
       );
-      
+
       // Verify the callback is the correct function by checking its behavior
       const registeredCallback = xuiNodeStub.on.getCall(0).args[1];
       expect(registeredCallback).to.be.a('function');
@@ -115,7 +115,7 @@ describe('auth/index', () => {
     beforeEach(() => {
       delete require.cache[require.resolve('./index')];
       require('./index');
-      
+
       // Extract the callback function from the xuiNode.on call
       successCallback = xuiNodeStub.on.getCall(0).args[1];
     });
@@ -138,12 +138,12 @@ describe('auth/index', () => {
 
       expect(mockResponse.cookie).to.have.been.calledOnce;
       expect(mockResponse.cookie).to.have.been.calledWith('roles', ['admin', 'user']);
-      
+
       expect(mockResponse.redirect).to.have.been.calledOnce;
       expect(mockResponse.redirect).to.have.been.calledWith('/');
-      
+
       expect(mockNext).not.to.have.been.called;
-      
+
       expect(result).to.not.be.undefined;
     });
 
@@ -165,13 +165,13 @@ describe('auth/index', () => {
 
       expect(mockResponse.cookie).to.have.been.calledOnce;
       expect(mockResponse.cookie).to.have.been.calledWith('roles', ['admin', 'user']);
-      
+
       // Verify no redirect when isRefresh is true
       expect(mockResponse.redirect).not.to.have.been.called;
-      
+
       expect(mockNext).to.have.been.calledOnce;
       expect(mockNext).to.have.been.calledWith();
-      
+
       expect(result).to.be.undefined;
     });
 
@@ -190,10 +190,10 @@ describe('auth/index', () => {
       const mockNext = createMockNextFunction();
 
       expect(() => successCallback(mockRequest, mockResponse, mockNext)).not.to.throw();
-      
+
       expect(mockResponse.cookie).to.have.been.calledOnce;
       expect(mockResponse.cookie).to.have.been.calledWith('roles', undefined);
-      
+
       expect(mockResponse.redirect).to.have.been.calledOnce;
       expect(mockResponse.redirect).to.have.been.calledWith('/');
       expect(mockNext).not.to.have.been.called;

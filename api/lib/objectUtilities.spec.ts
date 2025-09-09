@@ -12,7 +12,7 @@ describe('lib/objectUtilities', () => {
           }
         }
       };
-      
+
       const result = propsExist(obj, ['level1', 'level2', 'level3']);
       expect(result).to.be.true;
     });
@@ -23,7 +23,7 @@ describe('lib/objectUtilities', () => {
           level2: {}
         }
       };
-      
+
       const result = propsExist(obj, ['level1', 'level2', 'level3']);
       expect(result).to.be.false;
     });
@@ -32,7 +32,7 @@ describe('lib/objectUtilities', () => {
       const obj = {
         level1: {}
       };
-      
+
       const result = propsExist(obj, ['level1', 'level2', 'level3']);
       expect(result).to.be.false;
     });
@@ -41,7 +41,7 @@ describe('lib/objectUtilities', () => {
       const obj = {
         singleProp: 'value'
       };
-      
+
       const result = propsExist(obj, ['singleProp']);
       expect(result).to.be.true;
     });
@@ -50,7 +50,7 @@ describe('lib/objectUtilities', () => {
       const obj = {
         existingProp: 'value'
       };
-      
+
       const result = propsExist(obj, ['nonExistentProp']);
       expect(result).to.be.false;
     });
@@ -79,7 +79,7 @@ describe('lib/objectUtilities', () => {
           emptyString: ''
         }
       };
-      
+
       expect(propsExist(obj, ['level1', 'falsyValue'])).to.be.true;
       expect(propsExist(obj, ['level1', 'zeroValue'])).to.be.true;
       expect(propsExist(obj, ['level1', 'emptyString'])).to.be.true;
@@ -91,7 +91,7 @@ describe('lib/objectUtilities', () => {
           nullProp: null
         }
       };
-      
+
       const result = propsExist(obj, ['level1', 'nullProp', 'deeperProp']);
       expect(result).to.be.false;
     });

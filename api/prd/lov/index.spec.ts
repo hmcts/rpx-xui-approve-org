@@ -43,9 +43,9 @@ describe('prd/lov/index', () => {
           { key: 'value2', value_en: 'Value 2' }
         ]
       };
-      mockRequest.http.get.resolves({ 
-        status: 200, 
-        data: responseData 
+      mockRequest.http.get.resolves({
+        status: 200,
+        data: responseData
       });
 
       const handler = router.stack[0].route.stack[0].handle;
@@ -68,12 +68,12 @@ describe('prd/lov/index', () => {
         list_of_values: [
           { key: 'parent1', value_en: 'Parent 1', child_nodes: [
             { key: 'child1', value_en: 'Child 1' }
-          ]}
+          ] }
         ]
       };
-      mockRequest.http.get.resolves({ 
-        status: 200, 
-        data: responseData 
+      mockRequest.http.get.resolves({
+        status: 200,
+        data: responseData
       });
 
       const handler = router.stack[0].route.stack[0].handle;
@@ -93,9 +93,9 @@ describe('prd/lov/index', () => {
         isChildRequired: 'false'
       };
       const responseData = { list_of_values: [] };
-      mockRequest.http.get.resolves({ 
-        status: 200, 
-        data: responseData 
+      mockRequest.http.get.resolves({
+        status: 200,
+        data: responseData
       });
 
       const handler = router.stack[0].route.stack[0].handle;
@@ -129,9 +129,9 @@ describe('prd/lov/index', () => {
         isChildRequired: 'false'
       };
       const responseData = { list_of_values: [] };
-      mockRequest.http.get.resolves({ 
-        status: 404, 
-        data: responseData 
+      mockRequest.http.get.resolves({
+        status: 404,
+        data: responseData
       });
 
       const handler = router.stack[0].route.stack[0].handle;
@@ -148,9 +148,9 @@ describe('prd/lov/index', () => {
         isChildRequired: 'false'
       };
       const responseData = { list_of_values: [] };
-      mockRequest.http.get.resolves({ 
-        status: 200, 
-        data: responseData 
+      mockRequest.http.get.resolves({
+        status: 200,
+        data: responseData
       });
 
       delete require.cache[require.resolve('./index')];
@@ -168,9 +168,9 @@ describe('prd/lov/index', () => {
     it('should handle empty query parameters', async () => {
       mockRequest.query = {};
       const responseData = { list_of_values: [] };
-      mockRequest.http.get.resolves({ 
-        status: 200, 
-        data: responseData 
+      mockRequest.http.get.resolves({
+        status: 200,
+        data: responseData
       });
 
       const handler = router.stack[0].route.stack[0].handle;
@@ -193,7 +193,7 @@ describe('prd/lov/index', () => {
     it('should have GET route configured for /', () => {
       const module = require('./index');
       const router = module.router;
-      
+
       expect(router).to.be.a('function');
       expect(router.stack).to.be.an('array');
       expect(router.stack).to.have.length(1);

@@ -7,9 +7,9 @@ describe('lib/proxy', () => {
   describe('setHeaders', () => {
     it('should return empty object when request has no headers', () => {
       const mockRequest = {} as EnhancedRequest;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({});
     });
 
@@ -19,9 +19,9 @@ describe('lib/proxy', () => {
           'content-type': 'application/json'
         }
       } as EnhancedRequest;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         'content-type': 'application/json'
       });
@@ -33,9 +33,9 @@ describe('lib/proxy', () => {
           accept: 'application/json'
         }
       } as EnhancedRequest;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         accept: 'application/json'
       });
@@ -47,9 +47,9 @@ describe('lib/proxy', () => {
           experimental: 'true'
         }
       } as EnhancedRequest;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         experimental: 'true'
       });
@@ -61,9 +61,9 @@ describe('lib/proxy', () => {
           Authorization: 'Bearer test-token'
         }
       } as EnhancedRequest;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         Authorization: 'Bearer test-token'
       });
@@ -75,9 +75,9 @@ describe('lib/proxy', () => {
           ServiceAuthorization: 'Bearer s2s-token'
         }
       } as EnhancedRequest;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         ServiceAuthorization: 'Bearer s2s-token'
       });
@@ -89,9 +89,9 @@ describe('lib/proxy', () => {
           'user-roles': ['admin', 'user']
         }
       } as any;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         'user-roles': ['admin', 'user']
       });
@@ -103,9 +103,9 @@ describe('lib/proxy', () => {
           'user-roles': []
         }
       } as any;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({});
     });
 
@@ -120,9 +120,9 @@ describe('lib/proxy', () => {
           'user-roles': ['admin']
         }
       } as any;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         'content-type': 'application/json',
         accept: 'application/json',
@@ -143,9 +143,9 @@ describe('lib/proxy', () => {
           Authorization: 'Bearer test-token'
         }
       } as any;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         'content-type': 'application/json',
         Authorization: 'Bearer test-token'
@@ -161,9 +161,9 @@ describe('lib/proxy', () => {
           Authorization: undefined
         }
       } as any;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({});
     });
 
@@ -175,9 +175,9 @@ describe('lib/proxy', () => {
           authorization: 'Bearer lowercase-token'
         }
       } as any;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       // Only exact case matches should be included based on the implementation
       expect(result).to.deep.equal({});
     });
@@ -188,9 +188,9 @@ describe('lib/proxy', () => {
           'user-roles': ['Admin', 'USER', 'editor']
         }
       } as any;
-      
+
       const result = setHeaders(mockRequest);
-      
+
       expect(result).to.deep.equal({
         'user-roles': ['Admin', 'USER', 'editor']
       });

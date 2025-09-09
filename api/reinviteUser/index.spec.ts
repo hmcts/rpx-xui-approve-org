@@ -19,7 +19,7 @@ describe('reinviteUser/index', () => {
       email: 'john.doe@example.com',
       roles: ['admin']
     };
-    
+
     mockResponse = createMockResponse();
     mockLogger = createMockLogger();
     configStub = sinon.stub().returns('https://rd-professional-api.example.com');
@@ -142,7 +142,7 @@ describe('reinviteUser/index', () => {
       mockRequest.http.post.rejects(error);
 
       const handler = router.stack[0].route.stack[0].handle;
-      
+
       try {
         await handler(mockRequest, mockResponse);
       } catch (e) {
@@ -180,7 +180,7 @@ describe('reinviteUser/index', () => {
     it('should have POST route configured for /', () => {
       const module = require('./index');
       const router = module.router;
-      
+
       expect(router).to.be.a('function');
       expect(router.stack).to.be.an('array');
       expect(router.stack).to.have.length(1);

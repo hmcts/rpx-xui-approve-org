@@ -13,7 +13,7 @@ describe('lib/stateEngine', () => {
       warn: sinon.stub(),
       error: sinon.stub()
     };
-    
+
     sinon.stub(require('./log4jui'), 'getLogger').returns(mockLogger);
   });
 
@@ -148,7 +148,9 @@ describe('lib/stateEngine', () => {
       someStub.callsFake((array: any[], predicate: any) => {
         for (const item of array) {
           const result = predicate(item);
-          if (result) return result;
+          if (result) {
+            return result;
+          }
         }
         return false;
       });
@@ -229,7 +231,9 @@ describe('lib/stateEngine', () => {
       someStub.callsFake((array: any[], predicate: any) => {
         for (const item of array) {
           const result = predicate(item);
-          if (result) return result;
+          if (result) {
+            return result;
+          }
         }
         return false;
       });
@@ -286,8 +290,8 @@ describe('lib/stateEngine', () => {
       const instruction = {
         event: 'validate',
         states: [
-          { 
-            state: 'form', 
+          {
+            state: 'form',
             conditions: [
               { condition: [{ valid: true }], result: 'form_valid' }
             ]
@@ -300,7 +304,9 @@ describe('lib/stateEngine', () => {
       someStub.callsFake((array: any[], predicate: any) => {
         for (const item of array) {
           const result = predicate(item);
-          if (result) return result;
+          if (result) {
+            return result;
+          }
         }
         return false;
       });
@@ -577,7 +583,7 @@ describe('lib/stateEngine', () => {
 
       const responseCall = mockRes.send.getCall(0);
       const response = JSON.parse(responseCall.args[0]);
-      
+
       expect(response).to.have.property('formValues');
       expect(response).to.have.property('meta');
       expect(response).to.have.property('newRoute');
@@ -591,7 +597,7 @@ describe('lib/stateEngine', () => {
 
       const responseCall = mockRes.send.getCall(0);
       const response = JSON.parse(responseCall.args[0]);
-      
+
       expect(response.formValues).to.deep.equal({});
     });
 

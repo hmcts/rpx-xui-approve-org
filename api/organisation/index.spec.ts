@@ -49,31 +49,31 @@ describe('organisation/index', () => {
 
     it('should have GET route for organisations', () => {
       const router = require('./index').default;
-      const getRoute = router.stack.find(layer => layer.route && layer.route.path === '/' && layer.route.methods.get);
+      const getRoute = router.stack.find((layer) => layer.route && layer.route.path === '/' && layer.route.methods.get);
       expect(getRoute).to.exist;
     });
 
     it('should have POST route for organisation paging', () => {
       const router = require('./index').default;
-      const postRoute = router.stack.find(layer => layer.route && layer.route.path === '/' && layer.route.methods.post);
+      const postRoute = router.stack.find((layer) => layer.route && layer.route.path === '/' && layer.route.methods.post);
       expect(postRoute).to.exist;
     });
 
     it('should have PUT route for organisation update', () => {
       const router = require('./index').default;
-      const putRoute = router.stack.find(layer => layer.route && layer.route.path === '/:id' && layer.route.methods.put);
+      const putRoute = router.stack.find((layer) => layer.route && layer.route.path === '/:id' && layer.route.methods.put);
       expect(putRoute).to.exist;
     });
 
     it('should have DELETE route for organisation deletion', () => {
       const router = require('./index').default;
-      const deleteRoute = router.stack.find(layer => layer.route && layer.route.path === '/:id' && layer.route.methods.delete);
+      const deleteRoute = router.stack.find((layer) => layer.route && layer.route.path === '/:id' && layer.route.methods.delete);
       expect(deleteRoute).to.exist;
     });
 
     it('should have GET route for deletable status', () => {
       const router = require('./index').default;
-      const getDeletableRoute = router.stack.find(layer => layer.route && layer.route.path === '/:id/isDeletable' && layer.route.methods.get);
+      const getDeletableRoute = router.stack.find((layer) => layer.route && layer.route.path === '/:id/isDeletable' && layer.route.methods.get);
       expect(getDeletableRoute).to.exist;
     });
   });
@@ -87,7 +87,7 @@ describe('organisation/index', () => {
       mockReq.http.get.resolves({ data: orgData });
 
       const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) => 
+      const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -110,7 +110,7 @@ describe('organisation/index', () => {
       });
 
       const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) => 
+      const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -129,7 +129,7 @@ describe('organisation/index', () => {
       mockReq.http.get.rejects(error);
 
       const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) => 
+      const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -149,7 +149,7 @@ describe('organisation/index', () => {
           }
         }
       };
-      
+
       const orgList = [{ name: 'Test Org', sraId: '123' }];
       mockReq.http.get.resolves({
         data: { organisations: orgList },
@@ -157,7 +157,7 @@ describe('organisation/index', () => {
       });
 
       const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) => 
+      const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -174,7 +174,7 @@ describe('organisation/index', () => {
       mockReq.http.get.resolves({ data: orgData });
 
       const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) => 
+      const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -192,7 +192,7 @@ describe('organisation/index', () => {
       mockReq.http.get.resolves({ data: userData });
 
       const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) => 
+      const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -211,7 +211,7 @@ describe('organisation/index', () => {
       mockReq.http.get.resolves({ data: orgData });
 
       const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) => 
+      const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -232,7 +232,7 @@ describe('organisation/index', () => {
       mockReq.http.get.rejects(error);
 
       const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) => 
+      const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -270,7 +270,7 @@ describe('organisation/index', () => {
       });
 
       const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) => 
+      const postHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.post
       ).route.stack[0].handle;
 
@@ -289,7 +289,7 @@ describe('organisation/index', () => {
       });
 
       const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) => 
+      const postHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.post
       ).route.stack[0].handle;
 
@@ -308,7 +308,7 @@ describe('organisation/index', () => {
       mockReq.http.get.rejects(error);
 
       const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) => 
+      const postHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.post
       ).route.stack[0].handle;
 
@@ -328,7 +328,7 @@ describe('organisation/index', () => {
         }
       };
       mockReq.query = { status: 'ACTIVE' };
-      
+
       const orgList = [{ name: 'Test Org', status: 'ACTIVE' }];
       mockReq.http.get.resolves({
         data: { organisations: orgList },
@@ -336,7 +336,7 @@ describe('organisation/index', () => {
       });
 
       const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) => 
+      const postHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.post
       ).route.stack[0].handle;
 
@@ -356,14 +356,14 @@ describe('organisation/index', () => {
         }
       };
       mockReq.query = { status: 'PENDING' };
-      
+
       const orgList = [{ name: 'Test Org', status: 'PENDING' }];
       mockReq.http.get.resolves({
         data: { organisations: orgList }
       });
 
       const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) => 
+      const postHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.post
       ).route.stack[0].handle;
 
@@ -383,11 +383,11 @@ describe('organisation/index', () => {
         }
       };
       mockReq.query = { status: 'PENDING' };
-      
+
       mockReq.http.get.resolves(null);
 
       const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) => 
+      const postHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.post
       ).route.stack[0].handle;
 
@@ -410,13 +410,13 @@ describe('organisation/index', () => {
         }
       };
       mockReq.query = { status: 'PENDING' };
-      
+
       // Mock the call to return a list of organizations for filtering
       const orgList = [{ name: 'Test Org', status: 'PENDING' }];
       mockReq.http.get.resolves({ data: { organisations: orgList } });
 
       const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) => 
+      const postHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.post
       ).route.stack[0].handle;
 
@@ -432,7 +432,7 @@ describe('organisation/index', () => {
       mockReq.http.delete = sinon.stub().resolves({ status: 204 });
 
       const router = require('./index').default;
-      const deleteHandler = router.stack.find((layer: any) => 
+      const deleteHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id' && layer.route.methods.delete
       ).route.stack[0].handle;
 
@@ -451,7 +451,7 @@ describe('organisation/index', () => {
       mockReq.http.delete = sinon.stub().rejects(error);
 
       const router = require('./index').default;
-      const deleteHandler = router.stack.find((layer: any) => 
+      const deleteHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id' && layer.route.methods.delete
       ).route.stack[0].handle;
 
@@ -464,7 +464,7 @@ describe('organisation/index', () => {
       mockReq.params = {};
 
       const router = require('./index').default;
-      const deleteHandler = router.stack.find((layer: any) => 
+      const deleteHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id' && layer.route.methods.delete
       ).route.stack[0].handle;
 
@@ -479,13 +479,13 @@ describe('organisation/index', () => {
     it('should update organisation status', async () => {
       mockReq.params = { id: '12345' };
       mockReq.body = { status: 'ACTIVE' };
-      mockReq.http.put = sinon.stub().resolves({ 
+      mockReq.http.put = sinon.stub().resolves({
         status: 200,
         data: { organisationIdentifier: '12345', status: 'ACTIVE' }
       });
 
       const router = require('./index').default;
-      const putHandler = router.stack.find((layer: any) => 
+      const putHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id' && layer.route.methods.put
       ).route.stack[0].handle;
 
@@ -505,7 +505,7 @@ describe('organisation/index', () => {
       mockReq.http.put = sinon.stub().rejects(error);
 
       const router = require('./index').default;
-      const putHandler = router.stack.find((layer: any) => 
+      const putHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id' && layer.route.methods.put
       ).route.stack[0].handle;
 
@@ -519,7 +519,7 @@ describe('organisation/index', () => {
       mockReq.body = { status: 'ACTIVE' };
 
       const router = require('./index').default;
-      const putHandler = router.stack.find((layer: any) => 
+      const putHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id' && layer.route.methods.put
       ).route.stack[0].handle;
 
@@ -539,7 +539,7 @@ describe('organisation/index', () => {
       mockReq.http.put = sinon.stub().rejects(error);
 
       const router = require('./index').default;
-      const putHandler = router.stack.find((layer: any) => 
+      const putHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id' && layer.route.methods.put
       ).route.stack[0].handle;
 
@@ -560,7 +560,7 @@ describe('organisation/index', () => {
       });
 
       const router = require('./index').default;
-      const getDeletableHandler = router.stack.find((layer: any) => 
+      const getDeletableHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id/isDeletable' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -583,7 +583,7 @@ describe('organisation/index', () => {
       });
 
       const router = require('./index').default;
-      const getDeletableHandler = router.stack.find((layer: any) => 
+      const getDeletableHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id/isDeletable' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -598,7 +598,7 @@ describe('organisation/index', () => {
       mockReq.params = {};
 
       const router = require('./index').default;
-      const getDeletableHandler = router.stack.find((layer: any) => 
+      const getDeletableHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id/isDeletable' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -616,7 +616,7 @@ describe('organisation/index', () => {
       mockReq.http.get.rejects(error);
 
       const router = require('./index').default;
-      const getDeletableHandler = router.stack.find((layer: any) => 
+      const getDeletableHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/:id/isDeletable' && layer.route.methods.get
       ).route.stack[0].handle;
 
@@ -696,13 +696,13 @@ describe('organisation/index', () => {
 
       it('should filter by dxNumber', () => {
         const orgs = [
-          { 
-            name: 'Org 1', 
+          {
+            name: 'Org 1',
             dxNumber: [{ dxNumber: 'DX123456', dxExchange: 'London' }],
             contactInformation: []
           },
-          { 
-            name: 'Org 2', 
+          {
+            name: 'Org 2',
             dxNumber: [{ dxNumber: 'DX789012', dxExchange: 'Manchester' }],
             contactInformation: []
           }
@@ -714,13 +714,13 @@ describe('organisation/index', () => {
 
       it('should filter by dxExchange', () => {
         const orgs = [
-          { 
-            name: 'Org 1', 
+          {
+            name: 'Org 1',
             dxNumber: [{ dxNumber: 'DX123456', dxExchange: 'London' }],
             contactInformation: []
           },
-          { 
-            name: 'Org 2', 
+          {
+            name: 'Org 2',
             dxNumber: [{ dxNumber: 'DX789012', dxExchange: 'Manchester' }],
             contactInformation: []
           }
@@ -732,13 +732,13 @@ describe('organisation/index', () => {
 
       it('should handle postCode filtering', () => {
         const orgs = [
-          { 
-            name: 'Org 1', 
-            contactInformation: [{ postCode: 'SW1A 1AA' }] 
+          {
+            name: 'Org 1',
+            contactInformation: [{ postCode: 'SW1A 1AA' }]
           },
-          { 
-            name: 'Org 2', 
-            contactInformation: [{ postCode: 'M1 1AA' }] 
+          {
+            name: 'Org 2',
+            contactInformation: [{ postCode: 'M1 1AA' }]
           }
         ];
         const result = filterOrganisations(orgs, 'sw1a');
@@ -766,8 +766,8 @@ describe('organisation/index', () => {
       });
 
       it('should handle dxNumber without dxNumber field', () => {
-        const orgs = [{ 
-          name: 'Org 1', 
+        const orgs = [{
+          name: 'Org 1',
           dxNumber: [{ dxExchange: 'London' }],
           contactInformation: []
         }];
@@ -776,8 +776,8 @@ describe('organisation/index', () => {
       });
 
       it('should handle dxNumber without dxExchange field', () => {
-        const orgs = [{ 
-          name: 'Org 1', 
+        const orgs = [{
+          name: 'Org 1',
           dxNumber: [{ dxNumber: 'DX123456' }],
           contactInformation: []
         }];
@@ -886,5 +886,4 @@ describe('organisation/index', () => {
       });
     });
   });
-
 });

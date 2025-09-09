@@ -28,7 +28,7 @@ describe('caseWorkerDetailsRouter/util', () => {
       delete require.cache[require.resolve('./util')];
       const util = require('./util');
       getContentType = util.getContentType;
-      
+
       mockFormData = {
         getBoundary: () => 'test-boundary-123'
       };
@@ -77,11 +77,11 @@ describe('caseWorkerDetailsRouter/util', () => {
       };
 
       const result = getFormData(mockFile);
-      
+
       expect(result).to.be.instanceOf(FormData);
       expect(result.getBoundary()).to.be.a('string');
       expect(result.getBoundary()).to.have.lengthOf.greaterThan(0);
-      
+
       const headers = result.getHeaders();
       expect(headers).to.have.property('content-type');
       expect(headers['content-type']).to.include('multipart/form-data');
@@ -103,11 +103,11 @@ describe('caseWorkerDetailsRouter/util', () => {
       };
 
       const result = getFormData(mockFile);
-      
+
       expect(result).to.be.instanceOf(FormData);
       expect(result.getBoundary()).to.be.a('string');
       expect(result.getBoundary()).to.have.lengthOf.greaterThan(0);
-      
+
       const headers = result.getHeaders();
       expect(headers).to.have.property('content-type');
       expect(headers['content-type']).to.include('multipart/form-data');
@@ -129,7 +129,7 @@ describe('caseWorkerDetailsRouter/util', () => {
       };
 
       const result = getFormData(mockFile);
-      
+
       expect(result).to.be.instanceOf(FormData);
       expect(result.getBoundary()).to.be.a('string');
       expect(result.getBoundary()).to.have.lengthOf.greaterThan(0);
@@ -155,7 +155,7 @@ describe('caseWorkerDetailsRouter/util', () => {
       };
 
       const result = getHeaders(mockFormData);
-      
+
       expect(result).to.deep.equal({
         headers: { 'Content-Type': 'multipart/form-data; boundary=test-boundary-123' }
       });
@@ -167,7 +167,7 @@ describe('caseWorkerDetailsRouter/util', () => {
       };
 
       const result = getHeaders(mockFormData);
-      
+
       expect(result).to.deep.equal({
         headers: { 'Content-Type': 'multipart/form-data; boundary=different-boundary-456' }
       });
@@ -181,7 +181,7 @@ describe('caseWorkerDetailsRouter/util', () => {
       };
 
       const result = getHeaders(mockFormData);
-      
+
       expect(result).to.have.property('headers');
       expect(result.headers).to.have.property('Content-Type');
       expect(result.headers['Content-Type']).to.equal(`multipart/form-data; boundary=${complexBoundary}`);
@@ -200,35 +200,35 @@ describe('caseWorkerDetailsRouter/util', () => {
     it('should append upload-file endpoint to base URL', () => {
       const baseUrl = 'http://rd-professional.example.com';
       const result = getUploadFileUrl(baseUrl);
-      
+
       expect(result).to.equal('http://rd-professional.example.com/refdata/case-worker/upload-file');
     });
 
     it('should work with different base URLs', () => {
       const baseUrl = 'https://api.example.org/v1';
       const result = getUploadFileUrl(baseUrl);
-      
+
       expect(result).to.equal('https://api.example.org/v1/refdata/case-worker/upload-file');
     });
 
     it('should handle URLs without protocol', () => {
       const baseUrl = 'localhost:3000';
       const result = getUploadFileUrl(baseUrl);
-      
+
       expect(result).to.equal('localhost:3000/refdata/case-worker/upload-file');
     });
 
     it('should handle empty base URL', () => {
       const baseUrl = '';
       const result = getUploadFileUrl(baseUrl);
-      
+
       expect(result).to.equal('/refdata/case-worker/upload-file');
     });
 
     it('should handle base URL with only slash', () => {
       const baseUrl = '/';
       const result = getUploadFileUrl(baseUrl);
-      
+
       expect(result).to.equal('//refdata/case-worker/upload-file');
     });
   });

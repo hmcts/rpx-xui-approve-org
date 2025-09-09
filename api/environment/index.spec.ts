@@ -14,7 +14,7 @@ describe('environment/index', () => {
       session: {},
       csrfToken: sinon.stub().returns('test-csrf-token')
     };
-    
+
     mockResponse = {
       cookie: sinon.stub(),
       status: sinon.stub().returnsThis(),
@@ -54,29 +54,29 @@ describe('environment/index', () => {
       setTimeout(() => {
         expect(mockRequest.session.env).to.be.true;
         expect(mockRequest.session.save).to.have.been.calledOnce;
-        
+
         expect(mockRequest.csrfToken).to.have.been.calledOnce;
         expect(mockResponse.cookie).to.have.been.calledOnce;
         expect(mockResponse.cookie).to.have.been.calledWith('XSRF-TOKEN', 'test-csrf-token');
-        
+
         expect(mockResponse.status).to.have.been.calledOnce;
         expect(mockResponse.status).to.have.been.calledWith(200);
         expect(mockResponse.send).to.have.been.calledOnce;
         expect(mockResponse.send).to.have.been.calledWith({ config: 'test' });
         expect(mockResponse.end).to.have.been.calledOnce;
-        
+
         expect(mockLogger.info).to.have.been.calledTwice;
         expect(mockLogger.info).to.have.been.calledWith('new session saved! ', 'test-session-id');
         expect(mockLogger.info).to.have.been.calledWith('token for new session: ', 'test-csrf-token');
-        
+
         expect(uiConfigStub).to.have.been.calledOnce;
-        
+
         done();
       }, 10);
     });
 
     it('should handle existing session without CSRF setup', () => {
-      mockRequest.session = { 
+      mockRequest.session = {
         id: 'existing-session-id',
         env: true,
         save: sinon.stub()
@@ -87,17 +87,17 @@ describe('environment/index', () => {
 
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('existing session ', 'existing-session-id');
-      
+
       expect(mockRequest.session.save).to.not.have.been.called;
-      
+
       expect(mockRequest.csrfToken).to.not.have.been.called;
       expect(mockResponse.cookie).to.not.have.been.called;
-      
+
       expect(mockResponse.status).to.have.been.calledOnce;
       expect(mockResponse.status).to.have.been.calledWith(200);
       expect(mockResponse.send).to.have.been.calledOnce;
       expect(mockResponse.send).to.have.been.calledWith({ config: 'test' });
-      
+
       expect(uiConfigStub).to.have.been.calledOnce;
     });
 
@@ -115,7 +115,7 @@ describe('environment/index', () => {
   describe('module exports', () => {
     it('should export router as Express router', () => {
       const module = require('./index');
-      
+
       expect(module.router).to.be.a('function');
       expect(module.router.stack).to.be.an('array');
       expect(module.default).to.be.a('function');
@@ -126,9 +126,9 @@ describe('environment/index', () => {
     it('should have exactly one GET route configured for /config', () => {
       const module = require('./index');
       const router = module.router;
-      
+
       expect(router.stack).to.have.length(1);
-      
+
       const routeLayer = router.stack[0];
       expect(routeLayer.route).to.exist;
       expect(routeLayer.route.path).to.equal('/config');
@@ -136,7 +136,7 @@ describe('environment/index', () => {
       expect(routeLayer.route.methods.post).to.be.undefined;
       expect(routeLayer.route.methods.put).to.be.undefined;
       expect(routeLayer.route.methods.delete).to.be.undefined;
-      
+
       expect(routeLayer.route.stack).to.have.length(1);
       expect(routeLayer.route.stack[0].handle).to.be.a('function');
     });

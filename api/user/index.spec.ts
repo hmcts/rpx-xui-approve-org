@@ -20,7 +20,7 @@ describe('user/index', () => {
         }
       }
     };
-    
+
     mockResponse = {
       send: sinon.stub(),
       status: sinon.stub().returnsThis()
@@ -53,7 +53,7 @@ describe('user/index', () => {
 
       expect(configStub).to.have.been.calledWith('userTimeoutInSeconds');
       expect(consoleLogStub).to.have.been.calledWith('getConfigValue(USER_TIMEOUT_IN_SECONDS)', '1800');
-      
+
       const sentData = JSON.parse(mockResponse.send.getCall(0).args[0]);
       expect(sentData).to.deep.include({
         id: 'test-user-id',
@@ -86,7 +86,7 @@ describe('user/index', () => {
 
       expect(mockLogger.info).to.have.been.called;
       expect(mockResponse.status).to.have.been.calledWith(500);
-      
+
       const errorResponse = JSON.parse(mockResponse.send.getCall(0).args[0]);
       expect(errorResponse).to.have.property('apiError');
       expect(errorResponse).to.have.property('message', '');
@@ -121,7 +121,7 @@ describe('user/index', () => {
     it('should have GET route configured for /details', () => {
       const module = require('./index');
       const router = module.router;
-      
+
       expect(router).to.be.a('function');
       expect(router.stack).to.be.an('array');
       expect(router.stack).to.have.length(1);

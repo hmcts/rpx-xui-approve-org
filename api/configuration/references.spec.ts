@@ -1,9 +1,9 @@
 import { expect } from '../test/shared/testSetup';
 import 'mocha';
-import { 
+import {
   ENVIRONMENT,
   COOKIE_TOKEN,
-  COOKIES_USERID, 
+  COOKIES_USERID,
   COOKIE_ROLES,
   MAX_LINES,
   SERVICES_ISS_PATH

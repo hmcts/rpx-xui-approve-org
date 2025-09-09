@@ -205,7 +205,7 @@ describe('caseWorkerDetailsRouter/index', () => {
       // no response is sent (this matches the actual code behavior)
       expect(mockResponse.status).not.to.have.been.called;
       expect(mockResponse.send).not.to.have.been.called;
-      
+
       expect(mockRequest.http.post).to.have.been.calledOnce;
     });
 
@@ -221,7 +221,7 @@ describe('caseWorkerDetailsRouter/index', () => {
       const mockFormData = { append: sinon.stub() };
       const mockHeaders = { headers: { 'Content-Type': 'multipart/form-data' } };
       const expectedUploadUrl = 'https://different-api.gov.uk/refdata/case-worker/upload-file';
-      
+
       utilStub.getFormData.returns(mockFormData);
       utilStub.getHeaders.returns(mockHeaders);
       utilStub.getUploadFileUrl.returns(expectedUploadUrl);
@@ -237,13 +237,13 @@ describe('caseWorkerDetailsRouter/index', () => {
       await handler(mockRequest, mockResponse);
 
       expect(configStub).to.have.been.calledWith('services.caseworkerApi');
-      
+
       expect(utilStub.getUploadFileUrl).to.have.been.calledOnce;
       expect(utilStub.getUploadFileUrl).to.have.been.calledWith('https://different-api.gov.uk');
-      
+
       expect(mockRequest.http.post).to.have.been.calledOnce;
       expect(mockRequest.http.post).to.have.been.calledWith(expectedUploadUrl, mockFormData, mockHeaders);
-      
+
       expect(mockResponse.status).to.have.been.calledWith(200);
       expect(mockResponse.send).to.have.been.calledWith(responseData);
     });
@@ -252,11 +252,11 @@ describe('caseWorkerDetailsRouter/index', () => {
   describe('module exports', () => {
     it('should export router', () => {
       const module = require('./index');
-      
+
       expect(module.router).to.exist;
       expect(module.router).to.be.a('function');
       expect(module.router.stack).to.be.an('array');
-      
+
       expect(module.default).to.exist;
       expect(module.default).to.equal(module.router);
     });
@@ -264,24 +264,24 @@ describe('caseWorkerDetailsRouter/index', () => {
     it('should have POST route configured for / with file upload middleware', () => {
       const module = require('./index');
       const router = module.router;
-      
+
       // Verify router has exactly one route
       expect(router.stack).to.have.length(1);
-      
+
       const route = router.stack[0];
       expect(route.route).to.exist;
       expect(route.route.path).to.equal('/');
       expect(route.route.methods.post).to.be.true;
       expect(route.route.methods.get).to.be.undefined;
-      
+
       // Verify the route has middleware stack with multer and handler
       expect(route.route.stack).to.have.length(2);
-      
+
       // First middleware should be multer (upload.single('file'))
       const multerMiddleware = route.route.stack[0];
       expect(multerMiddleware.handle).to.be.a('function');
       expect(multerMiddleware.name).to.equal('multerMiddleware');
-      
+
       // Second should be the actual route handler
       const routeHandler = route.route.stack[1];
       expect(routeHandler.handle).to.be.a('function');

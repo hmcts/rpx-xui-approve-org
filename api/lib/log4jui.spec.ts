@@ -58,13 +58,13 @@ describe('log4jui', () => {
     it('should set the logger level from configuration', () => {
       configMock.getConfigValueStub.restore();
       delete require.cache[require.resolve('./log4jui')];
-      
+
       const freshConfigStub = sinon.stub(require('../configuration'), 'getConfigValue');
       freshConfigStub.withArgs('logging').returns('info');
-      
+
       const { getLogger: freshGetLogger } = require('./log4jui');
       const logger = freshGetLogger('test-category');
-      
+
       expect(freshConfigStub).to.have.been.calledWith('logging');
       expect(logger._logger.level).to.equal('info');
     });
@@ -72,16 +72,16 @@ describe('log4jui', () => {
     it('should default to "off" when no logging configuration is provided', () => {
       sinon.restore();
       delete require.cache[require.resolve('./log4jui')];
-      
+
       sinon.stub(require('log4js'), 'getLogger').callsFake(mockLog4js.getLogger);
       sinon.stub(require('./appInsights'), 'client').value(appInsightsStub);
-      
+
       const freshConfigStub = sinon.stub(require('../configuration'), 'getConfigValue');
       freshConfigStub.withArgs('logging').returns(undefined);
-      
+
       const { getLogger: freshGetLogger } = require('./log4jui');
       const logger = freshGetLogger('test-category');
-      
+
       expect(logger._logger.level).to.equal('off');
     });
 
@@ -126,19 +126,19 @@ describe('log4jui', () => {
         sinon.stub(require('./appInsights'), 'client').value(appInsightsStub);
         const { getLogger } = require('./log4jui');
         const freshLogger = getLogger('test');
-        
+
         const requestData = { name: 'test-request', duration: 100 };
-        
+
         freshLogger.trackRequest(requestData);
-        
+
         expect(appInsightsStub.trackRequest).to.have.been.calledWith(requestData);
       });
 
       it('should not throw when appInsights client is not available', () => {
         sinon.stub(require('./appInsights'), 'client').value(null);
-        
+
         const requestData = { name: 'test-request', duration: 100 };
-        
+
         expect(() => logger.trackRequest(requestData)).to.not.throw();
       });
     });

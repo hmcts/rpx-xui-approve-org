@@ -59,7 +59,7 @@ describe('interceptors', () => {
     it('should calculate and set response duration', () => {
       const startTime = new Date('2023-01-01T10:00:00.000Z');
       const endTime = new Date('2023-01-01T10:00:01.500Z');
-      
+
       sinon.useFakeTimers(endTime);
 
       const mockResponse = {
@@ -96,7 +96,7 @@ describe('interceptors', () => {
 
       expect(log4juiStub.getLogger).to.have.been.calledWith('return');
       expect(mockLogger.trackRequest).to.have.been.calledOnce;
-      
+
       const trackRequestCall = mockLogger.trackRequest.getCall(0).args[0];
       expect(trackRequestCall).to.have.property('duration');
       expect(trackRequestCall).to.have.property('name', 'Service GET call');
@@ -123,10 +123,10 @@ describe('interceptors', () => {
       };
 
       expect(() => errorInterceptor(mockError)).to.throw(Error);
-      
+
       expect(log4juiStub.getLogger).to.have.been.calledWith('return');
       expect(mockLogger.trackRequest).to.have.been.calledOnce;
-      
+
       const trackRequestCall = mockLogger.trackRequest.getCall(0).args[0];
       expect(trackRequestCall).to.have.property('duration');
       expect(trackRequestCall).to.have.property('name', 'Service POST call');
@@ -153,7 +153,7 @@ describe('interceptors', () => {
         expect(rejectedValue).to.have.property('message', 'No api response');
         expect(rejectedValue).to.have.property('url');
       }
-      
+
       expect(mockLogger.trackRequest).to.have.been.calledOnce;
       const trackRequestCall = mockLogger.trackRequest.getCall(0).args[0];
       expect(trackRequestCall).to.have.property('duration');
@@ -185,7 +185,7 @@ describe('interceptors', () => {
         expect(rejectedValue).to.have.property('status', 500);
         expect(rejectedValue).to.have.property('data');
       }
-      
+
       expect(mockLogger.error).to.have.been.calledOnce;
       const errorCall = mockLogger.error.getCall(0).args[0];
       expect(errorCall).to.include('Error on GET to http://example.com/api/test');

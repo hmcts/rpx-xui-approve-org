@@ -12,15 +12,15 @@ describe('services/rdProfessional', () => {
   beforeEach(() => {
     configStub = sinon.stub();
     configStub.withArgs('services.rdProfessionalApi').returns('https://rd-professional-api.example.com');
-    
+
     mockLogger = {
       info: sinon.stub(),
       debug: sinon.stub()
     };
-    
+
     getLoggerStub = sinon.stub().returns(mockLogger);
     mockRequest = createMockEnhancedRequest();
-    
+
     sinon.stub(require('../configuration'), 'getConfigValue').callsFake(configStub);
     sinon.stub(require('../lib/log4jui'), 'getLogger').callsFake(getLoggerStub);
   });
@@ -44,14 +44,14 @@ describe('services/rdProfessional', () => {
         address: '123 Test Street',
         email: 'contact@test.org'
       };
-      
+
       const mockResponse = {
         data: {
           organisationIdentifier: 'ORG12345',
           status: 'ACTIVE'
         }
       };
-      
+
       mockRequest.http.post.resolves(mockResponse);
 
       const result = await postOrganisation(orgData, mockRequest);
@@ -60,7 +60,7 @@ describe('services/rdProfessional', () => {
         'https://rd-professional-api.example.com/organisations',
         orgData
       );
-      
+
       expect(result).to.equal(mockResponse.data);
     });
 
@@ -80,7 +80,7 @@ describe('services/rdProfessional', () => {
           { addressLine1: '123 Law Street', postCode: 'L1 1AA' }
         ]
       };
-      
+
       mockRequest.http.post.resolves({ data: { id: 'org123' } });
 
       await postOrganisation(orgData, mockRequest);
@@ -93,7 +93,7 @@ describe('services/rdProfessional', () => {
         name: 'Test Organisation',
         status: 'PENDING'
       };
-      
+
       mockRequest.http.post.resolves({ data: { id: 'org456' } });
 
       await postOrganisation(orgData, mockRequest);
@@ -116,11 +116,11 @@ describe('services/rdProfessional', () => {
 
     it('should handle different API base URLs', async () => {
       configStub.withArgs('services.rdProfessionalApi').returns('https://different-rd-api.gov.uk');
-      
+
       delete require.cache[require.resolve('./rdProfessional')];
       const module = require('./rdProfessional');
       const postOrganisation = module.postOrganisation;
-      
+
       const orgData = { name: 'Test Org' };
       mockRequest.http.post.resolves({ data: 'success' });
 
@@ -140,7 +140,7 @@ describe('services/rdProfessional', () => {
         statusText: 'Created',
         headers: {}
       };
-      
+
       mockRequest.http.post.resolves(mockResponse);
 
       const result = await postOrganisation(orgData, mockRequest);
@@ -179,7 +179,7 @@ describe('services/rdProfessional', () => {
           organisationSectorId: 'OTHER'
         }
       };
-      
+
       mockRequest.http.post.resolves({ data: { id: 'complex-org' } });
 
       const result = await postOrganisation(complexOrgData, mockRequest);
@@ -194,7 +194,7 @@ describe('services/rdProfessional', () => {
     it('should propagate axios errors', async () => {
       const orgData = { name: 'Test Org' };
       const error = new Error('API Error');
-      
+
       mockRequest.http.post.rejects(error);
 
       try {

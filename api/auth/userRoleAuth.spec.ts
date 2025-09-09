@@ -104,7 +104,7 @@ describe('auth/userRoleAuth', () => {
 
     it('should handle non-array input gracefully', () => {
       const result = havePrdAdminRole('not-an-array');
-      
+
       expect(result).to.be.false;
       expect(consoleLogStub).to.have.been.calledOnce;
       expect(consoleLogStub).to.have.been.calledWith('userData', -1);

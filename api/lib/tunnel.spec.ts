@@ -33,17 +33,17 @@ describe('lib/tunnel', () => {
 
   afterEach(() => {
     sinon.restore();
-    
+
     delete require.cache[require.resolve('./tunnel')];
     delete require.cache[require.resolve('../configuration')];
     delete require.cache[require.resolve('./log4jui')];
-    
+
     if (originalEnv.AO_HTTP_PROXY !== undefined) {
       process.env.AO_HTTP_PROXY = originalEnv.AO_HTTP_PROXY;
     } else {
       delete process.env.AO_HTTP_PROXY;
     }
-    
+
     if (originalEnv.AO_NO_PROXY !== undefined) {
       process.env.AO_NO_PROXY = originalEnv.AO_NO_PROXY;
     } else {
@@ -54,11 +54,11 @@ describe('lib/tunnel', () => {
   describe('init', () => {
     it('should create logger with correct category', () => {
       showFeatureStub.returns(false);
-      
+
       delete require.cache[require.resolve('./tunnel')];
       const { init } = require('./tunnel');
       init();
-      
+
       expect(getLoggerStub).to.have.been.calledWith('proxy');
     });
 
@@ -66,20 +66,20 @@ describe('lib/tunnel', () => {
       showFeatureStub.returns(true);
       process.env.AO_HTTP_PROXY = 'http://proxy.example.com:8080';
       process.env.AO_NO_PROXY = 'localhost,127.0.0.1';
-      
+
       delete require.cache[require.resolve('./tunnel')];
       const { init } = require('./tunnel');
       init();
-      
+
       expect(showFeatureStub).to.have.been.calledWith('proxyEnabled');
     });
 
     it('should not configure global proxy agent when feature is disabled', () => {
       showFeatureStub.returns(false);
-      
+
       const { init } = require('./tunnel');
       init();
-      
+
       expect(createGlobalProxyAgentStub).not.to.have.been.called;
     });
 
@@ -87,7 +87,7 @@ describe('lib/tunnel', () => {
       showFeatureStub.returns(true);
       process.env.AO_HTTP_PROXY = 'http://proxy.example.com:8080';
       process.env.AO_NO_PROXY = 'localhost,127.0.0.1';
-      
+
       const { init } = require('./tunnel');
       init();
 
@@ -103,7 +103,7 @@ describe('lib/tunnel', () => {
       showFeatureStub.returns(true);
       delete process.env.AO_HTTP_PROXY;
       delete process.env.AO_NO_PROXY;
-      
+
       const { init } = require('./tunnel');
       init();
 
@@ -117,10 +117,10 @@ describe('lib/tunnel', () => {
 
     it('should check correct feature flag', () => {
       showFeatureStub.returns(false);
-      
+
       const { init } = require('./tunnel');
       init();
-      
+
       expect(showFeatureStub).to.have.been.calledWith('proxyEnabled');
     });
 
@@ -128,7 +128,7 @@ describe('lib/tunnel', () => {
       showFeatureStub.returns(true);
       process.env.AO_HTTP_PROXY = 'http://proxy.example.com:8080';
       delete process.env.AO_NO_PROXY;
-      
+
       const { init } = require('./tunnel');
       init();
 
@@ -144,7 +144,7 @@ describe('lib/tunnel', () => {
       showFeatureStub.returns(true);
       delete process.env.AO_HTTP_PROXY;
       process.env.AO_NO_PROXY = 'localhost,127.0.0.1';
-      
+
       const { init } = require('./tunnel');
       init();
 

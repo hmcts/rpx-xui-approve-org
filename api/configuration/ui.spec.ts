@@ -191,7 +191,7 @@ describe('configuration/ui', () => {
       const config = uiConfig();
 
       expect(config.configEnv).to.be.null;
-      
+
       expect(config.idamClient).to.be.undefined;
       expect(config.indexUrl).to.be.undefined;
       expect(config.iss).to.be.undefined;
@@ -203,13 +203,13 @@ describe('configuration/ui', () => {
       expect(config.protocol).to.be.undefined;
       expect(config.sessionSecret).to.be.undefined;
       expect(config.launchDarklyClientId).to.be.undefined;
-      
+
       expect(config.cookies.roles).to.be.undefined;
       expect(config.cookies.token).to.be.undefined;
       expect(config.cookies.userId).to.be.undefined;
-      
+
       expect(config.exceptionOptions.maxLines).to.be.undefined;
-      
+
       expect(config.services.ccdDataApi).to.be.undefined;
       expect(config.services.ccdDefApi).to.be.undefined;
       expect(config.services.feeAndPayApi).to.be.undefined;
@@ -219,10 +219,10 @@ describe('configuration/ui', () => {
       expect(config.services.rdProfessionalApi).to.be.undefined;
       expect(config.services.s2s).to.be.undefined;
       expect(config.services.prd.commondataApi).to.be.undefined;
-      
+
       expect(config.oidcEnabled).to.be.undefined;
       expect(config.secureCookie).to.be.undefined;
-      
+
       expect(config.health).to.deep.equal({});
     });
 
@@ -231,7 +231,7 @@ describe('configuration/ui', () => {
       uiConfig();
 
       expect(getEnvironmentStub).to.have.been.calledOnce;
-      
+
       // Verify all getConfigValue calls
       expect(getConfigValueStub).to.have.been.calledWith('cookies.roles');
       expect(getConfigValueStub).to.have.been.calledWith('cookies.token');
@@ -256,11 +256,11 @@ describe('configuration/ui', () => {
       expect(getConfigValueStub).to.have.been.calledWith('services.prd.commondataApi');
       expect(getConfigValueStub).to.have.been.calledWith('sessionSecret');
       expect(getConfigValueStub).to.have.been.calledWith('secrets.rpx.launch-darkly-client-id');
-      
+
       // Verify showFeature calls
       expect(showFeatureStub).to.have.been.calledWith('oidcEnabled');
       expect(showFeatureStub).to.have.been.calledWith('secureCookieEnabled');
-      
+
       // Verify healthEndpoints call
       expect(healthEndpointsStub).to.have.been.calledOnce;
     });

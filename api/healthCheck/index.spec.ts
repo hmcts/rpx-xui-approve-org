@@ -15,7 +15,7 @@ describe('healthCheck/index', () => {
       query: {},
       get: sinon.stub()
     };
-    
+
     mockResponse = {
       send: sinon.stub().returnsThis(),
       status: sinon.stub().returnsThis()
@@ -52,7 +52,7 @@ describe('healthCheck/index', () => {
 
       expect(healthEndpointsStub).to.not.have.been.called;
       expect(mockRequest.get).to.not.have.been.called;
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('response::', { healthState: true });
       expect(mockResponse.send).to.have.been.calledOnce;
@@ -69,7 +69,7 @@ describe('healthCheck/index', () => {
       expect(healthEndpointsStub).to.not.have.been.called;
       expect(mockRequest.get).to.not.have.been.called;
       expect(consoleLogStub).to.not.have.been.called;
-      
+
       expect(mockResponse.send).to.have.been.calledOnce;
       expect(mockResponse.send).to.have.been.calledWith({ healthState: true });
       expect(mockResponse.status).to.not.have.been.called;
@@ -83,14 +83,14 @@ describe('healthCheck/index', () => {
       await handler(mockRequest, mockResponse);
 
       expect(healthEndpointsStub).to.have.been.calledTwice;
-      
+
       expect(consoleLogStub).to.have.been.calledTwice;
       expect(consoleLogStub.getCall(0)).to.have.been.calledWith('healthEndpoints');
       expect(consoleLogStub.getCall(1)).to.have.been.calledWith('https://rd-professional-api.example.com/health');
-      
+
       expect(mockRequest.get).to.have.been.calledOnce;
       expect(mockRequest.get).to.have.been.calledWith('https://rd-professional-api.example.com/health');
-      
+
       expect(mockResponse.send).to.have.been.calledOnce;
       expect(mockResponse.send).to.have.been.calledWith({ healthState: true });
       expect(mockResponse.status).to.not.have.been.called;
@@ -149,11 +149,11 @@ describe('healthCheck/index', () => {
       expect(healthEndpointsStub).to.have.been.calledTwice;
       expect(mockRequest.get).to.have.been.calledOnce;
       expect(mockRequest.get).to.have.been.calledWith('https://rd-professional-api.example.com/health');
-      
+
       expect(consoleLogStub).to.have.been.called;
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('response::', { healthState: false });
-      
+
       expect(mockResponse.send).to.have.been.calledOnce;
       expect(mockResponse.send).to.have.been.calledWith({ healthState: false });
       expect(mockResponse.status).to.not.have.been.called;
@@ -171,9 +171,9 @@ describe('healthCheck/index', () => {
 
       expect(healthEndpointsStub).to.have.been.calledTwice;
       expect(mockRequest.get).to.have.been.calledOnce;
-      
+
       expect(consoleLogStub).to.have.been.called;
-      
+
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('response::', { healthState: false });
       expect(mockResponse.send).to.have.been.calledOnce;
@@ -184,7 +184,7 @@ describe('healthCheck/index', () => {
       mockRequest.query = { path: '/organisation' };
       const error = new Error('Unexpected error') as any;
       error.status = 500;
-      
+
       // Force an error in the try block by making healthEndpoints throw
       healthEndpointsStub.throws(error);
 
@@ -225,13 +225,13 @@ describe('healthCheck/index', () => {
       await handler(mockRequest, mockResponse);
 
       expect(healthEndpointsStub).to.have.been.calledTwice;
-      
+
       expect(mockRequest.get).to.have.been.calledOnce;
       expect(mockRequest.get).to.have.been.calledWith('https://rd-professional-api.example.com/health');
-      
+
       expect(consoleLogStub).to.have.been.calledWith('healthEndpoints');
       expect(consoleLogStub).to.have.been.calledWith('https://rd-professional-api.example.com/health');
-      
+
       expect(mockResponse.send).to.have.been.calledOnce;
       expect(mockResponse.send).to.have.been.calledWith({ healthState: true });
     });
@@ -240,7 +240,7 @@ describe('healthCheck/index', () => {
   describe('module exports', () => {
     it('should export router as Express router', () => {
       const module = require('./index');
-      
+
       expect(module.router).to.be.a('function');
       expect(module.router.stack).to.be.an('array');
       expect(module.default).to.be.a('function');
@@ -251,9 +251,9 @@ describe('healthCheck/index', () => {
     it('should have exactly one GET route configured for /', () => {
       const module = require('./index');
       const router = module.router;
-      
+
       expect(router.stack).to.have.length(1);
-      
+
       const routeLayer = router.stack[0];
       expect(routeLayer.route).to.exist;
       expect(routeLayer.route.path).to.equal('/');
@@ -261,7 +261,7 @@ describe('healthCheck/index', () => {
       expect(routeLayer.route.methods.post).to.be.undefined;
       expect(routeLayer.route.methods.put).to.be.undefined;
       expect(routeLayer.route.methods.delete).to.be.undefined;
-      
+
       expect(routeLayer.route.stack).to.have.length(1);
       expect(routeLayer.route.stack[0].handle).to.be.a('function');
     });

@@ -55,16 +55,16 @@ describe('states/templates/index', () => {
       const expectedKeys = [
         'email-address',
         'name',
-        'organisation-address', 
+        'organisation-address',
         'organisation-dx',
         'organisation-have-dx',
         'organisation-name',
         'organisation-pba'
       ];
-      
+
       const actualKeys = Object.keys(templates.any);
       expect(actualKeys).to.have.length(expectedKeys.length);
-      expectedKeys.forEach(key => {
+      expectedKeys.forEach((key) => {
         expect(actualKeys).to.include(key);
       });
     });

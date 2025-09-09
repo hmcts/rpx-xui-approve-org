@@ -28,7 +28,7 @@ describe('states/index', () => {
       caseId: 'test-case',
       stateId: 'test-state'
     };
-    
+
     mockResponse = createMockResponse();
     mockLogger = createMockLogger();
 
@@ -95,7 +95,7 @@ describe('states/index', () => {
 
     it('should handle successful organisation registration', async () => {
       asyncReturnOrErrorStub.resolves('success');
-      
+
       // Mock the internal payload function behavior
       const mockPayloadFunction = async (req, res) => {
         const result = await asyncReturnOrErrorStub();
@@ -114,7 +114,7 @@ describe('states/index', () => {
 
     it('should handle failed organisation registration', async () => {
       asyncReturnOrErrorStub.resolves(null);
-      
+
       const mockPayloadFunction = async (req, res) => {
         const result = await asyncReturnOrErrorStub();
         if (result) {
@@ -151,7 +151,7 @@ describe('states/index', () => {
         sinon.match.any, // mapping
         sinon.match.any, // payload function
         sinon.match.any, // templates
-        sinon.match.any  // store
+        sinon.match.any // store
       );
     });
   });
@@ -171,14 +171,14 @@ describe('states/index', () => {
     });
 
     it('should have GET route configured for states endpoint', () => {
-      const getRoute = router.stack.find(layer => 
+      const getRoute = router.stack.find((layer) =>
         layer.route && layer.route.path === '/states/:jurId/:caseTypeId/:caseId/:stateId' && layer.route.methods.get
       );
       expect(getRoute).to.exist;
     });
 
     it('should have POST route configured for states endpoint', () => {
-      const postRoute = router.stack.find(layer => 
+      const postRoute = router.stack.find((layer) =>
         layer.route && layer.route.path === '/states/:jurId/:caseTypeId/:caseId/:stateId' && layer.route.methods.post
       );
       expect(postRoute).to.exist;
@@ -212,12 +212,12 @@ describe('states/index', () => {
 
       payloadBuilderStub.returns(realPayload);
       asyncReturnOrErrorStub.resolves('success');
-      
+
       const mockPayloadFunction = async (req, res) => {
         mockLogger.info('Posting to Reference Data (Professional) service');
         const result = await asyncReturnOrErrorStub();
         mockLogger.info('Posted to Reference Data (Professional) service', result);
-        
+
         if (result) {
           return 'registration-confirmation';
         }
@@ -236,12 +236,12 @@ describe('states/index', () => {
       const errorPayload = new Error('Service unavailable');
       rdProfessionalStub.rejects(errorPayload);
       asyncReturnOrErrorStub.resolves(null);
-      
+
       const mockPayloadFunction = async (req, res) => {
         mockLogger.info('Posting to Reference Data (Professional) service');
         const result = await asyncReturnOrErrorStub();
         mockLogger.info('Posted to Reference Data (Professional) service', result);
-        
+
         if (result) {
           return 'registration-confirmation';
         }
@@ -273,7 +273,7 @@ describe('states/index', () => {
 
       expect(stateEngineStub).to.have.been.calledOnce;
       const args = stateEngineStub.getCall(0).args;
-      
+
       expect(args[0]).to.equal(mockRequest);
       expect(args[1]).to.equal(mockResponse);
       expect(args[2]).to.be.an('object'); // mapping
@@ -299,7 +299,7 @@ describe('states/index', () => {
 
     it('should handle missing fromValues in request body', async () => {
       mockRequest.body = {}; // No fromValues
-      
+
       const registerOrganisation = async (req, res) => {
         const organisationPayload = payloadBuilderStub(req.body.fromValues);
         return await asyncReturnOrErrorStub(
@@ -320,7 +320,7 @@ describe('states/index', () => {
 
     it('should handle empty fromValues object', async () => {
       mockRequest.body = { fromValues: {} };
-      
+
       const registerOrganisation = async (req, res) => {
         const organisationPayload = payloadBuilderStub(req.body.fromValues);
         return await asyncReturnOrErrorStub(
@@ -344,7 +344,7 @@ describe('states/index', () => {
     it('should handle asyncReturnOrError with different error scenarios', async () => {
       // Test with false return value
       asyncReturnOrErrorStub.resolves(false);
-      
+
       const mockPayloadFunction = async (req, res) => {
         const result = await asyncReturnOrErrorStub();
         if (result) {
@@ -417,10 +417,10 @@ describe('states/index', () => {
         }
       ];
 
-      testCases.forEach(params => {
+      testCases.forEach((params) => {
         mockRequest.params = params;
         handler(mockRequest, mockResponse);
-        
+
         expect(stateEngineStub).to.have.been.called;
       });
     });
@@ -449,7 +449,7 @@ describe('states/index', () => {
   describe('constants and configuration', () => {
     it('should use correct HTTP error code', async () => {
       asyncReturnOrErrorStub.resolves(null);
-      
+
       const mockPayloadFunction = async (req, res) => {
         const result = await asyncReturnOrErrorStub();
         if (result) {
@@ -466,7 +466,7 @@ describe('states/index', () => {
 
     it('should return correct success state', async () => {
       asyncReturnOrErrorStub.resolves('success');
-      
+
       const mockPayloadFunction = async (req, res) => {
         const result = await asyncReturnOrErrorStub();
         if (result) {

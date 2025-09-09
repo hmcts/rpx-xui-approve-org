@@ -218,12 +218,12 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { 
-          organisationName: 'Test Org 1', 
+        {
+          organisationName: 'Test Org 1',
           superUser: { email: 'test@example.com' }
         },
-        { 
-          organisationName: 'Another Org', 
+        {
+          organisationName: 'Another Org',
           superUser: { email: 'other@example.com' }
         }
       ];
@@ -274,13 +274,13 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { 
-          organisationName: 'Org 1', 
-          pbaNumbers: [{ pbaNumber: 'PBA123456', status: 'PENDING' }] 
+        {
+          organisationName: 'Org 1',
+          pbaNumbers: [{ pbaNumber: 'PBA123456', status: 'PENDING' }]
         },
-        { 
-          organisationName: 'Org 2', 
-          pbaNumbers: [{ pbaNumber: 'PBA789012', status: 'PENDING' }] 
+        {
+          organisationName: 'Org 2',
+          pbaNumbers: [{ pbaNumber: 'PBA789012', status: 'PENDING' }]
         }
       ];
       mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
@@ -371,9 +371,9 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { organisationName: 'Legal Services Ltd', superUser: { email: 'admin@legal.com' }},
-        { organisationName: 'Tech Corp', superUser: { email: 'admin@tech.com' }},
-        { organisationName: 'Another Legal Services', superUser: { email: 'admin@legal2.com' }}
+        { organisationName: 'Legal Services Ltd', superUser: { email: 'admin@legal.com' } },
+        { organisationName: 'Tech Corp', superUser: { email: 'admin@tech.com' } },
+        { organisationName: 'Another Legal Services', superUser: { email: 'admin@legal2.com' } }
       ];
       mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
@@ -393,9 +393,9 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { organisationName: 'Legal Services Ltd', superUser: { email: 'admin@legal.com' }},
-        { organisationName: 'Tech Corp', superUser: { email: 'admin@tech.com' }},
-        { organisationName: 'Another Legal Services', superUser: { email: 'admin@legal2.com' }}
+        { organisationName: 'Legal Services Ltd', superUser: { email: 'admin@legal.com' } },
+        { organisationName: 'Tech Corp', superUser: { email: 'admin@tech.com' } },
+        { organisationName: 'Another Legal Services', superUser: { email: 'admin@legal2.com' } }
       ];
       mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
@@ -414,9 +414,9 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { organisationName: 'Org 1', superUser: { email: 'admin@legal.com' }},
-        { organisationName: 'Org 2', superUser: { email: 'admin@tech.com' }},
-        { organisationName: 'Org 3', superUser: { email: 'admin@legal2.com' }}
+        { organisationName: 'Org 1', superUser: { email: 'admin@legal.com' } },
+        { organisationName: 'Org 2', superUser: { email: 'admin@tech.com' } },
+        { organisationName: 'Org 3', superUser: { email: 'admin@legal2.com' } }
       ];
       mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
@@ -435,13 +435,13 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { 
-          organisationName: 'Org 1', 
+        {
+          organisationName: 'Org 1',
           pbaNumbers: [{ pbaNumber: 'PBA123456' }],
           superUser: { email: 'admin@org1.com' }
         },
-        { 
-          organisationName: 'Org 2', 
+        {
+          organisationName: 'Org 2',
           pbaNumbers: [{ pbaNumber: 'PBA789012' }],
           superUser: { email: 'admin@org2.com' }
         }
@@ -463,12 +463,12 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { 
-          organisationName: 'Org 1', 
+        {
+          organisationName: 'Org 1',
           superUser: { firstName: 'John', lastName: 'Doe', email: 'john@org1.com' }
         },
-        { 
-          organisationName: 'Org 2', 
+        {
+          organisationName: 'Org 2',
           superUser: { firstName: 'Jane', lastName: 'Smith', email: 'jane@org2.com' }
         }
       ];
@@ -489,13 +489,13 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { 
-          organisationName: 'Org 1', 
+        {
+          organisationName: 'Org 1',
           status: 'ACTIVE',
           superUser: { email: 'admin@org1.com' }
         },
-        { 
-          organisationName: 'Org 2', 
+        {
+          organisationName: 'Org 2',
           status: 'PENDING',
           superUser: { email: 'admin@org2.com' }
         }
@@ -517,8 +517,8 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { 
-          organisationName: 'Org 1 Without PBAs', 
+        {
+          organisationName: 'Org 1 Without PBAs',
           superUser: { email: 'admin@org1.com' }
           // No pbaNumbers property
         }
@@ -540,7 +540,7 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { 
+        {
           organisationName: 'Minimal Org'
           // No superUser property
         }
@@ -566,13 +566,13 @@ describe('updatePba/index', () => {
         }
       };
       const apiResponseData = [
-        { 
-          organisationName: 'Org with matching PBA', 
+        {
+          organisationName: 'Org with matching PBA',
           pbaNumbers: [{ pbaNumber: 'PBA123456' }],
           superUser: { email: 'admin@matching.com' }
         },
-        { 
-          organisationName: 'Org with non-matching PBA', 
+        {
+          organisationName: 'Org with non-matching PBA',
           pbaNumbers: [{ pbaNumber: 'PBA789012' }],
           superUser: { email: 'admin@non-matching.com' }
         }
@@ -619,7 +619,7 @@ describe('updatePba/index', () => {
       );
     });
 
-it('should create correct GET by status URL', async () => {
+    it('should create correct GET by status URL', async () => {
       const mockRequest = createMockEnhancedRequest();
       mockRequest.params = { status: 'ACCEPTED' };
       mockRequest.http.get.resolves({ status: 200, data: [] });
@@ -643,7 +643,7 @@ it('should create correct GET by status URL', async () => {
       const mockRequest = createMockEnhancedRequest();
       const mockResponse = createMockResponse();
       mockRequest.body = { orgId: 'org-123', paymentAccounts: ['PBA123456'] };
-      
+
       const errorWithoutStatus = new Error('Network error');
       mockRequest.http.put.rejects(errorWithoutStatus);
 
@@ -658,7 +658,7 @@ it('should create correct GET by status URL', async () => {
       const mockRequest = createMockEnhancedRequest();
       const mockResponse = createMockResponse();
       mockRequest.body = { orgId: 'org-123', pbaNumbers: [] };
-      
+
       const errorWithoutData = { status: 400 };
       mockRequest.http.put.rejects(errorWithoutData);
 
@@ -673,7 +673,7 @@ it('should create correct GET by status URL', async () => {
       const mockRequest = createMockEnhancedRequest();
       const mockResponse = createMockResponse();
       mockRequest.params = { status: 'PENDING' };
-      
+
       const partialError = { status: 503 };
       mockRequest.http.get.rejects(partialError);
 
@@ -699,28 +699,28 @@ it('should create correct GET by status URL', async () => {
         // But we can verify the URLs are built correctly through the HTTP calls
         const testOrgId = 'test-org-123';
         const expectedUrl = 'https://rd-professional-api.example.com/refdata/internal/v1/organisations/test-org-123/pbas';
-        
+
         const mockRequest = createMockEnhancedRequest();
         const mockResponse = createMockResponse();
         mockRequest.body = { orgId: testOrgId, paymentAccounts: ['PBA123'] };
         mockRequest.http.put.resolves();
 
         return indexModule.handleUpdatePBARoute(mockRequest, mockResponse).then(() => {
-        expect(mockRequest.http.put).to.have.been.calledWith(expectedUrl, sinon.match.any);
+          expect(mockRequest.http.put).to.have.been.calledWith(expectedUrl, sinon.match.any);
         });
       });
 
       it('should test putStatusUrl function with different org IDs', () => {
         const testOrgId = 'status-org-456';
         const expectedUrl = 'https://rd-professional-api.example.com/refdata/internal/v1/organisations/status-org-456/pba/status';
-        
+
         const mockRequest = createMockEnhancedRequest();
         const mockResponse = createMockResponse();
         mockRequest.body = { orgId: testOrgId, pbaNumbers: [] };
         mockRequest.http.put.resolves();
 
         return indexModule.handleSetStatusPBARoute(mockRequest, mockResponse).then(() => {
-        expect(mockRequest.http.put).to.have.been.calledWith(expectedUrl, sinon.match.any);
+          expect(mockRequest.http.put).to.have.been.calledWith(expectedUrl, sinon.match.any);
         });
       });
 
@@ -731,7 +731,7 @@ it('should create correct GET by status URL', async () => {
           { status: 'REJECTED', expectedUrl: 'https://rd-professional-api.example.com/refdata/internal/v1/organisations/pba/REJECTED' }
         ];
 
-        const promises = testCases.map(testCase => {
+        const promises = testCases.map((testCase) => {
           const mockRequest = createMockEnhancedRequest();
           const mockResponse = createMockResponse();
           mockRequest.params = { status: testCase.status };
@@ -748,28 +748,28 @@ it('should create correct GET by status URL', async () => {
       it('should handle URL building with special characters in org ID', () => {
         const specialOrgId = 'org-with-special-chars_123@test';
         const expectedUrl = 'https://rd-professional-api.example.com/refdata/internal/v1/organisations/org-with-special-chars_123@test/pbas';
-        
+
         const mockRequest = createMockEnhancedRequest();
         const mockResponse = createMockResponse();
         mockRequest.body = { orgId: specialOrgId, paymentAccounts: [] };
         mockRequest.http.put.resolves();
 
         return indexModule.handleUpdatePBARoute(mockRequest, mockResponse).then(() => {
-        expect(mockRequest.http.put).to.have.been.calledWith(expectedUrl, sinon.match.any);
+          expect(mockRequest.http.put).to.have.been.calledWith(expectedUrl, sinon.match.any);
         });
       });
 
       it('should handle URL building with empty org ID', () => {
         const emptyOrgId = '';
         const expectedUrl = 'https://rd-professional-api.example.com/refdata/internal/v1/organisations//pbas';
-        
+
         const mockRequest = createMockEnhancedRequest();
         const mockResponse = createMockResponse();
         mockRequest.body = { orgId: emptyOrgId, paymentAccounts: [] };
         mockRequest.http.put.resolves();
 
         return indexModule.handleUpdatePBARoute(mockRequest, mockResponse).then(() => {
-        expect(mockRequest.http.put).to.have.been.calledWith(expectedUrl, sinon.match.any);
+          expect(mockRequest.http.put).to.have.been.calledWith(expectedUrl, sinon.match.any);
         });
       });
 
@@ -780,954 +780,954 @@ it('should create correct GET by status URL', async () => {
         mockRequest.http.get.resolves({ status: 200, data: [] });
 
         return indexModule.handleGetPBAsByStatusRoute(mockRequest, mockResponse).then(() => {
-        expect(mockRequest.http.get).to.have.been.calledWith(
+          expect(mockRequest.http.get).to.have.been.calledWith(
             'https://rd-professional-api.example.com/refdata/internal/v1/organisations/pba/undefined'
           );
-      });
-    });
-    
-    describe('filterOrganisations function comprehensive tests', () => {
-      it('should return empty array when orgs is null', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'test'
-          }
-        };
-        mockRequest.http.get.resolves({ status: 200, data: null });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg).to.deep.equal({ organisations: [], total_records: 0 });
+        });
       });
 
-      it('should return empty array when orgs is undefined', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'test'
-          }
-        };
-        mockRequest.http.get.resolves({ status: 200, data: undefined });
+      describe('filterOrganisations function comprehensive tests', () => {
+        it('should return empty array when orgs is null', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'test'
+            }
+          };
+          mockRequest.http.get.resolves({ status: 200, data: null });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg).to.deep.equal({ organisations: [], total_records: 0 });
-      });
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-      it('should handle all text field matching scenarios', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'law'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Law Firm Ltd',
-            superUser: { email: 'admin@lawfirm.com' }
-          },
-          {
-            organisationName: 'Tech Corp',
-            superUser: { email: 'admin@law-tech.com' }
-          },
-          {
-            organisationName: 'Medical Practice',
-            superUser: { email: 'admin@medical.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg).to.deep.equal({ organisations: [], total_records: 0 });
+        });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(2); // Should match 'Law Firm Ltd' and email with 'law-tech'
-      });
+        it('should return empty array when orgs is undefined', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'test'
+            }
+          };
+          mockRequest.http.get.resolves({ status: 200, data: undefined });
 
-      it('should handle case where textFieldMatches finds match but drilldownFilterRelevent exists', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'law',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'PBA123' }
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Law Firm Ltd',
-            superUser: { email: 'admin@lawfirm.com' },
-            pbaNumbers: [{ pbaNumber: 'PBA456789' }] // Doesn't match drill-down filter
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(0); // Should not match due to drill-down filter not matching
-      });
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg).to.deep.equal({ organisations: [], total_records: 0 });
+        });
 
-      it('should handle organisation without superUser but with matching PBA', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'pba123'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Org Without SuperUser',
-            pbaNumbers: [{ pbaNumber: 'PBA123456' }]
+        it('should handle all text field matching scenarios', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'law'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Law Firm Ltd',
+              superUser: { email: 'admin@lawfirm.com' }
+            },
+            {
+              organisationName: 'Tech Corp',
+              superUser: { email: 'admin@law-tech.com' }
+            },
+            {
+              organisationName: 'Medical Practice',
+              superUser: { email: 'admin@medical.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(2); // Should match 'Law Firm Ltd' and email with 'law-tech'
+        });
+
+        it('should handle case where textFieldMatches finds match but drilldownFilterRelevent exists', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'law',
+              drill_down_search: [
+                { field_name: 'pbaPendings', search_filter: 'PBA123' }
+              ]
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Law Firm Ltd',
+              superUser: { email: 'admin@lawfirm.com' },
+              pbaNumbers: [{ pbaNumber: 'PBA456789' }] // Doesn't match drill-down filter
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(0); // Should not match due to drill-down filter not matching
+        });
+
+        it('should handle organisation without superUser but with matching PBA', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'pba123'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Org Without SuperUser',
+              pbaNumbers: [{ pbaNumber: 'PBA123456' }]
             // No superUser property
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1);
-      });
-
-      it('should handle superUser with only firstName but no lastName', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'john'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Test Org',
-            superUser: {
-              firstName: 'John',
-              // lastName is missing
-              email: 'john@example.com'
             }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match firstName
-      });
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-      it('should handle superUser with only lastName but no firstName', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'doe'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Test Org',
-            superUser: {
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1);
+        });
+
+        it('should handle superUser with only firstName but no lastName', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'john'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Test Org',
+              superUser: {
+                firstName: 'John',
+                // lastName is missing
+                email: 'john@example.com'
+              }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match firstName
+        });
+
+        it('should handle superUser with only lastName but no firstName', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'doe'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Test Org',
+              superUser: {
               // firstName is missing
-              lastName: 'Doe',
-              email: 'doe@example.com'
+                lastName: 'Doe',
+                email: 'doe@example.com'
+              }
             }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match lastName
-      });
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-      it('should handle organisation without status property', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'test'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Test Org Without Status',
-            superUser: { email: 'test@example.com' }
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match lastName
+        });
+
+        it('should handle organisation without status property', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'test'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Test Org Without Status',
+              superUser: { email: 'test@example.com' }
             // No status property
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match organisation name
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match organisation name
+        });
+
+        it('should handle exact status matching (case insensitive)', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'active'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Active Org',
+              status: 'ACTIVE',
+              superUser: { email: 'admin@active.com' }
+            },
+            {
+              organisationName: 'Inactive Org',
+              status: 'INACTIVE',
+              superUser: { email: 'admin@inactive.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should only match exact status
+        });
+
+        it('should handle mixed drill-down filters with different field names', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: '',
+              drill_down_search: [
+                { field_name: 'pbaPendings', search_filter: 'PBA123' },
+                { field_name: 'otherField', search_filter: 'other' } // Non-pbaPendings field
+              ]
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Test Org',
+              pbaNumbers: [{ pbaNumber: 'PBA123456' }],
+              superUser: { email: 'test@example.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match PBA filter
+        });
+
+        it('should handle drill-down filter matching without search_filter', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: '',
+              drill_down_search: [
+                { field_name: 'pbaPendings', search_filter: 'legal' }
+              ]
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Legal Services',
+              pbaNumbers: [{ pbaNumber: 'PBA789012' }],
+              superUser: { email: 'admin@legal.com' }
+            },
+            {
+              organisationName: 'Tech Corp',
+              pbaNumbers: [{ pbaNumber: 'PBA123456' }],
+              superUser: { email: 'admin@tech.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match through multipleFilter
+        });
+
+        it('should handle organisation without pbaNumbers and with drill-down filter', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: '',
+              drill_down_search: [
+                { field_name: 'pbaPendings', search_filter: 'legal' }
+              ]
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Legal Services Without PBAs',
+              // No pbaNumbers property
+              superUser: { email: 'admin@legal.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match through multipleFilter
+        });
       });
 
-      it('should handle exact status matching (case insensitive)', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'active'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Active Org',
-            status: 'ACTIVE',
-            superUser: { email: 'admin@active.com' }
-          },
-          {
-            organisationName: 'Inactive Org',
-            status: 'INACTIVE',
-            superUser: { email: 'admin@inactive.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+      describe('createPaginatedResponse function tests', () => {
+        it('should handle first page pagination', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 2 },
+              search_filter: ''
+            }
+          };
+          const apiResponseData = [
+            { organisationName: 'Org 1' },
+            { organisationName: 'Org 2' },
+            { organisationName: 'Org 3' },
+            { organisationName: 'Org 4' }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should only match exact status
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(2);
+          expect(responseArg.organisations[0].organisationName).to.equal('Org 1');
+          expect(responseArg.organisations[1].organisationName).to.equal('Org 2');
+          expect(responseArg.total_records).to.equal(4);
+        });
+
+        it('should handle last page with fewer items than page_size', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 3, page_size: 2 },
+              search_filter: ''
+            }
+          };
+          const apiResponseData = [
+            { organisationName: 'Org 1' },
+            { organisationName: 'Org 2' },
+            { organisationName: 'Org 3' },
+            { organisationName: 'Org 4' },
+            { organisationName: 'Org 5' } // Only 1 item on last page
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1);
+          expect(responseArg.organisations[0].organisationName).to.equal('Org 5');
+          expect(responseArg.total_records).to.equal(5);
+        });
+
+        it('should handle empty page beyond available data', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 5, page_size: 10 },
+              search_filter: ''
+            }
+          };
+          const apiResponseData = [
+            { organisationName: 'Org 1' },
+            { organisationName: 'Org 2' }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(0);
+          expect(responseArg.total_records).to.equal(2);
+        });
+
+        it('should handle single item pagination', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 1 },
+              search_filter: ''
+            }
+          };
+          const apiResponseData = [
+            { organisationName: 'Single Org' }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1);
+          expect(responseArg.organisations[0].organisationName).to.equal('Single Org');
+          expect(responseArg.total_records).to.equal(1);
+        });
+
+        it('should handle zero page_size', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 0 },
+              search_filter: ''
+            }
+          };
+          const apiResponseData = [
+            { organisationName: 'Org 1' },
+            { organisationName: 'Org 2' }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(0);
+          expect(responseArg.total_records).to.equal(2);
+        });
+
+        it('should handle large page_size exceeding data length', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 100 },
+              search_filter: ''
+            }
+          };
+          const apiResponseData = [
+            { organisationName: 'Org 1' },
+            { organisationName: 'Org 2' }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(2);
+          expect(responseArg.total_records).to.equal(2);
+        });
       });
 
-      it('should handle mixed drill-down filters with different field names', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: '',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'PBA123' },
-              { field_name: 'otherField', search_filter: 'other' } // Non-pbaPendings field
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Test Org',
-            pbaNumbers: [{ pbaNumber: 'PBA123456' }],
-            superUser: { email: 'test@example.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+      describe('textFieldMatches function comprehensive tests', () => {
+        it('should handle single-level field matching', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'test'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Test Organisation',
+              superUser: { email: 'admin@test.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match PBA filter
-      });
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-      it('should handle drill-down filter matching without search_filter', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: '',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'legal' }
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Legal Services',
-            pbaNumbers: [{ pbaNumber: 'PBA789012' }],
-            superUser: { email: 'admin@legal.com' }
-          },
-          {
-            organisationName: 'Tech Corp',
-            pbaNumbers: [{ pbaNumber: 'PBA123456' }],
-            superUser: { email: 'admin@tech.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match organisationName field
+        });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match through multipleFilter
-      });
+        it('should handle nested field matching (superUser.email)', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'nested'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Organisation',
+              superUser: { email: 'nested@example.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-      it('should handle organisation without pbaNumbers and with drill-down filter', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: '',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'legal' }
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Legal Services Without PBAs',
-            // No pbaNumbers property
-            superUser: { email: 'admin@legal.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match through multipleFilter
-      });
-    });
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match nested email field
+        });
 
-    describe('createPaginatedResponse function tests', () => {
-      it('should handle first page pagination', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 2 },
-            search_filter: ''
-          }
-        };
-        const apiResponseData = [
-          { organisationName: 'Org 1' },
-          { organisationName: 'Org 2' },
-          { organisationName: 'Org 3' },
-          { organisationName: 'Org 4' }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(2);
-        expect(responseArg.organisations[0].organisationName).to.equal('Org 1');
-        expect(responseArg.organisations[1].organisationName).to.equal('Org 2');
-        expect(responseArg.total_records).to.equal(4);
-      });
-
-      it('should handle last page with fewer items than page_size', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 3, page_size: 2 },
-            search_filter: ''
-          }
-        };
-        const apiResponseData = [
-          { organisationName: 'Org 1' },
-          { organisationName: 'Org 2' },
-          { organisationName: 'Org 3' },
-          { organisationName: 'Org 4' },
-          { organisationName: 'Org 5' } // Only 1 item on last page
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1);
-        expect(responseArg.organisations[0].organisationName).to.equal('Org 5');
-        expect(responseArg.total_records).to.equal(5);
-      });
-
-      it('should handle empty page beyond available data', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 5, page_size: 10 },
-            search_filter: ''
-          }
-        };
-        const apiResponseData = [
-          { organisationName: 'Org 1' },
-          { organisationName: 'Org 2' }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(0);
-        expect(responseArg.total_records).to.equal(2);
-      });
-
-      it('should handle single item pagination', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 1 },
-            search_filter: ''
-          }
-        };
-        const apiResponseData = [
-          { organisationName: 'Single Org' }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1);
-        expect(responseArg.organisations[0].organisationName).to.equal('Single Org');
-        expect(responseArg.total_records).to.equal(1);
-      });
-
-      it('should handle zero page_size', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 0 },
-            search_filter: ''
-          }
-        };
-        const apiResponseData = [
-          { organisationName: 'Org 1' },
-          { organisationName: 'Org 2' }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(0);
-        expect(responseArg.total_records).to.equal(2);
-      });
-
-      it('should handle large page_size exceeding data length', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 100 },
-            search_filter: ''
-          }
-        };
-        const apiResponseData = [
-          { organisationName: 'Org 1' },
-          { organisationName: 'Org 2' }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(2);
-        expect(responseArg.total_records).to.equal(2);
-      });
-    });
-
-    describe('textFieldMatches function comprehensive tests', () => {
-      it('should handle single-level field matching', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'test'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Test Organisation',
-            superUser: { email: 'admin@test.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match organisationName field
-      });
-
-      it('should handle nested field matching (superUser.email)', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'nested'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Organisation',
-            superUser: { email: 'nested@example.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match nested email field
-      });
-
-      it('should handle missing nested field gracefully', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'missing'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Organisation without SuperUser'
+        it('should handle missing nested field gracefully', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'missing'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Organisation without SuperUser'
             // No superUser property, so superUser.email will be undefined
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(0); // Should not match due to missing field
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(0); // Should not match due to missing field
+        });
+
+        it('should handle null field values', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'null'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: null, // Null value
+              superUser: { email: 'test@example.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(0); // Should not match null value
+        });
+
+        it('should handle empty string field values', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: ''
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: '', // Empty string
+              superUser: { email: 'test@example.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Empty filter should return all
+        });
+
+        it('should handle case sensitivity properly', async () => {
+          const mockRequest = createMockEnhancedRequest();
+          const mockResponse = createMockResponse();
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'UPPER'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'upper case org', // lowercase but should match
+              superUser: { email: 'admin@upper.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+          await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          expect(mockResponse.send).to.have.been.called;
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.exist;
+          expect(responseArg.organisations).to.have.length(1); // Should match case-insensitively
+        });
+
+        describe('multipleFilter function comprehensive tests', () => {
+          it('should match organisation name through multipleFilter', async () => {
+            const mockRequest = createMockEnhancedRequest();
+            const mockResponse = createMockResponse();
+            mockRequest.params = { status: 'PENDING' };
+            mockRequest.body = {
+              searchRequest: {
+                pagination_parameters: { page_number: 1, page_size: 10 },
+                search_filter: '',
+                drill_down_search: [
+                  { field_name: 'pbaPendings', search_filter: 'Legal' }
+                ]
+              }
+            };
+            const apiResponseData = [
+              {
+                organisationName: 'Legal Services Ltd',
+                superUser: { email: 'admin@legal.com' }
+                // No pbaNumbers to trigger multipleFilter path
+              }
+            ];
+            mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+            await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+            expect(mockResponse.send).to.have.been.called;
+            const responseArg = mockResponse.send.getCall(0).args[0];
+            expect(responseArg).to.exist;
+            expect(responseArg.organisations).to.have.length(1); // Should match through multipleFilter
+          });
+
+          it('should match superUser.email through multipleFilter', async () => {
+            const mockRequest = createMockEnhancedRequest();
+            const mockResponse = createMockResponse();
+            mockRequest.params = { status: 'PENDING' };
+            mockRequest.body = {
+              searchRequest: {
+                pagination_parameters: { page_number: 1, page_size: 10 },
+                search_filter: '',
+                drill_down_search: [
+                  { field_name: 'pbaPendings', search_filter: 'legal' }
+                ]
+              }
+            };
+            const apiResponseData = [
+              {
+                organisationName: 'Some Organisation',
+                superUser: { email: 'admin@legal.com' }
+                // No pbaNumbers to trigger multipleFilter path
+              }
+            ];
+            mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+            await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+            expect(mockResponse.send).to.have.been.called;
+            const responseArg = mockResponse.send.getCall(0).args[0];
+            expect(responseArg).to.exist;
+            expect(responseArg.organisations).to.have.length(1); // Should match email through multipleFilter
+          });
+
+          it('should handle multiple drill-down filters in multipleFilter', async () => {
+            const mockRequest = createMockEnhancedRequest();
+            const mockResponse = createMockResponse();
+            mockRequest.params = { status: 'PENDING' };
+            mockRequest.body = {
+              searchRequest: {
+                pagination_parameters: { page_number: 1, page_size: 10 },
+                search_filter: '',
+                drill_down_search: [
+                  { field_name: 'pbaPendings', search_filter: 'legal' },
+                  { field_name: 'pbaPendings', search_filter: 'services' }
+                ]
+              }
+            };
+            const apiResponseData = [
+              {
+                organisationName: 'Legal Services Ltd',
+                superUser: { email: 'admin@company.com' }
+                // No pbaNumbers to trigger multipleFilter path
+              }
+            ];
+            mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+            await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+            expect(mockResponse.send).to.have.been.called;
+            const responseArg = mockResponse.send.getCall(0).args[0];
+            expect(responseArg).to.exist;
+            expect(responseArg.organisations).to.have.length(1); // Should match both filters
+          });
+
+          it('should handle no matches in multipleFilter', async () => {
+            const mockRequest = createMockEnhancedRequest();
+            const mockResponse = createMockResponse();
+            mockRequest.params = { status: 'PENDING' };
+            mockRequest.body = {
+              searchRequest: {
+                pagination_parameters: { page_number: 1, page_size: 10 },
+                search_filter: '',
+                drill_down_search: [
+                  { field_name: 'pbaPendings', search_filter: 'nonexistent' }
+                ]
+              }
+            };
+            const apiResponseData = [
+              {
+                organisationName: 'Legal Services Ltd',
+                superUser: { email: 'admin@company.com' }
+                // No pbaNumbers to trigger multipleFilter path
+              }
+            ];
+            mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+            await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+            expect(mockResponse.send).to.have.been.called;
+            const responseArg = mockResponse.send.getCall(0).args[0];
+            expect(responseArg).to.exist;
+            expect(responseArg.organisations).to.have.length(0); // Should not match
+          });
+
+          it('should handle drill-down filter with organisation without fields', async () => {
+            const mockRequest = createMockEnhancedRequest();
+            const mockResponse = createMockResponse();
+            mockRequest.params = { status: 'PENDING' };
+            mockRequest.body = {
+              searchRequest: {
+                pagination_parameters: { page_number: 1, page_size: 10 },
+                search_filter: '',
+                drill_down_search: [
+                  { field_name: 'pbaPendings', search_filter: 'test' }
+                ]
+              }
+            };
+            const apiResponseData = [
+              {
+                // Missing both organisationName and superUser
+              }
+            ];
+            mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+
+            await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+            expect(mockResponse.send).to.have.been.called;
+            const responseArg = mockResponse.send.getCall(0).args[0];
+            expect(responseArg).to.exist;
+            expect(responseArg.organisations).to.have.length(0); // Should not match
+          });
+        });
       });
 
-      it('should handle null field values', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'null'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: null, // Null value
-            superUser: { email: 'test@example.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+      describe('Edge cases in filtering', () => {
+        let handlePostPBAsByStatusRoute: any;
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(0); // Should not match null value
-      });
+        beforeEach(() => {
+          delete require.cache[require.resolve('./index')];
+          const module = require('./index');
+          handlePostPBAsByStatusRoute = module.handlePostPBAsByStatusRoute;
+        });
 
-      it('should handle empty string field values', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: ''
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: '', // Empty string
-            superUser: { email: 'test@example.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+        it('should handle null organisation in array', async () => {
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'test'
+            }
+          };
+          const apiResponseData = [
+            null, // Null organisation
+            { organisationName: 'Test Org', superUser: { email: 'test@example.com' } }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Empty filter should return all
-      });
+          await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-      it('should handle case sensitivity properly', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: 'UPPER'
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'upper case org', // lowercase but should match
-            superUser: { email: 'admin@upper.com' }
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg.organisations).to.have.length(1); // Should filter out null and match "Test Org"
+        });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match case-insensitively
-    });
+        it('should handle empty drill down search array', async () => {
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: '',
+              drill_down_search: [] // Empty array
+            }
+          };
+          const apiResponseData = [
+            { organisationName: 'Test Org', superUser: { email: 'test@example.com' } }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-    describe('multipleFilter function comprehensive tests', () => {
-      it('should match organisation name through multipleFilter', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: '',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'Legal' }
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Legal Services Ltd',
-            superUser: { email: 'admin@legal.com' }
-            // No pbaNumbers to trigger multipleFilter path
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match through multipleFilter
-      });
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg.organisations).to.have.length(1);
+        });
 
-      it('should match superUser.email through multipleFilter', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: '',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'legal' }
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Some Organisation',
-            superUser: { email: 'admin@legal.com' }
-            // No pbaNumbers to trigger multipleFilter path
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+        it('should handle superUser without firstName or lastName', async () => {
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'incomplete'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Test Org',
+              superUser: { email: 'incomplete@example.com' } // Missing firstName and lastName
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match email through multipleFilter
-      });
+          await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-      it('should handle multiple drill-down filters in multipleFilter', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: '',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'legal' },
-              { field_name: 'pbaPendings', search_filter: 'services' }
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Legal Services Ltd',
-            superUser: { email: 'admin@company.com' }
-            // No pbaNumbers to trigger multipleFilter path
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg).to.have.property('organisations');
+          expect(responseArg).to.have.property('total_records');
+        });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(1); // Should match both filters
-      });
+        it('should handle pagination at the exact boundary', async () => {
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 2, page_size: 2 },
+              search_filter: ''
+            }
+          };
+          const apiResponseData = [
+            { organisationName: 'Org 1' },
+            { organisationName: 'Org 2' },
+            { organisationName: 'Org 3' },
+            { organisationName: 'Org 4' } // Exactly fills pagination
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-      it('should handle no matches in multipleFilter', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: '',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'nonexistent' }
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            organisationName: 'Legal Services Ltd',
-            superUser: { email: 'admin@company.com' }
-            // No pbaNumbers to trigger multipleFilter path
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+          await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(0); // Should not match
-      });
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg.organisations).to.have.length(2); // Page 2, items 3 and 4
+          expect(responseArg.organisations[0].organisationName).to.equal('Org 3');
+          expect(responseArg.organisations[1].organisationName).to.equal('Org 4');
+          expect(responseArg.total_records).to.equal(4);
+        });
 
-      it('should handle drill-down filter with organisation without fields', async () => {
-        const mockRequest = createMockEnhancedRequest();
-        const mockResponse = createMockResponse();
-        mockRequest.params = { status: 'PENDING' };
-        mockRequest.body = {
-          searchRequest: {
-            pagination_parameters: { page_number: 1, page_size: 10 },
-            search_filter: '',
-            drill_down_search: [
-              { field_name: 'pbaPendings', search_filter: 'test' }
-            ]
-          }
-        };
-        const apiResponseData = [
-          {
-            // Missing both organisationName and superUser
-          }
-        ];
-        mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
+        it('should handle mixed case PBA number filtering', async () => {
+          mockRequest.params = { status: 'PENDING' };
+          mockRequest.body = {
+            searchRequest: {
+              pagination_parameters: { page_number: 1, page_size: 10 },
+              search_filter: 'pba'
+            }
+          };
+          const apiResponseData = [
+            {
+              organisationName: 'Org 1',
+              pbaNumbers: [{ pbaNumber: 'pba123456' }], // lowercase
+              superUser: { email: 'admin@org1.com' }
+            },
+            {
+              organisationName: 'Org 2',
+              pbaNumbers: [{ pbaNumber: 'PBA789012' }], // uppercase
+              superUser: { email: 'admin@org2.com' }
+            }
+          ];
+          mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
 
-        await indexModule.handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-        
-        expect(mockResponse.send).to.have.been.called;
-        const responseArg = mockResponse.send.getCall(0).args[0];
-        expect(responseArg).to.exist;
-        expect(responseArg.organisations).to.have.length(0); // Should not match
+          await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
+
+          const responseArg = mockResponse.send.getCall(0).args[0];
+          expect(responseArg.organisations).to.have.length(2); // Should match both case variations
+        });
       });
     });
   });
-
-  describe('Edge cases in filtering', () => {
-    let handlePostPBAsByStatusRoute: any;
-
-    beforeEach(() => {
-      delete require.cache[require.resolve('./index')];
-      const module = require('./index');
-      handlePostPBAsByStatusRoute = module.handlePostPBAsByStatusRoute;
-    });
-
-    it('should handle null organisation in array', async () => {
-      mockRequest.params = { status: 'PENDING' };
-      mockRequest.body = {
-        searchRequest: {
-          pagination_parameters: { page_number: 1, page_size: 10 },
-          search_filter: 'test'
-        }
-      };
-      const apiResponseData = [
-        null, // Null organisation
-        { organisationName: 'Test Org', superUser: { email: 'test@example.com' }}
-      ];
-      mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-      await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-
-      const responseArg = mockResponse.send.getCall(0).args[0];
-      expect(responseArg.organisations).to.have.length(1); // Should filter out null and match "Test Org"
-    });
-
-    it('should handle empty drill down search array', async () => {
-      mockRequest.params = { status: 'PENDING' };
-      mockRequest.body = {
-        searchRequest: {
-          pagination_parameters: { page_number: 1, page_size: 10 },
-          search_filter: '',
-          drill_down_search: [] // Empty array
-        }
-      };
-      const apiResponseData = [
-        { organisationName: 'Test Org', superUser: { email: 'test@example.com' }}
-      ];
-      mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-      await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-
-      const responseArg = mockResponse.send.getCall(0).args[0];
-      expect(responseArg.organisations).to.have.length(1);
-    });
-
-    it('should handle superUser without firstName or lastName', async () => {
-      mockRequest.params = { status: 'PENDING' };
-      mockRequest.body = {
-        searchRequest: {
-          pagination_parameters: { page_number: 1, page_size: 10 },
-          search_filter: 'incomplete'
-        }
-      };
-      const apiResponseData = [
-        { 
-          organisationName: 'Test Org',
-          superUser: { email: 'incomplete@example.com' } // Missing firstName and lastName
-        }
-      ];
-      mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-      await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-
-      const responseArg = mockResponse.send.getCall(0).args[0];
-      expect(responseArg).to.have.property('organisations');
-      expect(responseArg).to.have.property('total_records');
-    });
-
-    it('should handle pagination at the exact boundary', async () => {
-      mockRequest.params = { status: 'PENDING' };
-      mockRequest.body = {
-        searchRequest: {
-          pagination_parameters: { page_number: 2, page_size: 2 },
-          search_filter: ''
-        }
-      };
-      const apiResponseData = [
-        { organisationName: 'Org 1' },
-        { organisationName: 'Org 2' },
-        { organisationName: 'Org 3' },
-        { organisationName: 'Org 4' } // Exactly fills pagination
-      ];
-      mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-      await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-
-      const responseArg = mockResponse.send.getCall(0).args[0];
-      expect(responseArg.organisations).to.have.length(2); // Page 2, items 3 and 4
-      expect(responseArg.organisations[0].organisationName).to.equal('Org 3');
-      expect(responseArg.organisations[1].organisationName).to.equal('Org 4');
-      expect(responseArg.total_records).to.equal(4);
-    });
-
-    it('should handle mixed case PBA number filtering', async () => {
-      mockRequest.params = { status: 'PENDING' };
-      mockRequest.body = {
-        searchRequest: {
-          pagination_parameters: { page_number: 1, page_size: 10 },
-          search_filter: 'pba'
-        }
-      };
-      const apiResponseData = [
-        { 
-          organisationName: 'Org 1', 
-          pbaNumbers: [{ pbaNumber: 'pba123456' }], // lowercase
-          superUser: { email: 'admin@org1.com' }
-        },
-        { 
-          organisationName: 'Org 2', 
-          pbaNumbers: [{ pbaNumber: 'PBA789012' }], // uppercase
-          superUser: { email: 'admin@org2.com' }
-        }
-      ];
-      mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
-
-      await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
-
-      const responseArg = mockResponse.send.getCall(0).args[0];
-      expect(responseArg.organisations).to.have.length(2); // Should match both case variations
-    });
-  });
-});
-});
 });

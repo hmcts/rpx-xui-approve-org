@@ -36,12 +36,12 @@ describe('updatePba/models/search/index', () => {
     });
 
     it('should be re-importable multiple times', () => {
-      let modules = [];
+      const modules = [];
       for (let i = 0; i < 5; i++) {
         modules.push(require('./index'));
       }
       // All should be the same reference due to require cache
-      modules.forEach(mod => {
+      modules.forEach((mod) => {
         expect(mod).to.equal(modules[0]);
       });
     });

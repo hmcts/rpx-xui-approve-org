@@ -26,7 +26,7 @@ describe('lib/store', () => {
             userId: 123
           }
         };
-        
+
         const storeWithData = new Store(requestWithData);
         expect(storeWithData.session).to.equal(requestWithData.session);
         expect(storeWithData.session.existingKey).to.equal('existingValue');
@@ -36,14 +36,14 @@ describe('lib/store', () => {
     describe('set method', () => {
       it('should set value in session', async () => {
         await store.set('testKey', 'testValue');
-        
+
         expect(store.session.testKey).to.equal('testValue');
       });
 
       it('should overwrite existing value', async () => {
         await store.set('key', 'initialValue');
         await store.set('key', 'newValue');
-        
+
         expect(store.session.key).to.equal('newValue');
       });
 
@@ -53,7 +53,7 @@ describe('lib/store', () => {
         await store.set('booleanKey', true);
         await store.set('objectKey', { nested: 'object' });
         await store.set('arrayKey', [1, 2, 3]);
-        
+
         expect(store.session.stringKey).to.equal('stringValue');
         expect(store.session.numberKey).to.equal(42);
         expect(store.session.booleanKey).to.be.true;
@@ -64,7 +64,7 @@ describe('lib/store', () => {
       it('should handle null and undefined values', async () => {
         await store.set('nullKey', null);
         await store.set('undefinedKey', undefined);
-        
+
         expect(store.session.nullKey).to.be.null;
         expect(store.session.undefinedKey).to.be.undefined;
       });
@@ -73,7 +73,7 @@ describe('lib/store', () => {
     describe('get method', () => {
       it('should retrieve value from session', async () => {
         store.session.testKey = 'testValue';
-        
+
         const result = await store.get('testKey');
         expect(result).to.equal('testValue');
       });
@@ -89,7 +89,7 @@ describe('lib/store', () => {
         store.session.boolean = false;
         store.session.object = { key: 'value' };
         store.session.array = ['a', 'b', 'c'];
-        
+
         expect(await store.get('string')).to.equal('value');
         expect(await store.get('number')).to.equal(123);
         expect(await store.get('boolean')).to.be.false;
@@ -100,7 +100,7 @@ describe('lib/store', () => {
       it('should handle null and undefined stored values', async () => {
         store.session.nullValue = null;
         store.session.undefinedValue = undefined;
-        
+
         expect(await store.get('nullValue')).to.be.null;
         expect(await store.get('undefinedValue')).to.be.undefined;
       });
@@ -110,7 +110,7 @@ describe('lib/store', () => {
       it('should set and get values correctly', async () => {
         await store.set('integrationKey', 'integrationValue');
         const result = await store.get('integrationKey');
-        
+
         expect(result).to.equal('integrationValue');
       });
 
@@ -118,7 +118,7 @@ describe('lib/store', () => {
         await store.set('key1', 'value1');
         await store.set('key2', 'value2');
         await store.set('key3', 'value3');
-        
+
         expect(await store.get('key1')).to.equal('value1');
         expect(await store.get('key2')).to.equal('value2');
         expect(await store.get('key3')).to.equal('value3');
@@ -126,9 +126,9 @@ describe('lib/store', () => {
 
       it('should handle session modifications outside of store', async () => {
         await store.set('storeKey', 'storeValue');
-        
+
         store.session.directKey = 'directValue';
-        
+
         expect(await store.get('storeKey')).to.equal('storeValue');
         expect(await store.get('directKey')).to.equal('directValue');
       });

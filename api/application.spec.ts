@@ -11,7 +11,7 @@ describe('application', () => {
 
   beforeEach(() => {
     originalEnv = { ...process.env };
-    
+
     consoleLogStub = sinon.stub(console, 'log');
     processExitStub = sinon.stub(process, 'exit');
 
@@ -65,9 +65,9 @@ describe('application', () => {
     it('should initialize express app successfully', () => {
       // Set NODE_CONFIG_ENV to avoid error logging
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       const application = require('./application');
-      
+
       expect(application.app).to.exist;
       expect(application.logger).to.exist;
       expect(application.csrfProtection).to.exist;
@@ -76,7 +76,7 @@ describe('application', () => {
     it('should log error when no environment is configured', () => {
       // Remove NODE_CONFIG_ENV to trigger error
       delete process.env.NODE_CONFIG_ENV;
-      
+
       // Restore and re-stub getEnvironment to return null
       sinon.restore();
       sinon.stub(console, 'log');
@@ -95,7 +95,7 @@ describe('application', () => {
 
     it('should log environment check text', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       require('./application');
 
       expect(consoleLogStub).to.have.been.calledWith('Environment: test');
@@ -103,7 +103,7 @@ describe('application', () => {
 
     it('should log configuration values during initialization', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       require('./application');
 
       expect(consoleLogStub).to.have.been.calledWith('xui_webapp'); // IDAM_CLIENT
@@ -115,7 +115,7 @@ describe('application', () => {
 
     it('should log feature flag status', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       require('./application');
 
       expect(consoleLogStub).to.have.been.calledWith('Secure Cookie is:');
@@ -129,7 +129,7 @@ describe('application', () => {
   describe('helmet configuration', () => {
     it('should configure helmet middleware when enabled', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       sinon.restore();
       sinon.stub(console, 'log');
       sinon.stub(process, 'exit');
@@ -148,7 +148,7 @@ describe('application', () => {
 
     it('should skip helmet configuration when disabled', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       sinon.restore();
       sinon.stub(console, 'log');
       sinon.stub(process, 'exit');
@@ -164,7 +164,7 @@ describe('application', () => {
 
     it('should set robots.txt when helmet is enabled', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       sinon.restore();
       sinon.stub(console, 'log');
       sinon.stub(process, 'exit');
@@ -176,7 +176,7 @@ describe('application', () => {
       sinon.stub(require('./configuration'), 'environmentCheckText').returns('Environment: test');
 
       const application = require('./application');
-      
+
       const mockReq = { url: '/robots.txt', method: 'GET' };
       const mockRes = {
         type: sinon.stub().returnsThis(),
@@ -185,9 +185,9 @@ describe('application', () => {
       const mockNext = sinon.stub();
 
       expect(application.app).to.exist;
-      
+
       // Simulate the robots.txt route call
-      application.app._router.stack.find(layer => 
+      application.app._router.stack.find((layer) =>
         layer.route && layer.route.path === '/robots.txt'
       ).route.stack[0].handle(mockReq, mockRes, mockNext);
 
@@ -199,7 +199,7 @@ describe('application', () => {
   describe('OIDC configuration', () => {
     it('should log OIDC enabled status', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       sinon.restore();
       sinon.stub(console, 'log');
       sinon.stub(process, 'exit');
@@ -218,7 +218,7 @@ describe('application', () => {
 
     it('should not log OIDC enabled when disabled', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       // Restore and setup clean stubs for this test
       sinon.restore();
       sinon.stub(console, 'log');
@@ -238,28 +238,28 @@ describe('application', () => {
   describe('authentication options', () => {
     it('should configure authentication options correctly', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       const application = require('./application');
 
       expect(application.app).to.exist;
-      
+
       // Verify authentication middleware is attached
       const middlewares = application.app._router.stack;
-      const hasAttachMiddleware = middlewares.some(layer => 
-        layer.name === 'attachMiddleware' || 
+      const hasAttachMiddleware = middlewares.some((layer) =>
+        layer.name === 'attachMiddleware' ||
         (layer.handle && layer.handle.name === 'attach')
       );
-      
+
       // The auth attachment happens but we can verify the app has middleware configured
       expect(middlewares.length).to.be.greaterThan(0);
-      
+
       // Verify that authentication-related routes are accessible
       expect(application.app).to.have.property('_router');
     });
 
     it('should construct correct URLs from configuration', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       require('./application');
 
       expect(consoleLogStub).to.have.been.calledWith('tokenUrl');
@@ -267,12 +267,14 @@ describe('application', () => {
 
     it('should handle different IDAM API paths', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       sinon.restore();
       sinon.stub(console, 'log');
       sinon.stub(process, 'exit');
       sinon.stub(require('./configuration'), 'getConfigValue').callsFake((key) => {
-        if (key === 'services.idam.apiPath') return 'https://different-idam.example.com';
+        if (key === 'services.idam.apiPath') {
+          return 'https://different-idam.example.com';
+        }
         return configMock.getConfigValue(key);
       });
       sinon.stub(require('./configuration'), 'showFeature').callsFake(configMock.showFeature);
@@ -288,7 +290,7 @@ describe('application', () => {
   describe('environment variables logging', () => {
     it('should log NODE_CONFIG_ENV', () => {
       process.env.NODE_CONFIG_ENV = 'production';
-      
+
       require('./application');
 
       expect(consoleLogStub).to.have.been.calledWith('ENV PRINT');
@@ -298,7 +300,7 @@ describe('application', () => {
     it('should log ALLOW_CONFIG_MUTATIONS', () => {
       process.env.ALLOW_CONFIG_MUTATIONS = 'true';
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       require('./application');
 
       expect(consoleLogStub).to.have.been.calledWith('process.env.ALLOW_CONFIG_MUTATIONS');
@@ -308,7 +310,7 @@ describe('application', () => {
     it('should handle undefined environment variables', () => {
       delete process.env.ALLOW_CONFIG_MUTATIONS;
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       require('./application');
 
       expect(consoleLogStub).to.have.been.calledWith('process.env.ALLOW_CONFIG_MUTATIONS');
@@ -319,7 +321,7 @@ describe('application', () => {
   describe('module exports', () => {
     it('should export app, logger, and csrfProtection', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       const application = require('./application');
 
       expect(application).to.have.property('app');
@@ -329,7 +331,7 @@ describe('application', () => {
 
     it('should create express application instance', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       const application = require('./application');
 
       expect(application.app).to.be.a('function');
@@ -337,7 +339,7 @@ describe('application', () => {
 
     it('should create logger with server category', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       const application = require('./application');
 
       expect(application.logger).to.exist;
@@ -347,13 +349,15 @@ describe('application', () => {
   describe('configuration validation', () => {
     it('should handle missing configuration gracefully', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       sinon.restore();
       sinon.stub(console, 'log');
       sinon.stub(process, 'exit');
       sinon.stub(require('./configuration'), 'getConfigValue').callsFake((key) => {
         // Return empty string for S2S secret to prevent trim() error
-        if (key === 'secrets.rpx.ao-s2s-client-secret') return '';
+        if (key === 'secrets.rpx.ao-s2s-client-secret') {
+          return '';
+        }
         return undefined;
       });
       sinon.stub(require('./configuration'), 'showFeature').callsFake(configMock.showFeature);
@@ -367,7 +371,7 @@ describe('application', () => {
 
     it('should handle boolean feature flags correctly', () => {
       process.env.NODE_CONFIG_ENV = 'test';
-      
+
       sinon.restore();
       sinon.stub(console, 'log');
       sinon.stub(process, 'exit');

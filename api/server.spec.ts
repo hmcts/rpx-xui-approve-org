@@ -74,7 +74,7 @@ describe('server', () => {
   describe('server initialization', () => {
     it('should configure EJS as template engine', () => {
       require('./server');
-      
+
       expect(appMock.engine).to.have.been.calledWith('html', ejsMock.renderFile);
       expect(appMock.set).to.have.been.calledWith('view engine', 'html');
       expect(appMock.set).to.have.been.calledWith('views', __dirname);
@@ -82,7 +82,7 @@ describe('server', () => {
 
     it('should configure static file serving', () => {
       require('./server');
-      
+
       expect(expressMock.static).to.have.been.calledTwice;
       expect(appMock.use).to.have.been.calledWith('static-middleware');
       expect(pathMock.join).to.have.been.calledWith(sinon.match.string, '..', 'assets');
@@ -91,37 +91,37 @@ describe('server', () => {
 
     it('should configure catch-all route handler', () => {
       require('./server');
-      
+
       expect(appMock.use).to.have.been.calledWith('/*');
-      expect(appMock.use.args.find(call => call[0] === '/*')).to.exist;
+      expect(appMock.use.args.find((call) => call[0] === '/*')).to.exist;
     });
 
     it('should start server on default port 3000', () => {
       require('./server');
-      
+
       expect(appMock.listen).to.have.been.calledWith(3000);
     });
 
     it('should start server on PORT environment variable when set', () => {
       processEnvStub.value({ PORT: '8080' });
-      
+
       require('./server');
-      
+
       expect(appMock.listen).to.have.been.calledWith('8080');
     });
 
     it('should log server startup message', () => {
       // Mock the callback from app.listen
       appMock.listen.callsArg(1);
-      
+
       require('./server');
-      
+
       expect(loggerMock.info).to.have.been.calledWith('Local server up at 3000');
     });
 
     it('should log initialization message', () => {
       require('./server');
-      
+
       expect(consoleLogStub).to.have.been.calledWith('WE ARE USING server.ts on the box.');
     });
   });
@@ -133,9 +133,9 @@ describe('server', () => {
 
     beforeEach(() => {
       require('./server');
-      
+
       // Find the catch-all route handler
-      const catchAllCall = appMock.use.args.find(call => call[0] === '/*');
+      const catchAllCall = appMock.use.args.find((call) => call[0] === '/*');
       routeHandler = catchAllCall[1];
 
       mockReq = {
@@ -149,14 +149,14 @@ describe('server', () => {
 
     it('should time the request processing', () => {
       routeHandler(mockReq, mockRes);
-      
+
       expect(consoleTimeStub).to.have.been.calledWith('GET: /test/path');
       expect(consoleTimeEndStub).to.have.been.calledWith('GET: /test/path');
     });
 
     it('should render index template with providers', () => {
       routeHandler(mockReq, mockRes);
-      
+
       expect(mockRes.render).to.have.been.calledWith('../index', {
         providers: [
           { provide: 'REQUEST', useValue: mockReq },
@@ -169,9 +169,9 @@ describe('server', () => {
 
     it('should handle different URLs correctly', () => {
       mockReq.originalUrl = '/organizations/123';
-      
+
       routeHandler(mockReq, mockRes);
-      
+
       expect(consoleTimeStub).to.have.been.calledWith('GET: /organizations/123');
       expect(consoleTimeEndStub).to.have.been.calledWith('GET: /organizations/123');
     });
@@ -180,13 +180,13 @@ describe('server', () => {
   describe('path configuration', () => {
     it('should configure assets path correctly', () => {
       require('./server');
-      
+
       expect(pathMock.join).to.have.been.calledWith(sinon.match.string, '..', 'assets');
     });
 
     it('should configure root path correctly', () => {
       require('./server');
-      
+
       expect(pathMock.join).to.have.been.calledWith(sinon.match.string, '..');
     });
   });

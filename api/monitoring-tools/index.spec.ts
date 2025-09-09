@@ -11,7 +11,7 @@ describe('monitoring-tools/index', () => {
 
   beforeEach(() => {
     mockRequest = {};
-    
+
     mockResponse = {
       send: sinon.stub().returnsThis(),
       status: sinon.stub().returnsThis()
@@ -84,7 +84,7 @@ describe('monitoring-tools/index', () => {
         apiStatusCode: 404,
         message: 'List of users route error'
       });
-      
+
       expect(mockResponse.send).to.have.been.calledWith(expectedError);
       expect(mockResponse.status).to.have.been.calledWith(500);
     });
@@ -98,7 +98,7 @@ describe('monitoring-tools/index', () => {
 
       const callArgs = mockResponse.send.getCall(0).args[0];
       const errorResponse = JSON.parse(callArgs);
-      
+
       expect(errorResponse).to.have.property('apiError');
       expect(errorResponse.apiError).to.be.an('object');
       expect(errorResponse.apiStatusCode).to.be.undefined;
@@ -116,7 +116,7 @@ describe('monitoring-tools/index', () => {
     it('should have GET route configured for /', () => {
       const module = require('./index');
       const router = module.router;
-      
+
       expect(router).to.be.a('function');
       expect(router.stack).to.be.an('array');
       expect(router.stack).to.have.length(1);

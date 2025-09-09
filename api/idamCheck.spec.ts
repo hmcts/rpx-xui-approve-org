@@ -12,13 +12,13 @@ describe('idamCheck', () => {
   beforeEach(() => {
     configStub = sinon.stub();
     configStub.withArgs('services.idamApi').returns('http://idam-api.example.com');
-    
+
     axiosGetStub = sinon.stub();
     httpStub = sinon.stub().returns({ get: axiosGetStub });
-    
+
     processExitStub = sinon.stub(process, 'exit');
     consoleLogStub = sinon.stub(console, 'log');
-    
+
     sinon.stub(require('./configuration'), 'getConfigValue').callsFake(configStub);
     sinon.stub(require('./lib/http'), 'http').callsFake(httpStub);
   });
