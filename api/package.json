@@ -34,7 +34,12 @@
       "**/*mock.ts",
       "**/*Mocks.ts",
       "**/test/**",
-      "**/pact/**"
+      "**/pact/**",
+      "server.ts",
+      "local.ts",
+      "interfaces/**/*.ts",
+      "**/*.config.js",
+      "**/mock-error-scenarios.ts"
     ],
     "reporter": [
       "lcov",
