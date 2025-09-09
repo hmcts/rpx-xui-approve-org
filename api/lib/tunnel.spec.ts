@@ -90,6 +90,13 @@ describe('lib/tunnel', () => {
       
       const { init } = require('./tunnel');
       init();
+
+      expect(mockLogger.info).to.have.been.calledWith(
+        'configuring global-agent: ',
+        'http://proxy.example.com:8080',
+        ' no proxy: ',
+        'localhost,127.0.0.1'
+      );
     });
 
     it('should handle undefined proxy environment variables', () => {
@@ -99,6 +106,13 @@ describe('lib/tunnel', () => {
       
       const { init } = require('./tunnel');
       init();
+
+      expect(mockLogger.info).to.have.been.calledWith(
+        'configuring global-agent: ',
+        undefined,
+        ' no proxy: ',
+        undefined
+      );
     });
 
     it('should check correct feature flag', () => {
@@ -117,6 +131,13 @@ describe('lib/tunnel', () => {
       
       const { init } = require('./tunnel');
       init();
+
+      expect(mockLogger.info).to.have.been.calledWith(
+        'configuring global-agent: ',
+        'http://proxy.example.com:8080',
+        ' no proxy: ',
+        undefined
+      );
     });
 
     it('should handle only NO_PROXY set', () => {
@@ -126,6 +147,13 @@ describe('lib/tunnel', () => {
       
       const { init } = require('./tunnel');
       init();
+
+      expect(mockLogger.info).to.have.been.calledWith(
+        'configuring global-agent: ',
+        undefined,
+        ' no proxy: ',
+        'localhost,127.0.0.1'
+      );
     });
   });
 });

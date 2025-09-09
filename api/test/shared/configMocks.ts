@@ -11,7 +11,7 @@ export const createConfigMock = (configValues: ConfigValues = {}) => {
     'LOGGING': 'debug',
     'SERVICE_S2S_PATH': 'http://localhost:4502',
     'COOKIE_ROLES': 'roles',
-    'maxLogLine': 80, // Fixed: use actual config key, not constant name
+    'maxLogLine': 80,
     'APP_INSIGHTS_CONNECTION_STRING': 'InstrumentationKey=test-key',
     'FEATURE_APP_INSIGHTS_ENABLED': 'true',
     ...configValues

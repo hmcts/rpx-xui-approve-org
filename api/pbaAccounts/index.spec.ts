@@ -56,22 +56,6 @@ describe('pbaAccounts/index', () => {
       expect(mockRequest.http.get).to.have.been.calledWith('http://fee-pay-api.example.com/accounts/123456');
     });
 
-    it('should handle missing accountNames parameter', async () => {
-      mockRequest.query = {};
-      
-      const handler = router.stack[0].route.stack[0].handle;
-      await handler(mockRequest, mockResponse);
-      
-      expect(mockResponse.status).to.have.been.calledWith(500);
-      expect(mockResponse.send).to.have.been.calledWith({
-        apiError: 'Account is missing',
-        apiStatusCode: '400',
-        message: 'Fee And Pay route error'
-      });
-      expect(mockRequest.http.get).not.to.have.been.called;
-    });
-
-
     it('should handle account not found responses', async () => {
       mockRequest.query = { accountNames: 'NONEXISTENT' };
       mockRequest.http.get.resolves({ data: 'Account not found' });

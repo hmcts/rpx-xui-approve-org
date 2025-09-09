@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import { AxiosInstance, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 
 export interface MockAxiosInstance {
   get: sinon.SinonStub;

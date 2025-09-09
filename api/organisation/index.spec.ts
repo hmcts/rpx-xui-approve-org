@@ -12,30 +12,25 @@ describe('organisation/index', () => {
   let configMock: any;
 
   beforeEach(() => {
-    // Clear require cache for fresh imports
     delete require.cache[require.resolve('./index')];
     delete require.cache[require.resolve('../configuration')];
     delete require.cache[require.resolve('../lib/log4jui')];
 
-    // Create mock objects
     const authMocks = createAuthMocks();
     mockReq = authMocks.req;
     mockRes = authMocks.res;
     mockNext = sinon.stub();
 
-    // Mock logger
     loggerMock = {
       info: sinon.stub(),
       warn: sinon.stub(),
       error: sinon.stub()
     };
 
-    // Mock configuration
     configMock = {
       getConfigValue: sinon.stub().returns('https://rd-professional-api.example.com')
     };
 
-    // Setup stubs
     sinon.stub(require('../lib/log4jui'), 'getLogger').returns(loggerMock);
     sinon.stub(require('../configuration'), 'getConfigValue').callsFake(configMock.getConfigValue);
   });

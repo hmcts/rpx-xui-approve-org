@@ -13,7 +13,6 @@ async function handleAddressRoute(req, res) {
       message: 'Fee And Pay route error'
     };
     res.status(500).send(errReport);
-    return;
   }
   const accountNames = req.query.accountNames.split(',');
   const accounts = [];

@@ -402,7 +402,7 @@ describe('updatePba/index', () => {
       await handlePostPBAsByStatusRoute(mockRequest, mockResponse);
 
       const responseArg = mockResponse.send.getCall(0).args[0];
-      expect(responseArg.organisations).to.have.length(2); // Should match "Legal Services Ltd" and "Another Legal Services"
+      expect(responseArg.organisations).to.have.length(2);
     });
 
     it('should filter by superUser email', async () => {

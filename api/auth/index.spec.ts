@@ -113,7 +113,6 @@ describe('auth/index', () => {
     let successCallback: any;
 
     beforeEach(() => {
-      // Re-import to get fresh callback registration
       delete require.cache[require.resolve('./index')];
       require('./index');
       

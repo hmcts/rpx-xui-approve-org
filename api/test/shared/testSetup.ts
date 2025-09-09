@@ -1,7 +1,5 @@
-/// <reference path="./sinonChai.d.ts" />
-
 import * as chai from 'chai';
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 
 chai.use(sinonChai);
 

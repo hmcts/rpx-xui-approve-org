@@ -128,16 +128,11 @@ describe('configuration/index', () => {
       expect(result).to.be.true;
     });
 
-    it('should return false for disabled features', () => {
-      configStub.get.returns(false);
-      
+    it('should throw if feature is not present in config', () => {
+      configStub.get.throws(new Error('Feature not found'));
+
       const { showFeature } = require('./index');
-      const result = showFeature('DISABLED_FEATURE');
-      
-      expect(configStub.get).to.have.been.calledOnce;
-      expect(configStub.get).to.have.been.calledWith('feature.DISABLED_FEATURE');
-      expect(result).to.be.false;
-      expect(typeof result).to.equal('boolean');
+      expect(() => showFeature('MISSING_FEATURE')).to.throw('Feature not found');
     });
 
     it('should return true for enabled features', () => {
