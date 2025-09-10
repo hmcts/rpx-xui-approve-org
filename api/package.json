@@ -41,7 +41,9 @@
       "**/*.config.js",
       "**/mock-error-scenarios.ts",
       "**/constants.ts",
-      "**/models/**/*.ts"
+      "**/models/**/*.ts",
+      "**/lib/appInsights.ts",
+      "**/lib/util.ts"
     ],
     "reporter": [
       "lcov",
