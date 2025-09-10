@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import * as sinon from 'sinon';
 import { EnhancedRequest } from '../../models/enhanced-request.interface';
 import { MockAxiosInstance, createMockAxiosInstance } from './httpMocks';
