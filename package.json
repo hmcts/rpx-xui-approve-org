@@ -80,6 +80,7 @@
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "2.1.0",
     "@hmcts/rpx-xui-node-lib": "2.30.0",
+    "@microsoft/applicationinsights-web": "^3.3.9",
     "@ng-idle/core": "^14.0.0",
     "@ng-idle/keepalive": "^14.0.0",
     "@ngrx/effects": "^16.3.0",
@@ -92,8 +93,7 @@
     "@types/express-session": "^1.17.0",
     "@types/multer": "^1.4.13",
     "@types/passport": "^1.0.3",
-    "applicationinsights": "1.7.2",
-    "applicationinsights-js": "^1.0.20",
+    "applicationinsights": "^3.7.0",
     "axios": "^1.11.0",
     "axios-mock-adapter": "^1.18.2",
     "base-64": "^0.1.0",
@@ -117,7 +117,7 @@
     "helmet": "^3.21.3",
     "isomorphic-fetch": "^3.0.0",
     "json-stringify-safe": "^5.0.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^2.2.0",
     "launchdarkly-js-client-sdk": "3.8.1",
     "log4js": "^3.0.6",
@@ -143,6 +143,7 @@
     "sonar-scanner": "3.1.0",
     "striptags": "^3.1.1",
     "tslib": "^2.6.1",
+    "xlsx": "^0.18.5",
     "zone.js": "~0.14.4"
   },
   "devDependencies": {
@@ -160,7 +161,6 @@
     "@stryker-mutator/karma-runner": "^4.0.8",
     "@stryker-mutator/mocha-runner": "^4.0.8",
     "@stryker-mutator/typescript": "^4.0.0",
-    "@types/applicationinsights-js": "^1.0.9",
     "@types/chai": "^4.3.6",
     "@types/config": "^0.0.36",
     "@types/cookie-parser": "^1.4.2",
@@ -243,7 +243,9 @@
     "webdriver-manager": "^12.1.9",
     "xml2js": "^0.6.2",
     "critters": "^0.0.25",
-    "form-data": "^4.0.4"
+    "form-data": "^4.0.4",
+    "xlsx": "^0.18.5",
+    "tough-cookie": "^6.0.0"
   },
   "packageManager": "yarn@4.9.2"
 }

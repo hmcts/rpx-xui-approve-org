@@ -7,7 +7,7 @@ import { EnvironmentService } from './environment.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const environmentConfig: EnvironmentConfig = {
-  appInsightsInstrumentationKey: '123',
+  appInsightsConnectionString: '123',
   configEnv: '',
   cookies: undefined,
   exceptionOptions: undefined,
