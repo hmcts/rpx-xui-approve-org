@@ -557,7 +557,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-server@npm:18.2.14":
+"@angular/platform-server@npm:^18.2.14":
   version: 18.2.14
   resolution: "@angular/platform-server@npm:18.2.14"
   dependencies:
