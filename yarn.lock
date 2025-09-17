@@ -557,19 +557,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/platform-server@npm:18.2.13":
-  version: 18.2.13
-  resolution: "@angular/platform-server@npm:18.2.13"
+"@angular/platform-server@npm:^18.2.14":
+  version: 18.2.14
+  resolution: "@angular/platform-server@npm:18.2.14"
   dependencies:
     tslib: "npm:^2.3.0"
     xhr2: "npm:^0.2.0"
   peerDependencies:
-    "@angular/animations": 18.2.13
-    "@angular/common": 18.2.13
-    "@angular/compiler": 18.2.13
-    "@angular/core": 18.2.13
-    "@angular/platform-browser": 18.2.13
-  checksum: 10/05fcb79b9658ca9472a95237cc11e07e9dca1b05a3934fdb0815b30f098308bcd757f1faf5f3f134c1283fe5f5279e4b2bde432b65c43972855c65cc88932967
+    "@angular/animations": 18.2.14
+    "@angular/common": 18.2.14
+    "@angular/compiler": 18.2.14
+    "@angular/core": 18.2.14
+    "@angular/platform-browser": 18.2.14
+  checksum: 10/ce2d3864ba70e4b545146a29c560b18f1961d538693ccfbd45f2cca9e4cc9597641927a1de1f4ae6cd8a1b80677d2c81a04d8d96422ef609e36bb4b20ff3ada6
   languageName: node
   linkType: hard
 
@@ -587,16 +587,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/ssr@npm:^18.2.18":
-  version: 18.2.20
-  resolution: "@angular/ssr@npm:18.2.20"
+"@angular/ssr@npm:^18.2.21":
+  version: 18.2.21
+  resolution: "@angular/ssr@npm:18.2.21"
   dependencies:
     critters: "npm:0.0.24"
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/common": ^18.0.0
     "@angular/core": ^18.0.0
-  checksum: 10/62e5f130a9f42dd44eb8a83f0ac80bee0e4b2dff020afdf9ee8c674c392cd58f32aba1a128c91e50233fc86c8f511150d77f9ee8e6a2298988eddb9e38522b07
+  checksum: 10/a03b11e7129941f09f65a1a6b2e1f513372e3211fed24904d69c63e6876a195deff2126becfd06bbc41b2867a54ef41787b3ed9ebeaafac4ebdb83f73a808be3
   languageName: node
   linkType: hard
 
@@ -9749,24 +9749,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.11.0, axios@npm:^1.11.0, axios@npm:^1.7.7":
-  version: 1.11.0
-  resolution: "axios@npm:1.11.0"
+"axios@npm:^1.11.1":
+  version: 1.12.2
+  resolution: "axios@npm:1.12.2"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/232df4af7a4e4e07baa84621b9cc4b0c518a757b4eacc7f635c0eb3642cb98dff347326739f24b891b3b4481b7b838c79a3a0c4819c9fbc1fc40232431b9c5dc
-  languageName: node
-  linkType: hard
-
-"axios@npm:^0.27.2":
-  version: 0.27.2
-  resolution: "axios@npm:0.27.2"
-  dependencies:
-    follow-redirects: "npm:^1.14.9"
-    form-data: "npm:^4.0.0"
-  checksum: 10/2efaf18dd0805f7bc772882bc86f004abd92d51007b54c5081f74db0d08ce3593e2c010261896d25a14318eeaa2e966fd825e34f810e8a3339dc64b9d177cf70
+  checksum: 10/886a79770594eaad76493fecf90344b567bd956240609b5dcd09bd0afe8d3e6f1ad6d3257a93a483b6192b409d4b673d9515a34619e3e3ed1b2c0ec2a83b20ba
   languageName: node
   linkType: hard
 
@@ -14350,7 +14340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.14.9, follow-redirects@npm:^1.15.6":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.6":
   version: 1.15.11
   resolution: "follow-redirects@npm:1.15.11"
   peerDependenciesMeta:
@@ -20527,9 +20517,9 @@ __metadata:
     "@angular/material": "npm:16.2.12"
     "@angular/platform-browser": "npm:^18.2.13"
     "@angular/platform-browser-dynamic": "npm:^18.2.13"
-    "@angular/platform-server": "npm:18.2.13"
+    "@angular/platform-server": "npm:18.2.14"
     "@angular/router": "npm:^18.2.13"
-    "@angular/ssr": "npm:^18.2.18"
+    "@angular/ssr": "npm:^18.2.21"
     "@cucumber/cucumber": "npm:^9.5.1"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.2.0"
     "@hmcts/frontend": "npm:0.0.41-alpha"
