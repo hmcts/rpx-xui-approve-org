@@ -1,10 +1,12 @@
-import * as healthcheck from '@hmcts/nodejs-healthcheck';
-import { AuthOptions, getContentSecurityPolicy, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as csurf from 'csurf';
 import * as express from 'express';
-import * as helmet from 'helmet';
+import { existsSync, readFileSync } from 'fs';
+import helmet from 'helmet';
+import * as path from 'path';
+import * as healthcheck from '@hmcts/nodejs-healthcheck';
+import { AuthOptions, csp, SECURITY_POLICY, SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import { attach } from './auth';
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration';
 import { ERROR_NODE_CONFIG_ENV } from './configuration/constants';
@@ -34,6 +36,22 @@ import * as log4jui from './lib/log4jui';
 import * as tunnel from './lib/tunnel';
 import routes from './routes';
 import { idamCheck } from './idamCheck';
+import { AO_CSP } from './interfaces/csp-config';
+
+function loadIndexHtml(): string {
+  // production build output
+  let p = path.join(__dirname, '..', 'index.html');
+  if (!existsSync(p)) {
+    // running from sources - use the template inside src/
+    p = path.join(__dirname, '..', 'src', 'index.html');
+  }
+  return readFileSync(p, 'utf8');
+}
+const indexHtmlRaw = loadIndexHtml();
+
+function injectNonce(html: string, nonce: string): string {
+  return html.replace(/{{cspNonce}}/g, nonce);
+}
 
 export const app = express();
 
@@ -92,14 +110,24 @@ console.log(showFeature(FEATURE_HELMET_ENABLED));
 
 if (showFeature(FEATURE_HELMET_ENABLED)) {
   console.log('Helmet enabled');
-  app.use(helmet(getConfigValue(HELMET)));
+  const helmetConfig = getConfigValue(HELMET);
+  if (helmetConfig && typeof helmetConfig === 'object') {
+    app.use(helmet(helmetConfig)); // use the configured rules
+  } else {
+    app.use(helmet()); // fall back to Helmet defaults
+  }
+  app.use(
+    csp({
+      defaultCsp: SECURITY_POLICY,
+      ...AO_CSP
+    })
+  );
   app.use(helmet.noSniff());
   app.use(helmet.frameguard({ action: 'deny' }));
   app.use(helmet.referrerPolicy({ policy: ['origin'] }));
   app.use(helmet.hidePoweredBy());
   app.use(helmet.hsts({ maxAge: 28800000 }));
   app.use(helmet.xssFilter());
-  app.use(getContentSecurityPolicy(helmet));
   app.use((req, res, next) => {
     res.setHeader('X-Robots-Tag', 'noindex');
     res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
@@ -295,5 +323,25 @@ app.use(attach); // its called in routes.ts - no need to call it here
  *
  */
 app.use('/api', csrfProtection, routes);
+
+// Serve /index.html through the same nonce injector
+// This is to ensure that <MC URL>/index.html works with CSP
+app.get('/index.html', (req, res) => {
+  const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+  res
+    .type('html')
+    .set('Cache-Control', 'no-store, max-age=0')
+    .send(html);
+});
+const staticRoot = path.join(__dirname, '..');
+// runs for every incoming request in the order middleware are declared
+app.use(
+  express.static(staticRoot, { index: false })
+);
+// Catch-all handler for every URL that the static middleware didn’t serve
+app.use('/*', (req, res) => {
+  const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
+  res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
+});
 
 new Promise(idamCheck).then(() => 'IDAM is up and running');
