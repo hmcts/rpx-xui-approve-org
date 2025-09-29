@@ -6,7 +6,8 @@ import { NavItem } from '../../store';
 @Component({
   selector: 'app-hmcts-primary-navigation',
   templateUrl: './hmcts-primary-navigation.component.html',
-  styleUrls: ['./hmcts-primary-navigation.component.scss']
+  styleUrls: ['./hmcts-primary-navigation.component.scss'],
+  standalone: false
 })
 export class HmctsPrimaryNavigationComponent {
   @Input() public set userLoggedIn(value) {

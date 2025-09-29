@@ -4,7 +4,8 @@ import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-dat
 
 @Component({
   selector: 'app-prd-upload-partial-success',
-  templateUrl: './upload-info-partial-success.html'
+  templateUrl: './upload-info-partial-success.html',
+  standalone: false
 })
 
 export class UploadInfoPartialSuccessComponent {

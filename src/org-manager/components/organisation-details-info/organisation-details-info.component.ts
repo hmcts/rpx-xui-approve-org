@@ -10,7 +10,8 @@ import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './mo
  */
 @Component({
   selector: 'app-org-details-info',
-  templateUrl: './organisation-details-info.component.html'
+  templateUrl: './organisation-details-info.component.html',
+  standalone: false
 })
 export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
   @Input() public org: OrganisationVM;

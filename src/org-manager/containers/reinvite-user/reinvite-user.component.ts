@@ -15,7 +15,8 @@ import * as fromStore from '../../store';
 
 @Component({
   selector: 'app-prd-reinvite-user-component',
-  templateUrl: './reinvite-user.component.html'
+  templateUrl: './reinvite-user.component.html',
+  standalone: false
 })
 export class ReinviteUserComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store<fromStore.OrganisationRootState>,

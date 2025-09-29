@@ -9,7 +9,8 @@ import { PbaService } from '../../services';
 
 @Component({
   selector: 'app-new-pbas-confirm',
-  templateUrl: './new-pbas-confirm.component.html'
+  templateUrl: './new-pbas-confirm.component.html',
+  standalone: false
 })
 export class NewPBAsConfirmComponent implements OnInit, OnDestroy {
   @Input() public org: OrganisationVM;

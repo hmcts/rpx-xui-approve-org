@@ -7,7 +7,8 @@ import { OrganisationService } from '../../services';
 
 @Component({
   selector: 'app-home-component',
-  templateUrl: './home.component.html'
+  templateUrl: './home.component.html',
+  standalone: false
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public readonly tabs = [
