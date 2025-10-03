@@ -13,7 +13,8 @@ import * as fromStore from '../../store';
 
 @Component({
   selector: 'app-new-pbas',
-  templateUrl: './new-pbas.component.html'
+  templateUrl: './new-pbas.component.html',
+  standalone: false
 })
 export class NewPBAsComponent implements OnInit, OnDestroy {
   public confirmDecision: boolean = false;

@@ -7,7 +7,8 @@ import * as fromOrganisationPendingStore from '../../../org-manager/store';
 
 @Component({
   selector: 'app-org-pending-review',
-  templateUrl: './review-organisation.component.html'
+  templateUrl: './review-organisation.component.html',
+  standalone: false
 })
 export class ReviewOrganisationComponent {
   public orgForReview: OrganisationVM;

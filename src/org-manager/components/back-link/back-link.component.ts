@@ -7,7 +7,8 @@ import * as fromOrganisationPendingStore from '../../../org-manager/store';
 
 @Component({
   selector: 'app-back-link',
-  templateUrl: './back-link.component.html'
+  templateUrl: './back-link.component.html',
+  standalone: false
 })
 export class BackLinkComponent implements OnInit, OnDestroy {
   @Input() public store: Store<fromOrganisationPendingStore.OrganisationRootState>;
