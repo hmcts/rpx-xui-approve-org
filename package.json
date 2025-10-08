@@ -8,7 +8,6 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "preinstall": "cd ../rpx-xui-common-lib && yarn install && yarn build:library",
     "build": "export NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
     "build:docker": "docker build . -t rpx-xui-approve-org",
     "build:ng": "ng build",
