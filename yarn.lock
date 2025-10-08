@@ -11204,13 +11204,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"circular-json@npm:^0.5.5":
-  version: 0.5.9
-  resolution: "circular-json@npm:0.5.9"
-  checksum: 10/cf25c62ed7aac15ec17a773ebf253a9a7cf608e22bc09fadc38193cb52f507ba766fbc35f849401b0b6817c0b654015a58a5c7e77f3601d2ace7b73ef840d16c
-  languageName: node
-  linkType: hard
-
 "cjs-module-lexer@npm:^1.2.2":
   version: 1.4.3
   resolution: "cjs-module-lexer@npm:1.4.3"
@@ -11857,7 +11850,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie-parser@npm:^1.4.4":
+"cookie-parser@npm:^1.4.7":
   version: 1.4.7
   resolution: "cookie-parser@npm:1.4.7"
   dependencies:
@@ -11949,14 +11942,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:2.6.12":
-  version: 2.6.12
-  resolution: "core-js@npm:2.6.12"
-  checksum: 10/7c624eb00a59c74c769d5d80f751f3bf1fc6201205b6562f27286ad5e00bbca1483f2f7eb0c2854b86f526ef5c7dc958b45f2ff536f8a31b8e9cb1a13a96efca
-  languageName: node
-  linkType: hard
-
-"core-js@npm:^3.6.5":
+"core-js@npm:^3.37.0, core-js@npm:^3.6.5":
   version: 3.45.1
   resolution: "core-js@npm:3.45.1"
   checksum: 10/b9dca79b1af8bb4f0d4af0752ea98d694fe157abaf55513fd4084df32dfd4398f0fc57898b32cdb643c1cecb87b9231c2a2ce535797c80ae328eac6d6078ee61
@@ -12262,13 +12248,6 @@ __metadata:
   version: 6.0.2
   resolution: "data-uri-to-buffer@npm:6.0.2"
   checksum: 10/8b6927c33f9b54037f442856be0aa20e5fd49fa6c9c8ceece408dc306445d593ad72d207d57037c529ce65f413b421da800c6827b1dbefb607b8056f17123a61
-  languageName: node
-  linkType: hard
-
-"date-format@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "date-format@npm:1.2.0"
-  checksum: 10/992411caae4740bad8eda7c8eecf7571a4f68d0a603afc6c4b402f19b3fb4f36d1db2d8c3173d909e1be5a9ddf175bc0c28f62c1bd1cd2835d1577a2d936646e
   languageName: node
   linkType: hard
 
@@ -14981,14 +14960,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"git-rev-sync@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "git-rev-sync@npm:2.1.0"
+"git-rev-sync@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "git-rev-sync@npm:3.0.2"
   dependencies:
     escape-string-regexp: "npm:1.0.5"
     graceful-fs: "npm:4.1.15"
-    shelljs: "npm:0.8.4"
-  checksum: 10/500bdec3a4762748fb6c21ce745e256da102b44897bd1a7e14cdfa4ab570ddb001f015938af5b4666de352e746f870060b5b2529d4640433dfa1ccbd9a509b72
+    shelljs: "npm:0.8.5"
+  checksum: 10/a6c1b8d9417643f40db0e005df9f05b0f6440756ef5ed379f1565cb90ad58ac1192da193838b243ccf8979ca5109a43c9ca7eb016c612af06912868dab307dd3
   languageName: node
   linkType: hard
 
@@ -18619,20 +18598,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"log4js@npm:^3.0.6":
-  version: 3.0.6
-  resolution: "log4js@npm:3.0.6"
-  dependencies:
-    circular-json: "npm:^0.5.5"
-    date-format: "npm:^1.2.0"
-    debug: "npm:^3.1.0"
-    rfdc: "npm:^1.1.2"
-    streamroller: "npm:0.7.0"
-  checksum: 10/237f4820e585ac002640f305e03df1c612e39cec7a828768a8a38f28f4f9ff2151d9301ba54ee9481e116ea07c4b225fd9534916f3891af941d9505018331408
-  languageName: node
-  linkType: hard
-
-"log4js@npm:^6.4.1, log4js@npm:~6.9.1":
+"log4js@npm:^6.4.1, log4js@npm:^6.9.1, log4js@npm:~6.9.1":
   version: 6.9.1
   resolution: "log4js@npm:6.9.1"
   dependencies:
@@ -19540,7 +19506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:>=0.5 0, mkdirp@npm:^0.5.1, mkdirp@npm:^0.5.5, mkdirp@npm:^0.5.6, mkdirp@npm:~0.5.1":
+"mkdirp@npm:>=0.5 0, mkdirp@npm:^0.5.5, mkdirp@npm:^0.5.6, mkdirp@npm:~0.5.1":
   version: 0.5.6
   resolution: "mkdirp@npm:0.5.6"
   dependencies:
@@ -20909,8 +20875,8 @@ __metadata:
     codeceptjs-cucumber-json-reporter: "npm:^1.0.14"
     config: "npm:^3.2.5"
     connect-redis: "npm:^4.0.4"
-    cookie-parser: "npm:^1.4.4"
-    core-js: "npm:2.6.12"
+    cookie-parser: "npm:^1.4.7"
+    core-js: "npm:^3.37.0"
     crypto-js: "npm:^4.2.0"
     csurf: "npm:^1.11.0"
     cucumber-html-reporter: "npm:^7.1.1"
@@ -20923,7 +20889,7 @@ __metadata:
     express-session: "npm:^1.15.6"
     form-data: "npm:^4.0.4"
     get-port: "npm:^5.1.1"
-    git-rev-sync: "npm:^2.0.0"
+    git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^2.1.8"
     govuk-frontend: "npm:4.0.1"
     helmet: "npm:^3.21.3"
@@ -20943,7 +20909,7 @@ __metadata:
     karma-jasmine-html-reporter: "npm:^2.1.0"
     karma-spec-reporter: "npm:0.0.34"
     launchdarkly-js-client-sdk: "npm:3.8.1"
-    log4js: "npm:^3.0.6"
+    log4js: "npm:^6.9.1"
     mocha: "npm:^10.2.0"
     mochawesome: "npm:^7.1.3"
     mochawesome-merge: "npm:^4.1.0"
@@ -20962,7 +20928,7 @@ __metadata:
     otp: "npm:^0.1.3"
     p-iteration: "npm:^1.1.7"
     pa11y: "npm:^8.0.0"
-    passport: "npm:^0.4.1"
+    passport: "npm:^0.6.0"
     path: "npm:^0.12.7"
     playwright: "npm:^1.51.1"
     portfinder: "npm:^1.0.28"
@@ -21436,16 +21402,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"passport@npm:^0.4.1":
-  version: 0.4.1
-  resolution: "passport@npm:0.4.1"
-  dependencies:
-    passport-strategy: "npm:1.x.x"
-    pause: "npm:0.0.1"
-  checksum: 10/b431a3356321ec3d4d03bff3b5e226abee285f65b045d4312f872113886f9120b09e40aff6c15bb84819a9460f4c9ab3a9c2d5cff1f90f74ed7b1e8f4e619505
-  languageName: node
-  linkType: hard
-
 "passport@npm:^0.5.3":
   version: 0.5.3
   resolution: "passport@npm:0.5.3"
@@ -21453,6 +21409,17 @@ __metadata:
     passport-strategy: "npm:1.x.x"
     pause: "npm:0.0.1"
   checksum: 10/11ca647263572e0285179c8a13942e64be72c6c40759cb1fcebb8258cc5e57bc1671d08071ca0da0a15045ab0e5bb6745aff4b04cb52b2f66815dc45d612015e
+  languageName: node
+  linkType: hard
+
+"passport@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "passport@npm:0.6.0"
+  dependencies:
+    passport-strategy: "npm:1.x.x"
+    pause: "npm:0.0.1"
+    utils-merge: "npm:^1.0.1"
+  checksum: 10/5051e1d773ac0d802d4d71315f5fee566b8765b9731396b60c1d6822b7983bef31ae2f51af94d973ade94fb040efae0816e736e534b55294d0fbd10efcdf2d36
   languageName: node
   linkType: hard
 
@@ -22645,7 +22612,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"readable-stream@npm:^2.0.1, readable-stream@npm:^2.0.2, readable-stream@npm:^2.3.0, readable-stream@npm:~2.3.6":
+"readable-stream@npm:^2.0.1, readable-stream@npm:^2.0.2, readable-stream@npm:~2.3.6":
   version: 2.3.8
   resolution: "readable-stream@npm:2.3.8"
   dependencies:
@@ -23145,7 +23112,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rfdc@npm:^1.1.2, rfdc@npm:^1.3.0, rfdc@npm:^1.4.1":
+"rfdc@npm:^1.3.0, rfdc@npm:^1.4.1":
   version: 1.4.1
   resolution: "rfdc@npm:1.4.1"
   checksum: 10/2f3d11d3d8929b4bfeefc9acb03aae90f971401de0add5ae6c5e38fec14f0405e6a4aad8fdb76344bfdd20c5193110e3750cbbd28ba86d73729d222b6cf4a729
@@ -23878,16 +23845,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shelljs@npm:0.8.4":
-  version: 0.8.4
-  resolution: "shelljs@npm:0.8.4"
+"shelljs@npm:0.8.5":
+  version: 0.8.5
+  resolution: "shelljs@npm:0.8.5"
   dependencies:
     glob: "npm:^7.0.0"
     interpret: "npm:^1.0.0"
     rechoir: "npm:^0.6.2"
   bin:
     shjs: bin/shjs
-  checksum: 10/4ce7d31faae00a135ca4805520cd258c703096a80aec4d5ee6f7f4d7e34cff91d8e1e6b86b8ba9b1a01d3f572b3c68e5fa7ad7facba660afc28bc9b3a85c34f3
+  checksum: 10/f2178274b97b44332bbe9ddb78161137054f55ecf701c7a99db9552cb5478fe279ad5f5131d8a7c2f0730e01ccf0c629d01094143f0541962ce1a3d0243d23f7
   languageName: node
   linkType: hard
 
@@ -24452,18 +24419,6 @@ __metadata:
   dependencies:
     stream-chain: "npm:^2.2.5"
   checksum: 10/8c97d3078127aaf70197b0e4b5ca668307f1768a4eb1ac4c2030056e1f862d7a11b83094b87d2b04c3c14f76a8a8657eb87b1760d57781c172e3a513c7e2b5fd
-  languageName: node
-  linkType: hard
-
-"streamroller@npm:0.7.0":
-  version: 0.7.0
-  resolution: "streamroller@npm:0.7.0"
-  dependencies:
-    date-format: "npm:^1.2.0"
-    debug: "npm:^3.1.0"
-    mkdirp: "npm:^0.5.1"
-    readable-stream: "npm:^2.3.0"
-  checksum: 10/3f22f6914037425b1d593d2cccc793be4951e577f74ca9a757a2cbd6471995874a8c9091911a22ec318412ed8fad70b96c79587e43506996984313843ee88bc9
   languageName: node
   linkType: hard
 
@@ -26074,7 +26029,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x":
+"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x, utils-merge@npm:^1.0.1":
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 10/5d6949693d58cb2e636a84f3ee1c6e7b2f9c16cb1d42d0ecb386d8c025c69e327205aa1c69e2868cc06a01e5e20681fbba55a4e0ed0cce913d60334024eae798
