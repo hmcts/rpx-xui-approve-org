@@ -10,7 +10,8 @@ import * as fromStore from '../../store/';
 
 @Component({
   selector: 'app-org-pending-approve',
-  templateUrl: './approve-organisation.component.html'
+  templateUrl: './approve-organisation.component.html',
+  standalone: false
 })
 export class ApproveOrganisationComponent implements OnInit {
   public orgForReview: OrganisationVM | null;

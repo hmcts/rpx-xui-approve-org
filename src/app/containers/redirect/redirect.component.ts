@@ -5,7 +5,8 @@ import { AppUtils } from 'src/app/utils/app-utils';
 
 @Component({
   selector: 'app-redirect',
-  template: ''
+  template: '',
+  standalone: false
 })
 export class RedirectComponent implements OnInit {
   constructor(private readonly cookieService: CookieService,

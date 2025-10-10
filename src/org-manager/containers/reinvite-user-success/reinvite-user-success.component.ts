@@ -6,7 +6,8 @@ import * as fromStore from '../../store';
 
 @Component({
   selector: 'app-reinvite-user-success',
-  templateUrl: './reinvite-user-success.component.html'
+  templateUrl: './reinvite-user-success.component.html',
+  standalone: false
 })
 export class ReinviteUserSuccessComponent implements OnInit {
   public email$: Observable<string>;

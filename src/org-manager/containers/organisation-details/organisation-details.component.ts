@@ -20,7 +20,8 @@ import * as fromStore from '../../store';
  */
 @Component({
   selector: 'app-org-details',
-  templateUrl: './organisation-details.component.html'
+  templateUrl: './organisation-details.component.html',
+  standalone: false
 })
 export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public readonly CATEGORY_ORGANISATION_TYPE = 'OrgType';

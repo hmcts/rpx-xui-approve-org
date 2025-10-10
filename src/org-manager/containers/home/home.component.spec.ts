@@ -15,7 +15,8 @@ import { RpxTranslationService } from 'rpx-xui-translation';
 import { HttpClient, HttpHandler, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
-  template: '<div>Bob</div>'
+  template: '<div>Bob</div>',
+  standalone: false
 })
 export class MockComponent { }
 

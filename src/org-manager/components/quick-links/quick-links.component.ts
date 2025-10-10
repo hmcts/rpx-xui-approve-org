@@ -3,7 +3,8 @@ import { Component, Input, OnInit } from '@angular/core';
 @Component({
   selector: 'app-quick-links',
   templateUrl: './quick-links.component.html',
-  styleUrls: ['./quick-links.scss']
+  styleUrls: ['./quick-links.scss'],
+  standalone: false
 })
 export class QuickLinksComponent implements OnInit {
   public organisationNameEncoded: string;

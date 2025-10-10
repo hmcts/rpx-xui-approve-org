@@ -6,7 +6,8 @@ import { CaseWorkerRefDataService } from '../../services/caseworker-ref-data.ser
 
 @Component({
   selector: 'app-prd-caseworker-details',
-  templateUrl: './caseworker-details.component.html'
+  templateUrl: './caseworker-details.component.html',
+  standalone: false
 })
 export class CaseWorkerDetailsComponent {
   public errorDesc: string;
