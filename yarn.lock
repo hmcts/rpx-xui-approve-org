@@ -3310,12 +3310,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.0":
-  version: 7.2.0
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.0"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.1-angular-20":
+  version: 7.3.1-angular-20
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.1-angular-20"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/c0d2ac4250ab46b2567b196d87ed90ee39fd47157df0032c91dc873fd0c5944a863f00cb8f90fa28095684aab6d5758fe5f982c856c57aea30d228bdf2a3f7e7
+  checksum: 10/78aafdc88923fca2d95d58787b1dc592d84dbc264262c848200fe563f536ac8efaee99b5b0b0b79208ac7c632ef72809ad3a8ea5626d28848657f7616e96cd2c
   languageName: node
   linkType: hard
 
@@ -20331,7 +20331,7 @@ __metadata:
     "@angular/router": "npm:^20.0.0"
     "@angular/ssr": "npm:^20.0.0"
     "@cucumber/cucumber": "npm:^9.5.1"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.0"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.1-angular-20"
     "@hmcts/frontend": "npm:0.0.41-alpha"
     "@hmcts/nodejs-healthcheck": "npm:1.7.0"
     "@hmcts/properties-volume": "npm:^0.0.13"
@@ -20446,7 +20446,7 @@ __metadata:
     portfinder: "npm:^1.0.28"
     redis: "npm:^3.0.2"
     request: "npm:@cypress/request@^3.0.9"
-    rpx-xui-translation: "npm:1.1.2-CME-780-6"
+    rpx-xui-translation: "npm:1.1.2-CME-780-9"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
     session-file-store: "npm:^1.2.0"
@@ -22747,9 +22747,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.1.2-CME-780-6":
-  version: 1.1.2-CME-780-6
-  resolution: "rpx-xui-translation@npm:1.1.2-CME-780-6"
+"rpx-xui-translation@npm:1.1.2-CME-780-9":
+  version: 1.1.2-CME-780-9
+  resolution: "rpx-xui-translation@npm:1.1.2-CME-780-9"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -22757,7 +22757,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.1
     "@angular/core": ^20.3.1
-  checksum: 10/83e3a3c573c016b013acfaa159d6c9b3d93a934e06180d26aa53984d328daf8704d6d6d32febc89affeb41cd931ce0f078e02c8e55445501df4f2ca9e374cdc2
+  checksum: 10/82126cfbc5984c0e3718a173e8e29d35c18f56e01dbe10241b7bd3f17ce5df065421dffc030db0dc88ec807597aa5aadb55b3349c03ac8335dc44189886aec0a
   languageName: node
   linkType: hard
 
