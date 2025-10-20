@@ -3646,12 +3646,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.2.42-3044-2761-rc2":
-  version: 7.2.42-3044-2761-rc2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.42-3044-2761-rc2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.2.50-srt-rc4-2":
+  version: 7.2.50-srt-rc4-2
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.2.50-srt-rc4-2"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/755d18516a3fdda2dc768918c852e2bc834652f49fbbf56b0f7f8cd3ebe3613c738b56fe664801d0065c103dc704e647947bad9eb11bf3b467c32495f63ab733
+  checksum: 10/a6e9fedf35623f3177def0b1af2f7384627f1d4bfc3888b4847685d376463bbea90d6c1aef90ab3be2400b279d8e2b9a84228f4d8d0425b4f7a4df9c5b413980
   languageName: node
   linkType: hard
 
@@ -3695,16 +3695,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:2.1.6-javascript-void":
-  version: 2.1.6-javascript-void
-  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.6-javascript-void"
+"@hmcts/rpx-xui-common-lib@npm:2.1.7-javascript-void":
+  version: 2.1.7-javascript-void
+  resolution: "@hmcts/rpx-xui-common-lib@npm:2.1.7-javascript-void"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: ^0.1.1
-  checksum: 10/56d18dbc2591b3e82f00478f8ed34e4854c803f6a51c7f326eabc2d8d72fe319ef08909f90a3450980f4fea26b8d2921c0ebe42c854c464aa87e8818d000803f
+  checksum: 10/1aa93ed8b372bfb8feb5f85b5299fc3eafe26b0755c6da0922b29f08b46b9bb7458707c8f973dd705e35af3fb3521e7e7c790ca7e574e4920110809a9fefad80
   languageName: node
   linkType: hard
 
@@ -21033,11 +21033,11 @@ __metadata:
     "@angular/router": "npm:^18.2.13"
     "@angular/ssr": "npm:^18.2.21"
     "@cucumber/cucumber": "npm:^9.5.1"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.42-3044-2761-rc2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.2.50-srt-rc4-2"
     "@hmcts/frontend": "npm:0.0.41-alpha"
     "@hmcts/nodejs-healthcheck": "npm:1.7.0"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:2.1.6-javascript-void"
+    "@hmcts/rpx-xui-common-lib": "npm:2.1.7-javascript-void"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@microsoft/applicationinsights-web": "npm:^3.3.9"
     "@ng-idle/core": "npm:^14.0.0"
