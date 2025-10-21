@@ -74,7 +74,7 @@
     "@hmcts/frontend": "0.0.41-alpha",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
-    "@hmcts/rpx-xui-common-lib": "3.1.4-cme-778-prerelease",
+    "@hmcts/rpx-xui-common-lib": "3.1.5-cme-778-prerelease",
     "@hmcts/rpx-xui-node-lib": "2.30.0",
     "@microsoft/applicationinsights-web": "^3.3.9",
     "@ng-idle/core": "^14.0.0",
