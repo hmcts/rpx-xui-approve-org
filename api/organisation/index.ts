@@ -19,7 +19,7 @@ const logger = log4jui.getLogger('return');
  * @param next
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
+async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response) {
   // if a search_filter is passed in the request it means we need to load the paged organisations list, filtered by the status
   if (req.query.search_filter) {
     handleOrganisationPagingRoute(req, res);
