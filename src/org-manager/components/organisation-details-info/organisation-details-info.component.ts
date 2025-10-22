@@ -129,7 +129,9 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
 
   private getOrgTypeOther(): string {
     const otherOrgTypes = this.orgTypes.find((orgType) => orgType.key === 'OTHER');
-    return otherOrgTypes.child_nodes.find((orgType) => orgType.key === this.orgType).value_en;
+    const specificOtherType = otherOrgTypes.child_nodes.find((orgType) => orgType.key === this.orgType);
+    const englishValueOther = specificOtherType ? specificOtherType.value_en : '';
+    return englishValueOther;
   }
 
   public onChange(): void {

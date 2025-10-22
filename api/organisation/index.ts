@@ -1,5 +1,5 @@
 import { AxiosPromise } from 'axios';
-import { NextFunction, Response, Router } from 'express';
+import { Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
