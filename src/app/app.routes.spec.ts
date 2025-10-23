@@ -23,7 +23,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   selector: 'app-mock-root',
-  template: '<router-outlet></router-outlet>'
+  template: '<router-outlet></router-outlet>',
+  standalone: false
 })
 class AppMockComponent {}
 

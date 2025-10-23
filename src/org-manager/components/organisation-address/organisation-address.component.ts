@@ -4,7 +4,8 @@ import { OrganisationVM } from '../../models/organisation';
 
 @Component({
   selector: 'app-org-address',
-  templateUrl: './organisation-address.component.html'
+  templateUrl: './organisation-address.component.html',
+  standalone: false
 })
 export class OrganisationAddressComponent {
   @Input() public organisation: OrganisationVM;

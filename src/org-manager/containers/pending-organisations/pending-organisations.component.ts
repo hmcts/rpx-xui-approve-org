@@ -8,7 +8,8 @@ import { OrganisationListComponent } from './../organisation-list/organisation-l
 @Component({
   selector: 'app-pending-overview-component',
   templateUrl: './pending-organisations.component.html',
-  styleUrls: ['../organisation-list/organisation-list.component.scss']
+  styleUrls: ['../organisation-list/organisation-list.component.scss'],
+  standalone: false
 })
 export class PendingOrganisationsComponent extends OrganisationListComponent implements OnInit {
   constructor(
