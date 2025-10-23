@@ -249,7 +249,7 @@
     "shelljs": "^0.8.5",
     "got": "^11.8.5",
     "tough-cookie": "^6.0.0",
-    "cookie": "^0.7.0",
+    "cookie": "^0.7.1",
     "@cypress/request": "^3.0.0",
     "jose": "^4.15.5",
     "@angular/platform-server": "^18.2.14",
