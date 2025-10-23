@@ -70,7 +70,7 @@
     "@angular/platform-server": "^20.0.0",
     "@angular/router": "^20.0.0",
     "@angular/ssr": "^20.0.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.6-angular-20",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.7-angular-20",
     "@hmcts/frontend": "0.0.41-alpha",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
