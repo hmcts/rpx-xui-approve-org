@@ -7696,12 +7696,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rxweb/reactive-form-validators@npm:2.1.2":
-  version: 2.1.2
-  resolution: "@rxweb/reactive-form-validators@npm:2.1.2"
+"@rxweb/reactive-form-validators@npm:2.1.8":
+  version: 2.1.8
+  resolution: "@rxweb/reactive-form-validators@npm:2.1.8"
   dependencies:
-    tslib: "npm:^1.9.0"
-  checksum: 10/f42018d102f634fea2573a05ea294dc747f7468b5bce3ff33b09385031e3473fbc8f1287a07285e70feae02b5880701d4ea1146ca6fd95db7fbc0b29cb785340
+    tslib: "npm:2.2.0"
+  checksum: 10/ad568d362fe82c78407ae56da1a66469f71e960cfa631981252b644e55d9f3ef2bd7d0b0009c5884f869bc1561c789cc771179f38daccadc0c2c022030fc2a4c
   languageName: node
   linkType: hard
 
@@ -21049,7 +21049,7 @@ __metadata:
     "@pact-foundation/pact": "npm:^9.11.1"
     "@pact-foundation/pact-node": "npm:^10.9.7"
     "@playwright/test": "npm:^1.51.1"
-    "@rxweb/reactive-form-validators": "npm:2.1.2"
+    "@rxweb/reactive-form-validators": "npm:2.1.8"
     "@stryker-mutator/api": "npm:^4.0.8"
     "@stryker-mutator/core": "npm:^4.0.8"
     "@stryker-mutator/html-reporter": "npm:^3.1.0"
@@ -25665,6 +25665,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.2.0, tslib@npm:~2.2.0":
+  version: 2.2.0
+  resolution: "tslib@npm:2.2.0"
+  checksum: 10/d5fcf6cf3766d7a2bbdd0c276ce8be7d068da6f7519c656da87bf15a2a16286e6c6233e1aec17c16ef25d5f4cff3e3b1138bc081a0db2dff56fd00a8594676dd
+  languageName: node
+  linkType: hard
+
 "tslib@npm:2.6.3":
   version: 2.6.3
   resolution: "tslib@npm:2.6.3"
@@ -25683,13 +25690,6 @@ __metadata:
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10/3e2e043d5c2316461cb54e5c7fe02c30ef6dccb3384717ca22ae5c6b5bc95232a6241df19c622d9c73b809bea33b187f6dbc73030963e29950c2141bc32a79f7
-  languageName: node
-  linkType: hard
-
-"tslib@npm:~2.2.0":
-  version: 2.2.0
-  resolution: "tslib@npm:2.2.0"
-  checksum: 10/d5fcf6cf3766d7a2bbdd0c276ce8be7d068da6f7519c656da87bf15a2a16286e6c6233e1aec17c16ef25d5f4cff3e3b1138bc081a0db2dff56fd00a8594676dd
   languageName: node
   linkType: hard
 
