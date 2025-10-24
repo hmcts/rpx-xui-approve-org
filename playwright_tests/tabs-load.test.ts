@@ -4,8 +4,7 @@ import { signIn } from './helpers/login';
 test('all tabs on login load data', async ({ page }) => {
   await signIn(page);
   await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
-  //TODO: Revert - testing forced failure
-  await expect(page.getByRole('tabpanel')).not.toBeVisible();
+  await expect(page.getByRole('tabpanel')).toBeVisible();
   await expect(page.locator('app-pending-overview-component')).toBeVisible();
   await page.getByRole('tab', { name: 'New PBAs' }).click();
   await expect(page.locator('app-pending-pbas')).toBeVisible();

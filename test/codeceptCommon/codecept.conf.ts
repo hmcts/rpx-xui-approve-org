@@ -23,9 +23,6 @@ console.log(`testType : ${testType}`)
 console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
 
-if (!process.env.TEST_URL) {
-  process.env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net/'
-}
 let pipelineBranch = process.env.TEST_URL.includes('pr-') ? "preview" : "master"
 let features = ''
 if (testType === 'e2e' || testType === 'smoke') {
@@ -221,10 +218,9 @@ exports.config = {
 
 
 async function exitWithStatus() {
-  console.log('Exiting with status check...');
   // Check for failed tests by reading the generated report
   let status = 'PASS';
-  /* try {
+  try {
     const files = fs.readdirSync(functional_output_dir);
     const reportFile = files.find(f => f.startsWith('cucumber_output') && f.endsWith('.json'));
     const reportPath = reportFile ? path.join(functional_output_dir, reportFile) : '';
@@ -244,7 +240,6 @@ async function exitWithStatus() {
     console.error('Error checking test results:', err);
     status = 'FAIL';
   }
-  console.log(`Test run status: ${status}`); */
   process.exit(status === 'PASS' ? 0 : 1);
 
 }
