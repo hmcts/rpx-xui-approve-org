@@ -20891,7 +20891,7 @@ __metadata:
     otp: "npm:^0.1.3"
     p-iteration: "npm:^1.1.7"
     pa11y: "npm:^8.0.0"
-    passport: "npm:^0.6.0"
+    passport: "npm:^0.4.1"
     path: "npm:^0.12.7"
     playwright: "npm:^1.51.1"
     portfinder: "npm:^1.0.28"
@@ -21369,6 +21369,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"passport@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "passport@npm:0.4.1"
+  dependencies:
+    passport-strategy: "npm:1.x.x"
+    pause: "npm:0.0.1"
+  checksum: 10/b431a3356321ec3d4d03bff3b5e226abee285f65b045d4312f872113886f9120b09e40aff6c15bb84819a9460f4c9ab3a9c2d5cff1f90f74ed7b1e8f4e619505
+  languageName: node
+  linkType: hard
+
 "passport@npm:^0.5.3":
   version: 0.5.3
   resolution: "passport@npm:0.5.3"
@@ -21376,17 +21386,6 @@ __metadata:
     passport-strategy: "npm:1.x.x"
     pause: "npm:0.0.1"
   checksum: 10/11ca647263572e0285179c8a13942e64be72c6c40759cb1fcebb8258cc5e57bc1671d08071ca0da0a15045ab0e5bb6745aff4b04cb52b2f66815dc45d612015e
-  languageName: node
-  linkType: hard
-
-"passport@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "passport@npm:0.6.0"
-  dependencies:
-    passport-strategy: "npm:1.x.x"
-    pause: "npm:0.0.1"
-    utils-merge: "npm:^1.0.1"
-  checksum: 10/5051e1d773ac0d802d4d71315f5fee566b8765b9731396b60c1d6822b7983bef31ae2f51af94d973ade94fb040efae0816e736e534b55294d0fbd10efcdf2d36
   languageName: node
   linkType: hard
 
@@ -25967,7 +25966,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x, utils-merge@npm:^1.0.1":
+"utils-merge@npm:1.0.1, utils-merge@npm:1.x.x":
   version: 1.0.1
   resolution: "utils-merge@npm:1.0.1"
   checksum: 10/5d6949693d58cb2e636a84f3ee1c6e7b2f9c16cb1d42d0ecb386d8c025c69e327205aa1c69e2868cc06a01e5e20681fbba55a4e0ed0cce913d60334024eae798
