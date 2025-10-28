@@ -7,7 +7,8 @@ import { getOrganisationForReview } from '../../store/selectors';
 
 @Component({
   selector: 'app-delete-success',
-  templateUrl: './delete-organisation-success.component.html'
+  templateUrl: './delete-organisation-success.component.html',
+  standalone: false
 })
 export class DeleteOrganisationSuccessComponent implements OnInit {
   public orgForReview: OrganisationVM | null;

@@ -4,7 +4,8 @@ import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-dat
 
 @Component({
   selector: 'app-prd-upload-info-detail',
-  templateUrl: './upload-info-details.component.html'
+  templateUrl: './upload-info-details.component.html',
+  standalone: false
 })
 
 export class UploadInfoDetailsComponent {

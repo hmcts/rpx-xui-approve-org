@@ -19,7 +19,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   selector: 'app-mock',
-  template: ''
+  template: '',
+  standalone: false
 })
 class MockComponent { }
 
