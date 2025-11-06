@@ -28,7 +28,6 @@ import {
   PROTOCOL, REDIS_KEY_PREFIX,
   REDIS_TTL, REDISCLOUD_URL, S2S_SECRET, SERVICE_S2S_PATH, SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
-  SERVICES_IDAM_SERVICE_OVERRIDE,
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH, SESSION_SECRET
@@ -185,7 +184,7 @@ const options: AuthOptions = {
   tokenEndpointAuthMethod: 'client_secret_post',
   tokenURL: tokenUrl,
   useRoutes: true,
-  serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE)
+  ssoLogoutURL: `${idamWebUrl}/o/endSession`
 };
 
 const baseStoreOptions = {
