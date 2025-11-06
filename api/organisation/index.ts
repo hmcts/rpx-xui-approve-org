@@ -1,5 +1,5 @@
 import { AxiosPromise } from 'axios';
-import { NextFunction, Response, Router } from 'express';
+import { Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
@@ -18,7 +18,7 @@ const logger = log4jui.getLogger('return');
  * @param res - {organisations: [{org1}, {org2}]} OR {org1}
  * @param next
  */
-async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
+async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response) {
   // if a search_filter is passed in the request it means we need to load the paged organisations list, filtered by the status
   if (req.query.search_filter) {
     handleOrganisationPagingRoute(req, res);
@@ -94,7 +94,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
   }
 }
 
-function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
+export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
   const promise = req.http.get(url).catch((err) => err);
   return promise;
@@ -238,7 +238,7 @@ async function handleGetOrganisationDeletableStatusRoute(req: EnhancedRequest, r
   }
 }
 
-function filterOrganisations(orgs: any, searchFilter: string): any[] {
+export function filterOrganisations(orgs: any, searchFilter: string): any[] {
   const TEXT_FIELDS_TO_CHECK = ['name', 'postCode', 'sraId', 'admin'];
   if (!orgs) {
     return [];
@@ -276,13 +276,13 @@ function filterOrganisations(orgs: any, searchFilter: string): any[] {
   });
 }
 
-function postCodeMatches(org: any, filter: string): boolean {
+export function postCodeMatches(org: any, filter: string): boolean {
   return org.contactInformation.map(({ postCode }) => {
     return postCode && postCode.split(' ').join('').toLowerCase();
   }).some((element) => element && element.indexOf(filter.split(' ').join('')) >= 0);
 }
 
-function createPaginatedResponse(paginationParameters: any, filteredOrganisations: any) {
+export function createPaginatedResponse(paginationParameters: any, filteredOrganisations: any) {
   const startIndex = (paginationParameters.page_number - 1) * paginationParameters.page_size;
   let endIndex = startIndex + paginationParameters.page_size;
   if (endIndex > filteredOrganisations.length) {
@@ -292,7 +292,7 @@ function createPaginatedResponse(paginationParameters: any, filteredOrganisation
   return { organisations, total_records: filteredOrganisations.length };
 }
 
-function textFieldMatches(org: any, field: string, filter: string): boolean {
+export function textFieldMatches(org: any, field: string, filter: string): boolean {
   return org[field] && org[field].toLowerCase().includes(filter);
 }
 
