@@ -249,7 +249,8 @@
     "tough-cookie": "^6.0.0",
     "@angular/platform-server": "^18.2.14",
     "@angular/ssr": "^18.2.21",
-    "axios": "^1.11.1"
+    "axios": "^1.11.1",
+    "shelljs": "^0.8.5"
   },
   "packageManager": "yarn@4.9.2"
 }
