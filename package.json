@@ -88,7 +88,7 @@
     "@ngrx/store": "^16.3.0",
     "@ngrx/store-devtools": "^16.3.0",
     "@playwright/test": "^1.51.1",
-    "@rxweb/reactive-form-validators": "2.1.2",
+    "@rxweb/reactive-form-validators": "2.1.8",
     "@types/crypto-js": "^4.2.2",
     "@types/express-session": "^1.17.0",
     "@types/multer": "^1.4.13",
