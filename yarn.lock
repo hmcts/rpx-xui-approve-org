@@ -463,9 +463,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:16.2.12":
-  version: 16.2.12
-  resolution: "@angular/material@npm:16.2.12"
+"@angular/material@npm:16.2.14":
+  version: 16.2.14
+  resolution: "@angular/material@npm:16.2.14"
   dependencies:
     "@material/animation": "npm:15.0.0-canary.bc9ae6c9c.0"
     "@material/auto-init": "npm:15.0.0-canary.bc9ae6c9c.0"
@@ -517,13 +517,13 @@ __metadata:
     tslib: "npm:^2.3.0"
   peerDependencies:
     "@angular/animations": ^16.0.0 || ^17.0.0
-    "@angular/cdk": 16.2.12
+    "@angular/cdk": 16.2.14
     "@angular/common": ^16.0.0 || ^17.0.0
     "@angular/core": ^16.0.0 || ^17.0.0
     "@angular/forms": ^16.0.0 || ^17.0.0
     "@angular/platform-browser": ^16.0.0 || ^17.0.0
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/b47551a32745a89c840c47cbf2b7c6b22a551cd48135c6b6b512fada884508c1d45473a5a0f78189ca5f772e7b4fc7772360eea2afe57bbf3e62c1051ca60981
+  checksum: 10/c263eb0ee07848e12f937449525494e85d8b513479db8974ba8b2a2ab2584f333ee644d3502922e8928c52d255cf8ec09a8cf49614ee28238c944fd5d23f3a6f
   languageName: node
   linkType: hard
 
@@ -21026,7 +21026,7 @@ __metadata:
     "@angular/core": "npm:^18.2.13"
     "@angular/forms": "npm:^18.2.13"
     "@angular/language-service": "npm:^18.2.13"
-    "@angular/material": "npm:16.2.12"
+    "@angular/material": "npm:16.2.14"
     "@angular/platform-browser": "npm:^18.2.13"
     "@angular/platform-browser-dynamic": "npm:^18.2.13"
     "@angular/platform-server": "npm:18.2.14"
