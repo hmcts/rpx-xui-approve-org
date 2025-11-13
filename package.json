@@ -149,7 +149,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^18.2.18",
     "@angular-devkit/core": "^18.2.18",
-    "@angular/cli": "18.2.13",
+    "@angular/cli": "18.2.21",
     "@angular/compiler-cli": "^18.2.13",
     "@angular/language-service": "^18.2.13",
     "@cucumber/cucumber": "^9.5.1",
