@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'app-pba-account-approval',
-  templateUrl: './pba-account-approval.component.html'
+  templateUrl: './pba-account-approval.component.html',
+  standalone: false
 })
 export class PBAAccountApprovalComponent {
   @Input() public accountName: string;

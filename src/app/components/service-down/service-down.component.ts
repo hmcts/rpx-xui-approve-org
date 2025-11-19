@@ -6,7 +6,8 @@ import * as fromAppStore from '../../../app/store';
 
 @Component({
   selector: 'app-service-down',
-  templateUrl: './service-down.component.html'
+  templateUrl: './service-down.component.html',
+  standalone: false
 })
 export class ServiceDownComponent implements OnInit, OnDestroy {
   public currentError: GlobalError;

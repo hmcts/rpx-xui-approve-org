@@ -7,7 +7,8 @@ import { OrganisationService } from '../../services';
 @Component({
   selector: 'app-search-organisations-form',
   templateUrl: './search-organisations-form.component.html',
-  styleUrls: ['./search-organisations-form.component.scss']
+  styleUrls: ['./search-organisations-form.component.scss'],
+  standalone: false
 })
 export class SearchOrganisationsFormComponent implements OnInit, OnDestroy {
   @Input() public searchString: string;

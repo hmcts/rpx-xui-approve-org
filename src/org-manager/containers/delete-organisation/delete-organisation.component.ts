@@ -8,7 +8,8 @@ import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation
 
 @Component({
   selector: 'app-org-pending-delete',
-  templateUrl: './delete-organisation.component.html'
+  templateUrl: './delete-organisation.component.html',
+  standalone: false
 })
 export class DeleteOrganisationComponent {
   public orgForReview: OrganisationVM | null;

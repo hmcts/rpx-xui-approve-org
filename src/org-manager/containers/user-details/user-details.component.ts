@@ -9,7 +9,8 @@ import * as fromStore from '../../store';
 
 @Component({
   selector: 'app-user-details',
-  templateUrl: './user-details.component.html'
+  templateUrl: './user-details.component.html',
+  standalone: false
 })
 export class UserDetailsComponent implements OnInit {
   public errorsArray$: Observable<{ isFromValid: boolean; items: { id: string; message: any; } []}>;
