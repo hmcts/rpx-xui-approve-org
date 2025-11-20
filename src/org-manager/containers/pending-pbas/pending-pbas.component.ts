@@ -15,7 +15,8 @@ import { PBANumberModel, RenderableOrganisation } from './models';
 
 @Component({
   selector: 'app-pending-pbas',
-  templateUrl: './pending-pbas.component.html'
+  templateUrl: './pending-pbas.component.html',
+  standalone: false
 })
 export class PendingPBAsComponent implements OnInit, OnDestroy {
   public static PENDING_STATUS: string = 'pending';

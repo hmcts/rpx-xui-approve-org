@@ -8,7 +8,8 @@ import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from '../.
  */
 @Component({
   selector: 'app-org-details-info-old',
-  templateUrl: './organisation-details-info-old.component.html'
+  templateUrl: './organisation-details-info-old.component.html',
+  standalone: false
 })
 export class OrganisationDetailsInfoOldComponent implements OnInit {
   @Input() public org: OrganisationVM;

@@ -3,7 +3,8 @@ import { NotificationBannerType } from '../../../models/notification-banner-type
 
 @Component({
   selector: 'app-notification-banner-component',
-  templateUrl: './notification-banner.component.html'
+  templateUrl: './notification-banner.component.html',
+  standalone: false
 })
 export class NotificationBannerComponent {
   @Input() public bannerType: NotificationBannerType = NotificationBannerType.INFORMATION;

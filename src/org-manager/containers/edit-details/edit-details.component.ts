@@ -18,7 +18,8 @@ import { PBANumberModel } from '../pending-pbas/models';
 
 @Component({
   selector: 'app-change-details',
-  templateUrl: './edit-details.component.html'
+  templateUrl: './edit-details.component.html',
+  standalone: false
 })
 export class EditDetailsComponent implements OnInit, OnDestroy {
   public changePbaFG: FormGroup;
