@@ -681,18 +681,18 @@ __metadata:
   linkType: hard
 
 "@angular/platform-server@npm:^20.0.0":
-  version: 20.3.6
-  resolution: "@angular/platform-server@npm:20.3.6"
+  version: 20.3.15
+  resolution: "@angular/platform-server@npm:20.3.15"
   dependencies:
     tslib: "npm:^2.3.0"
     xhr2: "npm:^0.2.0"
   peerDependencies:
-    "@angular/common": 20.3.6
-    "@angular/compiler": 20.3.6
-    "@angular/core": 20.3.6
-    "@angular/platform-browser": 20.3.6
+    "@angular/common": 20.3.15
+    "@angular/compiler": 20.3.15
+    "@angular/core": 20.3.15
+    "@angular/platform-browser": 20.3.15
     rxjs: ^6.5.3 || ^7.4.0
-  checksum: 10/6cb52567d26cacf3f0c92abce382a903c8a220d82ba7e4b35668984fb687a3647eb0d9e40d6c95c2fabc7e294ec8061ca05568adfbce3b5b38f768fdee72875d
+  checksum: 10/607e5e8b46005ae75816b913f2aaa932a7562b5ecc6ef3c71d8f76d60762302d0b9cbaf20e4b74ed56ee0789afad40f10bb9e95a82500ca88d2c8bc2d5192d99
   languageName: node
   linkType: hard
 
@@ -20538,7 +20538,7 @@ __metadata:
     webpack-dev-server: "npm:^5.2.0"
     webpack-node-externals: "npm:^1.7.2"
     xlsx: "npm:^0.18.5"
-    zone.js: "npm:~0.15.0"
+    zone.js: "npm:~0.16.0"
   languageName: unknown
   linkType: soft
 
@@ -26548,9 +26548,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zone.js@npm:~0.15.0":
-  version: 0.15.1
-  resolution: "zone.js@npm:0.15.1"
-  checksum: 10/10f8b8651694e7c9484b32da677d4051b8aaa7e2cb3a6baa1f608ff789e249fbccca33820b0590f9d80a7bbfc860a3ae3a6969b5c433f77b1b66e896f3d5b4d5
+"zone.js@npm:~0.16.0":
+  version: 0.16.0
+  resolution: "zone.js@npm:0.16.0"
+  checksum: 10/48caf0ac9b443ca1615a3302ebe0387f73e04a725f72aceed4d8998e468ba250b2876b7c51f034656907235a0ab99e6b614af33a769b4fb7c6945b11d99e01d0
   languageName: node
   linkType: hard
