@@ -18,7 +18,8 @@ let page = null;
 let sessionCookies = [];
 
 async function login(page, email, pass){
-  const emailAddress = 'input#username';
+  const emailAddress = '[id=\'username\']';
+  console.log("Email address selector : "+emailAddress);
   const password ='[id=\'password\']';
   const signinBtn ='input.button';
   // const signOutlink = element(by.xpath('//a[@class=\'hmcts-header__navigation-link\']'));
