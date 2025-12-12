@@ -18,19 +18,37 @@ let page = null;
 let sessionCookies = [];
 
   async function login(page, email, pass){
-  const emailAddress = '[id=\'username\']';
+  // const emailAddress = '[id=\'username\']';
   console.log("Email address selector : "+emailAddress);
-  const password ='[id=\'password\']';
-  const signinBtn ='input.button';
+  // const password ='[id=\'password\']';
+  // const signinBtn ='input.button';
+  const emailAddressXPath = "//*[@id='username']";
+  const passwordXPath = "//*[@id='password']";
+  const signinBtnXPath = "//*[@id='login-submit-btn']";
   // const signOutlink = element(by.xpath('//a[@class=\'hmcts-header__navigation-link\']'));
   // const failure_error_heading = element(by.css('[id=\'validation-error-summary-heading\']'));
   const dashboard_header = 'a.hmcts-header__link'; 
 
   await page.goto("http://localhost:3000/");
-  await page.waitForSelector(emailAddress)
-  await page.type(emailAddress, email)
-  await page.type(password, pass)
-  await page.click(signinBtn);
+  await page.waitForXPath(emailAddressXPath);
+  const [emailEl] = await page.$x(emailAddressXPath);
+  await emailEl.type(email);
+  console.log("Entered email ");
+  await page.waitForXPath(passwordXPath);
+  const [passEl] = await page.$x(passwordXPath);
+  await passEl.type(pass);
+  console.log("Entered password ");
+  await page.waitForXPath(signinBtnXPath);
+  const [signinEl] = await page.$x(signinBtnXPath);
+  await signinEl.click();
+  console.log("Login clicked ");
+
+  // await page.goto("http://localhost:3000/");
+  // await page.waitForSelector(emailAddress)
+  // await page.type(emailAddress, email)
+  // await page.type(password, pass)
+  // await page.click(signinBtn);
+  console.log("Login done ");
   await page.waitForSelector(dashboard_header)
   console.log("Login successful ");
 }
