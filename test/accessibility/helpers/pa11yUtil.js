@@ -17,7 +17,7 @@ let page = null;
 
 let sessionCookies = [];
 
-  async function login(page, email, pass){
+async function login(page, email, pass){
   // const emailAddress = '[id=\'username\']';
   console.log("Email address selector : "+emailAddress);
   // const password ='[id=\'password\']';
@@ -54,8 +54,8 @@ let sessionCookies = [];
 }
 
 async function initBrowser() {
-  // idamLogin.withCredentials('vmuniganti@mailnesia.com', 'Monday01')
-  // await idamLogin.do()
+  idamLogin.withCredentials('vmuniganti@mailnesia.com', 'Monday01')
+  await idamLogin.do()
 
   testBrowser = await puppeteer.launch({
     ignoreHTTPSErrors: false,
@@ -67,15 +67,15 @@ async function initBrowser() {
   });
 
   page = await testBrowser.newPage();
-  await login(page, 'vmuniganti@mailnesia.com', 'Monday01')
-  // await page.goto("http://localhost:3000/");
+  // await login(page, 'vmuniganti@mailnesia.com', 'Monday01')
+  await page.goto("http://localhost:3000/");
 
   // await page.goto("http://localhost:3000/terms-and-conditions");
-  // const cookies = idamLogin.xuiCallbackResponse.details.setCookies;
-  // sessionCookies = cookies;
-  // for (let cookie of cookies) {
-  //   await page.setCookie({ name: cookie.name, value: cookie.value })
-  // }
+  const cookies = idamLogin.xuiCallbackResponse.details.setCookies;
+  sessionCookies = cookies;
+  for (let cookie of cookies) {
+    await page.setCookie({ name: cookie.name, value: cookie.value })
+  }
   // await page.goto("http://localhost:3000/");
 
 }
