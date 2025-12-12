@@ -34,7 +34,7 @@ exports.config = {
             "uniqueScreenshotNames": "true"
         },
         Puppeteer: {
-            url: 'https://manage-case.aat.platform.hmcts.net/',
+            url: 'https://administer-orgs.aat.platform.hmcts.net/',
             show: true,
             waitForNavigation: ['domcontentloaded'],
             restart: true,
