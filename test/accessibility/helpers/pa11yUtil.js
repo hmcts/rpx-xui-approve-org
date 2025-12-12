@@ -17,7 +17,7 @@ let page = null;
 
 let sessionCookies = [];
 
-async function login(page, email, pass){
+  async function login(page, email, pass){
   const emailAddress = '[id=\'username\']';
   console.log("Email address selector : "+emailAddress);
   const password ='[id=\'password\']';
@@ -32,6 +32,7 @@ async function login(page, email, pass){
   await page.type(password, pass)
   await page.click(signinBtn);
   await page.waitForSelector(dashboard_header)
+  console.log("Login successful ");
 }
 
 async function initBrowser() {
