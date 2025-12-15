@@ -7,7 +7,7 @@ import * as log4jui from './lib/log4jui';
 export const IDAM_CHECK_BASE_DELAY_MS = 30000;
 export const IDAM_CHECK_MAX_DURATION_MS = 10 * 60 * 1000; // 10 minutes
 
-const wait = (delay: number) => new Promise(resolve => setTimeout(resolve, delay));
+const wait = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
 
 export const idamCheck = async (resolve, reject) => {
   const idamApiUrl = getConfigValue(SERVICES_IDAM_API_PATH);

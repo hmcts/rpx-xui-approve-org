@@ -346,4 +346,4 @@ app.use('/*', (req, res) => {
 
 new Promise(idamCheck)
   .then(() => 'IDAM is up and running')
-  .catch(err => logger.error('idam api check failed after retries', err));
+  .catch((err) => logger.error('idam api check failed after retries', err));
