@@ -52,11 +52,12 @@ class IdamLogin{
             await this.onIdamLoginPost()
             await this.onXuiCallback()
             await this.getUserDetails()
-
+            console.log('login successful for user ' + this.username);
 
             // this.authToken = this.userDetailsResponse.details.data.userInfo.token
 
         }catch(err){
+            console.log('login failed ' + err)
             reportLogger.AddMessage('************* Login error *************')
             // reportLogger.AddMessage(
             //     JSON.stringify({

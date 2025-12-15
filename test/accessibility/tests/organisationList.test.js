@@ -20,7 +20,7 @@ describe('Organisations list', function () {
         await initBrowser()
         const actions = [];
         actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation/pending',));
-        actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
+        actions.push(...PallyActions.waitForPageWithCssLocator('app-pending-overview-component'));
         await pa11ytest(this, actions);
     });
 
@@ -29,7 +29,7 @@ describe('Organisations list', function () {
         const actions = [];
         // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
         actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation/active',));
-        actions.push(...PallyActions.waitForPageWithCssLocator('td>a'));
+        actions.push(...PallyActions.waitForPageWithCssLocator('app-prd-org-overview-component'));
         await pa11ytest(this, actions);
     });
 
