@@ -8,9 +8,9 @@ describe('idamCheck', () => {
   let axiosGetStub: any;
   let loggerStub: any;
   let processExitStub: sinon.SinonStub;
-  let setTimeoutStub: sinon.SinonStub;
-  let dateNowStub: sinon.SinonStub;
-  let currentTime: number;
+  let clock: sinon.SinonFakeTimers;
+  let idamCheckBaseDelay: number;
+  let idamCheckMaxDuration: number;
 
   beforeEach(() => {
     configStub = sinon.stub();
@@ -27,16 +27,7 @@ describe('idamCheck', () => {
       trackRequest: sinon.stub()
     };
     processExitStub = sinon.stub(process, 'exit');
-    currentTime = 0;
-    dateNowStub = sinon.stub(Date, 'now').callsFake(() => currentTime);
-    setTimeoutStub = sinon.stub(global, 'setTimeout').callsFake(((fn: any, delay?: number, ...args: any[]) => {
-      const waitTime = typeof delay === 'number' ? delay : 0;
-      currentTime += waitTime;
-      if (typeof fn === 'function') {
-        fn(...args);
-      }
-      return 0 as unknown as NodeJS.Timeout;
-    }) as any);
+    clock = sinon.useFakeTimers({ now: 0 });
 
     sinon.stub(require('./configuration'), 'getConfigValue').callsFake(configStub);
     sinon.stub(require('./lib/http'), 'http').callsFake(httpStub);
@@ -44,8 +35,7 @@ describe('idamCheck', () => {
   });
 
   afterEach(() => {
-    dateNowStub.restore();
-    setTimeoutStub.restore();
+    clock.restore();
     processExitStub.restore();
     sinon.restore();
   });
@@ -57,6 +47,8 @@ describe('idamCheck', () => {
       delete require.cache[require.resolve('./idamCheck')];
       const module = require('./idamCheck');
       idamCheck = module.idamCheck;
+      idamCheckBaseDelay = module.IDAM_CHECK_BASE_DELAY_MS;
+      idamCheckMaxDuration = module.IDAM_CHECK_MAX_DURATION_MS;
     });
 
     it('should resolve successfully when IDAM API responds', async () => {
@@ -90,7 +82,10 @@ describe('idamCheck', () => {
       const resolveStub = sinon.stub();
       const rejectStub = sinon.stub();
 
-      await idamCheck(resolveStub, rejectStub);
+      const idamCheckPromise = idamCheck(resolveStub, rejectStub);
+      await Promise.resolve(); // allow first attempt to schedule retry
+      clock.tick(idamCheckBaseDelay);
+      await idamCheckPromise;
 
       expect(configStub).to.have.been.calledOnce;
       expect(configStub).to.have.been.calledWith('services.idamApi');
@@ -133,7 +128,13 @@ describe('idamCheck', () => {
       const resolveStub = sinon.stub();
       const rejectStub = sinon.stub();
 
-      await idamCheck(resolveStub, rejectStub);
+      const idamCheckPromise = idamCheck(resolveStub, rejectStub);
+      await Promise.resolve(); // allow first attempt to schedule retry
+      for (let elapsed = 0; elapsed <= idamCheckMaxDuration; elapsed += idamCheckBaseDelay) {
+        clock.tick(idamCheckBaseDelay);
+        await Promise.resolve(); // let the retry loop progress between ticks
+      }
+      await idamCheckPromise;
 
       expect(configStub).to.have.been.calledOnce;
       expect(httpStub).to.have.been.calledOnce;
