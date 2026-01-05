@@ -240,7 +240,8 @@
     "@angular/platform-server": "^20.0.0",
     "@angular/ssr": "^20.0.0",
     "axios": "^1.11.1",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "jose": "^2.0.7"
   },
   "packageManager": "yarn@4.9.2"
 }
