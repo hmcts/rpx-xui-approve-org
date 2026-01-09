@@ -53,6 +53,7 @@ class IdamLogin{
             await this.onXuiCallback()
             await this.getUserDetails()
 
+
             // this.authToken = this.userDetailsResponse.details.data.userInfo.token
 
         }catch(err){
