@@ -344,4 +344,6 @@ app.use('/*', (req, res) => {
   res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
 });
 
-new Promise(idamCheck).then(() => 'IDAM is up and running');
+new Promise(idamCheck)
+  .then(() => 'IDAM is up and running')
+  .catch((err) => logger.error('idam api check failed after retries', err));
