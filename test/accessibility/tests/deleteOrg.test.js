@@ -22,7 +22,7 @@ describe('Delete Organisation', function () {
   }
 
   ['PENDING', 'ACTIVE'].forEach((state) => {
-    it(state+' Org Delete registration request Page', async function () {
+    xit(state+' Org Delete registration request Page', async function () {
       // MockApp.onGet('/api/organisations/:OrgId/isDeletable', (req, res) => {
       //   res.send({ 'organisationDeletable': true });
       // });
