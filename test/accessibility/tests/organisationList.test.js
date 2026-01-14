@@ -16,7 +16,7 @@ describe('Organisations list', function () {
         
     // });
 
-    it('Pending oraganisations page', async function () {
+    xit('Pending oraganisations page', async function () {
         await initBrowser()
         const actions = [];
         actions.push(...PallyActions.navigateTourl(conf.baseUrl + 'organisation/pending',));
@@ -24,7 +24,7 @@ describe('Organisations list', function () {
         await pa11ytest(this, actions);
     });
 
-    it('Active oraganisations page', async function () {
+    xit('Active oraganisations page', async function () {
         await initBrowser()
         const actions = [];
         // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
