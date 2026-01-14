@@ -16,7 +16,7 @@ describe('Organisations details', function () {
 
     });
 
-    xit('Active oraganisation details page', async function () {
+    it('Active oraganisation details page', async function () {
         await initBrowser()
         const actions = [];
         // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
@@ -25,7 +25,7 @@ describe('Organisations details', function () {
         await pa11ytest(this, actions);
     });
 
-    xit('Active oraganisation Users page', async function () {
+    it('Active oraganisation Users page', async function () {
         await initBrowser()
         const actions = [];
         // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
@@ -38,7 +38,7 @@ describe('Organisations details', function () {
     });
 
 
-    xit('Pending oraganisation details page', async function () {
+    it('Pending oraganisation details page', async function () {
         await initBrowser()
         const actions = [];
         // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));
@@ -48,7 +48,7 @@ describe('Organisations details', function () {
     });
 
 
-    xit('Pending oraganisation confirm decision page', async function () {
+    it('Pending oraganisation confirm decision page', async function () {
         await initBrowser()
         const actions = [];
         // actions.push(...AppActions.idamLogin(conf.params.username, conf.params.password));

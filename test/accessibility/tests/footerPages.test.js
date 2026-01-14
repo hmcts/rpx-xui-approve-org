@@ -17,7 +17,7 @@ describe('Footer links', function () {
     done();
   });
 
-  xit('Accessibility Page', async function () {
+  it('Accessibility Page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
@@ -27,7 +27,7 @@ describe('Footer links', function () {
     await pa11ytest(this, actions);
   });
 
-  xit('terms and Conditions page', async function () {
+  it('terms and Conditions page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
@@ -37,7 +37,7 @@ describe('Footer links', function () {
     await pa11ytest(this, actions);
   });
 
-  xit('Cookies Page', async function () {
+  it('Cookies Page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
@@ -47,7 +47,7 @@ describe('Footer links', function () {
     await pa11ytest(this, actions);
   });
 
-  xit('Privacy policy page', async function () {
+  it('Privacy policy page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
