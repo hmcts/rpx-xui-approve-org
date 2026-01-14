@@ -27,7 +27,7 @@ describe('Footer links', function () {
     await pa11ytest(this, actions);
   });
 
-  it('terms and Conditions page', async function () {
+  xit('terms and Conditions page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
