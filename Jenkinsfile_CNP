@@ -12,7 +12,6 @@ properties([
 ])
 
 @Library("Infrastructure@fix-steps-issue")
-
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
 import uk.gov.hmcts.contino.Environment
