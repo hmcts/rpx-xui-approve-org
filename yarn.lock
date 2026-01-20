@@ -20512,7 +20512,6 @@ __metadata:
     nodemon: "npm:^2.0.19"
     openid-client: "npm:^3.14.2"
     otp: "npm:^0.1.3"
-    otplib: "npm:^13.1.1"
     p-iteration: "npm:^1.1.7"
     pa11y: "npm:^8.0.0"
     passport: "npm:^0.6.0"
