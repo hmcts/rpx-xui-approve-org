@@ -11,7 +11,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@update-build-timeout")
+@Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
