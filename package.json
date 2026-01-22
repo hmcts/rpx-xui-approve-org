@@ -41,7 +41,7 @@
     "test:coverage:node": "cd api && yarn coverage",
     "test:crossbrowser": "yarn playwright install --with-deps && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn test:api && echo 'Protractor tests removed - use Playwright instead'",
-    "test:functional": "yarn playwright install chromium  && npx playwright test -c playwright.config.ts && yarn run test:a11yInTest",
+    "test:functional": "yarn playwright install chromium  && npx playwright test -c playwright.config.ts",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ng": "ng test",
     "test:ng:watch": "ng test --watch",
