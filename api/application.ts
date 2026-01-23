@@ -1,6 +1,6 @@
+import csrf from '@dr.pogodin/csurf';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as csurf from 'csurf';
 import * as express from 'express';
 import { existsSync, readFileSync } from 'fs';
 import helmet from 'helmet';
@@ -57,7 +57,7 @@ export const app = express();
 
 export const logger = log4jui.getLogger('server');
 
-export const csrfProtection = csurf();
+export const csrfProtection = csrf();
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -183,7 +183,8 @@ const options: AuthOptions = {
   sessionKey: 'xui-approve-org',
   tokenEndpointAuthMethod: 'client_secret_post',
   tokenURL: tokenUrl,
-  useRoutes: true
+  useRoutes: true,
+  ssoLogoutURL: `${idamWebUrl}/o/endSession`
 };
 
 const baseStoreOptions = {
