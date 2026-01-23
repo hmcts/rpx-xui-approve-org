@@ -35,7 +35,9 @@ export const test = base.extend<{
       await page.getByRole('button', { name: 'Continue' }).click();
       await page.locator('#regulator-type0').selectOption({ label: 'Not Applicable' });
       await page.getByRole('button', { name: 'Continue' }).click();
-      await page.locator('#Damages').click();
+      const damagesCheckbox = page.locator('input[data-service-label="Damages"]');
+      await expect(damagesCheckbox).toBeVisible();
+      await damagesCheckbox.check();
       await page.getByRole('button', { name: 'Continue' }).click();
       await page.getByLabel('No').check();
       await page.getByRole('button', { name: 'Continue' }).click();

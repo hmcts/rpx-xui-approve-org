@@ -3,7 +3,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { OrganisationVM } from '../models/organisation';
 
 @Pipe({
-  name: 'filterOrganisations'
+  name: 'filterOrganisations',
+  standalone: false
 })
 export class FilterOrganisationsPipe implements PipeTransform {
   private static readonly TEXT_FIELDS_TO_CHECK = ['name', 'postCode', 'sraId', 'admin'];

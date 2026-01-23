@@ -5,7 +5,8 @@ import { OrganisationVM } from '../../models/organisation';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-new-pbas-info',
-  templateUrl: './new-pbas-info.component.html'
+  templateUrl: './new-pbas-info.component.html',
+  standalone: false
 })
 export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public org: OrganisationVM;

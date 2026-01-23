@@ -23,7 +23,6 @@ console.log(`testType : ${testType}`)
 console.log(`parallel : ${parallel}`)
 console.log(`headless : ${!head}`)
 
-
 let pipelineBranch = process.env.TEST_URL.includes('pr-') ? "preview" : "master"
 let features = ''
 if (testType === 'e2e' || testType === 'smoke') {
@@ -219,8 +218,29 @@ exports.config = {
 
 
 async function exitWithStatus() {
-  const status = 'PASS'
-  process.exit(status === 'PASS' ? 0 : 1)
+  // Check for failed tests by reading the generated report
+  let status = 'PASS';
+  try {
+    const files = fs.readdirSync(functional_output_dir);
+    const reportFile = files.find(f => f.startsWith('cucumber_output') && f.endsWith('.json'));
+    const reportPath = reportFile ? path.join(functional_output_dir, reportFile) : '';
+    if (fs.existsSync(reportPath)) {
+      const reportData = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+      let failed = 0;
+      for (const feature of reportData) {
+        for (const scenario of feature.elements) {
+          if (scenario.steps.some((step: any) => step.result.status === 'failed')) {
+            failed++;
+          }
+        }
+      }
+      status = failed > 0 ? 'FAIL' : 'PASS';
+    }
+  } catch (err) {
+    console.error('Error checking test results:', err);
+    status = 'FAIL';
+  }
+  process.exit(status === 'PASS' ? 0 : 1);
 
 }
 
