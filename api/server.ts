@@ -4,6 +4,7 @@ import * as ejs from 'ejs';
 import * as express from 'express';
 import * as path from 'path';
 import { app, logger } from './application';
+import { idamCheck } from './idamCheck';
 
 console.log('WE ARE USING server.ts on the box.');
 
@@ -32,4 +33,11 @@ app.use('/*', (req, res) => {
 
 const port = process.env.PORT || 3000;
 
-app.listen(port, () => logger.info(`Local server up at ${port}`));
+new Promise(idamCheck)
+  .then(() => {
+    app.listen(port, () => logger.info(`Local server up at ${port}`));
+  })
+  .catch((err) => {
+    logger.error('idam check failed after retries', err);
+    process.exit(1);
+  });
