@@ -51,14 +51,11 @@ describe('idamCheck', () => {
       idamCheckMaxDuration = module.IDAM_CHECK_MAX_DURATION_MS;
     });
 
-    it('should resolve successfully when IDAM API responds', async () => {
+    it('should complete when IDAM API responds', async () => {
       const mockResponse = { data: { issuer: 'http://idam-api.example.com/o' } };
       axiosGetStub.resolves(mockResponse);
 
-      const resolveStub = sinon.stub();
-      const rejectStub = sinon.stub();
-
-      await idamCheck(resolveStub, rejectStub);
+      await idamCheck();
 
       expect(configStub).to.have.been.calledOnce;
       expect(configStub).to.have.been.calledWith('services.idamApi');
@@ -66,23 +63,17 @@ describe('idamCheck', () => {
       expect(httpStub).to.have.been.calledWith({});
       expect(axiosGetStub).to.have.been.calledOnce;
       expect(axiosGetStub).to.have.been.calledWith('http://idam-api.example.com/o/.well-known/openid-configuration');
-      expect(resolveStub).to.have.been.calledOnce;
-      expect(resolveStub).to.have.been.calledWithExactly();
-      expect(rejectStub).not.to.have.been.called;
       expect(loggerStub.warn).not.to.have.been.called;
       expect(loggerStub.error).not.to.have.been.called;
       expect(processExitStub).not.to.have.been.called;
     });
 
-    it('should retry on transient failure and eventually resolve', async () => {
+    it('should retry on transient failure and eventually complete', async () => {
       const mockResponse = { data: { issuer: 'http://idam-api.example.com/o' } };
       axiosGetStub.onFirstCall().rejects(new Error('502'));
       axiosGetStub.onSecondCall().resolves(mockResponse);
 
-      const resolveStub = sinon.stub();
-      const rejectStub = sinon.stub();
-
-      const idamCheckPromise = idamCheck(resolveStub, rejectStub);
+      const idamCheckPromise = idamCheck();
       await Promise.resolve(); // allow first attempt to schedule retry
       clock.tick(idamCheckBaseDelay);
       await idamCheckPromise;
@@ -92,9 +83,6 @@ describe('idamCheck', () => {
       expect(httpStub).to.have.been.called;
       expect(axiosGetStub).to.have.been.calledTwice;
       expect(loggerStub.warn).to.have.been.calledWithMatch('attempt 1');
-      expect(resolveStub).to.have.been.calledOnce;
-      expect(resolveStub).to.have.been.calledWithExactly();
-      expect(rejectStub).not.to.have.been.called;
       expect(processExitStub).not.to.have.been.called;
     });
 
@@ -103,10 +91,7 @@ describe('idamCheck', () => {
       const mockResponse = { data: { issuer: 'http://different-idam.example.com/o' } };
       axiosGetStub.resolves(mockResponse);
 
-      const resolveStub = sinon.stub();
-      const rejectStub = sinon.stub();
-
-      await idamCheck(resolveStub, rejectStub);
+      await idamCheck();
 
       expect(configStub).to.have.been.calledOnce;
       expect(configStub).to.have.been.calledWith('services.idamApi');
@@ -114,9 +99,6 @@ describe('idamCheck', () => {
       expect(httpStub).to.have.been.calledWith({});
       expect(axiosGetStub).to.have.been.calledOnce;
       expect(axiosGetStub).to.have.been.calledWithExactly('http://different-idam.example.com/o/.well-known/openid-configuration');
-      expect(resolveStub).to.have.been.calledOnce;
-      expect(resolveStub).to.have.been.calledWithExactly();
-      expect(rejectStub).not.to.have.been.called;
       expect(loggerStub.warn).not.to.have.been.called;
       expect(loggerStub.error).not.to.have.been.called;
       expect(processExitStub).not.to.have.been.called;
@@ -125,25 +107,26 @@ describe('idamCheck', () => {
     it('should reject after exhausting retries', async () => {
       axiosGetStub.rejects(new Error('timeout'));
 
-      const resolveStub = sinon.stub();
-      const rejectStub = sinon.stub();
-
-      const idamCheckPromise = idamCheck(resolveStub, rejectStub);
+      const idamCheckPromise = idamCheck();
       await Promise.resolve(); // allow first attempt to schedule retry
       for (let elapsed = 0; elapsed <= idamCheckMaxDuration; elapsed += idamCheckBaseDelay) {
         clock.tick(idamCheckBaseDelay);
         await Promise.resolve(); // let the retry loop progress between ticks
       }
-      await idamCheckPromise;
+      let caughtError: unknown;
+      try {
+        await idamCheckPromise;
+      } catch (err) {
+        caughtError = err;
+      }
 
       expect(configStub).to.have.been.calledOnce;
       expect(httpStub).to.have.been.calledOnce;
       expect(axiosGetStub.callCount).to.be.greaterThan(1);
-      expect(resolveStub).not.to.have.been.called;
-      expect(rejectStub).to.have.been.calledOnce;
+      expect(caughtError).to.exist;
       expect(loggerStub.warn).to.have.been.called;
       expect(loggerStub.error).to.have.been.calledOnce;
-      expect(processExitStub).to.have.been.calledOnceWith(1);
+      expect(processExitStub).not.to.have.been.called;
     });
   });
 });
