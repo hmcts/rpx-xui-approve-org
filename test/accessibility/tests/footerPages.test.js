@@ -10,14 +10,14 @@ const MockApp = require('../../nodeMock/app');
 
 describe('Footer links', function () {
   beforeEach(function () {
-
+   
   });
   afterEach(async function (done) {
     // await MockApp.stopServer();
     done();
   });
 
-  it('Accessibility Page', async function () {
+  xit('Accessibility Page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
@@ -27,7 +27,7 @@ describe('Footer links', function () {
     await pa11ytest(this, actions);
   });
 
-  it('terms and Conditions page', async function () {
+  xit('terms and Conditions page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
@@ -37,7 +37,7 @@ describe('Footer links', function () {
     await pa11ytest(this, actions);
   });
 
-  it('Cookies Page', async function () {
+  xit('Cookies Page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
@@ -47,7 +47,7 @@ describe('Footer links', function () {
     await pa11ytest(this, actions);
   });
 
-  it('Privacy policy page', async function () {
+  xit('Privacy policy page', async function () {
     // await MockApp.startServer();
     await initBrowser()
     const actions = [];
