@@ -1,0 +1,116 @@
+/* ==========================================================================
+   #HEADER
+   ========================================================================== */
+
+.hmcts-header {
+  background-color: govuk-colour("black");
+  padding-top: govuk-spacing(2);
+}
+
+
+.hmcts-header__container {
+  @include hmcts-width-container;
+  @include govuk-clearfix;
+  position: relative;
+}
+
+
+.hmcts-header__logo {
+  padding-bottom: govuk-spacing(2);
+
+  @include mq($from: tablet) {
+    float: left;
+  }
+
+}
+
+
+.hmcts-header__content {
+  padding-bottom: govuk-spacing(2);
+
+  @include mq($from: tablet) {
+    float: right;
+  }
+
+}
+
+
+.hmcts-header__link {
+  @include govuk-font($size: 24, $weight: bold);
+  border-bottom: 1px solid transparent;
+  color: govuk-colour("white");
+  display: inline-block;
+  text-decoration: none;
+  line-height: 25px; // Override due to alignment issue in Chrome
+  margin-bottom: -1px;
+  overflow: hidden; // Fixes focus gaps in background colour
+  vertical-align: middle;
+
+  &:link,
+  &:visited,
+  &:hover,
+  &:active {
+    color: govuk-colour("white");
+  }
+
+  &:hover {
+    border-color: govuk-colour("white");
+  }
+
+  &:focus {
+    border-color: transparent;
+    color: govuk-colour("black");
+  }
+
+}
+
+
+// Navigation
+.hmcts-header__navigation {
+  color: govuk-colour("white");
+  margin-top: govuk-spacing(1)-2px;
+}
+
+
+.hmcts-header__navigation-list {
+  font-size: 0; // Removes white space when using inline-block on child element.
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+.hmcts-header__navigation-item {
+  @include govuk-font(19);
+  display: inline-block;
+  margin-right: govuk-spacing(4);
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+}
+
+
+.hmcts-header__navigation-link {
+
+  &:link,
+  &:visited,
+  &:active {
+    color: inherit;
+  }
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus {
+    color: govuk-colour("black");
+  }
+
+}
+
+
+.hmcts-header__navigation-link[aria-current=page] {
+  text-decoration: none;
+}

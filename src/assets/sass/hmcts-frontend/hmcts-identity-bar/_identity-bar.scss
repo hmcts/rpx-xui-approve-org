@@ -1,0 +1,67 @@
+/* ==========================================================================
+   #IDENTITY BAR
+   ========================================================================== */
+
+.hmcts-identity-bar {
+  @include govuk-clearfix;
+  background-color: govuk-colour("light-grey", $legacy: "grey-4");
+  box-shadow: inset 0 -1px 0 0 govuk-colour("mid-grey", $legacy: "grey-2"); /* Takes up no space */
+  color: govuk-colour("black");
+  padding-bottom: govuk-spacing(2) - 1px; /* Negative by 1px to compensate */
+  padding-top: govuk-spacing(2);
+}
+
+
+.hmcts-identity-bar__container {
+  @include hmcts-width-container;
+  font-size: 0; /* Hide whitespace between elements */
+  text-align: justify; /* Trick to remove the need for floats */
+
+  &:after {
+    content: '';
+    display: inline-block;
+    width: 100%;
+  }
+
+}
+
+.hmcts-identity-bar__title {
+  @include govuk-font(16);
+  display: inline-block;
+  vertical-align: top;
+}
+
+.hmcts-identity-bar__details {
+  margin-right: govuk-spacing(2);
+  padding-top: govuk-spacing(1);
+  padding-bottom: govuk-spacing(1);
+
+  @include mq($from: tablet) {
+    display: inline-block;
+    vertical-align: top;
+    padding-top: govuk-spacing(2) + 1px; /* Alignment tweaks */
+    padding-bottom: govuk-spacing(2) - 1px; /* Alignment tweaks */
+  }
+
+}
+
+
+.hmcts-identity-bar__actions {
+  margin-bottom: - govuk-spacing(2);
+
+  @include mq($from: tablet) {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+}
+
+.hmcts-identity-bar__menu {
+  display: inline-block;
+  margin-right: govuk-spacing(2);
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+}
