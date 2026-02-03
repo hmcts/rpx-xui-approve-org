@@ -1,12 +1,4 @@
-@import "hmcts-badge/badge";
-@import "hmcts-banner/banner";
-@import "hmcts-footer/footer";
-@import "hmcts-header/header";
-@import "hmcts-identity-bar/identity-bar";
-@import "hmcts-page-header-with-actions/page-header-with-actions";
-@import "hmcts-pagination/pagination";
-@import "hmcts-primary-navigation/primary-navigation";
-@import "hmcts-search/search";
-@import "hmcts-secondary-button/secondary-button";
-@import "hmcts-sortable-table/sortable-table";
-@import "hmcts-sub-navigation/sub-navigation";
+@import "settings/all";
+@import "objects/all";
+@import "components/all";
+@import "utilities/all";
