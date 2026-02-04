@@ -18,7 +18,7 @@
 
 .hmcts-primary-navigation__nav {
   text-align: left;
-  @include mq($from: desktop) {
+  @include govuk-media-query($from: desktop) {
     display: inline-block;
     vertical-align: middle;
   }
@@ -95,7 +95,7 @@
 
 .hmcts-primary-navigation__search {
 
-  @include mq($from: desktop) {
+  @include govuk-media-query($from: desktop) {
     display: inline-block;
     vertical-align: middle;
   }
