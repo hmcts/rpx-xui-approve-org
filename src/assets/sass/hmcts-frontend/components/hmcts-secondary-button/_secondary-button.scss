@@ -20,12 +20,6 @@
   &:link:focus {
     background-color: rgba(govuk-colour("mid-grey", $legacy: "grey-2"), .7);
     color: $govuk-text-colour;
-
-    // IE8 does not support RGBA, provide fallback
-    @include govuk-if-ie8 {
-      background-color: #d3d4d5; // 70% of grey-2
-    }
-
   }
 
 }

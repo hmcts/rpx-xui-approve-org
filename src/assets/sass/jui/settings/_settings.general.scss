@@ -14,10 +14,6 @@ $jui-assets-path : "/public/images/";
   margin-right: auto;
   max-width: $jui-page-width;
 
-  @include govuk-if-ie8 {
-    width: $jui-page-width;
-  }
-
   // On mobile, add half width gutters
   margin: 0 $jui-gutter-half;
 
