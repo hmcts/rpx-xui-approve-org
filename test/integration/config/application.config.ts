@@ -1,13 +1,10 @@
-import { getConfigValue } from 'api/configuration';
-import { IDAM_CLIENT } from 'api/configuration/references';
-
 export const application = {
   cookies: {
     token: '__auth__',
     userId: '__userid__'
   },
   microservice: 'xui_webapp',
-  idamClient: getConfigValue(IDAM_CLIENT),
+  idamClient: 'xuiaowebapp',
   oauthCallbackUrl: '/oauth2/callback',
   protocol: 'https',
   logging: 'debug',
