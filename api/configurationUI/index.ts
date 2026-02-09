@@ -1,7 +1,15 @@
 import * as csurf from 'csurf';
 import * as express from 'express';
-import { uiConfig } from '../configuration/ui';
 import * as log4jui from '../lib/log4jui';
+import { getConfigValue, getEnvironment, showFeature } from '../configuration';
+import {
+  FEATURE_OIDC_ENABLED,
+  LAUNCH_DARKLY_CLIENT_ID,
+  MICROSERVICE,
+  NOW,
+  PROTOCOL,
+  SERVICES_IDAM_WEB,
+} from '../configuration/references';
 
 const logger = log4jui.getLogger('configuration-ui');
 
@@ -16,6 +24,20 @@ router.get('/', csrfProtection, configurationUIRoute);
  * and CSRF token cookie are initialised.
  */
 export function configurationUIRoute(req, res): void {
+   const configEnv = getEnvironment();
+
+   const uiConfig = {
+      configEnv,
+      launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),
+      microservice: getConfigValue(MICROSERVICE),
+      now: getConfigValue(NOW),
+      oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
+      protocol: getConfigValue(PROTOCOL),
+      services: {
+        idamWeb: getConfigValue(SERVICES_IDAM_WEB),
+      }
+   };
+
   if (!req.session.env) {
     req.session.env = true;
     return req.session.save(() => {
@@ -23,14 +45,13 @@ export function configurationUIRoute(req, res): void {
       const csrfToken = req.csrfToken();
       logger.info('token for new session: ', csrfToken);
       res.cookie('XSRF-TOKEN', csrfToken);
-      res.status(200).send(uiConfig());
+      res.status(200).send(uiConfig);
       res.end();
     });
   }
 
   logger.info('existing session ', req.session.id);
-  res.status(200).send(uiConfig());
+  res.status(200).send(uiConfig);
 }
 
 export default router;
-
