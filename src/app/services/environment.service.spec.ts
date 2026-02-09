@@ -1,10 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { of } from 'rxjs';
-import { EnvironmentConfig } from 'src/models/environmentConfig.model';
+import { EnvironmentConfig, ENVIRONMENT_CONFIG } from 'src/models/environmentConfig.model';
 import { EnvironmentService } from './environment.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const environmentConfig: EnvironmentConfig = {
   appInsightsConnectionString: '123',
@@ -28,15 +25,13 @@ const environmentConfig: EnvironmentConfig = {
 };
 
 describe('EnvironmentService', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let mockedHttpClient;
-
   beforeEach(() => {
-    mockedHttpClient = jasmine.createSpyObj('mockedHttpClient', { get: of(environmentConfig) });
-
     TestBed.configureTestingModule({
       imports: [],
-      providers: [EnvironmentService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+      providers: [
+        EnvironmentService,
+        { provide: ENVIRONMENT_CONFIG, useValue: environmentConfig }
+      ]
     });
   });
 

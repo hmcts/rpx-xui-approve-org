@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, Inject } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import { EnvironmentConfig } from 'src/models/environmentConfig.model';
+import { EnvironmentConfig, ENVIRONMENT_CONFIG } from 'src/models/environmentConfig.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +11,9 @@ export class EnvironmentService {
 
   private readonly config$: Observable<EnvironmentConfig>;
 
-  constructor(private readonly http: HttpClient) {
-    this.config$ = this.http.get<EnvironmentConfig>('/api/environment/config')
-      .pipe<EnvironmentConfig>(shareReplay<EnvironmentConfig>(1));
-
-    this.config$.subscribe((config) => {
-      this.data = config;
-    });
+  constructor(@Inject(ENVIRONMENT_CONFIG) config: EnvironmentConfig) {
+    this.data = config;
+    this.config$ = of(config).pipe(shareReplay(1));
   }
 
   public get<K extends keyof EnvironmentConfig>(key: K): EnvironmentConfig[K] {

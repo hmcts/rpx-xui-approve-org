@@ -2,7 +2,7 @@ import { xuiNode } from '@hmcts/rpx-xui-node-lib';
 import * as express from 'express';
 import allUserListWithoutRolesRouter from './allUserListWithoutRoles';
 import caseWorkerDetailsRouter from './caseWorkerDetailsRouter';
-import environment from './environment';
+// import environment from './environment';
 import healthCheck from './healthCheck';
 import getAppInsightsConnectionString from './monitoring-tools';
 import organisationRouter from './organisation';
@@ -12,10 +12,12 @@ import reinviteUserRouter from './reinviteUser';
 import stateRouter from './states';
 import pbaRouter from './updatePba/routes';
 import userDetailsRouter from './user';
+import getConfigurationUIRouter from './configurationUI';
 
 const router = express.Router({ mergeParams: true });
 // open routes
-router.use('/environment', environment);
+// router.use('/environment', environment);
+router.use('/configuration-ui', getConfigurationUIRouter);
 
 router.use(xuiNode.authenticate);
 router.use('/user', userDetailsRouter);

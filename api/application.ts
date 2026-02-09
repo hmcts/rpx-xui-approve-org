@@ -310,8 +310,8 @@ app.get('/external/ping', (req, res) => {
     featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
     featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED)
-  });
-});
+	  });
+	});
 
 /**
  * We are attaching authentication to all subsequent routes.
