@@ -4,23 +4,14 @@ import { EnvironmentConfig, ENVIRONMENT_CONFIG } from 'src/models/environmentCon
 import { EnvironmentService } from './environment.service';
 
 const environmentConfig: EnvironmentConfig = {
-  appInsightsConnectionString: '123',
-  configEnv: '',
   cookies: undefined,
-  exceptionOptions: undefined,
-  health: undefined,
   idamClient: '',
   indexUrl: '',
-  logging: '',
   now: false,
-  maxLogLine: 0,
   microservice: '',
   oauthCallbackUrl: '',
   protocol: '',
-  proxy: undefined,
-  secureCookie: false,
   services: undefined,
-  sessionSecret: '',
   oidcEnabled: false
 };
 

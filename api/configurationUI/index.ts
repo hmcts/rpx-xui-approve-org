@@ -4,6 +4,7 @@ import * as log4jui from '../lib/log4jui';
 import { getConfigValue, getEnvironment, showFeature } from '../configuration';
 import {
   FEATURE_OIDC_ENABLED,
+  IDAM_CLIENT,
   LAUNCH_DARKLY_CLIENT_ID,
   MICROSERVICE,
   NOW,
@@ -33,6 +34,7 @@ export function configurationUIRoute(req, res): void {
       now: getConfigValue(NOW),
       oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
       protocol: getConfigValue(PROTOCOL),
+      idamClient: getConfigValue(IDAM_CLIENT),
       services: {
         idamWeb: getConfigValue(SERVICES_IDAM_WEB),
       }

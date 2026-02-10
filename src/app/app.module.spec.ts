@@ -3,23 +3,14 @@ import { launchDarklyClientIdFactory } from './app.module';
 
 const environmentConfig: EnvironmentConfig = {
   launchDarklyClientId: null,
-  appInsightsConnectionString: '',
-  configEnv: '',
   cookies: undefined,
-  exceptionOptions: undefined,
-  health: undefined,
   idamClient: '',
   indexUrl: '',
-  logging: '',
   now: false,
-  maxLogLine: 0,
   microservice: '',
   oauthCallbackUrl: '',
   protocol: '',
-  proxy: undefined,
-  secureCookie: false,
   services: undefined,
-  sessionSecret: '',
   oidcEnabled: false
 };
 
