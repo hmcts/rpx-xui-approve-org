@@ -9,7 +9,7 @@ import {
   MICROSERVICE,
   NOW,
   PROTOCOL,
-  SERVICES_IDAM_WEB,
+  SERVICES_IDAM_WEB
 } from '../configuration/references';
 
 const logger = log4jui.getLogger('configuration-ui');
@@ -25,20 +25,20 @@ router.get('/', csrfProtection, configurationUIRoute);
  * and CSRF token cookie are initialised.
  */
 export function configurationUIRoute(req, res): void {
-   const configEnv = getEnvironment();
+  const configEnv = getEnvironment();
 
-   const uiConfig = {
-      configEnv,
-      launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),
-      microservice: getConfigValue(MICROSERVICE),
-      now: getConfigValue(NOW),
-      oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
-      protocol: getConfigValue(PROTOCOL),
-      idamClient: getConfigValue(IDAM_CLIENT),
-      services: {
-        idamWeb: getConfigValue(SERVICES_IDAM_WEB),
-      }
-   };
+  const uiConfig = {
+    configEnv,
+    launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),
+    microservice: getConfigValue(MICROSERVICE),
+    now: getConfigValue(NOW),
+    oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
+    protocol: getConfigValue(PROTOCOL),
+    idamClient: getConfigValue(IDAM_CLIENT),
+    services: {
+      idamWeb: getConfigValue(SERVICES_IDAM_WEB)
+    }
+  };
 
   if (!req.session.env) {
     req.session.env = true;

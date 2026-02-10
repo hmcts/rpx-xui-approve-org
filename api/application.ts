@@ -11,7 +11,6 @@ import { attach } from './auth';
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration';
 import { ERROR_NODE_CONFIG_ENV } from './configuration/constants';
 import {
-  APP_INSIGHTS_CONNECTION_STRING,
   COOKIE_TOKEN,
   COOKIES_USERID,
   FEATURE_APP_INSIGHTS_ENABLED,
