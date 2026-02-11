@@ -61,7 +61,7 @@ async function generateMergedReport() {
     fs.writeFileSync(destReport, htmlData);
     console.log('html update write done');
 
-
+    return mergedReportData;
 
 }
 
