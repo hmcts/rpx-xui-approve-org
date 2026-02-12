@@ -1,0 +1,64 @@
+/* ==========================================================================
+   #FOOTER
+   ========================================================================== */
+
+.hmcts-footer {
+  background-color: govuk-colour("light-grey", $legacy: "grey-3");
+  border-top: 1px solid $hmcts-border-color;
+  padding-top: govuk-spacing(7);
+  padding-bottom: govuk-spacing(7);
+}
+
+
+.hmcts-footer__container {
+  @include hmcts-width-container;
+}
+
+
+.hmcts-footer__heading {
+  @include govuk-font($size: 19, $weight: bold);
+  margin-bottom: govuk-spacing(2);
+  margin-top: 0;
+}
+
+.hmcts-footer__list {
+  @include govuk-font($size: 16);
+  color: $hmcts-secondary-text-color;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+
+.hmcts-footer__list-item {
+  margin-bottom: govuk-spacing(1);
+}
+
+
+.hmcts-footer__link {
+
+  &:link,
+  &:visited {
+    color: $hmcts-secondary-link-color;
+  }
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $hmcts-secondary-link-hover-color;
+  }
+
+}
+
+
+/* Style variants
+  ========================================================================== */
+
+.hmcts-footer__list--inline {
+
+  .hmcts-footer__list-item {
+    display: inline;
+    margin-right: govuk-spacing(3);
+  }
+
+}
