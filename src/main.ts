@@ -14,7 +14,7 @@ if (environment.production) {
   enableProdMode();
 }
 
-fetch('/api/environment/config').then(async (response) => {
+fetch('/api/configuration-ui/').then(async (response) => {
   let config = await response.json();
   config = config || {};
   platformBrowserDynamic([{ provide: ENVIRONMENT_CONFIG, useValue: config },

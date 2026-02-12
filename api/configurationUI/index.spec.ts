@@ -3,7 +3,7 @@ import 'mocha';
 import * as sinon from 'sinon';
 import { createMockLogger } from '../test/shared/loggerMocks';
 
-describe('environment/index', () => {
+describe('configurationUI/index', () => {
   let mockRequest: any;
   let mockResponse: any;
   let mockLogger: any;
@@ -33,22 +33,22 @@ describe('environment/index', () => {
     sinon.restore();
   });
 
-  describe('environmentRoute', () => {
+  describe('configurationUIRoute', () => {
+    let configurationUIRoute: any;
     let router: any;
 
     beforeEach(() => {
-      // Import the router after mocking dependencies
       delete require.cache[require.resolve('./index')];
       const module = require('./index');
       router = module.router;
+      configurationUIRoute = module.configurationUIRoute;
     });
 
     it('should handle new session and set CSRF token', (done) => {
       mockRequest.session = { id: 'test-session-id' };
       mockRequest.session.save = sinon.stub().callsArgWith(0);
 
-      const handler = router.stack[0].route.stack[0].handle;
-      handler(mockRequest, mockResponse);
+      configurationUIRoute(mockRequest, mockResponse);
 
       // Give async operation time to complete
       setTimeout(() => {
@@ -82,8 +82,7 @@ describe('environment/index', () => {
         save: sinon.stub()
       };
 
-      const handler = router.stack[0].route.stack[0].handle;
-      handler(mockRequest, mockResponse);
+      configurationUIRoute(mockRequest, mockResponse);
 
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('existing session ', 'existing-session-id');
@@ -104,11 +103,27 @@ describe('environment/index', () => {
     it('should call uiConfig function exactly once', () => {
       mockRequest.session = { env: true };
 
-      const handler = router.stack[0].route.stack[0].handle;
-      handler(mockRequest, mockResponse);
+      configurationUIRoute(mockRequest, mockResponse);
 
       expect(uiConfigStub).to.have.been.calledOnce;
       expect(uiConfigStub).to.have.been.calledWith();
+    });
+
+    it('should have exactly one GET route configured for /', () => {
+      expect(router.stack).to.have.length(1);
+
+      const routeLayer = router.stack[0];
+      expect(routeLayer.route).to.exist;
+      expect(routeLayer.route.path).to.equal('/');
+      expect(routeLayer.route.methods.get).to.be.true;
+      expect(routeLayer.route.methods.post).to.be.undefined;
+      expect(routeLayer.route.methods.put).to.be.undefined;
+      expect(routeLayer.route.methods.delete).to.be.undefined;
+
+      // CSRF middleware + handler
+      expect(routeLayer.route.stack).to.have.length(2);
+      expect(routeLayer.route.stack[0].handle).to.be.a('function');
+      expect(routeLayer.route.stack[1].handle).to.equal(configurationUIRoute);
     });
   });
 
@@ -122,23 +137,6 @@ describe('environment/index', () => {
       expect(module.router).to.equal(module.default);
       expect(module.router.name).to.equal('router');
     });
-
-    it('should have exactly one GET route configured for /config', () => {
-      const module = require('./index');
-      const router = module.router;
-
-      expect(router.stack).to.have.length(1);
-
-      const routeLayer = router.stack[0];
-      expect(routeLayer.route).to.exist;
-      expect(routeLayer.route.path).to.equal('/config');
-      expect(routeLayer.route.methods.get).to.be.true;
-      expect(routeLayer.route.methods.post).to.be.undefined;
-      expect(routeLayer.route.methods.put).to.be.undefined;
-      expect(routeLayer.route.methods.delete).to.be.undefined;
-
-      expect(routeLayer.route.stack).to.have.length(1);
-      expect(routeLayer.route.stack[0].handle).to.be.a('function');
-    });
   });
 });
+

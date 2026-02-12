@@ -1,50 +1,25 @@
 import { InjectionToken } from '@angular/core';
 
 export interface EnvironmentConfig {
-    appInsightsConnectionString: string;
-    configEnv: string;
-    cookies: EnvironmentConfigCookies;
-    exceptionOptions: EnvironmentConfigExceptionOptions;
-    health: EnvironmentConfigServices;
-    idamClient: string;
-    indexUrl: string;
-    logging: string;
-    now: boolean;
-    maxLogLine: number;
-    microservice: string;
-    oauthCallbackUrl: string;
-    protocol: string;
-    proxy: EnvironmentConfigProxy;
-    secureCookie: boolean;
-    services: EnvironmentConfigServices;
-    sessionSecret: string;
-    oidcEnabled: boolean;
-    launchDarklyClientId?: string;
+  cookies: EnvironmentConfigCookies;
+  idamClient: string;
+  indexUrl: string;
+  now: boolean;
+  microservice: string;
+  oauthCallbackUrl: string;
+  protocol: string;
+  services: EnvironmentConfigServices;
+  oidcEnabled: boolean;
+  launchDarklyClientId?: string;
   }
 
 export interface EnvironmentConfigCookies {
-    token: string;
-    userId: string;
-    roles: string;
-  }
-
-export interface EnvironmentConfigExceptionOptions {
-    maxLines: number;
-  }
-
+  token: string;
+  userId: string;
+  roles: string;
+}
 export interface EnvironmentConfigServices {
-    ccdDataApi: string;
-    ccdDefApi: string;
-    idamApi: string;
-    idamWeb: string;
-    rdProfessionalApi: string;
-    s2s: string;
-    iss: string;
-  }
-
-export interface EnvironmentConfigProxy {
-    host: string;
-    port: number;
-  }
+  idamWeb: string;
+}
 
 export const ENVIRONMENT_CONFIG = new InjectionToken<EnvironmentConfig>('environment.config');
