@@ -35,7 +35,6 @@ import {
 import * as log4jui from './lib/log4jui';
 import * as tunnel from './lib/tunnel';
 import routes from './routes';
-import { idamCheck } from './idamCheck';
 import { AO_CSP } from './interfaces/csp-config';
 
 function loadIndexHtml(): string {
@@ -343,7 +342,3 @@ app.use('/*', (req, res) => {
   const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
   res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
 });
-
-new Promise(idamCheck)
-  .then(() => 'IDAM is up and running')
-  .catch((err) => logger.error('idam api check failed after retries', err));
