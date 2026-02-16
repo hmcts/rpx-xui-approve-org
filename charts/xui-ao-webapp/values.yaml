@@ -42,7 +42,6 @@ nodejs:
     NODE_CONFIG_ENV: production
     UV_THREADPOOL_SIZE: 64
     PUI_ENV: prod
-    SESSION_SECRET: secretSauce
     NODE_TLS_REJECT_UNAUTHORIZED: 1
     AO_HTTP_PROXY: http://172.16.0.7:8080
     AO_NO_PROXY: localhost
@@ -81,6 +80,7 @@ nodejs:
         - name: ao-webapp-redis6-connection-string
           alias: ao-webapp-redis-connection-string
         - launch-darkly-client-id
+        - ao-session-secret
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

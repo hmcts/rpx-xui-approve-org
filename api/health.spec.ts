@@ -169,7 +169,7 @@ describe('health', () => {
       expect(configStub).to.have.been.calledWith('services.s2s');
       expect(configStub).to.have.been.calledWith('services.rdProfessionalApi');
       expect(configStub).to.have.been.calledWith('services.feeAndPayApi');
-      expect(configStub).to.have.been.calledWith('sessionSecret');
+      expect(configStub).to.have.been.calledWith('secrets.rpx.ao-session-secret');
 
       expect(showFeatureStub).to.have.callCount(3);
       expect(showFeatureStub).to.have.been.calledWith('secureCookieEnabled');

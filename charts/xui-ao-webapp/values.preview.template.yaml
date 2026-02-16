@@ -19,6 +19,7 @@ nodejs:
         - appinsights-connection-string-ao
         - name: launch-darkly-client-id-preview
           alias: launch-darkly-client-id
+        - ao-session-secret
   autoscaling:
     enabled: false
 redis:
