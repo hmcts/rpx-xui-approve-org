@@ -7948,12 +7948,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rxweb/reactive-form-validators@npm:2.1.2":
-  version: 2.1.2
-  resolution: "@rxweb/reactive-form-validators@npm:2.1.2"
+"@rxweb/reactive-form-validators@npm:2.1.8":
+  version: 2.1.8
+  resolution: "@rxweb/reactive-form-validators@npm:2.1.8"
   dependencies:
-    tslib: "npm:^1.9.0"
-  checksum: 10/f42018d102f634fea2573a05ea294dc747f7468b5bce3ff33b09385031e3473fbc8f1287a07285e70feae02b5880701d4ea1146ca6fd95db7fbc0b29cb785340
+    tslib: "npm:2.2.0"
+  checksum: 10/ad568d362fe82c78407ae56da1a66469f71e960cfa631981252b644e55d9f3ef2bd7d0b0009c5884f869bc1561c789cc771179f38daccadc0c2c022030fc2a4c
   languageName: node
   linkType: hard
 
@@ -20663,7 +20663,7 @@ __metadata:
     "@pact-foundation/pact": "npm:^9.11.1"
     "@pact-foundation/pact-node": "npm:^10.9.7"
     "@playwright/test": "npm:^1.51.1"
-    "@rxweb/reactive-form-validators": "npm:2.1.2"
+    "@rxweb/reactive-form-validators": "npm:2.1.8"
     "@stryker-mutator/api": "npm:8.6.0"
     "@stryker-mutator/core": "npm:8.6.0"
     "@stryker-mutator/html-reporter": "npm:3.1.0"
@@ -25007,6 +25007,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.2.0":
+  version: 2.2.0
+  resolution: "tslib@npm:2.2.0"
+  checksum: 10/d5fcf6cf3766d7a2bbdd0c276ce8be7d068da6f7519c656da87bf15a2a16286e6c6233e1aec17c16ef25d5f4cff3e3b1138bc081a0db2dff56fd00a8594676dd
+  languageName: node
+  linkType: hard
+
 "tslib@npm:2.7.0, tslib@npm:~2.7.0":
   version: 2.7.0
   resolution: "tslib@npm:2.7.0"
@@ -25021,7 +25028,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^1.8.1, tslib@npm:^1.9.0, tslib@npm:^1.9.3":
+"tslib@npm:^1.8.1, tslib@npm:^1.9.3":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: 10/7dbf34e6f55c6492637adb81b555af5e3b4f9cc6b998fb440dac82d3b42bdc91560a35a5fb75e20e24a076c651438234da6743d139e4feabf0783f3cdfe1dddb
