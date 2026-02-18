@@ -3,14 +3,20 @@ import { launchDarklyClientIdFactory } from './app.module';
 
 const environmentConfig: EnvironmentConfig = {
   launchDarklyClientId: null,
-  cookies: undefined,
-  idamClient: '',
+  cookies: {
+    token: '__auth__',
+    userId: '__userid__',
+    roles: 'roles'
+  },
+  idamClient: 'xuiaowebapp',
   indexUrl: '',
   now: false,
-  microservice: '',
-  oauthCallbackUrl: '',
-  protocol: '',
-  services: undefined,
+  microservice: 'xui_webapp',
+  oauthCallbackUrl: '/oauth2/callback',
+  protocol: 'https',
+  services: {
+    idamWeb: 'https://idam-web-public.aat.platform.hmcts.net'
+  },
   oidcEnabled: false
 };
 

@@ -3,11 +3,16 @@ import * as express from 'express';
 import * as log4jui from '../lib/log4jui';
 import { getConfigValue, getEnvironment, showFeature } from '../configuration';
 import {
+  COOKIE_ROLES,
+  COOKIE_TOKEN,
+  COOKIES_USERID,
   FEATURE_OIDC_ENABLED,
   IDAM_CLIENT,
+  INDEX_URL,
   LAUNCH_DARKLY_CLIENT_ID,
   MICROSERVICE,
   NOW,
+  OAUTH_CALLBACK_URL,
   PROTOCOL,
   SERVICES_IDAM_WEB
 } from '../configuration/references';
@@ -29,10 +34,17 @@ export function configurationUIRoute(req, res): void {
 
   const uiConfig = {
     configEnv,
+    cookies: {
+      roles: getConfigValue(COOKIE_ROLES),
+      token: getConfigValue(COOKIE_TOKEN),
+      userId: getConfigValue(COOKIES_USERID)
+    },
+    indexUrl: getConfigValue(INDEX_URL),
     launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID),
     microservice: getConfigValue(MICROSERVICE),
     now: getConfigValue(NOW),
     oidcEnabled: showFeature(FEATURE_OIDC_ENABLED),
+    oauthCallbackUrl: getConfigValue(OAUTH_CALLBACK_URL),
     protocol: getConfigValue(PROTOCOL),
     idamClient: getConfigValue(IDAM_CLIENT),
     services: {

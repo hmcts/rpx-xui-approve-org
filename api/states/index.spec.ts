@@ -276,9 +276,11 @@ describe('states/index', () => {
 
       expect(args[0]).to.equal(mockRequest);
       expect(args[1]).to.equal(mockResponse);
-      expect(args[2]).to.be.an('object'); // mapping
+      expect(args[2]).to.be.an('array'); // mapping
+      expect(args[2][0]).to.be.an('object');
       expect(args[3]).to.be.a('function'); // payload function
-      expect(args[4]).to.be.an('object'); // templates
+      expect(args[4]).to.be.an('array'); // templates
+      expect(args[4].any).to.be.an('object');
       expect(args[5]).to.be.an('object'); // store instance
     });
 

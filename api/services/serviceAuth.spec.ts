@@ -1,45 +1,53 @@
 import { expect } from '../test/shared/testSetup';
 import 'mocha';
 import * as sinon from 'sinon';
-import { postS2SLease } from './serviceAuth';
 import { createMockLogger } from '../test/shared/loggerMocks';
-import { createConfigMock } from '../test/shared/configMocks';
 import { createMockAxiosInstance, createMockAxiosResponse } from '../test/shared/httpMocks';
+import { MICROSERVICE, S2S_SECRET, SERVICE_S2S_PATH } from '../configuration/references';
 
 describe('serviceAuth', () => {
+  let postS2SLease: any;
   let mockLogger: any;
-  let configMock: any;
-  let log4juiStub: any;
+  let getLoggerStub: sinon.SinonStub;
+  let getConfigValueStub: sinon.SinonStub;
   let httpStub: any;
   let mockAxiosInstance: any;
-  let otpStub: any;
+  let otpStub: sinon.SinonStub;
+  let otpTotpStub: sinon.SinonStub;
+  let otpModulePath: string;
+  let originalOtpExport: any;
 
   beforeEach(() => {
     mockLogger = createMockLogger();
-    configMock = createConfigMock({
-      'SERVICE_S2S_PATH': 'http://localhost:4502',
-      'S2S_SECRET': '  test-secret-key  ',
-      'MICROSERVICE': 'xui_approveorg'
-    });
-
-    log4juiStub = {
-      getLogger: sinon.stub().returns(mockLogger)
-    };
+    getLoggerStub = sinon.stub().returns(mockLogger);
+    getConfigValueStub = sinon.stub();
+    getConfigValueStub.withArgs(SERVICE_S2S_PATH).returns('http://localhost:4502');
+    getConfigValueStub.withArgs(S2S_SECRET).returns('  test-secret-key  ');
+    getConfigValueStub.withArgs(MICROSERVICE).returns('xui_approveorg');
 
     mockAxiosInstance = createMockAxiosInstance();
     httpStub = sinon.stub().returns(mockAxiosInstance);
 
-    otpStub = sinon.stub().returns({
-      totp: sinon.stub().returns('123456')
-    });
+    otpTotpStub = sinon.stub().returns('123456');
+    otpStub = sinon.stub().returns({ totp: otpTotpStub });
 
-    sinon.stub(require('../lib/log4jui'), 'getLogger').callsFake(log4juiStub.getLogger);
-    sinon.stub(require('../configuration'), 'getConfigValue').callsFake(configMock.getConfigValue);
+    sinon.stub(require('../lib/log4jui'), 'getLogger').callsFake(getLoggerStub);
+    sinon.stub(require('../configuration'), 'getConfigValue').callsFake(getConfigValueStub);
     sinon.stub(require('../lib/http'), 'http').callsFake(httpStub);
-    sinon.stub(require('otp')).callsFake(otpStub);
+
+    otpModulePath = require.resolve('otp');
+    originalOtpExport = require(otpModulePath);
+    require.cache[otpModulePath].exports = otpStub;
+
+    delete require.cache[require.resolve('./serviceAuth')];
+    postS2SLease = require('./serviceAuth').postS2SLease;
   });
 
   afterEach(() => {
+    if (otpModulePath && require.cache[otpModulePath]) {
+      require.cache[otpModulePath].exports = originalOtpExport;
+    }
+    delete require.cache[require.resolve('./serviceAuth')];
     sinon.restore();
   });
 
@@ -79,6 +87,7 @@ describe('serviceAuth', () => {
       expect(otpStub).to.have.been.calledWith({
         secret: 'test-secret-key' // Should be trimmed
       });
+      expect(otpTotpStub).to.have.been.calledOnce;
     });
 
     it('should post to correct S2S endpoint with microservice and OTP', async () => {
@@ -102,7 +111,7 @@ describe('serviceAuth', () => {
 
       await postS2SLease();
 
-      expect(log4juiStub.getLogger).to.have.been.calledWith('service auth');
+      expect(getLoggerStub).to.have.been.calledWith('service auth');
       expect(mockLogger.info).to.have.been.calledWith(
         'generating from secret  :',
         'test-secret-key',

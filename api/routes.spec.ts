@@ -26,16 +26,16 @@ describe('routes', () => {
       expect(router).to.be.a('function');
     });
 
-    it('should configure environment route without authentication', () => {
+    it('should configure configuration-ui route without authentication', () => {
       delete require.cache[require.resolve('./routes')];
       const router = require('./routes').default;
 
       expect(router.stack).to.be.an('array');
       expect(router.stack.length).to.be.greaterThan(0);
 
-      // First route should be environment (open route)
-      const environmentRoute = router.stack[0];
-      expect(environmentRoute.regexp.source).to.include('environment');
+      // First route should be configuration-ui (open route)
+      const configurationUIRoute = router.stack[0];
+      expect(configurationUIRoute.regexp.source).to.include('configuration-ui');
     });
 
     it('should use xuiNode authenticate middleware', () => {
