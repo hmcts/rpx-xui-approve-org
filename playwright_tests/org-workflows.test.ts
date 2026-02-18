@@ -17,8 +17,9 @@ test('i can approve a pending org', async ({ page, userName }) => {
   const spinner = page.locator('div.spinner-inner-container .spinner');
   await page.getByRole('button', { name: 'Confirm' }).click();
   await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
-  const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
-  await expect(successDivs.first()).toBeVisible({ timeout: 20_000 });
+  const successBanner = page.locator('app-notification-banner-component .hmcts-banner--success').first();
+  await expect(successBanner).toBeVisible({ timeout: 20_000 });
+  await expect(successBanner).toContainText(/Registration approved/i);
 });
 
 test('i can reject a pending org', async ({ page, userName }) => {
@@ -35,8 +36,9 @@ test('i can reject a pending org', async ({ page, userName }) => {
   const spinner = page.locator('div.spinner-inner-container .spinner');
   await page.getByRole('button', { name: 'Confirm' }).click();
   await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
-  const rejectDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration rejected/i });
-  await expect(rejectDivs.first()).toBeVisible({ timeout: 20_000 });
+  const successBanner = page.locator('app-notification-banner-component .hmcts-banner--success').first();
+  await expect(successBanner).toBeVisible({ timeout: 20_000 });
+  await expect(successBanner).toContainText(/Registration rejected/i);
 });
 
 test('i can place registration under review for a pending org', async ({ page, userName }) => {
@@ -53,8 +55,9 @@ test('i can place registration under review for a pending org', async ({ page, u
   const spinner = page.locator('div.spinner-inner-container .spinner');
   await page.getByRole('button', { name: 'Confirm' }).click();
   await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
-  const underDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration put under/i });
-  await expect(underDivs.first()).toBeVisible({ timeout: 20_000 });
+  const successBanner = page.locator('app-notification-banner-component .hmcts-banner--success').first();
+  await expect(successBanner).toBeVisible({ timeout: 20_000 });
+  await expect(successBanner).toContainText(/Registration put under/i);
 });
 
 test('i can delete an active org', async ({ page, userName }) => {
@@ -73,8 +76,9 @@ test('i can delete an active org', async ({ page, userName }) => {
   const spinner = page.locator('div.spinner-inner-container .spinner');
   await page.getByRole('button', { name: 'Confirm' }).click();
   await spinner.waitFor({ state: 'hidden', timeout: 30_000 });
-  const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
-  await expect(successDivs.first()).toBeVisible({ timeout: 20_000 });
+  const successBanner = page.locator('app-notification-banner-component .hmcts-banner--success').first();
+  await expect(successBanner).toBeVisible({ timeout: 20_000 });
+  await expect(successBanner).toContainText(/Registration approved/i);
   await page.getByRole('tab', { name: 'Active organisations' }).click();
   await page.waitForTimeout(5000); // small timeout to make sure spinner has had chance to start
   await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
