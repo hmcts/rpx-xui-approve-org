@@ -1,0 +1,72 @@
+
+
+.hmcts-search {
+  font-size: 0; // Fallback
+}
+
+.hmcts-search form {
+  align-items: flex-end;
+  display: flex;
+}
+
+.hmcts-search .govuk-form-group {
+  display: inline-block;
+  flex: 1;
+  margin-bottom: 0;
+  vertical-align: top;
+}
+
+
+.hmcts-search__label,
+.hmcts-search__hint {
+  text-align: left;
+}
+
+
+.hmcts-search__input:focus {
+  position: relative;
+  z-index: 1;
+}
+
+.hmcts-search__button {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-left: govuk-spacing(2);
+  position: relative;
+  top: -2px; // Override default gov properties due to active pixel movement
+  vertical-align: bottom;
+  width: auto;
+}
+
+// Modifiers
+.hmcts-search--ondark {
+  background-color: govuk-colour("black");
+  padding: govuk-spacing(3);
+}
+
+.hmcts-search--ondark .hmcts-search__label {
+  color: govuk-colour("white");
+}
+
+.hmcts-search--ondark .hmcts-search__hint {
+  color: govuk-colour("mid-grey", $legacy: "grey-2");
+}
+
+.hmcts-search--ondark .hmcts-search__input {
+  border-color: govuk-colour("white");
+}
+
+.hmcts-search--ondark .hmcts-search__button {
+  box-shadow: 0 2px 0 #00823b;
+  margin-left: 0;
+
+  &:hover,
+  &:focus {
+    box-shadow: 0 2px 0 darken(#00823b, 5%);
+  }
+
+  &:active {
+    top: -2px;
+  }
+
+}
