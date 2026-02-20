@@ -138,7 +138,7 @@
     "sonar-scanner": "3.1.0",
     "striptags": "^3.1.1",
     "tslib": "^2.6.1",
-    "zone.js": "~0.15.0"
+    "zone.js": "~0.16.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.0.0",
