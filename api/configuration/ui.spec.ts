@@ -14,7 +14,9 @@ describe('configuration/ui', () => {
     delete require.cache[require.resolve('./index')];
 
     configMock = createConfigMock({
+      'cookies.roles': '__user-roles',
       'cookies.token': '__auth-token',
+      'cookies.userId': '__userid',
       'idamClient': 'xui_webapp',
       'oauthCallbackUrl': 'https://callback.example.com',
       'protocol': 'https',
@@ -47,7 +49,9 @@ describe('configuration/ui', () => {
       expect(config).to.deep.equal({
         configEnv: 'test',
         cookies: {
-          token: '__auth-token'
+          roles: '__user-roles',
+          token: '__auth-token',
+          userId: '__userid'
         },
         idamClient: 'xui_webapp',
         oauthCallbackUrl: 'https://callback.example.com',
@@ -65,7 +69,9 @@ describe('configuration/ui', () => {
       const config = uiConfig();
 
       expect(config.cookies).to.deep.equal({
-        token: '__auth-token'
+        roles: '__user-roles',
+        token: '__auth-token',
+        userId: '__userid'
       });
     });
 
@@ -120,6 +126,8 @@ describe('configuration/ui', () => {
       expect(config.launchDarklyClientId).to.be.undefined;
 
       expect(config.cookies.token).to.be.undefined;
+      expect(config.cookies.userId).to.be.undefined;
+      expect(config.cookies.roles).to.be.undefined;
       expect(config.services.idamWeb).to.be.undefined;
 
       expect(config.oidcEnabled).to.be.undefined;
@@ -130,7 +138,9 @@ describe('configuration/ui', () => {
       uiConfig();
 
       expect(getEnvironmentStub).to.have.been.calledOnce;
+      expect(getConfigValueStub).to.have.been.calledWith('cookies.roles');
       expect(getConfigValueStub).to.have.been.calledWith('cookies.token');
+      expect(getConfigValueStub).to.have.been.calledWith('cookies.userId');
       expect(getConfigValueStub).to.have.been.calledWith('idamClient');
       expect(getConfigValueStub).to.have.been.calledWith('oauthCallbackUrl');
       expect(getConfigValueStub).to.have.been.calledWith('protocol');
@@ -148,7 +158,7 @@ describe('configuration/ui', () => {
         'configEnv', 'cookies', 'idamClient', 'oauthCallbackUrl', 'oidcEnabled',
         'protocol', 'services', 'launchDarklyClientId'
       ]);
-      expect(config.cookies).to.have.all.keys(['token']);
+      expect(config.cookies).to.have.all.keys(['roles', 'token', 'userId']);
       expect(config.services).to.have.all.keys(['idamWeb']);
     });
   });

@@ -5,7 +5,9 @@ const environmentConfig: EnvironmentConfig = {
   launchDarklyClientId: undefined,
   configEnv: '',
   cookies: {
-    token: '__auth__'
+    roles: 'roles',
+    token: '__auth__',
+    userId: '__userid__'
   },
   idamClient: '',
   oauthCallbackUrl: '',

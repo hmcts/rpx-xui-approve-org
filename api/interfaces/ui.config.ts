@@ -10,7 +10,9 @@ export interface UIConfig {
 }
 
 export interface UIConfigCookies {
-  token: string
+  token: string,
+  userId: string,
+  roles: string
 }
 
 export interface UIConfigServices {

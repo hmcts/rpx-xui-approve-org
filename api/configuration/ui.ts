@@ -1,7 +1,9 @@
 import { getConfigValue, getEnvironment, showFeature } from '.';
 import { UIConfig, UIConfigCookies, UIConfigServices } from '../interfaces/ui.config';
 import {
+  COOKIE_ROLES,
   COOKIE_TOKEN,
+  COOKIES_USERID,
   FEATURE_OIDC_ENABLED,
   IDAM_CLIENT,
   LAUNCH_DARKLY_CLIENT_ID,
@@ -14,7 +16,9 @@ export const uiConfig = (): UIConfig => {
   return {
     configEnv: getEnvironment(),
     cookies: {
-      token: getConfigValue(COOKIE_TOKEN)
+      roles: getConfigValue(COOKIE_ROLES),
+      token: getConfigValue(COOKIE_TOKEN),
+      userId: getConfigValue(COOKIES_USERID)
     } as UIConfigCookies,
     idamClient: getConfigValue(IDAM_CLIENT),
     oauthCallbackUrl: getConfigValue(OAUTH_CALLBACK_URL),

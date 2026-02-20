@@ -12,7 +12,9 @@ export interface EnvironmentConfig {
   }
 
 export interface EnvironmentConfigCookies {
+    roles: string;
     token: string;
+    userId: string;
   }
 
 export interface EnvironmentConfigServices {

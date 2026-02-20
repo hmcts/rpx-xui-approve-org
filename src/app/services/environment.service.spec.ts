@@ -9,7 +9,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 const environmentConfig: EnvironmentConfig = {
   configEnv: '',
   cookies: {
-    token: '__auth__'
+    roles: 'roles',
+    token: '__auth__',
+    userId: '__userid__'
   },
   idamClient: '',
   oauthCallbackUrl: '',
