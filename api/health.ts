@@ -18,7 +18,6 @@ import {
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET
 } from './configuration/references';
 
 const router = express.Router({ mergeParams: true });
@@ -45,8 +44,6 @@ router.get('/', (req, res) => {
     rdProfessionalApi: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH),
     feeAndPayApi: getConfigValue(SERVICES_FEE_AND_PAY_PATH),
     // 4th set
-    sessionSecret: getConfigValue(SESSION_SECRET),
-    // 5th set
     featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
     featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED)

@@ -13,7 +13,6 @@ export interface UIConfig {
   protocol: string,
   secureCookie: boolean,
   services: UIConfigServices,
-  sessionSecret: string,
   oidcEnabled: boolean,
   iss: string,
   launchDarklyClientId: string

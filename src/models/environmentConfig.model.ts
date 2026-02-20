@@ -17,7 +17,6 @@ export interface EnvironmentConfig {
     proxy: EnvironmentConfigProxy;
     secureCookie: boolean;
     services: EnvironmentConfigServices;
-    sessionSecret: string;
     oidcEnabled: boolean;
     launchDarklyClientId?: string;
   }

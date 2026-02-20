@@ -23,7 +23,6 @@ const environmentConfig: EnvironmentConfig = {
   proxy: undefined,
   secureCookie: false,
   services: undefined,
-  sessionSecret: '',
   oidcEnabled: false
 };
 

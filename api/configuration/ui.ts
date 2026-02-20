@@ -25,7 +25,6 @@ import {
   SERVICES_IDAM_WEB,
   SERVICES_ISS_PATH,
   SERVICES_RD_PROFESSIONAL_API_PATH,
-  SESSION_SECRET,
   SERVICES_PRD_COMMONDATA_API
 } from './references';
 
@@ -67,7 +66,6 @@ export const uiConfig = (): UIConfig => {
         commondataApi: getConfigValue(SERVICES_PRD_COMMONDATA_API)
       }
     } as UIConfigServices,
-    sessionSecret: getConfigValue(SESSION_SECRET),
     launchDarklyClientId: getConfigValue(LAUNCH_DARKLY_CLIENT_ID)
   };
 };

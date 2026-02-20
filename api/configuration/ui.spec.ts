@@ -37,7 +37,6 @@ describe('configuration/ui', () => {
       'services.rdProfessionalApi': 'https://rd-prof.example.com',
       'services.s2s': 'https://s2s.example.com',
       'services.prd.commondataApi': 'https://prd-common.example.com',
-      'sessionSecret': 'test-session-secret',
       'secrets.rpx.launch-darkly-client-id': 'ld-test-client'
     });
 
@@ -176,7 +175,6 @@ describe('configuration/ui', () => {
       expect(config.now).to.equal('false');
       expect(config.oauthCallbackUrl).to.equal('https://callback.example.com');
       expect(config.protocol).to.equal('https');
-      expect(config.sessionSecret).to.equal('test-session-secret');
       expect(config.launchDarklyClientId).to.equal('ld-test-client');
     });
 
@@ -201,7 +199,6 @@ describe('configuration/ui', () => {
       expect(config.now).to.be.undefined;
       expect(config.oauthCallbackUrl).to.be.undefined;
       expect(config.protocol).to.be.undefined;
-      expect(config.sessionSecret).to.be.undefined;
       expect(config.launchDarklyClientId).to.be.undefined;
 
       expect(config.cookies.roles).to.be.undefined;
@@ -254,7 +251,6 @@ describe('configuration/ui', () => {
       expect(getConfigValueStub).to.have.been.calledWith('services.rdProfessionalApi');
       expect(getConfigValueStub).to.have.been.calledWith('services.s2s');
       expect(getConfigValueStub).to.have.been.calledWith('services.prd.commondataApi');
-      expect(getConfigValueStub).to.have.been.calledWith('sessionSecret');
       expect(getConfigValueStub).to.have.been.calledWith('secrets.rpx.launch-darkly-client-id');
 
       // Verify showFeature calls
@@ -315,7 +311,7 @@ describe('configuration/ui', () => {
         'configEnv', 'cookies', 'exceptionOptions', 'health', 'idamClient',
         'indexUrl', 'iss', 'logging', 'maxLogLine', 'microservice', 'now',
         'oauthCallbackUrl', 'oidcEnabled', 'protocol', 'secureCookie',
-        'services', 'sessionSecret', 'launchDarklyClientId'
+        'services', 'launchDarklyClientId'
       ]);
     });
   });
