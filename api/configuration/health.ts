@@ -1,4 +1,4 @@
-import { UIConfigServices } from '../interfaces/ui.config';
+import { HealthConfigServices } from '../interfaces/ui.config';
 import { getConfigValue } from './index';
 import {
   SERVICE_S2S_PATH,
@@ -10,7 +10,7 @@ import {
   SERVICES_RD_PROFESSIONAL_API_PATH
 } from './references';
 
-export const healthEndpoints = (): UIConfigServices => {
+export const healthEndpoints = (): HealthConfigServices => {
   const HEALTH = '/health';
 
   return {
