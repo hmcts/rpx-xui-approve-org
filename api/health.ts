@@ -17,7 +17,7 @@ import {
   SERVICES_FEE_AND_PAY_PATH,
   SERVICES_IDAM_API_PATH,
   SERVICES_IDAM_WEB,
-  SERVICES_RD_PROFESSIONAL_API_PATH,
+  SERVICES_RD_PROFESSIONAL_API_PATH
 } from './configuration/references';
 
 const router = express.Router({ mergeParams: true });
