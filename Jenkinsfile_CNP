@@ -95,14 +95,14 @@ withPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/a11y/",
-            reportFiles          : 'Report.html',
-            reportName           : 'Approve Org a11y Test Report'
-        ])
+        // publishHTML([
+        //     allowMissing         : true,
+        //     alwaysLinkToLastBuild: true,
+        //     keepAll              : true,
+        //     reportDir            : "reports/tests/a11y/",
+        //     reportFiles          : 'Report.html',
+        //     reportName           : 'Approve Org a11y Test Report'
+        // ])
 
     }
 
