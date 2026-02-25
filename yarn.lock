@@ -3365,7 +3365,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/nodejs-healthcheck@npm:^1.8.5":
+"@hmcts/nodejs-healthcheck@npm:^1.8.6":
   version: 1.8.6
   resolution: "@hmcts/nodejs-healthcheck@npm:1.8.6"
   dependencies:
@@ -20724,7 +20724,7 @@ __metadata:
     "@angular/ssr": "npm:^20.3.1"
     "@cucumber/cucumber": "npm:^9.5.1"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.1-angular-20.3.14"
-    "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
+    "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"

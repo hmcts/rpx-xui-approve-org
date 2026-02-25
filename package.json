@@ -71,7 +71,7 @@
     "@angular/router": "^20.3.16",
     "@angular/ssr": "^20.3.1",
     "@hmcts/ccd-case-ui-toolkit": "7.3.1-angular-20.3.14",
-    "@hmcts/nodejs-healthcheck": "^1.8.5",
+    "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz",
     "@hmcts/rpx-xui-node-lib": "2.30.7-csp-final-change-3",
