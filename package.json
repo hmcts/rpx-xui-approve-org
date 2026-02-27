@@ -74,7 +74,7 @@
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz",
-    "@hmcts/rpx-xui-node-lib": "2.30.7-csp-final-change-3",
+    "@hmcts/rpx-xui-node-lib": "2.30.7-exui-4177-tax-cve-fix",
     "@microsoft/applicationinsights-web": "^3.3.9",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
@@ -241,8 +241,7 @@
     "@angular/ssr": "^20.0.0",
     "shelljs": "^0.8.5",
     "undici": "6.23.0",
-    "qs": "^6.14.1",
-    "tar": "^7.5.8"
+    "qs": "^6.14.1"
   },
   "packageManager": "yarn@4.9.2"
 }
