@@ -3356,13 +3356,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/frontend@npm:0.0.41-alpha":
-  version: 0.0.41-alpha
-  resolution: "@hmcts/frontend@npm:0.0.41-alpha"
-  checksum: 10/b5ae61a1150b1338aa5bd2f819bfc2d78bcf67c30917f9094088f1794f4916ed8f2682f5c618ed429cf759c1152bd490f2014cfad0cd36ceb26825f12724f387
-  languageName: node
-  linkType: hard
-
 "@hmcts/nodejs-healthcheck@npm:1.7.0":
   version: 1.7.0
   resolution: "@hmcts/nodejs-healthcheck@npm:1.7.0"
@@ -20648,7 +20641,6 @@ __metadata:
     "@angular/ssr": "npm:^20.3.1"
     "@cucumber/cucumber": "npm:^9.5.1"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.1-angular-20.3.14"
-    "@hmcts/frontend": "npm:0.0.41-alpha"
     "@hmcts/nodejs-healthcheck": "npm:1.7.0"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz"
