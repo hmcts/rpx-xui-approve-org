@@ -172,17 +172,25 @@ async function setup() {
 async function teardown() {
     await backendMockApp.stopServer();
     await applicationServer.stop()
-    await generateReport()
-    process.exit(0);
+    const hasFailures = await generateReport();
+    if (hasFailures) {
+        process.exitCode = 1
+    }
+    process.exit(process.exitCode || 0);
 }
 
 async function generateReport() {
     try {
 
-        await generateMergedReport();
+        const mergedReport = await generateMergedReport();
+        if (!mergedReport || !Array.isArray(mergedReport.tests) || mergedReport.tests.length === 0) {
+            return true;
+        }
+        return mergedReport.failed > 0;
 
     } catch (err) {
         console.log(JSON.stringify(err));
+        return true;
     }
 }
 
