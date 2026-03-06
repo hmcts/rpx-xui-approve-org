@@ -71,7 +71,6 @@
     "@angular/router": "^20.3.16",
     "@angular/ssr": "^20.3.1",
     "@hmcts/ccd-case-ui-toolkit": "7.3.1-angular-20.3.14",
-    "@hmcts/frontend": "0.0.41-alpha",
     "@hmcts/nodejs-healthcheck": "1.7.0",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz",
