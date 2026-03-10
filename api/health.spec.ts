@@ -71,7 +71,6 @@ describe('health', () => {
         s2sPath: undefined,
         rdProfessionalApi: undefined,
         feeAndPayApi: undefined,
-        sessionSecret: undefined,
         featureSecureCookieEnabled: true,
         featureAppInsightEnabled: false,
         featureProxyEnabled: true
@@ -105,7 +104,6 @@ describe('health', () => {
         s2sPath: undefined,
         rdProfessionalApi: undefined,
         feeAndPayApi: undefined,
-        sessionSecret: undefined,
         featureSecureCookieEnabled: true,
         featureAppInsightEnabled: false,
         featureProxyEnabled: true
@@ -139,7 +137,6 @@ describe('health', () => {
         s2sPath: undefined,
         rdProfessionalApi: undefined,
         feeAndPayApi: undefined,
-        sessionSecret: undefined,
         featureSecureCookieEnabled: true,
         featureAppInsightEnabled: false,
         featureProxyEnabled: true
@@ -154,7 +151,7 @@ describe('health', () => {
       handler(mockRequest, mockResponse);
 
       // Verify configuration functions were called with specific arguments
-      expect(configStub).to.have.callCount(15);
+      expect(configStub).to.have.callCount(14);
       expect(configStub).to.have.been.calledWith('idamClient');
       expect(configStub).to.have.been.calledWith('maxLogLine');
       expect(configStub).to.have.been.calledWith('microservice');
@@ -169,7 +166,6 @@ describe('health', () => {
       expect(configStub).to.have.been.calledWith('services.s2s');
       expect(configStub).to.have.been.calledWith('services.rdProfessionalApi');
       expect(configStub).to.have.been.calledWith('services.feeAndPayApi');
-      expect(configStub).to.have.been.calledWith('sessionSecret');
 
       expect(showFeatureStub).to.have.callCount(3);
       expect(showFeatureStub).to.have.been.calledWith('secureCookieEnabled');
@@ -206,7 +202,6 @@ describe('health', () => {
         s2sPath: undefined,
         rdProfessionalApi: undefined,
         feeAndPayApi: undefined,
-        sessionSecret: undefined,
         featureSecureCookieEnabled: true,
         featureAppInsightEnabled: false,
         featureProxyEnabled: true
