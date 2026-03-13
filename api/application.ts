@@ -1,6 +1,6 @@
-import csrf from '@dr.pogodin/csurf';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
+import * as csurf from 'csurf';
 import * as express from 'express';
 import { existsSync, readFileSync } from 'fs';
 import helmet from 'helmet';
@@ -57,7 +57,7 @@ export const app = express();
 
 export const logger = log4jui.getLogger('server');
 
-export const csrfProtection = csrf();
+export const csrfProtection = csurf();
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -183,8 +183,7 @@ const options: AuthOptions = {
   sessionKey: 'xui-approve-org',
   tokenEndpointAuthMethod: 'client_secret_post',
   tokenURL: tokenUrl,
-  useRoutes: true,
-  ssoLogoutURL: `${idamWebUrl}/o/endSession`
+  useRoutes: true
 };
 
 const baseStoreOptions = {
@@ -276,43 +275,6 @@ if (showFeature(FEATURE_REDIS_ENABLED)) {
 }
 
 healthcheck.addTo(app, healthChecks);
-
-/**
- * Open Routes
- *
- * Any routes here do not have authentication attached and are therefore reachable.
- */
-
-app.get('/external/ping', (req, res) => {
-  console.log('Pong');
-  res.send({
-    allowConfigMutations: process.env.ALLOW_CONFIG_MUTATIONS,
-    nodeConfigEnv: process.env.NODE_CONFIG_ENV,
-    // 1st set
-    idamClient: getConfigValue(IDAM_CLIENT),
-    maxLogLine: getConfigValue(MAX_LOG_LINE),
-    microService: getConfigValue(MICROSERVICE),
-    maxLines: getConfigValue(MAX_LINES),
-    now: getConfigValue(NOW),
-    // 2nd set
-    cookieToken: getConfigValue(COOKIE_TOKEN),
-    cookieUserId: getConfigValue(COOKIES_USERID),
-    oauthCallBack: getConfigValue(OAUTH_CALLBACK_URL),
-    protocol: getConfigValue(PROTOCOL),
-    // 3rd set
-    idamApiPath: getConfigValue(SERVICES_IDAM_API_PATH),
-    idamWeb: getConfigValue(SERVICES_IDAM_WEB),
-    s2sPath: getConfigValue(SERVICE_S2S_PATH),
-    rdProfessionalApi: getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH),
-    // 4th set
-    sessionSecret: getConfigValue(SESSION_SECRET),
-    appInsightsConnectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING),
-    // 5th set
-    featureSecureCookieEnabled: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
-    featureAppInsightEnabled: showFeature(FEATURE_APP_INSIGHTS_ENABLED),
-    featureProxyEnabled: showFeature(FEATURE_PROXY_ENABLED)
-  });
-});
 
 /**
  * We are attaching authentication to all subsequent routes.

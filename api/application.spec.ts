@@ -33,7 +33,7 @@ describe('application', () => {
       'now': 'false',
       'cookies.token': '__auth-token',
       'cookies.userId': '__userid',
-      'sessionSecret': 'test-session-secret',
+      'secrets.rpx.ao-session-secret': 'test-session-secret',
       'redisKeyPrefix': 'activity-tracker',
       'redisTTL': '30000',
       'redisCloudUrl': 'redis://localhost:6379',
