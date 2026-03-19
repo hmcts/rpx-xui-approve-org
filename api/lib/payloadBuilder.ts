@@ -1,43 +1,40 @@
 import { OrganisationPayload } from '../interfaces/organisationPayload';
 
-/**
- * makeOrganisationPayload
- *
- * Constructs payload to POST data to the /organisations endpoint.
- *
- * TODO: Note that if we add the dxAddress in, we get a 500 status error.
- * Fix required on the api. Awaiting fix. JIRA ticket raised: PUID-103
- *
- * TODO: houseNoBuildingName should not be an mandatory field on the api,
- * but an optional one. Hence it's currently an empty string, to prevent
- * a 500. JIRA ticket: PUID-111
- *
- * @param stateValues
- * @return
- */
+function setPropertyIfNotNull(organisationPayload: OrganisationPayload, propertyName: 'sraId', value?: string) {
+  if (value) {
+    organisationPayload[propertyName] = value;
+  }
+}
+
+function setDXIfNotNull(contactInformation: OrganisationPayload['contactInformation'][number], dxNumber?: string, dxExchange?: string) {
+  if (dxNumber || dxExchange) {
+    contactInformation.dxAddress = [{
+      dxNumber: dxNumber || '',
+      dxExchange: dxExchange || ''
+    }];
+  }
+}
+
 export function makeOrganisationPayload(stateValues): OrganisationPayload {
-  return {
-    address: {
+  const organisationPayload: OrganisationPayload = {
+    contactInformation: [{
       addressLine1: stateValues.officeAddressOne,
       addressLine2: stateValues.officeAddressTwo,
       county: stateValues.county,
-      houseNoBuildingName: 'Remove property on api fix @see comments',
-      postcode: stateValues.postcode,
+      postCode: stateValues.postcode,
       townCity: stateValues.townOrCity
-    },
+    }],
     name: stateValues.orgName,
-    pbaAccounts: [
-      {
-        pbaNumber: stateValues.PBAnumber1
-      },
-      {
-        pbaNumber: stateValues.PBAnumber2
-      }
-    ],
+    paymentAccount: [stateValues.PBAnumber1, stateValues.PBAnumber2].filter(Boolean),
     superUser: {
       email: stateValues.emailAddress,
       firstName: stateValues.firstName,
       lastName: stateValues.lastName
     }
   };
+
+  setPropertyIfNotNull(organisationPayload, 'sraId', stateValues.sraNumber);
+  setDXIfNotNull(organisationPayload.contactInformation[0], stateValues.DXnumber, stateValues.DXexchange);
+
+  return organisationPayload;
 }

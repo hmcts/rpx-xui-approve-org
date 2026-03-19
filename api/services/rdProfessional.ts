@@ -10,6 +10,6 @@ const url = getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH);
 export async function postOrganisation(body: any, req: EnhancedRequest): Promise<any> {
   logger.info('Post organisation body');
   logger.debug(JSON.stringify(body));
-  const response = await req.http.post(`${url}/organisations`, body);
+  const response = await req.http.post(`${url}/refdata/internal/v1/organisations`, body);
   return response.data;
 }

@@ -57,7 +57,7 @@ describe('services/rdProfessional', () => {
       const result = await postOrganisation(orgData, mockRequest);
 
       expect(mockRequest.http.post).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/organisations',
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations',
         orgData
       );
 
@@ -109,7 +109,7 @@ describe('services/rdProfessional', () => {
 
       expect(configStub).to.have.been.calledWith('services.rdProfessionalApi');
       expect(mockRequest.http.post).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/organisations',
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations',
         orgData
       );
     });
@@ -127,7 +127,7 @@ describe('services/rdProfessional', () => {
       await postOrganisation(orgData, mockRequest);
 
       expect(mockRequest.http.post).to.have.been.calledWith(
-        'https://different-rd-api.gov.uk/organisations',
+        'https://different-rd-api.gov.uk/refdata/internal/v1/organisations',
         orgData
       );
     });
