@@ -2,31 +2,26 @@ import { EnvironmentConfig } from 'src/models/environmentConfig.model';
 import { launchDarklyClientIdFactory } from './app.module';
 
 const environmentConfig: EnvironmentConfig = {
-  launchDarklyClientId: null,
-  appInsightsConnectionString: '',
+  launchDarklyClientId: undefined,
   configEnv: '',
-  cookies: undefined,
-  exceptionOptions: undefined,
-  health: undefined,
+  cookies: {
+    roles: 'roles',
+    token: '__auth__',
+    userId: '__userid__'
+  },
   idamClient: '',
-  indexUrl: '',
-  logging: '',
-  now: false,
-  maxLogLine: 0,
-  microservice: '',
   oauthCallbackUrl: '',
   protocol: '',
-  proxy: undefined,
-  secureCookie: false,
-  services: undefined,
-  sessionSecret: '',
+  services: {
+    idamWeb: ''
+  },
   oidcEnabled: false
 };
 
 describe('AppModule', () => {
   describe('launchDarklyClientIdFactory()', () => {
-    it('should return empty if config is null', () => {
-      const env = { ...environmentConfig, launchDarklyClientId: null };
+    it('should return empty if launchDarklyClientId is missing', () => {
+      const env = { ...environmentConfig, launchDarklyClientId: undefined };
 
       const result = launchDarklyClientIdFactory(env);
 
