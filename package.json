@@ -39,7 +39,7 @@
     "test:coverage": "echo 'not implemented'",
     "test:coverage:ng": "ng test organisation-manager --code-coverage --watch",
     "test:coverage:node": "cd api && yarn coverage",
-    "test:crossbrowser": "yarn playwright install --with-deps && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
+    "test:crossbrowser": "yarn test:setup:playwright-install-all && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn test:api && echo 'Protractor tests removed - use Playwright instead'",
     "test:functional": "yarn playwright install chromium  && npx playwright test -c playwright.config.ts",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
@@ -51,10 +51,12 @@
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/**/*.spec.ts",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
-    "test:smoke": " yarn playwright install chromium  && TEST_TYPE=smoke npx codeceptjs run --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test/codeceptCommon/codecept.conf.ts --features",
+    "test:smoke": "npx playwright test --project=smoke",
     "test:codeceptE2EDebug": "DEBUG=true TEST_TYPE=e2e npx codeceptjs run --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test/codeceptCommon/codecept.conf.ts --features",
     "test:codeceptE2E": "TEST_TYPE=e2e npx codeceptjs run-workers --suites 6 --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test/codeceptCommon/codecept.conf.ts --features",
-    "test:backendMock": "DEBUG=true nodemon test/backendMock/app --standalone"
+    "test:backendMock": "DEBUG=true nodemon test/backendMock/app --standalone",
+    "test:setup:playwright-install-all": "npx playwright install --with-deps",
+    "test:setup:playwright-install-chromium": "npx playwright install chromium"
   },
   "private": true,
   "dependencies": {

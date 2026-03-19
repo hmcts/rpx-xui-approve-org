@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
+const smokeSpecPattern = 'playwright_tests/smoke.test.ts';
 
 module.exports = defineConfig({
   testDir: './playwright_tests',
@@ -27,6 +28,7 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
+      testIgnore: [smokeSpecPattern],
       use: { ...devices['Desktop Chrome'],
         actionTimeout: 15 * 1000,
         channel: 'chrome',
@@ -36,6 +38,7 @@ module.exports = defineConfig({
     },
     {
       name: 'firefox',
+      testIgnore: [smokeSpecPattern],
       use: { ...devices['Desktop Firefox'],
         actionTimeout: 15 * 1000,
         screenshot: 'only-on-failure',
@@ -45,6 +48,7 @@ module.exports = defineConfig({
     },
     {
       name: 'webkit',
+      testIgnore: [smokeSpecPattern],
       use: { ...devices['Desktop Safari'],
         actionTimeout: 15 * 1000,
         screenshot: 'only-on-failure',

@@ -62,6 +62,16 @@ withPipeline(type, product, component) {
       AppPipelineDsl.PactRoles.CONSUMER,
     ])
 
+    afterAlways('checkout') {
+        stage('Playwright Install Chromium') {
+            try {
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }
+        }
+    }
+
     afterSuccess('build') {
         yarnBuilder.yarn('build')
     }
@@ -106,26 +116,28 @@ withPipeline(type, product, component) {
 
     }
 
-    afterSuccess('smoketest:demo') {
+    afterAlways('smoketest:demo') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : "functional-output/tests/playwright-e2e",
             reportFiles          : 'index.html',
             reportName           : 'DEMO Smoke Test'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**'
     }
 
-    afterSuccess('smoketest:preview') {
+    afterAlways('smoketest:preview') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : "functional-output/tests/playwright-e2e",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**'
     }
 
     afterSuccess('functionalTest:preview') {
@@ -159,15 +171,16 @@ withPipeline(type, product, component) {
     }
 
 
-    afterSuccess('smoketest:aat') {
+    afterAlways('smoketest:aat') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : "functional-output/tests/playwright-e2e",
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**'
     }
 
 
