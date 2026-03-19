@@ -1,17 +1,43 @@
 import { test as base, expect, chromium, type Page } from '@playwright/test';
 import { config } from '../config/config';
 
+const registrationSubmittedUrlPattern = /\/registration-submitted(?:[/?#]|$)/;
+
+const attachRegistrationDebug = async (page: Page, testInfo: { attach: (name: string, options: { body: Buffer, contentType: string }) => Promise<void> }, error: unknown) => {
+  const title = await page.title().catch(() => 'unavailable');
+  const bodyText = await page.locator('body').innerText().catch(() => 'unavailable');
+  const screenshot = await page.screenshot({ fullPage: true }).catch(() => undefined);
+
+  await testInfo.attach('register-org-debug', {
+    body: Buffer.from([
+      `URL: ${page.url()}`,
+      `Title: ${title}`,
+      `Error: ${error instanceof Error ? error.message : String(error)}`,
+      '',
+      bodyText.slice(0, 4000)
+    ].join('\n')),
+    contentType: 'text/plain'
+  });
+
+  if (screenshot) {
+    await testInfo.attach('register-org-debug-screenshot', {
+      body: screenshot,
+      contentType: 'image/png'
+    });
+  }
+};
+
 /**
  * We’ll give tests an extra parameter:
  *   • userName  – the user name created when registering
  */
 export const test = base.extend<{
-  userName: string;   // value we return from setup
+  userName: string; // value we return from setup
 }>({
 
   /* -------- fixture: log into MO and register org -------- */
   userName: [
-    async ({ }, use) => {
+    async (_args, use, testInfo) => {
       const userName = 'xui-ao-test-' + Date.now().toString();
       // Need a full browser context for cross-domain login
       const ctx = await chromium.launchPersistentContext('', {
@@ -52,21 +78,18 @@ export const test = base.extend<{
       await page.getByRole('button', { name: 'Continue' }).click();
       await page.locator('#confirm-terms-and-conditions').click();
       const spinner = page.locator('div.spinner-wrapper');
+      const registrationSubmittedHeading = page.getByRole('heading', { name: 'Registration details submitted' });
+      const whatHappensNextHeading = page.getByRole('heading', { name: 'What happens next' });
       await page.getByRole('button', { name: 'Confirm and submit' }).click();
-      await page.waitForTimeout(2000);
-      await spinner.waitFor({ state: 'hidden', timeout: 30_000 });
-      for (let i = 0; i < 6; i++) {
-        // added a loop to retry viewing the header in case of spinner issues
-        try {
-          if (i !== 0) {
-            console.log(`Attempt ${i}: Failed to view heading, retrying...`);
-          }
-          await expect(page.getByRole('heading', { name: 'Registration details submitted' })).toBeVisible();
-          break;
-        } catch (error) {
-          console.error(error);
-        }
-        await page.waitForTimeout(5000);
+      try {
+        await page.waitForLoadState('domcontentloaded');
+        await spinner.waitFor({ state: 'hidden', timeout: 30_000 }).catch(() => undefined);
+        await page.waitForURL(registrationSubmittedUrlPattern, { timeout: 30_000 });
+        await expect(registrationSubmittedHeading).toBeVisible({ timeout: 30_000 });
+        await expect(whatHappensNextHeading).toBeVisible({ timeout: 30_000 });
+      } catch (error) {
+        await attachRegistrationDebug(page, testInfo, error);
+        throw error;
       }
 
       await use(userName);

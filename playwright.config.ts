@@ -1,8 +1,42 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 const smokeSpecPattern = 'playwright_tests/smoke.test.ts';
+const htmlOutputFolder = process.env.PLAYWRIGHT_HTML_OUTPUT || 'functional-output/tests/playwright-e2e';
+
+const resolveDefaultReporter = (): string => {
+  const configured = process.env.PLAYWRIGHT_DEFAULT_REPORTER?.trim();
+  return configured || (process.env.CI ? 'dot' : 'list');
+};
+
+const resolveReporters = (): ReporterDescription[] => {
+  const configured = process.env.PLAYWRIGHT_REPORTERS
+    ?.split(',')
+    .map((reporter) => reporter.trim())
+    .filter(Boolean);
+  const reporterNames = configured?.length
+    ? configured
+    : [resolveDefaultReporter(), 'html', ...(process.env.CI ? ['junit'] : [])];
+  const uniqueReporterNames = [...new Set(reporterNames)];
+
+  return uniqueReporterNames.map((reporterName) => {
+    switch (reporterName.toLowerCase()) {
+      case 'html':
+        return ['html', { open: process.env.PLAYWRIGHT_HTML_OPEN || 'never', outputFolder: htmlOutputFolder }];
+      case 'junit':
+        return ['junit', { outputFile: process.env.PLAYWRIGHT_JUNIT_OUTPUT || 'playwright-junit.xml' }];
+      case 'dot':
+        return ['dot'];
+      case 'line':
+        return ['line'];
+      case 'list':
+        return ['list'];
+      default:
+        return [reporterName];
+    }
+  });
+};
 
 module.exports = defineConfig({
   use: {
@@ -25,8 +59,7 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.FUNCTIONAL_TESTS_WORKERS ? parseInt(process.env.FUNCTIONAL_TESTS_WORKERS, 10) : 1,
 
-  reporter: [[process.env.CI ? 'dot' : 'list'],
-    ['html', { open: 'never', outputFolder: 'functional-output/tests/playwright-e2e' }]],
+  reporter: resolveReporters(),
 
   projects: [
     {
