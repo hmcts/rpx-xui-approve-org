@@ -221,7 +221,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "resolutions": {
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "minimist": "^1.2.8",
     "loader-utils": "~2.0.3",
     "async": "~3.2.2",
