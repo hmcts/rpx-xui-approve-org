@@ -1,17 +1,17 @@
-<testsuites id="" name="" tests="21" failures="0" skipped="21" errors="0" time="0.03150099999999997">
-<testsuite name="active-org.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testsuites id="" name="" tests="8" failures="0" skipped="8" errors="0" time="0.070375">
+<testsuite name="active-org.test.ts" timestamp="2026-03-19T14:28:50.564Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
 <testcase name="i can see organsation details for an active org" classname="active-org.test.ts" time="0">
 <skipped>
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="login.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testsuite name="login.test.ts" timestamp="2026-03-19T14:28:50.564Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
 <testcase name="login and log out from AO with valid user" classname="login.test.ts" time="0">
 <skipped>
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="org-workflows.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="chromium" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testsuite name="org-workflows.test.ts" timestamp="2026-03-19T14:28:50.564Z" hostname="chromium" tests="4" failures="0" skipped="4" time="0" errors="0">
 <testcase name="i can approve a pending org" classname="org-workflows.test.ts" time="0">
 <skipped>
 </skipped>
@@ -29,25 +29,25 @@
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="tabs-load.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testsuite name="tabs-load.test.ts" timestamp="2026-03-19T14:28:50.564Z" hostname="chromium" tests="1" failures="0" skipped="1" time="0" errors="0">
 <testcase name="all tabs on login load data" classname="tabs-load.test.ts" time="0">
 <skipped>
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="active-org.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
-<testcase name="i can see organsation details for an active org" classname="active-org.test.ts" time="0">
+<testsuite name="smoke.test.ts" timestamp="2026-03-19T14:28:50.564Z" hostname="smoke" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testcase name="IDAM login page is up and displays username and password fields" classname="smoke.test.ts" time="0">
 <skipped>
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="login.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
+</testsuites>tsuite name="login.test.ts" timestamp="2026-03-19T14:28:50.563Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
 <testcase name="login and log out from AO with valid user" classname="login.test.ts" time="0">
 <skipped>
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="org-workflows.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="firefox" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testsuite name="org-workflows.test.ts" timestamp="2026-03-19T14:28:50.563Z" hostname="firefox" tests="4" failures="0" skipped="4" time="0" errors="0">
 <testcase name="i can approve a pending org" classname="org-workflows.test.ts" time="0">
 <skipped>
 </skipped>
@@ -65,25 +65,25 @@
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="tabs-load.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testsuite name="tabs-load.test.ts" timestamp="2026-03-19T14:28:50.563Z" hostname="firefox" tests="1" failures="0" skipped="1" time="0" errors="0">
 <testcase name="all tabs on login load data" classname="tabs-load.test.ts" time="0">
 <skipped>
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="active-org.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testsuite name="active-org.test.ts" timestamp="2026-03-19T14:28:50.563Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
 <testcase name="i can see organsation details for an active org" classname="active-org.test.ts" time="0">
 <skipped>
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="login.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testsuite name="login.test.ts" timestamp="2026-03-19T14:28:50.563Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
 <testcase name="login and log out from AO with valid user" classname="login.test.ts" time="0">
 <skipped>
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="org-workflows.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="webkit" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testsuite name="org-workflows.test.ts" timestamp="2026-03-19T14:28:50.563Z" hostname="webkit" tests="4" failures="0" skipped="4" time="0" errors="0">
 <testcase name="i can approve a pending org" classname="org-workflows.test.ts" time="0">
 <skipped>
 </skipped>
@@ -101,7 +101,7 @@
 </skipped>
 </testcase>
 </testsuite>
-<testsuite name="tabs-load.test.ts" timestamp="2026-03-19T13:06:48.632Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
+<testsuite name="tabs-load.test.ts" timestamp="2026-03-19T14:28:50.563Z" hostname="webkit" tests="1" failures="0" skipped="1" time="0" errors="0">
 <testcase name="all tabs on login load data" classname="tabs-load.test.ts" time="0">
 <skipped>
 </skipped>

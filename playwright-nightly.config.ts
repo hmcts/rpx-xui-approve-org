@@ -18,7 +18,7 @@ const resolveReporters = (): ReporterDescription[] => {
   const reporterNames = configured?.length
     ? configured
     : [resolveDefaultReporter(), 'html', ...(process.env.CI ? ['junit'] : [])];
-  const uniqueReporterNames = [...new Set(reporterNames)];
+  const uniqueReporterNames = reporterNames.filter((reporterName, index) => reporterNames.indexOf(reporterName) === index);
 
   return uniqueReporterNames.map((reporterName) => {
     switch (reporterName.toLowerCase()) {

@@ -37,7 +37,8 @@ export const test = base.extend<{
 
   /* -------- fixture: log into MO and register org -------- */
   userName: [
-    async (_args, use, testInfo) => {
+    async ({ browserName }, use, testInfo) => {
+      void browserName;
       const userName = 'xui-ao-test-' + Date.now().toString();
       // Need a full browser context for cross-domain login
       const ctx = await chromium.launchPersistentContext('', {
