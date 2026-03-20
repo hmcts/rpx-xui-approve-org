@@ -1,9 +1,29 @@
+require('../../playwright-env');
+
+const firstNonEmpty = (...values: Array<string | undefined>) => values.find((value) => value?.trim())?.trim();
+
 export const config = {
-  baseUrl: process.env.TEST_URL || 'https://administer-orgs.aat.platform.hmcts.net/',
-  registerUrl: process.env.TEST_REGISTER_URL || 'https://manage-org.aat.platform.hmcts.net',
+  baseUrl: firstNonEmpty(
+    process.env.TEST_URL,
+    process.env.EXUI_BASE_URL,
+    'https://administer-orgs.aat.platform.hmcts.net/'
+  ) as string,
+  registerUrl: firstNonEmpty(
+    process.env.TEST_REGISTER_URL,
+    process.env.MANAGE_ORG_API_PATH,
+    'https://manage-org.aat.platform.hmcts.net'
+  ) as string,
   base: {
-    username: 'vamshiadminuser@mailnesia.com',
-    password: 'Testing123'
+    username: firstNonEmpty(
+      process.env.AO_ADMIN_USERNAME,
+      process.env.EXUI_APPROVE_ORG_USERNAME,
+      'vamshiadminuser@mailnesia.com'
+    ) as string,
+    password: firstNonEmpty(
+      process.env.AO_ADMIN_PASSWORD,
+      process.env.EXUI_APPROVE_ORG_PASSWORD,
+      'Testing123'
+    ) as string
   },
   twoFactorAuthEnabled: false,
   termsAndConditionsEnabled: true

@@ -1,3 +1,4 @@
+require('./playwright-env');
 import { defineConfig, devices } from '@playwright/test';
 import { resolveReporters, resolveWorkerCount } from './playwright-reporting';
 

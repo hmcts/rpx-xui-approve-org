@@ -42,6 +42,7 @@
     "test:crossbrowser": "yarn test:setup:playwright-install-all && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn test:api && echo 'Protractor tests removed - use Playwright instead'",
     "test:functional": "yarn playwright install chromium  && npx playwright test -c playwright.config.ts",
+    "test:functional:org-workflows:new": "yarn playwright install chromium && npx playwright test -c playwright.config.ts playwright_tests_new/E2E/test/orgWorkflows/orgWorkflows.spec.ts",
     "test:mutation": "NODE_CONFIG_DIR=./config stryker run stryker.node.conf.js ",
     "test:ng": "ng test",
     "test:ng:watch": "ng test --watch",
