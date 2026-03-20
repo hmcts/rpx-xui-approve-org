@@ -35,7 +35,7 @@ module.exports = defineConfig({
       defaultProject: 'RPX XUI Approve Organisations',
       defaultRelease: appVersion,
       defaultTitle: 'RPX XUI Approve Organisations Playwright',
-      includeJunit: true,
+      includeJunit: true
     },
     baseUrl,
     process.env,

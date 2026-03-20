@@ -1,10 +1,10 @@
 import { test as base, expect, chromium, type Page } from '@playwright/test';
 import { config } from '../config/config';
 import { signIn } from './login';
+import { findPendingOrganisationId, type PendingOrganisation } from './pending-organisations';
 import { getAppBaseUrl, resolveAppUrl, resolveRegisterUrl } from './url';
 
 const registrationStatePath = 'api/decisions/states/test/any/test/check';
-const pendingOrganisationSearchPath = 'api/organisations?status=PENDING,REVIEW';
 const registrationModeEnvVar = 'PLAYWRIGHT_ORG_REGISTRATION_MODE';
 const manageOrgRegistrationHosts = ['administer-orgs.aat.platform.hmcts.net'];
 const registrationConfirmationTimeoutMs = 30_000;
@@ -12,7 +12,6 @@ const pendingOrganisationTimeoutMs = parseInt(process.env.PLAYWRIGHT_PENDING_ORG
 const pollingIntervalMs = 2_000;
 
 type RegistrationMode = 'manage-org' | 'seed';
-
 const delay = async (timeoutMs: number) => new Promise((resolve) => setTimeout(resolve, timeoutMs));
 
 const normalizeBaseUrlHost = () => new URL(config.baseUrl).host.toLowerCase();
@@ -170,8 +169,13 @@ const createPendingOrganisation = async (page: Page, userName: string) => {
   }
 };
 
-const searchPendingOrganisations = async (page: Page, searchFilter: string, xsrfToken: string) => {
-  const response = await page.context().request.post(resolveAppUrl(pendingOrganisationSearchPath), {
+const searchOrganisations = async (
+  page: Page,
+  searchFilter: string,
+  xsrfToken: string,
+  statuses: string
+): Promise<PendingOrganisation[]> => {
+  const response = await page.context().request.post(resolveAppUrl(`api/organisations?status=${statuses}`), {
     headers: {
       'Content-Type': 'application/json',
       'X-XSRF-TOKEN': xsrfToken
@@ -201,39 +205,56 @@ const searchPendingOrganisations = async (page: Page, searchFilter: string, xsrf
   return Array.isArray(responseData?.organisations) ? responseData.organisations : [];
 };
 
-const waitForPendingOrganisation = async (page: Page, userName: string) => {
-  const expectedOrganisationName = `${userName}-company`;
+export const waitForOrganisationStatus = async (
+  page: Page,
+  organisationName: string,
+  statuses: string,
+  timeoutMs: number = pendingOrganisationTimeoutMs
+) => {
   const xsrfToken = await getXsrfToken(page);
+  let matchedOrganisationId = '';
 
   await pollUntil(
-    `Seeded organisation ${expectedOrganisationName} appearing in the pending organisations API`,
+    `Organisation ${organisationName} appearing in ${statuses}`,
     async () => {
-      const organisations = await searchPendingOrganisations(page, expectedOrganisationName, xsrfToken);
-      return organisations.some((organisation) => organisation?.name === expectedOrganisationName);
+      const organisations = await searchOrganisations(page, organisationName, xsrfToken, statuses);
+      const organisationId = findPendingOrganisationId(organisations, organisationName);
+      if (!organisationId) {
+        return false;
+      }
+
+      matchedOrganisationId = organisationId;
+      return true;
     },
-    pendingOrganisationTimeoutMs
+    timeoutMs
   );
 
-  await pollUntil(
-    `Seeded organisation ${expectedOrganisationName} appearing in the pending list`,
-    async () => {
-      await page.goto(config.baseUrl);
-      await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
-      await page.locator('#search').fill(expectedOrganisationName);
-      await page.getByRole('button', { name: 'Search' }).click();
-      return page.getByText(expectedOrganisationName).first().isVisible().catch(() => false);
-    },
-    pendingOrganisationTimeoutMs
-  );
+  if (!matchedOrganisationId) {
+    throw new Error(`Organisation ${organisationName} did not return an organisationIdentifier for statuses ${statuses}`);
+  }
+
+  return matchedOrganisationId;
+};
+
+const waitForPendingOrganisation = async (page: Page, userName: string) => {
+  return waitForOrganisationStatus(page, `${userName}-company`, 'PENDING,REVIEW');
 };
 
 export const test = base.extend<{
   userName: string;
+  organisationId: string;
 }>({
   userName: [
-    async ({ browserName }, use, testInfo) => {
+    async ({ browserName }, use) => {
       void browserName;
       const userName = `xui-ao-test-${Date.now().toString()}`;
+      await use(userName);
+    },
+    { auto: true }
+  ],
+  organisationId: [
+    async ({ browserName, userName }, use, testInfo) => {
+      void browserName;
       const ctx = await chromium.launchPersistentContext('', {
         headless: true
       });
@@ -242,18 +263,20 @@ export const test = base.extend<{
       try {
         if (resolveRegistrationMode() === 'manage-org') {
           await createPendingOrganisationViaManageOrg(page, userName);
+          await signIn(page);
         } else {
           await signIn(page);
           await createPendingOrganisation(page, userName);
-          await waitForPendingOrganisation(page, userName);
         }
+
+        const organisationId = await waitForPendingOrganisation(page, userName);
+        await use(organisationId);
       } catch (error) {
         await attachRegistrationDebug(page, testInfo, error);
         throw error;
+      } finally {
+        await ctx.close();
       }
-
-      await use(userName);
-      await ctx.close();
     },
     { auto: true }
   ]
