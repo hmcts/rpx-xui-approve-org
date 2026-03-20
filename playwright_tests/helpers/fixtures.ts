@@ -1,6 +1,7 @@
 import { test as base, expect, chromium, type Page } from '@playwright/test';
 import { config } from '../config/config';
 import { signIn } from './login';
+import { getAppBaseUrl, resolveAppUrl, resolveRegisterUrl } from './url';
 
 const registrationStatePath = 'api/decisions/states/test/any/test/check';
 const registrationModeEnvVar = 'PLAYWRIGHT_ORG_REGISTRATION_MODE';
@@ -80,8 +81,8 @@ const attachRegistrationDebug = async (
 };
 
 const getXsrfToken = async (page: Page) => {
-  await page.context().request.get(`${config.baseUrl}api/environment/config`);
-  const cookies = await page.context().cookies(config.baseUrl);
+  await page.context().request.get(resolveAppUrl('api/environment/config'));
+  const cookies = await page.context().cookies(getAppBaseUrl());
   const xsrfCookie = cookies.find((cookie) => cookie.name === 'XSRF-TOKEN');
 
   if (!xsrfCookie?.value) {
@@ -92,7 +93,7 @@ const getXsrfToken = async (page: Page) => {
 };
 
 const createPendingOrganisationViaManageOrg = async (page: Page, userName: string) => {
-  await page.goto(`${config.registerUrl}/register-org-new/register`);
+  await page.goto(resolveRegisterUrl('/register-org-new/register'));
   await page.getByLabel('I\'ve checked whether my organisation already has an account').click();
   await page.getByRole('button', { name: 'Start' }).click();
   await page.getByLabel('Solicitor').click();
@@ -139,7 +140,7 @@ const createPendingOrganisationViaManageOrg = async (page: Page, userName: strin
 
 const createPendingOrganisation = async (page: Page, userName: string) => {
   const xsrfToken = await getXsrfToken(page);
-  const response = await page.context().request.post(`${config.baseUrl}${registrationStatePath}`, {
+  const response = await page.context().request.post(resolveAppUrl(registrationStatePath), {
     headers: {
       'Content-Type': 'application/json',
       'X-XSRF-TOKEN': xsrfToken
