@@ -121,14 +121,30 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report",
+            reportFiles          : 'xui-playwright-e2e.html',
+            reportName           : 'DEMO Smoke Test (Odhin)'
+        ])
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e",
             reportFiles          : 'index.html',
             reportName           : 'DEMO Smoke Test'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**,test-results/**/*'
     }
 
     afterAlways('smoketest:preview') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report",
+            reportFiles          : 'xui-playwright-e2e.html',
+            reportName           : 'PREVIEW Smoke Test (Odhin)'
+        ])
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -137,7 +153,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**,test-results/**/*'
     }
 
     afterSuccess('functionalTest:preview') {
@@ -176,11 +192,19 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
+            reportDir            : "functional-output/tests/playwright-e2e/odhin-report",
+            reportFiles          : 'xui-playwright-e2e.html',
+            reportName           : 'AAT Smoke Test (Odhin)'
+        ])
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e",
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/**,test-results/**/*'
     }
 
 

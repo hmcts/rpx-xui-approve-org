@@ -4,10 +4,11 @@ import { signIn } from './login';
 import { getAppBaseUrl, resolveAppUrl, resolveRegisterUrl } from './url';
 
 const registrationStatePath = 'api/decisions/states/test/any/test/check';
+const pendingOrganisationSearchPath = 'api/organisations?status=PENDING,REVIEW';
 const registrationModeEnvVar = 'PLAYWRIGHT_ORG_REGISTRATION_MODE';
 const manageOrgRegistrationHosts = ['administer-orgs.aat.platform.hmcts.net'];
 const registrationConfirmationTimeoutMs = 30_000;
-const pendingOrganisationTimeoutMs = 30_000;
+const pendingOrganisationTimeoutMs = parseInt(process.env.PLAYWRIGHT_PENDING_ORG_TIMEOUT_MS || '120000', 10);
 const pollingIntervalMs = 2_000;
 
 type RegistrationMode = 'manage-org' | 'seed';
@@ -169,14 +170,56 @@ const createPendingOrganisation = async (page: Page, userName: string) => {
   }
 };
 
+const searchPendingOrganisations = async (page: Page, searchFilter: string, xsrfToken: string) => {
+  const response = await page.context().request.post(resolveAppUrl(pendingOrganisationSearchPath), {
+    headers: {
+      'Content-Type': 'application/json',
+      'X-XSRF-TOKEN': xsrfToken
+    },
+    data: {
+      searchRequest: {
+        search_filter: searchFilter,
+        sorting_parameters: [{
+          sort_by: 'organisationId',
+          sort_order: 'ASC'
+        }],
+        pagination_parameters: {
+          page_number: 1,
+          page_size: 10
+        }
+      },
+      view: 'NEW'
+    }
+  });
+
+  const bodyText = await response.text();
+  if (!response.ok()) {
+    throw new Error(`Pending organisation search failed with ${response.status()}: ${bodyText}`);
+  }
+
+  const responseData = JSON.parse(bodyText);
+  return Array.isArray(responseData?.organisations) ? responseData.organisations : [];
+};
+
 const waitForPendingOrganisation = async (page: Page, userName: string) => {
   const expectedOrganisationName = `${userName}-company`;
+  const xsrfToken = await getXsrfToken(page);
+
+  await pollUntil(
+    `Seeded organisation ${expectedOrganisationName} appearing in the pending organisations API`,
+    async () => {
+      const organisations = await searchPendingOrganisations(page, expectedOrganisationName, xsrfToken);
+      return organisations.some((organisation) => organisation?.name === expectedOrganisationName);
+    },
+    pendingOrganisationTimeoutMs
+  );
+
   await pollUntil(
     `Seeded organisation ${expectedOrganisationName} appearing in the pending list`,
     async () => {
       await page.goto(config.baseUrl);
       await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
-      await page.locator('#search').fill(userName);
+      await page.locator('#search').fill(expectedOrganisationName);
       await page.getByRole('button', { name: 'Search' }).click();
       return page.getByText(expectedOrganisationName).first().isVisible().catch(() => false);
     },

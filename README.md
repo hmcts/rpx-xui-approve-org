@@ -170,6 +170,16 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 Run `yarn test:functional` to execute the end-to-end tests via Playwright.
 
+## Playwright reporting
+
+Playwright smoke and browser runs emit an Odhin report under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`.
+
+- Run info includes project, release, target environment, branch, worker count, CPU cores, and RAM.
+- Branch defaults to the current git branch and can be overridden with `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`.
+- Report metadata can be overridden with `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `PLAYWRIGHT_REPORT_TEST_ENVIRONMENT`, `PLAYWRIGHT_REPORT_FOLDER`, and `PLAYWRIGHT_REPORT_INDEX_FILENAME`.
+- Existing `PW_ODHIN_*` overrides are still supported for backward compatibility.
+- Jenkins archives both `functional-output/tests/playwright-e2e/**` and `test-results/**/*` for smoke runs.
+
 ## Integration Documentation
 
 https://tools.hmcts.net/confluence/display/EUI/EXUI+Low+Level+Design
