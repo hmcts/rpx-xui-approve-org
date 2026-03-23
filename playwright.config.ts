@@ -3,21 +3,20 @@ import { defineConfig, devices } from '@playwright/test';
 import { resolveReporters, resolveWorkerCount } from './playwright-reporting';
 
 const { version: appVersion } = require('./package.json');
+const fs = require('node:fs');
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
-const smokeSpecPattern = 'playwright_tests/smoke.test.ts';
-const legacyFunctionalSpecs = [
-  'playwright_tests/active-org.test.ts',
-  'playwright_tests/login.test.ts',
-  'playwright_tests/tabs-load.test.ts'
-];
-const migratedE2ESpecPattern = 'playwright_tests_new/E2E/**/*.spec.ts';
+const smokeSpecPattern = 'playwright_tests_new/smoke/**/*.spec.ts';
+const migratedE2ESpecPattern = 'playwright_tests_new/E2E/test/**/*.spec.ts';
 const baseUrl = process.env.TEST_URL || 'https://administer-orgs.aat.platform.hmcts.net/';
 const workerCount = resolveWorkerCount(process.env);
 
+fs.mkdirSync('test-results', { recursive: true });
+
 module.exports = defineConfig({
+  outputDir: 'test-results',
   use: {
-    baseURL: baseUrl
+    baseURL: baseUrl,
   },
   testDir: '.',
   /* Run tests in files in parallel */
@@ -29,7 +28,7 @@ module.exports = defineConfig({
 
   timeout: 3 * 60 * 1000,
   expect: {
-    timeout: 1 * 60 * 1000
+    timeout: 1 * 60 * 1000,
   },
   reportSlowTests: null,
 
@@ -42,7 +41,7 @@ module.exports = defineConfig({
       defaultProject: 'RPX XUI Approve Organisations',
       defaultRelease: appVersion,
       defaultTitle: 'RPX XUI Approve Organisations Playwright',
-      includeJunit: true
+      includeJunit: true,
     },
     baseUrl,
     process.env
@@ -51,23 +50,33 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
-      testMatch: [...legacyFunctionalSpecs, migratedE2ESpecPattern],
-      testIgnore: [smokeSpecPattern, 'playwright_tests/org-workflows.test.ts'],
-      use: { ...devices['Desktop Chrome'],
+      testMatch: [migratedE2ESpecPattern],
+      use: {
+        ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,
-        trace: 'on-first-retry'
-      }
+        trace: 'retain-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true,
+        },
+        video: 'off',
+      },
     },
     {
       name: 'smoke',
       testMatch: [smokeSpecPattern],
-      use: { ...devices['Desktop Chrome'],
+      use: {
+        ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,
-        screenshot: 'only-on-failure',
-        trace: 'on-first-retry'
-      }
-    }
-  ]
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true,
+        },
+        trace: 'retain-on-failure',
+        video: 'off',
+      },
+    },
+  ],
 });

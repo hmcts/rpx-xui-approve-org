@@ -3,14 +3,19 @@ import { defineConfig, devices } from '@playwright/test';
 import { resolveReporters, resolveWorkerCount } from './playwright-reporting';
 
 const { version: appVersion } = require('./package.json');
+const fs = require('node:fs');
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
-const smokeSpecPattern = 'playwright_tests/smoke.test.ts';
+const smokeSpecPattern = 'playwright_tests_new/smoke/**/*.spec.ts';
+const migratedE2ESpecPattern = 'playwright_tests_new/E2E/test/**/*.spec.ts';
 const baseUrl = process.env.TEST_URL || 'https://administer-orgs.aat.platform.hmcts.net/';
 const workerCount = resolveWorkerCount(process.env);
 
+fs.mkdirSync('test-results', { recursive: true });
+
 module.exports = defineConfig({
-  testDir: './playwright_tests',
+  outputDir: 'test-results',
+  testDir: '.',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -20,7 +25,7 @@ module.exports = defineConfig({
 
   timeout: 3 * 60 * 1000,
   expect: {
-    timeout: 1 * 60 * 1000
+    timeout: 1 * 60 * 1000,
   },
   reportSlowTests: null,
 
@@ -33,42 +38,61 @@ module.exports = defineConfig({
       defaultProject: 'RPX XUI Approve Organisations',
       defaultRelease: appVersion,
       defaultTitle: 'RPX XUI Approve Organisations Playwright',
-      includeJunit: true
+      includeJunit: true,
     },
     baseUrl,
-    process.env,
+    process.env
   ),
 
   projects: [
     {
       name: 'chromium',
+      testMatch: [migratedE2ESpecPattern],
       testIgnore: [smokeSpecPattern],
-      use: { ...devices['Desktop Chrome'],
+      use: {
+        ...devices['Desktop Chrome'],
         actionTimeout: 15 * 1000,
         channel: 'chrome',
         headless: headlessMode,
-        trace: 'on-first-retry'
-      }
+        trace: 'retain-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true,
+        },
+        video: 'off',
+      },
     },
     {
       name: 'firefox',
+      testMatch: [migratedE2ESpecPattern],
       testIgnore: [smokeSpecPattern],
-      use: { ...devices['Desktop Firefox'],
+      use: {
+        ...devices['Desktop Firefox'],
         actionTimeout: 15 * 1000,
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true,
+        },
+        video: 'off',
         headless: headlessMode,
-        trace: 'off'
-      }
+        trace: 'retain-on-failure',
+      },
     },
     {
       name: 'webkit',
+      testMatch: [migratedE2ESpecPattern],
       testIgnore: [smokeSpecPattern],
-      use: { ...devices['Desktop Safari'],
+      use: {
+        ...devices['Desktop Safari'],
         actionTimeout: 15 * 1000,
-        screenshot: 'only-on-failure',
+        screenshot: {
+          mode: 'only-on-failure',
+          fullPage: true,
+        },
+        video: 'off',
         headless: headlessMode,
-        trace: 'off'
-      }
-    }
-  ]
+        trace: 'retain-on-failure',
+      },
+    },
+  ],
 });

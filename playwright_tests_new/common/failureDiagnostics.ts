@@ -1,7 +1,4 @@
-import { test as base, type ConsoleMessage, type Page, type Request, type Response, type TestInfo } from '@playwright/test';
-import { OrganisationApprovalsPage } from './page-objects/pages/organisationApprovals.page';
-import { OrganisationDetailsPage } from './page-objects/pages/organisationDetails.page';
-import { buildOrganisationName, seedPendingOrganisation, waitForOrganisationStatus } from './utils/test-setup/organisationSetup';
+import type { ConsoleMessage, Page, Request, Response, TestInfo } from '@playwright/test';
 import {
   classifyFailure,
   classifyFailureCategory,
@@ -11,26 +8,12 @@ import {
   type ApiError,
   type FailedRequest,
   type SlowCall,
-} from '../common/failureClassification';
-import { attachAuthRecoveryAnnotations, consumeAuthRecoveryEvents, mergeAuthRecoveryEvents } from '../common/authRecovery';
-import { ensureSession, getSessionStatePath, readSessionRecoveryEvents } from '../common/sessionCapture';
-
-type AuthenticatedFixtures = {
-  organisationApprovalsPage: OrganisationApprovalsPage;
-  organisationDetailsPage: OrganisationDetailsPage;
-  _failureDiagnostics: void;
-};
-
-type OrganisationFixtures = {
-  userName: string;
-  organisationName: string;
-  organisationId: string;
-};
+} from './failureClassification';
 
 const slowCallThresholdMs = Number.parseInt(process.env.PW_ODHIN_SLOW_CALL_MS || '5000', 10);
 const maxTrackedArtifacts = Number.parseInt(process.env.PW_ODHIN_MAX_DIAGNOSTIC_CALLS || '20', 10);
 
-type FailureDiagnosticsTracker = {
+export type FailureDiagnosticsTracker = {
   attachIfFailed: (testInfo: TestInfo) => Promise<void>;
   detach: () => void;
 };
@@ -206,7 +189,7 @@ async function attachFailureDiagnosis(
   });
 }
 
-function createFailureDiagnosticsTracker(page: Page): FailureDiagnosticsTracker {
+export function createFailureDiagnosticsTracker(page: Page): FailureDiagnosticsTracker {
   const apiErrors: ApiError[] = [];
   const failedRequests: FailedRequest[] = [];
   const slowCalls: SlowCall[] = [];
@@ -309,101 +292,3 @@ function createFailureDiagnosticsTracker(page: Page): FailureDiagnosticsTracker 
     },
   };
 }
-
-export const test = base.extend<AuthenticatedFixtures>({
-  storageState: async ({ browserName }, use) => {
-    void browserName;
-    await ensureSession();
-    await use(getSessionStatePath());
-  },
-  _failureDiagnostics: [
-    async ({ page }, use, testInfo) => {
-      const tracker = createFailureDiagnosticsTracker(page);
-
-      try {
-        await use();
-      } finally {
-        tracker.detach();
-        const authRecoveryEvents = mergeAuthRecoveryEvents(readSessionRecoveryEvents(), consumeAuthRecoveryEvents(page));
-        attachAuthRecoveryAnnotations(testInfo, authRecoveryEvents, 'session/page');
-        await tracker.attachIfFailed(testInfo);
-      }
-    },
-    { auto: true },
-  ],
-  organisationApprovalsPage: async ({ page }, use) => {
-    await use(new OrganisationApprovalsPage(page));
-  },
-  organisationDetailsPage: async ({ page }, use) => {
-    await use(new OrganisationDetailsPage(page));
-  },
-});
-
-export const orgWorkflowTest = test.extend<OrganisationFixtures>({
-  userName: [
-    async ({ browserName }, use) => {
-      void browserName;
-      await use(`xui-ao-test-${Date.now().toString()}`);
-    },
-    { auto: true },
-  ],
-  organisationName: [
-    async ({ userName }, use) => {
-      await use(buildOrganisationName(userName));
-    },
-    { auto: true },
-  ],
-  organisationId: [
-    async ({ browserName, browser, userName, organisationName }, use, testInfo) => {
-      void browserName;
-      await ensureSession();
-      const context = await browser.newContext({ storageState: getSessionStatePath() });
-      const page = await context.newPage();
-      const tracker = createFailureDiagnosticsTracker(page);
-
-      try {
-        await seedPendingOrganisation(page, userName);
-        const organisationId = await waitForOrganisationStatus(page, organisationName, 'PENDING,REVIEW');
-        await use(organisationId);
-      } catch (error) {
-        const title = await page.title().catch(() => 'unavailable');
-        const bodyText = await page
-          .locator('body')
-          .innerText()
-          .catch(() => 'unavailable');
-        const screenshot = await page.screenshot({ fullPage: true }).catch(() => undefined);
-
-        await testInfo.attach('new-suite-org-setup-debug', {
-          body: Buffer.from(
-            [
-              `URL: ${safeSanitizedUrl(page.url())}`,
-              `Title: ${title}`,
-              `Error: ${error instanceof Error ? error.message : String(error)}`,
-              '',
-              bodyText.slice(0, 4000),
-            ].join('\n')
-          ),
-          contentType: 'text/plain',
-        });
-
-        if (screenshot) {
-          await testInfo.attach('new-suite-org-setup-debug-screenshot', {
-            body: screenshot,
-            contentType: 'image/png',
-          });
-        }
-
-        throw error;
-      } finally {
-        tracker.detach();
-        const authRecoveryEvents = mergeAuthRecoveryEvents(readSessionRecoveryEvents(), consumeAuthRecoveryEvents(page));
-        attachAuthRecoveryAnnotations(testInfo, authRecoveryEvents, 'session/setup-page');
-        await tracker.attachIfFailed(testInfo);
-        await context.close();
-      }
-    },
-    { auto: true },
-  ],
-});
-
-export { expect } from '@playwright/test';

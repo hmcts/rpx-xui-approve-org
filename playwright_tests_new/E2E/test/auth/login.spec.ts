@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { signIn } from './helpers/login';
+import { expect, test } from '../../../common/diagnosticFixtures';
+import { signIn } from '../../utils/test-setup/auth';
 
 test('login and log out from AO with valid user', async ({ page }) => {
   await signIn(page);

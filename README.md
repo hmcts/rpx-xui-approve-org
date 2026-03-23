@@ -168,7 +168,29 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Running end-to-end tests
 
-Run `yarn test:functional` to execute the end-to-end tests via Playwright.
+Run `yarn test:functional` to execute the migrated Playwright E2E suite from `playwright_tests_new/`.
+
+Useful commands:
+
+- `yarn test:functional` - run the standard migrated browser suite
+- `yarn test:smoke` - run the migrated smoke-only login page check
+- `yarn test:functional:org-workflows:new` - run only the migrated organisation workflow coverage
+- `yarn test:playwright:helpers` - run lightweight helper coverage for extracted session/auth/reporting support modules
+
+## Playwright environment bootstrap
+
+The migrated Playwright suite reads local values from `.env` and can populate that file from Key Vault for approved environments.
+
+- `yarn env:populate:playwright:aat`
+- `yarn env:populate:playwright:demo`
+
+The env population helper is:
+
+- `scripts/populate-playwright-env-from-keyvault.sh`
+
+The example env contract for the new suite is:
+
+- `playwright_tests_new/.env.example`
 
 ## Playwright reporting
 
@@ -179,6 +201,8 @@ Playwright smoke and browser runs emit an Odhin report under `functional-output/
 - Report metadata can be overridden with `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `PLAYWRIGHT_REPORT_TEST_ENVIRONMENT`, `PLAYWRIGHT_REPORT_FOLDER`, and `PLAYWRIGHT_REPORT_INDEX_FILENAME`.
 - Existing `PW_ODHIN_*` overrides are still supported for backward compatibility.
 - Jenkins archives both `functional-output/tests/playwright-e2e/**` and `test-results/**/*` for smoke runs.
+- HTML reports are available under `functional-output/tests/playwright-e2e`.
+- Failure or timeout runs retain trace and screenshot artifacts under `test-results/`.
 
 ## Integration Documentation
 

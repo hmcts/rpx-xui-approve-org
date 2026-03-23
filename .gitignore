@@ -78,3 +78,4 @@ stryker.log
 src/coverage/*
 /functional-output
 /api/.yarn
+/docs/

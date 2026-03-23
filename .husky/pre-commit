@@ -1,0 +1,10 @@
+#!/bin/sh
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^(playwright-env\.ts|playwright\.config\.ts|playwright-nightly\.config\.ts|playwright-reporting\.ts|playwright_tests_new/|test/integration/tests/playwright_helpers/|scripts/populate-playwright-env-from-keyvault\.sh|package\.json|\.prettierrc|\.prettierignore|\.husky/pre-commit)' || true)
+
+if [ -z "$STAGED_FILES" ]; then
+  exit 0
+fi
+
+printf '%s\n' "$STAGED_FILES" | xargs yarn prettier -w
+printf '%s\n' "$STAGED_FILES" | xargs git add
