@@ -20870,7 +20870,7 @@ __metadata:
     portfinder: "npm:^1.0.28"
     redis: "npm:^3.0.2"
     request: "npm:@cypress/request@^3.0.9"
-    rpx-xui-translation: "npm:1.2.0-angular-20.3.14"
+    rpx-xui-translation: "npm:1.2.2-exui-4277"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
     session-file-store: "npm:^1.2.0"
@@ -23234,9 +23234,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.0-angular-20.3.14":
-  version: 1.2.0-angular-20.3.14
-  resolution: "rpx-xui-translation@npm:1.2.0-angular-20.3.14"
+"rpx-xui-translation@npm:1.2.2-exui-4277":
+  version: 1.2.2-exui-4277
+  resolution: "rpx-xui-translation@npm:1.2.2-exui-4277"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -23244,7 +23244,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.14
     "@angular/core": ^20.3.14
-  checksum: 10/6c66db44fdcbc1bcf95ff219db399b7b6e3db6832870247c63f402efe4c156ee8e8888b33dc2da991264d66598e2064adc9df9a8fbf1a4ede431193cfc705ec5
+  checksum: 10/b8bf75994ccf973924c6a7a094df9819603e357f7ae3bcfdeb1d54d173af38cb55dbaf941a2a8e976c4b47520af5635fbbb88c3f6eb710a75d2ea2b6e8b4da17
   languageName: node
   linkType: hard
 

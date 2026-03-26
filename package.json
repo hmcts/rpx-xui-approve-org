@@ -128,7 +128,7 @@
     "passport": "^0.6.0",
     "path": "^0.12.7",
     "redis": "^3.0.2",
-    "rpx-xui-translation": "1.2.0-angular-20.3.14",
+    "rpx-xui-translation": "1.2.2-exui-4277",
     "rxjs": "^7.8.1",
     "rxjs-compat": "^6.6.7",
     "session-file-store": "^1.2.0",
