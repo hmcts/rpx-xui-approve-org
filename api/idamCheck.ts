@@ -9,7 +9,7 @@ export const IDAM_CHECK_MAX_DURATION_MS = 10 * 60 * 1000; // 10 minutes
 
 const wait = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
 
-export const idamCheck = async (resolve, reject) => {
+export const idamCheck = async (): Promise<void> => {
   const idamApiUrl = getConfigValue(SERVICES_IDAM_API_PATH);
   const axiosInstance = http({} as unknown as Request);
   const logger = log4jui.getLogger('idam-check');
@@ -21,7 +21,6 @@ export const idamCheck = async (resolve, reject) => {
   for (let attempt = 1; Date.now() < deadline; attempt++) {
     try {
       await axiosInstance.get(targetUrl);
-      resolve();
       return;
     } catch (err) {
       lastError = err;
@@ -38,6 +37,8 @@ export const idamCheck = async (resolve, reject) => {
   }
 
   logger.error('idam api check failed after retries', lastError);
-  reject(lastError);
-  process.exit(1);
+  if (lastError) {
+    throw lastError;
+  }
+  throw new Error('idam api check failed after retries');
 };
