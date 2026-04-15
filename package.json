@@ -70,7 +70,7 @@
     "@angular/platform-server": "^20.3.18",
     "@angular/router": "^20.3.18",
     "@angular/ssr": "^20.3.18",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.46",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.48",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "3.2.8",
@@ -221,7 +221,6 @@
     "webpack-node-externals": "^1.7.2"
   },
   "resolutions": {
-    "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "loader-utils": "~2.0.3",
     "async": "~3.2.2",

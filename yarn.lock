@@ -3292,12 +3292,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.46":
-  version: 7.3.46
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.46"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.48":
+  version: 7.3.48
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.48"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/9c043ad57b43473e8f7c61517afb3bc02b5130d5af1b8b156eb5bf88bf4b93bac32fd83c526bb73c80ee1796bb3551edc162861f3d48399e87512a51a8b26a9c
+  checksum: 10/f9d4f6389b6f627d935c998c08e7877b50c8658f9161ca8108370ae9fddedc035d6811b62ca5629ebea3c6227865c8ca4df90924ae7673d521e7b7520a46e0d8
   languageName: node
   linkType: hard
 
@@ -17180,7 +17180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.17.21":
+"lodash@npm:4, lodash@npm:^4.17.11, lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.21":
   version: 4.17.23
   resolution: "lodash@npm:4.17.23"
   checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
@@ -19418,7 +19418,7 @@ __metadata:
     "@angular/router": "npm:^20.3.18"
     "@angular/ssr": "npm:^20.3.18"
     "@cucumber/cucumber": "npm:^9.5.1"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.46"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.48"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.8"
