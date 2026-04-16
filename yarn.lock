@@ -3471,12 +3471,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.44-cve-fix":
-  version: 7.3.44-cve-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.44-cve-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.49-cve-fix":
+  version: 7.3.49-cve-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.49-cve-fix"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/224ec7e9f39c92d8d25d627a5889511a2113206dccef099a32ea2a6a836e8e173fc2cc9362dca3ba573b420cda7ffc65f0516de01d6c0e5f49b395f85310dc4a
+  checksum: 10/29cc162c1c20b70ec70e4a966a1e387e402f81ca547d0ebc0a1e81bac1518e720ff3ead86d6039ce48e583fdb1193d407fa36ba584b51ca0c5e33f1fc9ed4715
   languageName: node
   linkType: hard
 
@@ -3515,16 +3515,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz":
-  version: 3.2.3
-  resolution: "@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz"
+"@hmcts/rpx-xui-common-lib@npm:3.2.8":
+  version: 3.2.8
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.8"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/d39a580b8ee65ea6193a239346468d8a0c88145bfb78d9c6c639cd8072174161855bde981ad0e17a6d5616d3104325665cdd23b1060fb5d15734d495c3bea5fa
+  checksum: 10/4e48b962f867ee137fca5415e6f465cc3c68ed7845a925565b423711a32e032ac8b3af39923439653f6200391f75f089ab49f795743e1ef0a11a934aafeee331
   languageName: node
   linkType: hard
 
@@ -18592,6 +18592,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash@npm:4, lodash@npm:^4.17.11, lodash@npm:^4.17.15, lodash@npm:^4.17.20, lodash@npm:^4.17.23":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
+  languageName: node
+  linkType: hard
+
 "lodash@npm:^4.17.21":
   version: 4.17.23
   resolution: "lodash@npm:4.17.23"
@@ -20822,10 +20829,10 @@ __metadata:
     "@angular/ssr": "npm:^20.3.22"
     "@cucumber/cucumber": "npm:^9.5.1"
     "@eslint/js": "npm:^10.0.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.44-cve-fix"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.49-cve-fix"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.8"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-4177-tax-cve-fix"
     "@microsoft/applicationinsights-web": "npm:^3.3.9"
     "@ng-idle/core": "npm:^16.0.0"
