@@ -9,11 +9,14 @@ describe('server', () => {
   let ejsMock: any;
   let expressMock: any;
   let pathMock: any;
+  let idamCheckStub: sinon.SinonStub;
   let processEnvStub: any;
+  let processExitStub: sinon.SinonStub;
   let consoleTimeStub: any;
   let consoleTimeEndStub: any;
   let consoleLogStub: any;
   let configMock: any;
+  const flushPromises = () => new Promise((resolve) => setImmediate(resolve));
 
   beforeEach(() => {
     delete require.cache[require.resolve('./application')];
@@ -38,7 +41,8 @@ describe('server', () => {
     };
 
     loggerMock = {
-      info: sinon.stub()
+      info: sinon.stub(),
+      error: sinon.stub()
     };
 
     ejsMock = {
@@ -56,11 +60,15 @@ describe('server', () => {
     consoleTimeStub = sinon.stub(console, 'time');
     consoleTimeEndStub = sinon.stub(console, 'timeEnd');
     consoleLogStub = sinon.stub(console, 'log');
+    processExitStub = sinon.stub(process, 'exit');
 
     processEnvStub = sinon.stub(process, 'env').value({ PORT: undefined });
 
     sinon.stub(require('./application'), 'app').value(appMock);
     sinon.stub(require('./application'), 'logger').value(loggerMock);
+    idamCheckStub = sinon.stub().resolves();
+    sinon.stub(require('./idamCheck'), 'idamCheck').callsFake(idamCheckStub);
+    sinon.stub(require('./lib/log4jui'), 'getLogger').returns(loggerMock);
     sinon.stub(require('ejs'), 'renderFile').value(ejsMock.renderFile);
     sinon.stub(require('express'), 'static').callsFake(expressMock.static);
     sinon.stub(require('path'), 'join').callsFake(pathMock.join);
@@ -72,16 +80,18 @@ describe('server', () => {
   });
 
   describe('server initialization', () => {
-    it('should configure EJS as template engine', () => {
+    it('should configure EJS as template engine', async () => {
       require('./server');
+      await flushPromises();
 
       expect(appMock.engine).to.have.been.calledWith('html', ejsMock.renderFile);
       expect(appMock.set).to.have.been.calledWith('view engine', 'html');
       expect(appMock.set).to.have.been.calledWith('views', __dirname);
     });
 
-    it('should configure static file serving', () => {
+    it('should configure static file serving', async () => {
       require('./server');
+      await flushPromises();
 
       expect(expressMock.static).to.have.been.calledTwice;
       expect(appMock.use).to.have.been.calledWith('static-middleware');
@@ -89,40 +99,66 @@ describe('server', () => {
       expect(pathMock.join).to.have.been.calledWith(sinon.match.string, '..');
     });
 
-    it('should configure catch-all route handler', () => {
+    it('should configure catch-all route handler', async () => {
       require('./server');
+      await flushPromises();
 
       expect(appMock.use).to.have.been.calledWith('/*');
       expect(appMock.use.args.find((call) => call[0] === '/*')).to.exist;
     });
 
-    it('should start server on default port 3000', () => {
+    it('should start server on default port 3000', async () => {
       require('./server');
+      await flushPromises();
 
       expect(appMock.listen).to.have.been.calledWith(3000);
     });
 
-    it('should start server on PORT environment variable when set', () => {
+    it('should start server on PORT environment variable when set', async () => {
       processEnvStub.value({ PORT: '8080' });
 
       require('./server');
+      await flushPromises();
 
       expect(appMock.listen).to.have.been.calledWith('8080');
     });
 
-    it('should log server startup message', () => {
+    it('should log server startup message', async () => {
       // Mock the callback from app.listen
       appMock.listen.callsArg(1);
 
       require('./server');
+      await flushPromises();
 
       expect(loggerMock.info).to.have.been.calledWith('Local server up at 3000');
     });
 
-    it('should log initialization message', () => {
+    it('should log initialization message', async () => {
       require('./server');
+      await flushPromises();
 
       expect(consoleLogStub).to.have.been.calledWith('WE ARE USING server.ts on the box.');
+    });
+
+    it('should wait for idam check before listening', async () => {
+      require('./server');
+      await flushPromises();
+
+      expect(idamCheckStub).to.have.been.calledOnce;
+      expect(appMock.listen).to.have.been.calledOnce;
+      sinon.assert.callOrder(idamCheckStub, appMock.listen);
+    });
+
+    it('should exit when idam check fails', async () => {
+      const error = new Error('idam down');
+      idamCheckStub.rejects(error);
+
+      require('./server');
+      await flushPromises();
+
+      expect(loggerMock.error).to.have.been.calledWith('idam check failed after retries', error);
+      expect(processExitStub).to.have.been.calledWith(1);
+      expect(appMock.listen).not.to.have.been.called;
     });
   });
 
@@ -131,8 +167,9 @@ describe('server', () => {
     let mockReq: any;
     let mockRes: any;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       require('./server');
+      await flushPromises();
 
       // Find the catch-all route handler
       const catchAllCall = appMock.use.args.find((call) => call[0] === '/*');
@@ -178,14 +215,16 @@ describe('server', () => {
   });
 
   describe('path configuration', () => {
-    it('should configure assets path correctly', () => {
+    it('should configure assets path correctly', async () => {
       require('./server');
+      await flushPromises();
 
       expect(pathMock.join).to.have.been.calledWith(sinon.match.string, '..', 'assets');
     });
 
-    it('should configure root path correctly', () => {
+    it('should configure root path correctly', async () => {
       require('./server');
+      await flushPromises();
 
       expect(pathMock.join).to.have.been.calledWith(sinon.match.string, '..');
     });

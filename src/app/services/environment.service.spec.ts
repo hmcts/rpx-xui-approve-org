@@ -7,23 +7,18 @@ import { EnvironmentService } from './environment.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 const environmentConfig: EnvironmentConfig = {
-  appInsightsConnectionString: '123',
   configEnv: '',
-  cookies: undefined,
-  exceptionOptions: undefined,
-  health: undefined,
+  cookies: {
+    roles: 'roles',
+    token: '__auth__',
+    userId: '__userid__'
+  },
   idamClient: '',
-  indexUrl: '',
-  logging: '',
-  now: false,
-  maxLogLine: 0,
-  microservice: '',
   oauthCallbackUrl: '',
   protocol: '',
-  proxy: undefined,
-  secureCookie: false,
-  services: undefined,
-  sessionSecret: '',
+  services: {
+    idamWeb: ''
+  },
   oidcEnabled: false
 };
 
