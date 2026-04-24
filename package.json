@@ -146,6 +146,7 @@
     "@angular/compiler-cli": "^20.3.18",
     "@angular/language-service": "^20.3.18",
     "@cucumber/cucumber": "^9.5.1",
+    "@hmcts/playwright-common": "^1.1.2",
     "@pact-foundation/pact": "^9.11.1",
     "@pact-foundation/pact-node": "^10.9.7",
     "@stryker-mutator/api": "8.6.0",
