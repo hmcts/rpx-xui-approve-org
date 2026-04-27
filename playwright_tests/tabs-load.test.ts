@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from './helpers/login';
+import { applySessionCookies } from './helpers/sessionCapture';
 
+test.beforeEach(async ({ page }) => {
+  await applySessionCookies(page, 'base');
+});
 test('all tabs on login load data', async ({ page }) => {
   await signIn(page);
   await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();

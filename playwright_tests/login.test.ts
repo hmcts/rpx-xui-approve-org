@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from './helpers/login';
+import { applySessionCookies } from './helpers/sessionCapture';
+
+const userIdentifier = 'base';
 
 test('login and log out from AO with valid user', async ({ page }) => {
   await signIn(page);

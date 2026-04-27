@@ -1,6 +1,11 @@
 import { test, expect } from './helpers/fixtures';
 import { signIn } from './helpers/login';
+import { applySessionCookies } from './helpers/sessionCapture';
 import { getTableActionButton, getTableDataByXpath } from './helpers/tables';
+
+test.beforeEach(async ({ page }) => {
+  await applySessionCookies(page, 'base');
+});
 
 test('i can approve a pending org', async ({ page, userName }) => {
   await signIn(page);
@@ -112,10 +117,15 @@ test('i can delete an active org', async ({ page, userName }) => {
   await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
   await expect(page.getByText('Warning Make sure you have')).toBeVisible();
   await page.getByRole('button', { name: 'Delete organisation' }).click();
-  await expect(page.locator('div').filter({ hasText: `${orgName} has been` }).nth(3)).toBeVisible();
+  await expect(
+    page
+      .locator('div')
+      .filter({ hasText: `${orgName} has been` })
+      .nth(3)
+  ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What happens next' })).toBeVisible();
   await expect(page.getByText('You should tell the')).toBeVisible();
-  await expect(page.getByText('They\'ve also been removed')).toBeVisible();
+  await expect(page.getByText("They've also been removed")).toBeVisible();
   await page.getByRole('link', { name: 'Go back to active' }).click();
   console.log(`${orgName} has been deleted`);
 });
