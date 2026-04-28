@@ -1,11 +1,9 @@
-import { config } from './config/config';
 import { test, expect } from './helpers/fixtures';
-import { applySessionCookies } from './helpers/sessionCapture';
+import { ensureAuthenticatedPage } from './helpers/sessionCapture';
 import { getTableActionButton, getTableDataByXpath } from './helpers/tables';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, 'base');
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+  await ensureAuthenticatedPage(page, 'base');
 });
 
 test('i can approve a pending org', async ({ page, userName }) => {
@@ -122,7 +120,7 @@ test('i can delete an active org', async ({ page, userName }) => {
   ).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What happens next' })).toBeVisible();
   await expect(page.getByText('You should tell the')).toBeVisible();
-  await expect(page.getByText("They've also been removed")).toBeVisible();
+  await expect(page.getByText('They\'ve also been removed')).toBeVisible();
   await page.getByRole('link', { name: 'Go back to active' }).click();
   console.log(`${orgName} has been deleted`);
 });

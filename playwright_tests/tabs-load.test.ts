@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { config } from './config/config';
-import { applySessionCookies } from './helpers/sessionCapture';
+import { ensureAuthenticatedPage } from './helpers/sessionCapture';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, 'base');
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+  await ensureAuthenticatedPage(page, 'base');
 });
 test('all tabs on login load data', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();

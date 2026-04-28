@@ -13,6 +13,11 @@ type UserConfig = {
   password: string;
 };
 
+type SessionCaptureOptions = {
+  force?: boolean;
+  partitionKey?: string;
+};
+
 function normaliseSessionStorageKey(value: string): string {
   return value.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
 }
@@ -30,9 +35,29 @@ function getUserConfig(user: string): UserConfig {
   return account;
 }
 
-export function getSessionStatePath(user: string = 'base'): string {
+function resolveSessionPartitionKey(explicitPartitionKey?: string): string | undefined {
+  const configured = explicitPartitionKey?.trim();
+  if (configured) {
+    return configured;
+  }
+
+  const fromParallelIndex = process.env.TEST_PARALLEL_INDEX?.trim();
+  if (fromParallelIndex) {
+    return `parallel-${fromParallelIndex}`;
+  }
+
+  const fromWorkerIndex = process.env.TEST_WORKER_INDEX?.trim();
+  if (fromWorkerIndex) {
+    return `worker-${fromWorkerIndex}`;
+  }
+
+  return undefined;
+}
+
+export function getSessionStatePath(user: string = 'base', partitionKey?: string): string {
   const { username } = getUserConfig(user);
-  const key = normaliseSessionStorageKey(username);
+  const compositeKey = partitionKey ? `${username}.${partitionKey}` : username;
+  const key = normaliseSessionStorageKey(compositeKey);
   return path.join(SESSION_DIR, `${key}.storage.json`);
 }
 
@@ -43,8 +68,12 @@ function hasUnexpiredAuthCookie(storageStatePath: string): boolean {
     const nowSeconds = Date.now() / 1000;
     return cookies.some((cookie) => {
       const name = cookie.name ?? '';
-      if (name !== '__auth__' && name !== 'Idam.Session' && name !== 'ao-webapp') return false;
-      if (cookie.expires === undefined || cookie.expires === -1) return true;
+      if (name !== '__auth__' && name !== 'Idam.Session' && name !== 'ao-webapp') {
+        return false;
+      }
+      if (cookie.expires === undefined || cookie.expires === -1) {
+        return true;
+      }
       return cookie.expires > nowSeconds + 30;
     });
   } catch {
@@ -53,11 +82,15 @@ function hasUnexpiredAuthCookie(storageStatePath: string): boolean {
 }
 
 function isSessionFresh(storageStatePath: string): boolean {
-  if (!fs.existsSync(storageStatePath)) return false;
+  if (!fs.existsSync(storageStatePath)) {
+    return false;
+  }
 
   const maxAgeMs = resolveSessionMaxAgeMs();
   const stats = fs.statSync(storageStatePath);
-  if (Date.now() - stats.mtimeMs > maxAgeMs) return false;
+  if (Date.now() - stats.mtimeMs > maxAgeMs) {
+    return false;
+  }
 
   return hasUnexpiredAuthCookie(storageStatePath);
 }
@@ -121,8 +154,9 @@ async function persistSessionState(context: BrowserContext, storageStatePath: st
   await context.storageState({ path: storageStatePath });
 }
 
-export async function sessionCapture(user: string = 'base', options: { force?: boolean } = {}): Promise<string> {
-  const storageStatePath = getSessionStatePath(user);
+export async function sessionCapture(user: string = 'base', options: SessionCaptureOptions = {}): Promise<string> {
+  const partitionKey = resolveSessionPartitionKey(options.partitionKey);
+  const storageStatePath = getSessionStatePath(user, partitionKey);
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
 
   if (!options.force && isSessionFresh(storageStatePath)) {
@@ -131,7 +165,8 @@ export async function sessionCapture(user: string = 'base', options: { force?: b
   }
 
   const { username, password } = getUserConfig(user);
-  console.log(`[playwright-session] Capturing session for ${username} -> ${storageStatePath}`);
+  const partitionSuffix = partitionKey ? ` [${partitionKey}]` : '';
+  console.log(`[playwright-session] Capturing session for ${username}${partitionSuffix} -> ${storageStatePath}`);
   const browser = await launchBrowserForSessionCapture();
   const context = await browser.newContext();
   const page = await context.newPage();
@@ -149,26 +184,26 @@ export async function sessionCapture(user: string = 'base', options: { force?: b
   }
 }
 
-export async function applySessionCookies(page: Page, user: string = 'base'): Promise<void> {
+export async function applySessionCookies(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
   const loadCookies = (storageStatePath: string): any[] => {
     const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as { cookies?: any[] };
     return state.cookies ?? [];
   };
 
-  const storageStatePath = await sessionCapture(user);
+  const storageStatePath = await sessionCapture(user, options);
   const cookies = loadCookies(storageStatePath);
   if (cookies.length > 0) {
     await page.context().addCookies(cookies);
   }
 }
 
-export async function ensureAuthenticatedPage(page: Page, user: string = 'base'): Promise<void> {
-  await applySessionCookies(page, user);
+export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
+  await applySessionCookies(page, user, options);
   await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
 
   if (page.url().includes('idam') || page.url().includes('/login')) {
-    await sessionCapture(user, { force: true });
-    await applySessionCookies(page, user);
+    await sessionCapture(user, { ...options, force: true });
+    await applySessionCookies(page, user, options);
     await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
   }
 }

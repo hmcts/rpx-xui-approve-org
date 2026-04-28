@@ -1,14 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { getTableActionButton, verifyTableHasRows } from './helpers/tables';
-import { applySessionCookies } from './helpers/sessionCapture';
-import { config } from './config/config';
+import { ensureAuthenticatedPage } from './helpers/sessionCapture';
 
 const userIdentifier = 'base';
 
 test.describe('Active organisation details', () => {
   test.beforeEach(async ({ page }) => {
-    await applySessionCookies(page, userIdentifier);
-    await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+    await ensureAuthenticatedPage(page, userIdentifier);
   });
 
   test('i can see organsation details for an active org', async ({ page }) => {

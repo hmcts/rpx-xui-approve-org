@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import { signIn } from './helpers/login';
-import { applySessionCookies } from './helpers/sessionCapture';
 
 const userIdentifier = 'base';
 
