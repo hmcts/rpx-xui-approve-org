@@ -42,6 +42,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.FUNCTIONAL_TESTS_WORKERS = '4'
     // enableFortifyScan('rpx-aat')
     // enableFullFunctionalTest(60)
     // below no longer running as it is not required
