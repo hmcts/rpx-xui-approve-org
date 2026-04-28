@@ -1,14 +1,14 @@
+import { config } from './config/config';
 import { test, expect } from './helpers/fixtures';
-import { signIn } from './helpers/login';
 import { applySessionCookies } from './helpers/sessionCapture';
 import { getTableActionButton, getTableDataByXpath } from './helpers/tables';
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, 'base');
+  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
 });
 
 test('i can approve a pending org', async ({ page, userName }) => {
-  await signIn(page);
   await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
   await page.locator('#search').fill(userName);
   await page.getByRole('button', { name: 'Search' }).click();
@@ -26,7 +26,6 @@ test('i can approve a pending org', async ({ page, userName }) => {
 });
 
 test('i can reject a pending org', async ({ page, userName }) => {
-  await signIn(page);
   await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
   await page.locator('#search').fill(userName);
   await page.getByRole('button', { name: 'Search' }).click();
@@ -44,7 +43,6 @@ test('i can reject a pending org', async ({ page, userName }) => {
 });
 
 test('i can place registration under review for a pending org', async ({ page, userName }) => {
-  await signIn(page);
   await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
   await page.locator('#search').fill(userName);
   await page.getByRole('button', { name: 'Search' }).click();
@@ -62,7 +60,6 @@ test('i can place registration under review for a pending org', async ({ page, u
 });
 
 test('i can delete an active org', async ({ page, userName }) => {
-  await signIn(page);
   await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
   await page.locator('#search').fill(userName);
   await page.getByRole('button', { name: 'Search' }).click();

@@ -8,10 +8,10 @@ const userIdentifier = 'base';
 test.describe('Active organisation details', () => {
   test.beforeEach(async ({ page }) => {
     await applySessionCookies(page, userIdentifier);
+    await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
   });
 
   test('i can see organsation details for an active org', async ({ page }) => {
-    await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.getByRole('tab', { name: 'Active organisations' }).click();
     await getTableActionButton(page, '//app-prd-org-overview-component/table/thead/tr[2]/td[6]/a').click();
