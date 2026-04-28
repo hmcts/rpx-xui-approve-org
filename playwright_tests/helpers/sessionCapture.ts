@@ -36,6 +36,12 @@ export function getSessionStatePath(user: string = 'base'): string {
   return path.join(SESSION_DIR, `${key}.storage.json`);
 }
 
+function getSessionStoragePath(user: string = 'base'): string {
+  const { username } = getUserConfig(user);
+  const key = normaliseSessionStorageKey(username);
+  return path.join(SESSION_DIR, `${key}.session.json`);
+}
+
 function hasUnexpiredAuthCookie(storageStatePath: string): boolean {
   try {
     const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as { cookies?: Array<{ name?: string; expires?: number }> };
@@ -121,11 +127,17 @@ async function persistSessionState(context: BrowserContext, storageStatePath: st
   await context.storageState({ path: storageStatePath });
 }
 
+async function persistSessionStorage(page: Page, sessionStoragePath: string): Promise<void> {
+  const sessionStorageJson = await page.evaluate(() => JSON.stringify(window.sessionStorage));
+  fs.writeFileSync(sessionStoragePath, sessionStorageJson, 'utf8');
+}
+
 export async function sessionCapture(user: string = 'base', options: { force?: boolean } = {}): Promise<string> {
   const storageStatePath = getSessionStatePath(user);
+  const sessionStoragePath = getSessionStoragePath(user);
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
 
-  if (!options.force && isSessionFresh(storageStatePath)) {
+  if (!options.force && isSessionFresh(storageStatePath) && fs.existsSync(sessionStoragePath)) {
     console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
     return storageStatePath;
   }
@@ -143,6 +155,7 @@ export async function sessionCapture(user: string = 'base', options: { force?: b
       throw new Error(`Session capture did not create an authenticated session for "${username}".`);
     }
     await persistSessionState(context, storageStatePath);
+    await persistSessionStorage(page, sessionStoragePath);
     return storageStatePath;
   } finally {
     await browser.close();
@@ -156,9 +169,25 @@ export async function applySessionCookies(page: Page, user: string = 'base'): Pr
   };
 
   const storageStatePath = await sessionCapture(user);
+  const sessionStoragePath = getSessionStoragePath(user);
   const cookies = loadCookies(storageStatePath);
   if (cookies.length > 0) {
     await page.context().addCookies(cookies);
+  }
+
+  if (fs.existsSync(sessionStoragePath)) {
+    const raw = fs.readFileSync(sessionStoragePath, 'utf8');
+    const sessionStorageEntries = JSON.parse(raw) as Record<string, string>;
+    const baseHost = new URL(config.baseUrl).hostname;
+    await page.context().addInitScript(
+      ({ entries, host }) => {
+        if (window.location.hostname !== host) return;
+        for (const [key, value] of Object.entries(entries)) {
+          window.sessionStorage.setItem(key, value);
+        }
+      },
+      { entries: sessionStorageEntries, host: baseHost }
+    );
   }
 }
 
