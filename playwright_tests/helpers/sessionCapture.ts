@@ -155,19 +155,10 @@ export async function applySessionCookies(page: Page, user: string = 'base'): Pr
     return state.cookies ?? [];
   };
 
-  let storageStatePath = await sessionCapture(user);
-  let cookies = loadCookies(storageStatePath);
+  const storageStatePath = await sessionCapture(user);
+  const cookies = loadCookies(storageStatePath);
   if (cookies.length > 0) {
     await page.context().addCookies(cookies);
-  }
-
-  if (!(await isAuthenticatedByApi(page))) {
-    storageStatePath = await sessionCapture(user, { force: true });
-    cookies = loadCookies(storageStatePath);
-    await page.context().clearCookies();
-    if (cookies.length > 0) {
-      await page.context().addCookies(cookies);
-    }
   }
 }
 
