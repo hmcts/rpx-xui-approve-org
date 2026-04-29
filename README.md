@@ -168,7 +168,18 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 ## Running end-to-end tests
 
-Run `yarn test:functional` to execute the end-to-end tests via Playwright.
+This repository now uses Playwright for the functional/liveliness test path.
+
+- `yarn test:smoke` runs the Playwright smoke journey (`playwright_tests/login.test.ts`).
+- `yarn test:functional` runs the Playwright functional suite (`playwright_tests/`).
+- `yarn test:crossbrowser` runs cross-browser Playwright tests using `playwright-nightly.config.ts`.
+- `TEST_URL` can be set to target a different environment (default: AAT URL).
+- `TEST_REGISTER_URL` can be set for registration flow tests.
+- `FUNCTIONAL_TESTS_WORKERS` can be set to override Playwright worker count.
+
+CI/Jenkins notes:
+
+- `smoketest:*`, `functionalTest:*`, and nightly cross-browser stages publish Playwright HTML reports from `functional-output/tests/playwright-e2e`.
 
 ## Integration Documentation
 
