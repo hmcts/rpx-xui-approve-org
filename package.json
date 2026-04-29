@@ -52,8 +52,6 @@
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/**/*.spec.ts",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:smoke": "yarn playwright install chromium && npx playwright test playwright_tests/login.test.ts -c playwright.config.ts",
-    "test:codeceptE2EDebug": "DEBUG=true TEST_TYPE=e2e npx codeceptjs run --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test/codeceptCommon/codecept.conf.ts --features",
-    "test:codeceptE2E": "TEST_TYPE=e2e npx codeceptjs run-workers --suites 6 --plugins cucumberJsonReporter --plugins retryFailedStep --config ./test/codeceptCommon/codecept.conf.ts --features",
     "test:backendMock": "DEBUG=true nodemon test/backendMock/app --standalone"
   },
   "private": true,
