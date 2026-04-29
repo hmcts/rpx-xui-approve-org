@@ -147,7 +147,7 @@ withPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Functional Test'
+            reportName           : 'PREVIEW Functional E2E Test'
         ])
 
         publishHTML([
@@ -190,7 +190,7 @@ withPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'AAT Functional Test'
+            reportName           : 'AAT Functional E2ETest'
         ])
 
         publishHTML([

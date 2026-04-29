@@ -119,7 +119,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             keepAll              : true,
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'DEMO Functional Test'
+            reportName           : 'DEMO Functional E2E Test'
         ])
     }
 
@@ -141,7 +141,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             keepAll              : true,
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Functional Test'
+            reportName           : 'PREVIEW Functional E2E Test'
         ])
     }
 
@@ -163,7 +163,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             keepAll              : true,
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'AAT Functional Test'
+            reportName           : 'AAT Functional E2E Test'
         ])
     }
 

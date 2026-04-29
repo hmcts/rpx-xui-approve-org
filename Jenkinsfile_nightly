@@ -92,7 +92,7 @@ withNightlyPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Full functional Tests'
+            reportName           : 'XUI Approve Organisation Full functional E2E Tests'
         ])
     }
 
