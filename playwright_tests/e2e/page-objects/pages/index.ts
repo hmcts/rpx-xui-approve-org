@@ -1,1 +1,1 @@
-export * from './organisation-approvals.page';
+export * from './exui/organisation-approvals.page';

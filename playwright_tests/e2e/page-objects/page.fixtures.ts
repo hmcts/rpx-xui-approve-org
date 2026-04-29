@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { OrganisationApprovalsPage } from './pages/exui/organisation-approvals.page';
+import { OrganisationApprovalsPage } from './pages';
 
 type PageFixtures = {
   organisationApprovalsPage: OrganisationApprovalsPage;
