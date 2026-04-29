@@ -2,10 +2,9 @@ import { config } from '../config/config';
 
 export async function signIn(page: any, user: string = 'base') {
   const { username, password } = config[user];
+  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
   console.log('signing in to: ' + config.baseUrl);
-
-  await page.goto(config.baseUrl);
-
+  void password;
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       // Ensure fields are visible before interacting
@@ -24,12 +23,14 @@ export async function signIn(page: any, user: string = 'base') {
     } catch (error) {
       console.error(`Login attempt ${attempt + 1} failed:`, error);
     }
+    if (page.url().includes('idam') || page.url().includes('/login')) {
+      throw new Error(`Login failed for ${username}.`);
+    }
+    console.log('Signed in as ' + username);
   }
-
-  throw new Error('Login failed after 2 attempts.');
 }
 
-export async function signOut(page) {
+export async function signOut(page: any) {
   try {
     await page.getByText('Sign out').click();
     console.log('Signed out');

@@ -18,6 +18,7 @@ def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 def vault = "rpx"
+def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 
 def secrets = [
   'rpx-${env}': [
@@ -42,6 +43,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.FUNCTIONAL_TESTS_WORKERS = '4'
     // enableFortifyScan('rpx-aat')
     // enableFullFunctionalTest(60)
     // below no longer running as it is not required
@@ -88,9 +90,9 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Full functional Tests'
+            reportName           : 'XUI Approve Organisation Full functional E2E Tests'
         ])
     }
 
@@ -110,7 +112,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/crossbrowser/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
       ])

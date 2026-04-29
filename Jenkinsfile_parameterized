@@ -21,6 +21,7 @@ def product   = "xui"
 def component = "manage-organisations"
 def vault     = "rpx"
 def channel   = '#xui-pipeline'
+def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 
 List<LinkedHashMap<String, Object>> secrets = [
   secret('ao-s2s-client-secret',                 'S2S_SECRET'),
@@ -42,6 +43,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
   enableSlackNotifications(channel)
   enableDockerBuild()
   loadVaultSecrets(secrets)
+  env.FUNCTIONAL_TESTS_WORKERS = '4'
   setVaultName(vault)
  // installCharts()
 
@@ -115,9 +117,9 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'DEMO Functional Test'
+            reportName           : 'DEMO Functional E2E Test'
         ])
     }
 
@@ -126,7 +128,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/smoke_tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
@@ -137,9 +139,9 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Functional Test'
+            reportName           : 'PREVIEW Functional E2E Test'
         ])
     }
 
@@ -148,7 +150,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/smoke_tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])
@@ -159,9 +161,9 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'AAT Functional Test'
+            reportName           : 'AAT Functional E2E Test'
         ])
     }
 
@@ -170,7 +172,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/smoke_tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PROD Smoke Test'
         ])
