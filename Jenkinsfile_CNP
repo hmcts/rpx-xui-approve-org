@@ -22,6 +22,7 @@ def product   = "xui"
 def component = "ao-webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
+def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -112,7 +113,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'DEMO Smoke Test'
         ])
@@ -123,7 +124,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
@@ -144,7 +145,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
         ])
@@ -165,7 +166,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])
@@ -187,7 +188,7 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'AAT Functional Test'
         ])

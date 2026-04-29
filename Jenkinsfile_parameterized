@@ -21,6 +21,7 @@ def product   = "xui"
 def component = "manage-organisations"
 def vault     = "rpx"
 def channel   = '#xui-pipeline'
+def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 
 List<LinkedHashMap<String, Object>> secrets = [
   secret('ao-s2s-client-secret',                 'S2S_SECRET'),
@@ -116,7 +117,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'DEMO Functional Test'
         ])
@@ -127,7 +128,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/smoke_tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
@@ -138,7 +139,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
         ])
@@ -149,7 +150,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/smoke_tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])
@@ -160,7 +161,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'AAT Functional Test'
         ])
@@ -171,7 +172,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/smoke_tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PROD Smoke Test'
         ])

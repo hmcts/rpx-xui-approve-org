@@ -18,6 +18,7 @@ def product   = "xui"
 def component = "webapp"
 def channel   = '#xui-pipeline'
 def vault = "rpx"
+def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 
 def secrets = [
   'rpx-${env}': [
@@ -89,7 +90,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Full functional Tests'
         ])
@@ -111,7 +112,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/crossbrowser/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
       ])
