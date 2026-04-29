@@ -1,6 +1,7 @@
 import { cpus } from 'node:os';
 
 type EnvMap = NodeJS.ProcessEnv;
+const DEFAULT_WORKER_COUNT = 1;
 
 export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number | undefined {
   const configured = env.FUNCTIONAL_TESTS_WORKERS?.trim();
@@ -50,12 +51,15 @@ export function resolveWorkerCount(env: EnvMap = process.env): number {
   if (env.CI) {
     const targetEnv = resolveWorkerTargetEnvironment(env);
     if (targetEnv === 'aat' || targetEnv === 'demo') {
-      return 2;
+      return DEFAULT_WORKER_COUNT;
     }
-    return 8;
+    return DEFAULT_WORKER_COUNT;
   }
 
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  return Math.min(8, Math.max(2, approxPhysical));
+  const logical = cpus()?.length ?? DEFAULT_WORKER_COUNT;
+  const approxPhysical = logical <= 2
+    ? DEFAULT_WORKER_COUNT
+    : Math.max(DEFAULT_WORKER_COUNT, Math.round(logical / 2));
+
+  return Math.min(DEFAULT_WORKER_COUNT, Math.max(DEFAULT_WORKER_COUNT, approxPhysical));
 }

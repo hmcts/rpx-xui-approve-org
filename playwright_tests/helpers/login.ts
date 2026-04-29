@@ -1,18 +1,36 @@
 import { config } from '../config/config';
-import { ensureAuthenticatedPage } from './sessionCapture';
 
 export async function signIn(page: any, user: string = 'base') {
   const { username, password } = config[user];
+  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
   console.log('signing in to: ' + config.baseUrl);
   void password;
-  await ensureAuthenticatedPage(page, user);
-  if (page.url().includes('idam') || page.url().includes('/login')) {
-    throw new Error(`Login failed for ${username}.`);
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      // Ensure fields are visible before interacting
+      await page.getByRole('textbox', { name: 'Email address' }).waitFor();
+      await page.getByRole('textbox', { name: 'Email address' }).fill(username);
+      await page.getByRole('textbox', { name: 'Password' }).fill(password);
+      await page.getByRole('button', { name: 'Sign in' }).click();
+
+      // Verify login success
+      if (!page.url().includes('idam')) {
+        console.log('Signed in as ' + username);
+        return;
+      }
+
+      console.log('First login attempt failed, retrying...');
+    } catch (error) {
+      console.error(`Login attempt ${attempt + 1} failed:`, error);
+    }
+    if (page.url().includes('idam') || page.url().includes('/login')) {
+      throw new Error(`Login failed for ${username}.`);
+    }
+    console.log('Signed in as ' + username);
   }
-  console.log('Signed in as ' + username);
 }
 
-export async function signOut(page) {
+export async function signOut(page: any) {
   try {
     await page.getByText('Sign out').click();
     console.log('Signed out');
