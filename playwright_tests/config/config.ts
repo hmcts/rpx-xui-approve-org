@@ -16,28 +16,31 @@ function resolveUrl(rawValue: string | undefined, fallback: string, envName: str
   }
 }
 
-function resolveCredential(rawValue: string | undefined, fallback: string, envName: string): string {
-  const value = (rawValue ?? '').trim();
-  if (value.length > 0) {
-    return value;
+function resolveBaseCredentials(): { username: string; password: string } {
+  const emailFromEnv = (process.env.TEST_EMAIL ?? '').trim();
+  const passwordFromEnv = (process.env.TEST_PASSWORD ?? '').trim();
+
+  // Only use CI-provided credentials when both are present.
+  if (emailFromEnv.length > 0 && passwordFromEnv.length > 0) {
+    return { username: emailFromEnv, password: passwordFromEnv };
   }
 
-  const runningInCi =
-    (process.env.CI ?? '').toLowerCase() === 'true' ||
-    (process.env.JENKINS_URL ?? '').trim().length > 0;
-  if (runningInCi) {
-    console.warn(`[playwright-config] ${envName} is not set. Falling back to default test credential.`);
+  // If only one env var is set, fall back to defaults to avoid mixed credentials.
+  if (emailFromEnv.length > 0 || passwordFromEnv.length > 0) {
+    console.warn('[playwright-config] Incomplete TEST_EMAIL/TEST_PASSWORD env vars. Falling back to default test credentials.');
   }
 
-  return fallback;
+  return { username: DEFAULT_TEST_EMAIL, password: DEFAULT_TEST_PASSWORD };
 }
+
+const baseCredentials = resolveBaseCredentials();
 
 export const config = {
   baseUrl: resolveUrl(process.env.TEST_URL, DEFAULT_TEST_URL, 'TEST_URL'),
   registerUrl: resolveUrl(process.env.TEST_REGISTER_URL, DEFAULT_REGISTER_URL, 'TEST_REGISTER_URL'),
   base: {
-    username: resolveCredential(process.env.TEST_EMAIL, DEFAULT_TEST_EMAIL, 'TEST_EMAIL'),
-    password: resolveCredential(process.env.TEST_PASSWORD, DEFAULT_TEST_PASSWORD, 'TEST_PASSWORD')
+    username: baseCredentials.username,
+    password: baseCredentials.password
   },
   twoFactorAuthEnabled: false,
   termsAndConditionsEnabled: true
