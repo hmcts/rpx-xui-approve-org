@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { config } from './config/config';
 
 test.describe('Login and logout', () => {
+  
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test('login and log out from AO with valid user @smoke', async ({ page }) => {

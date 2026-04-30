@@ -120,6 +120,17 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
         ])
     }
 
+    after('smoketest:demo') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'DEMO Smoke Test'
+        ])
+    }
+
     after('smoketest:preview') {
         publishHTML([
             allowMissing         : true,
