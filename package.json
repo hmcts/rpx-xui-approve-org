@@ -51,7 +51,7 @@
     "test:nodeMock": "nodemon test/nodeMock/app --standalone",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/**/*.spec.ts",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
-    "test:smoke": "yarn playwright install chromium && npx playwright test playwright_tests/login.test.ts -c playwright.config.ts",
+    "test:smoke": "yarn playwright install chromium && PW_SKIP_SESSION_CAPTURE=true npx playwright test playwright_tests/login.test.ts -c playwright.config.ts",
     "test:backendMock": "DEBUG=true nodemon test/backendMock/app --standalone"
   },
   "private": true,
