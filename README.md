@@ -1,6 +1,6 @@
 # Approve Organisation
 
-TODO: Readme copied over from Manage Cases, needs to be updated to reflect Approve Organisation App [19.02.2020]
+Local development, configuration, and test guidance for `rpx-xui-approve-org`.
 
 To run the application locally please make sure you follow the prerequisite task of
 Setting up Secrets locally as documented below.
@@ -26,14 +26,15 @@ Run `yarn start:ng` to start up the UI.
 
 ## Running unit tests
 
-Run `yarn test` to execute the unit tests on both the Angular and Node layers. Note that 
-`yarn test` is run on the build pipelines.
+Run `yarn test` to execute Angular unit tests.
+Run `yarn test:node` to execute Node unit tests.
+Both are run on the build pipelines.
 
 ## Linting
 
 Run `yarn lint` to execute all linting across both Angular and Node layers. Note that this
 is run on the build pipelines.
-Run `yarn lint:node` to execute note linting.
+Run `yarn lint:node` to execute node linting.
 
 # Branches, Environment and Deployment methods used
 
@@ -55,7 +56,7 @@ Run `yarn lint:node` to execute note linting.
 The application should point to the configuration folder that contains the .json configuration files. There 
 should only ever be three files within this folder:
 
-`custom-environmental-variables.json` - Allows configuration values to be set by the machines environmental values.
+`custom-environment-variables.json` - Allows configuration values to be set by the machines environmental values.
 Through the Jenkins pipelines they are overwritten by values.*.template.yaml files for the Preview and AAT enviroments.
 On AKS they are only overwritten by the values.yaml file
 `default.json` - Should contain Production configuration values as per Reform standards.
@@ -117,24 +118,24 @@ which in turn uses `propertiesVolume.addTo()`
 
 The application picks up the configuration from the /config .json files.
 
-The references within *.json ie. production.json are set by the /charts/xui-terms-and-conditions/values.yaml file ie.
+The references within *.json ie. production.json are set by the `/charts/xui-ao-webapp/values.yaml` file ie.
 POSTGRES_SERVER_PORT is set by POSTGRES_SERVER_PORT within values.yaml. <br><br>HOWEVER if there is a
 values.*.template.yaml file it will override the values within the values.yaml file, BUT this only happens on the JENKINS
 pipelines, where values.*.template.yaml are available to the build pipeline.
 
-AKS uses a .json file in /config and the values.yaml from within charts/xui-terms-and-conditions ONLY.
+AKS uses a .json file in /config and the values.yaml from within `charts/xui-ao-webapp` ONLY.
  
-AKS does not use values.aat.template.yaml and values.previews.template.yaml
+AKS does not use `values.aat.template.yaml` and `values.preview.template.yaml`.
 
 DO NOT create a new .json file within /config as this increases the complexity of configuration. 
 
 The 3rd party Node config package selects the file within /config based on `NODE_ENV` which is always production on all environments,
 due to Reform standards, this does not change on different environments, it is always `NODE_ENV=production`
 
-If production.json is not within /config, it's not in the case of Manage Cases, it will use the files in the order specified by
+If production.json is not within /config, it will use the files in the order specified by
 @see https://github.com/lorenwest/node-config/wiki/Configuration-Files
 
-We DO NOT need to leverage `NODE_CONFIG_ENV` on the Manage Cases project - All application code be written so that it's 
+We DO NOT need to leverage `NODE_CONFIG_ENV` on this project - all application code should be written so that it's 
 not environment specific!
 
 Note about secrets ie. 
