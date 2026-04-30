@@ -4,7 +4,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly heading = this.page.getByRole('heading', { name: 'Organisation approvals' });
   readonly tabPanel = this.page.getByRole('tabpanel');
   readonly pendingOverviewPanel = this.page.locator('app-pending-overview-component');
-  readonly tabCollection  = this.page.locator('.govuk-tabs');
+  readonly tabCollection = this.page.locator('.govuk-tabs');
   readonly newPbasTab = this.tabCollection.getByRole('tab', { name: 'New PBAs' });
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
   readonly activeOrganisationsTab = this.tabCollection.getByRole('tab', { name: 'Active organisations' });

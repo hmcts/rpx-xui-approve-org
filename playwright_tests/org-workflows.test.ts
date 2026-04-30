@@ -2,11 +2,10 @@ import { test, expect } from './helpers/fixtures';
 import { ensureAuthenticatedPage } from './helpers/sessionCapture';
 import { getTableActionButton, getTableDataByXpath } from './helpers/tables';
 
-
 test.describe('Organisation approvals - pending org workflows', () => {
   test.beforeEach(async ({ page }) => {
-  await ensureAuthenticatedPage(page, 'base');
-});
+    await ensureAuthenticatedPage(page, 'base');
+  });
   test('i can approve a pending org', async ({ page, userName }) => {
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.locator('#search').fill(userName);

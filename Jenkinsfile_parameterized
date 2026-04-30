@@ -14,12 +14,12 @@ properties([
     ])
 ])
 
-@Library("Infrastructure")
+@Library('Infrastructure')
 
-def type      = "nodejs"
-def product   = "xui"
-def component = "manage-organisations"
-def vault     = "rpx"
+def type      = 'nodejs'
+def product   = 'xui'
+def component = 'manage-organisations'
+def vault     = 'rpx'
 def channel   = '#xui-pipeline'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 
@@ -31,7 +31,7 @@ List<LinkedHashMap<String, Object>> secrets = [
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [ $class: 'AzureKeyVaultSecret',
+    [ $class: 'AzureKeyVaultSecret',
     secretType: 'Secret',
     name: secretName,
     version: '',
@@ -40,15 +40,14 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox') {
-  enableSlackNotifications(channel)
-  enableDockerBuild()
-  loadVaultSecrets(secrets)
-  env.FUNCTIONAL_TESTS_WORKERS = '4'
-  setVaultName(vault)
+    enableSlackNotifications(channel)
+    enableDockerBuild()
+    loadVaultSecrets(secrets)
+    env.FUNCTIONAL_TESTS_WORKERS = '4'
+    setVaultName(vault)
  // installCharts()
 
-
-    after('checkout') {sh 'yarn cache clean'}
+    after('checkout') { sh 'yarn cache clean' }
 
     after('build') {
         sh 'yarn build'
@@ -57,7 +56,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/lint/node/",
+            reportDir            : 'test/reports/lint/node/',
             reportFiles          : 'index.html',
             reportName           : 'node lint Report'
         ])
@@ -66,50 +65,48 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/lint/ng/",
+            reportDir            : 'test/reports/lint/ng/',
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
     }
 
     after('test') {
-
-        publishHTML ( [
+        publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/tests/unit/node",
-            reportFiles          : "index.html",
-            reportName           : "node unit tests"
+            reportDir            : 'test/reports/tests/unit/node',
+            reportFiles          : 'index.html',
+            reportName           : 'node unit tests'
         ])
 
-        publishHTML ( [
+        publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/tests/unit/ng",
-            reportFiles          : "index.html",
-            reportName           : "ng unit Tests"
+            reportDir            : 'test/reports/tests/unit/ng',
+            reportFiles          : 'index.html',
+            reportName           : 'ng unit Tests'
         ])
 
-        publishHTML ( [
+        publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/tests/coverage/node",
-            reportFiles          : "index.html",
-            reportName           : "node coverage tests"
+            reportDir            : 'test/reports/tests/coverage/node',
+            reportFiles          : 'index.html',
+            reportName           : 'node coverage tests'
         ])
 
-        publishHTML ( [
+        publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/coverage/ng",
-            reportFiles          : "index.html",
-            reportName           : "ng coverage tests"
+            reportDir            : 'reports/tests/coverage/ng',
+            reportFiles          : 'index.html',
+            reportName           : 'ng coverage tests'
         ])
-
     }
 
     after('functionalTest:demo') {
@@ -167,7 +164,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
         ])
     }
 
-    after('smoketest:prod'){
+    after('smoketest:prod') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -177,5 +174,4 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             reportName           : 'PROD Smoke Test'
         ])
     }
-
 }
