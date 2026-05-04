@@ -70,7 +70,7 @@
     "@angular/platform-server": "^20.3.18",
     "@angular/router": "^20.3.18",
     "@angular/ssr": "^20.3.18",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.52-exui-4425-rc-3",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.52-exui-4425-rc-4",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^0.0.13",
     "@hmcts/rpx-xui-common-lib": "3.2.9-exui-4425-rc-2",
