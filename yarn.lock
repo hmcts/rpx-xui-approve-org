@@ -3325,13 +3325,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-4":
-  version: 7.3.52-exui-4425-rc-4
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-4"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-6":
+  version: 7.3.52-exui-4425-rc-6
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-6"
   dependencies:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
-    "@hmcts/media-viewer": "npm:4.2.16"
+    "@hmcts/media-viewer": "npm:4.2.16-exui-4425-rc1"
     file-saver: "npm:^2.0.2"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
@@ -3368,7 +3368,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/ec7d0e2609d27fc4d078d559f859a7c587ea485ca3410e653f4ecb30ff0ee6fad2ae3ef862fb58b60345b338a0c55a5c1742f91439d645479d894a1ac25c3f5f
+  checksum: 10/d3293b6ebae9858dd80e2853527b3a6f4f2df642e378955dc6a77a937eb9c728c877ce2cce3e59648ffcb47a1d1d656a6ee205bea3b14e7bdf8336b04d046319
   languageName: node
   linkType: hard
 
@@ -3391,11 +3391,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.16":
-  version: 4.2.16
-  resolution: "@hmcts/media-viewer@npm:4.2.16"
+"@hmcts/media-viewer@npm:4.2.16-exui-4425-rc1":
+  version: 4.2.16-exui-4425-rc1
+  resolution: "@hmcts/media-viewer@npm:4.2.16-exui-4425-rc1"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
+    moment-timezone: "npm:^0.5.28"
     mutable-div: "npm:^2.0.0"
     pdfjs-dist: "npm:^4.10.38"
     socket.io-client: "npm:^4.8.0"
@@ -3403,6 +3404,7 @@ __metadata:
     uuid: "npm:^11.0.3"
   peerDependencies:
     "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
     "@angular/common": ^20.0.0
     "@angular/core": ^20.0.0
     "@angular/forms": ^20.0.0
@@ -3412,7 +3414,10 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/3f49d013cf857a4d07c5a59722855ac348f0eead29203575824595211ab9d4af5ef0bc77cc0366c170206ffe09e6be33b46b4d1f43392dc3ee40552695334acb
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.1.2-CME-780-9
+    rxjs: ^7.8.1
+  checksum: 10/2490a95a5d671dc288b8c66c982ea190ecca740fcee51842733f5ac580eaa0378d363bed1704613b109b859f0e309848254ba4f2fa18111b1b42ad20628bc880
   languageName: node
   linkType: hard
 
@@ -18780,6 +18785,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment-timezone@npm:^0.5.28":
+  version: 0.5.48
+  resolution: "moment-timezone@npm:0.5.48"
+  dependencies:
+    moment: "npm:^2.29.4"
+  checksum: 10/8e0b7a05577623552293b28eeee4e60634b8be87fdb74084fa6d5ccc516771eb42d88f29c5a5e50a94c494048d14cdef94f94526a9dfd5e1b0050ff29d0a6c0a
+  languageName: node
+  linkType: hard
+
 "moment@npm:^2.19.3, moment@npm:^2.29.4":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
@@ -19951,7 +19965,7 @@ __metadata:
     "@angular/router": "npm:^20.3.18"
     "@angular/ssr": "npm:^20.3.18"
     "@cucumber/cucumber": "npm:^9.5.1"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-exui-4425-rc-4"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-exui-4425-rc-6"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.9-exui-4425-rc-2"
