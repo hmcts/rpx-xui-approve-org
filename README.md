@@ -174,6 +174,8 @@ This repository now uses Playwright for the functional/liveliness test path.
 - `yarn test:smoke` runs the Playwright smoke journey (`playwright_tests/login.test.ts`).
 - `yarn test:functional` runs the Playwright functional suite (`playwright_tests/`).
 - `yarn test:crossbrowser` runs cross-browser Playwright tests using `playwright-nightly.config.ts`.
+- `yarn test:api:playwright` runs the Playwright API suite (`playwright_tests/api`) using `playwright-api.config.ts`.
+- `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests.
 - `FUNCTIONAL_TESTS_WORKERS` can be set to override Playwright worker count.

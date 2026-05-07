@@ -6,6 +6,7 @@ export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 module.exports = defineConfig({
   testDir: './playwright_tests',
+  testIgnore: ['**/api/**'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
