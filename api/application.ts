@@ -1,6 +1,6 @@
+import csrf from '@dr.pogodin/csurf';
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
-import * as csurf from 'csurf';
 import * as express from 'express';
 import { existsSync, readFileSync } from 'fs';
 import helmet from 'helmet';
@@ -35,7 +35,6 @@ import {
 import * as log4jui from './lib/log4jui';
 import * as tunnel from './lib/tunnel';
 import routes from './routes';
-import { idamCheck } from './idamCheck';
 import { AO_CSP } from './interfaces/csp-config';
 
 function loadIndexHtml(): string {
@@ -57,7 +56,7 @@ export const app = express();
 
 export const logger = log4jui.getLogger('server');
 
-export const csrfProtection = csurf();
+export const csrfProtection = csrf();
 
 /**
  * If there are no configuration properties found we highlight this to the person attempting to initialise
@@ -183,7 +182,8 @@ const options: AuthOptions = {
   sessionKey: 'xui-approve-org',
   tokenEndpointAuthMethod: 'client_secret_post',
   tokenURL: tokenUrl,
-  useRoutes: true
+  useRoutes: true,
+  ssoLogoutURL: `${idamWebUrl}/o/endSession`
 };
 
 const baseStoreOptions = {
@@ -306,7 +306,3 @@ app.use('/*', (req, res) => {
   const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
   res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
 });
-
-new Promise(idamCheck)
-  .then(() => 'IDAM is up and running')
-  .catch((err) => logger.error('idam api check failed after retries', err));
