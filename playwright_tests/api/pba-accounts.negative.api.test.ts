@@ -1,16 +1,24 @@
 import { test, expect } from './helpers/api.fixtures';
+import { pbaAccountsMissingParameterErrors, resolveHeader } from './helpers/json-contracts';
+
+const missingResponseError = {
+  "apiError": "Account is missing",
+  "apiStatusCode": "400",
+  "message": "Fee And Pay route error"
+}
 
 test.describe('Playwright API negative: pba accounts', () => {
   test('GET /api/pbaAccounts without accountNames returns an error payload', async ({ apiRequest }) => {
     const response = await apiRequest.get('/api/pbaAccounts', { failOnStatusCode: false });
     expect(response.status()).toBe(500);
 
-    const contentType = response.headers()['content-type'] ?? '';
+    const contentType = resolveHeader(response.headers(), 'content-type');
     expect(contentType).toContain('application/json');
 
     const payload = await response.json();
-    expect(payload).toHaveProperty('apiError');
-    expect(payload.apiError).toContain('Account is missing');
+    const shapeErrors = pbaAccountsMissingParameterErrors(payload);
+    expect(shapeErrors).toEqual([]);
+    expect(payload).toEqual(missingResponseError);
   });
 
   test('GET /api/pbaAccounts without auth is denied', async ({ apiAnonymousRequest }) => {
@@ -23,4 +31,5 @@ test.describe('Playwright API negative: pba accounts', () => {
       expect(location.toLowerCase()).toContain('login');
     }
   });
+
 });

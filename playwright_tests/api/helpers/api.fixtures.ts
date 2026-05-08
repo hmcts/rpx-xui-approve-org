@@ -7,15 +7,50 @@ type ApiFixtures = {
   apiAnonymousRequest: APIRequestContext;
 };
 
+async function isAuthenticatedRequestContext(requestContext: APIRequestContext): Promise<boolean> {
+  try {
+    const response = await requestContext.get('auth/isAuthenticated', { failOnStatusCode: false });
+    if (response.status() !== 200) {
+      return false;
+    }
+
+    const rawBody = (await response.text()).trim().toLowerCase();
+    if (rawBody === 'true') {
+      return true;
+    }
+    if (rawBody === 'false' || rawBody.length === 0) {
+      return false;
+    }
+
+    try {
+      return JSON.parse(rawBody) === true;
+    } catch {
+      return false;
+    }
+  } catch {
+    return false;
+  }
+}
+
+async function createAuthenticatedApiContext(forceRefresh = false): Promise<APIRequestContext> {
+  const storageStatePath = await sessionCapture('base', { force: forceRefresh });
+  return playwrightRequest.newContext({
+    baseURL: config.baseUrl,
+    ignoreHTTPSErrors: true,
+    storageState: storageStatePath
+  });
+}
+
 export const test = base.extend<ApiFixtures>({
   apiRequest: [async ({ browserName }, use) => {
     void browserName;
-    const storageStatePath = await sessionCapture('base');
-    const requestContext = await playwrightRequest.newContext({
-      baseURL: config.baseUrl,
-      ignoreHTTPSErrors: true,
-      storageState: storageStatePath
-    });
+
+    let requestContext = await createAuthenticatedApiContext(false);
+    const authenticated = await isAuthenticatedRequestContext(requestContext);
+    if (!authenticated) {
+      await requestContext.dispose();
+      requestContext = await createAuthenticatedApiContext(true);
+    }
 
     await use(requestContext);
     await requestContext.dispose();

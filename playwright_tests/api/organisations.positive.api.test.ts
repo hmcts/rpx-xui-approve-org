@@ -1,33 +1,25 @@
 import { test, expect } from './helpers/api.fixtures';
+import { organisationsListShapeErrors, resolveHeader } from './helpers/json-contracts';
+
+const statuses = ['PENDING', 'ACTIVE'];
 
 test.describe('Playwright API positive: organisations', () => {
-  test('GET /api/organisations?status=PENDING returns a JSON list', async ({ apiRequest }) => {
-    const response = await apiRequest.get('/api/organisations?status=PENDING', { failOnStatusCode: false });
-    expect(response.status()).toBe(200);
+  for (const status of statuses) {
+    test(`GET /api/organisations?status=${status} returns a JSON list`, async ({ apiRequest }) => {
+      const response = await apiRequest.get(`/api/organisations?status=${status}`, { failOnStatusCode: false });
+      expect(response.status()).toBe(200);
 
-    const contentType = response.headers()['content-type'] ?? '';
-    expect(contentType).toContain('application/json');
+      const contentType = resolveHeader(response.headers(), 'content-type');
+      expect(contentType).toContain('application/json');
 
-    const payload = await response.json();
-    expect(Array.isArray(payload)).toBe(true);
+      const payload = await response.json();
+      const shapeErrors = organisationsListShapeErrors(payload);
+      expect(shapeErrors).toEqual([]);
 
-    if (payload.length > 0) {
-      expect(payload[0]).toHaveProperty('organisationIdentifier');
-    }
-  });
-
-  test('GET /api/organisations?status=ACTIVE returns a JSON list', async ({ apiRequest }) => {
-    const response = await apiRequest.get('/api/organisations?status=ACTIVE', { failOnStatusCode: false });
-    expect(response.status()).toBe(200);
-
-    const contentType = response.headers()['content-type'] ?? '';
-    expect(contentType).toContain('application/json');
-
-    const payload = await response.json();
-    expect(Array.isArray(payload)).toBe(true);
-
-    if (payload.length > 0) {
-      expect(payload[0]).toHaveProperty('organisationIdentifier');
-    }
-  });
+      const firstOrganisation = Array.isArray(payload) ? payload[0] : undefined;
+      if (firstOrganisation && typeof firstOrganisation === 'object') {
+        expect(Object.keys(firstOrganisation)).toEqual(expect.arrayContaining(['organisationIdentifier']));
+      }
+    });
+  }
 });
