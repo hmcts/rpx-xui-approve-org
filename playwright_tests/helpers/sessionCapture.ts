@@ -142,8 +142,19 @@ async function isAuthenticatedByApi(page: Page): Promise<boolean> {
     if (response.status() !== 200) {
       return false;
     }
-    const body = await response.json().catch(() => false);
-    return body === true;
+    const rawBody = (await response.text()).trim().toLowerCase();
+    if (rawBody === 'true') {
+      return true;
+    }
+    if (rawBody === 'false' || rawBody.length === 0) {
+      return false;
+    }
+
+    try {
+      return JSON.parse(rawBody) === true;
+    } catch {
+      return false;
+    }
   } catch {
     return false;
   }
