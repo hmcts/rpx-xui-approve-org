@@ -4,6 +4,7 @@ import { sessionCapture } from '../../helpers/sessionCapture';
 
 type ApiFixtures = {
   apiRequest: APIRequestContext;
+  apiAnonymousRequest: APIRequestContext;
 };
 
 export const test = base.extend<ApiFixtures>({
@@ -14,6 +15,17 @@ export const test = base.extend<ApiFixtures>({
       baseURL: config.baseUrl,
       ignoreHTTPSErrors: true,
       storageState: storageStatePath
+    });
+
+    await use(requestContext);
+    await requestContext.dispose();
+  }, { scope: 'worker' }],
+
+  apiAnonymousRequest: [async ({ browserName }, use) => {
+    void browserName;
+    const requestContext = await playwrightRequest.newContext({
+      baseURL: config.baseUrl,
+      ignoreHTTPSErrors: true
     });
 
     await use(requestContext);
