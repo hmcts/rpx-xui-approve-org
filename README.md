@@ -172,7 +172,9 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 This repository now uses Playwright for the functional/liveliness test path.
 
 - `yarn test:smoke` runs the Playwright smoke journey (`playwright_tests/login.test.ts`).
-- `yarn test:functional` runs the Playwright functional suite (`playwright_tests/`).
+- `yarn test:functional` runs the Playwright E2E suite (`playwright_tests/`) unless `PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN=true` (used by Jenkins parallel functional stages).
+- `yarn test:functional:parallel` runs Playwright E2E (`playwright_tests/`) and Playwright API (`playwright_tests/api`) suites in parallel by invoking separate commands.
+- `yarn test:functional:e2e` runs only Playwright E2E (`playwright_tests/`).
 - `yarn test:crossbrowser` runs cross-browser Playwright tests using `playwright-nightly.config.ts`.
 - `yarn test:api:playwright` runs the Playwright API suite (`playwright_tests/api`) using `playwright-api.config.ts`.
 - `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
@@ -182,7 +184,10 @@ This repository now uses Playwright for the functional/liveliness test path.
 
 CI/Jenkins notes:
 
-- `smoketest:*`, `functionalTest:*`, and nightly cross-browser stages publish Playwright HTML reports from `functional-output/tests/playwright-e2e`.
+- `smoketest:*` and nightly cross-browser stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e`.
+- `functionalTest:*` stages publish both Playwright E2E (`functional-output/tests/playwright-e2e`) and Playwright API (`functional-output/tests/playwright-api`) HTML reports.
+- PR functional stages run API and E2E as separate parallel Jenkins branches (`before('functionalTest:preview')` / `before('functionalTest:aat')`).
+- Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 
 ## Integration Documentation
 
