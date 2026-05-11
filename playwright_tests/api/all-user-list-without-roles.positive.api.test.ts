@@ -31,24 +31,27 @@ test.describe('Playwright API positive: all user list without roles', () => {
       Array.isArray(payload.users),
       `Expected payload.users to be an array from GET /api/allUserListWithoutRoles. usersType=${typeof payload.users}`
     ).toBe(true);
+    expect(
+      payload.users.length,
+      `Expected at least one user from GET /api/allUserListWithoutRoles for usersOrgId=${USERS_ORG_ID}. Received usersLength=${payload.users.length}`
+    ).toBeGreaterThan(0);
 
-    if (Array.isArray(payload.users) && payload.users.length > 0) {
+    const firstUser = payload.users[0];
+    expect(
+      typeof firstUser,
+      `Expected first user to be an object. Received firstUserType=${typeof firstUser}`
+    ).toBe('object');
+    if (firstUser?.email !== undefined) {
       expect(
-        typeof payload.users[0],
-        `Expected first user to be an object. Received firstUserType=${typeof payload.users[0]}`
-      ).toBe('object');
-      if (payload.users[0]?.email !== undefined) {
-        expect(
-          typeof payload.users[0].email,
-          `Expected first user email to be a string when present. Received emailType=${typeof payload.users[0].email}`
-        ).toBe('string');
-      }
-      if (payload.users[0]?.idamStatus !== undefined) {
-        expect(
-          typeof payload.users[0].idamStatus,
-          `Expected first user idamStatus to be a string when present. Received idamStatusType=${typeof payload.users[0].idamStatus}`
-        ).toBe('string');
-      }
+        typeof firstUser.email,
+        `Expected first user email to be a string when present. Received emailType=${typeof firstUser.email}`
+      ).toBe('string');
+    }
+    if (firstUser?.idamStatus !== undefined) {
+      expect(
+        typeof firstUser.idamStatus,
+        `Expected first user idamStatus to be a string when present. Received idamStatusType=${typeof firstUser.idamStatus}`
+      ).toBe('string');
     }
   });
 });
