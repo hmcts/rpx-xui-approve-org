@@ -10,25 +10,45 @@ const missingResponseError = {
 test.describe('Playwright API negative: pba accounts', () => {
   test('GET /api/pbaAccounts without accountNames returns an error payload', async ({ apiRequest }) => {
     const response = await apiRequest.get('/api/pbaAccounts', { failOnStatusCode: false });
-    expect(response.status()).toBe(500);
+    const httpStatus = response.status();
+    expect(httpStatus, `Expected 500 from GET /api/pbaAccounts without accountNames. Received status=${httpStatus}`).toBe(500);
 
     const contentType = resolveHeader(response.headers(), 'content-type');
-    expect(contentType).toContain('application/json');
+    expect(
+      contentType,
+      `Expected JSON content-type from GET /api/pbaAccounts without accountNames. Received content-type=${contentType}`
+    ).toContain('application/json');
 
     const payload = await response.json();
     const shapeErrors = pbaAccountsMissingParameterErrors(payload);
-    expect(shapeErrors).toEqual([]);
-    expect(payload).toEqual(missingResponseError);
+    expect(
+      shapeErrors,
+      `Expected missing-account payload shape to be valid. shapeErrors=${JSON.stringify(shapeErrors)}`
+    ).toEqual([]);
+    expect(
+      payload,
+      `Expected exact missing-account error payload. Received payload=${JSON.stringify(payload)}`
+    ).toEqual(missingResponseError);
   });
 
   test('GET /api/pbaAccounts without auth is denied', async ({ apiAnonymousRequest }) => {
     const response = await apiAnonymousRequest.get('/api/pbaAccounts?accountNames=PBA1088483', { failOnStatusCode: false });
-    expect(response.ok()).toBe(false);
-    expect([302, 401, 403]).toContain(response.status());
+    const httpStatus = response.status();
+    expect(
+      response.ok(),
+      `Expected unauthenticated GET /api/pbaAccounts to be denied. Received ok=${response.ok()} status=${httpStatus}`
+    ).toBe(false);
+    expect(
+      [302, 401, 403],
+      `Expected denied status to be one of 302/401/403 for unauthenticated pba accounts request. Received status=${httpStatus}`
+    ).toContain(httpStatus);
 
-    if (response.status() === 302) {
+    if (httpStatus === 302) {
       const location = response.headers().location ?? '';
-      expect(location.toLowerCase()).toContain('login');
+      expect(
+        location.toLowerCase(),
+        `Expected redirect location to contain login for unauthenticated pba accounts request. Received location=${location}`
+      ).toContain('login');
     }
   });
 
