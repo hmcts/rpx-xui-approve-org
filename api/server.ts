@@ -38,7 +38,12 @@ idamCheck()
       console.timeEnd(`GET: ${req.originalUrl}`);
     });
 
-    app.listen(port, () => logger.info(`Local server up at ${port}`));
+    app.listen(port, (error?: Error) => {
+      if (error) {
+        throw error;
+      }
+      logger.info(`Local server up at ${port}`);
+    });
   })
   .catch((err) => {
     startupLogger.error('idam check failed after retries', err);

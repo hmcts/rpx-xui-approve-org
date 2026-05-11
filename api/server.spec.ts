@@ -133,6 +133,18 @@ describe('server', () => {
       expect(loggerMock.info).to.have.been.calledWith('Local server up at 3000');
     });
 
+    it('should throw when app.listen provides an error', async () => {
+      const listenError = new Error('port unavailable');
+
+      require('./server');
+      await flushPromises();
+
+      const listenCallback = appMock.listen.firstCall.args[1];
+
+      expect(() => listenCallback(listenError)).to.throw(listenError);
+      expect(loggerMock.info).not.to.have.been.calledWith('Local server up at 3000');
+    });
+
     it('should log initialization message', async () => {
       require('./server');
       await flushPromises();
