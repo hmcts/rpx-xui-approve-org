@@ -60,7 +60,7 @@ export async function handleUpdatePBARoute(req: EnhancedRequest, res: Response) 
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.status(error.status).send(error.data);
+    res.status(Number(error?.status) || 500).send(error?.data);
   }
 }
 
@@ -78,7 +78,7 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
     // res.status(430).send('no permission');
   } catch (error) {
     console.error(error);
-    res.status(error.status).send(error.data);
+    res.status(Number(error?.status) || 500).send(error?.data);
   }
 }
 
@@ -94,7 +94,7 @@ export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Resp
     res.status(status).send(data);
   } catch (error) {
     console.error(error);
-    res.status(error.status).send(error.data);
+    res.status(Number(error?.status) || 500).send(error?.data);
   }
 }
 
@@ -117,7 +117,7 @@ export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Res
     res.status(status).send(responseData);
   } catch (error) {
     console.error(error);
-    res.status(error.status).send(error.data);
+    res.status(Number(error?.status) || 500).send(error?.data);
   }
 }
 

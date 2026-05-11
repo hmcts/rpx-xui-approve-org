@@ -636,7 +636,6 @@ describe('updatePba/index', () => {
   describe('Error handling edge cases', () => {
     beforeEach(() => {
       delete require.cache[require.resolve('./index')];
-      consoleErrorStub = sinon.stub(console, 'error');
     });
 
     it('should handle error without status code in updatePBA', async () => {
@@ -651,7 +650,7 @@ describe('updatePba/index', () => {
       await module.handleUpdatePBARoute(mockRequest, mockResponse);
 
       expect(consoleErrorStub).to.have.been.calledWith(errorWithoutStatus);
-      expect(mockResponse.status).to.have.been.calledWith(undefined);
+      expect(mockResponse.status).to.have.been.calledWith(500);
     });
 
     it('should handle error without data in setStatus', async () => {
