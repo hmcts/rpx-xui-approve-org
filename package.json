@@ -157,7 +157,7 @@
     "@types/cookie-parser": "^1.4.2",
     "@types/crypto-js": "^3.1.43",
     "@types/ejs": "^2.6.3",
-    "@types/express": "^5.0.1",
+    "@types/express": "^5.0.6",
     "@types/express-session": "^1.17.0",
     "@types/global-agent": "^2.1.0",
     "@types/jasmine": "~4.3.5",
