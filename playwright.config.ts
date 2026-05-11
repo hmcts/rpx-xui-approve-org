@@ -1,10 +1,16 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as fs from 'node:fs';
+import { getSessionStatePath } from './playwright_tests/helpers/sessionCapture';
+import { resolveWorkerCount } from './playwright-config-utils';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
+const sharedStorageStatePath = getSessionStatePath('base');
+const sharedStorageState = fs.existsSync(sharedStorageStatePath) ? sharedStorageStatePath : undefined;
 
 module.exports = defineConfig({
   testDir: './playwright_tests',
+  globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -19,7 +25,7 @@ module.exports = defineConfig({
   reportSlowTests: null,
 
   /* Opt out of parallel tests on CI. */
-  workers: process.env.FUNCTIONAL_TESTS_WORKERS ? parseInt(process.env.FUNCTIONAL_TESTS_WORKERS, 10) : 1,
+  workers: resolveWorkerCount(),
 
   reporter: [[process.env.CI ? 'html' : 'list'],
     ['html', { open: 'never', outputFolder: 'functional-output/tests/playwright-e2e' }]],
@@ -30,6 +36,7 @@ module.exports = defineConfig({
       use: { ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,
+        storageState: sharedStorageState,
         trace: 'on-first-retry'
       }
     }
