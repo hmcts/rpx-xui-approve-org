@@ -103,8 +103,8 @@ describe('server', () => {
       require('./server');
       await flushPromises();
 
-      expect(appMock.use).to.have.been.calledWith('/*');
-      expect(appMock.use.args.find((call) => call[0] === '/*')).to.exist;
+      expect(appMock.use).to.have.been.calledWith('/{*splat}');
+      expect(appMock.use.args.find((call) => call[0] === '/{*splat}')).to.exist;
     });
 
     it('should start server on default port 3000', async () => {
@@ -172,7 +172,7 @@ describe('server', () => {
       await flushPromises();
 
       // Find the catch-all route handler
-      const catchAllCall = appMock.use.args.find((call) => call[0] === '/*');
+      const catchAllCall = appMock.use.args.find((call) => call[0] === '/{*splat}');
       routeHandler = catchAllCall[1];
 
       mockReq = {

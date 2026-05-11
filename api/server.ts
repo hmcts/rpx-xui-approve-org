@@ -28,7 +28,7 @@ idamCheck()
     /**
      * Used on server.ts only but should be fine to lift and shift to local.ts
      */
-    app.use('/*', (req, res) => {
+    app.use('/{*splat}', (req, res) => {
       console.time(`GET: ${req.originalUrl}`);
       res.render('../index', {
         providers: [{ provide: 'REQUEST', useValue: req }, { provide: 'RESPONSE', useValue: res }],
