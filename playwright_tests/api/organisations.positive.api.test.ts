@@ -1,7 +1,6 @@
 import { test, expect } from './helpers/api.fixtures';
 import { organisationsListShapeErrors, resolveHeader } from './helpers/json-contracts';
-
-const statuses = ['PENDING', 'ACTIVE'];
+const statuses = ['PENDING', 'ACTIVE', 'REVIEW', 'PENDING,REVIEW'] as const;
 
 test.describe('Playwright API positive: organisations', () => {
   for (const status of statuses) {
