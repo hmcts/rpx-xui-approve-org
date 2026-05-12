@@ -89,7 +89,7 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
  */
 export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
   try {
-    const pbaStatus = req.params.status;
+    const pbaStatus = req.params.status as string;
     const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     res.status(status).send(data);
   } catch (error) {
@@ -106,7 +106,7 @@ export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Resp
 export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
   try {
     let responseData = null;
-    const pbaStatus = req.params.status;
+    const pbaStatus = req.params.status as string;
     const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     if (data) {
       const filteredOrganisations = filterOrganisations(data, req.body.searchRequest.search_filter, req.body.searchRequest.drill_down_search);
