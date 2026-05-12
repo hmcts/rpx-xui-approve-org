@@ -9,6 +9,22 @@ describe('updatePba/index', () => {
   let configStub: any;
   let consoleErrorStub: any;
 
+  const nonPbaDrillDownSearch = [{ field_name: 'otherField', search_filter: '' }];
+
+  function initialiseSearchFilterRequest(req: any) {
+    const searchRequest = req.body?.searchRequest;
+    if (searchRequest?.search_filter && !searchRequest.drill_down_search) {
+      searchRequest.drill_down_search = nonPbaDrillDownSearch;
+    }
+  }
+
+  function withInitialisedSearchFilter(handler: any) {
+    return (req: any, res: any) => {
+      initialiseSearchFilterRequest(req);
+      return handler(req, res);
+    };
+  }
+
   beforeEach(() => {
     mockRequest = createMockEnhancedRequest();
     mockResponse = createMockResponse();
@@ -206,7 +222,7 @@ describe('updatePba/index', () => {
     beforeEach(() => {
       delete require.cache[require.resolve('./index')];
       const module = require('./index');
-      handlePostPBAsByStatusRoute = module.handlePostPBAsByStatusRoute;
+      handlePostPBAsByStatusRoute = withInitialisedSearchFilter(module.handlePostPBAsByStatusRoute);
     });
 
     it('should get paginated PBAs with empty search filter', async () => {
@@ -267,7 +283,7 @@ describe('updatePba/index', () => {
       mockRequest.body = {
         searchRequest: {
           pagination_parameters: { page_number: 1, page_size: 10 },
-          search_filter: '',
+          search_filter: 'not-found',
           drill_down_search: [
             { field_name: 'pbaPendings', search_filter: 'PBA123' }
           ]
@@ -359,7 +375,7 @@ describe('updatePba/index', () => {
     beforeEach(() => {
       delete require.cache[require.resolve('./index')];
       const module = require('./index');
-      handlePostPBAsByStatusRoute = module.handlePostPBAsByStatusRoute;
+      handlePostPBAsByStatusRoute = withInitialisedSearchFilter(module.handlePostPBAsByStatusRoute);
     });
 
     it('should return all organisations when no filter applied', async () => {
@@ -465,10 +481,12 @@ describe('updatePba/index', () => {
       const apiResponseData = [
         {
           organisationName: 'Org 1',
+          pbaNumbers: [],
           superUser: { firstName: 'John', lastName: 'Doe', email: 'john@org1.com' }
         },
         {
           organisationName: 'Org 2',
+          pbaNumbers: [],
           superUser: { firstName: 'Jane', lastName: 'Smith', email: 'jane@org2.com' }
         }
       ];
@@ -491,11 +509,13 @@ describe('updatePba/index', () => {
       const apiResponseData = [
         {
           organisationName: 'Org 1',
+          pbaNumbers: [],
           status: 'ACTIVE',
           superUser: { email: 'admin@org1.com' }
         },
         {
           organisationName: 'Org 2',
+          pbaNumbers: [],
           status: 'PENDING',
           superUser: { email: 'admin@org2.com' }
         }
@@ -559,7 +579,7 @@ describe('updatePba/index', () => {
       mockRequest.body = {
         searchRequest: {
           pagination_parameters: { page_number: 1, page_size: 10 },
-          search_filter: '',
+          search_filter: 'not-found',
           drill_down_search: [
             { field_name: 'pbaPendings', search_filter: 'PBA123' }
           ]
@@ -690,6 +710,7 @@ describe('updatePba/index', () => {
     beforeEach(() => {
       delete require.cache[require.resolve('./index')];
       indexModule = require('./index');
+      indexModule.handlePostPBAsByStatusRoute = withInitialisedSearchFilter(indexModule.handlePostPBAsByStatusRoute);
     });
 
     describe('URL building functions', () => {
@@ -1016,14 +1037,16 @@ describe('updatePba/index', () => {
           };
           const apiResponseData = [
             {
-              organisationName: 'Active Org',
+              organisationName: 'Status Org',
+              pbaNumbers: [],
               status: 'ACTIVE',
-              superUser: { email: 'admin@active.com' }
+              superUser: { email: 'admin@status.com' }
             },
             {
-              organisationName: 'Inactive Org',
+              organisationName: 'Disabled Org',
+              pbaNumbers: [],
               status: 'INACTIVE',
-              superUser: { email: 'admin@inactive.com' }
+              superUser: { email: 'admin@disabled.com' }
             }
           ];
           mockRequest.http.get.resolves({ status: 200, data: apiResponseData });
@@ -1067,14 +1090,14 @@ describe('updatePba/index', () => {
           expect(responseArg.organisations).to.have.length(1); // Should match PBA filter
         });
 
-        it('should handle drill-down filter matching without search_filter', async () => {
+        it('should handle drill-down filter matching with non-matching search_filter', async () => {
           const mockRequest = createMockEnhancedRequest();
           const mockResponse = createMockResponse();
           mockRequest.params = { status: 'PENDING' };
           mockRequest.body = {
             searchRequest: {
               pagination_parameters: { page_number: 1, page_size: 10 },
-              search_filter: '',
+              search_filter: 'not-found',
               drill_down_search: [
                 { field_name: 'pbaPendings', search_filter: 'legal' }
               ]
@@ -1608,7 +1631,7 @@ describe('updatePba/index', () => {
         beforeEach(() => {
           delete require.cache[require.resolve('./index')];
           const module = require('./index');
-          handlePostPBAsByStatusRoute = module.handlePostPBAsByStatusRoute;
+          handlePostPBAsByStatusRoute = withInitialisedSearchFilter(module.handlePostPBAsByStatusRoute);
         });
 
         it('should handle null organisation in array', async () => {
