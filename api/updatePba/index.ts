@@ -131,9 +131,9 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
   }
   searchFilter = searchFilter.toLowerCase();
 
-  let drilldownFilterRelevent: string[];
-  if (drilldownFilters && drilldownFilters.length) {
-    drilldownFilterRelevent = drilldownFilters.filter((x) => x.field_name === 'pbaPendings').map((y) => y.search_filter);
+  const drilldownFilterRelevent: string[] = [];
+  if (drilldownFilters?.length) {
+    drilldownFilterRelevent.push(...drilldownFilters.filter((x) => x.field_name === 'pbaPendings').map((y) => y.search_filter));
   }
 
   return orgs.filter((org: any) => {
@@ -145,14 +145,14 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
       }
       if (org.pbaNumbers) {
         for (const pba of org.pbaNumbers) {
-          if (pba.pbaNumber.toLowerCase().includes(searchFilter) || (drilldownFilterRelevent &&
+          if ((searchFilter && pba.pbaNumber.toLowerCase().includes(searchFilter)) || (drilldownFilterRelevent &&
             drilldownFilterRelevent.filter((pnumber) => pba.pbaNumber.toLowerCase().includes(pnumber.toLowerCase())).length)) {
             return true;
           } else if (drilldownFilterRelevent && drilldownFilterRelevent.length) {
             return multipleFilter(org, drilldownFilterRelevent, TEXT_FIELDS_TO_CHECK);
           }
         }
-      } else {
+      } else if (drilldownFilterRelevent.length) {
         return multipleFilter(org, drilldownFilterRelevent, TEXT_FIELDS_TO_CHECK);
       }
 
