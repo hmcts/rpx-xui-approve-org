@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import { resolveWorkerCount } from './playwright-config-utils';
+import { buildPlaywrightReporters } from './playwright-reporting';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
@@ -23,8 +24,7 @@ module.exports = defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: resolveWorkerCount(),
 
-  reporter: [[process.env.CI ? 'html' : 'list'],
-    ['html', { open: 'never', outputFolder: 'functional-output/tests/playwright-e2e' }]],
+  reporter: buildPlaywrightReporters('nightly'),
 
   projects: [
     {

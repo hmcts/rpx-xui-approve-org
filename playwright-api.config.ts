@@ -1,5 +1,6 @@
 import { defineConfig } from '@playwright/test';
 import { resolveWorkerCount } from './playwright-config-utils';
+import { buildPlaywrightReporters } from './playwright-reporting';
 
 module.exports = defineConfig({
   testDir: './playwright_tests/api',
@@ -12,8 +13,7 @@ module.exports = defineConfig({
   },
   reportSlowTests: null,
   workers: resolveWorkerCount(),
-  reporter: [[process.env.CI ? 'html' : 'list'],
-    ['html', { open: 'never', outputFolder: 'functional-output/tests/playwright-api' }]],
+  reporter: buildPlaywrightReporters('api'),
   use: {
     ignoreHTTPSErrors: true
   },
