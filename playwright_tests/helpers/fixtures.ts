@@ -1,4 +1,5 @@
-import { test as base, expect, chromium, type Page } from '@playwright/test';
+import { test as base, expect, chromium } from '@playwright/test';
+import { randomBytes } from 'node:crypto';
 import { config } from '../config/config';
 
 /**
@@ -6,13 +7,14 @@ import { config } from '../config/config';
  *   • userName  – the user name created when registering
  */
 export const test = base.extend<{
-  userName: string;   // value we return from setup
+  userName: string; // value we return from setup
 }>({
 
   /* -------- fixture: log into MO and register org -------- */
   userName: [
-    async ({ }, use) => {
-      const userName = 'xui-ao-test-' + Date.now().toString();
+    async ({ browserName: _browserName }, use) => {
+      void _browserName;
+      const userName = `xui-ao-test-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`;
       // Need a full browser context for cross-domain login
       const ctx = await chromium.launchPersistentContext('', {
         headless: true
