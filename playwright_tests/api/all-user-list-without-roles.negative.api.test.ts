@@ -33,7 +33,7 @@ test.describe('Playwright API negative: all user list without roles', { tag: ['@
       failOnStatusCode: false
     });
     const httpStatus = response.status();
-    
+
     if (httpStatus === 200) {
       const payload = await response.json();
       expect(

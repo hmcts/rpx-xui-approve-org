@@ -6,12 +6,12 @@ test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@ne
   test('PUT /api/updatePba without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
       paymentAccounts: ['PBA33L6BNO'],
-      orgId: UPDATE_PBA_ORG_ID,
+      orgId: UPDATE_PBA_ORG_ID
     };
 
     const response = await apiAnonymousRequest.put('/api/updatePba', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
     const httpStatus = response.status();
     expect(
@@ -51,7 +51,7 @@ test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@ne
     for (const testCase of testCases) {
       const response = await apiRequest.put('/api/updatePba', {
         data: testCase.payload,
-        failOnStatusCode: false,
+        failOnStatusCode: false
       });
       const httpStatus = response.status();
       expect(
@@ -64,12 +64,12 @@ test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@ne
   test('PUT /api/updatePba with empty paymentAccounts array passes validation', async ({ apiRequest }) => {
     const payload = {
       paymentAccounts: [],
-      orgId: UPDATE_PBA_ORG_ID,
+      orgId: UPDATE_PBA_ORG_ID
     };
 
     const response = await apiRequest.put('/api/updatePba', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
     const httpStatus = response.status();
     expect(

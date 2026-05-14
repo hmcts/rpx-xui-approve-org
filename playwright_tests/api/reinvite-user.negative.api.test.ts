@@ -1,5 +1,4 @@
 import { test, expect } from './helpers/api.fixtures';
-import { resolveHeader } from './helpers/json-contracts';
 
 const USERS_ORG_ID = process.env.PW_API_USERS_ORG_ID || '2GIHJH9';
 const REINVITE_ORG_ID = process.env.PW_API_REINVITE_ORG_ID || USERS_ORG_ID;

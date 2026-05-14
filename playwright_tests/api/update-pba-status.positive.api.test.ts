@@ -13,7 +13,7 @@ test.describe.skip('Playwright API positive: update pba status', { tag: ['@updat
 
     const response = await apiRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     expect(response.status()).toBe(200);

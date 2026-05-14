@@ -11,7 +11,7 @@ test.describe.skip('Playwright API negative: update pba status', { tag: ['@updat
 
     const response = await apiAnonymousRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     const httpStatus = response.status();
@@ -40,7 +40,7 @@ test.describe.skip('Playwright API negative: update pba status', { tag: ['@updat
 
     const response = await apiRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     const httpStatus = response.status();
@@ -57,7 +57,7 @@ test.describe.skip('Playwright API negative: update pba status', { tag: ['@updat
 
     const response = await apiRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     const httpStatus = response.status();
@@ -75,7 +75,7 @@ test.describe.skip('Playwright API negative: update pba status', { tag: ['@updat
 
     const response = await apiRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     const httpStatus = response.status();

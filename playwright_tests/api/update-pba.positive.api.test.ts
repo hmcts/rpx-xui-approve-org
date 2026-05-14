@@ -6,12 +6,12 @@ test.describe.skip('Playwright API positive: update pba', { tag: ['@update-pba',
   test('PUT /api/updatePba accepts payment account updates', async ({ apiRequest }) => {
     const payload = {
       paymentAccounts: ['PBA33L6BNO'],
-      orgId: UPDATE_PBA_ORG_ID,
+      orgId: UPDATE_PBA_ORG_ID
     };
 
     const response = await apiRequest.put('/api/updatePba', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
     expect(response.status()).toBe(200);
 

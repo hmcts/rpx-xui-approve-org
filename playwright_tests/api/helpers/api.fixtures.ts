@@ -42,7 +42,7 @@ async function createAuthenticatedApiContext(forceRefresh = false): Promise<APIR
 }
 
 export const test = base.extend<ApiFixtures>({
-  apiRequest: [async ({ browserName: _ }, use) => {
+  apiRequest: [async (_fixtures, use) => {
     let requestContext = await createAuthenticatedApiContext(false);
     const authenticated = await isAuthenticatedRequestContext(requestContext);
     if (!authenticated) {
@@ -54,7 +54,7 @@ export const test = base.extend<ApiFixtures>({
     await requestContext.dispose();
   }, { scope: 'test' }],
 
-  apiAnonymousRequest: [async ({ browserName: _ }, use) => {
+  apiAnonymousRequest: [async (_fixtures, use) => {
     const requestContext = await playwrightRequest.newContext({
       baseURL: config.baseUrl,
       ignoreHTTPSErrors: true
