@@ -15,9 +15,9 @@ module.exports = defineConfig({
   /* Retry on CI only */
   retries: 3, // Set the number of retries for all projects
 
-  timeout: 3 * 60 * 1000,
+  timeout: 180_000,
   expect: {
-    timeout: 1 * 60 * 1000
+    timeout: 60_000
   },
   reportSlowTests: null,
 
@@ -30,7 +30,7 @@ module.exports = defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'],
-        actionTimeout: 15 * 1000,
+        actionTimeout: 15_000,
         channel: 'chrome',
         headless: headlessMode,
         trace: 'on-first-retry'
@@ -39,7 +39,7 @@ module.exports = defineConfig({
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'],
-        actionTimeout: 15 * 1000,
+        actionTimeout: 15_000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
         trace: 'off'
@@ -48,7 +48,7 @@ module.exports = defineConfig({
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'],
-        actionTimeout: 15 * 1000,
+        actionTimeout: 15_000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
         trace: 'off'

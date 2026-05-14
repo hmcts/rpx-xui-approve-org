@@ -7,9 +7,9 @@ module.exports = defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 3,
-  timeout: 3 * 60 * 1000,
+  timeout: 180_000,
   expect: {
-    timeout: 1 * 60 * 1000
+    timeout: 60_000
   },
   reportSlowTests: null,
   workers: resolveWorkerCount(),
