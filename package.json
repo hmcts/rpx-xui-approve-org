@@ -37,6 +37,8 @@
     "test:api": "ts-node ./test/integration/tests/test.ts",
     "test:api:playwright": "yarn playwright install chromium && yarn test:api:playwright:raw",
     "test:api:playwright:raw": "npx playwright test -c playwright-api.config.ts",
+    "test:integration:playwright": "yarn playwright install chromium && yarn test:integration:playwright:raw",
+    "test:integration:playwright:raw": "npx playwright test -c playwright-integration.config.ts --pass-with-no-tests",
     "test:can-i-deploy:consumer": "export VERSION=$(git rev-parse --short HEAD) && SSL_CERT_FILE=test/pact/cer/ca-bundle.crt pact-broker can-i-deploy --pacticipant 'xui_approveorg' --version ${VERSION} --broker-base-url https://pact-broker.platform.hmcts.net",
     "test:coverage": "echo 'not implemented'",
     "test:coverage:ng": "ng test organisation-manager --code-coverage --watch",

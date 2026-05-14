@@ -34,10 +34,10 @@ function resolveTestEnvironment(): string {
 
 /**
  * Builds Playwright reporters array with Ohdin configured
- * @param reportType - Type of report (e2e, api, or nightly)
+ * @param reportType - Type of report (e2e, api, nightly, or integration)
  * @returns Array of reporter configurations
  */
-export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' = 'e2e'): ReporterDescription[] {
+export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' | 'integration' = 'e2e'): ReporterDescription[] {
   const isCI = !!process.env.CI;
   const environment = resolveTestEnvironment();
   const reportFolder = process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests';
@@ -49,6 +49,8 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' =
     switch (reportType) {
       case 'api':
         return `${reportFolder}/playwright-api`;
+      case 'integration':
+        return `${reportFolder}/playwright-integration`;
       case 'nightly':
         return `${reportFolder}/playwright-nightly`;
       case 'e2e':
@@ -56,6 +58,12 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' =
         return `${reportFolder}/playwright-e2e`;
     }
   })();
+
+  const testFolder = reportType === 'api'
+    ? 'playwright_tests/api'
+    : reportType === 'integration'
+      ? 'playwright_tests/integration'
+      : 'playwright_tests';
 
   const odhinOutputFolder = reportOutput;
 
@@ -66,7 +74,7 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' =
       {
         outputFolder: odhinOutputFolder,
         indexFilename: 'index.html',
-        testFolder: reportType === 'api' ? 'playwright_tests/api' : 'playwright_tests',
+        testFolder,
         title: `XUI AO ${reportType.toUpperCase()} Report`,
         testEnvironment: environment,
         project: process.env.ODHIN_PROJECT_NAME || 'rpx-xui-approve-org',
