@@ -4,13 +4,27 @@ import { ReporterDescription } from '@playwright/test';
  * Resolves the test environment from the baseURL
  */
 function resolveEnvironmentFromUrl(baseUrl?: string): string {
-  if (!baseUrl) return 'local';
-  if (baseUrl.includes('localhost')) return 'local';
-  if (baseUrl.includes('127.0.0.1')) return 'local';
-  if (baseUrl.includes('dev')) return 'dev';
-  if (baseUrl.includes('staging')) return 'staging';
-  if (baseUrl.includes('aat')) return 'aat';
-  if (baseUrl.includes('prod')) return 'prod';
+  if (!baseUrl) {
+    return 'local';
+  }
+  if (baseUrl.includes('localhost')) {
+    return 'local';
+  }
+  if (baseUrl.includes('127.0.0.1')) {
+    return 'local';
+  }
+  if (baseUrl.includes('dev')) {
+    return 'dev';
+  }
+  if (baseUrl.includes('staging')) {
+    return 'staging';
+  }
+  if (baseUrl.includes('aat')) {
+    return 'aat';
+  }
+  if (baseUrl.includes('prod')) {
+    return 'prod';
+  }
   return 'unknown';
 }
 
@@ -20,15 +34,15 @@ function resolveEnvironmentFromUrl(baseUrl?: string): string {
 function resolveTestEnvironment(): string {
   const testUrl = process.env.TEST_URL || '';
   const buildEnv = process.env.BUILD_ENV || '';
-  
+
   if (testUrl) {
     return resolveEnvironmentFromUrl(testUrl);
   }
-  
+
   if (buildEnv) {
     return buildEnv.toLowerCase();
   }
-  
+
   return 'local';
 }
 
@@ -44,7 +58,7 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
   const buildTag = process.env.BUILD_TAG || 'local-run';
   const releaseTag = process.env.PLAYWRIGHT_RELEASE_TAG || buildTag;
   const disableOhdin = process.env.DISABLE_ODHIN_REPORTER === 'true';
-  
+
   const reportOutput = (() => {
     switch (reportType) {
       case 'api':

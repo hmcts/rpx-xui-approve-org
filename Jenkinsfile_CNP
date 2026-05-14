@@ -24,7 +24,6 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
-def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -41,11 +40,6 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
             e2e: {
                 stage("${environmentLabel} E2E Playwright Tests") {
                     yarnBuilder.yarn('test:functional:e2e:raw')
-                }
-            },
-            integration: {
-                stage("${environmentLabel} Integration Playwright Tests") {
-                    yarnBuilder.yarn('test:integration:playwright:raw')
                 }
             }
         )
@@ -162,15 +156,6 @@ withPipeline(type, product, component) {
 
     afterSuccess('functionalTest:preview') {
 
-      publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'PREVIEW API Functional Test'
-      ])
-
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -178,15 +163,6 @@ withPipeline(type, product, component) {
             reportDir            : playwrightApiReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW API Playwright Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Integration Playwright Test'
         ])
 
         publishHTML([
@@ -228,15 +204,6 @@ withPipeline(type, product, component) {
     afterSuccess('functionalTest:aat') {
 
       publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
-      ])
-
-      publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
@@ -244,15 +211,6 @@ withPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'AAT API Playwright Test'
         ])
-
-    publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : playwrightIntegrationReportDir,
-        reportFiles          : 'index.html',
-        reportName           : 'AAT Integration Playwright Test'
-      ])
 
       publishHTML([
             allowMissing         : true,
