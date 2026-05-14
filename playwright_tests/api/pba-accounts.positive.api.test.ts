@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 import { pbaAccountsShapeErrors, resolveHeader } from './helpers/json-contracts';
 
 
-test.describe('Playwright API positive: pba accounts', () => {
+test.describe('Playwright API positive: pba accounts', { tag: ['@pba-accounts', '@positive'] }, () => {
   test('GET /api/pbaAccounts returns one item per requested account', async ({ apiRequest }) => {
     const accountNames = process.env.PW_API_PBA_ACCOUNT_NAMES || 'PBA1088483';
     const response = await apiRequest.get('/api/pbaAccounts', {

@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 
 const UPDATE_PBA_ORG_ID = process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
 
-test.describe('Playwright API negative: update pba', () => {
+test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@negative'] }, () => {
   test('PUT /api/updatePba without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
       paymentAccounts: ['PBA33L6BNO'],

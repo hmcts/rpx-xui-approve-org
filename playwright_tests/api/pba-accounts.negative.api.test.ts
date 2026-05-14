@@ -7,7 +7,7 @@ const missingResponseError = {
   "message": "Fee And Pay route error"
 }
 
-test.describe('Playwright API negative: pba accounts', () => {
+test.describe('Playwright API negative: pba accounts', { tag: ['@pba-accounts', '@negative'] }, () => {
   test('GET /api/pbaAccounts without accountNames returns an error payload', async ({ apiRequest }) => {
     const response = await apiRequest.get('/api/pbaAccounts', { failOnStatusCode: false });
     const httpStatus = response.status();

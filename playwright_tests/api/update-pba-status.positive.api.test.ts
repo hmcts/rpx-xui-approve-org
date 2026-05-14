@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 
 const UPDATE_PBA_ORG_ID = process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
 
-test.describe.skip('Playwright API positive: update pba status', () => {
+test.describe.skip('Playwright API positive: update pba status', { tag: ['@update-pba-status', '@positive'] }, () => {
   test('PUT /api/updatePba/status sets status for pba numbers', async ({ apiRequest }) => {
     const payload = {
       orgId: UPDATE_PBA_ORG_ID,

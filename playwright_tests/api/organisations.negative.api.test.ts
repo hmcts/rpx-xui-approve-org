@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 
 const statuses = ['PENDING', 'ACTIVE'];
 
-test.describe('Playwright API negative: organisations', () => {
+test.describe('Playwright API negative: organisations', { tag: ['@organisations', '@negative'] }, () => {
   for (const status of statuses) {
     test(`GET /api/organisations?status=${status} without auth is denied`, async ({ apiAnonymousRequest }) => {
       const response = await apiAnonymousRequest.get(`/api/organisations?status=${status}`, { failOnStatusCode: false });
