@@ -38,6 +38,11 @@ def runPlaywrightFunctionalInParallel = {
                 stage('Nightly E2E Playwright Tests') {
                     yarnBuilder.yarn('test:functional:e2e:raw')
                 }
+            },
+            integration: {
+                stage('Nightly Integration Playwright Tests') {
+                    yarnBuilder.yarn('test:integration:playwright:raw')
+                }
             }
         )
     }
