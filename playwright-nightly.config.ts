@@ -1,10 +1,12 @@
 import { defineConfig, devices } from '@playwright/test';
+import { resolveWorkerCount } from './playwright-config-utils';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 module.exports = defineConfig({
   testDir: './playwright_tests',
+  testIgnore: ['**/api/**'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -19,7 +21,7 @@ module.exports = defineConfig({
   reportSlowTests: null,
 
   /* Opt out of parallel tests on CI. */
-  workers: process.env.FUNCTIONAL_TESTS_WORKERS ? parseInt(process.env.FUNCTIONAL_TESTS_WORKERS, 10) : 1,
+  workers: resolveWorkerCount(),
 
   reporter: [[process.env.CI ? 'html' : 'list'],
     ['html', { open: 'never', outputFolder: 'functional-output/tests/playwright-e2e' }]],

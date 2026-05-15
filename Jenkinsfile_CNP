@@ -22,8 +22,29 @@ def product   = "xui"
 def component = "ao-webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
+def playwrightReportDir = 'functional-output/tests/playwright-e2e'
+def playwrightApiReportDir = 'functional-output/tests/playwright-api'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+def runPlaywrightFunctionalInParallel = { String environmentLabel ->
+    stage("${environmentLabel} Functional Tests (Parallel)") {
+        env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        parallel(
+            failFast: true,
+            api: {
+                stage("${environmentLabel} API Playwright Tests") {
+                    yarnBuilder.yarn('test:api:playwright:raw')
+                }
+            },
+            e2e: {
+                stage("${environmentLabel} E2E Playwright Tests") {
+                    yarnBuilder.yarn('test:functional:e2e:raw')
+                }
+            }
+        )
+    }
+}
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 
@@ -53,6 +74,7 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.FUNCTIONAL_TESTS_WORKERS = '4'
     enableAksStagingDeployment()
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
@@ -111,21 +133,25 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'DEMO Smoke Test'
         ])
     }
 
-    afterSuccess('smoketest:preview') {
+    afterAlways('smoketest:preview') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Smoke Test'
         ])
+    }
+
+    before('functionalTest:preview') {
+        runPlaywrightFunctionalInParallel('PREVIEW')
     }
 
     afterSuccess('functionalTest:preview') {
@@ -143,9 +169,18 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightApiReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Functional Test'
+            reportName           : 'PREVIEW API Playwright Test'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'PREVIEW Functional E2E Test'
         ])
 
         publishHTML([
@@ -164,10 +199,14 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/smoke/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'AAT Smoke Test'
         ])
+    }
+
+    before('functionalTest:aat') {
+        runPlaywrightFunctionalInParallel('AAT')
     }
 
 
@@ -186,9 +225,18 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightApiReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'AAT Functional Test'
+            reportName           : 'AAT API Playwright Test'
+        ])
+
+      publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'AAT Functional E2ETest'
         ])
 
         publishHTML([
