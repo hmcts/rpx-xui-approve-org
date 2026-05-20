@@ -37,7 +37,7 @@ async function createAuthenticatedApiContext(forceRefresh = false): Promise<APIR
   return playwrightRequest.newContext({
     baseURL: config.baseUrl,
     ignoreHTTPSErrors: true,
-    storageState: storageStatePath,
+    storageState: storageStatePath
   });
 }
 
@@ -55,7 +55,7 @@ export const test = base.extend<ApiFixtures>({
       await use(requestContext);
       await requestContext.dispose();
     },
-    { scope: 'test' },
+    { scope: 'test' }
   ],
 
   apiAnonymousRequest: [
@@ -63,14 +63,14 @@ export const test = base.extend<ApiFixtures>({
       void _baseURL;
       const requestContext = await playwrightRequest.newContext({
         baseURL: config.baseUrl,
-        ignoreHTTPSErrors: true,
+        ignoreHTTPSErrors: true
       });
 
       await use(requestContext);
       await requestContext.dispose();
     },
-    { scope: 'test' },
-  ],
+    { scope: 'test' }
+  ]
 });
 
 export { expect } from '@playwright/test';
