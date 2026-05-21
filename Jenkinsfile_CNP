@@ -51,6 +51,20 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     }
 }
 
+def runSmokeGateIfRequired = { String environmentLabel ->
+    def smokeCompletedFlag = "SMOKE_${environmentLabel}_COMPLETED"
+    if (env[smokeCompletedFlag] == 'true') {
+        echo "${environmentLabel} smoke stage already completed. Skipping smoke gate."
+        return
+    }
+
+    stage("${environmentLabel} Smoke Test (Gate)") {
+        yarnBuilder.yarn('test:smoke')
+    }
+
+    env[smokeCompletedFlag] = 'true'
+}
+
 def branchesToSync = ['demo', 'perftest', 'ithc']
 
 def secrets = [
@@ -143,7 +157,12 @@ withPipeline(type, product, component) {
         ])
     }
 
+    afterSuccess('smoketest:preview') {
+        env.SMOKE_PREVIEW_COMPLETED = 'true'
+    }
+
     before('functionalTest:preview') {
+        runSmokeGateIfRequired('PREVIEW')
         runPlaywrightFunctionalInParallel('PREVIEW')
     }
 
@@ -177,6 +196,8 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('smoketest:aat') {
+        env.SMOKE_AAT_COMPLETED = 'true'
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -188,6 +209,7 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:aat') {
+        runSmokeGateIfRequired('AAT')
         runPlaywrightFunctionalInParallel('AAT')
     }
 
