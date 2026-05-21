@@ -1,4 +1,5 @@
 import { ReporterDescription } from '@playwright/test';
+import * as fs from 'node:fs';
 
 /**
  * Resolves the test environment from the baseURL
@@ -81,8 +82,18 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
 
   const odhinOutputFolder = reportOutput;
 
+  fs.mkdirSync(reportFolder, { recursive: true });
+
+  const junitOutput = `${reportFolder}/junit-${reportType}.xml`;
+
   const reporters: ReporterDescription[] = [
     [isCI ? 'dot' : 'list'],
+    [
+      'junit',
+      {
+        outputFile: junitOutput
+      }
+    ],
     [
       'odhin-reports-playwright',
       {
@@ -102,7 +113,15 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
   ];
 
   if (disableOhdin) {
-    return [[isCI ? 'dot' : 'list']];
+    return [
+      [isCI ? 'dot' : 'list'],
+      [
+        'junit',
+        {
+          outputFile: junitOutput
+        }
+      ]
+    ];
   }
 
   return reporters;
