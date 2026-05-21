@@ -11,20 +11,19 @@ properties([
     ])
 ])
 
-@Library('Infrastructure')
+@Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
 import uk.gov.hmcts.contino.Environment
 
-def type      = 'nodejs'
-def product   = 'xui'
-def component = 'ao-webapp'
-def vault = 'rpx'
+def type      = "nodejs"
+def product   = "xui"
+def component = "ao-webapp"
+def vault = "rpx"
 def channel   = '#xui-pipeline'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
-def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -42,27 +41,9 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
                 stage("${environmentLabel} E2E Playwright Tests") {
                     yarnBuilder.yarn('test:functional:e2e:raw')
                 }
-            },
-            integration: {
-                stage("${environmentLabel} Integration Playwright Tests") {
-                    yarnBuilder.yarn('test:integration:playwright:raw')
-                }
             }
         )
     }
-}
-
-def runSmokeGateIfRequired = { String environmentLabel ->
-    def smokeCompletedFlag = "SMOKE_${environmentLabel}_COMPLETED"
-    if (env[smokeCompletedFlag] == 'true') {
-        echo "${environmentLabel} smoke stage already completed. Skipping smoke gate."
-        return
-    }
-
-    echo "Running ${environmentLabel} smoke gate before functional tests."
-    yarnBuilder.yarn('test:smoke')
-
-    env[smokeCompletedFlag] = 'true'
 }
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
@@ -98,6 +79,7 @@ withPipeline(type, product, component) {
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
 
+
     enablePactAs([
       AppPipelineDsl.PactRoles.CONSUMER,
     ])
@@ -107,32 +89,43 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('test') {
-        publishHTML([
+
+        publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : 'reports/tests/coverage/node',
-            reportFiles          : 'index.html',
-            reportName           : 'node coverage tests'
+            reportDir            : "reports/tests/coverage/node",
+            reportFiles          : "index.html",
+            reportName           : "node coverage tests"
+        ])
+
+        publishHTML ( [
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/coverage/ng",
+            reportFiles          : "index.html",
+            reportName           : "ng coverage tests"
         ])
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : 'reports/tests/coverage/ng',
-            reportFiles          : 'index.html',
-            reportName           : 'ng coverage tests'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : 'reports/tests/mutation/node/',
+            reportDir            : "reports/tests/mutation/node/",
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
+
+        // publishHTML([
+        //     allowMissing         : true,
+        //     alwaysLinkToLastBuild: true,
+        //     keepAll              : true,
+        //     reportDir            : "reports/tests/a11y/",
+        //     reportFiles          : 'Report.html',
+        //     reportName           : 'Approve Org a11y Test Report'
+        // ])
+
     }
 
     afterSuccess('smoketest:demo') {
@@ -157,16 +150,12 @@ withPipeline(type, product, component) {
         ])
     }
 
-    afterSuccess('smoketest:preview') {
-        env.SMOKE_PREVIEW_COMPLETED = 'true'
-    }
-
     before('functionalTest:preview') {
-        runSmokeGateIfRequired('PREVIEW')
         runPlaywrightFunctionalInParallel('PREVIEW')
     }
 
     afterSuccess('functionalTest:preview') {
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -189,15 +178,14 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : playwrightIntegrationReportDir,
+            reportDir            : "reports/tests/ngIntegration/",
             reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Integration Playwright Test'
+            reportName           : 'PREVIEW NG Integration Test'
         ])
     }
 
-    afterSuccess('smoketest:aat') {
-        env.SMOKE_AAT_COMPLETED = 'true'
 
+    afterSuccess('smoketest:aat') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -209,12 +197,13 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:aat') {
-        runSmokeGateIfRequired('AAT')
         runPlaywrightFunctionalInParallel('AAT')
     }
 
+
     afterSuccess('functionalTest:aat') {
-        publishHTML([
+
+      publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
@@ -223,22 +212,22 @@ withPipeline(type, product, component) {
             reportName           : 'AAT API Playwright Test'
         ])
 
-        publishHTML([
+      publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'AAT Functional E2E Test'
+            reportName           : 'AAT Functional E2ETest'
         ])
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : playwrightIntegrationReportDir,
+            reportDir            : "reports/tests/ngIntegration/",
             reportFiles          : 'index.html',
-            reportName           : 'AAT Integration Playwright Test'
+            reportName           : 'AAt NG Integration Test'
         ])
     }
 }
