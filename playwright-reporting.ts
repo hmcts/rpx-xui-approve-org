@@ -56,6 +56,7 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
   const isCI = !!process.env.CI;
   const environment = resolveTestEnvironment();
   const reportFolder = process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests';
+  const junitReportFolder = process.env.PLAYWRIGHT_JUNIT_REPORT_FOLDER || 'test-results';
   const buildTag = process.env.BUILD_TAG || 'local-run';
   const releaseTag = process.env.PLAYWRIGHT_RELEASE_TAG || buildTag;
   const disableOhdin = process.env.DISABLE_ODHIN_REPORTER === 'true';
@@ -83,17 +84,26 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
   const odhinOutputFolder = reportOutput;
 
   fs.mkdirSync(reportFolder, { recursive: true });
+  fs.mkdirSync(junitReportFolder, { recursive: true });
 
-  const junitOutput = `${reportFolder}/junit-${reportType}.xml`;
-
-  const reporters: ReporterDescription[] = [
-    [isCI ? 'dot' : 'list'],
+  const junitReporters: ReporterDescription[] = [
     [
       'junit',
       {
-        outputFile: junitOutput
+        outputFile: `${reportFolder}/junit-${reportType}.xml`
       }
     ],
+    [
+      'junit',
+      {
+        outputFile: `${junitReportFolder}/junit-${reportType}.xml`
+      }
+    ]
+  ];
+
+  const reporters: ReporterDescription[] = [
+    [isCI ? 'dot' : 'list'],
+    ...junitReporters,
     [
       'odhin-reports-playwright',
       {
@@ -115,12 +125,7 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
   if (disableOhdin) {
     return [
       [isCI ? 'dot' : 'list'],
-      [
-        'junit',
-        {
-          outputFile: junitOutput
-        }
-      ]
+      ...junitReporters
     ];
   }
 
