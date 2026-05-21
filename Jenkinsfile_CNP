@@ -24,6 +24,7 @@ def vault = 'rpx'
 def channel   = '#xui-pipeline'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
+def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -58,9 +59,8 @@ def runSmokeGateIfRequired = { String environmentLabel ->
         return
     }
 
-    stage("${environmentLabel} Smoke Test (Gate)") {
-        yarnBuilder.yarn('test:smoke')
-    }
+    echo "Running ${environmentLabel} smoke gate before functional tests."
+    yarnBuilder.yarn('test:smoke')
 
     env[smokeCompletedFlag] = 'true'
 }
