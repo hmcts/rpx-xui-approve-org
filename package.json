@@ -45,7 +45,7 @@
     "test:coverage:node": "cd api && yarn coverage",
     "test:crossbrowser": "yarn playwright install --with-deps && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn test:api && echo 'Protractor tests removed - use Playwright instead'",
-    "test:functional": "yarn test:functional:e2e",
+    "test:functional": "sh -c 'if [ \"${PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN}\" = \"true\" ]; then echo \"Skipping test:functional because Jenkins ran Playwright API + E2E in parallel\"; exit 0; fi; yarn test:functional:e2e'",
     "test:functional:parallel": "yarn playwright install chromium && sh -c 'yarn test:functional:e2e:raw & pid_e2e=$!; yarn test:api:playwright:raw & pid_api=$!; wait \"$pid_e2e\"; e2e_status=$?; wait \"$pid_api\"; api_status=$?; [ \"$e2e_status\" -eq 0 ] && [ \"$api_status\" -eq 0 ]'",
     "test:functional:e2e": "yarn playwright install chromium && yarn test:functional:e2e:raw",
     "test:functional:e2e:raw": "npx playwright test -c playwright.config.ts",
