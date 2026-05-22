@@ -173,21 +173,26 @@ This repository now uses Playwright for the functional/liveliness test path.
 
 - `yarn test:smoke` runs the Playwright smoke journey (`playwright_tests/login.test.ts`).
 - `yarn test:functional` runs the Playwright E2E suite (`playwright_tests/`) unless `PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN=true` (used by Jenkins parallel functional stages).
-- `yarn test:functional:parallel` runs Playwright E2E (`playwright_tests/`) and Playwright API (`playwright_tests/api`) suites in parallel by invoking separate commands.
+- `yarn test:functional:parallel` runs Playwright E2E (`playwright_tests/`), Playwright API (`playwright_tests/api`), and Playwright integration (`playwright_tests/integration`) suites in parallel by invoking separate commands.
 - `yarn test:functional:e2e` runs only Playwright E2E (`playwright_tests/`).
 - `yarn test:crossbrowser` runs cross-browser Playwright tests using `playwright-nightly.config.ts`.
 - `yarn test:api:playwright` runs the Playwright API suite (`playwright_tests/api`) using `playwright-api.config.ts`.
+- `yarn test:integration:playwright` runs the Playwright integration suite (`playwright_tests/integration`) using `playwright-integration.config.ts`.
 - Playwright API specs use filename split in one folder (`*.positive.api.test.ts` and `*.negative.api.test.ts`) under `playwright_tests/api`.
+- Playwright integration specs use shared authenticated request fixtures from `playwright_tests/framework/fixtures/auth-request.fixtures.ts`.
 - `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests.
+- `TEST_API_EMAIL_ADMIN` and `TEST_API_PASSWORD_ADMIN` are the preferred Playwright auth credentials for API and integration suites.
+- `TEST_EMAIL` and `TEST_PASSWORD` are used as fallback Playwright auth credentials when admin-specific variables are not set.
+- `PW_INTEGRATION_UPDATE_PBA_ORG_ID` can override the org id used by the seeded integration write scenario.
 - `FUNCTIONAL_TESTS_WORKERS` can be set to override Playwright worker count.
 
 CI/Jenkins notes:
 
 - `smoketest:*` and nightly cross-browser stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e`.
-- `functionalTest:*` stages publish both Playwright E2E (`functional-output/tests/playwright-e2e`) and Playwright API (`functional-output/tests/playwright-api`) HTML reports.
-- PR functional stages run API and E2E as separate parallel Jenkins branches (`before('functionalTest:preview')` / `before('functionalTest:aat')`).
+- `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e`), Playwright API (`functional-output/tests/playwright-api`), and Playwright integration (`functional-output/tests/playwright-integration`) HTML reports.
+- PR and nightly functional stages run API, integration, and E2E as separate parallel Jenkins branches.
 - Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 
 ## Integration Documentation

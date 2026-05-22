@@ -14,12 +14,26 @@ function resolveUrl(rawValue: string | undefined, fallback: string, envName: str
   }
 }
 
+function resolveCredential(primaryEnvName: string, fallbackEnvName?: string): string {
+  const primaryValue = (process.env[primaryEnvName] ?? '').trim();
+  if (primaryValue) {
+    return primaryValue;
+  }
+
+  const fallbackValue = fallbackEnvName ? (process.env[fallbackEnvName] ?? '').trim() : '';
+  if (fallbackValue) {
+    return fallbackValue;
+  }
+
+  return '';
+}
+
 export const config = {
   baseUrl: resolveUrl(process.env.TEST_URL, DEFAULT_TEST_URL, 'TEST_URL'),
   registerUrl: resolveUrl(process.env.TEST_REGISTER_URL, DEFAULT_REGISTER_URL, 'TEST_REGISTER_URL'),
   base: {
-    username: 'vamshiadminuser@mailnesia.com',
-    password: 'Testing123'
+    username: resolveCredential('TEST_API_EMAIL_ADMIN', 'TEST_EMAIL'),
+    password: resolveCredential('TEST_API_PASSWORD_ADMIN', 'TEST_PASSWORD')
   },
   twoFactorAuthEnabled: false,
   termsAndConditionsEnabled: true

@@ -24,6 +24,7 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
+def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -35,6 +36,11 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
             api: {
                 stage("${environmentLabel} API Playwright Tests") {
                     yarnBuilder.yarn('test:api:playwright:raw')
+                }
+            },
+            integration: {
+                stage("${environmentLabel} Integration Playwright Tests") {
+                    yarnBuilder.yarn('test:integration:playwright:raw')
                 }
             },
             e2e: {
@@ -178,6 +184,15 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
+            reportDir            : playwrightIntegrationReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'PREVIEW Integration Playwright Test'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
             reportDir            : "reports/tests/ngIntegration/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW NG Integration Test'
@@ -203,7 +218,7 @@ withPipeline(type, product, component) {
 
     afterSuccess('functionalTest:aat') {
 
-      publishHTML([
+        publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
@@ -212,13 +227,22 @@ withPipeline(type, product, component) {
             reportName           : 'AAT API Playwright Test'
         ])
 
-      publishHTML([
+        publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'AAT Functional E2ETest'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightIntegrationReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'AAT Integration Playwright Test'
         ])
 
         publishHTML([

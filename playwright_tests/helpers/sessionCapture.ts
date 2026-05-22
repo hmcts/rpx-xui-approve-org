@@ -30,7 +30,9 @@ function resolveSessionMaxAgeMs(): number {
 function getUserConfig(user: string): UserConfig {
   const account = (config as unknown as Record<string, UserConfig>)[user];
   if (!account?.username || !account?.password) {
-    throw new Error(`Missing Playwright credentials for user "${user}".`);
+    throw new Error(
+      `Missing Playwright credentials for user "${user}". Set TEST_API_EMAIL_ADMIN/TEST_API_PASSWORD_ADMIN or TEST_EMAIL/TEST_PASSWORD.`
+    );
   }
   return account;
 }
