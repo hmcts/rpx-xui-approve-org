@@ -1,4 +1,5 @@
 import { test, expect } from './helpers/fixtures';
+import { runAxeAudit } from './helpers/axe';
 import { ensureAuthenticatedPage } from './helpers/sessionCapture';
 import { getTableActionButton, getTableDataByXpath } from './helpers/tables';
 
@@ -6,58 +7,67 @@ test.describe('Organisation approvals - pending org workflows', () => {
   test.beforeEach(async ({ page }) => {
     await ensureAuthenticatedPage(page, 'base');
   });
-  test('i can approve a pending org', async ({ page, userName }) => {
+  test('i can approve a pending org', async ({ page, userName }, testInfo) => {
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.locator('#search').fill(userName);
     await page.getByRole('button', { name: 'Search' }).click();
     await getTableActionButton(page, '//app-pending-overview-component/table/thead/tr[2]/td[6]/a').click();
     await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
     await expect(page.locator('app-org-details-info')).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration approve details' });
     await page.getByLabel('Approve it').check();
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration approve confirm' });
     const spinner = page.locator('div.spinner-inner-container .spinner');
     page.getByRole('button', { name: 'Confirm' }).click();
     await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
     const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
     await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration approve success' });
   });
 
-  test('i can reject a pending org', async ({ page, userName }) => {
+  test('i can reject a pending org', async ({ page, userName }, testInfo) => {
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.locator('#search').fill(userName);
     await page.getByRole('button', { name: 'Search' }).click();
     await getTableActionButton(page, '//app-pending-overview-component/table/thead/tr[2]/td[6]/a').click();
     await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
     await expect(page.locator('app-org-details-info')).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration reject details' });
     await page.getByLabel('Reject it').check();
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration reject confirm' });
     const spinner = page.locator('div.spinner-inner-container .spinner');
     page.getByRole('button', { name: 'Confirm' }).click();
     await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
     const rejectDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration rejected/i });
     await expect(rejectDivs.first()).toBeVisible({ timeout: 5000 });
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration reject success' });
   });
 
-  test('i can place registration under review for a pending org', async ({ page, userName }) => {
+  test('i can place registration under review for a pending org', async ({ page, userName }, testInfo) => {
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.locator('#search').fill(userName);
     await page.getByRole('button', { name: 'Search' }).click();
     await getTableActionButton(page, '//app-pending-overview-component/table/thead/tr[2]/td[6]/a').click();
     await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
     await expect(page.locator('app-org-details-info')).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration under review details' });
     await page.getByLabel('Place registration under').check();
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration under review confirm' });
     const spinner = page.locator('div.spinner-inner-container .spinner');
     page.getByRole('button', { name: 'Confirm' }).click();
     await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
     const underDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration put under/i });
     await expect(underDivs.first()).toBeVisible({ timeout: 5000 });
+    await runAxeAudit(page, testInfo, { reportName: 'Pending registration under review success' });
   });
 
-  test('i can delete an active org', async ({ page, userName }) => {
+  test('i can delete an active org', async ({ page, userName }, testInfo) => {
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.locator('#search').fill(userName);
     await page.getByRole('button', { name: 'Search' }).click();
@@ -108,9 +118,11 @@ test.describe('Organisation approvals - pending org workflows', () => {
     }
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('div').filter({ hasText: 'Organisation details Users' }).nth(1)).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Active organisation details before delete' });
     await page.getByRole('button', { name: 'Delete organisation' }).click();
     await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
     await expect(page.getByText('Warning Make sure you have')).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Active organisation delete confirm' });
     await page.getByRole('button', { name: 'Delete organisation' }).click();
     await expect(
       page
@@ -120,7 +132,8 @@ test.describe('Organisation approvals - pending org workflows', () => {
     ).toBeVisible();
     await expect(page.getByRole('heading', { name: 'What happens next' })).toBeVisible();
     await expect(page.getByText('You should tell the')).toBeVisible();
-    await expect(page.getByText("They've also been removed")).toBeVisible();
+    await expect(page.getByText('They\'ve also been removed')).toBeVisible();
+    await runAxeAudit(page, testInfo, { reportName: 'Active organisation delete success' });
     await page.getByRole('link', { name: 'Go back to active' }).click();
     console.log(`${orgName} has been deleted`);
   });
