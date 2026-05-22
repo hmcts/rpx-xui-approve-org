@@ -23,197 +23,191 @@
     </ng-template>
     <div>
       <h3 class="govuk-heading-m">Organisation details</h3>
-      <dl class="govuk-summary-list" *ngIf="org">
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <dt class="govuk-summary-list__key">
-            Organisation name
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {{org.name}}
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Organisation address
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <app-org-address [organisation]="org"></app-org-address>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div *ngIf="org.dxNumber[0]?.dxNumber" class="govuk-summary-list__row govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            DX reference
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {{org.dxNumber[0]?.dxNumber}}<span *ngIf="org.dxNumber[0]?.dxExchange">, {{org.dxNumber[0]?.dxExchange}}</span>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Service to access
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div *ngFor="let service of serviceList">
-              {{service}}
-            </div>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-
-        <ng-container *ngFor="let pba of pbaNumbers(); let i = index">
+      <ng-container *ngIf="org">
+        <dl class="govuk-summary-list">
           <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+            <dt class="govuk-summary-list__key">
+              Organisation name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{org.name}}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Organisation address
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <app-org-address [organisation]="org"></app-org-address>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          <div *ngIf="org.dxNumber[0]?.dxNumber" class="govuk-summary-list__row govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              DX reference
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{org.dxNumber[0]?.dxNumber}}<span *ngIf="org.dxNumber[0]?.dxExchange">, {{org.dxNumber[0]?.dxExchange}}</span>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Service to access
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <div *ngFor="let service of serviceList">
+                {{service}}
+              </div>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+
+          <ng-container *ngFor="let pba of pbaNumbers(); let i = index">
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+              <dt class="govuk-summary-list__key">
+                PBA number
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <div *ngIf="pbaNumbers().length!=0">
+                  {{pba}}
+                </div>
+                <div *ngIf="pbaNumbers().length==0">
+                  No PBA Provided
+                </div>
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="pbaNumbers().length!=0">
+              <dt class="govuk-summary-list__key">
+                Name on Liberata account
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <span *ngIf="!!org?.accountDetails">
+                  {{org?.accountDetails[i]?.account_name}}
+                </span>
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              </dd>
+            </div>
+          </ng-container>
+          <div *ngIf="pbaNumbers().length==0" class="govuk-summary-list__row govuk-summary-list__row--no-border">
             <dt class="govuk-summary-list__key">
               PBA number
             </dt>
             <dd class="govuk-summary-list__value">
-              <div *ngIf="pbaNumbers().length!=0">
-                {{pba}}
-              </div>
-              <div *ngIf="pbaNumbers().length==0">
+              <div>
                 No PBA Provided
               </div>
             </dd>
             <dd class="govuk-summary-list__actions">
             </dd>
           </div>
-          <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="pbaNumbers().length!=0">
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
             <dt class="govuk-summary-list__key">
-              Name on Liberata account
+              Company registration number
             </dt>
             <dd class="govuk-summary-list__value">
-              <span *ngIf="!!org?.accountDetails">
-                {{org?.accountDetails[i]?.account_name}}
-              </span>
+              {{companyNumber}}
             </dd>
             <dd class="govuk-summary-list__actions">
             </dd>
           </div>
-        </ng-container>
-        <div *ngIf="pbaNumbers().length==0" class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <dt class="govuk-summary-list__key">
-            PBA number
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div>
-              No PBA Provided
-            </div>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-        </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <dt class="govuk-summary-list__key">
-            Company registration number
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {{companyNumber}}
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Organisation type
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {{orgTypeDescription}}
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="regulators?.length">
-          <dt class="govuk-summary-list__key">
-            Regulatory organisation type
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div *ngFor="let regulator of regulators">
-              <ng-container [ngSwitch]="regulator.regulatorType">
-                <span *ngSwitchCase="regulatoryTypeEnum.Other">
-                  {{regulator.regulatorType}}: {{regulator.regulatorName}} ref:
-                  {{regulator.organisationRegistrationNumber}}
-                </span>
-                <span *ngSwitchCase="regulatoryTypeEnum.NotApplicable">
-                  {{regulator.regulatorType}}
-                </span>
-                <span *ngSwitchDefault>
-                  {{regulator.regulatorType}} ref: {{regulator.organisationRegistrationNumber}}
-                </span>
-                <br />
-              </ng-container>
-            </div>
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="individualRegulators?.length">
-          <dt class="govuk-summary-list__key">
-            What regulator are you (as an individual) registered with?
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div *ngFor="let regulator of individualRegulators">
-              <ng-container [ngSwitch]="regulator.regulatorType">
-                <span *ngSwitchCase="regulatoryTypeEnum.Other">
-                  {{regulator.regulatorType}}: {{regulator.regulatorName}} ref:
-                  {{regulator.organisationRegistrationNumber}}
-                </span>
-                <span *ngSwitchCase="regulatoryTypeEnum.NotApplicable">
-                  {{regulator.regulatorType}}
-                </span>
-                <span *ngSwitchDefault>
-                  {{regulator.regulatorType}} ref: {{regulator.organisationRegistrationNumber}}
-                </span>
-                <br />
-              </ng-container>
-            </div>
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-        </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <br>
-          <br>
-          <h3 class="govuk-heading-m">Administrator details </h3>
-        </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <dt class="govuk-summary-list__key">
-            First name(s)
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div>{{org.firstName}}</div>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Last name
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div>{{org.lastName}}</div>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Email address
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div>{{org.adminEmail}}</div>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-        </div>
-      </dl>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Organisation type
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{orgTypeDescription}}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="regulators?.length">
+            <dt class="govuk-summary-list__key">
+              Regulatory organisation type
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <div *ngFor="let regulator of regulators">
+                <ng-container [ngSwitch]="regulator.regulatorType">
+                  <span *ngSwitchCase="regulatoryTypeEnum.Other">
+                    {{regulator.regulatorType}}: {{regulator.regulatorName}} ref:
+                    {{regulator.organisationRegistrationNumber}}
+                  </span>
+                  <span *ngSwitchCase="regulatoryTypeEnum.NotApplicable">
+                    {{regulator.regulatorType}}
+                  </span>
+                  <span *ngSwitchDefault>
+                    {{regulator.regulatorType}} ref: {{regulator.organisationRegistrationNumber}}
+                  </span>
+                  <br />
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="individualRegulators?.length">
+            <dt class="govuk-summary-list__key">
+              What regulator are you (as an individual) registered with?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <div *ngFor="let regulator of individualRegulators">
+                <ng-container [ngSwitch]="regulator.regulatorType">
+                  <span *ngSwitchCase="regulatoryTypeEnum.Other">
+                    {{regulator.regulatorType}}: {{regulator.regulatorName}} ref:
+                    {{regulator.organisationRegistrationNumber}}
+                  </span>
+                  <span *ngSwitchCase="regulatoryTypeEnum.NotApplicable">
+                    {{regulator.regulatorType}}
+                  </span>
+                  <span *ngSwitchDefault>
+                    {{regulator.regulatorType}} ref: {{regulator.organisationRegistrationNumber}}
+                  </span>
+                  <br />
+                </ng-container>
+              </div>
+            </dd>
+          </div>
+        </dl>
+        <h3 class="govuk-heading-m govuk-!-margin-top-8 govuk-!-padding-bottom-6">Administrator details</h3>
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+            <dt class="govuk-summary-list__key">
+              First name(s)
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <div>{{org.firstName}}</div>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Last name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <div>{{org.lastName}}</div>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Email address
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <div>{{org.adminEmail}}</div>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+        </dl>
+      </ng-container>
       <div *ngIf="org.status !== 'ACTIVE'" class="govuk-form-group"
         [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">
         <fieldset class="govuk-fieldset">
