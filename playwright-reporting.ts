@@ -7,22 +7,30 @@ function resolveEnvironmentFromUrl(baseUrl?: string): string {
   if (!baseUrl) {
     return 'local';
   }
-  if (baseUrl.includes('localhost')) {
+  const normalizedUrl = baseUrl.toLowerCase();
+
+  if (normalizedUrl.includes('localhost')) {
     return 'local';
   }
-  if (baseUrl.includes('127.0.0.1')) {
+  if (normalizedUrl.includes('127.0.0.1')) {
     return 'local';
   }
-  if (baseUrl.includes('dev')) {
+
+  // Preview environments follow hostnames like xui-ao-webapp-pr-1039.preview.platform.hmcts.net
+  if (normalizedUrl.includes('.preview.') || /-pr-\d+\.preview\./.test(normalizedUrl)) {
+    return 'preview';
+  }
+
+  if (normalizedUrl.includes('dev')) {
     return 'dev';
   }
-  if (baseUrl.includes('staging')) {
+  if (normalizedUrl.includes('staging')) {
     return 'staging';
   }
-  if (baseUrl.includes('aat')) {
+  if (normalizedUrl.includes('aat')) {
     return 'aat';
   }
-  if (baseUrl.includes('prod')) {
+  if (normalizedUrl.includes('prod')) {
     return 'prod';
   }
   return 'unknown';
