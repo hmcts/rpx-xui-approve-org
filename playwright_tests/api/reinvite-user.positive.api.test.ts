@@ -17,7 +17,7 @@ function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
   }
 }
 
-test.describe.skip('Playwright API positive: reinvite user', () => {
+test.describe.skip('Playwright API positive: reinvite user', { tag: ['@reinvite-user', '@positive'] }, () => {
   test('POST /api/reinviteUser returns accepted or already-invited response', async ({ apiRequest }) => {
     const payload = {
       firstName: 'Vamshi',

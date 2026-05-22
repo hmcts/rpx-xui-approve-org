@@ -20,6 +20,7 @@ def channel   = '#xui-pipeline'
 def vault = 'rpx'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
+def playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -66,6 +67,7 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '4'
+    env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
     env.ENABLE_AXE_TESTS = 'true'
     // enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(60)
@@ -104,15 +106,6 @@ withNightlyPipeline(type, product, component) {
 
     afterSuccess('fullFunctionalTest') {
         publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : 'reports/tests/api_functional/',
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
-        ])
-
-        publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
@@ -147,7 +140,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : playwrightReportDir,
+            reportDir            : playwrightNightlyReportDir,
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
       ])

@@ -11,13 +11,7 @@ if (config.proxy) {
 
 const mocha = new Mocha({
   ui: 'tdd',
-  // reporter: 'spec',
-  // bail: 'yes',
-  reporter: 'mochawesome',
-  reporterOptions: {
-    reportDir: 'reports/tests/api_functional/',
-    reportName: 'XUI_AO_Integration_tests'
-  }
+  reporter: 'spec'
 });
 
 mocha.addFile('test/integration/tests/get_Pending_Organisations.ts');

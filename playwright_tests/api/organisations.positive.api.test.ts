@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 import { organisationsListShapeErrors, resolveHeader } from './helpers/json-contracts';
 const statuses = ['PENDING', 'ACTIVE', 'REVIEW', 'PENDING,REVIEW'] as const;
 
-test.describe('Playwright API positive: organisations', () => {
+test.describe('Playwright API positive: organisations', { tag: ['@organisations', '@positive'] }, () => {
   for (const status of statuses) {
     test(`GET /api/organisations?status=${status} returns a JSON list`, async ({ apiRequest }) => {
       const response = await apiRequest.get(`/api/organisations?status=${status}`, { failOnStatusCode: false });
