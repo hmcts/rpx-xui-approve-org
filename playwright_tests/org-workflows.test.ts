@@ -1,7 +1,7 @@
 import { test, expect } from './helpers/fixtures';
 import { runAxeAudit } from './helpers/axe';
 import { ensureAuthenticatedPage } from './helpers/sessionCapture';
-import { getTableActionButton, getTableDataByXpath } from './helpers/tables';
+import { getSummaryListValueByKey, getTableActionButton } from './helpers/tables';
 
 test.describe('Organisation approvals - pending org workflows', () => {
   test.beforeEach(async ({ page }) => {
@@ -73,7 +73,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
     await page.getByRole('button', { name: 'Search' }).click();
     await getTableActionButton(page, '//app-pending-overview-component/table/thead/tr[2]/td[6]/a').click();
     await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
-    const orgName = await getTableDataByXpath(page, '//app-org-details-info/form/div/dl/div[1]/dd[1]');
+    const orgName = await getSummaryListValueByKey(page, 'app-org-details-info', 'Organisation name');
     await expect(page.locator('app-org-details-info')).toBeVisible();
     await page.getByLabel('Approve it').check();
     await page.getByRole('button', { name: 'Submit' }).click();
