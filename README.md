@@ -171,10 +171,10 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 This repository now uses Playwright for the functional/liveliness test path.
 
-- `yarn test:smoke` runs the Playwright smoke journey (`playwright_tests/login.test.ts`).
-- `yarn test:functional` runs the Playwright E2E suite (`playwright_tests/`) unless `PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN=true` (used by Jenkins parallel functional stages).
-- `yarn test:functional:parallel` runs Playwright E2E (`playwright_tests/`), Playwright API (`playwright_tests/api`), and Playwright integration (`playwright_tests/integration`) suites in parallel by invoking separate commands.
-- `yarn test:functional:e2e` runs only Playwright E2E (`playwright_tests/`).
+- `yarn test:smoke` runs the Playwright smoke journey (`playwright_tests/e2e/login.test.ts`).
+- `yarn test:functional` runs the Playwright E2E suite (`playwright_tests/e2e`) unless `PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN=true` (used by Jenkins parallel functional stages).
+- `yarn test:functional:parallel` runs Playwright E2E (`playwright_tests/e2e`), Playwright API (`playwright_tests/api`), and Playwright integration (`playwright_tests/integration`) suites in parallel by invoking separate commands.
+- `yarn test:functional:e2e` runs only Playwright E2E (`playwright_tests/e2e`).
 - `yarn test:crossbrowser` runs cross-browser Playwright tests using `playwright-nightly.config.ts`.
 - `yarn test:api:playwright` runs the Playwright API suite (`playwright_tests/api`) using `playwright-api.config.ts`.
 - `yarn test:integration:playwright` runs the Playwright integration suite (`playwright_tests/integration`) using `playwright-integration.config.ts`.
