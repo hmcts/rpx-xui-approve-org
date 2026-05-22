@@ -156,15 +156,6 @@ withPipeline(type, product, component) {
 
     afterSuccess('functionalTest:preview') {
 
-      publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'PREVIEW API Functional Test'
-      ])
-
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -211,15 +202,6 @@ withPipeline(type, product, component) {
 
 
     afterSuccess('functionalTest:aat') {
-
-      publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
-      ])
 
       publishHTML([
             allowMissing         : true,

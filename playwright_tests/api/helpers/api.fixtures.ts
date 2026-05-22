@@ -42,27 +42,35 @@ async function createAuthenticatedApiContext(forceRefresh = false): Promise<APIR
 }
 
 export const test = base.extend<ApiFixtures>({
-  apiRequest: [async ({ browserName: _ }, use) => {
-    let requestContext = await createAuthenticatedApiContext(false);
-    const authenticated = await isAuthenticatedRequestContext(requestContext);
-    if (!authenticated) {
+  apiRequest: [
+    async ({ baseURL: _baseURL }, use) => {
+      void _baseURL;
+      let requestContext = await createAuthenticatedApiContext(false);
+      const authenticated = await isAuthenticatedRequestContext(requestContext);
+      if (!authenticated) {
+        await requestContext.dispose();
+        requestContext = await createAuthenticatedApiContext(true);
+      }
+
+      await use(requestContext);
       await requestContext.dispose();
-      requestContext = await createAuthenticatedApiContext(true);
-    }
+    },
+    { scope: 'test' }
+  ],
 
-    await use(requestContext);
-    await requestContext.dispose();
-  }, { scope: 'test' }],
+  apiAnonymousRequest: [
+    async ({ baseURL: _baseURL }, use) => {
+      void _baseURL;
+      const requestContext = await playwrightRequest.newContext({
+        baseURL: config.baseUrl,
+        ignoreHTTPSErrors: true
+      });
 
-  apiAnonymousRequest: [async ({ browserName: _ }, use) => {
-    const requestContext = await playwrightRequest.newContext({
-      baseURL: config.baseUrl,
-      ignoreHTTPSErrors: true
-    });
-
-    await use(requestContext);
-    await requestContext.dispose();
-  }, { scope: 'test' }]
+      await use(requestContext);
+      await requestContext.dispose();
+    },
+    { scope: 'test' }
+  ]
 });
 
 export { expect } from '@playwright/test';
