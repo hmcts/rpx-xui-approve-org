@@ -1,4 +1,4 @@
-import { test, expect } from './page-objects/page.fixtures';
+import { test, expect } from '../page-objects/page.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 
 test.beforeEach(async ({ page }) => {

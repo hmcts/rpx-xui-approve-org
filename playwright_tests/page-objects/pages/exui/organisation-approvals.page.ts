@@ -1,6 +1,11 @@
+import type { Page } from '@playwright/test';
 import { BasePage } from '../../base';
 
 export class OrganisationApprovalsPage extends BasePage {
+  constructor(page: Page) {
+    super(page);
+  }
+
   readonly heading = this.page.getByRole('heading', { name: 'Organisation approvals' });
   readonly tabPanel = this.page.getByRole('tabpanel');
   readonly pendingOverviewPanel = this.page.locator('app-pending-overview-component');

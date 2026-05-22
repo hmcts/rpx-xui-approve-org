@@ -11,7 +11,7 @@ import {
 const UPDATE_PBA_ORG_ID = process.env.PW_INTEGRATION_UPDATE_PBA_ORG_ID || process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
 const EXISTING_PBA = process.env.PW_INTEGRATION_EXISTING_PBA || 'PBA1234567';
 
-test.describe('Playwright integration seed: update pba', { tag: ['@integration', '@seed', '@write', '@update-pba'] }, () => {
+test.describe('Playwright integration seed: update pba', { tag: ['@integration','@update-pba'] }, () => {
   test('Change PBA UI submits updated payment account payload', async ({ page }) => {
     const updatedPba = `PBA${Date.now().toString().slice(-7)}`;
     const mockedOrganisation = createMockOrganisation({
