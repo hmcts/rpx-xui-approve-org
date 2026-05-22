@@ -188,6 +188,31 @@ This repository now uses Playwright for the functional/liveliness test path.
 - `PW_INTEGRATION_UPDATE_PBA_ORG_ID` can override the org id used by the seeded integration write scenario.
 - `FUNCTIONAL_TESTS_WORKERS` can be set to override Playwright worker count.
 
+### Local selector-check runs
+
+Use these when validating against a specific deployment target.
+
+1. Export test credentials first (`TEST_API_EMAIL_ADMIN` and `TEST_API_PASSWORD_ADMIN`, or `TEST_EMAIL` and `TEST_PASSWORD`).
+2. Run against a local build:
+
+```bash
+export TEST_URL="http://localhost:3000"
+yarn test:functional:e2e:raw
+```
+
+3. Run against an ephemeral preview build:
+
+```bash
+export TEST_URL="https://xui-ao-webapp-pr-<PR_NUMBER>.preview.platform.hmcts.net"
+yarn test:functional:e2e:raw
+```
+
+4. Optional: run only a targeted selector test:
+
+```bash
+yarn test:functional:e2e:raw --grep "tabs on login load data"
+```
+
 CI/Jenkins notes:
 
 - `smoketest:*` and nightly cross-browser stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e`.
