@@ -183,8 +183,7 @@ This repository now uses Playwright for the functional/liveliness test path.
 - `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests.
-- `TEST_API_EMAIL_ADMIN` and `TEST_API_PASSWORD_ADMIN` are the preferred Playwright auth credentials for API and integration suites.
-- `TEST_EMAIL` and `TEST_PASSWORD` are used as fallback Playwright auth credentials when admin-specific variables are not set.
+- `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` are the Playwright auth credentials for API and integration suites.
 - `PW_INTEGRATION_UPDATE_PBA_ORG_ID` can override the org id used by the seeded integration write scenario.
 - `FUNCTIONAL_TESTS_WORKERS` can be set to override Playwright worker count.
 
@@ -192,7 +191,7 @@ This repository now uses Playwright for the functional/liveliness test path.
 
 Use these when validating against a specific deployment target.
 
-1. Export test credentials first (`TEST_API_EMAIL_ADMIN` and `TEST_API_PASSWORD_ADMIN`, or `TEST_EMAIL` and `TEST_PASSWORD`).
+1. Export test credentials first (`APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD`).
 2. Run against a local build:
 
 ```bash
@@ -212,6 +211,84 @@ yarn test:functional:e2e:raw
 ```bash
 yarn test:functional:e2e:raw --grep "tabs on login load data"
 ```
+
+### Azure Key Vault env population
+
+This repo includes scripts to generate local env files by resolving template keys from Azure Key Vault secrets where `tags.e2e` matches the env key name.
+
+Environment to vault mapping is fixed to:
+
+- `aat` -> `rpx-aat`
+- `demo` -> `rpx-demo`
+
+Prerequisites:
+
+- Azure CLI installed
+- Authenticated with Azure CLI
+- Correct subscription selected
+- Access to `rpx-aat` and `rpx-demo` Key Vaults
+
+```bash
+az login
+az account set --subscription <subscription>
+```
+
+Template files:
+
+- Root env template: `.env.example`
+
+Populate commands write to `.env` using `.env.example` by default.
+
+Generate env files:
+
+```bash
+yarn env:populate
+yarn env:populate:aat
+yarn env:populate:demo
+```
+
+The base commands default to `aat`. To override:
+
+```bash
+ENVIRONMENT=demo yarn env:populate
+```
+
+Equivalent npm commands:
+
+```bash
+npm run env:populate
+npm run env:populate:aat
+npm run env:populate:demo
+```
+
+Direct script usage with explicit paths:
+
+```bash
+./scripts/populate-env-from-keyvault.sh aat .env .env.example
+./scripts/populate-env-from-keyvault.sh demo .env .env.example
+```
+
+Behavior notes:
+
+- Missing tagged secrets do not fail the run.
+- Missing keys are written as blank values and logged as warnings.
+- Generated local env files include resolved values only at runtime and should not be committed.
+
+### Add new username/password credentials to Key Vault
+
+Use `--tags e2e=<ENV_KEY>` so the populate scripts can map secrets to env keys.
+
+Example admin credentials for `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` in both vaults:
+
+```bash
+az keyvault secret set --vault-name rpx-aat --name approve-org-admin-username --value "user@example.com" --tags e2e=APPROVE_ORG_ADMIN_USERNAME
+az keyvault secret set --vault-name rpx-aat --name approve-org-admin-password --value "change-me" --tags e2e=APPROVE_ORG_ADMIN_PASSWORD
+
+az keyvault secret set --vault-name rpx-demo --name approve-org-admin-username --value "user@example.com" --tags e2e=APPROVE_ORG_ADMIN_USERNAME
+az keyvault secret set --vault-name rpx-demo --name approve-org-admin-password --value "change-me" --tags e2e=APPROVE_ORG_ADMIN_PASSWORD
+```
+
+If credentials are required in both `aat` and `demo`, add them to both `rpx-aat` and `rpx-demo` with the same `tags.e2e` key mapping.
 
 CI/Jenkins notes:
 
