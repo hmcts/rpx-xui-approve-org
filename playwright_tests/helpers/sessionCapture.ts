@@ -31,7 +31,7 @@ function getUserConfig(user: string): UserConfig {
   const account = (config as unknown as Record<string, UserConfig>)[user];
   if (!account?.username || !account?.password) {
     throw new Error(
-      `Missing Playwright credentials for user "${user}". Set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD.`
+      `Missing Playwright credentials for user "${user}". Set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD `
     );
   }
   return account;
