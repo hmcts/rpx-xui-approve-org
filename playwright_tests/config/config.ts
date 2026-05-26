@@ -49,6 +49,10 @@ export const config = {
     username: resolveCredentialWithFallback('APPROVE_ORG_ADMIN_USERNAME', ['TEST_EMAIL', 'TEST_API_EMAIL_ADMIN']),
     password: resolveCredentialWithFallback('APPROVE_ORG_ADMIN_PASSWORD', ['TEST_PASSWORD', 'TEST_API_PASSWORD_ADMIN'])
   },
+  api: {
+    username: resolveCredential('APPROVE_ORG_API_USERNAME'),
+    password: resolveCredential('APPROVE_ORG_API_PASSWORD')
+  },
   twoFactorAuthEnabled: false,
   termsAndConditionsEnabled: true
 };

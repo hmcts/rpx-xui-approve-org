@@ -7,6 +7,8 @@ type AuthRequestFixtures = {
   anonymousRequest: APIRequestContext;
 };
 
+const authSessionUser = (process.env.PW_AUTH_SESSION_USER ?? 'base').trim() || 'base';
+
 async function isAuthenticatedRequestContext(requestContext: APIRequestContext): Promise<boolean> {
   try {
     const response = await requestContext.get('auth/isAuthenticated', { failOnStatusCode: false });
@@ -33,7 +35,7 @@ async function isAuthenticatedRequestContext(requestContext: APIRequestContext):
 }
 
 async function createAuthenticatedApiContext(forceRefresh = false): Promise<APIRequestContext> {
-  const storageStatePath = await sessionCapture('base', { force: forceRefresh });
+  const storageStatePath = await sessionCapture(authSessionUser, { force: forceRefresh });
   return playwrightRequest.newContext({
     baseURL: config.baseUrl,
     ignoreHTTPSErrors: true,

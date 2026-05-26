@@ -183,7 +183,8 @@ This repository now uses Playwright for the functional/liveliness test path.
 - `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests.
-- `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` are the Playwright auth credentials for API and integration suites.
+- `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` are the Playwright auth credentials for E2E and integration suites.
+- `APPROVE_ORG_API_USERNAME` and `APPROVE_ORG_API_PASSWORD` are the Playwright auth credentials for API suites.
 - `PW_INTEGRATION_UPDATE_PBA_ORG_ID` can override the org id used by the seeded integration write scenario.
 - `FUNCTIONAL_TESTS_WORKERS` can be set to override Playwright worker count.
 
@@ -191,22 +192,23 @@ This repository now uses Playwright for the functional/liveliness test path.
 
 Use these when validating against a specific deployment target.
 
-1. Export test credentials first (`APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD`).
-2. Run against a local build:
+1. Export E2E/integration credentials first (`APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD`).
+2. Export API credentials when running Playwright API tests (`APPROVE_ORG_API_USERNAME` and `APPROVE_ORG_API_PASSWORD`).
+3. Run against a local build:
 
 ```bash
 export TEST_URL="http://localhost:3000"
 yarn test:functional:e2e:raw
 ```
 
-3. Run against an ephemeral preview build:
+4. Run against an ephemeral preview build:
 
 ```bash
 export TEST_URL="https://xui-ao-webapp-pr-<PR_NUMBER>.preview.platform.hmcts.net"
 yarn test:functional:e2e:raw
 ```
 
-4. Optional: run only a targeted selector test:
+5. Optional: run only a targeted selector test:
 
 ```bash
 yarn test:functional:e2e:raw --grep "tabs on login load data"
@@ -278,14 +280,18 @@ Behavior notes:
 
 Use `--tags e2e=<ENV_KEY>` so the populate scripts can map secrets to env keys.
 
-Example admin credentials for `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` in both vaults:
+Example admin credentials for `APPROVE_ORG_ADMIN_USERNAME`/`APPROVE_ORG_ADMIN_PASSWORD` and API credentials for `APPROVE_ORG_API_USERNAME`/`APPROVE_ORG_API_PASSWORD` in both vaults:
 
 ```bash
 az keyvault secret set --vault-name rpx-aat --name approve-org-admin-username --value "user@example.com" --tags e2e=APPROVE_ORG_ADMIN_USERNAME
 az keyvault secret set --vault-name rpx-aat --name approve-org-admin-password --value "change-me" --tags e2e=APPROVE_ORG_ADMIN_PASSWORD
+az keyvault secret set --vault-name rpx-aat --name approve-org-api-username --value "user@example.com" --tags e2e=APPROVE_ORG_API_USERNAME
+az keyvault secret set --vault-name rpx-aat --name approve-org-api-password --value "change-me" --tags e2e=APPROVE_ORG_API_PASSWORD
 
 az keyvault secret set --vault-name rpx-demo --name approve-org-admin-username --value "user@example.com" --tags e2e=APPROVE_ORG_ADMIN_USERNAME
 az keyvault secret set --vault-name rpx-demo --name approve-org-admin-password --value "change-me" --tags e2e=APPROVE_ORG_ADMIN_PASSWORD
+az keyvault secret set --vault-name rpx-demo --name approve-org-api-username --value "user@example.com" --tags e2e=APPROVE_ORG_API_USERNAME
+az keyvault secret set --vault-name rpx-demo --name approve-org-api-password --value "change-me" --tags e2e=APPROVE_ORG_API_PASSWORD
 ```
 
 If credentials are required in both `aat` and `demo`, add them to both `rpx-aat` and `rpx-demo` with the same `tags.e2e` key mapping.

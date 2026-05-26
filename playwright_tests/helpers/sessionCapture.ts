@@ -27,11 +27,19 @@ function resolveSessionMaxAgeMs(): number {
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
 }
 
+function resolveCredentialHint(user: string): string {
+  if (user === 'api') {
+    return 'Set APPROVE_ORG_API_USERNAME/APPROVE_ORG_API_PASSWORD.';
+  }
+
+  return 'Set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD.';
+}
+
 function getUserConfig(user: string): UserConfig {
   const account = (config as unknown as Record<string, UserConfig>)[user];
   if (!account?.username || !account?.password) {
     throw new Error(
-      `Missing Playwright credentials for user "${user}". Set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD `
+      `Missing Playwright credentials for user "${user}". ${resolveCredentialHint(user)}`
     );
   }
   return account;

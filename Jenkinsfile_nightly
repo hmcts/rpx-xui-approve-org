@@ -53,6 +53,8 @@ def secrets = [
   'rpx-${env}': [
     secret('approve-org-admin-username', 'APPROVE_ORG_ADMIN_USERNAME'),
     secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
+    secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
+    secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
   ]
