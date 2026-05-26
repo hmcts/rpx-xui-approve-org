@@ -2,8 +2,6 @@ import * as puppeteer from 'puppeteer';
 
 // const username = process.env.TEST_API_EMAIL_ADMIN || 'elvianixui@mailnesia.com';
 // const password = process.env.APPROVE_ORG_ADMIN_PASSWORD || 'Monday01';
-const username = 'elvianixui@mailnesia.com';
-const password = 'Monday01';
 let xsrfCookie = '';
 let xxsrfCookie = '';
 
