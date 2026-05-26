@@ -3,7 +3,7 @@ import { expect, type Page, type Request, type Response, type Route } from '@pla
 export const PENDING_ORGANISATIONS_TABLE_SELECTOR = 'table.pending-organisations';
 export const ACTIVE_ORGANISATIONS_TABLE_SELECTOR = 'table.active-organisations';
 
-type MockOrganisation = {
+export type MockOrganisation = {
   organisationIdentifier: string;
   name: string;
   status: string;
@@ -36,18 +36,15 @@ type CommonOrganisationApiMockState = {
   singleOrganisationsById?: Record<string, MockOrganisation>;
 };
 
-type UpdatePbaApiMockState = {
+type PendingDecisionApiMockState = {
+  organisationId: string;
   status?: number;
   responseBody?: unknown;
 };
 
-type UpdatePbaApiPayload = {
-  paymentAccounts: string[];
-  orgId: string;
-};
-
-type UpdatePbaApiMockControl = {
-  getLastPayload: () => UpdatePbaApiPayload | undefined;
+type PendingDecisionApiMockControl = {
+  getLastMethod: () => string | undefined;
+  getLastPayload: () => unknown;
 };
 
 export function createMockOrganisation(overrides: Partial<MockOrganisation>): MockOrganisation {
@@ -86,7 +83,7 @@ function normaliseStatusValue(statusValue: string): string {
     .split(',')
     .map((value) => value.trim().toUpperCase())
     .filter(Boolean)
-    .sort()
+    .sort((left, right) => left.localeCompare(right))
     .join(',');
 }
 
@@ -176,35 +173,55 @@ export async function setupCommonOrganisationApiMocks(
   };
 }
 
-export async function setupUpdatePbaApiMock(
+export async function setupPendingOrganisationDecisionApiMock(
   page: Page,
-  state: UpdatePbaApiMockState = {}
-): Promise<UpdatePbaApiMockControl> {
-  let lastPayload: UpdatePbaApiPayload | undefined;
+  state: PendingDecisionApiMockState
+): Promise<PendingDecisionApiMockControl> {
+  let lastMethod: string | undefined;
+  let lastPayload: unknown;
 
-  await page.route('**/api/updatePba**', async (route, request) => {
-    try {
-      lastPayload = request.postDataJSON() as UpdatePbaApiPayload;
-    } catch {
-      lastPayload = undefined;
+  await page.route('**/api/organisations/**', async (route, request) => {
+    const method = request.method().toUpperCase();
+    const pathName = new URL(request.url()).pathname;
+    const expectedPath = `/api/organisations/${state.organisationId}`;
+
+    if ((method === 'PUT' || method === 'DELETE') && pathName === expectedPath) {
+      lastMethod = method;
+      try {
+        lastPayload = request.postDataJSON();
+      } catch {
+        lastPayload = undefined;
+      }
+
+      await route.fulfill({
+        status: state.status ?? 200,
+        contentType: 'application/json',
+        body: JSON.stringify(state.responseBody ?? {})
+      });
+      return;
     }
 
-    await route.fulfill({
-      status: state.status ?? 200,
-      contentType: 'application/json',
-      body: JSON.stringify(state.responseBody ?? { ok: true })
-    });
+    await route.continue();
   });
 
   return {
+    getLastMethod: () => lastMethod,
     getLastPayload: () => lastPayload
   };
 }
 
-export function waitForUpdatePbaResponse(page: Page): Promise<Response> {
+export function waitForPendingOrganisationDecisionResponse(page: Page, organisationId: string): Promise<Response> {
+  const expectedPath = `/api/organisations/${organisationId}`;
+
   return page.waitForResponse((response) => {
     const request = response.request();
-    return request.method() === 'PUT' && request.url().includes('/api/updatePba') && response.status() < 500;
+    const method = request.method().toUpperCase();
+    if (method !== 'PUT' && method !== 'DELETE') {
+      return false;
+    }
+
+    const pathName = new URL(request.url()).pathname;
+    return pathName === expectedPath && response.status() < 500;
   });
 }
 

@@ -1,3 +1,11 @@
+import * as path from 'node:path';
+import * as dotenvExtended from 'dotenv-extended';
+
+dotenvExtended.load({
+  path: path.resolve(__dirname, '../../.env'),
+  silent: true
+});
+
 const DEFAULT_TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net/';
 const DEFAULT_REGISTER_URL = 'https://manage-org.aat.platform.hmcts.net';
 

@@ -8,7 +8,7 @@ import {
   setupCommonOrganisationApiMocks,
   waitForOrganisationNameInTable,
   waitForOrganisationStatusResponse
-} from './helpers/ui-api-mocks';
+} from './mocks';
 
 async function expectOrganisationApprovalsUi(page: Page): Promise<OrganisationApprovalsPage> {
   await ensureAuthenticatedPage(page, 'base');

@@ -6,7 +6,7 @@ import {
   setupCommonOrganisationApiMocks,
   setupUpdatePbaApiMock,
   waitForUpdatePbaResponse
-} from './helpers/ui-api-mocks';
+} from './mocks';
 
 const UPDATE_PBA_ORG_ID = process.env.PW_INTEGRATION_UPDATE_PBA_ORG_ID || process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
 const EXISTING_PBA = process.env.PW_INTEGRATION_EXISTING_PBA || 'PBA1234567';
