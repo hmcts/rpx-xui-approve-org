@@ -10,8 +10,7 @@ const sharedStorageStatePath = getSessionStatePath('base');
 const sharedStorageState = fs.existsSync(sharedStorageStatePath) ? sharedStorageStatePath : undefined;
 
 module.exports = defineConfig({
-  testDir: './playwright_tests',
-  testIgnore: ['**/api/**', '**/integration/**'],
+  testDir: './playwright_tests/e2e',
   globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
