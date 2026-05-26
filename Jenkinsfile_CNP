@@ -23,8 +23,28 @@ def component = "ao-webapp"
 def vault = "rpx"
 def channel   = '#xui-pipeline'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
+def playwrightApiReportDir = 'functional-output/tests/playwright-api'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+def runPlaywrightFunctionalInParallel = { String environmentLabel ->
+    stage("${environmentLabel} Functional Tests (Parallel)") {
+        env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        parallel(
+            failFast: true,
+            api: {
+                stage("${environmentLabel} API Playwright Tests") {
+                    yarnBuilder.yarn('test:api:playwright:raw')
+                }
+            },
+            e2e: {
+                stage("${environmentLabel} E2E Playwright Tests") {
+                    yarnBuilder.yarn('test:functional:e2e:raw')
+                }
+            }
+        )
+    }
+}
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 
@@ -130,16 +150,20 @@ withPipeline(type, product, component) {
         ])
     }
 
+    before('functionalTest:preview') {
+        runPlaywrightFunctionalInParallel('PREVIEW')
+    }
+
     afterSuccess('functionalTest:preview') {
 
-      publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'PREVIEW API Functional Test'
-      ])
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightApiReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'PREVIEW API Playwright Test'
+        ])
 
         publishHTML([
             allowMissing         : true,
@@ -172,17 +196,21 @@ withPipeline(type, product, component) {
         ])
     }
 
+    before('functionalTest:aat') {
+        runPlaywrightFunctionalInParallel('AAT')
+    }
+
 
     afterSuccess('functionalTest:aat') {
 
       publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
-      ])
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightApiReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'AAT API Playwright Test'
+        ])
 
       publishHTML([
             allowMissing         : true,

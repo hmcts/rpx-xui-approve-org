@@ -111,19 +111,28 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
   }
 
   for (let attempt = 1; attempt <= 2; attempt += 1) {
+    const hasNamedUsernameInput = await page.locator('input[name="username"]').isVisible().catch(() => false);
+    const hasRoleEmailInput = await page.getByRole('textbox', { name: /Email address|Enter your work email address/i }).isVisible().catch(() => false);
     const isOnLoginSurface =
       page.url().includes('idam') ||
       page.url().includes('/login') ||
-      (await page.getByRole('textbox', { name: 'Email address' }).isVisible().catch(() => false));
+      hasNamedUsernameInput ||
+      hasRoleEmailInput;
 
     if (!isOnLoginSurface && (await isAuthenticatedByApi(page))) {
       return;
     }
 
     if (isOnLoginSurface) {
-      await page.getByRole('textbox', { name: 'Email address' }).fill(username);
-      await page.getByRole('textbox', { name: 'Password' }).fill(password);
-      await page.getByRole('button', { name: 'Sign in' }).click();
+      if (hasNamedUsernameInput) {
+        await page.fill('input[name="username"]', username);
+        await page.fill('input[name="password"]', password);
+        await page.click('#login-submit-btn');
+      } else {
+        await page.getByRole('textbox', { name: /Email address|Enter your work email address/i }).fill(username);
+        await page.getByRole('textbox', { name: 'Password' }).fill(password);
+        await page.getByRole('button', { name: 'Sign in' }).click();
+      }
     }
 
     await page.waitForTimeout(1000 * attempt);
@@ -142,8 +151,19 @@ async function isAuthenticatedByApi(page: Page): Promise<boolean> {
     if (response.status() !== 200) {
       return false;
     }
-    const body = await response.json().catch(() => false);
-    return body === true;
+    const rawBody = (await response.text()).trim().toLowerCase();
+    if (rawBody === 'true') {
+      return true;
+    }
+    if (rawBody === 'false' || rawBody.length === 0) {
+      return false;
+    }
+
+    try {
+      return JSON.parse(rawBody) === true;
+    } catch {
+      return false;
+    }
   } catch {
     return false;
   }

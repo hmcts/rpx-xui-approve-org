@@ -19,6 +19,29 @@ def component = 'webapp'
 def channel   = '#xui-pipeline'
 def vault = 'rpx'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
+def playwrightApiReportDir = 'functional-output/tests/playwright-api'
+def playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
+
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+def runPlaywrightFunctionalInParallel = {
+    stage('Nightly Functional Tests (Parallel)') {
+        env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        parallel(
+            failFast: true,
+            api: {
+                stage('Nightly API Playwright Tests') {
+                    yarnBuilder.yarn('test:api:playwright:raw')
+                }
+            },
+            e2e: {
+                stage('Nightly E2E Playwright Tests') {
+                    yarnBuilder.yarn('test:functional:e2e:raw')
+                }
+            }
+        )
+    }
+}
 
 def secrets = [
   'rpx-${env}': [
@@ -44,9 +67,10 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '4'
+    env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
     // enableFortifyScan('rpx-aat')
-    // enableFullFunctionalTest(60)
-    // below no longer running as it is not required
+    enableFullFunctionalTest(60)
+    // mutation test no longer running as it is not required
     // enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
@@ -75,14 +99,18 @@ withNightlyPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
+    before('fullFunctionalTest') {
+        runPlaywrightFunctionalInParallel()
+    }
+
     afterSuccess('fullFunctionalTest') {
         publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : 'reports/tests/api_functional/',
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightApiReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Full functional API Playwright Tests'
         ])
 
         publishHTML([
@@ -111,7 +139,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : playwrightReportDir,
+            reportDir            : playwrightNightlyReportDir,
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
       ])

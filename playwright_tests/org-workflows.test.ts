@@ -120,7 +120,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
     ).toBeVisible();
     await expect(page.getByRole('heading', { name: 'What happens next' })).toBeVisible();
     await expect(page.getByText('You should tell the')).toBeVisible();
-    await expect(page.getByText("They've also been removed")).toBeVisible();
+    await expect(page.getByText('They\'ve also been removed')).toBeVisible();
     await page.getByRole('link', { name: 'Go back to active' }).click();
     console.log(`${orgName} has been deleted`);
   });
