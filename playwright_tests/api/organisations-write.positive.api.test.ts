@@ -5,12 +5,12 @@ import {
   type OrganisationRecord
 } from './helpers/organisations-write.helpers';
 
-const APPROVE_ORG_ID = (process.env.PW_API_APPROVE_ORG_ID ?? '').trim();
-const DELETE_ORG_ID = (process.env.PW_API_DELETE_ORG_ID ?? '').trim();
+const APPROVE_ORG_ID = (process.env.APPROVE_ORG_API_APPROVE_ORG_ID ?? '').trim();
+const DELETE_ORG_ID = (process.env.APPROVE_ORG_API_DELETE_ORG_ID ?? '').trim();
 
 test.describe('Playwright API positive: organisations write', { tag: ['@organisations-write', '@positive'] }, () => {
   test('PUT /api/organisations/:id approves a pending organisation', async ({ apiRequest }) => {
-    test.skip(!APPROVE_ORG_ID, 'Set PW_API_APPROVE_ORG_ID to run pending organisation approval tests.');
+    test.skip(!APPROVE_ORG_ID, 'Set APPROVE_ORG_API_APPROVE_ORG_ID to run pending organisation approval tests.');
 
     const sourceOrganisation = await loadOrganisationById(apiRequest, APPROVE_ORG_ID);
     const organisationId = APPROVE_ORG_ID;
@@ -28,7 +28,7 @@ test.describe('Playwright API positive: organisations write', { tag: ['@organisa
 
     expect(
       response.status(),
-      `Expected 200 from PUT /api/organisations/${organisationId} when PW_API_APPROVE_ORG_ID is explicitly set. Received status=${response.status()}`
+      `Expected 200 from PUT /api/organisations/${organisationId} when APPROVE_ORG_API_APPROVE_ORG_ID is explicitly set. Received status=${response.status()}`
     ).toBe(200);
   });
 
@@ -36,7 +36,7 @@ test.describe('Playwright API positive: organisations write', { tag: ['@organisa
     const organisationId = await findDeletablePendingOrganisationId(apiRequest, {
       preferredOrganisationId: DELETE_ORG_ID
     });
-    test.skip(!organisationId, 'No deletable pending organisation found. Set PW_API_DELETE_ORG_ID to run against a known deletable org.');
+    test.skip(!organisationId, 'No deletable pending organisation found. Set APPROVE_ORG_API_DELETE_ORG_ID to run against a known deletable org.');
 
     const response = await apiRequest.delete(`/api/organisations/${organisationId}`, {
       data: {},
