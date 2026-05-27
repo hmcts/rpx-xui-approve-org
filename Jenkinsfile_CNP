@@ -32,7 +32,7 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
         parallel(
-            failFast: true,
+            failFast: false,
             api: {
                 stage("${environmentLabel} API Playwright Tests") {
                     yarnBuilder.yarn('test:api:playwright:raw')
@@ -160,7 +160,7 @@ withPipeline(type, product, component) {
         runPlaywrightFunctionalInParallel('PREVIEW')
     }
 
-    afterSuccess('functionalTest:preview') {
+    afterAlways('functionalTest:preview') {
 
         publishHTML([
             allowMissing         : true,
@@ -216,7 +216,7 @@ withPipeline(type, product, component) {
     }
 
 
-    afterSuccess('functionalTest:aat') {
+    afterAlways('functionalTest:aat') {
 
         publishHTML([
             allowMissing         : true,

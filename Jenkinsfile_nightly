@@ -29,7 +29,7 @@ def runPlaywrightFunctionalInParallel = {
     stage('Nightly Functional Tests (Parallel)') {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
         parallel(
-            failFast: true,
+            failFast: false,
             api: {
                 stage('Nightly API Playwright Tests') {
                     yarnBuilder.yarn('test:api:playwright:raw')
@@ -109,7 +109,7 @@ withNightlyPipeline(type, product, component) {
         runPlaywrightFunctionalInParallel()
     }
 
-    afterSuccess('fullFunctionalTest') {
+    afterAlways('fullFunctionalTest') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
