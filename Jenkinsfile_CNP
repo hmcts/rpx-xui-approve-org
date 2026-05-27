@@ -72,6 +72,14 @@ def publishNgIntegrationReport = { String environmentLabel ->
     ])
 }
 
+def archivePlaywrightArtifacts = {
+    steps.archiveArtifacts(
+        allowEmptyArchive: true,
+        artifacts: 'functional-output/tests/**/*,test-results/**/*',
+        excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
+    )
+}
+
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
@@ -210,6 +218,7 @@ withPipeline(type, product, component) {
         publishPlaywrightE2eReport('PREVIEW')
         publishPlaywrightIntegrationReport('PREVIEW')
         publishNgIntegrationReport('PREVIEW')
+        archivePlaywrightArtifacts()
     }
 
 
@@ -234,5 +243,6 @@ withPipeline(type, product, component) {
         publishPlaywrightE2eReport('AAT')
         publishPlaywrightIntegrationReport('AAT')
         publishNgIntegrationReport('AAT')
+        archivePlaywrightArtifacts()
     }
 }
