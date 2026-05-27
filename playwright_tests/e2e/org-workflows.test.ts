@@ -6,29 +6,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await ensureAuthenticatedPage(page, 'base');
   });
 
-  test('i can approve a pending org', async ({ organisationApprovalsPage, userName }) => {
-
-    await test.step('Search for and open the pending organisation', async () => {
-      await expect(organisationApprovalsPage.heading).toBeVisible();
-      await organisationApprovalsPage.searchForOrganisation(userName);
-      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
-      await organisationApprovalsPage.openFirstPendingOrganisation();
-    });
-
-    await test.step('Approve the pending organisation', async () => {
-      await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
-      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
-      await organisationApprovalsPage.chooseDecision('Approve it');
-      await organisationApprovalsPage.submitDecision();
-      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
-      await organisationApprovalsPage.confirmDecision();
-      await organisationApprovalsPage.waitForSpinnerToHide();
-      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible({ timeout: 5000 });
-    });
-  });
-
   test('i can reject a pending org', async ({ organisationApprovalsPage, userName }) => {
-
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
@@ -44,12 +22,11 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
       await organisationApprovalsPage.waitForSpinnerToHide();
-      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration rejected/i)).toBeVisible({ timeout: 5000 });
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration rejected/i)).toBeVisible();
     });
   });
 
   test('i can place registration under review for a pending org', async ({ organisationApprovalsPage, userName }) => {
-
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
@@ -65,7 +42,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
       await organisationApprovalsPage.waitForSpinnerToHide();
-      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration put under/i)).toBeVisible({ timeout: 5000 });
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration put under/i)).toBeVisible();
     });
   });
 
@@ -85,7 +62,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
       await organisationApprovalsPage.waitForSpinnerToHide(30_000);
-      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible({ timeout: 5000 });
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
     });
 
     await test.step('Find the organisation in the active tab and open details', async () => {
