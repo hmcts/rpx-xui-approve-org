@@ -43,7 +43,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
     enableSlackNotifications(channel)
     enableDockerBuild()
     loadVaultSecrets(secrets)
-    env.FUNCTIONAL_TESTS_WORKERS = '6'
+    env.FUNCTIONAL_TESTS_WORKERS = '7'
     setVaultName(vault)
  // installCharts()
 
