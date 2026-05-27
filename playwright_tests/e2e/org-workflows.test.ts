@@ -1,7 +1,7 @@
-import { test, expect } from './helpers/fixtures';
-import { runAxeAudit } from './helpers/axe';
-import { ensureAuthenticatedPage } from './helpers/sessionCapture';
-import { getSummaryListValueByKey, getTableActionButton } from './helpers/tables';
+import { test, expect } from '../helpers/fixtures';
+import { runAxeAudit } from '../helpers/axe';
+import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
+import { getSummaryListValueByKey, getTableActionButton } from '../helpers/tables';
 
 test.describe('Organisation approvals - pending org workflows', () => {
   test.beforeEach(async ({ page }) => {

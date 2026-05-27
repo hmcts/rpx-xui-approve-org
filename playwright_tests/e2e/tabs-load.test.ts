@@ -1,6 +1,6 @@
-import { test, expect } from './e2e/page-objects/page.fixtures';
-import { runAxeAudit } from './helpers/axe';
-import { ensureAuthenticatedPage } from './helpers/sessionCapture';
+import { test, expect } from '../page-objects/page.fixtures';
+import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
+import { runAxeAudit } from '../helpers/axe';
 
 test.beforeEach(async ({ page }) => {
   await ensureAuthenticatedPage(page, 'base');

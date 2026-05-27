@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { runAxeAudit } from './helpers/axe';
-import { getTableActionButton, verifyTableHasRows } from './helpers/tables';
-import { ensureAuthenticatedPage } from './helpers/sessionCapture';
+import { runAxeAudit } from '../helpers/axe';
+import { getTableActionButton, verifyTableHasRows } from '../helpers/tables';
+import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 
 const userIdentifier = 'base';
 

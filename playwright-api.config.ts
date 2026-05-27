@@ -2,6 +2,8 @@ import { defineConfig } from '@playwright/test';
 import { resolveWorkerCount } from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
 
+process.env.PW_AUTH_SESSION_USER = process.env.PW_AUTH_SESSION_USER || 'api';
+
 module.exports = defineConfig({
   testDir: './playwright_tests/api',
   fullyParallel: true,

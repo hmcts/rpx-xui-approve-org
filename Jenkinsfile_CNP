@@ -24,6 +24,7 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
+def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -49,6 +50,17 @@ def publishPlaywrightE2eReport = { String environmentLabel ->
     ])
 }
 
+def publishPlaywrightIntegrationReport = { String environmentLabel ->
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : playwrightIntegrationReportDir,
+        reportFiles          : 'index.html',
+        reportName           : "${environmentLabel} Integration Playwright Test"
+    ])
+}
+
 def publishNgIntegrationReport = { String environmentLabel ->
     publishHTML([
         allowMissing         : true,
@@ -70,6 +82,11 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
                     yarnBuilder.yarn('test:api:playwright:raw')
                 }
             },
+            integration: {
+                stage("${environmentLabel} Integration Playwright Tests") {
+                    yarnBuilder.yarn('test:integration:playwright:raw')
+                }
+            },
             e2e: {
                 stage("${environmentLabel} E2E Playwright Tests") {
                     yarnBuilder.yarn('test:functional:e2e:raw')
@@ -83,10 +100,10 @@ def branchesToSync = ['demo', 'perftest', 'ithc']
 
 def secrets = [
   'rpx-${env}': [
-    secret('ao-test-email', 'TEST_EMAIL'),
-    secret('ao-test-password', 'TEST_PASSWORD'),
-    secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
-    secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
+    secret('approve-org-admin-username', 'APPROVE_ORG_ADMIN_USERNAME'),
+    secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
+    secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
+    secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
     secret('ao-idam-client-secret', 'IDAM_SECRET'),
@@ -191,6 +208,7 @@ withPipeline(type, product, component) {
     afterAlways('functionalTest:preview') {
         publishPlaywrightApiReport('PREVIEW')
         publishPlaywrightE2eReport('PREVIEW')
+        publishPlaywrightIntegrationReport('PREVIEW')
         publishNgIntegrationReport('PREVIEW')
     }
 
@@ -214,6 +232,7 @@ withPipeline(type, product, component) {
     afterAlways('functionalTest:aat') {
         publishPlaywrightApiReport('AAT')
         publishPlaywrightE2eReport('AAT')
+        publishPlaywrightIntegrationReport('AAT')
         publishNgIntegrationReport('AAT')
     }
 }

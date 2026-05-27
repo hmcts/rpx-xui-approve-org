@@ -6,8 +6,7 @@ const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 module.exports = defineConfig({
-  testDir: './playwright_tests',
-  testIgnore: ['**/api/**', '**/integration/**'],
+  testDir: './playwright_tests/e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -27,15 +26,6 @@ module.exports = defineConfig({
   reporter: buildPlaywrightReporters('nightly'),
 
   projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'],
-        actionTimeout: 15_000,
-        channel: 'chrome',
-        headless: headlessMode,
-        trace: 'on-first-retry'
-      }
-    },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'],

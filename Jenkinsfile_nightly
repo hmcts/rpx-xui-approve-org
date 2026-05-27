@@ -20,6 +20,7 @@ def channel   = '#xui-pipeline'
 def vault = 'rpx'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
+def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 def playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
@@ -34,6 +35,11 @@ def runPlaywrightFunctionalInParallel = {
                     yarnBuilder.yarn('test:api:playwright:raw')
                 }
             },
+            integration: {
+                stage('Nightly Integration Playwright Tests') {
+                    yarnBuilder.yarn('test:integration:playwright:raw')
+                }
+            },
             e2e: {
                 stage('Nightly E2E Playwright Tests') {
                     yarnBuilder.yarn('test:functional:e2e:raw')
@@ -45,10 +51,10 @@ def runPlaywrightFunctionalInParallel = {
 
 def secrets = [
   'rpx-${env}': [
-    secret('ao-test-email', 'TEST_EMAIL'),
-    secret('ao-test-password', 'TEST_PASSWORD'),
-    secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
-    secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
+    secret('approve-org-admin-username', 'APPROVE_ORG_ADMIN_USERNAME'),
+    secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
+    secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
+    secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
   ]
@@ -121,6 +127,15 @@ withNightlyPipeline(type, product, component) {
             reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Full functional E2E Tests'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightIntegrationReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
         ])
     }
 

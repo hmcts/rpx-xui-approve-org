@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { runAxeAudit } from './helpers/axe';
-import { isAuthenticatedByApi, signIn, signOut } from './helpers/login';
+import { runAxeAudit } from '../helpers/axe';
+import { isAuthenticatedByApi, signIn, signOut } from '../helpers/login';
 
 test.describe('Login and logout', () => {
   test.use({ storageState: { cookies: [], origins: [] } });
