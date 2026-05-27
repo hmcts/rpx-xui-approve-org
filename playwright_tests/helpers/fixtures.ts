@@ -1,6 +1,7 @@
 import { test as base, expect, chromium } from '@playwright/test';
 import { randomBytes } from 'node:crypto';
 import { config } from '../config/config';
+import { pageFixtures, type PageFixtures } from '../page-objects/page.fixtures';
 
 /**
  * We’ll give tests an extra parameter:
@@ -8,12 +9,13 @@ import { config } from '../config/config';
  */
 export const test = base.extend<{
   userName: string; // value we return from setup
-}>({
+} & PageFixtures>({
+
+  ...pageFixtures,
 
   /* -------- fixture: log into MO and register org -------- */
   userName: [
-    async ({ browserName: _browserName }, use) => {
-      void _browserName;
+    async ({}, use) => {
       const userName = `xui-ao-test-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`;
       // Need a full browser context for cross-domain login
       const ctx = await chromium.launchPersistentContext('', {
