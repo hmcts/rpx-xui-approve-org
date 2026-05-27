@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { getTableActionButton, verifyTableHasRows } from './helpers/tables';
-import { ensureAuthenticatedPage } from './helpers/sessionCapture';
+import { getTableActionButton, verifyTableHasRows } from '../helpers/tables';
+import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 
 const userIdentifier = 'base';
 

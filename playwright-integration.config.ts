@@ -1,11 +1,11 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 import { resolveWorkerCount } from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
 
-process.env.PW_AUTH_SESSION_USER = process.env.PW_AUTH_SESSION_USER || 'api';
+const headlessMode = process.env.HEAD !== 'true';
 
 module.exports = defineConfig({
-  testDir: './playwright_tests/api',
+  testDir: './playwright_tests/integration',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 3,
@@ -15,13 +15,16 @@ module.exports = defineConfig({
   },
   reportSlowTests: null,
   workers: resolveWorkerCount(),
-  reporter: buildPlaywrightReporters('api'),
-  use: {
-    ignoreHTTPSErrors: true
-  },
+  reporter: buildPlaywrightReporters('integration'),
   projects: [
     {
-      name: 'api'
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: 'chrome',
+        headless: headlessMode,
+        trace: 'on-first-retry'
+      }
     }
   ]
 });

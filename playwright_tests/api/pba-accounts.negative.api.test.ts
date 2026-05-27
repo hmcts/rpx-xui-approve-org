@@ -2,12 +2,12 @@ import { test, expect } from './helpers/api.fixtures';
 import { pbaAccountsMissingParameterErrors, resolveHeader } from './helpers/json-contracts';
 
 const missingResponseError = {
-  "apiError": "Account is missing",
-  "apiStatusCode": "400",
-  "message": "Fee And Pay route error"
-}
+  'apiError': 'Account is missing',
+  'apiStatusCode': '400',
+  'message': 'Fee And Pay route error'
+};
 
-test.describe('Playwright API negative: pba accounts', () => {
+test.describe('Playwright API negative: pba accounts', { tag: ['@pba-accounts', '@negative'] }, () => {
   test('GET /api/pbaAccounts without accountNames returns an error payload', async ({ apiRequest }) => {
     const response = await apiRequest.get('/api/pbaAccounts', { failOnStatusCode: false });
     const httpStatus = response.status();
@@ -41,9 +41,9 @@ test.describe('Playwright API negative: pba accounts', () => {
     const statusPayload = await statusResponse.json();
     const accountName = Array.isArray(statusPayload)
       ? statusPayload
-          .flatMap((org) => Array.isArray(org?.pbaNumbers) ? org.pbaNumbers : [])
-          .map((pba) => pba?.pbaNumber)
-          .find((pbaNumber) => typeof pbaNumber === 'string' && pbaNumber.length > 0)
+        .flatMap((org) => Array.isArray(org?.pbaNumbers) ? org.pbaNumbers : [])
+        .map((pba) => pba?.pbaNumber)
+        .find((pbaNumber) => typeof pbaNumber === 'string' && pbaNumber.length > 0)
       : undefined;
 
     expect(
@@ -109,5 +109,4 @@ test.describe('Playwright API negative: pba accounts', () => {
       `Expected invalid account response marker account_name='not found'. Received item=${JSON.stringify(payload[0])}`
     ).toMatchObject({ account_name: 'not found' });
   });
-
 });
