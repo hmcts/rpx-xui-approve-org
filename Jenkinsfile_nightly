@@ -106,7 +106,9 @@ withNightlyPipeline(type, product, component) {
     }
 
     before('fullFunctionalTest') {
-        runPlaywrightFunctionalInParallel()
+        catchError(stageResult: 'FAILURE') {
+            runPlaywrightFunctionalInParallel()
+        }
     }
 
     afterAlways('fullFunctionalTest') {

@@ -52,6 +52,12 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     }
 }
 
+def runWithFunctionalFailureCapture = { Closure functionalExecution ->
+    catchError(stageResult: 'FAILURE') {
+        functionalExecution()
+    }
+}
+
 def branchesToSync = ['demo', 'perftest', 'ithc']
 
 def secrets = [
@@ -157,7 +163,9 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:preview') {
-        runPlaywrightFunctionalInParallel('PREVIEW')
+        runWithFunctionalFailureCapture {
+            runPlaywrightFunctionalInParallel('PREVIEW')
+        }
     }
 
     afterAlways('functionalTest:preview') {
@@ -212,7 +220,9 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:aat') {
-        runPlaywrightFunctionalInParallel('AAT')
+        runWithFunctionalFailureCapture {
+            runPlaywrightFunctionalInParallel('AAT')
+        }
     }
 
 
