@@ -67,8 +67,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
     await runAxeAudit(page, testInfo, { reportName: 'Pending registration under review success' });
   });
 
-  // Temporarily disabled while the active organisation delete journey is flaky.
-  test.skip('i can delete an active org', async ({ page, userName }, testInfo) => {
+  test('i can delete an active org', async ({ page, userName }, testInfo) => {
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.locator('#search').fill(userName);
     await page.getByRole('button', { name: 'Search' }).click();
