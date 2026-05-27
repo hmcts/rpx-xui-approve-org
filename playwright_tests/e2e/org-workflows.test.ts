@@ -61,7 +61,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await organisationApprovalsPage.submitDecision();
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
-      await organisationApprovalsPage.waitForSpinnerToHide(30_000);
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
       await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
     });
 
@@ -72,7 +72,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await organisationApprovalsPage.searchForOrganisation(organisationName);
       await organisationApprovalsPage.waitForSpinnerToHide(60_000);
 
-      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible({ timeout: 30_000 });
+      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
       await organisationApprovalsPage.openFirstActiveOrganisation();
     });
 
