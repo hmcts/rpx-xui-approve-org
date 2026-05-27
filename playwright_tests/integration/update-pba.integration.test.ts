@@ -1,4 +1,5 @@
 import { test, expect } from './helpers/integration.fixtures';
+import { runAxeAudit } from '../helpers/axe';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { config } from '../config/config';
 import {
@@ -11,8 +12,8 @@ import {
 const UPDATE_PBA_ORG_ID = process.env.PW_INTEGRATION_UPDATE_PBA_ORG_ID || process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
 const EXISTING_PBA = process.env.PW_INTEGRATION_EXISTING_PBA || 'PBA1234567';
 
-test.describe('Playwright integration seed: update pba', { tag: ['@integration','@update-pba'] }, () => {
-  test('Change PBA UI submits updated payment account payload', async ({ page }) => {
+test.describe('Playwright integration seed: update pba', { tag: ['@integration', '@update-pba'] }, () => {
+  test('Change PBA UI submits updated payment account payload', async ({ page }, testInfo) => {
     const updatedPba = `PBA${Date.now().toString().slice(-7)}`;
     const mockedOrganisation = createMockOrganisation({
       organisationIdentifier: UPDATE_PBA_ORG_ID,
@@ -56,6 +57,7 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
     const pbaInput = page.locator('#pba1');
     await expect(pbaInput).toBeVisible();
     await expect(pbaInput).toHaveValue(EXISTING_PBA);
+    await runAxeAudit(page, testInfo, { reportName: 'Integration change PBA form' });
     await pbaInput.fill(updatedPba);
 
     const updateResponse = waitForUpdatePbaResponse(page);
