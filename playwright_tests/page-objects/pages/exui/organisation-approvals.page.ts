@@ -23,6 +23,9 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly confirmDecisionHeading = this.contentMain.locator('h1.govuk-heading-xl');
   readonly confirmButton = this.contentMain.locator('button.govuk-button:not(.govuk-button--warning)').first();
   readonly submitButton = this.page.locator('app-org-details-info button.govuk-button[type="submit"]:not(.govuk-button--secondary), app-org-details-info-old button.govuk-button[type="submit"]:not(.govuk-button--secondary)');
+  readonly approveDecisionRadio = this.page.locator('#reason-0');
+  readonly rejectDecisionRadio = this.page.locator('#reason-1');
+  readonly reviewDecisionRadio = this.page.locator('#reason-2');
   readonly deleteOrganisationDetailsButton = this.page.locator('app-org-details-info button.govuk-button--secondary, app-org-details-info-old button.govuk-button--secondary').first();
   readonly deleteOrganisationConfirmButton = this.contentMain.locator('button.govuk-button--warning').first();
   readonly goBackToActiveLink = this.contentMain.locator('a[href*="/active-organisation"]');
@@ -35,25 +38,37 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
   readonly activeOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/active"]');
   readonly activeOrganisationsPanel = this.page.locator('app-prd-org-overview-component');
+  readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
+  readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
+  readonly usersList = this.page.locator('xuilib-user-list');
+  readonly usersTableRows = this.usersList.locator('table tbody tr');
+  readonly adminDetailsHeading = this.detailsPanel.locator('h3.govuk-heading-m').nth(1);
+  readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
+    .locator('table.pending-organisations a.govuk-link[href*="/organisation-details/"]')
+    .first();
+  readonly activeOrganisationViewLinkLocator = this.activeOrganisationsPanel
+    .locator('table.active-organisations a.govuk-link[href*="/organisation-details/"]')
+    .first();
+  readonly notificationBannerMessage = this.page.locator('app-notification-banner-component .hmcts-banner__message');
+  readonly deletedOrganisationBannerTitle = this.contentMain.locator('.govuk-panel--confirmation .govuk-panel__title');
+  readonly organisationNameSummaryValue = this.page
+    .locator('app-org-details-info .govuk-summary-list__row .govuk-summary-list__value, app-org-details-info-old .govuk-summary-list__row .govuk-summary-list__value')
+    .first();
 
   pendingOrganisationViewLink(): Locator {
-    return this.pendingOverviewPanel
-      .locator('table.pending-organisations a.govuk-link[href*="/organisation-details/"]')
-      .first();
+    return this.pendingOrganisationViewLinkLocator;
   }
 
   activeOrganisationViewLink(): Locator {
-    return this.activeOrganisationsPanel
-      .locator('table.active-organisations a.govuk-link[href*="/organisation-details/"]')
-      .first();
+    return this.activeOrganisationViewLinkLocator;
   }
 
   successBanner(messageText: RegExp | string): Locator {
-    return this.page.locator('app-notification-banner-component .hmcts-banner__message').filter({ hasText: messageText }).first();
+    return this.notificationBannerMessage.filter({ hasText: messageText }).first();
   }
 
   deletedOrganisationBanner(organisationName: string): Locator {
-    return this.contentMain.locator('.govuk-panel--confirmation .govuk-panel__title').filter({ hasText: organisationName }).first();
+    return this.deletedOrganisationBannerTitle.filter({ hasText: organisationName }).first();
   }
 
   async searchForOrganisation(organisationName: string): Promise<void> {
@@ -73,17 +88,17 @@ export class OrganisationApprovalsPage extends BasePage {
     const normalizedDecision = (typeof decisionLabel === 'string' ? decisionLabel : decisionLabel.source).toLowerCase();
 
     if (normalizedDecision.includes('approve')) {
-      await this.page.locator('#reason-0').check();
+      await this.approveDecisionRadio.check();
       return;
     }
 
     if (normalizedDecision.includes('reject')) {
-      await this.page.locator('#reason-1').check();
+      await this.rejectDecisionRadio.check();
       return;
     }
 
     if (normalizedDecision.includes('review') || normalizedDecision.includes('hold')) {
-      await this.page.locator('#reason-2').check();
+      await this.reviewDecisionRadio.check();
       return;
     }
 
@@ -106,10 +121,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async getOrganisationNameFromDetails(): Promise<string> {
-    const organisationName = await this.page
-      .locator('app-org-details-info .govuk-summary-list__row .govuk-summary-list__value, app-org-details-info-old .govuk-summary-list__row .govuk-summary-list__value')
-      .first()
-      .innerText();
+    const organisationName = await this.organisationNameSummaryValue.innerText();
 
     return organisationName.trim();
   }
@@ -130,5 +142,9 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openActiveOrganisationsTab(): Promise<void> {
     await this.activeOrganisationsTab.click();
+  }
+
+  async openUsersTab(): Promise<void> {
+    await this.usersTabLink.click();
   }
 }
