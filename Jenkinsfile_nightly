@@ -11,27 +11,57 @@ properties([
     ])
 ])
 
-@Library("Infrastructure")
+@Library('Infrastructure')
 
-def type      = "nodejs"
-def product   = "xui"
-def component = "webapp"
+def type      = 'nodejs'
+def product   = 'xui'
+def component = 'webapp'
 def channel   = '#xui-pipeline'
-def vault = "rpx"
+def vault = 'rpx'
+def playwrightReportDir = 'functional-output/tests/playwright-e2e'
+def playwrightApiReportDir = 'functional-output/tests/playwright-api'
+def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
+def playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
+
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+def runPlaywrightFunctionalInParallel = {
+    stage('Nightly Functional Tests (Parallel)') {
+        env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        parallel(
+            failFast: true,
+            api: {
+                stage('Nightly API Playwright Tests') {
+                    yarnBuilder.yarn('test:api:playwright:raw')
+                }
+            },
+            integration: {
+                stage('Nightly Integration Playwright Tests') {
+                    yarnBuilder.yarn('test:integration:playwright:raw')
+                }
+            },
+            e2e: {
+                stage('Nightly E2E Playwright Tests') {
+                    yarnBuilder.yarn('test:functional:e2e:raw')
+                }
+            }
+        )
+    }
+}
 
 def secrets = [
   'rpx-${env}': [
-    secret('ao-test-email', 'TEST_EMAIL'),
-    secret('ao-test-password', 'TEST_PASSWORD'),
-    secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
-    secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
+    secret('approve-org-admin-username', 'APPROVE_ORG_ADMIN_USERNAME'),
+    secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
+    secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
+    secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
   ]
 ]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [ $class: 'AzureKeyVaultSecret',
+    [ $class: 'AzureKeyVaultSecret',
     secretType: 'Secret',
     name: secretName,
     version: '',
@@ -42,20 +72,22 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.FUNCTIONAL_TESTS_WORKERS = '4'
+    env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
     // enableFortifyScan('rpx-aat')
-    // enableFullFunctionalTest(60)
-    // below no longer running as it is not required
+    enableFullFunctionalTest(60)
+    // mutation test no longer running as it is not required
     // enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
-    afterSuccess('checkout') {sh 'yarn cache clean'}
+    afterSuccess('checkout') { sh 'yarn cache clean' }
     afterSuccess('build') {
         sh 'npm run build'
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/lint/node/",
+            reportDir            : 'test/reports/lint/node/',
             reportFiles          : 'index.html',
             reportName           : 'node lint Report'
         ])
@@ -63,7 +95,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/lint/ng/",
+            reportDir            : 'test/reports/lint/ng/',
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
@@ -73,24 +105,36 @@ withNightlyPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
-    afterSuccess('fullFunctionalTest') {
+    before('fullFunctionalTest') {
+        runPlaywrightFunctionalInParallel()
+    }
 
+    afterSuccess('fullFunctionalTest') {
         publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightApiReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Full functional API Playwright Tests'
         ])
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
+            reportDir            : playwrightReportDir,
             reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Full functional Tests'
+            reportName           : 'XUI Approve Organisation Full functional E2E Tests'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightIntegrationReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
         ])
     }
 
@@ -110,7 +154,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/crossbrowser/",
+            reportDir            : playwrightNightlyReportDir,
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
       ])
@@ -121,7 +165,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/",
+            reportDir            : 'reports/tests/',
             reportFiles          : 'activescan.html',
             reportName           : 'XUIAO ZAP Security Scan Report'
         ])
