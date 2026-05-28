@@ -11,12 +11,12 @@ export type RegisterOrganisationInput = {
 
 type RegisterOrganisationPayload = {
   companyName: string;
-  companyHouseNumber: null;
+  companyHouseNumber: string;
   hasDxReference: boolean;
-  dxNumber: null;
-  dxExchange: null;
+  dxNumber: string | null;
+  dxExchange: string | null;
   services: Array<{ key: string; value: string }>;
-  otherServices: null;
+  otherServices: string | null;
   hasPBA: boolean;
   contactDetails: {
     firstName: string;
@@ -28,7 +28,7 @@ type RegisterOrganisationPayload = {
     addressLine2: string;
     addressLine3: string;
     postTown: string;
-    county: null;
+    county: string | null;
     country: string;
     postCode: string;
   };
@@ -36,27 +36,27 @@ type RegisterOrganisationPayload = {
     key: string;
     description: string;
   };
-  otherOrganisationType: null;
-  otherOrganisationDetail: null;
-  regulatorRegisteredWith: null;
+  otherOrganisationType: string | null;
+  otherOrganisationDetail: string | null;
+  regulatorRegisteredWith: string | null;
   regulators: Array<{ regulatorType: string }>;
   hasIndividualRegisteredWithRegulator: boolean;
   individualRegulators: unknown[];
-  pbaNumbers: unknown[];
+  pbaNumbers: string[];
   inInternationalMode: boolean;
   sraRegulated: boolean;
 };
 
 function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): RegisterOrganisationPayload {
-  const companyName = input.companyName ?? `${input.userName}-company`;
+  const companyName = input.companyName ?? `${input.userName}`;
   const workEmailAddress = input.workEmailAddress ?? `${input.userName}@mailinator.com`;
 
   return {
     companyName,
-    companyHouseNumber: null,
+    companyHouseNumber: '123456',
     hasDxReference: false,
-    dxNumber: null,
-    dxExchange: null,
+    dxNumber: 'DX321',
+    dxExchange: 'DX Exchange',
     services: [{ key: 'AAA7', value: 'Damages' }],
     otherServices: null,
     hasPBA: false,
@@ -70,7 +70,7 @@ function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): Reg
       addressLine2: 'Farringdon Road',
       addressLine3: '',
       postTown: 'London',
-      county: null,
+      county: 'GreaterLondon',
       country: 'United Kingdom',
       postCode: 'EC1A 1BB'
     },
@@ -84,7 +84,7 @@ function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): Reg
     regulators: [{ regulatorType: 'Not Applicable' }],
     hasIndividualRegisteredWithRegulator: false,
     individualRegulators: [],
-    pbaNumbers: [],
+    pbaNumbers: ['PBA8NMHAFU'],
     inInternationalMode: false,
     sraRegulated: false
   };
