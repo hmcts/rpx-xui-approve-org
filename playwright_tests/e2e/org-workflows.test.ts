@@ -27,6 +27,8 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
   });
 
   test('i can place registration under review for a pending org', async ({ organisationApprovalsPage, userName }) => {
+    let organisationName = '';
+
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
@@ -37,12 +39,22 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await test.step('Place the registration under review', async () => {
       await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      organisationName = await organisationApprovalsPage.getOrganisationNameFromDetails();
       await organisationApprovalsPage.chooseDecision(/Place registration under review/i);
       await organisationApprovalsPage.submitDecision();
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
       await organisationApprovalsPage.waitForSpinnerToHide();
       await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration put under/i)).toBeVisible();
+    });
+
+    await test.step('Search by company name and confirm it appears in pending results', async () => {
+      await organisationApprovalsPage.searchForOrganisation(organisationName);
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      const matchingRows = organisationApprovalsPage.pendingOverviewPanel
+        .locator('table.pending-organisations tbody tr')
+        .filter({ hasText: organisationName });
+      await expect(matchingRows.first()).toBeVisible();
     });
   });
 
