@@ -16,6 +16,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly contentMain = this.page.locator('main#content');
   readonly tabPanel = this.page.locator('.govuk-tabs > .govuk-tabs__panel[role="tabpanel"]');
   readonly pendingOverviewPanel = this.page.locator('app-pending-overview-component');
+  readonly pendingOrganisationRows = this.pendingOverviewPanel.locator('table.pending-organisations tr');
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
@@ -57,6 +58,10 @@ export class OrganisationApprovalsPage extends BasePage {
 
   pendingOrganisationViewLink(): Locator {
     return this.pendingOrganisationViewLinkLocator;
+  }
+
+  pendingOrganisationRowsByName(organisationName: string): Locator {
+    return this.pendingOrganisationRows.filter({ hasText: organisationName });
   }
 
   activeOrganisationViewLink(): Locator {

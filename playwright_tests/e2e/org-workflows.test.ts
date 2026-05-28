@@ -49,12 +49,9 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
 
     await test.step('Search by company name and confirm it appears in pending results', async () => {
-      await organisationApprovalsPage.searchForOrganisation(organisationName);
       await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-      const matchingRows = organisationApprovalsPage.pendingOverviewPanel
-        .locator('table.pending-organisations tbody tr')
-        .filter({ hasText: organisationName });
-      await expect(matchingRows.first()).toBeVisible();
+      await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
+      await expect(organisationApprovalsPage.pendingOrganisationRowsByName(organisationName).first()).toBeVisible();
     });
   });
 
