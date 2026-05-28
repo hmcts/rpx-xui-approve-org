@@ -59,9 +59,10 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
     const status = req.query.status;
     const pageNumber = req.body.searchRequest.pagination_parameters.page_number;
     const pageSize = req.body.searchRequest.pagination_parameters.page_size;
+    const searchFilter = req.body.searchRequest.search_filter;
     let response = null;
     let organisationsUri;
-    if (!req.body.searchRequest.search_filter || req.body.searchRequest.search_filter === '') {
+    if (!searchFilter || searchFilter === '') {
       organisationsUri = getOrganisationPagingUri(status, pageNumber, pageSize);
       response = await req.http.get(organisationsUri);
       const organisationsList = response.data.organisations;
@@ -69,12 +70,9 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         { organisations: organisationsList, total_records: response.headers.total_records } :
         { organisations: [], total_records: 0 };
     } else {
-      if (status && status === 'ACTIVE') {
-        response = await getActiveOrganisations(req);
-      } else {
-        organisationsUri = getOrganisationUri(status, null, null, null);
-        response = await req.http.get(organisationsUri);
-      }
+      // Temporary mitigation: avoid full ACTIVE fan-out reads that frequently hit gateway timeout.
+      organisationsUri = getOrganisationPagingUri(status, pageNumber, pageSize, searchFilter);
+      response = await req.http.get(organisationsUri);
       let organisations;
       if (response && response.data && response.data.organisations) {
         organisations = response.data.organisations;
@@ -83,7 +81,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
       }
 
       if (organisations) {
-        const filteredOrganisations = filterOrganisations(organisations, req.body.searchRequest.search_filter);
+        const filteredOrganisations = filterOrganisations(organisations, searchFilter);
         responseData = createPaginatedResponse(req.body.searchRequest.pagination_parameters, filteredOrganisations);
       } else {
         responseData = { organisations: [], total_records: 0 };
@@ -153,8 +151,12 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, vers
   return url;
 }
 
-function getOrganisationPagingUri(status, pageNumber, size): string {
-  return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=${status}`;
+function getOrganisationPagingUri(status, pageNumber, size, searchFilter?: string): string {
+  let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=${status}`;
+  if (searchFilter && searchFilter !== '') {
+    url = `${url}&search_filter=${encodeURIComponent(searchFilter)}`;
+  }
+  return url;
 }
 
 async function handlePutOrganisationRoute(req: EnhancedRequest, res: Response) {
