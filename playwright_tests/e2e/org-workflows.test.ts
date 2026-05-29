@@ -17,7 +17,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
     const spinner = page.locator('div.spinner-inner-container .spinner');
-    page.getByRole('button', { name: 'Confirm' }).click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
     const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
     await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
@@ -34,7 +34,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
     const spinner = page.locator('div.spinner-inner-container .spinner');
-    page.getByRole('button', { name: 'Confirm' }).click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
     const rejectDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration rejected/i });
     await expect(rejectDivs.first()).toBeVisible({ timeout: 5000 });
@@ -51,7 +51,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
     const spinner = page.locator('div.spinner-inner-container .spinner');
-    page.getByRole('button', { name: 'Confirm' }).click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
     const underDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration put under/i });
     await expect(underDivs.first()).toBeVisible({ timeout: 5000 });
@@ -69,27 +69,29 @@ test.describe('Organisation approvals - pending org workflows', () => {
     await page.getByRole('button', { name: 'Submit' }).click();
     await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
     const spinner = page.locator('div.spinner-inner-container .spinner');
-    page.getByRole('button', { name: 'Confirm' }).click();
+    await page.getByRole('button', { name: 'Confirm' }).click();
     await spinner.waitFor({ state: 'hidden', timeout: 30_000 });
     const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
     await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
     await page.getByRole('tab', { name: 'Active organisations' }).click();
     await page.waitForTimeout(5000); // small timeout to make sure spinner has had chance to start
     await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
+    const searchInput = page.getByLabel('Search');
     for (let i = 0; i < 6; i++) {
       // added a loop to retry clicking on the 'Search' link in case of spinner issues
       try {
         if (i !== 0) {
           console.log(`Attempt ${i}: Failed to 'Search' label, retrying...`);
         }
-        await page.getByLabel('Search').click();
+        await searchInput.click({ timeout: 5000 });
         break;
       } catch (error) {
         console.error(error);
       }
       await page.waitForTimeout(5000);
     }
-    await page.getByLabel('Search').fill(orgName);
+    await expect(searchInput).toBeVisible({ timeout: 5000 });
+    await searchInput.fill(orgName);
     await page.getByRole('button', { name: 'Search' }).click();
     await page.waitForTimeout(2000); // small timeout to make sure spinner has had chance to start
     await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
