@@ -105,8 +105,8 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
   const response = await req.http.get(url);
   const chunkSize = 500;
-  const total_records = response.headers.total_records;
-  const counts = Math.floor(total_records / chunkSize) + 1;
+  const total_records = Number(response.headers.total_records || 0);
+  const counts = Math.ceil(total_records / chunkSize);
   const organisationPromises = [];
   for (let i = 1; i <= counts; i++) {
     organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
@@ -115,7 +115,7 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
   try {
     await Promise.all(organisationPromises).catch((err) => err).then((organisations) => {
       organisations.forEach((organisation) => {
-        if (organisation.data.organisations) {
+        if (Array.isArray(organisation?.data?.organisations)) {
           organisation.data.organisations.forEach((org) => {
             allActiveOrgs.push(org);
           });
