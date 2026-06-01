@@ -6,6 +6,9 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../models/enhanced-request.interface';
 
 const logger = log4jui.getLogger('return');
+const ACTIVE_ORGANISATION_INITIAL_TIMEOUT = 8_000;
+const ACTIVE_ORGANISATION_CHUNK_TIMEOUT = 25_000;
+const ACTIVE_ORGANISATION_ROUTE_TIMEOUT = 28_000;
 
 /**
  * Handle Get Organisation Route
@@ -95,21 +98,24 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
   }
 }
 
-export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
+export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest, timeout = ACTIVE_ORGANISATION_CHUNK_TIMEOUT): AxiosPromise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
-  const promise = req.http.get(url).catch((err) => err);
+  const promise = req.http.get(url, { timeout }).catch((err) => err);
   return promise;
 }
 
 async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
+  const startedAt = Date.now();
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
-  const response = await req.http.get(url);
+  const response = await req.http.get(url, { timeout: ACTIVE_ORGANISATION_INITIAL_TIMEOUT }).catch((err) => err);
   const chunkSize = 500;
-  const total_records = Number(response.headers.total_records || 0);
+  const total_records = Number(response?.headers?.total_records || 0);
   const counts = Math.ceil(total_records / chunkSize);
+  const elapsedTime = Date.now() - startedAt;
+  const chunkTimeout = Math.min(ACTIVE_ORGANISATION_CHUNK_TIMEOUT, Math.max(1_000, ACTIVE_ORGANISATION_ROUTE_TIMEOUT - elapsedTime));
   const organisationPromises = [];
   for (let i = 1; i <= counts; i++) {
-    organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
+    organisationPromises.push(getActiveOrganisation(i, chunkSize, req, chunkTimeout));
   }
   const allActiveOrgs = [];
   try {
@@ -278,6 +284,9 @@ export function filterOrganisations(orgs: any, searchFilter: string): any[] {
 }
 
 export function postCodeMatches(org: any, filter: string): boolean {
+  if (!Array.isArray(org?.contactInformation)) {
+    return false;
+  }
   return org.contactInformation.map(({ postCode }) => {
     return postCode && postCode.split(' ').join('').toLowerCase();
   }).some((element) => element && element.indexOf(filter.split(' ').join('')) >= 0);

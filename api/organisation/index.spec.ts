@@ -343,6 +343,87 @@ describe('organisation/index', () => {
       await postHandler(mockReq, mockRes);
 
       expect(mockRes.send).to.have.been.called;
+      expect(mockReq.http.get.firstCall.args[1]).to.deep.equal({ timeout: 8000 });
+      expect(mockReq.http.get.secondCall.args[1]).to.deep.equal({ timeout: 25000 });
+    });
+
+    it('should return an error when the ACTIVE count request times out', async () => {
+      mockReq.body = {
+        searchRequest: {
+          search_filter: 'test',
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10
+          }
+        }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+
+      const timeoutError = new Error('Count timed out') as any;
+      timeoutError.status = 504;
+      timeoutError.code = 'ECONNABORTED';
+      timeoutError.data = { message: 'Gateway timeout' };
+      mockReq.http.get.rejects(timeoutError);
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledWith({
+        apiError: 'Gateway timeout',
+        apiStatusCode: 504,
+        message: 'handlePostOrganisationsRoute error'
+      });
+      expect(mockReq.http.get).to.have.been.calledOnce;
+      expect(mockReq.http.get.firstCall.args[1]).to.deep.equal({ timeout: 8000 });
+    });
+
+    it('should ignore timed out ACTIVE search chunks and return valid filtered results', async () => {
+      mockReq.body = {
+        searchRequest: {
+          search_filter: 'test',
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10
+          }
+        }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+
+      const matchingOrg = { name: 'Test Org', status: 'ACTIVE', contactInformation: [] };
+      const timeoutError = new Error('Chunk timed out') as any;
+      timeoutError.code = 'ECONNABORTED';
+
+      mockReq.http.get.onCall(0).resolves({
+        data: { organisations: [] },
+        headers: { total_records: '1000' }
+      });
+      mockReq.http.get.onCall(1).resolves({
+        data: {
+          organisations: [
+            matchingOrg,
+            { name: 'Other Org', status: 'ACTIVE', contactInformation: [] }
+          ]
+        }
+      });
+      mockReq.http.get.onCall(2).rejects(timeoutError);
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).not.to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledWith({
+        organisations: [matchingOrg],
+        total_records: 1
+      });
     });
 
     it('should handle search filter with non-ACTIVE status', async () => {
@@ -746,6 +827,16 @@ describe('organisation/index', () => {
         expect(result[0].contactInformation[0].postCode).to.equal('SW1A 1AA');
       });
 
+      it('should handle organisations without contactInformation', () => {
+        const orgs = [
+          { name: 'Other Org' },
+          { name: 'Valid Org', contactInformation: [] }
+        ];
+        const result = filterOrganisations(orgs, 'valid');
+        expect(result).to.have.length(1);
+        expect(result[0].name).to.equal('Valid Org');
+      });
+
       it('should return false for null org', () => {
         const orgs = [null, { name: 'Valid Org', contactInformation: [] }];
         const result = filterOrganisations(orgs, 'valid');
@@ -826,6 +917,11 @@ describe('organisation/index', () => {
           contactInformation: []
         };
         const result = postCodeMatches(org, 'test');
+        expect(result).to.be.false;
+      });
+
+      it('should handle missing contactInformation', () => {
+        const result = postCodeMatches({}, 'test');
         expect(result).to.be.false;
       });
 

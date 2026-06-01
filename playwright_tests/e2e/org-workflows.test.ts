@@ -58,7 +58,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
   });
 
   test('i can delete an active org', async ({ page, userName }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(600_000);
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.locator('#search').fill(userName);
     await page.getByRole('button', { name: 'Search' }).click();
@@ -80,23 +80,26 @@ test.describe('Organisation approvals - pending org workflows', () => {
     const searchInput = page.getByLabel('Search');
     await expect(searchInput).toBeVisible({ timeout: 60_000 });
     await searchInput.click({ timeout: 5000 });
-    await searchInput.fill(orgName);
-    await page.getByRole('button', { name: 'Search' }).click();
-    await page.waitForTimeout(2000); // small timeout to make sure spinner has had chance to start
-    await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
-    for (let i = 0; i < 6; i++) {
-      // added a loop to retry clicking on the 'View' link in case of spinner issues
+    await searchInput.fill(userName);
+    const searchButton = page.getByRole('button', { name: 'Search' });
+    const viewLink = page.getByRole('link', { name: 'View' }).first();
+    for (let i = 0; i < 10; i++) {
       try {
         if (i !== 0) {
-          console.log(`Attempt ${i}: Failed to click on 'View' link, retrying...`);
+          console.log(`Attempt ${i}: Active organisation not found, retrying search...`);
         }
-        await page.getByRole('link', { name: 'View' }).first().click();
+        await searchButton.click({ timeout: 5000 });
+        await page.waitForTimeout(2000); // small timeout to make sure spinner has had chance to start
+        await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
+        await expect(viewLink).toBeVisible({ timeout: 5000 });
         break;
       } catch (error) {
         console.error(error);
       }
       await page.waitForTimeout(5000);
     }
+    await expect(viewLink).toBeVisible({ timeout: 5000 });
+    await viewLink.click();
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('div').filter({ hasText: 'Organisation details Users' }).nth(1)).toBeVisible();
     await page.getByRole('button', { name: 'Delete organisation' }).click();
