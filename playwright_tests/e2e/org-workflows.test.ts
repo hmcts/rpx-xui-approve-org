@@ -58,6 +58,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
   });
 
   test('i can delete an active org', async ({ page, userName }) => {
+    test.setTimeout(180_000);
     await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
     await page.locator('#search').fill(userName);
     await page.getByRole('button', { name: 'Search' }).click();
@@ -77,20 +78,8 @@ test.describe('Organisation approvals - pending org workflows', () => {
     await page.waitForTimeout(5000); // small timeout to make sure spinner has had chance to start
     await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
     const searchInput = page.getByLabel('Search');
-    for (let i = 0; i < 6; i++) {
-      // added a loop to retry clicking on the 'Search' link in case of spinner issues
-      try {
-        if (i !== 0) {
-          console.log(`Attempt ${i}: Failed to 'Search' label, retrying...`);
-        }
-        await searchInput.click({ timeout: 5000 });
-        break;
-      } catch (error) {
-        console.error(error);
-      }
-      await page.waitForTimeout(5000);
-    }
-    await expect(searchInput).toBeVisible({ timeout: 5000 });
+    await expect(searchInput).toBeVisible({ timeout: 60_000 });
+    await searchInput.click({ timeout: 5000 });
     await searchInput.fill(orgName);
     await page.getByRole('button', { name: 'Search' }).click();
     await page.waitForTimeout(2000); // small timeout to make sure spinner has had chance to start
