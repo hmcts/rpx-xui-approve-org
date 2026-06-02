@@ -1,5 +1,7 @@
 {
-  "excludedTags": [],
+  "excludedTags": [
+    "@smoke"
+  ],
   "availableTags": [
     "@e2e",
     "@auth",

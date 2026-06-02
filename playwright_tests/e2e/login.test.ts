@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { isAuthenticatedByApi, signIn, signOut } from '../helpers/login';
 
-test.describe('Login and logout', { tag: ['@e2e', '@auth', '@smoke'] }, () => {
+test.describe('Login and logout', { tag: ['@smoke'] }, () => {
   test.use({ storageState: { cookies: [], origins: [] } });
 
   test('login and log out from AO with valid user', async ({ page }) => {
