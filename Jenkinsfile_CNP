@@ -105,13 +105,13 @@ def applyPlaywrightTagFilterEnv = {
 }
 
 def logPlaywrightTagFilterEnv = { String contextLabel ->
-    echo [
+    echo([
         "[playwright-tags] ${contextLabel}",
         "E2E include=${env.E2E_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
             " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
-    ].join(' | ')
+    ].join(' | '))
 }
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
