@@ -74,6 +74,7 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '4'
     env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
+    env.ENABLE_AXE_TESTS = 'true'
     // enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(60)
     // mutation test no longer running as it is not required

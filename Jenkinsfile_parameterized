@@ -44,6 +44,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
     enableDockerBuild()
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '4'
+    env.ENABLE_AXE_TESTS = 'true'
     setVaultName(vault)
  // installCharts()
 

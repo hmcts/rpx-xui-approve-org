@@ -83,13 +83,10 @@
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <br>
-          <br>
-          <h3 class="govuk-heading-m">PBAs </h3>
-        </div>
-
-        <ng-container  *ngFor="let pba of pbaNumbers(); let i = index">
+      </dl>
+      <h3 class="govuk-heading-m govuk-!-margin-top-8">PBAs</h3>
+      <dl class="govuk-summary-list" *ngIf="org">
+        <ng-container *ngFor="let pba of pbaNumbers(); let i = index">
           <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
             <dt class="govuk-summary-list__key">
               PBA number
@@ -105,7 +102,7 @@
             <dd class="govuk-summary-list__actions">
             </dd>
           </div>
-          <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="pbaNumbers().length!=0">
+          <div class="govuk-summary-list__row" *ngIf="pbaNumbers().length!=0">
             <dt class="govuk-summary-list__key">
               Name on Liberata account
             </dt>
@@ -117,7 +114,7 @@
             <dd class="govuk-summary-list__actions">
             </dd>
           </div>
-        </ng-container >
+        </ng-container>
         <div *ngIf="pbaNumbers().length==0" class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
             PBA number
@@ -129,8 +126,6 @@
           </dd>
           <dd class="govuk-summary-list__actions">
           </dd>
-        </div>
-        <div class="govuk-summary-list__row">
         </div>
       </dl>
       <div *ngIf="org.status !== 'ACTIVE'" class="govuk-form-group"  [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">

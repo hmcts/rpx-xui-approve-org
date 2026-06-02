@@ -28,6 +28,66 @@ def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integra
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+def publishPlaywrightApiReport = { String environmentLabel ->
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : playwrightApiReportDir,
+        reportFiles          : 'index.html',
+        reportName           : "${environmentLabel} API Playwright Test"
+    ])
+}
+
+def publishPlaywrightE2eReport = { String environmentLabel ->
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : playwrightReportDir,
+        reportFiles          : 'index.html',
+        reportName           : "${environmentLabel} Functional E2E Test"
+    ])
+}
+
+def publishPlaywrightIntegrationReport = { String environmentLabel ->
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : playwrightIntegrationReportDir,
+        reportFiles          : 'index.html',
+        reportName           : "${environmentLabel} Integration Playwright Test"
+    ])
+}
+
+def publishNgIntegrationReport = { String environmentLabel ->
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "reports/tests/ngIntegration/",
+        reportFiles          : 'index.html',
+        reportName           : "${environmentLabel} NG Integration Test"
+    ])
+}
+
+def archivePlaywrightArtifacts = {
+    steps.archiveArtifacts(
+        allowEmptyArchive: true,
+        artifacts: 'functional-output/tests/**/*,test-results/**/*',
+        excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
+    )
+}
+
+def publishAndArchivePlaywrightReports = { String environmentLabel ->
+    publishPlaywrightApiReport(environmentLabel)
+    publishPlaywrightE2eReport(environmentLabel)
+    publishPlaywrightIntegrationReport(environmentLabel)
+    publishNgIntegrationReport(environmentLabel)
+    archivePlaywrightArtifacts()
+}
+
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
@@ -49,6 +109,14 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
                 }
             }
         )
+    }
+}
+
+def runPlaywrightFunctionalAndPublishReports = { String environmentLabel ->
+    try {
+        runPlaywrightFunctionalInParallel(environmentLabel)
+    } finally {
+        publishAndArchivePlaywrightReports(environmentLabel)
     }
 }
 
@@ -81,6 +149,7 @@ withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '4'
+    env.ENABLE_AXE_TESTS = 'true'
     enableAksStagingDeployment()
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
@@ -157,46 +226,7 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:preview') {
-        runPlaywrightFunctionalInParallel('PREVIEW')
-    }
-
-    afterSuccess('functionalTest:preview') {
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightApiReportDir,
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW API Playwright Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Functional E2E Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW Integration Playwright Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW NG Integration Test'
-        ])
+        runPlaywrightFunctionalAndPublishReports('PREVIEW')
     }
 
 
@@ -212,46 +242,6 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:aat') {
-        runPlaywrightFunctionalInParallel('AAT')
-    }
-
-
-    afterSuccess('functionalTest:aat') {
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightApiReportDir,
-            reportFiles          : 'index.html',
-            reportName           : 'AAT API Playwright Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
-            reportName           : 'AAT Functional E2ETest'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : 'index.html',
-            reportName           : 'AAT Integration Playwright Test'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "reports/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'AAt NG Integration Test'
-        ])
+        runPlaywrightFunctionalAndPublishReports('AAT')
     }
 }

@@ -1,4 +1,5 @@
 import { test, expect } from './helpers/integration.fixtures';
+import { runAxeAudit } from '../helpers/axe';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { config } from '../config/config';
 import {
@@ -43,7 +44,7 @@ const decisionScenarios: DecisionScenario[] = [
 
 test.describe('Playwright integration: pending decision matrix', { tag: ['@integration', '@organisations', '@pending-decisions'] }, () => {
   for (const scenario of decisionScenarios) {
-    test(`Pending registration decision: ${scenario.idSuffix}`, async ({ page }) => {
+    test(`Pending registration decision: ${scenario.idSuffix}`, async ({ page }, testInfo) => {
       const organisationId = `PENDING-${scenario.idSuffix.toUpperCase()}-001`;
       const mockedPendingOrganisation = createMockOrganisation({
         organisationIdentifier: organisationId,
@@ -68,9 +69,11 @@ test.describe('Playwright integration: pending decision matrix', { tag: ['@integ
       await page.goto(organisationDetailsUrl);
 
       await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
+      await runAxeAudit(page, testInfo, { reportName: `Integration pending ${scenario.idSuffix} details` });
       await page.getByLabel(scenario.decisionLabel).check();
       await page.getByRole('button', { name: 'Submit' }).click();
       await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
+      await runAxeAudit(page, testInfo, { reportName: `Integration pending ${scenario.idSuffix} confirm` });
 
       const decisionResponse = waitForPendingOrganisationDecisionResponse(page, organisationId);
       await page.getByRole('button', { name: 'Confirm' }).click();
@@ -86,6 +89,7 @@ test.describe('Playwright integration: pending decision matrix', { tag: ['@integ
 
       await expect(page).toHaveURL(/\/organisation\/pending/);
       await expect(page.getByText(scenario.successBannerText)).toBeVisible();
+      await runAxeAudit(page, testInfo, { reportName: `Integration pending ${scenario.idSuffix} success` });
     });
   }
 });
