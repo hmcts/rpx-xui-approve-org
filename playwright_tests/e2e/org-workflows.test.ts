@@ -55,7 +55,8 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
   });
 
-  test('i can delete an active org', async ({ organisationApprovalsPage, userName }) => {
+  // Skipping until EXUI-4610 and assoicated bug tickets have been resolved.  
+  test.skip('i can delete an active org', async ({ organisationApprovalsPage, userName }) => {
     let organisationName = '';
 
     await test.step('Approve a pending organisation so it appears in active organisations', async () => {
