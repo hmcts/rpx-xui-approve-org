@@ -3,7 +3,7 @@ import { resolveHeader } from './helpers/json-contracts';
 
 const USERS_ORG_ID = process.env.PW_API_USERS_ORG_ID || '2GIHJH9';
 
-test.describe('Playwright API positive: all user list without roles', () => {
+test.describe('Playwright API positive: all user list without roles', { tag: ['@all-user-list-without-roles', '@positive'] }, () => {
   test('GET /api/allUserListWithoutRoles returns organisation user list', async ({ apiRequest }) => {
     const response = await apiRequest.get('/api/allUserListWithoutRoles', {
       params: { usersOrgId: USERS_ORG_ID },

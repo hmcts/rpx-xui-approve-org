@@ -3,7 +3,7 @@ import { resolveHeader } from './helpers/json-contracts';
 
 const statusValues = ['PENDING', 'ACCEPTED'] as const;
 
-test.describe('Playwright API positive: pba status', () => {
+test.describe('Playwright API positive: pba status', { tag: ['@pba-status', '@positive'] }, () => {
   for (const statusValue of statusValues) {
     test(`GET /api/pba/status/${statusValue} returns a list`, async ({ apiRequest }) => {
       const response = await apiRequest.get(`/api/pba/status/${statusValue}`, { failOnStatusCode: false });
