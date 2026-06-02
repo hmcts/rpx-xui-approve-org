@@ -105,8 +105,8 @@ export function getActiveOrganisation(pageNumber: number, size: number, req: Enh
 export async function getActiveOrganisations(req: EnhancedRequest, paginationParameters?: any): Promise<any> {
   const startedAt = Date.now();
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
-  const response = await req.http.get(url, { timeout: 60000 });
-  const chunkSize = 500;
+  const response = await req.http.get(url);
+  const chunkSize = 1000;
   const total_records = Number(response?.headers?.total_records || 0);
   const counts = Math.ceil(total_records / chunkSize);
 
@@ -139,7 +139,7 @@ export async function getActiveOrganisations(req: EnhancedRequest, paginationPar
   // once enough filtered organisations have been collected to satisfy the requested page.
   if (paginationParameters?.page_number && paginationParameters?.page_size) {
     const neededCount = paginationParameters.page_number * paginationParameters.page_size;
-    const BATCH_CONCURRENCY = 10; // number of parallel page requests per batch when doing early-stop
+    const BATCH_CONCURRENCY = 50; // number of parallel page requests per batch when doing early-stop
     for (let i = 0; i < pages.length && allActiveOrgs.length < neededCount; i += BATCH_CONCURRENCY) {
       const batch = pages.slice(i, i + BATCH_CONCURRENCY);
       const settled = await Promise.allSettled(batch.map(fetchPage));
