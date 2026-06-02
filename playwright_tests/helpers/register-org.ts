@@ -1,4 +1,5 @@
 import type { BrowserContext, Page } from '@playwright/test';
+import { faker } from '@faker-js/faker';
 import { config } from '../config/config';
 
 export type RegisterOrganisationInput = {
@@ -8,6 +9,14 @@ export type RegisterOrganisationInput = {
   lastName?: string;
   workEmailAddress?: string;
 };
+
+export interface PBANumberModel {
+  pbaNumber: string;
+  status?: string;
+  statusMessage?: string;
+  dateCreated?: string;
+  dateAccepted?: string;
+}
 
 type RegisterOrganisationPayload = {
   companyName: string;
@@ -47,31 +56,43 @@ type RegisterOrganisationPayload = {
   sraRegulated: boolean;
 };
 
+function generatePBANumbers(count: number = 3): PBANumberModel[] {
+  return Array.from({ length: count }, () => ({
+    pbaNumber: `PBA${faker.string.numeric({ length: 7, allowLeadingZeros: true })}`
+  }));
+}
+
 function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): RegisterOrganisationPayload {
   const companyName = input.companyName ?? `${input.userName}`;
   const workEmailAddress = input.workEmailAddress ?? `${input.userName}@mailinator.com`;
+  const firstName = input.firstName ?? 'Test';
+  const lastName = input.lastName ?? 'User';
+  const pbaNumbers = generatePBANumbers(2);
+  const addressLine1Seed = faker.string.numeric({ length: 4, allowLeadingZeros: true });
+  const dxNumber = `DX ${faker.string.numeric({ length: 10, allowLeadingZeros: true })}`;
+  const dxExchange = faker.string.numeric({ length: 18, allowLeadingZeros: true });
 
   return {
     companyName,
-    companyHouseNumber: '123456',
+    companyHouseNumber: faker.string.numeric({ length: 8, allowLeadingZeros: true }),
     hasDxReference: false,
-    dxNumber: 'DX321',
-    dxExchange: 'DX Exchange',
+    dxNumber,
+    dxExchange,
     services: [{ key: 'AAA7', value: 'Damages' }],
     otherServices: null,
     hasPBA: false,
     contactDetails: {
-      firstName: input.firstName ?? 'Test',
-      lastName: input.lastName ?? 'User',
+      firstName,
+      lastName,
       workEmailAddress
     },
     address: {
-      addressLine1: 'Royal Mail, Mount Pleasant Mail Centre',
-      addressLine2: 'Farringdon Road',
-      addressLine3: '',
-      postTown: 'London',
-      county: 'GreaterLondon',
-      country: 'United Kingdom',
+      addressLine1: `${addressLine1Seed} high road`,
+      addressLine2: `RDPerf${firstName} ${lastName}`,
+      addressLine3: 'Maharaj road',
+      postTown: 'West Kirby',
+      county: 'Wirral',
+      country: 'UK',
       postCode: 'EC1A 1BB'
     },
     organisationType: {
@@ -84,9 +105,9 @@ function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): Reg
     regulators: [{ regulatorType: 'Not Applicable' }],
     hasIndividualRegisteredWithRegulator: false,
     individualRegulators: [],
-    pbaNumbers: ['PBA8NMHAFU'],
+    pbaNumbers: pbaNumbers.map((pba) => pba.pbaNumber),
     inInternationalMode: false,
-    sraRegulated: false
+    sraRegulated: true
   };
 }
 
