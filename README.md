@@ -323,6 +323,7 @@ CI/Jenkins notes:
 - `smoketest:*` and nightly cross-browser stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e`.
 - `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e`), Playwright API (`functional-output/tests/playwright-api`), and Playwright integration (`functional-output/tests/playwright-integration`) HTML reports.
 - PR and nightly functional stages run API, integration, and E2E as separate parallel Jenkins branches.
+- CNP and nightly Jenkins pipelines expose optional build parameters for tag filtering: `E2E_PW_INCLUDE_TAGS`, `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_INCLUDE_TAGS`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_INCLUDE_TAGS`, and `API_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 
 ## Integration Documentation
