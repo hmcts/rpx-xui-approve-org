@@ -6,9 +6,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../models/enhanced-request.interface';
 
 const logger = log4jui.getLogger('return');
-const ACTIVE_ORGANISATION_INITIAL_TIMEOUT = 8_000;
-const ACTIVE_ORGANISATION_CHUNK_TIMEOUT = 25_000;
-const ACTIVE_ORGANISATION_ROUTE_TIMEOUT = 28_000;
+const ACTIVE_ORGANISATION_CONCURRENCY = 6; // number of parallel page requests
 
 /**
  * Handle Get Organisation Route
@@ -33,7 +31,7 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response) 
       const organisationsUri = getOrganisationUri(req.query.status, req.query.organisationId, req.query.usersOrgId, req.query.page, version);
       console.log(organisationsUri, 'organisationUrl');
       const response = await req.http.get(organisationsUri);
-      if (response.data.organisations) {
+      if (response.data?.organisations) {
         res.send(response.data.organisations);
       } else {
         res.send(response.data);
@@ -73,7 +71,8 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         { organisations: [], total_records: 0 };
     } else {
       if (status && status === 'ACTIVE') {
-        response = await getActiveOrganisations(req);
+        const paginationParameters = req.body.searchRequest?.pagination_parameters ? req.body.searchRequest.pagination_parameters : undefined;
+        response = await getActiveOrganisations(req, paginationParameters);
       } else {
         organisationsUri = getOrganisationUri(status, null, null, null);
         response = await req.http.get(organisationsUri);
@@ -98,36 +97,67 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
   }
 }
 
-export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest, timeout = ACTIVE_ORGANISATION_CHUNK_TIMEOUT): AxiosPromise<any> {
+export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
-  const promise = req.http.get(url, { timeout }).catch((err) => err);
-  return promise;
+  return req.http.get(url);
 }
 
-async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
+export async function getActiveOrganisations(req: EnhancedRequest, paginationParameters?: any): Promise<any> {
   const startedAt = Date.now();
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
-  const response = await req.http.get(url, { timeout: ACTIVE_ORGANISATION_INITIAL_TIMEOUT }).catch((err) => err);
+  const response = await req.http.get(url);
   const chunkSize = 500;
   const total_records = Number(response?.headers?.total_records || 0);
   const counts = Math.ceil(total_records / chunkSize);
-  const elapsedTime = Date.now() - startedAt;
-  const chunkTimeout = Math.min(ACTIVE_ORGANISATION_CHUNK_TIMEOUT, Math.max(1_000, ACTIVE_ORGANISATION_ROUTE_TIMEOUT - elapsedTime));
-  const organisationPromises = [];
-  for (let i = 1; i <= counts; i++) {
-    organisationPromises.push(getActiveOrganisation(i, chunkSize, req, chunkTimeout));
+
+  // handle the single-org or organisations array case immediately and return.
+  if (counts === 0) {
+    if (Array.isArray(response?.data?.organisations)) return response.data.organisations;
+    return response?.data && typeof response.data === 'object' ? [response.data] : [];
   }
-  const allActiveOrgs = [];
+
+  const pages = Array.from({ length: counts }, (_, i) => i + 1);
+  const allActiveOrgs: any[] = [];
+  const fetchPage = (page: number) => getActiveOrganisation(page, chunkSize, req);
+
+  const extractOrgs = (resp: any): any[] => {
+    if (!resp?.data) return [];
+    if (Array.isArray(resp.data.organisations)) return resp.data.organisations;
+    if (typeof resp.data === 'object') return [resp.data];
+    return [];
+  };
+
+  // If pagination parameters are provided, perform batched parallel fetching with early-stop
+  // once enough filtered organisations have been collected to satisfy the requested page.
+  if (paginationParameters?.page_number && paginationParameters?.page_size) {
+    const neededCount = paginationParameters.page_number * paginationParameters.page_size;
+    const BATCH_CONCURRENCY = 20; // number of parallel page requests per batch when doing early-stop
+    for (let i = 0; i < pages.length && allActiveOrgs.length < neededCount; i += BATCH_CONCURRENCY) {
+      const batch = pages.slice(i, i + BATCH_CONCURRENCY);
+      const settled = await Promise.allSettled(batch.map(fetchPage));
+      for (const r of settled) {
+        if (r.status === 'rejected') continue;
+        filterOrganisations(extractOrgs(r.value), req.body?.searchRequest?.search_filter)
+          .forEach((o) => allActiveOrgs.push(o));
+        if (allActiveOrgs.length >= neededCount) break;
+      }
+    }
+    return allActiveOrgs;
+  }
+
+  // Default behaviour: fetch all pages in batched parallel mode
   try {
-    await Promise.all(organisationPromises).catch((err) => err).then((organisations) => {
-      organisations.forEach((organisation) => {
-        if (Array.isArray(organisation?.data?.organisations)) {
-          organisation.data.organisations.forEach((org) => {
-            allActiveOrgs.push(org);
-          });
+    for (let i = 0; i < pages.length; i += ACTIVE_ORGANISATION_CONCURRENCY) {
+      const batch = pages.slice(i, i + ACTIVE_ORGANISATION_CONCURRENCY);
+      const settled = await Promise.allSettled(batch.map(fetchPage));
+      settled.forEach((r: any, idx: number) => {
+        if (r.status === 'rejected') {
+          logger.error(`getActiveOrganisations chunk rejected - page ${batch[idx]}`, r.reason);
+          return;
         }
+        extractOrgs((r as PromiseFulfilledResult<any>).value).forEach((org) => allActiveOrgs.push(org));
       });
-    });
+    }
   } catch (error) {
     logger.error(error);
     if (error.message) {

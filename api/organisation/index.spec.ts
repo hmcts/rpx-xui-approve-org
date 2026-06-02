@@ -981,5 +981,58 @@ describe('organisation/index', () => {
         expect(result).to.not.be.ok;
       });
     });
+
+    describe('getActiveOrganisations', () => {
+      it('should return single organisation when initial response is a single object with no headers', async () => {
+        const singleOrg = { name: 'Single Org', sraId: 'S1' };
+        // initial count request returns a single organisation object (no headers)
+        mockReq.http.get.resolves({ data: singleOrg });
+
+        const orgIndex = require('./index');
+        const result = await orgIndex.getActiveOrganisations(mockReq);
+
+        expect(result).to.be.an('array');
+        expect(result).to.have.length(1);
+        expect(result[0]).to.deep.equal(singleOrg);
+      });
+
+      it('should return organisations array when initial response contains organisations array but headers missing', async () => {
+        const orgs = [{ name: 'Org A' }, { name: 'Org B' }];
+        mockReq.http.get.resolves({ data: { organisations: orgs } });
+
+        const orgIndex = require('./index');
+        const result = await orgIndex.getActiveOrganisations(mockReq);
+
+        expect(result).to.be.an('array');
+        expect(result).to.have.length(2);
+        expect(result).to.deep.equal(orgs);
+      });
+
+      it('should aggregate organisations from chunked responses including single-object chunks and ignore rejected chunks', async () => {
+        // initial count indicates 3 chunks (total_records = 1500 with chunkSize 500)
+        const orgArrayChunk = [{ name: 'ChunkOrg1' }, { name: 'ChunkOrg2' }];
+        const singleChunkOrg = { name: 'SingleChunkOrg' };
+        const timeoutError = new Error('Chunk failed') as any;
+        timeoutError.code = 'ECONNABORTED';
+
+        // call order: 0 = initial count request, 1..3 = chunk requests
+        mockReq.http.get.onCall(0).resolves({ data: { organisations: [] }, headers: { total_records: '1500' } });
+        // first chunk returns an organisations array
+        mockReq.http.get.onCall(1).resolves({ data: { organisations: orgArrayChunk } });
+        // second chunk returns a single organisation object
+        mockReq.http.get.onCall(2).resolves({ data: singleChunkOrg });
+        // third chunk fails
+        mockReq.http.get.onCall(3).rejects(timeoutError);
+
+        const orgIndex = require('./index');
+        const result = await orgIndex.getActiveOrganisations(mockReq);
+
+        expect(result).to.be.an('array');
+        // should contain 2 from first chunk + 1 from single-object chunk = 3
+        expect(result).to.have.length(3);
+        expect(result).to.deep.include.members(orgArrayChunk);
+        expect(result).to.deep.include(singleChunkOrg);
+      });
+    });
   });
 });
