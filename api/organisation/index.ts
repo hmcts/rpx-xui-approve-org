@@ -105,7 +105,7 @@ export function getActiveOrganisation(pageNumber: number, size: number, req: Enh
 export async function getActiveOrganisations(req: EnhancedRequest, paginationParameters?: any): Promise<any> {
   const startedAt = Date.now();
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
-  const response = await req.http.get(url);
+  const response = await req.http.get(url, { timeout: 60000 });
   const chunkSize = 500;
   const total_records = Number(response?.headers?.total_records || 0);
   const counts = Math.ceil(total_records / chunkSize);
