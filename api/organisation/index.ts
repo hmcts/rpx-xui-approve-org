@@ -139,7 +139,7 @@ export async function getActiveOrganisations(req: EnhancedRequest, paginationPar
   // once enough filtered organisations have been collected to satisfy the requested page.
   if (paginationParameters?.page_number && paginationParameters?.page_size) {
     const neededCount = paginationParameters.page_number * paginationParameters.page_size;
-    const BATCH_CONCURRENCY = 20; // number of parallel page requests per batch when doing early-stop
+    const BATCH_CONCURRENCY = 10; // number of parallel page requests per batch when doing early-stop
     for (let i = 0; i < pages.length && allActiveOrgs.length < neededCount; i += BATCH_CONCURRENCY) {
       const batch = pages.slice(i, i + BATCH_CONCURRENCY);
       const settled = await Promise.allSettled(batch.map(fetchPage));
