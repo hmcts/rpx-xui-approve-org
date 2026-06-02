@@ -80,7 +80,7 @@ test.describe('Organisation approvals - pending org workflows', () => {
     const searchInput = page.getByLabel('Search');
     await expect(searchInput).toBeVisible({ timeout: 60_000 });
     await searchInput.click({ timeout: 5000 });
-    await searchInput.fill(userName);
+    await searchInput.fill(orgName);
     const searchButton = page.getByRole('button', { name: 'Search' });
     const viewLink = page.getByRole('link', { name: 'View' }).first();
     for (let i = 0; i < 10; i++) {
