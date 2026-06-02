@@ -112,7 +112,9 @@ export async function getActiveOrganisations(req: EnhancedRequest, paginationPar
 
   // handle the single-org or organisations array case immediately and return.
   if (counts === 0) {
-    if (Array.isArray(response?.data?.organisations)) return response.data.organisations;
+    if (Array.isArray(response?.data?.organisations)) {
+      return response.data.organisations;
+    }
     return response?.data && typeof response.data === 'object' ? [response.data] : [];
   }
 
@@ -121,9 +123,15 @@ export async function getActiveOrganisations(req: EnhancedRequest, paginationPar
   const fetchPage = (page: number) => getActiveOrganisation(page, chunkSize, req);
 
   const extractOrgs = (resp: any): any[] => {
-    if (!resp?.data) return [];
-    if (Array.isArray(resp.data.organisations)) return resp.data.organisations;
-    if (typeof resp.data === 'object') return [resp.data];
+    if (!resp?.data) {
+      return [];
+    }
+    if (Array.isArray(resp.data.organisations)) {
+      return resp.data.organisations;
+    }
+    if (typeof resp.data === 'object') {
+      return [resp.data];
+    }
     return [];
   };
 
@@ -136,10 +144,14 @@ export async function getActiveOrganisations(req: EnhancedRequest, paginationPar
       const batch = pages.slice(i, i + BATCH_CONCURRENCY);
       const settled = await Promise.allSettled(batch.map(fetchPage));
       for (const r of settled) {
-        if (r.status === 'rejected') continue;
+        if (r.status === 'rejected') {
+          continue;
+        }
         filterOrganisations(extractOrgs(r.value), req.body?.searchRequest?.search_filter)
           .forEach((o) => allActiveOrgs.push(o));
-        if (allActiveOrgs.length >= neededCount) break;
+        if (allActiveOrgs.length >= neededCount) {
+          break;
+        }
       }
     }
     return allActiveOrgs;
