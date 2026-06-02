@@ -1,8 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
-import { resolveWorkerCount } from './playwright-config-utils';
+import { resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
 
 const headlessMode = process.env.HEAD !== 'true';
+const integrationTagFilters = resolveTagFilters({
+  includeTagsEnvVar: 'INTEGRATION_PW_INCLUDE_TAGS',
+  excludedTagsEnvVar: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+  configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
+  defaultConfigPath: 'playwright_tests/integration/tag-filter.json',
+  suiteTag: '@integration',
+});
 
 module.exports = defineConfig({
   testDir: './playwright_tests/integration',
@@ -19,6 +26,8 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
+      grep: integrationTagFilters.grep,
+      grepInvert: integrationTagFilters.grepInvert,
       use: {
         ...devices['Desktop Chrome'],
         channel: 'chrome',
