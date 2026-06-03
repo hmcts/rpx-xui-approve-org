@@ -15,7 +15,7 @@ export const test = base.extend<{
 
   /* -------- fixture: log into MO and register org -------- */
   userName: [
-    async (_fixtures, use) => {
+    async ({ browserName: _browserName }, use) => {
       const userName = `xui-ao-test-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`;
       const ctx = await chromium.launchPersistentContext('', {
         headless: true
