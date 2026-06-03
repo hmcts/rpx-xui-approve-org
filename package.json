@@ -26,6 +26,7 @@
     "lint:test": "yarn eslint playwright_tests",
     "ng": "ng",
     "pre-push": "yarn lint && yarn build:prod && ng test organisation-manager --code-coverage",
+    "prepush": "bash ./bin/prepush.sh",
     "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error node -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults",
     "run:docker": "yarn build:docker && yarn start:docker",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
