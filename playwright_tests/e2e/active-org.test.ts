@@ -1,27 +1,35 @@
-import { test, expect } from '@playwright/test';
-import { getTableActionButton, verifyTableHasRows } from '../helpers/tables';
+import { test, expect } from '../page-objects/page.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 
 const userIdentifier = 'base';
 
-test.describe('Active organisation details', () => {
+test.describe('Active organisation details', { tag: ['@e2e', '@organisations', '@active-org'] }, () => {
   test.beforeEach(async ({ page }) => {
     await ensureAuthenticatedPage(page, userIdentifier);
   });
 
-  test('i can see organsation details for an active org', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
-    await page.getByRole('tab', { name: 'Active organisations' }).click();
-    await getTableActionButton(page, '//app-prd-org-overview-component/table/thead/tr[2]/td[6]/a').click();
-    await expect(page.locator('app-org-details-info')).toBeVisible();
-    await expect(page.locator('h1')).toBeVisible();
-    await expect(page.getByText('Organisation details Users')).toBeVisible();
-    await expect(page.getByText('Users')).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Administrator details' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Delete organisation' })).toBeVisible();
-    await page.getByText('Users').click();
-    await expect(page.getByRole('heading', { name: 'Users' })).toBeVisible();
-    await expect(page.locator('xuilib-user-list')).toBeVisible();
-    expect(verifyTableHasRows(page, '//xuilib-user-list/table')).toBeTruthy();
+  test('i can see organisation details for an active org', async ({ organisationApprovalsPage }) => {
+    await test.step('Open the first active organisation', async () => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible({ timeout: 30_000 });
+      await organisationApprovalsPage.openFirstActiveOrganisation();
+    });
+
+    await test.step('Validate organisation details panel', async () => {
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await expect(organisationApprovalsPage.subNavigation).toBeVisible();
+      await expect(organisationApprovalsPage.usersTabLink).toBeVisible();
+      await expect(organisationApprovalsPage.adminDetailsHeading).toBeVisible();
+      await expect(organisationApprovalsPage.deleteOrganisationDetailsButton).toBeVisible();
+    });
+
+    await test.step('Open users tab and verify there are user rows', async () => {
+      await organisationApprovalsPage.openUsersTab();
+      await expect(organisationApprovalsPage.usersList).toBeVisible();
+      const usersRowCount = await organisationApprovalsPage.usersTableRows.count();
+      expect(usersRowCount).toBeGreaterThan(0);
+    });
   });
 });

@@ -1,13 +1,20 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as fs from 'node:fs';
 import { getSessionStatePath } from './playwright_tests/helpers/sessionCapture';
-import { resolveWorkerCount } from './playwright-config-utils';
+import { resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 const sharedStorageStatePath = getSessionStatePath('base');
 const sharedStorageState = fs.existsSync(sharedStorageStatePath) ? sharedStorageStatePath : undefined;
+const e2eTagFilters = resolveTagFilters({
+  includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+  excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+  configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+  defaultConfigPath: 'playwright_tests/e2e/tag-filter.json',
+  suiteTag: '@e2e',
+});
 
 module.exports = defineConfig({
   testDir: './playwright_tests/e2e',
@@ -33,10 +40,13 @@ module.exports = defineConfig({
   projects: [
     {
       name: 'chromium',
+      grep: e2eTagFilters.grep,
+      grepInvert: e2eTagFilters.grepInvert,
       use: { ...devices['Desktop Chrome'],
         channel: 'chrome',
         headless: headlessMode,
         storageState: sharedStorageState,
+        screenshot: 'only-on-failure',
         trace: 'on-first-retry'
       }
     }

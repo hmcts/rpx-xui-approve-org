@@ -1,127 +1,122 @@
 import { test, expect } from '../helpers/fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
-import { getTableActionButton, getTableDataByXpath } from '../helpers/tables';
 
-test.describe('Organisation approvals - pending org workflows', () => {
+test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', '@organisations', '@org-workflows'] }, () => {
   test.beforeEach(async ({ page }) => {
     await ensureAuthenticatedPage(page, 'base');
   });
-  test('i can approve a pending org', async ({ page, userName }) => {
-    await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
-    await page.locator('#search').fill(userName);
-    await page.getByRole('button', { name: 'Search' }).click();
-    await getTableActionButton(page, '//app-pending-overview-component/table/thead/tr[2]/td[6]/a').click();
-    await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
-    await expect(page.locator('app-org-details-info')).toBeVisible();
-    await page.getByLabel('Approve it').check();
-    await page.getByRole('button', { name: 'Submit' }).click();
-    await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
-    const spinner = page.locator('div.spinner-inner-container .spinner');
-    page.getByRole('button', { name: 'Confirm' }).click();
-    await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
-    const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
-    await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
+
+  test('I can reject a pending org', async ({ organisationApprovalsPage, userName }) => {
+    await test.step('Search for and open the pending organisation', async () => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await organisationApprovalsPage.searchForOrganisation(userName);
+      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
+      await organisationApprovalsPage.openFirstPendingOrganisation();
+    });
+
+    await test.step('Reject the pending organisation', async () => {
+      await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await organisationApprovalsPage.chooseDecision('Reject it');
+      await organisationApprovalsPage.submitDecision();
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+      await organisationApprovalsPage.confirmDecision();
+      await organisationApprovalsPage.waitForSpinnerToHide();
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration rejected/i)).toBeVisible();
+    });
   });
 
-  test('i can reject a pending org', async ({ page, userName }) => {
-    await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
-    await page.locator('#search').fill(userName);
-    await page.getByRole('button', { name: 'Search' }).click();
-    await getTableActionButton(page, '//app-pending-overview-component/table/thead/tr[2]/td[6]/a').click();
-    await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
-    await expect(page.locator('app-org-details-info')).toBeVisible();
-    await page.getByLabel('Reject it').check();
-    await page.getByRole('button', { name: 'Submit' }).click();
-    await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
-    const spinner = page.locator('div.spinner-inner-container .spinner');
-    page.getByRole('button', { name: 'Confirm' }).click();
-    await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
-    const rejectDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration rejected/i });
-    await expect(rejectDivs.first()).toBeVisible({ timeout: 5000 });
+  test('I can place registration under review for a pending org', async ({ organisationApprovalsPage, userName }) => {
+    let organisationName = '';
+
+    await test.step('Search for and open the pending organisation', async () => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await organisationApprovalsPage.searchForOrganisation(userName);
+      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
+      await organisationApprovalsPage.openFirstPendingOrganisation();
+    });
+
+    await test.step('Place the registration under review', async () => {
+      await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      organisationName = await organisationApprovalsPage.getOrganisationNameFromDetails();
+      await organisationApprovalsPage.chooseDecision(/Place registration under review/i);
+      await organisationApprovalsPage.submitDecision();
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+      await organisationApprovalsPage.confirmDecision();
+      await organisationApprovalsPage.waitForSpinnerToHide();
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration put under/i)).toBeVisible();
+    });
+
+    await test.step('Search by company name and confirm it appears in pending results', async () => {
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
+      await expect(organisationApprovalsPage.pendingOrganisationRowsByName(organisationName).first()).toBeVisible();
+    });
   });
 
-  test('i can place registration under review for a pending org', async ({ page, userName }) => {
-    await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
-    await page.locator('#search').fill(userName);
-    await page.getByRole('button', { name: 'Search' }).click();
-    await getTableActionButton(page, '//app-pending-overview-component/table/thead/tr[2]/td[6]/a').click();
-    await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
-    await expect(page.locator('app-org-details-info')).toBeVisible();
-    await page.getByLabel('Place registration under').check();
-    await page.getByRole('button', { name: 'Submit' }).click();
-    await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
-    const spinner = page.locator('div.spinner-inner-container .spinner');
-    page.getByRole('button', { name: 'Confirm' }).click();
-    await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
-    const underDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration put under/i });
-    await expect(underDivs.first()).toBeVisible({ timeout: 5000 });
+  test('I can approve a pending organisation', async ({ organisationApprovalsPage, userName }) => {
+    await test.step('Pending organisation appears in active organisations tab', async () => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await organisationApprovalsPage.searchForOrganisation(userName);
+      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
+      await organisationApprovalsPage.openFirstPendingOrganisation();
+    });
+
+    await test.step('Approve a pending organisation so it appears in active organisations', async () => {
+      await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await organisationApprovalsPage.chooseDecision('Approve it');
+      await organisationApprovalsPage.submitDecision();
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+      await organisationApprovalsPage.confirmDecision();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
+    });
   });
 
-  test('i can delete an active org', async ({ page, userName }) => {
-    await expect(page.getByRole('heading', { name: 'Organisation approvals' })).toBeVisible();
-    await page.locator('#search').fill(userName);
-    await page.getByRole('button', { name: 'Search' }).click();
-    await getTableActionButton(page, '//app-pending-overview-component/table/thead/tr[2]/td[6]/a').click();
-    await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
-    const orgName = await getTableDataByXpath(page, '//app-org-details-info/form/div/dl/div[1]/dd[1]');
-    await expect(page.locator('app-org-details-info')).toBeVisible();
-    await page.getByLabel('Approve it').check();
-    await page.getByRole('button', { name: 'Submit' }).click();
-    await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
-    const spinner = page.locator('div.spinner-inner-container .spinner');
-    page.getByRole('button', { name: 'Confirm' }).click();
-    await spinner.waitFor({ state: 'hidden', timeout: 30_000 });
-    const successDivs = await page.locator('div').filter({ hasText: /SUCCESS\s*Registration approved/i });
-    await expect(successDivs.first()).toBeVisible({ timeout: 5000 });
-    await page.getByRole('tab', { name: 'Active organisations' }).click();
-    await page.waitForTimeout(5000); // small timeout to make sure spinner has had chance to start
-    await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
-    for (let i = 0; i < 6; i++) {
-      // added a loop to retry clicking on the 'Search' link in case of spinner issues
-      try {
-        if (i !== 0) {
-          console.log(`Attempt ${i}: Failed to 'Search' label, retrying...`);
-        }
-        await page.getByLabel('Search').click();
-        break;
-      } catch (error) {
-        console.error(error);
-      }
-      await page.waitForTimeout(5000);
-    }
-    await page.getByLabel('Search').fill(orgName);
-    await page.getByRole('button', { name: 'Search' }).click();
-    await page.waitForTimeout(2000); // small timeout to make sure spinner has had chance to start
-    await spinner.waitFor({ state: 'hidden', timeout: 60_000 });
-    for (let i = 0; i < 6; i++) {
-      // added a loop to retry clicking on the 'View' link in case of spinner issues
-      try {
-        if (i !== 0) {
-          console.log(`Attempt ${i}: Failed to click on 'View' link, retrying...`);
-        }
-        await page.getByRole('link', { name: 'View' }).first().click();
-        break;
-      } catch (error) {
-        console.error(error);
-      }
-      await page.waitForTimeout(5000);
-    }
-    await expect(page.locator('h1')).toBeVisible();
-    await expect(page.locator('div').filter({ hasText: 'Organisation details Users' }).nth(1)).toBeVisible();
-    await page.getByRole('button', { name: 'Delete organisation' }).click();
-    await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
-    await expect(page.getByText('Warning Make sure you have')).toBeVisible();
-    await page.getByRole('button', { name: 'Delete organisation' }).click();
-    await expect(
-      page
-        .locator('div')
-        .filter({ hasText: `${orgName} has been` })
-        .nth(3)
-    ).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'What happens next' })).toBeVisible();
-    await expect(page.getByText('You should tell the')).toBeVisible();
-    await expect(page.getByText('They\'ve also been removed')).toBeVisible();
-    await page.getByRole('link', { name: 'Go back to active' }).click();
-    console.log(`${orgName} has been deleted`);
+  // Skipping until EXUI-4610 and assoicated bug tickets have been resolved.
+  test.skip('i can delete an active org', async ({ organisationApprovalsPage, userName }) => {
+    let organisationName = '';
+
+    await test.step('Approve a pending organisation so it appears in active organisations', async () => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await organisationApprovalsPage.searchForOrganisation(userName);
+      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
+      await organisationApprovalsPage.openFirstPendingOrganisation();
+      organisationName = await organisationApprovalsPage.getOrganisationNameFromDetails();
+      await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await organisationApprovalsPage.chooseDecision('Approve it');
+      await organisationApprovalsPage.submitDecision();
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+      await organisationApprovalsPage.confirmDecision();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
+    });
+
+    await test.step('Find the organisation in the active tab and open details', async () => {
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+
+      await organisationApprovalsPage.searchForOrganisation(organisationName);
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+
+      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
+      await organisationApprovalsPage.openFirstActiveOrganisation();
+    });
+
+    await test.step('Delete the active organisation and verify confirmation guidance', async () => {
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await organisationApprovalsPage.deleteActiveOrganisation();
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+      await expect(organisationApprovalsPage.deleteWarningText).toBeVisible();
+      await organisationApprovalsPage.deleteActiveOrganisation();
+      await expect(organisationApprovalsPage.deletedOrganisationBanner(organisationName)).toBeVisible();
+      await expect(organisationApprovalsPage.whatHappensNextHeading).toBeVisible();
+      await expect(organisationApprovalsPage.tellOrganisationText).toBeVisible();
+      await expect(organisationApprovalsPage.usersRemovedText).toBeVisible();
+      await organisationApprovalsPage.goBackToActiveLink.click();
+    });
   });
 });

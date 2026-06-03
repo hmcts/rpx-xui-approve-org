@@ -8,6 +8,38 @@ properties([
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']
+    ]),
+    parameters([
+        string(
+            name: 'E2E_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional E2E include tags (space/comma separated)'
+        ),
+        string(
+            name: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional E2E excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'INTEGRATION_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional integration include tags (space/comma separated)'
+        ),
+        string(
+            name: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional integration excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'API_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional API include tags (space/comma separated)'
+        ),
+        string(
+            name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional API excluded tags override (@none clears file defaults)'
+        )
     ])
 ])
 
@@ -32,7 +64,7 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
         parallel(
-            failFast: true,
+            failFast: false,
             api: {
                 stage("${environmentLabel} API Playwright Tests") {
                     yarnBuilder.yarn('test:api:playwright:raw')
@@ -50,6 +82,36 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
             }
         )
     }
+}
+
+def runWithFunctionalFailureCapture = { Closure functionalExecution ->
+    catchError(stageResult: 'FAILURE') {
+        functionalExecution()
+    }
+}
+
+def resolveParamOrEnv = { String envName ->
+    def paramValue = params."${envName}"?.trim()
+    return paramValue ?: (env."${envName}"?.trim() ?: '')
+}
+
+def applyPlaywrightTagFilterEnv = {
+    env.E2E_PW_INCLUDE_TAGS = resolveParamOrEnv('E2E_PW_INCLUDE_TAGS')
+    env.E2E_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('E2E_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.INTEGRATION_PW_INCLUDE_TAGS = resolveParamOrEnv('INTEGRATION_PW_INCLUDE_TAGS')
+    env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.API_PW_INCLUDE_TAGS = resolveParamOrEnv('API_PW_INCLUDE_TAGS')
+    env.API_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('API_PW_EXCLUDED_TAGS_OVERRIDE')
+}
+
+def logPlaywrightTagFilterEnv = { String contextLabel ->
+    echo([
+        "[playwright-tags] ${contextLabel}",
+        "E2E include=${env.E2E_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
+            " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
+    ].join(' | '))
 }
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
@@ -80,7 +142,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    env.FUNCTIONAL_TESTS_WORKERS = '4'
+    env.FUNCTIONAL_TESTS_WORKERS = '5'
+    applyPlaywrightTagFilterEnv()
+    logPlaywrightTagFilterEnv('pipeline env')
     enableAksStagingDeployment()
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
@@ -157,10 +221,12 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:preview') {
-        runPlaywrightFunctionalInParallel('PREVIEW')
+        runWithFunctionalFailureCapture {
+            runPlaywrightFunctionalInParallel('PREVIEW')
+        }
     }
 
-    afterSuccess('functionalTest:preview') {
+    afterAlways('functionalTest:preview') {
 
         publishHTML([
             allowMissing         : true,
@@ -212,11 +278,13 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:aat') {
-        runPlaywrightFunctionalInParallel('AAT')
+        runWithFunctionalFailureCapture {
+            runPlaywrightFunctionalInParallel('AAT')
+        }
     }
 
 
-    afterSuccess('functionalTest:aat') {
+    afterAlways('functionalTest:aat') {
 
         publishHTML([
             allowMissing         : true,
