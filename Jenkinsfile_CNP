@@ -160,6 +160,10 @@ withPipeline(type, product, component) {
 
     afterSuccess('test') {
 
+        catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+            yarnBuilder.yarn('test:a11yInTest')
+        }
+
         publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

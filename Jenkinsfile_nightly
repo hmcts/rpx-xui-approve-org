@@ -169,6 +169,12 @@ withNightlyPipeline(type, product, component) {
         }
     }
 
+    before('crossBrowserTest') {
+        catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+            yarnBuilder.yarn('test:a11yInTest')
+        }
+    }
+
     afterAlways('fullFunctionalTest') {
         publishHTML([
             allowMissing         : true,
