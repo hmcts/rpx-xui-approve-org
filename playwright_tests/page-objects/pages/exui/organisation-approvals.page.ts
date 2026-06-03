@@ -47,9 +47,11 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
     .locator('table.pending-organisations a.govuk-link[href*="/organisation-details/"]')
     .first();
+
   readonly activeOrganisationViewLinkLocator = this.activeOrganisationsPanel
     .locator('table.active-organisations a.govuk-link[href*="/organisation-details/"]')
     .first();
+
   readonly notificationBannerMessage = this.page.locator('app-notification-banner-component .hmcts-banner__message');
   readonly deletedOrganisationBannerTitle = this.contentMain.locator('.govuk-panel--confirmation .govuk-panel__title');
   readonly organisationNameSummaryValue = this.page
