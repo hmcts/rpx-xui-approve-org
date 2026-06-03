@@ -6,7 +6,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await ensureAuthenticatedPage(page, 'base');
   });
 
-  test('i can reject a pending org', async ({ organisationApprovalsPage, userName }) => {
+  test('I can reject a pending org', async ({ organisationApprovalsPage, userName }) => {
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
@@ -26,7 +26,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
   });
 
-  test('i can place registration under review for a pending org', async ({ organisationApprovalsPage, userName }) => {
+  test('I can place registration under review for a pending org', async ({ organisationApprovalsPage, userName }) => {
     let organisationName = '';
 
     await test.step('Search for and open the pending organisation', async () => {
@@ -55,7 +55,27 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
   });
 
-  // Skipping until EXUI-4610 and assoicated bug tickets have been resolved.  
+  test('I can approve a pending organisation', async ({ organisationApprovalsPage, userName }) => {
+    await test.step('Pending organisation appears in active organisations tab', async () => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await organisationApprovalsPage.searchForOrganisation(userName);
+      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
+      await organisationApprovalsPage.openFirstPendingOrganisation();
+    });
+
+    await test.step('Approve a pending organisation so it appears in active organisations', async () => {
+      await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await organisationApprovalsPage.chooseDecision('Approve it');
+      await organisationApprovalsPage.submitDecision();
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+      await organisationApprovalsPage.confirmDecision();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
+    });
+  });
+
+  // Skipping until EXUI-4610 and assoicated bug tickets have been resolved.
   test.skip('i can delete an active org', async ({ organisationApprovalsPage, userName }) => {
     let organisationName = '';
 
