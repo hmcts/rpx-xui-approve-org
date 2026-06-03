@@ -39,6 +39,16 @@ properties([
             name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
             defaultValue: '',
             description: 'Optional API excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'A11Y_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional accessibility include tags (space/comma separated)'
+        ),
+        string(
+            name: 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional accessibility excluded tags override (@none clears file defaults)'
         )
     ])
 ])
@@ -54,6 +64,7 @@ def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
 def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 def playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
+def playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -76,6 +87,13 @@ def runPlaywrightFunctionalInParallel = {
                 stage('Nightly E2E Playwright Tests') {
                     yarnBuilder.yarn('test:functional:e2e:raw')
                 }
+            },
+            accessibility: {
+                stage('Nightly Accessibility Playwright Tests') {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        yarnBuilder.yarn('test:accessibility:playwright:raw')
+                    }
+                }
             }
         )
     }
@@ -93,6 +111,8 @@ def applyPlaywrightTagFilterEnv = {
     env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE')
     env.API_PW_INCLUDE_TAGS = resolveParamOrEnv('API_PW_INCLUDE_TAGS')
     env.API_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('API_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.A11Y_PW_INCLUDE_TAGS = resolveParamOrEnv('A11Y_PW_INCLUDE_TAGS')
+    env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('A11Y_PW_EXCLUDED_TAGS_OVERRIDE')
 }
 
 def logPlaywrightTagFilterEnv = { String contextLabel ->
@@ -101,7 +121,8 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
         "E2E include=${env.E2E_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
             " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
-        "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
+        "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
     ].join(' | '))
 }
 
@@ -169,12 +190,6 @@ withNightlyPipeline(type, product, component) {
         }
     }
 
-    before('crossBrowserTest') {
-        catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-            yarnBuilder.yarn('test:a11yInTest')
-        }
-    }
-
     afterAlways('fullFunctionalTest') {
         publishHTML([
             allowMissing         : true,
@@ -201,6 +216,15 @@ withNightlyPipeline(type, product, component) {
             reportDir            : playwrightIntegrationReportDir,
             reportFiles          : 'index.html',
             reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightAccessibilityReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
         ])
     }
 

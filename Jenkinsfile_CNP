@@ -39,6 +39,16 @@ properties([
             name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
             defaultValue: '',
             description: 'Optional API excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'A11Y_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional accessibility include tags (space/comma separated)'
+        ),
+        string(
+            name: 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional accessibility excluded tags override (@none clears file defaults)'
         )
     ])
 ])
@@ -57,6 +67,7 @@ def channel   = '#xui-pipeline'
 def playwrightReportDir = 'functional-output/tests/playwright-e2e'
 def playwrightApiReportDir = 'functional-output/tests/playwright-api'
 def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
+def playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -78,6 +89,13 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
             e2e: {
                 stage("${environmentLabel} E2E Playwright Tests") {
                     yarnBuilder.yarn('test:functional:e2e:raw')
+                }
+            },
+            accessibility: {
+                stage("${environmentLabel} Accessibility Playwright Tests") {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        yarnBuilder.yarn('test:accessibility:playwright:raw')
+                    }
                 }
             }
         )
@@ -102,6 +120,8 @@ def applyPlaywrightTagFilterEnv = {
     env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE')
     env.API_PW_INCLUDE_TAGS = resolveParamOrEnv('API_PW_INCLUDE_TAGS')
     env.API_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('API_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.A11Y_PW_INCLUDE_TAGS = resolveParamOrEnv('A11Y_PW_INCLUDE_TAGS')
+    env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('A11Y_PW_EXCLUDED_TAGS_OVERRIDE')
 }
 
 def logPlaywrightTagFilterEnv = { String contextLabel ->
@@ -110,7 +130,8 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
         "E2E include=${env.E2E_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
             " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
-        "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
+        "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
     ].join(' | '))
 }
 
@@ -159,10 +180,6 @@ withPipeline(type, product, component) {
     }
 
     afterSuccess('test') {
-
-        catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-            yarnBuilder.yarn('test:a11yInTest')
-        }
 
         publishHTML ( [
             allowMissing         : true,
@@ -263,6 +280,15 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
+            reportDir            : playwrightAccessibilityReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'PREVIEW Accessibility Playwright Test'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
             reportDir            : "reports/tests/ngIntegration/",
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW NG Integration Test'
@@ -315,6 +341,15 @@ withPipeline(type, product, component) {
             reportDir            : playwrightIntegrationReportDir,
             reportFiles          : 'index.html',
             reportName           : 'AAT Integration Playwright Test'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightAccessibilityReportDir,
+            reportFiles          : 'index.html',
+            reportName           : 'AAT Accessibility Playwright Test'
         ])
 
         publishHTML([
