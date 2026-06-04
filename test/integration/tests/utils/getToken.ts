@@ -14,10 +14,8 @@ export async function getOauth2Token() {
   const redirectUri = `${baseUrl}/oauth2/callback`;
   const urlPost = `${url}?response_type=code&client_id=${idamClient}&redirect_uri=${redirectUri}&scope=openid profile roles manage-user create-user`;
 
-  // let encode = base64.encode((process.env.TEST_EMAIL + ':' + process.env.TEST_PASSWORD))
-  // const encode = base64.encode(('autotest_superuser@mailinator.com:Monday01'));
-  const encode = base64.encode(('xuiapitestuser@mailnesia.com:Monday01'));
-  console.log(`THIS IS MY FIRST TEST:${encode}`);
+   let encode = base64.encode((process.env.TEST_EMAIL + ':' + process.env.TEST_PASSWORD))
+ 
   const otherParam = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -44,7 +42,6 @@ export async function getauthToken() {
   console.log(tokenUrlPost);
 
   // let encode = base64.encode((process.env.TEST_EMAIL + ':' + process.env.TEST_PASSWORD))
-  const encode = base64.encode(('xuiapitestuser@mailnesia.com:Monday01'));
 
   const otherParam = {
     headers: {
