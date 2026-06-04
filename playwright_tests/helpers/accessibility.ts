@@ -27,7 +27,7 @@ function formatViolations(violations: A11yViolation[]): string {
         `id=${violation.id}`,
         `impact=${violation.impact ?? 'unknown'}`,
         `description=${violation.description}`,
-        `targets=${targets || 'n/a'}`,
+        `targets=${targets || 'n/a'}`
       ].join(' | ');
     })
     .join('\n');

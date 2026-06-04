@@ -51,6 +51,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly userUploadSurfaceLocator = this.page
     .locator('input[type="file"], xuilib-user-list, app-org-details-info, app-org-details-info-old')
     .first();
+
   readonly usersTableRows = this.usersList.locator('table tbody tr');
   readonly adminDetailsHeading = this.detailsPanel.locator('h3.govuk-heading-m').nth(1);
   readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
