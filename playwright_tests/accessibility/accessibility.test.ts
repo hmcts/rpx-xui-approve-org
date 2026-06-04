@@ -7,50 +7,123 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     await ensureAuthenticatedPage(page, 'base');
   });
 
-  test('pending organisations tab passes baseline accessibility scan', { tag: ['@tabs-states'] }, async ({ organisationApprovalsPage, page }) => {
-    await expect(organisationApprovalsPage.heading).toBeVisible();
-    await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
-    await accessibilityCheck(page, 'Pending organisations tab');
-  });
-
-  test('new pbas tab passes baseline accessibility scan', { tag: ['@tabs-states'] }, async ({ organisationApprovalsPage, page }) => {
-    await organisationApprovalsPage.openNewPbasTab();
-    await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
-    await accessibilityCheck(page, 'New PBAs tab');
-  });
-
-  test('active organisations tab passes baseline accessibility scan', { tag: ['@tabs-states'] }, async ({ organisationApprovalsPage, page }) => {
-    await organisationApprovalsPage.openActiveOrganisationsTab();
-    await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-    await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
-    await accessibilityCheck(page, 'Active organisations tab');
-  });
-
-  test('user upload surface passes baseline accessibility scan', { tag: ['@user-upload'] }, async ({ organisationApprovalsPage, page }) => {
-    await organisationApprovalsPage.openActiveOrganisationsTab();
-    await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-    await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible({ timeout: 30_000 });
-    await organisationApprovalsPage.openFirstActiveOrganisation();
-    await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
-
-    await organisationApprovalsPage.openUsersTab();
-    await expect(organisationApprovalsPage.usersList).toBeVisible();
-
-    const uploadLink = page.getByRole('link', { name: /upload/i }).first();
-    const uploadButton = page.getByRole('button', { name: /upload/i }).first();
-
-    if (await uploadLink.isVisible().catch(() => false)) {
-      await uploadLink.click();
-    } else if (await uploadButton.isVisible().catch(() => false)) {
-      await uploadButton.click();
+  test(
+    'Pending organisations tab passes baseline accessibility scan',
+    { tag: ['@tabs-states'] },
+    async ({ organisationApprovalsPage, page }) => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
+      await accessibilityCheck(page, 'Pending organisations tab');
     }
+  );
 
-    await expect(
-      page
-        .locator('input[type="file"], xuilib-user-list, app-org-details-info, app-org-details-info-old')
-        .first()
-    ).toBeVisible();
+  test(
+    'Viewing a new registration organisation from pending list passes baseline accessibility scan',
+    { tag: ['@tabs-states'] },
+    async ({ organisationApprovalsPage, page }) => {
+      await organisationApprovalsPage.openPendingOrganisationsTab();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
 
-    await accessibilityCheck(page, 'User upload surface');
-  });
+      const hasPendingRegistration = await organisationApprovalsPage
+        .pendingOrganisationViewLink()
+        .isVisible()
+        .catch(() => false);
+      test.skip(!hasPendingRegistration, 'No pending registration requests are available for the current data set.');
+
+      await organisationApprovalsPage.openFirstPendingOrganisation();
+      await expect(page).toHaveURL(/\/organisation-details\/[^/?#]+(?:\/?|\?.*)$/);
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await accessibilityCheck(page, 'Pending registration details view');
+    }
+  );
+
+  test(
+    'New pbas tab passes baseline accessibility scan',
+    { tag: ['@tabs-states'] },
+    async ({ organisationApprovalsPage, page }) => {
+      await organisationApprovalsPage.openNewPbasTab();
+      await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
+      await accessibilityCheck(page, 'New PBAs tab');
+    }
+  );
+
+  test(
+    'Viewing a PBA from the new PBAs list passes baseline accessibility scan',
+    { tag: ['@tabs-states'] },
+    async ({ organisationApprovalsPage, page }) => {
+      await organisationApprovalsPage.openNewPbasTab();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
+
+      await organisationApprovalsPage
+        .pendingPbaViewLink()
+        .isVisible()
+        .catch(() => false);
+
+      await organisationApprovalsPage.openFirstPendingPba();
+      await expect(page).toHaveURL(/\/(?:organisation\/)?pbas\/new\/[^/?#]+(?:\/?|\?.*)$/);
+      await expect(organisationApprovalsPage.newPbaDetailsPageHeading).toBeVisible();
+      await expect(organisationApprovalsPage.newPbaAccountsHeading).toBeVisible();
+      await accessibilityCheck(page, 'Pending PBA details view');
+    }
+  );
+
+  test(
+    'Active organisations tab passes baseline accessibility scan',
+    { tag: ['@tabs-states'] },
+    async ({ organisationApprovalsPage, page }) => {
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
+      await accessibilityCheck(page, 'Active organisations tab');
+    }
+  );
+
+  test(
+    'Viewing an organisation from active tab passes baseline accessibility scan',
+    { tag: ['@tabs-states'] },
+    async ({ organisationApprovalsPage, page }) => {
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
+      await organisationApprovalsPage.openFirstActiveOrganisation();
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await accessibilityCheck(page, 'Active organisation details view');
+    }
+  );
+
+  test(
+    'Staff details header tab page passes baseline accessibility scan',
+    { tag: ['@staff-details'] },
+    async ({ organisationApprovalsPage, page }) => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+
+      await expect(organisationApprovalsPage.staffDetailsHeaderTab()).toBeVisible();
+      await organisationApprovalsPage.openStaffDetailsTab();
+
+      await expect(page).toHaveURL(/\/caseworker-details(?:\/?|\?.*)$/);
+      await expect(organisationApprovalsPage.staffDetailsPageHeading).toHaveText(/Upload staff details/i);
+      await accessibilityCheck(page, 'Staff details page');
+    }
+  );
+
+  test(
+    'Org user list passes baseline accessibility scan',
+    { tag: ['@user-upload'] },
+    async ({ organisationApprovalsPage, page }) => {
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
+      await organisationApprovalsPage.openFirstActiveOrganisation();
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+
+      await organisationApprovalsPage.openUsersTab();
+      await expect(organisationApprovalsPage.usersList).toBeVisible();
+
+      await expect(organisationApprovalsPage.userUploadSurface()).toBeVisible();
+
+      await accessibilityCheck(page, 'User upload surface');
+    }
+  );
 });

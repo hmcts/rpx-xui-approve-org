@@ -35,13 +35,22 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly tellOrganisationText = this.contentMain.locator('p.govuk-body').nth(0);
   readonly usersRemovedText = this.contentMain.locator('p.govuk-body').nth(1);
   readonly tabCollection = this.page.locator('.govuk-tabs');
+  readonly pendingOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pending"]');
   readonly newPbasTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pbas"]');
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
+  readonly pendingPbaViewLinkLocator = this.pendingPbasPanel.locator('table.govuk-table a.govuk-link[href*="/new/"]').first();
+  readonly newPbaDetailsPageHeading = this.page.getByRole('heading', { name: /^Approve new PBA number$/i, level: 1 });
+  readonly newPbaAccountsHeading = this.page.getByRole('heading', { name: /^PBA accounts$/i });
   readonly activeOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/active"]');
   readonly activeOrganisationsPanel = this.page.locator('app-prd-org-overview-component');
+  readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
+  readonly staffDetailsPageHeading = this.page.locator('app-prd-caseworker-details .govuk-heading-l');
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
+  readonly userUploadSurfaceLocator = this.page
+    .locator('input[type="file"], xuilib-user-list, app-org-details-info, app-org-details-info-old')
+    .first();
   readonly usersTableRows = this.usersList.locator('table tbody tr');
   readonly adminDetailsHeading = this.detailsPanel.locator('h3.govuk-heading-m').nth(1);
   readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
@@ -70,6 +79,18 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.activeOrganisationViewLinkLocator;
   }
 
+  pendingPbaViewLink(): Locator {
+    return this.pendingPbaViewLinkLocator;
+  }
+
+  staffDetailsHeaderTab(): Locator {
+    return this.staffDetailsHeaderTabLocator;
+  }
+
+  userUploadSurface(): Locator {
+    return this.userUploadSurfaceLocator;
+  }
+
   successBanner(messageText: RegExp | string): Locator {
     return this.notificationBannerMessage.filter({ hasText: messageText }).first();
   }
@@ -89,6 +110,14 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstActiveOrganisation(): Promise<void> {
     await this.activeOrganisationViewLink().click();
+  }
+
+  async openFirstPendingPba(): Promise<void> {
+    await this.pendingPbaViewLink().click();
+  }
+
+  async openStaffDetailsTab(): Promise<void> {
+    await this.staffDetailsHeaderTab().click();
   }
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
@@ -145,6 +174,10 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openNewPbasTab(): Promise<void> {
     await this.newPbasTab.click();
+  }
+
+  async openPendingOrganisationsTab(): Promise<void> {
+    await this.pendingOrganisationsTab.click();
   }
 
   async openActiveOrganisationsTab(): Promise<void> {
