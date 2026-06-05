@@ -39,6 +39,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly newPbasTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pbas"]');
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
   readonly pendingPbaViewLinkLocator = this.pendingPbasPanel.locator('table.govuk-table a.govuk-link[href*="/new/"]').first();
+  readonly pendingPbaDecisionRows = this.page.locator('app-pba-account-approval');
+  readonly pendingPbaContinueButton = this.contentMain.getByRole('button', { name: /^Continue$/i });
   readonly newPbaDetailsPageHeading = this.page.getByRole('heading', { name: /^Approve new PBA number$/i, level: 1 });
   readonly newPbaAccountsHeading = this.page.getByRole('heading', { name: /^PBA accounts$/i });
   readonly activeOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/active"]');
@@ -115,6 +117,23 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstPendingPba(): Promise<void> {
     await this.pendingPbaViewLink().click();
+  }
+
+  async approveAllPendingPbas(): Promise<void> {
+    await this.pendingPbaDecisionRows.first().waitFor({ state: 'visible', timeout: 60_000 });
+    const pendingPbaCount = await this.pendingPbaDecisionRows.count();
+
+    for (let index = 0; index < pendingPbaCount; index += 1) {
+      await this.pendingPbaDecisionRows
+        .nth(index)
+        .locator('input.govuk-radios__input')
+        .first()
+        .check({ force: true });
+    }
+  }
+
+  async continuePendingPbaDecision(): Promise<void> {
+    await this.pendingPbaContinueButton.click();
   }
 
   async openStaffDetailsTab(): Promise<void> {
