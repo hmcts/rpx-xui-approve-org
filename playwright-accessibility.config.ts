@@ -17,8 +17,8 @@ module.exports = defineConfig({
   globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 1,
-  timeout: 180_000,
+  retries: 0,
+  timeout: 120_000,
   expect: {
     timeout: 60_000,
   },

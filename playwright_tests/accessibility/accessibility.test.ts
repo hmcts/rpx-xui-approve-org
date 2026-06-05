@@ -4,7 +4,7 @@ import { accessibilityCheck } from '../helpers/accessibility';
 
 test.describe('Accessibility: organisation tab states and user upload', { tag: ['@accessibility'] }, () => {
   test.beforeEach(async ({ page }) => {
-    await ensureAuthenticatedPage(page, 'base', { partitionKey: 'a11y' });
+    await ensureAuthenticatedPage(page, 'base');
   });
 
   test.describe('Pending organisations', () => {
