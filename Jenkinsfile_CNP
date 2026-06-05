@@ -59,15 +59,16 @@ import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
 import uk.gov.hmcts.contino.Environment
 
-def type      = "nodejs"
-def product   = "xui"
-def component = "ao-webapp"
-def vault = "rpx"
-def channel   = '#xui-pipeline'
-def playwrightReportDir = 'functional-output/tests/playwright-e2e'
-def playwrightApiReportDir = 'functional-output/tests/playwright-api'
-def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
-def playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
+String type      = 'nodejs'
+String product   = 'xui'
+String component = 'ao-webapp'
+String channel   = '#xui-pipeline'
+String playwrightReportDir = 'functional-output/tests/playwright-e2e'
+String playwrightApiReportDir = 'functional-output/tests/playwright-api'
+String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
+String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
+final String htmlIndexReportFile = 'index.html'
+final String ngIntegrationReportDir = 'reports/tests/ngIntegration/'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -137,8 +138,10 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
 
 def branchesToSync = ['demo', 'perftest', 'ithc']
 
+String vaultSecretsKey = 'rpx-' + '$' + '{env}'
+
 def secrets = [
-  'rpx-${env}': [
+    (vaultSecretsKey): [
     secret('approve-org-admin-username', 'APPROVE_ORG_ADMIN_USERNAME'),
     secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
     secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
@@ -151,7 +154,7 @@ def secrets = [
   ]
 ]
 
-static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+static Map<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
       secretType: 'Secret',
       name: secretName,
@@ -186,7 +189,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "reports/tests/coverage/node",
-            reportFiles          : "index.html",
+            reportFiles          : htmlIndexReportFile,
             reportName           : "node coverage tests"
         ])
 
@@ -195,7 +198,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "reports/tests/coverage/ng",
-            reportFiles          : "index.html",
+            reportFiles          : htmlIndexReportFile,
             reportName           : "ng coverage tests"
         ])
 
@@ -204,7 +207,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "reports/tests/mutation/node/",
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
 
@@ -225,7 +228,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'DEMO Smoke Test'
         ])
     }
@@ -236,7 +239,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'PREVIEW Smoke Test'
         ])
     }
@@ -254,7 +257,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightApiReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'PREVIEW API Playwright Test'
         ])
 
@@ -263,7 +266,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'PREVIEW Functional E2E Test'
         ])
 
@@ -272,7 +275,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'PREVIEW Integration Playwright Test'
         ])
 
@@ -281,7 +284,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'PREVIEW Accessibility Playwright Test'
         ])
 
@@ -289,8 +292,8 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/ngIntegration/",
-            reportFiles          : 'index.html',
+            reportDir            : ngIntegrationReportDir,
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'PREVIEW NG Integration Test'
         ])
     }
@@ -302,7 +305,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'AAT Smoke Test'
         ])
     }
@@ -321,7 +324,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightApiReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'AAT API Playwright Test'
         ])
 
@@ -330,7 +333,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'AAT Functional E2ETest'
         ])
 
@@ -339,7 +342,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'AAT Integration Playwright Test'
         ])
 
@@ -348,7 +351,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'AAT Accessibility Playwright Test'
         ])
 
@@ -356,9 +359,9 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'AAt NG Integration Test'
+            reportDir            : ngIntegrationReportDir,
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'AAT NG Integration Test'
         ])
     }
 }
