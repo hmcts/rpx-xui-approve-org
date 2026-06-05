@@ -53,7 +53,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure")
+@Library('Infrastructure')
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
@@ -188,25 +188,25 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/coverage/node",
+            reportDir            : 'reports/tests/coverage/node',
             reportFiles          : htmlIndexReportFile,
-            reportName           : "node coverage tests"
+            reportName           : 'node coverage tests'
         ])
 
         publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/coverage/ng",
+            reportDir            : 'reports/tests/coverage/ng',
             reportFiles          : htmlIndexReportFile,
-            reportName           : "ng coverage tests"
+            reportName           : 'ng coverage tests'
         ])
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/mutation/node/",
+            reportDir            : 'reports/tests/mutation/node/',
             reportFiles          : htmlIndexReportFile,
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
@@ -215,7 +215,7 @@ withPipeline(type, product, component) {
         //     allowMissing         : true,
         //     alwaysLinkToLastBuild: true,
         //     keepAll              : true,
-        //     reportDir            : "reports/tests/a11y/",
+        //     reportDir            : 'reports/tests/a11y/',
         //     reportFiles          : 'Report.html',
         //     reportName           : 'Approve Org a11y Test Report'
         // ])
