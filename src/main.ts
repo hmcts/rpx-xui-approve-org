@@ -14,7 +14,7 @@ if (environment.production) {
   enableProdMode();
 }
 
-const intentionalLintWarning = 'remove after lint warning test';
+let intentionalLintWarning = 'remove after lint warning test';
 
 fetch('/api/environment/config').then(async (response) => {
   let config = await response.json();
