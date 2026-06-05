@@ -16,6 +16,7 @@ type UserConfig = {
 type SessionCaptureOptions = {
   force?: boolean;
   partitionKey?: string;
+  baseUrl?: string;
 };
 
 function normaliseSessionStorageKey(value: string): string {
@@ -64,9 +65,10 @@ function resolveSessionPartitionKey(explicitPartitionKey?: string): string | und
   return undefined;
 }
 
-export function getSessionStatePath(user: string = 'base', partitionKey?: string): string {
+export function getSessionStatePath(user: string = 'base', partitionKey?: string, baseUrl?: string): string {
   const { username } = getUserConfig(user);
-  const compositeKey = partitionKey ? `${username}.${partitionKey}` : username;
+  const hostKey = baseUrl?.trim() ? new URL(baseUrl).host : '';
+  const compositeKey = [username, hostKey, partitionKey].filter(Boolean).join('.');
   const key = normaliseSessionStorageKey(compositeKey);
   return path.join(SESSION_DIR, `${key}.storage.json`);
 }
@@ -113,40 +115,120 @@ async function launchBrowserForSessionCapture(): Promise<Browser> {
   }
 }
 
-async function completeLoginOnPage(page: Page, username: string, password: string): Promise<void> {
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+function resolveBaseUrl(options: SessionCaptureOptions = {}): string {
+  return options.baseUrl?.trim() || config.baseUrl;
+}
 
-  if (await isAuthenticatedByApi(page)) {
+async function waitForVisibleLocator(page: Page, selectors: string[], timeoutMs: number = 5000): Promise<string | null> {
+  for (const selector of selectors) {
+    try {
+      await page.waitForSelector(selector, { state: 'visible', timeout: timeoutMs });
+      return selector;
+    } catch {
+      continue;
+    }
+  }
+
+  return null;
+}
+
+async function isModernLoginSurfaceVisible(page: Page): Promise<boolean> {
+  return page.getByRole('textbox', { name: /Email address|Enter your work email address/i }).isVisible().catch(() => false);
+}
+
+async function detectLoginSurface(page: Page): Promise<'legacy' | 'modern' | null> {
+  const legacyUsernameSelector = await waitForVisibleLocator(page, [
+    'input[name="username"]',
+    'input[autocomplete="username"]',
+    'input[type="email"]',
+    'input[type="text"]',
+    '#username'
+  ], 60_000);
+  const legacyPasswordSelector = await waitForVisibleLocator(page, [
+    'input[name="password"]',
+    'input[autocomplete="current-password"]',
+    'input[type="password"]',
+    '#password'
+  ], 60_000);
+
+  if (legacyUsernameSelector && legacyPasswordSelector) {
+    return 'legacy';
+  }
+
+  if (await isModernLoginSurfaceVisible(page)) {
+    return 'modern';
+  }
+
+  return null;
+}
+
+async function submitLegacyLogin(page: Page, username: string, password: string): Promise<void> {
+  const usernameSelector = await waitForVisibleLocator(page, [
+    'input[name="username"]',
+    'input[autocomplete="username"]',
+    'input[type="email"]',
+    'input[type="text"]',
+    '#username'
+  ], 60_000);
+  const passwordSelector = await waitForVisibleLocator(page, [
+    'input[name="password"]',
+    'input[autocomplete="current-password"]',
+    'input[type="password"]',
+    '#password'
+  ], 60_000);
+
+  if (!usernameSelector || !passwordSelector) {
+    throw new Error(`Login form not recognised on ${page.url()}`);
+  }
+
+  await page.locator(usernameSelector).fill(username);
+  await page.locator(passwordSelector).fill(password);
+
+  const submitSelector = await waitForVisibleLocator(page, [
+    '#login-submit-btn',
+    'input.button',
+    'button[type="submit"]'
+  ], 3000);
+  if (submitSelector) {
+    await page.locator(submitSelector).click();
+    return;
+  }
+
+  await page.getByRole('button', { name: /Sign in|Login/i }).click();
+}
+
+async function submitModernLogin(page: Page, username: string, password: string): Promise<void> {
+  const emailTextbox = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
+  const passwordTextbox = page.getByRole('textbox', { name: 'Password' });
+  const signInButton = page.getByRole('button', { name: /Sign in|Login/i });
+
+  await emailTextbox.fill(username);
+  await passwordTextbox.fill(password);
+  await signInButton.click();
+}
+
+async function completeLoginOnPage(page: Page, username: string, password: string, baseUrl: string): Promise<void> {
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+
+  if (await isAuthenticatedByApi(page, baseUrl)) {
     return;
   }
 
   for (let attempt = 1; attempt <= 2; attempt += 1) {
-    const hasNamedUsernameInput = await page.locator('input[name="username"]').isVisible().catch(() => false);
-    const hasRoleEmailInput = await page.getByRole('textbox', { name: /Email address|Enter your work email address/i }).isVisible().catch(() => false);
-    const isOnLoginSurface =
-      page.url().includes('idam') ||
-      page.url().includes('/login') ||
-      hasNamedUsernameInput ||
-      hasRoleEmailInput;
+    const loginSurface = await detectLoginSurface(page);
 
-    if (!isOnLoginSurface && (await isAuthenticatedByApi(page))) {
+    if (!loginSurface && (await isAuthenticatedByApi(page, baseUrl))) {
       return;
     }
 
-    if (isOnLoginSurface) {
-      if (hasNamedUsernameInput) {
-        await page.fill('input[name="username"]', username);
-        await page.fill('input[name="password"]', password);
-        await page.click('#login-submit-btn');
-      } else {
-        await page.getByRole('textbox', { name: /Email address|Enter your work email address/i }).fill(username);
-        await page.getByRole('textbox', { name: 'Password' }).fill(password);
-        await page.getByRole('button', { name: 'Sign in' }).click();
-      }
+    if (loginSurface === 'legacy') {
+      await submitLegacyLogin(page, username, password);
+    } else if (loginSurface === 'modern') {
+      await submitModernLogin(page, username, password);
     }
 
-    await page.waitForTimeout(1000 * attempt);
-    if (await isAuthenticatedByApi(page)) {
+    await page.waitForTimeout(1500 * attempt);
+    if (await isAuthenticatedByApi(page, baseUrl)) {
       return;
     }
   }
@@ -154,9 +236,9 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
   throw new Error(`Unable to authenticate "${username}" and capture Playwright session state.`);
 }
 
-async function isAuthenticatedByApi(page: Page): Promise<boolean> {
+async function isAuthenticatedByApi(page: Page, baseUrl: string = config.baseUrl): Promise<boolean> {
   try {
-    const authCheckUrl = new URL('auth/isAuthenticated', config.baseUrl).toString();
+    const authCheckUrl = new URL('auth/isAuthenticated', baseUrl).toString();
     const response = await page.request.get(authCheckUrl, { failOnStatusCode: false });
     if (response.status() !== 200) {
       return false;
@@ -186,7 +268,8 @@ async function persistSessionState(context: BrowserContext, storageStatePath: st
 
 export async function sessionCapture(user: string = 'base', options: SessionCaptureOptions = {}): Promise<string> {
   const partitionKey = resolveSessionPartitionKey(options.partitionKey);
-  const storageStatePath = getSessionStatePath(user, partitionKey);
+  const baseUrl = resolveBaseUrl(options);
+  const storageStatePath = getSessionStatePath(user, partitionKey, baseUrl);
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
 
   if (!options.force && isSessionFresh(storageStatePath)) {
@@ -202,8 +285,8 @@ export async function sessionCapture(user: string = 'base', options: SessionCapt
   const page = await context.newPage();
 
   try {
-    await completeLoginOnPage(page, username, password);
-    const authenticated = await isAuthenticatedByApi(page);
+    await completeLoginOnPage(page, username, password, baseUrl);
+    const authenticated = await isAuthenticatedByApi(page, baseUrl);
     if (!authenticated) {
       throw new Error(`Session capture did not create an authenticated session for "${username}".`);
     }
@@ -229,11 +312,12 @@ export async function applySessionCookies(page: Page, user: string = 'base', opt
 
 export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
   await applySessionCookies(page, user, options);
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+  const baseUrl = resolveBaseUrl(options);
+  await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
 
   if (page.url().includes('idam') || page.url().includes('/login')) {
     await sessionCapture(user, { ...options, force: true });
     await applySessionCookies(page, user, options);
-    await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+    await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
   }
 }
