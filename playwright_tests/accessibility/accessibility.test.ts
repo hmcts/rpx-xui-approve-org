@@ -4,7 +4,7 @@ import { accessibilityCheck } from '../helpers/accessibility';
 
 test.describe('Accessibility: organisation tab states and user upload', { tag: ['@accessibility'] }, () => {
   test.beforeEach(async ({ page }) => {
-    await ensureAuthenticatedPage(page, 'base');
+    await ensureAuthenticatedPage(page, 'base', { partitionKey: 'a11y' });
   });
 
   test.describe('Pending organisations', () => {
@@ -26,12 +26,6 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
 
-        const hasPendingRegistration = await organisationApprovalsPage
-          .pendingOrganisationViewLink()
-          .isVisible()
-          .catch(() => false);
-        test.skip(!hasPendingRegistration, 'No pending registration requests are available for the current data set.');
-
         await organisationApprovalsPage.openFirstPendingOrganisation();
         await expect(page).toHaveURL(/\/organisation-details\/[^/?#]+(?:\/?|\?.*)$/);
         await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
@@ -46,12 +40,6 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
         await organisationApprovalsPage.openPendingOrganisationsTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
-
-        const hasPendingRegistration = await organisationApprovalsPage
-          .pendingOrganisationViewLink()
-          .isVisible()
-          .catch(() => false);
-        test.skip(!hasPendingRegistration, 'No pending registration requests are available for the current data set.');
 
         await organisationApprovalsPage.openFirstPendingOrganisation();
         await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
@@ -85,11 +73,6 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
         await organisationApprovalsPage.openNewPbasTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
-
-        await organisationApprovalsPage
-          .pendingPbaViewLink()
-          .isVisible()
-          .catch(() => false);
 
         await organisationApprovalsPage.openFirstPendingPba();
         await expect(page).toHaveURL(/\/(?:organisation\/)?pbas\/new\/[^/?#]+(?:\/?|\?.*)$/);
