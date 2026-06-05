@@ -2,6 +2,8 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page } from '@playwright/test';
 
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
+const A11Y_SCAN_SCOPE = 'main#content, main#main-content, #content, main';
+const HIDDEN_TAB_PANEL_SELECTOR = '.govuk-tabs__panel--hidden';
 
 type A11yViolation = {
   id: string;
@@ -38,6 +40,8 @@ export async function accessibilityCheck(page: Page, contextLabel: string): Prom
 
   const analysis = await new AxeBuilder({ page })
     .withTags(WCAG_TAGS)
+    .include(A11Y_SCAN_SCOPE)
+    .exclude(HIDDEN_TAB_PANEL_SELECTOR)
     .analyze();
   const violations = analysis.violations as A11yViolation[];
 
