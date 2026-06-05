@@ -14,8 +14,6 @@ if (environment.production) {
   enableProdMode();
 }
 
-let intentionalLintError = 'remove after lint test';
-
 fetch('/api/environment/config').then(async (response) => {
   let config = await response.json();
   config = config || {};
