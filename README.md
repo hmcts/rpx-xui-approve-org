@@ -180,6 +180,10 @@ This repository now uses Playwright for the functional/liveliness test path.
 - `yarn test:integration:playwright` runs the Playwright integration suite (`playwright_tests/integration`) using `playwright-integration.config.ts`.
 - Playwright API specs use filename split in one folder (`*.positive.api.test.ts` and `*.negative.api.test.ts`) under `playwright_tests/api`.
 - Playwright integration specs use shared authenticated request fixtures from `playwright_tests/framework/fixtures/auth-request.fixtures.ts`.
+- Tag catalogs are stored in JSON files: `playwright_tests/e2e/tag-filter.json`, `playwright_tests/integration/tag-filter.json`, and `playwright_tests/api/tag-filter.json`.
+- Include tags per suite with `E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, and `API_PW_INCLUDE_TAGS`.
+- Override excluded tags per suite with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, and `API_PW_EXCLUDED_TAGS_OVERRIDE` (`@none` clears file-based excludes).
+- Override catalog paths with `E2E_PW_TAG_FILTER_CONFIG`, `INTEGRATION_PW_TAG_FILTER_CONFIG`, and `API_PW_TAG_FILTER_CONFIG` when needed.
 - `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests.
@@ -212,6 +216,24 @@ yarn test:functional:e2e:raw
 
 ```bash
 yarn test:functional:e2e:raw --grep "tabs on login load data"
+```
+
+6. Optional: run by E2E tag from the JSON catalog:
+
+```bash
+E2E_PW_INCLUDE_TAGS='@smoke' yarn test:functional:e2e:raw
+```
+
+7. Optional: run integration while excluding one tagged area:
+
+```bash
+INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE='@pending-decisions' yarn test:integration:playwright:raw
+```
+
+8. Optional: run only negative API tests:
+
+```bash
+API_PW_INCLUDE_TAGS='@negative' yarn test:api:playwright:raw
 ```
 
 ### Azure Key Vault env population
@@ -301,6 +323,7 @@ CI/Jenkins notes:
 - `smoketest:*` and nightly cross-browser stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e`.
 - `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e`), Playwright API (`functional-output/tests/playwright-api`), and Playwright integration (`functional-output/tests/playwright-integration`) HTML reports.
 - PR and nightly functional stages run API, integration, and E2E as separate parallel Jenkins branches.
+- CNP and nightly Jenkins pipelines expose optional build parameters for tag filtering: `E2E_PW_INCLUDE_TAGS`, `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_INCLUDE_TAGS`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_INCLUDE_TAGS`, and `API_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 
 ## Integration Documentation

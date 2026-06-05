@@ -70,7 +70,7 @@ export function createMockOrganisation(overrides: Partial<MockOrganisation>): Mo
       userIdentifier: 'mock-user-id',
       firstName: 'Mock',
       lastName: 'Admin',
-      email: 'mock-admin@mailnesia.com'
+      email: 'mock-admin@example.com'
     },
     paymentAccount: overrides.paymentAccount ?? ['PBA1234567'],
     pendingPaymentAccount: overrides.pendingPaymentAccount ?? [],
