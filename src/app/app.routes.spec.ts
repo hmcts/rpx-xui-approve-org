@@ -20,7 +20,6 @@ import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { LoggerService } from './services/logger.service';
 import { MonitoringService } from './services/monitoring.service';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-var testVariable = 'testValue123';
 
 @Component({
   selector: 'app-mock-root',
