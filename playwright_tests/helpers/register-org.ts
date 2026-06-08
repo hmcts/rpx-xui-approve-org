@@ -56,10 +56,20 @@ type RegisterOrganisationPayload = {
   sraRegulated: boolean;
 };
 
+const PBA_NUMBER_PATTERN = /^(?:PBA|pba)[A-Za-z0-9]{7}$/;
+
 function generatePBANumbers(count: number = 3): PBANumberModel[] {
-  return Array.from({ length: count }, () => ({
-    pbaNumber: `PBA${faker.string.numeric({ length: 7, allowLeadingZeros: true })}`
-  }));
+  return Array.from({ length: count }, () => {
+    const pbaNumber = `PBA${faker.string.alphanumeric({ length: 7, casing: 'upper' })}`;
+
+    if (!PBA_NUMBER_PATTERN.test(pbaNumber)) {
+      throw new Error(`Invalid PBA number generated: ${pbaNumber}. Expected format PBA/pba followed by 7 alphanumeric characters.`);
+    }
+
+    return {
+      pbaNumber
+    };
+  });
 }
 
 function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): RegisterOrganisationPayload {

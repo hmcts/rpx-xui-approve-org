@@ -311,13 +311,27 @@ export async function applySessionCookies(page: Page, user: string = 'base', opt
 }
 
 export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
-  await applySessionCookies(page, user, options);
-  const baseUrl = resolveBaseUrl(options);
-  await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+  const isLoginUrl = (): boolean => page.url().includes('idam') || page.url().includes('/login');
 
-  if (page.url().includes('idam') || page.url().includes('/login')) {
-    await sessionCapture(user, { ...options, force: true });
-    await applySessionCookies(page, user, options);
-    await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+  const gotoAndVerify = async (): Promise<boolean> => {
+    await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+    if (isLoginUrl()) {
+      return false;
+    }
+
+    return isAuthenticatedByApi(page);
+  };
+
+  await applySessionCookies(page, user, options);
+  if (await gotoAndVerify()) {
+    return;
   }
+
+  await sessionCapture(user, { ...options, force: true });
+  await applySessionCookies(page, user, options);
+  if (await gotoAndVerify()) {
+    return;
+  }
+
+  throw new Error(`Unable to ensure authenticated page for user "${user}".`);
 }
