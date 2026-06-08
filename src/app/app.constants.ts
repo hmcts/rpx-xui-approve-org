@@ -1,4 +1,4 @@
-var testVariable = 'testValue123';
+var testVariable = 'testValue12345';
 
 const footerData = {
   heading: 'Help',
