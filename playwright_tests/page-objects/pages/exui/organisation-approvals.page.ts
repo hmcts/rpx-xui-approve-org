@@ -39,6 +39,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
   readonly activeOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/active"]');
   readonly activeOrganisationsPanel = this.page.locator('app-prd-org-overview-component');
+  readonly activeOrganisationRows = this.activeOrganisationsPanel.locator('table.active-organisations tr');
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
@@ -47,6 +48,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
     .locator('table.pending-organisations a.govuk-link[href*="/organisation-details/"]')
     .first();
+
+  readonly pendingPbaRows = this.pendingPbasPanel.locator('table.govuk-table tbody tr');
 
   readonly activeOrganisationViewLinkLocator = this.activeOrganisationsPanel
     .locator('table.active-organisations a.govuk-link[href*="/organisation-details/"]')
@@ -66,8 +69,16 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.pendingOrganisationRows.filter({ hasText: organisationName });
   }
 
+  activeOrganisationRowsByText(searchText: string): Locator {
+    return this.activeOrganisationRows.filter({ hasText: searchText });
+  }
+
   activeOrganisationViewLink(): Locator {
     return this.activeOrganisationViewLinkLocator;
+  }
+
+  pendingPbaRowsByText(searchText: string): Locator {
+    return this.pendingPbaRows.filter({ hasText: searchText });
   }
 
   successBanner(messageText: RegExp | string): Locator {
