@@ -1,5 +1,3 @@
-var testVariable = 'testValue1234545';
-
 const footerData = {
   heading: 'Help',
   email: {
