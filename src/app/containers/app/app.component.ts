@@ -14,7 +14,7 @@ import { EnvironmentService } from '../../services/environment.service';
 import * as fromRoot from '../../store';
 import { AppUtils } from '../../utils/app-utils';
 
-const testvar = 'test';
+let testvar = 'test';
 
 @Component({
   selector: 'app-root',
