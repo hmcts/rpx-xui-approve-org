@@ -1,4 +1,4 @@
-let testVariable: string = 'test';
+let testVariable: string = 'testt';
 
 const footerData = {
   heading: 'Help',
