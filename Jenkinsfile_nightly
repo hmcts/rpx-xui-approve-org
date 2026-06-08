@@ -8,6 +8,38 @@ properties([
     ],
     pipelineTriggers([
     cron('H 07 * * 1-5')
+    ]),
+    parameters([
+        string(
+            name: 'E2E_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional E2E include tags (space/comma separated)'
+        ),
+        string(
+            name: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional E2E excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'INTEGRATION_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional integration include tags (space/comma separated)'
+        ),
+        string(
+            name: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional integration excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'API_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional API include tags (space/comma separated)'
+        ),
+        string(
+            name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional API excluded tags override (@none clears file defaults)'
+        )
     ])
 ])
 
@@ -29,7 +61,7 @@ def runPlaywrightFunctionalInParallel = {
     stage('Nightly Functional Tests (Parallel)') {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
         parallel(
-            failFast: true,
+            failFast: false,
             api: {
                 stage('Nightly API Playwright Tests') {
                     yarnBuilder.yarn('test:api:playwright:raw')
@@ -47,6 +79,30 @@ def runPlaywrightFunctionalInParallel = {
             }
         )
     }
+}
+
+def resolveParamOrEnv = { String envName ->
+    def paramValue = params."${envName}"?.trim()
+    return paramValue ?: (env."${envName}"?.trim() ?: '')
+}
+
+def applyPlaywrightTagFilterEnv = {
+    env.E2E_PW_INCLUDE_TAGS = resolveParamOrEnv('E2E_PW_INCLUDE_TAGS')
+    env.E2E_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('E2E_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.INTEGRATION_PW_INCLUDE_TAGS = resolveParamOrEnv('INTEGRATION_PW_INCLUDE_TAGS')
+    env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.API_PW_INCLUDE_TAGS = resolveParamOrEnv('API_PW_INCLUDE_TAGS')
+    env.API_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('API_PW_EXCLUDED_TAGS_OVERRIDE')
+}
+
+def logPlaywrightTagFilterEnv = { String contextLabel ->
+    echo([
+        "[playwright-tags] ${contextLabel}",
+        "E2E include=${env.E2E_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
+            " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
+    ].join(' | '))
 }
 
 def secrets = [
@@ -72,7 +128,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    env.FUNCTIONAL_TESTS_WORKERS = '4'
+    env.FUNCTIONAL_TESTS_WORKERS = '5'
+    applyPlaywrightTagFilterEnv()
+    logPlaywrightTagFilterEnv('pipeline env')
     env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
     // enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(60)
@@ -106,10 +164,12 @@ withNightlyPipeline(type, product, component) {
     }
 
     before('fullFunctionalTest') {
-        runPlaywrightFunctionalInParallel()
+        catchError(stageResult: 'FAILURE') {
+            runPlaywrightFunctionalInParallel()
+        }
     }
 
-    afterSuccess('fullFunctionalTest') {
+    afterAlways('fullFunctionalTest') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
