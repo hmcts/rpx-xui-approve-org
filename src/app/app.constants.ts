@@ -1,5 +1,3 @@
-let testVariable: string = 'testt';
-
 const footerData = {
   heading: 'Help',
   email: {
