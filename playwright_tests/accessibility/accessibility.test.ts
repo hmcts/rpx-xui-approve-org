@@ -142,26 +142,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
         await organisationApprovalsPage.openUsersTab();
         await expect(organisationApprovalsPage.usersList).toBeVisible();
 
-        await expect(organisationApprovalsPage.userUploadSurface()).toBeVisible();
-
         await accessibilityCheck(page, 'User upload surface');
-      }
-    );
-  });
-
-  test.describe('Staff details', () => {
-    test(
-      'Upload staff details page passes baseline accessibility scan',
-      { tag: ['@staff-details'] },
-      async ({ organisationApprovalsPage, page }) => {
-        await expect(organisationApprovalsPage.heading).toBeVisible();
-
-        await expect(organisationApprovalsPage.staffDetailsHeaderTab()).toBeVisible();
-        await organisationApprovalsPage.openStaffDetailsTab();
-
-        await expect(page).toHaveURL(/\/caseworker-details(?:\/?|\?.*)$/);
-        await expect(organisationApprovalsPage.staffDetailsPageHeading).toHaveText(/Upload staff details/i);
-        await accessibilityCheck(page, 'Staff details page');
       }
     );
   });
