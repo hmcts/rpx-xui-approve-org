@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 
 const UPDATE_PBA_ORG_ID = process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
 
-test.describe.skip('Playwright API negative: update pba status', () => {
+test.describe.skip('Playwright API negative: update pba status', { tag: ['@update-pba-status', '@negative'] }, () => {
   test('PUT /api/updatePba/status without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
       orgId: UPDATE_PBA_ORG_ID,
@@ -11,7 +11,7 @@ test.describe.skip('Playwright API negative: update pba status', () => {
 
     const response = await apiAnonymousRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     const httpStatus = response.status();
@@ -40,7 +40,7 @@ test.describe.skip('Playwright API negative: update pba status', () => {
 
     const response = await apiRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     const httpStatus = response.status();
@@ -57,7 +57,7 @@ test.describe.skip('Playwright API negative: update pba status', () => {
 
     const response = await apiRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     const httpStatus = response.status();
@@ -75,7 +75,7 @@ test.describe.skip('Playwright API negative: update pba status', () => {
 
     const response = await apiRequest.put('/api/updatePba/status', {
       data: payload,
-      failOnStatusCode: false,
+      failOnStatusCode: false
     });
 
     const httpStatus = response.status();
