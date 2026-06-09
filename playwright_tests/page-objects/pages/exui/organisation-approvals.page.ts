@@ -21,8 +21,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
-  readonly confirmDecisionHeading = this.contentMain.locator('h1.govuk-heading-xl');
-  readonly confirmButton = this.contentMain.locator('button.govuk-button:not(.govuk-button--secondary):not(.govuk-button--warning)').first();
+  readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
+  readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
   readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
   readonly approveDecisionRadio = this.page.locator('#reason-0');
   readonly rejectDecisionRadio = this.page.locator('#reason-1');
