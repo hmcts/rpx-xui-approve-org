@@ -5,14 +5,22 @@ import { PactTestSetup } from '../settings/provider.mock';
 
 const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
 
+const wait = (milliseconds: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+const waitForOpenIdDiscovery = async (): Promise<void> => {
+  for (let attempt = 0; attempt < 20; attempt++) {
+    if (oidc.getClient()) {
+      return;
+    }
+    await wait(100);
+  }
+};
+
 describe('OpenId Connect API', async() => {
   // Setup the provider
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
-
-  // Write Pact when all tests done
-  after(async () => pactSetUp.provider.finalize());
 
   describe('when a request to .well-known endpoint is made', () => {
     before(async() => {
@@ -31,7 +39,7 @@ describe('OpenId Connect API', async() => {
         }
       });
     });
-    afterEach(() => pactSetUp.provider.verify());
+    afterEach(async () => pactSetUp.verifyAndFinalize());
 
     it('returns a json configuration', async () => {
       const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`;
@@ -52,6 +60,7 @@ describe('OpenId Connect API', async() => {
         tokenURL: `${oidcUrl}/token`,
         useRoutes: false
       });
+      await waitForOpenIdDiscovery();
       assert.isDefined(issuer, 'issuer exists');
     });
   });

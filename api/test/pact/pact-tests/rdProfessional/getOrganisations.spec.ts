@@ -3,7 +3,7 @@ import { Organisation } from '../../../pactFixtures';
 import { getOperation } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
+const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalInternal', port: 8000 });
 
@@ -21,7 +21,9 @@ describe('Get a list of organisations based on status', async () => {
         withRequest: {
           method: 'GET',
           path: '/refdata/internal/v1/organisations',
-          query: 'status=Active',
+          query: {
+            status: 'Active'
+          },
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer some-access-token',
@@ -42,17 +44,13 @@ describe('Get a list of organisations based on status', async () => {
 
     it('Returns a list of organisations based on status', async () => {
       const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations?status=Active`;
-      const resp = getOperation(path);
-      resp.then((response) => {
-        const responseDto: Organisation[] = <Organisation[]>response.data;
+      try {
+        const response = await getOperation(path);
+        const responseDto: Organisation[] = response.data.organisations as Organisation[];
         assertResponse(responseDto);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      }).finally(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      } finally {
+        await pactSetUp.verifyAndFinalize();
+      }
     });
   });
 });
@@ -87,4 +85,3 @@ const organisations = [
     paymentAccount: somethingLike(['abckd'])
   }
 ] as Organisation[];
-

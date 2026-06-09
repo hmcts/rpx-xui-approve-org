@@ -3,8 +3,6 @@ import { S2SResponse } from '../../../pactFixtures';
 import { postS2SLease } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-import { Matchers } from '@pact-foundation/pact';
-const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 's2s_auth', port: 8000 });
 
 describe('S2S Auth API', () => {
@@ -32,7 +30,7 @@ describe('S2S Auth API', () => {
             'Content-Type': 'text/plain'
           },
           status: 200,
-          body: somethingLike('someToken')
+          body: 'someToken'
         }
       };
       // @ts-ignore
@@ -44,12 +42,8 @@ describe('S2S Auth API', () => {
       try {
         const resp = await postS2SLease(s2sUrl, mockRequest);
         assertResponse(resp.data);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      } catch (e) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-        throw new Error(e);
+      } finally {
+        await pactSetUp.verifyAndFinalize();
       }
     });
   });

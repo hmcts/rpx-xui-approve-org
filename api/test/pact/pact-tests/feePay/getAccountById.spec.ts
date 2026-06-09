@@ -3,7 +3,7 @@ import { AccountDetailsResponse } from '../../../pactFixtures';
 import { getOperation } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
+const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike, like } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'payment_creditAccountPayment', port: 8000 });
 
@@ -64,18 +64,14 @@ describe('Get Account Status for a Account Name', async () => {
 
     it('Returns the Account details retrieved for an Account by number', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/accounts/` + accountId;
-      const resp = getOperation(taskUrl);
-      resp.then((axResponse) => {
+      try {
+        const axResponse = await getOperation(taskUrl);
         expect(axResponse.status).to.be.equal(200);
-        const responseDto: AccountDetailsResponse = <AccountDetailsResponse>axResponse.data;
+        const responseDto: AccountDetailsResponse = axResponse.data as AccountDetailsResponse;
         assertResponse(responseDto);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      }).finally(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      } finally {
+        await pactSetUp.verifyAndFinalize();
+      }
     });
   });
 });
