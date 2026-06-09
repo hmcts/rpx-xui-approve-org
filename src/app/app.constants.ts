@@ -108,8 +108,7 @@ export const navItemsArray = [
 ];
 
 const roleBasedNav = {
-  'prd-admin': navItemsArray[0],
-  'cwd-admin': navItemsArray[1]
+  'prd-admin': navItemsArray[0]
 };
 
 export class AppConstants {
