@@ -56,10 +56,10 @@ function resolveTestEnvironment(): string {
 
 /**
  * Builds Playwright reporters array with Ohdin configured
- * @param reportType - Type of report (e2e, api, nightly, or integration)
+ * @param reportType - Type of report (e2e, api, nightly, integration, or accessibility)
  * @returns Array of reporter configurations
  */
-export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' | 'integration' = 'e2e'): ReporterDescription[] {
+export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'accessibility' = 'e2e'): ReporterDescription[] {
   const isCI = !!process.env.CI;
   const environment = resolveTestEnvironment();
   const reportFolder = process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests';
@@ -75,6 +75,8 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
         return `${reportFolder}/playwright-integration`;
       case 'nightly':
         return `${reportFolder}/playwright-nightly`;
+      case 'accessibility':
+        return `${reportFolder}/playwright-a11y`;
       case 'e2e':
       default:
         return `${reportFolder}/playwright-e2e`;
@@ -85,6 +87,8 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
     ? 'playwright_tests/api'
     : reportType === 'integration'
       ? 'playwright_tests/integration'
+      : reportType === 'accessibility'
+        ? 'playwright_tests/accessibility'
       : 'playwright_tests';
 
   const odhinOutputFolder = reportOutput;
