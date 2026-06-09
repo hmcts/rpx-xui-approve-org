@@ -44,6 +44,8 @@
     "test:api:playwright:raw": "PW_AUTH_SESSION_USER=api npx playwright test -c playwright-api.config.ts",
     "test:integration:playwright": "yarn playwright install chromium && yarn test:integration:playwright:raw",
     "test:integration:playwright:raw": "npx playwright test -c playwright-integration.config.ts",
+    "test:accessibility:playwright": "yarn playwright install chromium && yarn test:accessibility:playwright:raw",
+    "test:accessibility:playwright:raw": "npx playwright test -c playwright-accessibility.config.ts",
     "test:can-i-deploy:consumer": "export VERSION=$(git rev-parse --short HEAD) && SSL_CERT_FILE=test/pact/cer/ca-bundle.crt pact-broker can-i-deploy --pacticipant 'xui_approveorg' --version ${VERSION} --broker-base-url https://pact-broker.platform.hmcts.net",
     "test:coverage": "echo 'not implemented'",
     "test:coverage:ng": "ng test organisation-manager --code-coverage --watch",
