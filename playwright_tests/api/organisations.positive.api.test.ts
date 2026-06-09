@@ -77,17 +77,8 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
       const httpStatus = response.status();
       expect(
         isSearchPostAllowedStatus(httpStatus),
-        `Expected POST /api/organisations?status=${scenario.status} to return 200 (allowed) or 403 (role restricted). Received status=${httpStatus}`
+        `Expected POST /api/organisations?status=${scenario.status} to return 200. Received status=${httpStatus}`
       ).toBe(true);
-
-      if (httpStatus === 403) {
-        const location = response.headers().location ?? '';
-        expect(
-          location.toLowerCase(),
-          `Expected authenticated POST /api/organisations search not to redirect to login when forbidden. location=${location}`
-        ).not.toContain('login');
-        return;
-      }
 
       const contentType = resolveHeader(response.headers(), 'content-type');
       expect(

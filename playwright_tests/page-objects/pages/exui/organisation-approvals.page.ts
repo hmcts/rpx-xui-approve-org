@@ -77,6 +77,14 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.pendingOrganisationViewLinkLocator;
   }
 
+  pendingPbaViewLink(): Locator {
+    return this.pendingPbaViewLinkLocator;
+  }
+
+  staffDetailsHeaderTab(): Locator {
+    return this.staffDetailsHeaderTabLocator;
+  }
+
   pendingOrganisationRowsByName(organisationName: string): Locator {
     return this.pendingOrganisationRows.filter({ hasText: organisationName });
   }

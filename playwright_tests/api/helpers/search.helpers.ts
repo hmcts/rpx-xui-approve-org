@@ -90,7 +90,7 @@ export function toTotalRecordsNumber(value: unknown): number | null {
 }
 
 export function isSearchPostAllowedStatus(httpStatus: number): boolean {
-  return httpStatus === 200 || httpStatus === 403;
+  return httpStatus === 200;
 }
 
 export async function getXsrfHeaders(apiRequest: APIRequestContext): Promise<Record<string, string>> {

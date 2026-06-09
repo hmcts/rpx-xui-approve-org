@@ -55,6 +55,5 @@ test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations',
     await organisationApprovalsPage.waitForSpinnerToHide(60_000);
 
     await expect(organisationApprovalsPage.pendingPbaRowsByText(NEW_PBA_ORG_SEARCH).first()).toBeVisible();
-    
   });
 });
