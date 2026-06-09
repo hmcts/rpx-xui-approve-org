@@ -87,7 +87,7 @@ for all operating system, but I have yet to try this.
 1. Create a Mount point on your local machine<br/> 
 Create the folder: `/mnt/secrets/rpx`
 2. In this folder we create a file per secret.
-ie.
+i.e.
 We create the file postgresql-admin-pw (no extension).
 Within the file we have one line of characters which is the secret.
 
@@ -96,11 +96,11 @@ Within the file we have one line of characters which is the secret.
 1. Create a Mount point on your local machine within the Volumes folder<br/>
 Create the folder: `/Volumes/mnt/secrets/rpx`
 2. In this folder we create a file per secret.
-ie.
+i.e.
 We create the file postgresql-admin-pw (no extension).
 Within the file we have one line of characters which is the secret.
 3. If you want to test the secrets locally override the default mountPoint with the following additional option added to .addTo
-ie. 
+i.e. 
 `propertiesVolume.addTo(secretsConfig, { mountPoint: '/Volumes/mnt/secrets/' });`
 
 Note that this is connected into the application via the following pieces of code:
@@ -118,7 +118,7 @@ which in turn uses `propertiesVolume.addTo()`
 
 The application picks up the configuration from the /config .json files.
 
-The references within *.json ie. production.json are set by the `/charts/xui-ao-webapp/values.yaml` file ie.
+The references within *.json i.e. production.json are set by the `/charts/xui-ao-webapp/values.yaml` file i.e.
 POSTGRES_SERVER_PORT is set by POSTGRES_SERVER_PORT within values.yaml. <br><br>HOWEVER if there is a
 values.*.template.yaml file it will override the values within the values.yaml file, BUT this only happens on the JENKINS
 pipelines, where values.*.template.yaml are available to the build pipeline.
@@ -138,7 +138,7 @@ If production.json is not within /config, it will use the files in the order spe
 We DO NOT need to leverage `NODE_CONFIG_ENV` on this project - all application code should be written so that it's 
 not environment specific!
 
-Note about secrets ie. 
+Note about secrets i.e. 
 
 ```javascript
   keyVaults:
@@ -154,7 +154,7 @@ The application pulls out the secrets directly using `propertiesVolume.addTo()`
 ## Issues and Solutions
 
 Property 'cookies' does not exist on type 'EnhancedRequest' - you will need to make
-sure @types/express-session is added ie.
+sure @types/express-session is added i.e.
 `yarn add @types/express-session`
 
 ### The following is legacy readme.
