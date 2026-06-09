@@ -131,7 +131,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
 
     test(
       'Active organisation user list passes baseline accessibility scan',
-      { tag: ['@user-upload'] },
+      { tag: ['@staff-details'] },
       async ({ organisationApprovalsPage, page }) => {
         await organisationApprovalsPage.openActiveOrganisationsTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
