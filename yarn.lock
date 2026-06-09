@@ -21092,7 +21092,7 @@ __metadata:
     applicationinsights: "npm:^3.7.0"
     axios: "npm:^1.13.5"
     axios-mock-adapter: "npm:^1.18.2"
-    base-64: "npm:^0.1.0"
+    base-64: "npm:^1.0.0"
     chai: "npm:^4.3.8"
     chai-as-promised: "npm:7.1.1"
     codeceptjs: "npm:^3.5.10"
