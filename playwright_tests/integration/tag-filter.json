@@ -1,0 +1,9 @@
+{
+  "excludedTags": [],
+  "availableTags": [
+    "@integration",
+    "@update-pba",
+    "@organisations",
+    "@pending-decisions"
+  ]
+}

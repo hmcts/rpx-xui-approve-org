@@ -171,23 +171,167 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 
 This repository now uses Playwright for the functional/liveliness test path.
 
-- `yarn test:smoke` runs the Playwright smoke journey (`playwright_tests/login.test.ts`).
-- `yarn test:functional` runs the Playwright E2E suite (`playwright_tests/`) unless `PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN=true` (used by Jenkins parallel functional stages).
-- `yarn test:functional:parallel` runs Playwright E2E (`playwright_tests/`) and Playwright API (`playwright_tests/api`) suites in parallel by invoking separate commands.
-- `yarn test:functional:e2e` runs only Playwright E2E (`playwright_tests/`).
+- `yarn test:smoke` runs the Playwright smoke journey (`playwright_tests/e2e/login.test.ts`).
+- `yarn test:functional` runs the Playwright E2E suite (`playwright_tests/e2e`) unless `PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN=true` (used by Jenkins parallel functional stages).
+- `yarn test:functional:parallel` runs Playwright E2E (`playwright_tests/e2e`), Playwright API (`playwright_tests/api`), and Playwright integration (`playwright_tests/integration`) suites in parallel by invoking separate commands.
+- `yarn test:functional:e2e` runs only Playwright E2E (`playwright_tests/e2e`).
 - `yarn test:crossbrowser` runs cross-browser Playwright tests using `playwright-nightly.config.ts`.
 - `yarn test:api:playwright` runs the Playwright API suite (`playwright_tests/api`) using `playwright-api.config.ts`.
+- `yarn test:integration:playwright` runs the Playwright integration suite (`playwright_tests/integration`) using `playwright-integration.config.ts`.
+- `yarn test:accessibility:playwright` runs the Playwright accessibility suite (`playwright_tests/accessibility`) using `playwright-accessibility.config.ts`.
 - Playwright API specs use filename split in one folder (`*.positive.api.test.ts` and `*.negative.api.test.ts`) under `playwright_tests/api`.
+- Playwright integration specs use shared authenticated request fixtures from `playwright_tests/framework/fixtures/auth-request.fixtures.ts`.
+- Tag catalogs are stored in JSON files: `playwright_tests/e2e/tag-filter.json`, `playwright_tests/integration/tag-filter.json`, `playwright_tests/api/tag-filter.json`, and `playwright_tests/accessibility/tag-filter.json`.
+- Include tags per suite with `E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS`, and `A11Y_PW_INCLUDE_TAGS`.
+- Override excluded tags per suite with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE` (`@none` clears file-based excludes).
+- Override catalog paths with `E2E_PW_TAG_FILTER_CONFIG`, `INTEGRATION_PW_TAG_FILTER_CONFIG`, `API_PW_TAG_FILTER_CONFIG`, and `A11Y_PW_TAG_FILTER_CONFIG` when needed.
 - `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests.
+- `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` are the Playwright auth credentials for E2E and integration suites.
+- `APPROVE_ORG_API_USERNAME` and `APPROVE_ORG_API_PASSWORD` are the Playwright auth credentials for API suites.
+- `PW_INTEGRATION_UPDATE_PBA_ORG_ID` can override the org id used by the seeded integration write scenario.
 - `FUNCTIONAL_TESTS_WORKERS` can be set to override Playwright worker count.
+
+### Local selector-check runs
+
+Use these when validating against a specific deployment target.
+
+1. Export E2E/integration credentials first (`APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD`).
+2. Export API credentials when running Playwright API tests (`APPROVE_ORG_API_USERNAME` and `APPROVE_ORG_API_PASSWORD`).
+3. Run against a local build:
+
+```bash
+export TEST_URL="http://localhost:3000"
+yarn test:functional:e2e:raw
+```
+
+4. Run against an ephemeral preview build:
+
+```bash
+export TEST_URL="https://xui-ao-webapp-pr-<PR_NUMBER>.preview.platform.hmcts.net"
+yarn test:functional:e2e:raw
+```
+
+5. Optional: run only a targeted selector test:
+
+```bash
+yarn test:functional:e2e:raw --grep "tabs on login load data"
+```
+
+6. Optional: run by E2E tag from the JSON catalog:
+
+```bash
+E2E_PW_INCLUDE_TAGS='@smoke' yarn test:functional:e2e:raw
+```
+
+7. Optional: run integration while excluding one tagged area:
+
+```bash
+INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE='@pending-decisions' yarn test:integration:playwright:raw
+```
+
+8. Optional: run only negative API tests:
+
+```bash
+API_PW_INCLUDE_TAGS='@negative' yarn test:api:playwright:raw
+```
+
+9. Optional: run only user-upload accessibility tests:
+
+```bash
+A11Y_PW_INCLUDE_TAGS='@user-upload' yarn test:accessibility:playwright:raw
+```
+
+### Azure Key Vault env population
+
+This repo includes scripts to generate local env files by resolving template keys from Azure Key Vault secrets where `tags.e2e` matches the env key name.
+
+Environment to vault mapping is fixed to:
+
+- `aat` -> `rpx-aat`
+- `demo` -> `rpx-demo`
+
+Prerequisites:
+
+- Azure CLI installed
+- Authenticated with Azure CLI
+- Correct subscription selected
+- Access to `rpx-aat` and `rpx-demo` Key Vaults
+
+```bash
+az login
+az account set --subscription <subscription>
+```
+
+Template files:
+
+- Root env template: `.env.example`
+
+Populate commands write to `.env` using `.env.example` by default.
+
+Generate env files:
+
+```bash
+yarn env:populate
+yarn env:populate:aat
+yarn env:populate:demo
+```
+
+The base commands default to `aat`. To override:
+
+```bash
+ENVIRONMENT=demo yarn env:populate
+```
+
+Equivalent npm commands:
+
+```bash
+npm run env:populate
+npm run env:populate:aat
+npm run env:populate:demo
+```
+
+Direct script usage with explicit paths:
+
+```bash
+./scripts/populate-env-from-keyvault.sh aat .env .env.example
+./scripts/populate-env-from-keyvault.sh demo .env .env.example
+```
+
+Behavior notes:
+
+- Missing tagged secrets do not fail the run.
+- Missing keys are written as blank values and logged as warnings.
+- Generated local env files include resolved values only at runtime and should not be committed.
+
+### Add new username/password credentials to Key Vault
+
+Use `--tags e2e=<ENV_KEY>` so the populate scripts can map secrets to env keys.
+
+Example admin credentials for `APPROVE_ORG_ADMIN_USERNAME`/`APPROVE_ORG_ADMIN_PASSWORD` and API credentials for `APPROVE_ORG_API_USERNAME`/`APPROVE_ORG_API_PASSWORD` in both vaults:
+
+```bash
+az keyvault secret set --vault-name rpx-aat --name approve-org-admin-username --value "user@example.com" --tags e2e=APPROVE_ORG_ADMIN_USERNAME
+az keyvault secret set --vault-name rpx-aat --name approve-org-admin-password --value "change-me" --tags e2e=APPROVE_ORG_ADMIN_PASSWORD
+az keyvault secret set --vault-name rpx-aat --name approve-org-api-username --value "user@example.com" --tags e2e=APPROVE_ORG_API_USERNAME
+az keyvault secret set --vault-name rpx-aat --name approve-org-api-password --value "change-me" --tags e2e=APPROVE_ORG_API_PASSWORD
+
+az keyvault secret set --vault-name rpx-demo --name approve-org-admin-username --value "user@example.com" --tags e2e=APPROVE_ORG_ADMIN_USERNAME
+az keyvault secret set --vault-name rpx-demo --name approve-org-admin-password --value "change-me" --tags e2e=APPROVE_ORG_ADMIN_PASSWORD
+az keyvault secret set --vault-name rpx-demo --name approve-org-api-username --value "user@example.com" --tags e2e=APPROVE_ORG_API_USERNAME
+az keyvault secret set --vault-name rpx-demo --name approve-org-api-password --value "change-me" --tags e2e=APPROVE_ORG_API_PASSWORD
+```
+
+If credentials are required in both `aat` and `demo`, add them to both `rpx-aat` and `rpx-demo` with the same `tags.e2e` key mapping.
 
 CI/Jenkins notes:
 
 - `smoketest:*` and nightly cross-browser stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e`.
-- `functionalTest:*` stages publish both Playwright E2E (`functional-output/tests/playwright-e2e`) and Playwright API (`functional-output/tests/playwright-api`) HTML reports.
-- PR functional stages run API and E2E as separate parallel Jenkins branches (`before('functionalTest:preview')` / `before('functionalTest:aat')`).
+- `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e`), Playwright API (`functional-output/tests/playwright-api`), Playwright integration (`functional-output/tests/playwright-integration`), and Playwright accessibility (`functional-output/tests/playwright-a11y`) HTML reports.
+- PR and nightly functional stages run API, integration, E2E, and accessibility as separate parallel Jenkins branches.
+- CNP and nightly Jenkins pipelines expose optional build parameters for tag filtering: `E2E_PW_INCLUDE_TAGS`, `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_INCLUDE_TAGS`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_INCLUDE_TAGS`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, `A11Y_PW_INCLUDE_TAGS`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Accessibility branch failures are informational: the accessibility branch is marked `UNSTABLE` but does not fail the overall build.
 - Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 
 ## Integration Documentation

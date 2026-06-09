@@ -4,7 +4,7 @@ import { resolveHeader } from './helpers/json-contracts';
 const ORGANISATION_ID = process.env.PW_API_ORGANISATION_ID || 'FWRJEOF';
 const versions = ['v1', 'v2'] as const;
 
-test.describe('Playwright API positive: organisations by id', () => {
+test.describe('Playwright API positive: organisations by id', { tag: ['@organisations-by-id', '@positive'] }, () => {
   for (const version of versions) {
     test(`GET /api/organisations?organisationId=${ORGANISATION_ID}&version=${version} returns a single organisation`, async ({ apiRequest }) => {
       const response = await apiRequest.get('/api/organisations', {

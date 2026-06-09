@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 
 const ORGANISATION_ID = process.env.PW_API_ORGANISATION_ID || 'FWRJEOF';
 
-test.describe('Playwright API negative: organisations by id', () => {
+test.describe('Playwright API negative: organisations by id', { tag: ['@organisations-by-id', '@negative'] }, () => {
   test('GET /api/organisations?organisationId=<id> without auth is denied', async ({ apiAnonymousRequest }) => {
     const response = await apiAnonymousRequest.get('/api/organisations', {
       params: {
