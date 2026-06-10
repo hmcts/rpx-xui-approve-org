@@ -93,11 +93,38 @@ export function isSearchPostAllowedStatus(httpStatus: number): boolean {
   return httpStatus === 200;
 }
 
+function cookieMatchesHost(cookieDomain: string | undefined, hostName: string): boolean {
+  if (!cookieDomain) {
+    return false;
+  }
+
+  const normalizedDomain = cookieDomain.replace(/^\./, '').toLowerCase();
+  const normalizedHost = hostName.toLowerCase();
+
+  return normalizedHost === normalizedDomain || normalizedHost.endsWith(`.${normalizedDomain}`);
+}
+
 export async function getXsrfHeaders(apiRequest: APIRequestContext): Promise<Record<string, string>> {
-  await apiRequest.get('/api/environment', { failOnStatusCode: false });
+  const environmentResponse = await apiRequest.get('/api/environment', { failOnStatusCode: false });
+  let apiHostName: string | undefined;
+  try {
+    apiHostName = new URL(environmentResponse.url()).hostname;
+  } catch {
+    apiHostName = undefined;
+  }
 
   const state = await apiRequest.storageState();
-  const xsrfToken = state.cookies.find((cookie) => cookie.name === 'XSRF-TOKEN')?.value;
+  const xsrfCookies = state.cookies.filter((cookie) => cookie.name === 'XSRF-TOKEN');
+  if (xsrfCookies.length === 0) {
+    return {};
+  }
+
+  const xsrfToken = (
+    apiHostName
+      ? xsrfCookies.find((cookie) => cookieMatchesHost(cookie.domain, apiHostName))?.value
+      : undefined
+  ) ?? xsrfCookies[xsrfCookies.length - 1]?.value;
+
   if (!xsrfToken) {
     return {};
   }
