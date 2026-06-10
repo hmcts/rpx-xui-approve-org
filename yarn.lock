@@ -8895,15 +8895,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^1.4.13":
-  version: 1.4.13
-  resolution: "@types/multer@npm:1.4.13"
-  dependencies:
-    "@types/express": "npm:*"
-  checksum: 10/f650a9f431007f05a5c51d6359140bea5f77d1299668d45a0791ddbf7789f1c220a3e038039c5e0de6608e273d5ee8001e9649c606d7e0e847e8774ccc5d1d68
-  languageName: node
-  linkType: hard
-
 "@types/mute-stream@npm:^0.0.4":
   version: 0.0.4
   resolution: "@types/mute-stream@npm:0.0.4"
@@ -21097,7 +21088,6 @@ __metadata:
     "@types/jasmine": "npm:~4.3.5"
     "@types/jasminewd2": "npm:~2.0.3"
     "@types/mocha": "npm:^10.0.1"
-    "@types/multer": "npm:^1.4.13"
     "@types/node": "npm:^20.10.0"
     "@types/passport": "npm:^1.0.3"
     "@types/shortid": "npm:0.0.29"
@@ -21122,7 +21112,6 @@ __metadata:
     eslint: "npm:^8.37.0"
     exception-formatter: "npm:^1.0.7"
     express: "npm:^4.16.4"
-    form-data: "npm:^4.0.4"
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^2.1.8"
     govuk-frontend: "npm:4.0.1"
@@ -21144,7 +21133,6 @@ __metadata:
     launchdarkly-js-client-sdk: "npm:3.8.1"
     log4js: "npm:^6.9.1"
     mocha: "npm:^10.2.0"
-    multer: "npm:^2.0.2"
     multiple-cucumber-html-reporter: "npm:^3.9.3"
     ng-packagr: "npm:^20.0.0"
     ngrx-store-freeze: "npm:^0.2.4"
