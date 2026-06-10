@@ -30,10 +30,40 @@ export type MockOrganisation = {
   orgAttributes: Array<{ key: string; value: string }>;
 };
 
-type CommonOrganisationApiMockState = {
+export type CommonOrganisationApiMockState = {
   activeOrganisations?: MockOrganisation[];
   pendingOrganisations?: MockOrganisation[];
   singleOrganisationsById?: Record<string, MockOrganisation>;
+  activeSearchResponse?: SearchResponseOverride;
+  pendingSearchResponse?: SearchResponseOverride;
+};
+
+type SearchResponseOverride = {
+  status?: number;
+  body?: unknown;
+  onlyWhenSearchTermPresent?: boolean;
+};
+
+export type OrganisationSearchApiRequestPayload = {
+  view?: string;
+  searchRequest?: {
+    search_filter?: string;
+    sorting_parameters?: Array<{
+      sort_by?: string;
+      sort_order?: string;
+    }>;
+    pagination_parameters?: {
+      page_number?: number;
+      page_size?: number;
+    };
+  };
+};
+
+export type CommonOrganisationApiMockControl = {
+  getLastPendingSearchPayload: () => OrganisationSearchApiRequestPayload | undefined;
+  getLastActiveSearchPayload: () => OrganisationSearchApiRequestPayload | undefined;
+  getLastPendingSearchTerm: () => string | undefined;
+  getLastActiveSearchTerm: () => string | undefined;
 };
 
 type PendingDecisionApiMockState = {
@@ -70,12 +100,74 @@ export function createMockOrganisation(overrides: Partial<MockOrganisation>): Mo
       userIdentifier: 'mock-user-id',
       firstName: 'Mock',
       lastName: 'Admin',
-      email: 'mock-admin@mailnesia.com'
+      email: 'mock-admin@example.com'
     },
     paymentAccount: overrides.paymentAccount ?? ['PBA1234567'],
     pendingPaymentAccount: overrides.pendingPaymentAccount ?? [],
     orgAttributes: overrides.orgAttributes ?? []
   };
+}
+
+function normaliseSearchTerm(value: string | undefined): string {
+  return (value ?? '').trim().toLowerCase();
+}
+
+function extractOrganisationSearchPayload(request: Request): OrganisationSearchApiRequestPayload | undefined {
+  if (request.method().toUpperCase() !== 'POST') {
+    return undefined;
+  }
+
+  try {
+    return request.postDataJSON() as OrganisationSearchApiRequestPayload;
+  } catch {
+    return undefined;
+  }
+}
+
+function resolveSearchTermFromPayload(payload?: OrganisationSearchApiRequestPayload): string | undefined {
+  const searchTerm = normaliseSearchTerm(payload?.searchRequest?.search_filter);
+  return searchTerm.length > 0 ? searchTerm : undefined;
+}
+
+function collectOrganisationSearchText(organisation: MockOrganisation): string {
+  const contactText = organisation.contactInformation
+    .flatMap((contact) => [
+      contact.addressLine1,
+      contact.addressLine2,
+      contact.addressLine3,
+      contact.townCity,
+      contact.county,
+      contact.postCode,
+      ...contact.dxAddress.flatMap((dxAddress) => [dxAddress.dxNumber, dxAddress.dxExchange])
+    ])
+    .join(' ');
+
+  return [
+    organisation.organisationIdentifier,
+    organisation.name,
+    organisation.status,
+    organisation.companyNumber,
+    organisation.orgType,
+    organisation.sraId,
+    organisation.superUser.firstName,
+    organisation.superUser.lastName,
+    organisation.superUser.email,
+    contactText,
+    ...organisation.paymentAccount,
+    ...organisation.pendingPaymentAccount
+  ]
+    .join(' ')
+    .toLowerCase();
+}
+
+function filterOrganisationsBySearchRequest(request: Request, organisations: MockOrganisation[]): MockOrganisation[] {
+  const payload = extractOrganisationSearchPayload(request);
+  const searchTerm = resolveSearchTermFromPayload(payload);
+  if (!searchTerm) {
+    return organisations;
+  }
+
+  return organisations.filter((organisation) => collectOrganisationSearchText(organisation).includes(searchTerm));
 }
 
 function normaliseStatusValue(statusValue: string): string {
@@ -106,11 +198,54 @@ async function fulfillOrganisationStatusRequest(route: Route, request: Request, 
   });
 }
 
+function shouldApplySearchResponseOverride(
+  override: SearchResponseOverride | undefined,
+  searchTerm: string | undefined
+): boolean {
+  if (!override) {
+    return false;
+  }
+
+  if (!override.onlyWhenSearchTermPresent) {
+    return true;
+  }
+
+  return Boolean(searchTerm);
+}
+
+async function fulfillOrganisationSearchResponse(
+  route: Route,
+  request: Request,
+  organisations: MockOrganisation[],
+  searchTerm: string | undefined,
+  override: SearchResponseOverride | undefined
+): Promise<void> {
+  if (!shouldApplySearchResponseOverride(override, searchTerm)) {
+    await fulfillOrganisationStatusRequest(route, request, organisations);
+    return;
+  }
+
+  const statusCode = override?.status ?? 200;
+  const responseBody = override?.body ?? (statusCode === 200 ? {
+    organisations,
+    total_records: organisations.length
+  } : {});
+
+  await route.fulfill({
+    status: statusCode,
+    contentType: 'application/json',
+    body: JSON.stringify(responseBody)
+  });
+}
+
 export async function setupCommonOrganisationApiMocks(
   page: Page,
   state: CommonOrganisationApiMockState = {}
-): Promise<{ activeOrganisations: MockOrganisation[]; pendingOrganisations: MockOrganisation[] }> {
+): Promise<{ activeOrganisations: MockOrganisation[]; pendingOrganisations: MockOrganisation[] } & CommonOrganisationApiMockControl> {
   const singleOrganisationsById = state.singleOrganisationsById ?? {};
+  let lastPendingSearchPayload: OrganisationSearchApiRequestPayload | undefined;
+  let lastActiveSearchPayload: OrganisationSearchApiRequestPayload | undefined;
+
   const pendingOrganisations = state.pendingOrganisations ?? [
     createMockOrganisation({
       organisationIdentifier: 'PENDINGMOCK01',
@@ -155,12 +290,30 @@ export async function setupCommonOrganisationApiMocks(
     const status = resolveNormalisedStatusFromUrl(request.url());
 
     if (status === 'ACTIVE') {
-      await fulfillOrganisationStatusRequest(route, request, activeOrganisations);
+      lastActiveSearchPayload = extractOrganisationSearchPayload(request);
+      const filteredActiveOrganisations = filterOrganisationsBySearchRequest(request, activeOrganisations);
+      const searchTerm = resolveSearchTermFromPayload(lastActiveSearchPayload);
+      await fulfillOrganisationSearchResponse(
+        route,
+        request,
+        filteredActiveOrganisations,
+        searchTerm,
+        state.activeSearchResponse
+      );
       return;
     }
 
     if (status === 'PENDING,REVIEW') {
-      await fulfillOrganisationStatusRequest(route, request, pendingOrganisations);
+      lastPendingSearchPayload = extractOrganisationSearchPayload(request);
+      const filteredPendingOrganisations = filterOrganisationsBySearchRequest(request, pendingOrganisations);
+      const searchTerm = resolveSearchTermFromPayload(lastPendingSearchPayload);
+      await fulfillOrganisationSearchResponse(
+        route,
+        request,
+        filteredPendingOrganisations,
+        searchTerm,
+        state.pendingSearchResponse
+      );
       return;
     }
 
@@ -169,7 +322,11 @@ export async function setupCommonOrganisationApiMocks(
 
   return {
     activeOrganisations,
-    pendingOrganisations
+    pendingOrganisations,
+    getLastPendingSearchPayload: () => lastPendingSearchPayload,
+    getLastActiveSearchPayload: () => lastActiveSearchPayload,
+    getLastPendingSearchTerm: () => resolveSearchTermFromPayload(lastPendingSearchPayload),
+    getLastActiveSearchTerm: () => resolveSearchTermFromPayload(lastActiveSearchPayload)
   };
 }
 
@@ -239,6 +396,24 @@ export function waitForOrganisationStatusResponse(
 
     const actualStatus = resolveNormalisedStatusFromUrl(requestUrl);
     return actualStatus === expectedStatus && response.status() === 200;
+  });
+}
+
+export function waitForOrganisationStatusResponseWithHttpStatus(
+  page: Page,
+  statusValue: 'ACTIVE' | 'PENDING,REVIEW',
+  expectedHttpStatus: number
+): Promise<Response> {
+  const expectedStatus = normaliseStatusValue(statusValue);
+
+  return page.waitForResponse((response) => {
+    const requestUrl = response.request().url();
+    if (!requestUrl.includes('/api/organisations?')) {
+      return false;
+    }
+
+    const actualStatus = resolveNormalisedStatusFromUrl(requestUrl);
+    return actualStatus === expectedStatus && response.status() === expectedHttpStatus;
   });
 }
 

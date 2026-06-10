@@ -7,6 +7,7 @@ async function globalSetup(_fullConfig: FullConfig): Promise<void> {
     console.log('[playwright-session] Skipping global setup session capture (PW_SKIP_SESSION_CAPTURE=true)');
     return;
   }
+
   console.log('[playwright-session] Running global setup session capture');
   await sessionCapture('base');
 }
