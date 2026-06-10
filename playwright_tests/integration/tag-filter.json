@@ -1,0 +1,11 @@
+{
+  "excludedTags": [],
+  "availableTags": [
+    "@integration",
+    "@update-pba",
+    "@organisations",
+    "@pending-decisions",
+    "@search",
+    "@search-negative"
+  ]
+}
