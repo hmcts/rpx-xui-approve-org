@@ -20,14 +20,14 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
-  readonly approveOrganisationHeading = this.page.locator('app-org-details-info h1.govuk-heading-xl, app-org-details-info-old h1.govuk-heading-xl');
-  readonly confirmDecisionHeading = this.contentMain.locator('h1.govuk-heading-xl');
-  readonly confirmButton = this.contentMain.getByRole('button', { name: /^Confirm$/i });
-  readonly submitButton = this.detailsPanel.getByRole('button', { name: /^Submit$/i });
+  readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
+  readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
+  readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
+  readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
   readonly approveDecisionRadio = this.page.locator('#reason-0');
   readonly rejectDecisionRadio = this.page.locator('#reason-1');
   readonly reviewDecisionRadio = this.page.locator('#reason-2');
-  readonly deleteOrganisationDetailsButton = this.page.locator('app-org-details-info button.govuk-button--secondary, app-org-details-info-old button.govuk-button--secondary').first();
+  readonly deleteOrganisationDetailsButton = this.detailsPanel.locator('button.govuk-button--secondary').first();
   readonly deleteOrganisationConfirmButton = this.contentMain.locator('button.govuk-button--warning').first();
   readonly goBackToActiveLink = this.contentMain.locator('a[href*="/active-organisation"]');
   readonly deleteWarningText = this.contentMain.locator('.govuk-warning-text__text');
@@ -35,18 +35,33 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly tellOrganisationText = this.contentMain.locator('p.govuk-body').nth(0);
   readonly usersRemovedText = this.contentMain.locator('p.govuk-body').nth(1);
   readonly tabCollection = this.page.locator('.govuk-tabs');
+  readonly pendingOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pending"]');
   readonly newPbasTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pbas"]');
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
+  readonly pendingPbaViewLinkLocator = this.pendingPbasPanel.locator('table.govuk-table a.govuk-link[href*="/new/"]').first();
+  readonly pendingPbaDecisionRows = this.page.locator('app-pba-account-approval');
+  readonly pendingPbaContinueButton = this.page.locator('app-new-pbas-info button[type="submit"].govuk-button').first();
+  readonly newPbaDetailsPageHeading = this.page.locator('app-new-pbas-info h1.govuk-heading-xl').first();
+  readonly newPbaAccountsHeading = this.page.locator('app-new-pbas-info h3.govuk-heading-m#heading').first();
   readonly activeOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/active"]');
   readonly activeOrganisationsPanel = this.page.locator('app-prd-org-overview-component');
+  readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
+  readonly staffDetailsPageHeading = this.page.locator('app-prd-caseworker-details .govuk-heading-l');
+  readonly activeOrganisationRows = this.activeOrganisationsPanel.locator('table.active-organisations tr');
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
+  readonly userUploadSurfaceLocator = this.page
+    .locator('input[type="file"], xuilib-user-list, app-org-details-info, app-org-details-info-old')
+    .first();
+
   readonly usersTableRows = this.usersList.locator('table tbody tr');
   readonly adminDetailsHeading = this.detailsPanel.locator('h3.govuk-heading-m').nth(1);
   readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
     .locator('table.pending-organisations a.govuk-link[href*="/organisation-details/"]')
     .first();
+
+  readonly pendingPbaRows = this.pendingPbasPanel.locator('table.govuk-table tbody tr');
 
   readonly activeOrganisationViewLinkLocator = this.activeOrganisationsPanel
     .locator('table.active-organisations a.govuk-link[href*="/organisation-details/"]')
@@ -54,20 +69,36 @@ export class OrganisationApprovalsPage extends BasePage {
 
   readonly notificationBannerMessage = this.page.locator('app-notification-banner-component .hmcts-banner__message');
   readonly deletedOrganisationBannerTitle = this.contentMain.locator('.govuk-panel--confirmation .govuk-panel__title');
-  readonly organisationNameSummaryValue = this.page
-    .locator('app-org-details-info .govuk-summary-list__row .govuk-summary-list__value, app-org-details-info-old .govuk-summary-list__row .govuk-summary-list__value')
+  readonly organisationNameSummaryValue = this.detailsPanel
+    .locator('.govuk-summary-list__row .govuk-summary-list__value')
     .first();
 
   pendingOrganisationViewLink(): Locator {
     return this.pendingOrganisationViewLinkLocator;
   }
 
+  pendingPbaViewLink(): Locator {
+    return this.pendingPbaViewLinkLocator;
+  }
+
+  staffDetailsHeaderTab(): Locator {
+    return this.staffDetailsHeaderTabLocator;
+  }
+
   pendingOrganisationRowsByName(organisationName: string): Locator {
     return this.pendingOrganisationRows.filter({ hasText: organisationName });
   }
 
+  activeOrganisationRowsByText(searchText: string): Locator {
+    return this.activeOrganisationRows.filter({ hasText: searchText });
+  }
+
   activeOrganisationViewLink(): Locator {
     return this.activeOrganisationViewLinkLocator;
+  }
+
+  pendingPbaRowsByText(searchText: string): Locator {
+    return this.pendingPbaRows.filter({ hasText: searchText });
   }
 
   successBanner(messageText: RegExp | string): Locator {
@@ -89,6 +120,31 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstActiveOrganisation(): Promise<void> {
     await this.activeOrganisationViewLink().click();
+  }
+
+  async openFirstPendingPba(): Promise<void> {
+    await this.pendingPbaViewLink().click();
+  }
+
+  async approveAllPendingPbas(): Promise<void> {
+    await this.pendingPbaDecisionRows.first().waitFor({ state: 'visible', timeout: 60_000 });
+    const pendingPbaCount = await this.pendingPbaDecisionRows.count();
+
+    for (let index = 0; index < pendingPbaCount; index += 1) {
+      await this.pendingPbaDecisionRows
+        .nth(index)
+        .locator('input.govuk-radios__input')
+        .first()
+        .check({ force: true });
+    }
+  }
+
+  async continuePendingPbaDecision(): Promise<void> {
+    await this.pendingPbaContinueButton.click();
+  }
+
+  async openStaffDetailsTab(): Promise<void> {
+    await this.staffDetailsHeaderTab().click();
   }
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
@@ -145,6 +201,10 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openNewPbasTab(): Promise<void> {
     await this.newPbasTab.click();
+  }
+
+  async openPendingOrganisationsTab(): Promise<void> {
+    await this.pendingOrganisationsTab.click();
   }
 
   async openActiveOrganisationsTab(): Promise<void> {
