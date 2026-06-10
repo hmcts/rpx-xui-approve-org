@@ -1,5 +1,27 @@
 #!groovy
 
+final String e2ePwIncludeTagsEnvName = 'E2E_PW_INCLUDE_TAGS'
+final String e2ePwExcludedTagsOverrideEnvName = 'E2E_PW_EXCLUDED_TAGS_OVERRIDE'
+final String integrationPwIncludeTagsEnvName = 'INTEGRATION_PW_INCLUDE_TAGS'
+final String integrationPwExcludedTagsOverrideEnvName = 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE'
+final String apiPwIncludeTagsEnvName = 'API_PW_INCLUDE_TAGS'
+final String apiPwExcludedTagsOverrideEnvName = 'API_PW_EXCLUDED_TAGS_OVERRIDE'
+final String a11yPwIncludeTagsEnvName = 'A11Y_PW_INCLUDE_TAGS'
+final String a11yPwExcludedTagsOverrideEnvName = 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE'
+final String noneTagFallback = '<none>'
+final String htmlIndexReportFile = 'index.html'
+
+final List<String> playwrightTagFilterEnvNames = [
+    e2ePwIncludeTagsEnvName,
+    e2ePwExcludedTagsOverrideEnvName,
+    integrationPwIncludeTagsEnvName,
+    integrationPwExcludedTagsOverrideEnvName,
+    apiPwIncludeTagsEnvName,
+    apiPwExcludedTagsOverrideEnvName,
+    a11yPwIncludeTagsEnvName,
+    a11yPwExcludedTagsOverrideEnvName
+]
+
 properties([
     [
         $class       : 'GithubProjectProperty',
@@ -8,30 +30,141 @@ properties([
     ],
     pipelineTriggers([
     cron('H 07 * * 1-5')
+    ]),
+    parameters([
+        string(
+            name: e2ePwIncludeTagsEnvName,
+            defaultValue: '',
+            description: 'Optional E2E include tags (space/comma separated)'
+        ),
+        string(
+            name: e2ePwExcludedTagsOverrideEnvName,
+            defaultValue: '',
+            description: 'Optional E2E excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: integrationPwIncludeTagsEnvName,
+            defaultValue: '',
+            description: 'Optional integration include tags (space/comma separated)'
+        ),
+        string(
+            name: integrationPwExcludedTagsOverrideEnvName,
+            defaultValue: '',
+            description: 'Optional integration excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: apiPwIncludeTagsEnvName,
+            defaultValue: '',
+            description: 'Optional API include tags (space/comma separated)'
+        ),
+        string(
+            name: apiPwExcludedTagsOverrideEnvName,
+            defaultValue: '',
+            description: 'Optional API excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: a11yPwIncludeTagsEnvName,
+            defaultValue: '',
+            description: 'Optional accessibility include tags (space/comma separated)'
+        ),
+        string(
+            name: a11yPwExcludedTagsOverrideEnvName,
+            defaultValue: '',
+            description: 'Optional accessibility excluded tags override (@none clears file defaults)'
+        )
     ])
 ])
 
-@Library("Infrastructure")
+@Library('Infrastructure@DTSPO-30107-jenkins-agents')
 
-def type      = "nodejs"
-def product   = "xui"
-def component = "webapp"
-def channel   = '#xui-pipeline'
-def vault = "rpx"
+String type      = 'nodejs'
+String product   = 'xui'
+String component = 'webapp'
+String channel   = '#xui-pipeline'
+String playwrightReportDir = 'functional-output/tests/playwright-e2e'
+String playwrightApiReportDir = 'functional-output/tests/playwright-api'
+String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
+String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
+String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
 
-def secrets = [
-  'rpx-${env}': [
-    secret('ao-test-email', 'TEST_EMAIL'),
-    secret('ao-test-password', 'TEST_PASSWORD'),
-    secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
-    secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
+uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+Closure<Void> runPlaywrightFunctionalInParallel = {
+    stage('Nightly Functional Tests (Parallel)') {
+        env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        parallel(
+            failFast: false,
+            api: {
+                stage('Nightly API Playwright Tests') {
+                    yarnBuilder.yarn('test:api:playwright:raw')
+                }
+            },
+            integration: {
+                stage('Nightly Integration Playwright Tests') {
+                    yarnBuilder.yarn('test:integration:playwright:raw')
+                }
+            },
+            e2e: {
+                stage('Nightly E2E Playwright Tests') {
+                    yarnBuilder.yarn('test:functional:e2e:raw')
+                }
+            },
+            accessibility: {
+                stage('Nightly Accessibility Playwright Tests') {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        yarnBuilder.yarn('test:accessibility:playwright:raw')
+                    }
+                }
+            }
+        )
+    }
+}
+
+Closure<String> resolveParamOrEnv = { String envName ->
+    String paramValue = params."${envName}"?.trim()
+    return paramValue ?: (env."${envName}"?.trim() ?: '')
+}
+
+Closure<Void> applyPlaywrightTagFilterEnv = {
+    playwrightTagFilterEnvNames.each { String envName ->
+        env."${envName}" = resolveParamOrEnv(envName)
+    }
+}
+
+Closure<Void> logPlaywrightTagFilterEnv = { String contextLabel ->
+    String e2eInclude = env.E2E_PW_INCLUDE_TAGS ?: noneTagFallback
+    String e2eExclude = env.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: noneTagFallback
+    String integrationInclude = env.INTEGRATION_PW_INCLUDE_TAGS ?: noneTagFallback
+    String integrationExclude = env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: noneTagFallback
+    String apiInclude = env.API_PW_INCLUDE_TAGS ?: noneTagFallback
+    String apiExclude = env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: noneTagFallback
+    String a11yInclude = env.A11Y_PW_INCLUDE_TAGS ?: noneTagFallback
+    String a11yExclude = env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: noneTagFallback
+
+    echo([
+        "[playwright-tags] ${contextLabel}",
+        "E2E include=${e2eInclude} exclude=${e2eExclude}",
+        "Integration include=${integrationInclude} exclude=${integrationExclude}",
+        "API include=${apiInclude} exclude=${apiExclude}",
+        "A11Y include=${a11yInclude} exclude=${a11yExclude}"
+    ].join(' | '))
+}
+
+String vaultSecretsKey = 'rpx-' + '$' + '{env}'
+
+Map<String, List<Map<String, Object>>> secrets = [
+    (vaultSecretsKey): [
+    secret('approve-org-admin-username', 'APPROVE_ORG_ADMIN_USERNAME'),
+    secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
+    secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
+    secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
   ]
 ]
 
-static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
-  [ $class: 'AzureKeyVaultSecret',
+static Map<String, Object> secret(String secretName, String envVar) {
+    [ $class: 'AzureKeyVaultSecret',
     secretType: 'Secret',
     name: secretName,
     version: '',
@@ -42,29 +175,33 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
+    env.FUNCTIONAL_TESTS_WORKERS = '5'
+    applyPlaywrightTagFilterEnv()
+    logPlaywrightTagFilterEnv('pipeline env')
+    env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
     // enableFortifyScan('rpx-aat')
-    // enableFullFunctionalTest(60)
-    // below no longer running as it is not required
+    enableFullFunctionalTest(60)
+    // mutation test no longer running as it is not required
     // enableMutationTest()
     enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
-    afterSuccess('checkout') {sh 'yarn cache clean'}
+    afterSuccess('checkout') { sh 'yarn cache clean' }
     afterSuccess('build') {
         sh 'npm run build'
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/lint/node/",
-            reportFiles          : 'index.html',
+            reportDir            : 'test/reports/lint/node/',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'node lint Report'
         ])
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "test/reports/lint/ng/",
-            reportFiles          : 'index.html',
+            reportDir            : 'test/reports/lint/ng/',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'ng lint Report'
         ])
     }
@@ -73,24 +210,47 @@ withNightlyPipeline(type, product, component) {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
     }
 
-    afterSuccess('fullFunctionalTest') {
+    before('fullFunctionalTest') {
+        catchError(stageResult: 'FAILURE') {
+            runPlaywrightFunctionalInParallel()
+        }
+    }
 
+    afterAlways('fullFunctionalTest') {
         publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightApiReportDir,
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'XUI Approve Organisation Full functional API Playwright Tests'
         ])
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/functional/",
-            reportFiles          : 'index.html',
-            reportName           : 'XUI Approve Organisation Full functional Tests'
+            reportDir            : playwrightReportDir,
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'XUI Approve Organisation Full functional E2E Tests'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightIntegrationReportDir,
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
+        ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightAccessibilityReportDir,
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
         ])
     }
 
@@ -100,7 +260,7 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "reports/tests/mutation/node/",
-            reportFiles          : 'index.html',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
     } */
@@ -110,8 +270,8 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/crossbrowser/",
-            reportFiles          : 'index.html',
+            reportDir            : playwrightNightlyReportDir,
+                        reportFiles          : htmlIndexReportFile,
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
       ])
     }
@@ -121,7 +281,7 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/",
+            reportDir            : 'reports/tests/',
             reportFiles          : 'activescan.html',
             reportName           : 'XUIAO ZAP Security Scan Report'
         ])

@@ -1,0 +1,16 @@
+{
+  "excludedTags": [],
+  "availableTags": [
+    "@all-user-list-without-roles",
+    "@reinvite-user",
+    "@organisations",
+    "@organisations-by-id",
+    "@organisations-write",
+    "@pba-accounts",
+    "@pba-status",
+    "@update-pba",
+    "@update-pba-status",
+    "@positive",
+    "@negative"
+  ]
+}
