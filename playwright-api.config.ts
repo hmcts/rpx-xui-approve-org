@@ -1,6 +1,14 @@
 import { defineConfig } from '@playwright/test';
-import { resolveWorkerCount } from './playwright-config-utils';
+import { resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
+
+process.env.PW_AUTH_SESSION_USER = process.env.PW_AUTH_SESSION_USER || 'api';
+const apiTagFilters = resolveTagFilters({
+  includeTagsEnvVar: 'API_PW_INCLUDE_TAGS',
+  excludedTagsEnvVar: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+  configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
+  defaultConfigPath: 'playwright_tests/api/tag-filter.json',
+});
 
 module.exports = defineConfig({
   testDir: './playwright_tests/api',
@@ -19,7 +27,9 @@ module.exports = defineConfig({
   },
   projects: [
     {
-      name: 'api'
+      name: 'api',
+      grep: apiTagFilters.grep,
+      grepInvert: apiTagFilters.grepInvert
     }
   ]
 });

@@ -1,0 +1,14 @@
+{
+  "excludedTags": [
+    "@smoke"
+  ],
+  "availableTags": [
+    "@e2e",
+    "@auth",
+    "@smoke",
+    "@organisations",
+    "@tabs-load",
+    "@active-org",
+    "@org-workflows"
+  ]
+}
