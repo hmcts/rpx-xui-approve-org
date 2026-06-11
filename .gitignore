@@ -10,6 +10,7 @@
 # dependencies
 node_modules
 api/node_modules/
+/package-lock.json
 
 # environments - stop accidental commit of a local.yaml file. See Readme.
 /config/local*.*

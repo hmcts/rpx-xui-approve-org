@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 
 const USERS_ORG_ID = process.env.PW_API_USERS_ORG_ID || '2GIHJH9';
 
-test.describe('Playwright API negative: all user list without roles', () => {
+test.describe('Playwright API negative: all user list without roles', { tag: ['@all-user-list-without-roles', '@negative'] }, () => {
   test('GET /api/allUserListWithoutRoles without auth is denied', async ({ apiAnonymousRequest }) => {
     const response = await apiAnonymousRequest.get('/api/allUserListWithoutRoles', {
       params: { usersOrgId: USERS_ORG_ID },
@@ -33,7 +33,7 @@ test.describe('Playwright API negative: all user list without roles', () => {
       failOnStatusCode: false
     });
     const httpStatus = response.status();
-    
+
     if (httpStatus === 200) {
       const payload = await response.json();
       expect(
