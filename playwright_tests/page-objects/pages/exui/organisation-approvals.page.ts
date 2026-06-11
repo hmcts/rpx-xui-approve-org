@@ -118,6 +118,10 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.pendingOrganisationViewLink().click();
   }
 
+  async clickBackLink(): Promise<void> {
+    await this.page.getByRole('link', { name: /^Back$/ }).click();
+  }
+
   async openFirstActiveOrganisation(): Promise<void> {
     await this.activeOrganisationViewLink().click();
   }

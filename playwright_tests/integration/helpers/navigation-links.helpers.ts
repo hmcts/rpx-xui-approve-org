@@ -1,5 +1,4 @@
 import type { Page } from '@playwright/test';
-import { expect } from '@playwright/test';
 import { ensureAuthenticatedPage } from '../../helpers/sessionCapture';
 import { OrganisationApprovalsPage } from '../../page-objects/pages';
 import {
@@ -85,9 +84,6 @@ export async function setupNavigationLinksIntegrationPage(page: Page): Promise<N
   await ensureAuthenticatedPage(page, 'base');
   const organisationApprovalsPage = new OrganisationApprovalsPage(page);
 
-  await expect(organisationApprovalsPage.heading).toBeVisible();
-  await expect(organisationApprovalsPage.tabPanel).toBeVisible();
-
   return {
     organisationApprovalsPage,
     pendingOrganisationId: pendingBacklinkOrganisation.organisationIdentifier,
@@ -95,8 +91,4 @@ export async function setupNavigationLinksIntegrationPage(page: Page): Promise<N
     activeOrganisationId: activeBacklinkOrganisation.organisationIdentifier,
     activeOrganisationName: activeBacklinkOrganisation.name
   };
-}
-
-export async function clickBackLink(page: Page): Promise<void> {
-  await page.locator('a.govuk-back-link').first().click();
 }
