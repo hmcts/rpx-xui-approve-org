@@ -100,3 +100,25 @@ export function pbaAccountsMissingParameterErrors(payload: unknown): string[] {
 
   return errors;
 }
+
+export function searchEnvelopeShapeErrors(payload: unknown): string[] {
+  const errors: string[] = [];
+
+  if (!isObject(payload)) {
+    errors.push('payload is not an object');
+    return errors;
+  }
+
+  if (!Array.isArray(payload.organisations)) {
+    errors.push('payload.organisations is not an array');
+  }
+
+  const totalRecords = payload.total_records;
+  const isNumber = typeof totalRecords === 'number';
+  const isNumericString = typeof totalRecords === 'string' && totalRecords.trim() !== '' && !Number.isNaN(Number(totalRecords));
+  if (!isNumber && !isNumericString) {
+    errors.push('payload.total_records is not a number or numeric string');
+  }
+
+  return errors;
+}

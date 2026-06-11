@@ -48,11 +48,19 @@ export const authRequestTest = base.extend<AuthRequestFixtures>({
     async ({ baseURL: _baseURL }, use) => {
       void _baseURL;
       let requestContext = await createAuthenticatedApiContext(false);
-      const authenticated = await isAuthenticatedRequestContext(requestContext);
+      let authenticated = await isAuthenticatedRequestContext(requestContext);
 
       if (!authenticated) {
         await requestContext.dispose();
         requestContext = await createAuthenticatedApiContext(true);
+        authenticated = await isAuthenticatedRequestContext(requestContext);
+      }
+
+      if (!authenticated) {
+        await requestContext.dispose();
+        throw new Error(
+          `Unable to create an authenticated API request context for user "${authSessionUser}".`
+        );
       }
 
       await use(requestContext);

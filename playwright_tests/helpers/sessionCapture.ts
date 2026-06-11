@@ -114,20 +114,25 @@ async function launchBrowserForSessionCapture(): Promise<Browser> {
 }
 
 async function completeLoginOnPage(page: Page, username: string, password: string): Promise<void> {
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+  await page.goto(config.baseUrl, { waitUntil: 'networkidle' });
 
   if (await isAuthenticatedByApi(page)) {
     return;
   }
 
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
-    const hasNamedUsernameInput = await page.locator('input[name="username"]').isVisible().catch(() => false);
-    const hasRoleEmailInput = await page.getByRole('textbox', { name: /Email address|Enter your work email address/i }).isVisible().catch(() => false);
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    const namedUsernameInput = page.locator('input[name="username"]');
+    const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
+    const fallbackEmailInput = page.locator('input[type="email"]').first();
+    const hasNamedUsernameInput = await namedUsernameInput.isVisible().catch(() => false);
+    const hasRoleEmailInput = await roleEmailInput.isVisible().catch(() => false);
+    const hasFallbackEmailInput = await fallbackEmailInput.isVisible().catch(() => false);
     const isOnLoginSurface =
       page.url().includes('idam') ||
       page.url().includes('/login') ||
       hasNamedUsernameInput ||
-      hasRoleEmailInput;
+      hasRoleEmailInput ||
+      hasFallbackEmailInput;
 
     if (!isOnLoginSurface && (await isAuthenticatedByApi(page))) {
       return;
@@ -135,13 +140,19 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
 
     if (isOnLoginSurface) {
       if (hasNamedUsernameInput) {
-        await page.fill('input[name="username"]', username);
-        await page.fill('input[name="password"]', password);
-        await page.click('#login-submit-btn');
-      } else {
-        await page.getByRole('textbox', { name: /Email address|Enter your work email address/i }).fill(username);
-        await page.getByRole('textbox', { name: 'Password' }).fill(password);
+        await namedUsernameInput.fill(username);
+        await page.locator('input[name="password"]').fill(password);
+        await page.locator('#login-submit-btn').click();
+        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+      } else if (hasRoleEmailInput || hasFallbackEmailInput) {
+        const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
+        await emailInput.fill(username);
+        await page.locator('input[type="password"], input[name="password"]').first().fill(password);
         await page.getByRole('button', { name: 'Sign in' }).click();
+        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+      } else {
+        // Login page can be in a transition state; retry instead of timing out on non-visible inputs.
+        await page.waitForTimeout(500 * attempt);
       }
     }
 
