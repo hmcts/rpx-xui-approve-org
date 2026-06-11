@@ -5,6 +5,46 @@ type UpdatePbaApiMockState = {
   responseBody?: unknown;
 };
 
+export type PendingPbaStatusApiRequestPayload = {
+  searchRequest?: {
+    search_filter?: string;
+    pagination_parameters?: {
+      page_number?: number;
+      page_size?: number;
+    };
+    drill_down_search?: Array<{
+      field_name?: string;
+      search_filter?: string;
+    }>;
+  };
+};
+
+export type MockPendingPbaOrganisation = {
+  organisationIdentifier: string;
+  organisationName: string;
+  superUser: {
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
+  pbaNumbers: Array<{
+    pbaNumber: string;
+    dateCreated: string;
+  }>;
+};
+
+export type PendingPbaStatusApiMockState = {
+  pendingPbaOrganisations?: MockPendingPbaOrganisation[];
+  status?: number;
+  responseBody?: unknown;
+  onlyWhenSearchTermPresent?: boolean;
+};
+
+export type PendingPbaStatusApiMockControl = {
+  getLastPayload: () => PendingPbaStatusApiRequestPayload | undefined;
+  getLastSearchTerm: () => string | undefined;
+};
+
 type UpdatePbaApiPayload = {
   paymentAccounts: string[];
   orgId: string;
@@ -13,6 +53,65 @@ type UpdatePbaApiPayload = {
 type UpdatePbaApiMockControl = {
   getLastPayload: () => UpdatePbaApiPayload | undefined;
 };
+
+function normaliseSearchTerm(value: string | undefined): string {
+  return (value ?? '').trim().toLowerCase();
+}
+
+function resolvePendingPbaSearchTerm(payload: PendingPbaStatusApiRequestPayload | undefined): string | undefined {
+  const drillDownSearchItems = payload?.searchRequest?.drill_down_search ?? [];
+  for (const drillDownSearchItem of drillDownSearchItems) {
+    const searchTerm = normaliseSearchTerm(drillDownSearchItem.search_filter);
+    if (searchTerm.length > 0) {
+      return searchTerm;
+    }
+  }
+
+  return undefined;
+}
+
+function collectPendingPbaSearchText(organisation: MockPendingPbaOrganisation): string {
+  return [
+    organisation.organisationIdentifier,
+    organisation.organisationName,
+    organisation.superUser.firstName,
+    organisation.superUser.lastName,
+    organisation.superUser.email,
+    ...organisation.pbaNumbers.flatMap((pbaNumber) => [pbaNumber.pbaNumber])
+  ]
+    .join(' ')
+    .toLowerCase();
+}
+
+function filterPendingPbaOrganisations(
+  pendingPbaOrganisations: MockPendingPbaOrganisation[],
+  payload: PendingPbaStatusApiRequestPayload | undefined
+): MockPendingPbaOrganisation[] {
+  const searchTerm = resolvePendingPbaSearchTerm(payload);
+  if (!searchTerm) {
+    return pendingPbaOrganisations;
+  }
+
+  return pendingPbaOrganisations.filter((organisation) => collectPendingPbaSearchText(organisation).includes(searchTerm));
+}
+
+export function createMockPendingPbaOrganisation(overrides: Partial<MockPendingPbaOrganisation>): MockPendingPbaOrganisation {
+  const organisationIdentifier = overrides.organisationIdentifier ?? 'PBAORGMOCK1';
+
+  return {
+    organisationIdentifier,
+    organisationName: overrides.organisationName ?? `${organisationIdentifier} Name`,
+    superUser: overrides.superUser ?? {
+      firstName: 'Mock',
+      lastName: 'Pba',
+      email: 'mock-pba-admin@example.com'
+    },
+    pbaNumbers: overrides.pbaNumbers ?? [{
+      pbaNumber: 'PBA1234567',
+      dateCreated: new Date('2024-01-01T00:00:00.000Z').toISOString()
+    }]
+  };
+}
 
 export async function setupUpdatePbaApiMock(
   page: Page,
@@ -46,6 +145,84 @@ export async function setupPbaAccountsApiMock(page: Page, accountNames: string[]
       contentType: 'application/json',
       body: JSON.stringify(accountNames.map((accountName) => ({ account_name: accountName })))
     });
+  });
+}
+
+export async function setupPendingPbaStatusApiMock(
+  page: Page,
+  state: PendingPbaStatusApiMockState = {}
+): Promise<PendingPbaStatusApiMockControl> {
+  const pendingPbaOrganisations = state.pendingPbaOrganisations ?? [
+    createMockPendingPbaOrganisation({
+      organisationIdentifier: 'PBAORGMOCK01',
+      organisationName: 'Pending PBA Mock Org One',
+      pbaNumbers: [{ pbaNumber: 'PBA1111111', dateCreated: new Date('2024-01-10T00:00:00.000Z').toISOString() }]
+    }),
+    createMockPendingPbaOrganisation({
+      organisationIdentifier: 'PBAORGMOCK02',
+      organisationName: 'Pending PBA Mock Org Two',
+      pbaNumbers: [{ pbaNumber: 'PBA2222222', dateCreated: new Date('2024-01-11T00:00:00.000Z').toISOString() }]
+    })
+  ];
+
+  let lastPayload: PendingPbaStatusApiRequestPayload | undefined;
+
+  await page.route('**/api/pba/status/pending**', async (route, request) => {
+    if (request.method().toUpperCase() === 'POST') {
+      try {
+        lastPayload = request.postDataJSON() as PendingPbaStatusApiRequestPayload;
+      } catch {
+        lastPayload = undefined;
+      }
+    }
+
+    const filteredPendingPbaOrganisations = filterPendingPbaOrganisations(pendingPbaOrganisations, lastPayload);
+    const shouldApplyOverride = state.onlyWhenSearchTermPresent
+      ? Boolean(resolvePendingPbaSearchTerm(lastPayload))
+      : true;
+
+    const resolvedStatusCode = shouldApplyOverride ? (state.status ?? 200) : 200;
+    const body = shouldApplyOverride
+      ? (state.responseBody ?? (resolvedStatusCode === 200 ? {
+        organisations: filteredPendingPbaOrganisations,
+        total_records: filteredPendingPbaOrganisations.length
+      } : {}))
+      : {
+        organisations: filteredPendingPbaOrganisations,
+        total_records: filteredPendingPbaOrganisations.length
+      };
+
+    await route.fulfill({
+      status: resolvedStatusCode,
+      contentType: 'application/json',
+      body: JSON.stringify(body)
+    });
+  });
+
+  return {
+    getLastPayload: () => lastPayload,
+    getLastSearchTerm: () => resolvePendingPbaSearchTerm(lastPayload)
+  };
+}
+
+export function waitForPendingPbaStatusResponse(page: Page): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method().toUpperCase() === 'POST'
+      && request.url().includes('/api/pba/status/pending')
+      && response.status() < 500;
+  });
+}
+
+export function waitForPendingPbaStatusResponseWithHttpStatus(
+  page: Page,
+  expectedHttpStatus: number
+): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method().toUpperCase() === 'POST'
+      && request.url().includes('/api/pba/status/pending')
+      && response.status() === expectedHttpStatus;
   });
 }
 

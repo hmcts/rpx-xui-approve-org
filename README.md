@@ -237,10 +237,10 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE='@pending-decisions' yarn test:integration
 API_PW_INCLUDE_TAGS='@negative' yarn test:api:playwright:raw
 ```
 
-9. Optional: run only user-upload accessibility tests:
+9. Optional: run only staff-details accessibility tests:
 
 ```bash
-A11Y_PW_INCLUDE_TAGS='@user-upload' yarn test:accessibility:playwright:raw
+A11Y_PW_INCLUDE_TAGS='@staff-details' yarn test:accessibility:playwright:raw
 ```
 
 ### Azure Key Vault env population
