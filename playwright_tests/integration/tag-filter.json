@@ -4,6 +4,8 @@
     "@integration",
     "@update-pba",
     "@organisations",
-    "@pending-decisions"
+    "@pending-decisions",
+    "@search",
+    "@search-negative"
   ]
 }
