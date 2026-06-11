@@ -8895,12 +8895,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/multer@npm:^1.4.13":
-  version: 1.4.13
-  resolution: "@types/multer@npm:1.4.13"
+"@types/multer@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@types/multer@npm:2.1.0"
   dependencies:
     "@types/express": "npm:*"
-  checksum: 10/f650a9f431007f05a5c51d6359140bea5f77d1299668d45a0791ddbf7789f1c220a3e038039c5e0de6608e273d5ee8001e9649c606d7e0e847e8774ccc5d1d68
+  checksum: 10/405298b6b0b6f4007c87b7bcd69074a96fba8d5a0efcc149788af9bdb45fb9d0ab367ddebec4840eaaa45d05ba682b2a8c3a71101e9e51d6cfaa624034339c1a
   languageName: node
   linkType: hard
 
@@ -10550,15 +10550,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"auto-parse@npm:^1.3.0":
-  version: 1.8.0
-  resolution: "auto-parse@npm:1.8.0"
-  dependencies:
-    typpy: "npm:2.3.11"
-  checksum: 10/78a5f549433c255a178029a3084da3b3e203c1c37dfa263ab7fe0a11106f5dcd6bd9d09e5890f30a918b7493c8bdafc6cd49535d76b401add6060497d7022e9e
-  languageName: node
-  linkType: hard
-
 "autoprefixer@npm:10.4.21":
   version: 10.4.21
   resolution: "autoprefixer@npm:10.4.21"
@@ -10929,10 +10920,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"base-64@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "base-64@npm:0.1.0"
-  checksum: 10/5a42938f82372ab5392cbacc85a5a78115cbbd9dbef9f7540fa47d78763a3a8bd7d598475f0d92341f66285afd377509851a9bb5c67bbecb89686e9255d5b3eb
+"base-64@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "base-64@npm:1.0.0"
+  checksum: 10/d10b64a1fc9b2c5a5f39f1ce1e6c9d1c5b249222bbfa3a0604c592d90623caf74419983feadd8a170f27dc0c3389704f72faafa3e645aeb56bfc030c93ff074a
   languageName: node
   linkType: hard
 
@@ -13481,24 +13472,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv-extended@npm:^2.7.1":
-  version: 2.9.0
-  resolution: "dotenv-extended@npm:2.9.0"
+"dotenv-extended@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "dotenv-extended@npm:3.1.0"
   dependencies:
-    auto-parse: "npm:^1.3.0"
-    camelcase: "npm:^5.3.1"
-    cross-spawn: "npm:^7.0.1"
-    dotenv: "npm:^8.2.0"
+    dotenv: "npm:^16.6.1"
   bin:
-    dotenv-extended: lib/bin/index.js
-  checksum: 10/b0418eb0fef371a3af59866d9cfcde199a2ce453b1e83a039ed3abd1879c1f59df43b235a67d72ebcf31ffc6d11be7c0437af192e442dd4bd7886a74d025fcb3
+    dee: lib/bin/cli.js
+    dotenv-extended: lib/bin/cli.js
+  checksum: 10/108d421a76592328372bf415099a3a76e4aeb09cda17351f9b315c8ac54968ed96fe726ce83ac56bb0ff29348bf19206bd000eef20df8b9d97cf46a07b6e3db0
   languageName: node
   linkType: hard
 
-"dotenv@npm:^8.2.0":
-  version: 8.6.0
-  resolution: "dotenv@npm:8.6.0"
-  checksum: 10/31d7b5c010cebb80046ba6853d703f9573369b00b15129536494f04b0af4ea0060ce8646e3af58b455af2f6f1237879dd261a5831656410ec92561ae1ea44508
+"dotenv@npm:^16.6.1":
+  version: 16.6.1
+  resolution: "dotenv@npm:16.6.1"
+  checksum: 10/1d1897144344447ffe62aa1a6d664f4cd2e0784e0aff787eeeec1940ded32f8e4b5b506d665134fc87157baa086fce07ec6383970a2b6d2e7985beaed6a4cc14
   languageName: node
   linkType: hard
 
@@ -15528,15 +15517,6 @@ __metadata:
   version: 1.1.2
   resolution: "function-bind@npm:1.1.2"
   checksum: 10/185e20d20f10c8d661d59aac0f3b63b31132d492e1b11fcc2a93cb2c47257ebaee7407c38513efd2b35cafdf972d9beb2ea4593c1e0f3bf8f2744836928d7454
-  languageName: node
-  linkType: hard
-
-"function.name@npm:^1.0.3":
-  version: 1.0.14
-  resolution: "function.name@npm:1.0.14"
-  dependencies:
-    noop6: "npm:^1.0.1"
-  checksum: 10/9626b2298d766442e421eb48fb50bb84c5ab05c26e4668bac69e43dff7fd8118c53304ad8b810a2815ccfd231693c513d5cf41cba56d3e93d1057ce4d70ecf46
   languageName: node
   linkType: hard
 
@@ -19956,6 +19936,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"multer@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "multer@npm:2.1.1"
+  dependencies:
+    append-field: "npm:^1.0.0"
+    busboy: "npm:^1.6.0"
+    concat-stream: "npm:^2.0.0"
+    type-is: "npm:^1.6.18"
+  checksum: 10/fb22868caaed37d725715c14c60b740b81665265da3a026bb61954414f65b99f76b360128413b8a2a7cc1a95ecae28a42bf831fe172bb79682d19ec105b556bd
+  languageName: node
+  linkType: hard
+
 "multi-sort-stream@npm:^1.0.3, multi-sort-stream@npm:^1.0.4":
   version: 1.0.4
   resolution: "multi-sort-stream@npm:1.0.4"
@@ -20494,13 +20486,6 @@ __metadata:
   bin:
     nodemon: bin/nodemon.js
   checksum: 10/1fbddb426e6c5510ed42001a947e9caad3f3ca29c36ca7aac143b3a084d3ba855fdf4020f41a890101b91cbe60824e70fcbcb98f21574ed0a7964b3a825e0a1f
-  languageName: node
-  linkType: hard
-
-"noop6@npm:^1.0.1":
-  version: 1.0.10
-  resolution: "noop6@npm:1.0.10"
-  checksum: 10/ad2d9e02009f89418d8668d83eac9c0370a672a95dce641a9860f2b36ab57be9310174115b79c0b869c81a43fb87ae143dcf7bddd06000fc46796df3a6eac32b
   languageName: node
   linkType: hard
 
@@ -21080,7 +21065,7 @@ __metadata:
     "@types/jasmine": "npm:~4.3.5"
     "@types/jasminewd2": "npm:~2.0.3"
     "@types/mocha": "npm:^10.0.1"
-    "@types/multer": "npm:^1.4.13"
+    "@types/multer": "npm:^2.1.0"
     "@types/node": "npm:^20.10.0"
     "@types/passport": "npm:^1.0.3"
     "@types/shortid": "npm:0.0.29"
@@ -21090,7 +21075,7 @@ __metadata:
     applicationinsights: "npm:^3.7.0"
     axios: "npm:^1.13.5"
     axios-mock-adapter: "npm:^1.18.2"
-    base-64: "npm:^0.1.0"
+    base-64: "npm:^1.0.0"
     chai: "npm:^4.3.8"
     chai-as-promised: "npm:7.1.1"
     codeceptjs: "npm:^3.5.10"
@@ -21100,7 +21085,7 @@ __metadata:
     core-js: "npm:^3.37.0"
     crypto-js: "npm:^4.2.0"
     cucumber-html-reporter: "npm:^7.1.1"
-    dotenv-extended: "npm:^2.7.1"
+    dotenv-extended: "npm:^3.1.0"
     ejs: "npm:~3.1.7"
     eslint: "npm:^8.37.0"
     exception-formatter: "npm:^1.0.7"
@@ -21127,7 +21112,7 @@ __metadata:
     launchdarkly-js-client-sdk: "npm:3.8.1"
     log4js: "npm:^6.9.1"
     mocha: "npm:^10.2.0"
-    multer: "npm:^2.0.2"
+    multer: "npm:^2.1.1"
     multiple-cucumber-html-reporter: "npm:^3.9.3"
     ng-packagr: "npm:^20.0.0"
     ngrx-store-freeze: "npm:^0.2.4"
@@ -25708,15 +25693,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10/696e1b017bc2635f4e0c94eb4435357701008e2f272f553d06e35b494b8ddc60aa221145e286c28ace0c89ee32827a28c2040e3a69bdc108b1a5dc8fb40b72e3
-  languageName: node
-  linkType: hard
-
-"typpy@npm:2.3.11":
-  version: 2.3.11
-  resolution: "typpy@npm:2.3.11"
-  dependencies:
-    function.name: "npm:^1.0.3"
-  checksum: 10/1a47018e48e1a5d2cbdf3d26c48298d23f5d57da141f78243789ccd66b64508f1a48bc2a293948b0e46579c719d5e7f2ca0b3467bc4a6e26eb1ab055cd5b82c0
   languageName: node
   linkType: hard
 
