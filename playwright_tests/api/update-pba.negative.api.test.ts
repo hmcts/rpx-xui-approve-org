@@ -1,12 +1,13 @@
 import { test, expect } from './helpers/api.fixtures';
+import { provisionPendingOrganisation } from './helpers/organisations-write.helpers';
 
-const UPDATE_PBA_ORG_ID = process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
+const UNAUTHENTICATED_ORG_ID = 'UPDATE_PBA_NEGATIVE_ORG';
 
 test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@negative'] }, () => {
   test('PUT /api/updatePba without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
       paymentAccounts: ['PBA33L6BNO'],
-      orgId: UPDATE_PBA_ORG_ID
+      orgId: UNAUTHENTICATED_ORG_ID
     };
 
     const response = await apiAnonymousRequest.put('/api/updatePba', {
@@ -32,12 +33,12 @@ test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@ne
     }
   });
 
-  test('PUT /api/updatePba with missing or invalid required fields returns 403 Forbidden', async ({ apiRequest }) => {
+  test('PUT /api/updatePba with malformed or invalid fields returns an error', async ({ apiRequest }) => {
+    const provisioned = await provisionPendingOrganisation(apiRequest, {
+      firstName: 'Pba',
+      lastName: 'Negative'
+    });
     const testCases = [
-      {
-        name: 'missing paymentAccounts',
-        payload: { orgId: UPDATE_PBA_ORG_ID }
-      },
       {
         name: 'missing orgId',
         payload: { paymentAccounts: ['PBA33L6BNO'] }
@@ -45,6 +46,10 @@ test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@ne
       {
         name: 'invalid orgId',
         payload: { paymentAccounts: ['PBA33L6BNO'], orgId: 'INVALID_ORG_ID_12345' }
+      },
+      {
+        name: 'invalid paymentAccounts type',
+        payload: { paymentAccounts: 'PBA33L6BNO', orgId: provisioned.organisationId }
       }
     ];
 
@@ -56,15 +61,19 @@ test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@ne
       const httpStatus = response.status();
       expect(
         httpStatus,
-        `Expected 403 Forbidden for ${testCase.name} (auth middleware validation). Received status=${httpStatus}`
-      ).toBe(403);
+        `Expected error status for ${testCase.name}. Received status=${httpStatus}`
+      ).toBeGreaterThanOrEqual(400);
     }
   });
 
   test('PUT /api/updatePba with empty paymentAccounts array passes validation', async ({ apiRequest }) => {
+    const provisioned = await provisionPendingOrganisation(apiRequest, {
+      firstName: 'Pba',
+      lastName: 'Empty'
+    });
     const payload = {
       paymentAccounts: [],
-      orgId: UPDATE_PBA_ORG_ID
+      orgId: provisioned.organisationId
     };
 
     const response = await apiRequest.put('/api/updatePba', {

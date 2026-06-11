@@ -1,14 +1,12 @@
 import { test, expect } from './helpers/api.fixtures';
+import { resolvePbaUpdateTarget } from './helpers/pba-test-data.helpers';
 
-const UPDATE_PBA_ORG_ID = process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
-const UPDATE_PBA_ACCOUNT_PRIMARY = process.env.PW_API_UPDATE_PBA_ACCOUNT_PRIMARY || 'PBA33L6BNO';
-const UPDATE_PBA_ACCOUNT_SECONDARY = process.env.PW_API_UPDATE_PBA_ACCOUNT_SECONDARY || 'PBA44J5MNP';
-
-test.describe.skip('Playwright API positive: update pba', { tag: ['@update-pba', '@positive'] }, () => {
+test.describe('Playwright API positive: update pba', { tag: ['@update-pba', '@positive'] }, () => {
   test('PUT /api/updatePba accepts payment account updates', async ({ apiRequest }) => {
+    const setupTarget = await resolvePbaUpdateTarget(apiRequest, 1);
     const payload = {
-      paymentAccounts: [UPDATE_PBA_ACCOUNT_PRIMARY],
-      orgId: UPDATE_PBA_ORG_ID
+      paymentAccounts: setupTarget.paymentAccounts,
+      orgId: setupTarget.orgId
     };
 
     const response = await apiRequest.put('/api/updatePba', {
@@ -22,9 +20,10 @@ test.describe.skip('Playwright API positive: update pba', { tag: ['@update-pba',
   });
 
   test('PUT /api/updatePba accepts multiple payment account updates', async ({ apiRequest }) => {
+    const setupTarget = await resolvePbaUpdateTarget(apiRequest, 2);
     const payload = {
-      paymentAccounts: [UPDATE_PBA_ACCOUNT_PRIMARY, UPDATE_PBA_ACCOUNT_SECONDARY],
-      orgId: UPDATE_PBA_ORG_ID
+      paymentAccounts: setupTarget.paymentAccounts,
+      orgId: setupTarget.orgId
     };
 
     const response = await apiRequest.put('/api/updatePba', {

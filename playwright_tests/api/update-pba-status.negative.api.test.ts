@@ -1,11 +1,11 @@
 import { test, expect } from './helpers/api.fixtures';
 
-const UPDATE_PBA_ORG_ID = process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
+const UPDATE_PBA_TEST_ORG_ID = 'UPDATE_PBA_STATUS_TEST_ORG';
 
-test.describe.skip('Playwright API negative: update pba status', { tag: ['@update-pba-status', '@negative'] }, () => {
+test.describe('Playwright API negative: update pba status', { tag: ['@update-pba-status', '@negative'] }, () => {
   test('PUT /api/updatePba/status without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
-      orgId: UPDATE_PBA_ORG_ID,
+      orgId: UPDATE_PBA_TEST_ORG_ID,
       pbaNumbers: [{ pbaNumber: 'PBA123456', status: 'PENDING' }]
     };
 
@@ -35,7 +35,7 @@ test.describe.skip('Playwright API negative: update pba status', { tag: ['@updat
 
   test('PUT /api/updatePba/status with missing pbaNumbers returns error', async ({ apiRequest }) => {
     const payload = {
-      orgId: UPDATE_PBA_ORG_ID
+      orgId: UPDATE_PBA_TEST_ORG_ID
     };
 
     const response = await apiRequest.put('/api/updatePba/status', {
@@ -69,7 +69,7 @@ test.describe.skip('Playwright API negative: update pba status', { tag: ['@updat
 
   test('PUT /api/updatePba/status with invalid status value returns error', async ({ apiRequest }) => {
     const payload = {
-      orgId: UPDATE_PBA_ORG_ID,
+      orgId: UPDATE_PBA_TEST_ORG_ID,
       pbaNumbers: [{ pbaNumber: 'PBA123456', status: 'INVALID_STATUS' }]
     };
 

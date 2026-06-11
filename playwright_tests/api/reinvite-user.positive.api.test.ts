@@ -1,9 +1,6 @@
 import { test, expect } from './helpers/api.fixtures';
+import { provisionActiveOrganisation } from './helpers/organisations-write.helpers';
 import { resolveHeader } from './helpers/json-contracts';
-
-const USERS_ORG_ID = process.env.PW_API_USERS_ORG_ID || '2GIHJH9';
-const REINVITE_ORG_ID = process.env.PW_API_REINVITE_ORG_ID || USERS_ORG_ID;
-const REINVITE_EMAIL = process.env.PW_API_REINVITE_EMAIL || 'vam.mun1752@mailnesia.com';
 
 function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
   if (!contentType.toLowerCase().includes('application/json')) {
@@ -17,18 +14,23 @@ function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
   }
 }
 
-test.describe.skip('Playwright API positive: reinvite user', { tag: ['@reinvite-user', '@positive'] }, () => {
+test.describe('Playwright API positive: reinvite user', { tag: ['@reinvite-user', '@positive'] }, () => {
   test('POST /api/reinviteUser returns accepted or already-invited response', async ({ apiRequest }) => {
+    const provisioned = await provisionActiveOrganisation(apiRequest, {
+      firstName: 'Reinvite',
+      lastName: 'User'
+    });
+
     const payload = {
-      firstName: 'Vamshi',
-      lastName: 'Muniganti',
-      email: REINVITE_EMAIL,
+      firstName: provisioned.firstName,
+      lastName: provisioned.lastName,
+      email: provisioned.workEmailAddress,
       roles: ['pui-organisation-manager'],
       resendInvite: true
     };
 
     const response = await apiRequest.post('/api/reinviteUser', {
-      params: { organisationId: REINVITE_ORG_ID },
+      params: { organisationId: provisioned.organisationId },
       data: payload,
       failOnStatusCode: false
     });

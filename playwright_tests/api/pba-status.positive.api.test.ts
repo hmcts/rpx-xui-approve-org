@@ -1,3 +1,4 @@
+import type { APIRequestContext } from '@playwright/test';
 import { test, expect } from './helpers/api.fixtures';
 import { resolveHeader, searchEnvelopeShapeErrors } from './helpers/json-contracts';
 import {
@@ -9,23 +10,68 @@ import {
 
 const statusValues = ['PENDING', 'ACCEPTED'] as const;
 const searchStatus = 'PENDING' as const;
+
+type PbaStatusListResult = {
+  contentType: string;
+  httpStatus: number;
+  payload: unknown;
+  rawBody: string;
+};
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
+  if (!contentType.toLowerCase().includes('application/json')) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawBody);
+  } catch {
+    return null;
+  }
+}
+
+async function getPbaStatusList(apiRequest: APIRequestContext, statusValue: string): Promise<PbaStatusListResult> {
+  let lastResult: PbaStatusListResult | null = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    const response = await apiRequest.get(`/api/pba/status/${statusValue}`, { failOnStatusCode: false });
+    const httpStatus = response.status();
+    const contentType = resolveHeader(response.headers(), 'content-type');
+    const rawBody = await response.text();
+    const payload = parseJsonIfPresent(contentType, rawBody);
+    const result = { contentType, httpStatus, payload, rawBody };
+
+    if (httpStatus === 200 && Array.isArray(payload)) {
+      return result;
+    }
+
+    lastResult = result;
+    await sleep(500 * attempt);
+  }
+
+  return lastResult as PbaStatusListResult;
+}
+
 test.describe('Playwright API positive: pba status', { tag: ['@pba-status', '@positive'] }, () => {
   for (const statusValue of statusValues) {
     test(`GET /api/pba/status/${statusValue} returns a list`, async ({ apiRequest }) => {
-      const response = await apiRequest.get(`/api/pba/status/${statusValue}`, { failOnStatusCode: false });
-      const httpStatus = response.status();
+      const result = await getPbaStatusList(apiRequest, statusValue);
+      const httpStatus = result.httpStatus;
       expect(
         httpStatus,
-        `Expected 200 from GET /api/pba/status/${statusValue}. Received status=${httpStatus}`
+        `Expected 200 from GET /api/pba/status/${statusValue}. Received status=${httpStatus} body=${result.rawBody}`
       ).toBe(200);
 
-      const contentType = resolveHeader(response.headers(), 'content-type');
       expect(
-        contentType,
-        `Expected JSON content-type from GET /api/pba/status/${statusValue}. Received content-type=${contentType}`
+        result.contentType,
+        `Expected JSON content-type from GET /api/pba/status/${statusValue}. Received content-type=${result.contentType}`
       ).toContain('application/json');
 
-      const payload = await response.json();
+      const payload = result.payload;
       expect(
         Array.isArray(payload),
         `Expected array payload from GET /api/pba/status/${statusValue}. Received payloadType=${typeof payload}`

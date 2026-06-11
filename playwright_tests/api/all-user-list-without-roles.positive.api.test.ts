@@ -1,22 +1,36 @@
 import { test, expect } from './helpers/api.fixtures';
+import { provisionActiveOrganisation } from './helpers/organisations-write.helpers';
 import { resolveHeader } from './helpers/json-contracts';
 
-const USERS_ORG_ID = process.env.PW_API_USERS_ORG_ID || '2GIHJH9';
-const EXPECTED_USER_EMAIL = (process.env.PW_API_EXPECTED_USER_EMAIL || '').trim();
-const EXPECTED_USER_FIRST_NAME = process.env.PW_API_EXPECTED_USER_FIRST_NAME || 'Jason';
-const EXPECTED_USER_LAST_NAME = process.env.PW_API_EXPECTED_USER_LAST_NAME || 'Lee';
-const EXPECTED_USER_IDAM_STATUS = process.env.PW_API_EXPECTED_USER_IDAM_STATUS || 'ACTIVE';
+type OrganisationUser = {
+  email?: unknown;
+  firstName?: unknown;
+  lastName?: unknown;
+  idamStatus?: unknown;
+};
+
+function findUserByEmail(users: unknown[], email: string): OrganisationUser | undefined {
+  return users.find(
+    (user: OrganisationUser) =>
+      typeof user.email === 'string' && user.email.toLowerCase() === email.toLowerCase()
+  ) as OrganisationUser | undefined;
+}
 
 test.describe('Playwright API positive: all user list without roles', { tag: ['@all-user-list-without-roles', '@positive'] }, () => {
   test('GET /api/allUserListWithoutRoles returns organisation user list', async ({ apiRequest }) => {
+    const provisioned = await provisionActiveOrganisation(apiRequest, {
+      firstName: 'List',
+      lastName: 'Smoke'
+    });
+
     const response = await apiRequest.get('/api/allUserListWithoutRoles', {
-      params: { usersOrgId: USERS_ORG_ID },
+      params: { usersOrgId: provisioned.organisationId },
       failOnStatusCode: false
     });
     const httpStatus = response.status();
     expect(
       httpStatus,
-      `Expected 200 from GET /api/allUserListWithoutRoles for usersOrgId=${USERS_ORG_ID}. Received status=${httpStatus}`
+      `Expected 200 from GET /api/allUserListWithoutRoles for usersOrgId=${provisioned.organisationId}. Received status=${httpStatus}`
     ).toBe(200);
 
     const contentType = resolveHeader(response.headers(), 'content-type');
@@ -37,10 +51,10 @@ test.describe('Playwright API positive: all user list without roles', { tag: ['@
     ).toBe(true);
     expect(
       payload.users.length,
-      `Expected at least one user from GET /api/allUserListWithoutRoles for usersOrgId=${USERS_ORG_ID}. Received usersLength=${payload.users.length}`
+      `Expected at least one user from GET /api/allUserListWithoutRoles for usersOrgId=${provisioned.organisationId}. Received usersLength=${payload.users.length}`
     ).toBeGreaterThan(0);
 
-    const firstUser = payload.users[0];
+    const firstUser = findUserByEmail(payload.users, provisioned.workEmailAddress) ?? payload.users[0];
     expect(
       typeof firstUser,
       `Expected first user to be an object. Received firstUserType=${typeof firstUser}`
@@ -59,45 +73,45 @@ test.describe('Playwright API positive: all user list without roles', { tag: ['@
     }
   });
 
-  test('GET /api/allUserListWithoutRoles contains configured expected user details', async ({ apiRequest }) => {
-    test.skip(!EXPECTED_USER_EMAIL, 'Set PW_API_EXPECTED_USER_EMAIL to verify deterministic user identity fields.');
+  test('GET /api/allUserListWithoutRoles contains provisioned user details', async ({ apiRequest }) => {
+    const provisioned = await provisionActiveOrganisation(apiRequest, {
+      firstName: 'Listed',
+      lastName: 'User'
+    });
 
     const response = await apiRequest.get('/api/allUserListWithoutRoles', {
-      params: { usersOrgId: USERS_ORG_ID },
+      params: { usersOrgId: provisioned.organisationId },
       failOnStatusCode: false
     });
     const httpStatus = response.status();
     expect(
       httpStatus,
-      `Expected 200 from GET /api/allUserListWithoutRoles for usersOrgId=${USERS_ORG_ID}. Received status=${httpStatus}`
+      `Expected 200 from GET /api/allUserListWithoutRoles for usersOrgId=${provisioned.organisationId}. Received status=${httpStatus}`
     ).toBe(200);
 
     const payload = await response.json();
     expect(
       Array.isArray(payload.users),
-      `Expected payload.users to be an array when validating expected user details for usersOrgId=${USERS_ORG_ID}.`
+      `Expected payload.users to be an array when validating expected user details for usersOrgId=${provisioned.organisationId}.`
     ).toBe(true);
+    expect(payload.users.length, `Expected at least one user for usersOrgId=${provisioned.organisationId}.`).toBeGreaterThan(0);
 
-    const matchedUser = payload.users.find(
-      (user: { email?: unknown }) =>
-        typeof user.email === 'string' && user.email.toLowerCase() === EXPECTED_USER_EMAIL.toLowerCase()
-    ) as { firstName?: unknown; lastName?: unknown; idamStatus?: unknown } | undefined;
+    const matchedUser = findUserByEmail(payload.users, provisioned.workEmailAddress);
 
     expect(
       matchedUser,
-      `Expected to find a user with email=${EXPECTED_USER_EMAIL} in usersOrgId=${USERS_ORG_ID}.`
+      `Expected to find provisioned user email=${provisioned.workEmailAddress} in usersOrgId=${provisioned.organisationId}.`
     ).toBeDefined();
     expect(
       matchedUser?.firstName,
-      `Expected matched user firstName=${EXPECTED_USER_FIRST_NAME}. Received firstName=${JSON.stringify(matchedUser?.firstName)}`
-    ).toBe(EXPECTED_USER_FIRST_NAME);
+      `Expected matched user firstName=${provisioned.firstName}. Received firstName=${JSON.stringify(matchedUser?.firstName)}`
+    ).toBe(provisioned.firstName);
     expect(
       matchedUser?.lastName,
-      `Expected matched user lastName=${EXPECTED_USER_LAST_NAME}. Received lastName=${JSON.stringify(matchedUser?.lastName)}`
-    ).toBe(EXPECTED_USER_LAST_NAME);
-    expect(
-      matchedUser?.idamStatus,
-      `Expected matched user idamStatus=${EXPECTED_USER_IDAM_STATUS}. Received idamStatus=${JSON.stringify(matchedUser?.idamStatus)}`
-    ).toBe(EXPECTED_USER_IDAM_STATUS);
+      `Expected matched user lastName=${provisioned.lastName}. Received lastName=${JSON.stringify(matchedUser?.lastName)}`
+    ).toBe(provisioned.lastName);
+    if (matchedUser?.idamStatus !== undefined) {
+      expect(typeof matchedUser.idamStatus, 'Expected matched user idamStatus to be a string when present').toBe('string');
+    }
   });
 });

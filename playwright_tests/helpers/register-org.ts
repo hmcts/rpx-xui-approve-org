@@ -1,4 +1,5 @@
-import type { BrowserContext, Page } from '@playwright/test';
+import { request as playwrightRequest } from '@playwright/test';
+import type { APIRequestContext, BrowserContext, Page } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { config } from '../config/config';
 
@@ -8,6 +9,8 @@ export type RegisterOrganisationInput = {
   firstName?: string;
   lastName?: string;
   workEmailAddress?: string;
+  hasPBA?: boolean;
+  pbaNumbers?: string[];
 };
 
 export interface PBANumberModel {
@@ -17,6 +20,10 @@ export interface PBANumberModel {
   dateCreated?: string;
   dateAccepted?: string;
 }
+
+export type RegisterOrganisationResult = {
+  pbaNumbers: string[];
+};
 
 type RegisterOrganisationPayload = {
   companyName: string;
@@ -72,12 +79,23 @@ function generatePBANumbers(count: number = 3): PBANumberModel[] {
   });
 }
 
+function resolvePBANumbers(input: RegisterOrganisationInput): string[] {
+  const pbaNumbers = input.pbaNumbers ?? generatePBANumbers(2).map((pba) => pba.pbaNumber);
+  for (const pbaNumber of pbaNumbers) {
+    if (!PBA_NUMBER_PATTERN.test(pbaNumber)) {
+      throw new Error(`Invalid PBA number: ${pbaNumber}. Expected format PBA/pba followed by 7 alphanumeric characters.`);
+    }
+  }
+
+  return pbaNumbers;
+}
+
 function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): RegisterOrganisationPayload {
   const companyName = input.companyName ?? `${input.userName}`;
   const workEmailAddress = input.workEmailAddress ?? `${input.userName}@mailinator.com`;
   const firstName = input.firstName ?? 'Test';
   const lastName = input.lastName ?? 'User';
-  const pbaNumbers = generatePBANumbers(2);
+  const pbaNumbers = resolvePBANumbers(input);
   const addressLine1Seed = faker.string.numeric({ length: 4, allowLeadingZeros: true });
   const dxNumber = `DX ${faker.string.numeric({ length: 10, allowLeadingZeros: true })}`;
   const dxExchange = faker.string.numeric({ length: 18, allowLeadingZeros: true });
@@ -90,7 +108,7 @@ function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): Reg
     dxExchange,
     services: [{ key: 'AAA7', value: 'Damages' }],
     otherServices: null,
-    hasPBA: false,
+    hasPBA: input.hasPBA ?? false,
     contactDetails: {
       firstName,
       lastName,
@@ -115,7 +133,7 @@ function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): Reg
     regulators: [{ regulatorType: 'Not Applicable' }],
     hasIndividualRegisteredWithRegulator: false,
     individualRegulators: [],
-    pbaNumbers: pbaNumbers.map((pba) => pba.pbaNumber),
+    pbaNumbers,
     inInternationalMode: false,
     sraRegulated: true
   };
@@ -128,6 +146,94 @@ async function getXsrfToken(context: BrowserContext, url: string): Promise<strin
     throw new Error(`XSRF token cookie is missing for ${url}`);
   }
   return xsrfToken;
+}
+
+function parseCookieValue(setCookieHeader: string, cookieName: string): string | null {
+  const parts = setCookieHeader.split(';');
+  const [nameAndValue] = parts;
+  if (!nameAndValue) {
+    return null;
+  }
+
+  const separatorIndex = nameAndValue.indexOf('=');
+  if (separatorIndex <= 0) {
+    return null;
+  }
+
+  const name = nameAndValue.slice(0, separatorIndex).trim();
+  if (name !== cookieName) {
+    return null;
+  }
+
+  return nameAndValue.slice(separatorIndex + 1);
+}
+
+function getXsrfTokenFromSetCookieHeaders(setCookieHeaders: string[], url: string): string {
+  for (const setCookieHeader of setCookieHeaders) {
+    const value = parseCookieValue(setCookieHeader, 'XSRF-TOKEN');
+    if (value && value.trim().length > 0) {
+      return value;
+    }
+  }
+
+  throw new Error(`XSRF token cookie is missing for ${url}`);
+}
+
+async function registerOrganisationViaExternalRequest(
+  requestContext: APIRequestContext,
+  input: RegisterOrganisationInput
+): Promise<RegisterOrganisationResult> {
+  const registerPagePath = '/register-org-new/register';
+  const registerApiPath = '/external/register-org-new/register';
+  const registerPageUrl = new URL(registerPagePath, config.registerUrl).toString();
+  const origin = new URL(config.registerUrl).origin;
+
+  const pageResponse = await requestContext.get(registerPagePath, { failOnStatusCode: false });
+  if (!pageResponse.ok()) {
+    const pageBody = await pageResponse.text().catch(() => 'Unable to read response body');
+    throw new Error(`Unable to load register organisation page (${pageResponse.status()}): ${pageBody}`);
+  }
+
+  const setCookieHeaders = pageResponse
+    .headersArray()
+    .filter((header) => header.name.toLowerCase() === 'set-cookie')
+    .map((header) => header.value);
+  const xsrfToken = getXsrfTokenFromSetCookieHeaders(setCookieHeaders, registerPageUrl);
+  const payload = buildRegisterOrganisationPayload(input);
+
+  const response = await requestContext.post(registerApiPath, {
+    failOnStatusCode: false,
+    headers: {
+      accept: 'application/json, text/plain, */*',
+      'content-type': 'application/json',
+      'x-xsrf-token': xsrfToken,
+      origin,
+      referer: `${origin}/`
+    },
+    data: payload
+  });
+
+  if (!response.ok()) {
+    const responseBody = await response.text().catch(() => 'Unable to read response body');
+    throw new Error(`Register organisation request failed (${response.status()}): ${responseBody}`);
+  }
+
+  return {
+    pbaNumbers: payload.pbaNumbers
+  };
+}
+
+export async function registerOrganisationViaExternalApi(input: RegisterOrganisationInput): Promise<RegisterOrganisationResult> {
+  const requestContext = await playwrightRequest.newContext({
+    baseURL: config.registerUrl,
+    ignoreHTTPSErrors: true
+  });
+
+  try {
+    return await registerOrganisationViaExternalRequest(requestContext, input);
+  } finally {
+    await requestContext.dispose();
+  }
 }
 
 export async function registerOrganisationViaExternalEndpoint(page: Page, input: RegisterOrganisationInput): Promise<void> {

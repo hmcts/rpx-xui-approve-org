@@ -1,13 +1,18 @@
 import { test, expect } from './helpers/api.fixtures';
+import { resolvePbaStatusUpdateTarget } from './helpers/pba-test-data.helpers';
 
-const UPDATE_PBA_ORG_ID = process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
-
-test.describe.skip('Playwright API positive: update pba status', { tag: ['@update-pba-status', '@positive'] }, () => {
+test.describe('Playwright API positive: update pba status', { tag: ['@update-pba-status', '@positive'] }, () => {
   test('PUT /api/updatePba/status sets status for pba numbers', async ({ apiRequest }) => {
+    const setupTarget = await resolvePbaStatusUpdateTarget(apiRequest);
+    test.skip(
+      !setupTarget,
+      'No exposed setup flow creates an active provisioned organisation with pending PBAs; skipping instead of using ambient AAT PBA data.'
+    );
+
     const payload = {
-      orgId: UPDATE_PBA_ORG_ID,
+      orgId: setupTarget.orgId,
       pbaNumbers: [
-        { pbaNumber: 'PBA123456', status: 'PENDING' }
+        { pbaNumber: setupTarget.pbaNumber, status: 'ACCEPTED', statusMessage: '' }
       ]
     };
 
