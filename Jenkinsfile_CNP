@@ -53,7 +53,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@DTSPO-30107-jenkins-agents")
+@Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
