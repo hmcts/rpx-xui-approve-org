@@ -119,7 +119,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async clickBackLink(): Promise<void> {
-    await this.page.getByRole('link', { name: /^Back$/ }).click();
+    await this.page.getByRole('link', { name: /^Back$/ }).first().click();
   }
 
   async openFirstActiveOrganisation(): Promise<void> {

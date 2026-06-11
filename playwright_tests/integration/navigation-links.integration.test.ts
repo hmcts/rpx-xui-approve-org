@@ -1,8 +1,8 @@
 import { test, expect } from './helpers/integration.fixtures';
 import { setupNavigationLinksIntegrationPage } from './helpers/navigation-links.helpers';
 
-const pendingListUrlPattern = /\/organisation\/pending(?:\/?|\?.*)$/;
-const activeListUrlPattern = /\/organisation\/active(?:\/?|\?.*)$/;
+const pendingListUrlPattern = /\/(?:organisation\/pending|pending-organisations)(?:\/?|\?.*)$/;
+const activeListUrlPattern = /\/(?:organisation\/active|active-organisation)(?:\/?|\?.*)$/;
 
 test.describe('Playwright integration: organisation backlink navigation', {
   tag: ['@integration', '@organisations', '@navigation-links']
@@ -21,10 +21,8 @@ test.describe('Playwright integration: organisation backlink navigation', {
     await expect(page).toHaveURL(new RegExp(`/organisation-details/${pendingOrganisationId}`));
     await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
 
-    await Promise.all([
-      page.waitForURL(pendingListUrlPattern),
-      organisationApprovalsPage.clickBackLink()
-    ]);
+    await organisationApprovalsPage.clickBackLink();
+    await expect(page).toHaveURL(pendingListUrlPattern);
 
     await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingOrganisationName).first()).toBeVisible();
   });
@@ -44,10 +42,8 @@ test.describe('Playwright integration: organisation backlink navigation', {
     await expect(page).toHaveURL(new RegExp(`/organisation-details/${activeOrganisationId}`));
     await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
 
-    await Promise.all([
-      page.waitForURL(activeListUrlPattern),
-      organisationApprovalsPage.clickBackLink()
-    ]);
+    await organisationApprovalsPage.clickBackLink();
+    await expect(page).toHaveURL(activeListUrlPattern);
 
     await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeOrganisationName).first()).toBeVisible();
   });
@@ -71,10 +67,8 @@ test.describe('Playwright integration: organisation backlink navigation', {
     await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
     await expect(page).toHaveURL(/\/approve-organisations(?:\/?|\?.*)$/);
 
-    await Promise.all([
-      page.waitForURL(new RegExp(`/organisation-details/${pendingOrganisationId}`)),
-      organisationApprovalsPage.clickBackLink()
-    ]);
+    await organisationApprovalsPage.clickBackLink();
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${pendingOrganisationId}`));
 
     await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
   });
@@ -98,10 +92,8 @@ test.describe('Playwright integration: organisation backlink navigation', {
     await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
     await expect(page).toHaveURL(/\/delete-organisation(?:\/?|\?.*)$/);
 
-    await Promise.all([
-      page.waitForURL(new RegExp(`/organisation-details/${activeOrganisationId}`)),
-      organisationApprovalsPage.clickBackLink()
-    ]);
+    await organisationApprovalsPage.clickBackLink();
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${activeOrganisationId}`));
 
     await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
   });
@@ -123,10 +115,8 @@ test.describe('Playwright integration: organisation backlink navigation', {
     await organisationApprovalsPage.openUsersTab();
     await expect(organisationApprovalsPage.usersList).toBeVisible();
 
-    await Promise.all([
-      page.waitForURL(activeListUrlPattern),
-      organisationApprovalsPage.clickBackLink()
-    ]);
+    await organisationApprovalsPage.clickBackLink();
+    await expect(page).toHaveURL(activeListUrlPattern);
 
     await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeOrganisationName).first()).toBeVisible();
 
