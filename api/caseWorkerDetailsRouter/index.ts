@@ -23,10 +23,10 @@ async function caseWorkerDetailsRoute(req: any, res: express.Response): Promise<
     res.status(status);
     res.send(data);
   } catch (error) {
-    if (error.status) {
-      res.status(error.status);
+    if (error?.status) {
+      res.status(Number(error.status) || 500);
     }
-    if (error.data) {
+    if (error?.data) {
       res.send(error.data);
     }
   }
