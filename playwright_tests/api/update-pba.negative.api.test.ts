@@ -13,7 +13,7 @@ type UpdatePbaMalformedCase = {
 const UPDATE_PBA_MALFORMED_CASES: UpdatePbaMalformedCase[] = [
   {
     name: 'empty request body',
-    buildPayload: (organisationId) => ({}),
+    buildPayload: () => ({}),
     expectedStatuses: [400]
   },
   {

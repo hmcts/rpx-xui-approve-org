@@ -143,6 +143,48 @@ test.describe('Playwright API negative: reinvite user', { tag: ['@reinvite-user'
     }
   });
 
+  test('POST /api/reinviteUser for provisioned-org user returns throttled error', async ({ apiRequest }) => {
+    let organisationId: string | undefined;
+
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'Reinvite',
+        lastName: 'Throttled'
+      });
+      organisationId = provisioned.organisationId;
+      const payload = {
+        firstName: provisioned.firstName,
+        lastName: provisioned.lastName,
+        email: provisioned.workEmailAddress,
+        roles: ['pui-organisation-manager'],
+        resendInvite: true
+      };
+
+      const response = await apiRequest.post('/api/reinviteUser', {
+        params: { organisationId: provisioned.organisationId },
+        data: payload,
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        httpStatus,
+        `Expected 429 for provisioned reinvite user email=${provisioned.workEmailAddress}. Received status=${httpStatus}`
+      ).toBe(429);
+
+      const contentType = response.headers()['content-type'] ?? '';
+      const rawBody = await response.text();
+      expect(typeof rawBody).toBe('string');
+
+      const parsedBody = parseJsonIfPresent(contentType, rawBody);
+      if (parsedBody && typeof parsedBody === 'object') {
+        expect(parsedBody).toHaveProperty('apiStatusCode', 429);
+        expect(parsedBody).toHaveProperty('apiError');
+      }
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
+  });
+
   test('POST /api/reinviteUser for missing provisioned-org user returns 404', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 
