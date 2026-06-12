@@ -5,6 +5,7 @@
     "@update-pba",
     "@organisations",
     "@pending-decisions",
+    "@navigation-links",
     "@search",
     "@search-negative"
   ]
