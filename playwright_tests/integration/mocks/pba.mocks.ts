@@ -54,6 +54,19 @@ type UpdatePbaApiMockControl = {
   getLastPayload: () => UpdatePbaApiPayload | undefined;
 };
 
+type SetPbaStatusApiPayload = {
+  pbaNumbers: Array<{
+    pbaNumber: string;
+    status: string;
+    statusMessage: string;
+  }>;
+  orgId: string;
+};
+
+type SetPbaStatusApiMockControl = {
+  getLastPayload: () => SetPbaStatusApiPayload | undefined;
+};
+
 function normaliseSearchTerm(value: string | undefined): string {
   return (value ?? '').trim().toLowerCase();
 }
@@ -122,6 +135,36 @@ export async function setupUpdatePbaApiMock(
   await page.route('**/api/updatePba**', async (route, request) => {
     try {
       lastPayload = request.postDataJSON() as UpdatePbaApiPayload;
+    } catch {
+      lastPayload = undefined;
+    }
+
+    await route.fulfill({
+      status: state.status ?? 200,
+      contentType: 'application/json',
+      body: JSON.stringify(state.responseBody ?? { ok: true })
+    });
+  });
+
+  return {
+    getLastPayload: () => lastPayload
+  };
+}
+
+export async function setupSetPbaStatusApiMock(
+  page: Page,
+  state: UpdatePbaApiMockState = {}
+): Promise<SetPbaStatusApiMockControl> {
+  let lastPayload: SetPbaStatusApiPayload | undefined;
+
+  await page.route('**/api/pba/status', async (route, request) => {
+    if (request.method().toUpperCase() !== 'PUT') {
+      await route.fallback();
+      return;
+    }
+
+    try {
+      lastPayload = request.postDataJSON() as SetPbaStatusApiPayload;
     } catch {
       lastPayload = undefined;
     }
@@ -230,5 +273,15 @@ export function waitForUpdatePbaResponse(page: Page): Promise<Response> {
   return page.waitForResponse((response) => {
     const request = response.request();
     return request.method() === 'PUT' && request.url().includes('/api/updatePba') && response.status() < 500;
+  });
+}
+
+export function waitForSetPbaStatusResponse(page: Page): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method().toUpperCase() === 'PUT'
+      && request.url().includes('/api/pba/status')
+      && !request.url().includes('/api/pba/status/pending')
+      && response.status() < 500;
   });
 }

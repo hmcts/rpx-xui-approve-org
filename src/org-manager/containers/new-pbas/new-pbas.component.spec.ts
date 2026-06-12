@@ -124,4 +124,21 @@ describe('NewPBAsComponent', () => {
     const result = component.newPBAs.get('test');
     expect(result).toEqual('test value NEW');
   });
+
+  it('should set PBA status errors for the page wrapper', () => {
+    const errorHeader = {
+      header: 'There is a problem.',
+      items: [{
+        id: 'confirm-pba-heading',
+        message: 'PBA numbers must start with PBA/pba and be followed by 7 alphanumeric characters'
+      }],
+      isFromValid: false
+    };
+
+    component.setPbaStatusError(errorHeader);
+
+    component.pbaErrorsHeader$.subscribe((result) => {
+      expect(result).toEqual(errorHeader);
+    });
+  });
 });
