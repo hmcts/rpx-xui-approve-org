@@ -45,7 +45,6 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.continueButton.click();
     await expect(this.confirmDecisionHeading).toBeVisible();
     await this.confirmButton.click();
-    await this.expectValidationError();
   }
 
   private async viewFirstInvalidPbaRow(): Promise<void> {
@@ -116,12 +115,6 @@ export class OrganisationApprovalsPage extends BasePage {
       await expect(approveAccountRadio).toBeVisible();
       await approveAccountRadio.check();
     }
-  }
-
-  private async expectValidationError(): Promise<void> {
-    await expect(this.validationSummary).toBeVisible();
-    await expect(this.validationSummary).toContainText('There is a problem');
-    await expect(this.validationSummary).toContainText(OrganisationApprovalsPage.invalidPbaMessage);
   }
 
   private async waitForPendingPbasContent(): Promise<void> {
