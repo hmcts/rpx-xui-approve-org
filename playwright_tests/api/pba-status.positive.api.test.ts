@@ -8,8 +8,8 @@ import {
   toTotalRecordsNumber
 } from './helpers/search.helpers';
 
-const statusValues = ['PENDING', 'ACCEPTED'] as const;
-const searchStatus = 'PENDING' as const;
+const statusValues = ['PENDING', 'pending', 'ACCEPTED'] as const;
+const searchStatus = 'pending' as const;
 
 type PbaStatusListResult = {
   contentType: string;
@@ -91,7 +91,7 @@ test.describe('Playwright API positive: pba status', { tag: ['@pba-status', '@po
     });
   }
 
-  test('POST /api/pba/status/PENDING returns a search envelope (drill-down search)', async ({ apiRequest }) => {
+  test(`POST /api/pba/status/${searchStatus} returns a search envelope (drill-down search)`, async ({ apiRequest }) => {
     const xsrfHeaders = await getXsrfHeaders(apiRequest);
     const response = await apiRequest.post(`/api/pba/status/${searchStatus}`, {
       failOnStatusCode: false,
@@ -134,7 +134,7 @@ test.describe('Playwright API positive: pba status', { tag: ['@pba-status', '@po
     }
   });
 
-  test('POST /api/pba/status/PENDING returns a search envelope (without drill-down search)', async ({ apiRequest }) => {
+  test(`POST /api/pba/status/${searchStatus} returns a search envelope (without drill-down search)`, async ({ apiRequest }) => {
     const xsrfHeaders = await getXsrfHeaders(apiRequest);
     const response = await apiRequest.post(`/api/pba/status/${searchStatus}`, {
       failOnStatusCode: false,

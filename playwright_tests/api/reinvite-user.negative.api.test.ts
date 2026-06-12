@@ -1,5 +1,5 @@
 import { test, expect } from './helpers/api.fixtures';
-import { provisionActiveOrganisation } from './helpers/organisations-write.helpers';
+import { cleanupProvisionedOrganisation, provisionActiveOrganisation } from './helpers/organisations-write.helpers';
 import { createMissingReinviteEmail } from './helpers/reinvite-user.helpers';
 
 const UNAUTHENTICATED_ORG_ID = 'UNAUTHENTICATED_REINVITE_ORG';
@@ -52,109 +52,137 @@ test.describe('Playwright API negative: reinvite user', { tag: ['@reinvite-user'
   });
 
   test('POST /api/reinviteUser with missing required fields returns error', async ({ apiRequest }) => {
-    const provisioned = await provisionActiveOrganisation(apiRequest, {
-      firstName: 'Reinvite',
-      lastName: 'MissingFields'
-    });
-    const payload = {
-      // Missing firstName, lastName, email, roles
-      resendInvite: true
-    };
+    let organisationId: string | undefined;
 
-    const response = await apiRequest.post('/api/reinviteUser', {
-      params: { organisationId: provisioned.organisationId },
-      data: payload,
-      failOnStatusCode: false
-    });
-    const httpStatus = response.status();
-    expect(
-      httpStatus,
-      `Expected error status for missing required fields. Received status=${httpStatus}`
-    ).toBeGreaterThanOrEqual(400);
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'Reinvite',
+        lastName: 'MissingFields'
+      });
+      organisationId = provisioned.organisationId;
+      const payload = {
+        // Missing firstName, lastName, email, roles
+        resendInvite: true
+      };
+
+      const response = await apiRequest.post('/api/reinviteUser', {
+        params: { organisationId: provisioned.organisationId },
+        data: payload,
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        httpStatus,
+        `Expected error status for missing required fields. Received status=${httpStatus}`
+      ).toBeGreaterThanOrEqual(400);
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
   });
 
   test('POST /api/reinviteUser without organisationId parameter returns error', async ({ apiRequest }) => {
-    const provisioned = await provisionActiveOrganisation(apiRequest, {
-      firstName: 'Reinvite',
-      lastName: 'NoOrgId'
-    });
-    const payload = {
-      firstName: provisioned.firstName,
-      lastName: provisioned.lastName,
-      email: provisioned.workEmailAddress,
-      roles: ['pui-organisation-manager'],
-      resendInvite: true
-    };
+    let organisationId: string | undefined;
 
-    const response = await apiRequest.post('/api/reinviteUser', {
-      data: payload,
-      failOnStatusCode: false
-    });
-    const httpStatus = response.status();
-    expect(
-      httpStatus,
-      `Expected error status when organisationId parameter is missing. Received status=${httpStatus}`
-    ).toBeGreaterThanOrEqual(400);
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'Reinvite',
+        lastName: 'NoOrgId'
+      });
+      organisationId = provisioned.organisationId;
+      const payload = {
+        firstName: provisioned.firstName,
+        lastName: provisioned.lastName,
+        email: provisioned.workEmailAddress,
+        roles: ['pui-organisation-manager'],
+        resendInvite: true
+      };
+
+      const response = await apiRequest.post('/api/reinviteUser', {
+        data: payload,
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        httpStatus,
+        `Expected error status when organisationId parameter is missing. Received status=${httpStatus}`
+      ).toBeGreaterThanOrEqual(400);
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
   });
 
   test('POST /api/reinviteUser with invalid email format returns error', async ({ apiRequest }) => {
-    const provisioned = await provisionActiveOrganisation(apiRequest, {
-      firstName: 'Reinvite',
-      lastName: 'InvalidEmail'
-    });
-    const payload = {
-      firstName: 'Test',
-      lastName: 'User',
-      email: 'not-a-valid-email',
-      roles: ['pui-organisation-manager'],
-      resendInvite: true
-    };
+    let organisationId: string | undefined;
 
-    const response = await apiRequest.post('/api/reinviteUser', {
-      params: { organisationId: provisioned.organisationId },
-      data: payload,
-      failOnStatusCode: false
-    });
-    const httpStatus = response.status();
-    expect(
-      httpStatus,
-      `Expected error status for invalid email format. Received status=${httpStatus}`
-    ).toBeGreaterThanOrEqual(400);
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'Reinvite',
+        lastName: 'InvalidEmail'
+      });
+      organisationId = provisioned.organisationId;
+      const payload = {
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'not-a-valid-email',
+        roles: ['pui-organisation-manager'],
+        resendInvite: true
+      };
+
+      const response = await apiRequest.post('/api/reinviteUser', {
+        params: { organisationId: provisioned.organisationId },
+        data: payload,
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        httpStatus,
+        `Expected error status for invalid email format. Received status=${httpStatus}`
+      ).toBeGreaterThanOrEqual(400);
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
   });
 
   test('POST /api/reinviteUser for missing provisioned-org user returns 404', async ({ apiRequest }) => {
-    const provisioned = await provisionActiveOrganisation(apiRequest, {
-      firstName: 'Reinvite',
-      lastName: 'MissingUser'
-    });
-    const missingUserEmail = createMissingReinviteEmail();
-    const payload = {
-      firstName: 'Missing',
-      lastName: 'User',
-      email: missingUserEmail,
-      roles: ['pui-organisation-manager'],
-      resendInvite: true
-    };
+    let organisationId: string | undefined;
 
-    const response = await apiRequest.post('/api/reinviteUser', {
-      params: { organisationId: provisioned.organisationId },
-      data: payload,
-      failOnStatusCode: false
-    });
-    const httpStatus = response.status();
-    expect(
-      httpStatus,
-      `Expected 404 for non-existent reinvite user email=${missingUserEmail}. Received status=${httpStatus}`
-    ).toBe(404);
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'Reinvite',
+        lastName: 'MissingUser'
+      });
+      organisationId = provisioned.organisationId;
+      const missingUserEmail = createMissingReinviteEmail();
+      const payload = {
+        firstName: 'Missing',
+        lastName: 'User',
+        email: missingUserEmail,
+        roles: ['pui-organisation-manager'],
+        resendInvite: true
+      };
 
-    const contentType = response.headers()['content-type'] ?? '';
-    const rawBody = await response.text();
-    expect(typeof rawBody).toBe('string');
+      const response = await apiRequest.post('/api/reinviteUser', {
+        params: { organisationId: provisioned.organisationId },
+        data: payload,
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        httpStatus,
+        `Expected 404 for non-existent reinvite user email=${missingUserEmail}. Received status=${httpStatus}`
+      ).toBe(404);
 
-    const parsedBody = parseJsonIfPresent(contentType, rawBody);
-    if (parsedBody && typeof parsedBody === 'object') {
-      expect(parsedBody).toHaveProperty('apiStatusCode', 404);
-      expect(parsedBody).toHaveProperty('apiError');
+      const contentType = response.headers()['content-type'] ?? '';
+      const rawBody = await response.text();
+      expect(typeof rawBody).toBe('string');
+
+      const parsedBody = parseJsonIfPresent(contentType, rawBody);
+      if (parsedBody && typeof parsedBody === 'object') {
+        expect(parsedBody).toHaveProperty('apiStatusCode', 404);
+        expect(parsedBody).toHaveProperty('apiError');
+      }
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
     }
   });
 });

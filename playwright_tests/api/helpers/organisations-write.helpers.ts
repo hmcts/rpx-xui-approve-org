@@ -2,6 +2,7 @@ import { randomBytes } from 'node:crypto';
 import type { APIRequestContext } from '@playwright/test';
 import { expect } from '@playwright/test';
 import { registerOrganisationViaExternalApi } from '../../helpers/register-org';
+import { createOrganisationSearchPayload, getXsrfHeaders } from './search.helpers';
 
 export type OrganisationRecord = {
   organisationIdentifier?: string;
@@ -12,6 +13,10 @@ export type OrganisationRecord = {
 type OrganisationListItem = {
   organisationIdentifier?: unknown;
   [key: string]: unknown;
+};
+
+type OrganisationSearchEnvelope = {
+  organisations?: unknown;
 };
 
 type ProvisionPendingOrganisationOptions = {
@@ -62,6 +67,21 @@ function extractOrganisationId(candidate: OrganisationListItem | null | undefine
   return orgId;
 }
 
+function extractOrganisationCandidates(payload: unknown): OrganisationListItem[] {
+  if (Array.isArray(payload)) {
+    return payload as OrganisationListItem[];
+  }
+
+  if (payload && typeof payload === 'object') {
+    const organisations = (payload as OrganisationSearchEnvelope).organisations;
+    if (Array.isArray(organisations)) {
+      return organisations as OrganisationListItem[];
+    }
+  }
+
+  return [];
+}
+
 async function registerPendingOrganisation(
   seed: string,
   firstName: string,
@@ -89,22 +109,30 @@ async function findPendingOrganisationBySeed(
   pollIntervalMs: number
 ): Promise<string | null> {
   const startTime = Date.now();
+  const xsrfHeaders = await getXsrfHeaders(apiRequest);
+  const searchPayload = createOrganisationSearchPayload({
+    view: 'NEW',
+    searchFilter: organisationSeed,
+    pageNumber: 1,
+    pageSize: 10
+  });
 
   while (Date.now() - startTime < timeoutMs) {
-    const response = await apiRequest.get('/api/organisations', {
-      params: { status: 'PENDING' },
+    const response = await apiRequest.post('/api/organisations', {
+      params: { status: 'PENDING,REVIEW' },
+      headers: xsrfHeaders,
+      data: searchPayload,
       failOnStatusCode: false
     });
 
     if (response.status() === 200) {
       const payload = await response.json();
-      if (Array.isArray(payload)) {
-        const matchedOrganisation = payload.find((candidate) => objectContainsSeed(candidate, organisationSeed)) as OrganisationListItem | undefined;
-        const organisationId = extractOrganisationId(matchedOrganisation);
+      const matchedOrganisation = extractOrganisationCandidates(payload)
+        .find((candidate) => objectContainsSeed(candidate, organisationSeed));
+      const organisationId = extractOrganisationId(matchedOrganisation);
 
-        if (organisationId) {
-          return organisationId;
-        }
+      if (organisationId) {
+        return organisationId;
       }
     }
 
@@ -214,4 +242,22 @@ export async function loadOrganisationById(
   }
 
   return payload as OrganisationRecord;
+}
+
+export async function cleanupProvisionedOrganisation(
+  apiRequest: APIRequestContext,
+  organisationId: string | null | undefined
+): Promise<void> {
+  if (!organisationId) {
+    return;
+  }
+
+  try {
+    await apiRequest.delete(`/api/organisations/${organisationId}`, {
+      data: {},
+      failOnStatusCode: false
+    });
+  } catch {
+    // Best-effort cleanup must not hide the test failure that triggered it.
+  }
 }

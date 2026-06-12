@@ -1,6 +1,12 @@
 import { test, expect } from './helpers/api.fixtures';
-import { provisionActiveOrganisation } from './helpers/organisations-write.helpers';
+import { cleanupProvisionedOrganisation, provisionActiveOrganisation } from './helpers/organisations-write.helpers';
 import { resolveHeader } from './helpers/json-contracts';
+
+type ReinviteSuccessResponse = {
+  apiError?: unknown;
+  apiStatusCode?: unknown;
+  message?: unknown;
+};
 
 function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
   if (!contentType.toLowerCase().includes('application/json')) {
@@ -15,35 +21,48 @@ function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
 }
 
 test.describe('Playwright API positive: reinvite user', { tag: ['@reinvite-user', '@positive'] }, () => {
-  test('POST /api/reinviteUser returns accepted or already-invited response', async ({ apiRequest }) => {
-    const provisioned = await provisionActiveOrganisation(apiRequest, {
-      firstName: 'Reinvite',
-      lastName: 'User'
-    });
+  test('POST /api/reinviteUser returns accepted response', async ({ apiRequest }) => {
+    let organisationId: string | undefined;
 
-    const payload = {
-      firstName: provisioned.firstName,
-      lastName: provisioned.lastName,
-      email: provisioned.workEmailAddress,
-      roles: ['pui-organisation-manager'],
-      resendInvite: true
-    };
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'Reinvite',
+        lastName: 'User'
+      });
+      organisationId = provisioned.organisationId;
 
-    const response = await apiRequest.post('/api/reinviteUser', {
-      params: { organisationId: provisioned.organisationId },
-      data: payload,
-      failOnStatusCode: false
-    });
-    expect([200, 429]).toContain(response.status());
+      const payload = {
+        firstName: provisioned.firstName,
+        lastName: provisioned.lastName,
+        email: provisioned.workEmailAddress,
+        roles: ['pui-organisation-manager'],
+        resendInvite: true
+      };
 
-    const contentType = resolveHeader(response.headers(), 'content-type');
-    const rawBody = await response.text();
-    expect(typeof rawBody).toBe('string');
+      const response = await apiRequest.post('/api/reinviteUser', {
+        params: { organisationId: provisioned.organisationId },
+        data: payload,
+        failOnStatusCode: false
+      });
+      expect(response.status()).toBe(200);
 
-    const parsedBody = parseJsonIfPresent(contentType, rawBody);
-    if (parsedBody && typeof parsedBody === 'object' && response.status() === 429) {
-      expect(parsedBody).toHaveProperty('apiStatusCode');
-      expect(parsedBody).toHaveProperty('apiError');
+      const contentType = resolveHeader(response.headers(), 'content-type');
+      const rawBody = await response.text();
+      expect(typeof rawBody).toBe('string');
+
+      const parsedBody = parseJsonIfPresent(contentType, rawBody);
+      expect(parsedBody, `Expected JSON success body from POST /api/reinviteUser. Received body=${rawBody}`).toBeTruthy();
+      expect(typeof parsedBody, `Expected success body to be an object. Received body=${rawBody}`).toBe('object');
+
+      const successBody = parsedBody as ReinviteSuccessResponse;
+      expect(successBody).not.toHaveProperty('apiStatusCode');
+      expect(successBody).not.toHaveProperty('apiError');
+      expect(
+        successBody.message,
+        `Expected reinvite success body to include a string message. Received body=${rawBody}`
+      ).toEqual(expect.any(String));
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
     }
   });
 });

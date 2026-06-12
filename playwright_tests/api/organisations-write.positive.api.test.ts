@@ -1,5 +1,6 @@
 import { test, expect } from './helpers/api.fixtures';
 import {
+  cleanupProvisionedOrganisation,
   loadOrganisationById,
   provisionPendingOrganisation,
   type OrganisationRecord
@@ -7,74 +8,92 @@ import {
 
 test.describe('Playwright API positive: organisations write', { tag: ['@organisations-write', '@positive'] }, () => {
   test('PUT /api/organisations/:id approves a pending organisation', async ({ apiRequest }) => {
-    const provisioned = await provisionPendingOrganisation(apiRequest);
-    const organisationId = provisioned.organisationId;
-    const sourceOrganisation = await loadOrganisationById(apiRequest, organisationId);
-    expect(sourceOrganisation, `Unable to load organisation payload for id=${organisationId}.`).toBeTruthy();
+    let organisationId: string | undefined;
 
-    const updatePayload: OrganisationRecord = {
-      ...sourceOrganisation,
-      status: 'ACTIVE'
-    };
+    try {
+      const provisioned = await provisionPendingOrganisation(apiRequest);
+      organisationId = provisioned.organisationId;
+      const sourceOrganisation = await loadOrganisationById(apiRequest, organisationId);
+      expect(sourceOrganisation, `Unable to load organisation payload for id=${organisationId}.`).toBeTruthy();
 
-    const response = await apiRequest.put(`/api/organisations/${organisationId}`, {
-      data: updatePayload,
-      failOnStatusCode: false
-    });
+      const updatePayload: OrganisationRecord = {
+        ...sourceOrganisation,
+        status: 'ACTIVE'
+      };
 
-    expect(
-      response.status(),
-      `Expected 200 from PUT /api/organisations/${organisationId}. Received status=${response.status()}`
-    ).toBe(200);
+      const response = await apiRequest.put(`/api/organisations/${organisationId}`, {
+        data: updatePayload,
+        failOnStatusCode: false
+      });
+
+      expect(
+        response.status(),
+        `Expected 200 from PUT /api/organisations/${organisationId}. Received status=${response.status()}`
+      ).toBe(200);
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
   });
 
   test('DELETE /api/organisations/:id deletes a deletable pending organisation', async ({ apiRequest }) => {
-    const provisioned = await provisionPendingOrganisation(apiRequest);
-    const organisationId = provisioned.organisationId;
+    let organisationId: string | undefined;
 
-    const response = await apiRequest.delete(`/api/organisations/${organisationId}`, {
-      data: {},
-      failOnStatusCode: false
-    });
+    try {
+      const provisioned = await provisionPendingOrganisation(apiRequest);
+      organisationId = provisioned.organisationId;
 
-    expect(
-      response.status(),
-      `Expected 200 from DELETE /api/organisations/${organisationId}. Received status=${response.status()}`
-    ).toBe(200);
+      const response = await apiRequest.delete(`/api/organisations/${organisationId}`, {
+        data: {},
+        failOnStatusCode: false
+      });
 
-    const rawBody = await response.text();
-    expect(typeof rawBody, 'Expected delete route to return a serialised body or an empty string.').toBe('string');
+      expect(
+        response.status(),
+        `Expected 200 from DELETE /api/organisations/${organisationId}. Received status=${response.status()}`
+      ).toBe(200);
+
+      const rawBody = await response.text();
+      expect(typeof rawBody, 'Expected delete route to return a serialised body or an empty string.').toBe('string');
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
   });
 
   test('DELETE /api/organisations/:id deletes an active organisation created by the test', async ({ apiRequest }) => {
-    const provisioned = await provisionPendingOrganisation(apiRequest);
-    const sourceOrganisation = await loadOrganisationById(apiRequest, provisioned.organisationId);
-    expect(sourceOrganisation, `Unable to load organisation payload for id=${provisioned.organisationId}.`).toBeTruthy();
+    let organisationId: string | undefined;
 
-    const activateResponse = await apiRequest.put(`/api/organisations/${provisioned.organisationId}`, {
-      data: {
-        ...sourceOrganisation,
-        status: 'ACTIVE'
-      },
-      failOnStatusCode: false
-    });
-    expect(
-      activateResponse.status(),
-      `Expected 200 from PUT /api/organisations/${provisioned.organisationId} during active-delete setup. Received status=${activateResponse.status()}`
-    ).toBe(200);
+    try {
+      const provisioned = await provisionPendingOrganisation(apiRequest);
+      organisationId = provisioned.organisationId;
+      const sourceOrganisation = await loadOrganisationById(apiRequest, provisioned.organisationId);
+      expect(sourceOrganisation, `Unable to load organisation payload for id=${provisioned.organisationId}.`).toBeTruthy();
 
-    const organisationId = provisioned.organisationId;
-    const response = await apiRequest.delete(`/api/organisations/${organisationId}`, {
-      data: {},
-      failOnStatusCode: false
-    });
+      const activateResponse = await apiRequest.put(`/api/organisations/${provisioned.organisationId}`, {
+        data: {
+          ...sourceOrganisation,
+          status: 'ACTIVE'
+        },
+        failOnStatusCode: false
+      });
+      expect(
+        activateResponse.status(),
+        `Expected 200 from PUT /api/organisations/${provisioned.organisationId} during active-delete setup. Received status=${activateResponse.status()}`
+      ).toBe(200);
 
-    expect(
-      response.status(),
-      `Expected 200 from DELETE /api/organisations/${organisationId}. Received status=${response.status()}`
-    ).toBe(200);
+      const response = await apiRequest.delete(`/api/organisations/${organisationId}`, {
+        data: {},
+        failOnStatusCode: false
+      });
 
-    const rawBody = await response.text();
-    expect(typeof rawBody, 'Expected delete route to return a serialised body or an empty string.').toBe('string');
+      expect(
+        response.status(),
+        `Expected 200 from DELETE /api/organisations/${organisationId}. Received status=${response.status()}`
+      ).toBe(200);
+
+      const rawBody = await response.text();
+      expect(typeof rawBody, 'Expected delete route to return a serialised body or an empty string.').toBe('string');
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
   });
 });
