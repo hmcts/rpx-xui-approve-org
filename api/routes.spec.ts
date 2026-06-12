@@ -2,6 +2,22 @@ import { expect } from './test/shared/testSetup';
 import 'mocha';
 import * as sinon from 'sinon';
 
+function layerMatchesPath(layer: any, path: string): boolean {
+  if (layer.slash || layer.regexp?.fast_slash) {
+    return false;
+  }
+
+  if (typeof layer.match === 'function') {
+    return layer.match(path);
+  }
+
+  return Boolean(layer.regexp?.test(path));
+}
+
+function hasMountedPath(router: any, path: string): boolean {
+  return router.stack.some((layer) => layerMatchesPath(layer, path));
+}
+
 describe('routes', () => {
   let mockXuiNode: any;
 
@@ -35,7 +51,8 @@ describe('routes', () => {
 
       // First route should be environment (open route)
       const environmentRoute = router.stack[0];
-      expect(environmentRoute.regexp.source).to.include('environment');
+      expect(layerMatchesPath(environmentRoute, '/environment/config')).to.be.true;
+      expect(router.stack[1].handle).to.equal(mockXuiNode.authenticate);
     });
 
     it('should use xuiNode authenticate middleware', () => {
@@ -51,51 +68,45 @@ describe('routes', () => {
 
       expect(router.stack.length).to.be.greaterThan(10);
 
-      const routePaths = router.stack.map((layer) => layer.regexp.source);
-      expect(routePaths.some((path) => path.includes('user'))).to.be.true;
-      expect(routePaths.some((path) => path.includes('decisions'))).to.be.true;
-      expect(routePaths.some((path) => path.includes('organisations'))).to.be.true;
-      expect(routePaths.some((path) => path.includes('pba'))).to.be.true;
+      expect(hasMountedPath(router, '/user/details')).to.be.true;
+      expect(hasMountedPath(router, '/decisions/states')).to.be.true;
+      expect(hasMountedPath(router, '/organisations')).to.be.true;
+      expect(hasMountedPath(router, '/pba/status/pending')).to.be.true;
     });
 
     it('should configure monitoring-tools route', () => {
       delete require.cache[require.resolve('./routes')];
       const router = require('./routes').default;
 
-      const routePaths = router.stack.map((layer) => layer.regexp.source);
-      expect(routePaths.some((path) => path.includes('monitoring-tools'))).to.be.true;
+      expect(hasMountedPath(router, '/monitoring-tools')).to.be.true;
     });
 
     it('should configure allUserListWithoutRoles route', () => {
       delete require.cache[require.resolve('./routes')];
       const router = require('./routes').default;
 
-      const routePaths = router.stack.map((layer) => layer.regexp.source);
-      expect(routePaths.some((path) => path.includes('allUserListWithoutRoles'))).to.be.true;
+      expect(hasMountedPath(router, '/allUserListWithoutRoles')).to.be.true;
     });
 
     it('should configure reinviteUser route', () => {
       delete require.cache[require.resolve('./routes')];
       const router = require('./routes').default;
 
-      const routePaths = router.stack.map((layer) => layer.regexp.source);
-      expect(routePaths.some((path) => path.includes('reinviteUser'))).to.be.true;
+      expect(hasMountedPath(router, '/reinviteUser')).to.be.true;
     });
 
     it('should configure caseworkerdetails route', () => {
       delete require.cache[require.resolve('./routes')];
       const router = require('./routes').default;
 
-      const routePaths = router.stack.map((layer) => layer.regexp.source);
-      expect(routePaths.some((path) => path.includes('caseworkerdetails'))).to.be.true;
+      expect(hasMountedPath(router, '/caseworkerdetails')).to.be.true;
     });
 
     it('should configure getLovRefData route', () => {
       delete require.cache[require.resolve('./routes')];
       const router = require('./routes').default;
 
-      const routePaths = router.stack.map((layer) => layer.regexp.source);
-      expect(routePaths.some((path) => path.includes('getLovRefData'))).to.be.true;
+      expect(hasMountedPath(router, '/getLovRefData')).to.be.true;
     });
   });
 });
