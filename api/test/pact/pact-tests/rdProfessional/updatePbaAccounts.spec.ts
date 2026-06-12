@@ -41,17 +41,16 @@ describe('Update the PBA for an organisation', async () => {
     it('Update an organisation`s PBA  and returns response', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId + '/pbas';
 
-      const resp = putOperation(taskUrl, mockRequest);
-      resp.then((response) => {
+      try {
+        const response = await putOperation(taskUrl, mockRequest);
         try {
           expect(response.status).to.be.equal(200);
         } catch (e) {
           console.log('error occurred in asserting response...' + e);
         }
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      } finally {
+        await pactSetUp.verifyAndFinalize();
+      }
     });
   });
 });

@@ -39,16 +39,12 @@ describe('Delete active Users of organistaion based on the showDeleted Flag ', a
 
     it('Delete users from organisation and return the correct response code', async () => {
       const taskUrl = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/${organisationId}`;
-      const response = deleteOperation(taskUrl);
-      response.then((axiosResponse) => {
+      try {
+        const axiosResponse = await deleteOperation(taskUrl);
         expect(axiosResponse.status).to.be.equal(204);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      }).finally(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      } finally {
+        await pactSetUp.verifyAndFinalize();
+      }
     });
   });
 });

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { idamGetUserDetails } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
+const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'idamApi_users', port: 8000 });
 
@@ -49,18 +49,13 @@ describe('Idam API user details', async () => {
 
     it('Returns the user details from IDAM', async () => {
       const taskUrl = `${pactSetUp.provider.mockService.baseUrl}/details`;
-      const response = idamGetUserDetails(taskUrl);
-
-      response.then((axiosResponse) => {
-        const dto: IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto>axiosResponse.data;
+      try {
+        const axiosResponse = await idamGetUserDetails(taskUrl);
+        const dto: IdamGetDetailsResponseDto = axiosResponse.data as IdamGetDetailsResponseDto;
         assertResponses(dto);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      }).finally(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      } finally {
+        await pactSetUp.verifyAndFinalize();
+      }
     });
   });
 });
