@@ -15,7 +15,7 @@ function resolveApiRetries(): number {
     return configured;
   }
 
-  return process.env.CI ? 1 : 3;
+  return 3;
 }
 
 function resolveApiWorkerCount(): number {
