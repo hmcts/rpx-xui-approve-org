@@ -35,7 +35,7 @@ module.exports = defineConfig({
         channel: 'chrome',
         headless: headlessMode,
         screenshot: 'only-on-failure',
-        trace: 'retain-on-failure',
+        trace: 'on-first-retry',
       },
     },
   ],
