@@ -78,9 +78,10 @@ test.describe('Playwright API negative: pba status', { tag: ['@pba-status', '@ne
   test('POST /api/pba/status/PENDING with malformed payload returns an error', async ({ apiRequest }) => {
     const response = await apiRequest.post('/api/pba/status/PENDING', {
       failOnStatusCode: false,
-      data: {
-        view: 'pending'
-      }
+      headers: {
+        'content-type': 'application/json'
+      },
+      data: '{"view":"pending"'
     });
 
     const httpStatus = response.status();

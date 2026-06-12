@@ -1,21 +1,34 @@
 import { test, expect } from './helpers/api.fixtures';
+import { provisionActiveOrganisation } from './helpers/organisations-write.helpers';
+import { createMissingReinviteEmail } from './helpers/reinvite-user.helpers';
 
-const USERS_ORG_ID = process.env.PW_API_USERS_ORG_ID || '2GIHJH9';
-const REINVITE_ORG_ID = process.env.PW_API_REINVITE_ORG_ID || USERS_ORG_ID;
-const REINVITE_EMAIL = process.env.PW_API_REINVITE_EMAIL || 'vam.mun1752@mailnesia.com';
+const UNAUTHENTICATED_ORG_ID = 'UNAUTHENTICATED_REINVITE_ORG';
+const UNAUTHENTICATED_EMAIL = createMissingReinviteEmail();
 
-test.describe.skip('Playwright API negative: reinvite user', { tag: ['@reinvite-user', '@negative'] }, () => {
+function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
+  if (!contentType.toLowerCase().includes('application/json')) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawBody);
+  } catch {
+    return null;
+  }
+}
+
+test.describe('Playwright API negative: reinvite user', { tag: ['@reinvite-user', '@negative'] }, () => {
   test('POST /api/reinviteUser without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
       firstName: 'Test',
       lastName: 'User',
-      email: REINVITE_EMAIL,
+      email: UNAUTHENTICATED_EMAIL,
       roles: ['pui-organisation-manager'],
       resendInvite: true
     };
 
     const response = await apiAnonymousRequest.post('/api/reinviteUser', {
-      params: { organisationId: REINVITE_ORG_ID },
+      params: { organisationId: UNAUTHENTICATED_ORG_ID },
       data: payload,
       failOnStatusCode: false
     });
@@ -39,13 +52,17 @@ test.describe.skip('Playwright API negative: reinvite user', { tag: ['@reinvite-
   });
 
   test('POST /api/reinviteUser with missing required fields returns error', async ({ apiRequest }) => {
+    const provisioned = await provisionActiveOrganisation(apiRequest, {
+      firstName: 'Reinvite',
+      lastName: 'MissingFields'
+    });
     const payload = {
       // Missing firstName, lastName, email, roles
       resendInvite: true
     };
 
     const response = await apiRequest.post('/api/reinviteUser', {
-      params: { organisationId: REINVITE_ORG_ID },
+      params: { organisationId: provisioned.organisationId },
       data: payload,
       failOnStatusCode: false
     });
@@ -57,10 +74,14 @@ test.describe.skip('Playwright API negative: reinvite user', { tag: ['@reinvite-
   });
 
   test('POST /api/reinviteUser without organisationId parameter returns error', async ({ apiRequest }) => {
+    const provisioned = await provisionActiveOrganisation(apiRequest, {
+      firstName: 'Reinvite',
+      lastName: 'NoOrgId'
+    });
     const payload = {
-      firstName: 'Test',
-      lastName: 'User',
-      email: REINVITE_EMAIL,
+      firstName: provisioned.firstName,
+      lastName: provisioned.lastName,
+      email: provisioned.workEmailAddress,
       roles: ['pui-organisation-manager'],
       resendInvite: true
     };
@@ -77,6 +98,10 @@ test.describe.skip('Playwright API negative: reinvite user', { tag: ['@reinvite-
   });
 
   test('POST /api/reinviteUser with invalid email format returns error', async ({ apiRequest }) => {
+    const provisioned = await provisionActiveOrganisation(apiRequest, {
+      firstName: 'Reinvite',
+      lastName: 'InvalidEmail'
+    });
     const payload = {
       firstName: 'Test',
       lastName: 'User',
@@ -86,7 +111,7 @@ test.describe.skip('Playwright API negative: reinvite user', { tag: ['@reinvite-
     };
 
     const response = await apiRequest.post('/api/reinviteUser', {
-      params: { organisationId: REINVITE_ORG_ID },
+      params: { organisationId: provisioned.organisationId },
       data: payload,
       failOnStatusCode: false
     });
@@ -95,5 +120,41 @@ test.describe.skip('Playwright API negative: reinvite user', { tag: ['@reinvite-
       httpStatus,
       `Expected error status for invalid email format. Received status=${httpStatus}`
     ).toBeGreaterThanOrEqual(400);
+  });
+
+  test('POST /api/reinviteUser for missing provisioned-org user returns 404', async ({ apiRequest }) => {
+    const provisioned = await provisionActiveOrganisation(apiRequest, {
+      firstName: 'Reinvite',
+      lastName: 'MissingUser'
+    });
+    const missingUserEmail = createMissingReinviteEmail();
+    const payload = {
+      firstName: 'Missing',
+      lastName: 'User',
+      email: missingUserEmail,
+      roles: ['pui-organisation-manager'],
+      resendInvite: true
+    };
+
+    const response = await apiRequest.post('/api/reinviteUser', {
+      params: { organisationId: provisioned.organisationId },
+      data: payload,
+      failOnStatusCode: false
+    });
+    const httpStatus = response.status();
+    expect(
+      httpStatus,
+      `Expected 404 for non-existent reinvite user email=${missingUserEmail}. Received status=${httpStatus}`
+    ).toBe(404);
+
+    const contentType = response.headers()['content-type'] ?? '';
+    const rawBody = await response.text();
+    expect(typeof rawBody).toBe('string');
+
+    const parsedBody = parseJsonIfPresent(contentType, rawBody);
+    if (parsedBody && typeof parsedBody === 'object') {
+      expect(parsedBody).toHaveProperty('apiStatusCode', 404);
+      expect(parsedBody).toHaveProperty('apiError');
+    }
   });
 });
