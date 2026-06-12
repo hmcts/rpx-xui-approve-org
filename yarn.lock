@@ -3620,12 +3620,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.57":
-  version: 7.3.57
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.57"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.58":
+  version: 7.3.58
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.58"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/daa488f9f06b5b498ea595ac8d7ac89fe4075e8102fc0eebe9657b8be61fd2b71a6794a1b103c872f0ef8641d6e5d96ea176fa3fe25c9f70dc694e9bb7318ffb
+  checksum: 10/ec643dd2f31c99077a7f3b237204e90a16554d6ff401ecb0e61516d552bb2d7d173d6c1c3357a917ad7c82943c0ee10958fa7a58eca91c3c10fa6b6c44a26cef
   languageName: node
   linkType: hard
 
@@ -3702,25 +3702,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.8":
-  version: 3.2.8
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.8"
+"@hmcts/rpx-xui-common-lib@npm:3.2.12":
+  version: 3.2.12
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.12"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/4e48b962f867ee137fca5415e6f465cc3c68ed7845a925565b423711a32e032ac8b3af39923439653f6200391f75f089ab49f795743e1ef0a11a934aafeee331
+    rpx-xui-translation: 1.2.4
+  checksum: 10/e2edab59f12e9c31635ccf74a5165f447908306cd3763a9d7065e40c3ca4762f0b05e5cdfbca98383cc47825fc742c9cf22f946c775be97712db47289a2ac6fd
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.15":
-  version: 2.30.15
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.15"
+"@hmcts/rpx-xui-node-lib@npm:2.30.16":
+  version: 2.30.16
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.16"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
-    axios: "npm:^1.11.0"
+    axios: "npm:^1.16.0"
     connect-redis: "npm:^4.0.4"
     debug: "npm:^4.3.7"
     deepmerge: "npm:^4.2.2"
@@ -3736,7 +3736,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/32c3ceddaa9edf90fd41dba0af9a860772a0b95c98f9606f58f1d3196547b8296b1cb41ca9cd32bacc8a2d8592c5244e9cc359d3e50dcf95edd01aaf1bfd7620
+  checksum: 10/54c774caffea0094ffb723045c276eab87a16ad48b423ee2cb71dbc328297b6c40ad0d77f069c9cc7e08f61a7362518d88d5706aa87b220cc2011e8919468456
   languageName: node
   linkType: hard
 
@@ -11001,7 +11001,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.11.0, axios@npm:^1.15.0":
+"axios@npm:^1.15.0, axios@npm:^1.16.0":
   version: 1.17.0
   resolution: "axios@npm:1.17.0"
   dependencies:
@@ -21285,12 +21285,12 @@ __metadata:
     "@angular/router": "npm:^20.3.18"
     "@cucumber/cucumber": "npm:^9.5.1"
     "@faker-js/faker": "npm:^10.4.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.57"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.58"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^0.0.13"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.8"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.15"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.12"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.16"
     "@microsoft/applicationinsights-web": "npm:^3.3.9"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
