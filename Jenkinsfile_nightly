@@ -28,9 +28,8 @@ properties([
         displayName  : 'Expert UI Approve Organisations',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org'
     ],
-    pipelineTriggers([
-    cron('H 07 * * 1-5')
-    ]),
+    // Keep master scheduled, but leave nightly-dev and PR branches manual-only.
+    pipelineTriggers(env.BRANCH_NAME == 'master' ? [cron('H 07 * * 1-5')] : []),
     parameters([
         string(
             name: e2ePwIncludeTagsEnvName,
