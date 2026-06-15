@@ -67,7 +67,7 @@ async function healthCheckRoute(req, res) {
   } catch (error) {
     console.log(error);
     logger.info('error', { healthState: false });
-    res.status(error.status).send({ healthState: false });
+    res.status(Number(error?.status) || 500).send({ healthState: false });
   }
 }
 export default router;

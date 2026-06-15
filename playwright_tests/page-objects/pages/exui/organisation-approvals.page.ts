@@ -21,8 +21,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
-  readonly confirmDecisionHeading = this.contentMain.locator('h1.govuk-heading-xl');
-  readonly confirmButton = this.contentMain.locator('button.govuk-button:not(.govuk-button--secondary):not(.govuk-button--warning)').first();
+  readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
+  readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
   readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
   readonly approveDecisionRadio = this.page.locator('#reason-0');
   readonly rejectDecisionRadio = this.page.locator('#reason-1');
@@ -47,6 +47,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly activeOrganisationsPanel = this.page.locator('app-prd-org-overview-component');
   readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
   readonly staffDetailsPageHeading = this.page.locator('app-prd-caseworker-details .govuk-heading-l');
+  readonly activeOrganisationRows = this.activeOrganisationsPanel.locator('table.active-organisations tr');
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
@@ -59,6 +60,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
     .locator('table.pending-organisations a.govuk-link[href*="/organisation-details/"]')
     .first();
+
+  readonly pendingPbaRows = this.pendingPbasPanel.locator('table.govuk-table tbody tr');
 
   readonly activeOrganisationViewLinkLocator = this.activeOrganisationsPanel
     .locator('table.active-organisations a.govuk-link[href*="/organisation-details/"]')
@@ -74,14 +77,6 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.pendingOrganisationViewLinkLocator;
   }
 
-  pendingOrganisationRowsByName(organisationName: string): Locator {
-    return this.pendingOrganisationRows.filter({ hasText: organisationName });
-  }
-
-  activeOrganisationViewLink(): Locator {
-    return this.activeOrganisationViewLinkLocator;
-  }
-
   pendingPbaViewLink(): Locator {
     return this.pendingPbaViewLinkLocator;
   }
@@ -90,8 +85,20 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.staffDetailsHeaderTabLocator;
   }
 
-  userUploadSurface(): Locator {
-    return this.userUploadSurfaceLocator;
+  pendingOrganisationRowsByName(organisationName: string): Locator {
+    return this.pendingOrganisationRows.filter({ hasText: organisationName });
+  }
+
+  activeOrganisationRowsByText(searchText: string): Locator {
+    return this.activeOrganisationRows.filter({ hasText: searchText });
+  }
+
+  activeOrganisationViewLink(): Locator {
+    return this.activeOrganisationViewLinkLocator;
+  }
+
+  pendingPbaRowsByText(searchText: string): Locator {
+    return this.pendingPbaRows.filter({ hasText: searchText });
   }
 
   successBanner(messageText: RegExp | string): Locator {
@@ -109,6 +116,16 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstPendingOrganisation(): Promise<void> {
     await this.pendingOrganisationViewLink().click();
+  }
+
+  async clickBackLink(): Promise<void> {
+    const roleBackLink = this.page.getByRole('link', { name: /^Back$/ }).first();
+    if (await roleBackLink.count()) {
+      await roleBackLink.click();
+      return;
+    }
+
+    await this.page.locator('a', { hasText: /^Back$/ }).first().click();
   }
 
   async openFirstActiveOrganisation(): Promise<void> {

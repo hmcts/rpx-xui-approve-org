@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, '../dist/organisation-manager'), { i
 /**
  * Used on server.ts only but should be fine to lift and shift to local.ts
  */
-app.use('/*', (req, res) => {
+app.use('/{*splat}', (req, res) => {
     console.time(`GET: ${req.originalUrl}`);
     res.render('../dist/organisation-manager/index', {
         providers: [{ provide: 'REQUEST', useValue: req }, { provide: 'RESPONSE', useValue: res }],

@@ -28,7 +28,7 @@ idamCheck()
     /**
      * Used on server.ts only but should be fine to lift and shift to local.ts
      */
-    app.use('/*', (req, res) => {
+    app.use('/{*splat}', (req, res) => {
       console.time(`GET: ${req.originalUrl}`);
       res.render('../index', {
         providers: [{ provide: 'REQUEST', useValue: req }, { provide: 'RESPONSE', useValue: res }],
@@ -38,7 +38,12 @@ idamCheck()
       console.timeEnd(`GET: ${req.originalUrl}`);
     });
 
-    app.listen(port, () => logger.info(`Local server up at ${port}`));
+    app.listen(port, (error?: Error) => {
+      if (error) {
+        throw error;
+      }
+      logger.info(`Local server up at ${port}`);
+    });
   })
   .catch((err) => {
     startupLogger.error('idam check failed after retries', err);
