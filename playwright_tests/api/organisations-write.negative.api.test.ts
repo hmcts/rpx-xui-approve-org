@@ -78,4 +78,35 @@ test.describe('Playwright API negative: organisations write', { tag: ['@organisa
       `Expected error status from DELETE /api/organisations/${invalidId}. Received status=${httpStatus}`
     ).toBeGreaterThanOrEqual(400);
   });
+
+  test('PUT /api/organisations/:id with blank id returns an error', async ({ apiRequest }) => {
+    const blankId = '%20';
+    const response = await apiRequest.put(`/api/organisations/${blankId}`, {
+      data: {
+        organisationIdentifier: ORGANISATION_ID,
+        status: 'ACTIVE'
+      },
+      failOnStatusCode: false
+    });
+
+    const httpStatus = response.status();
+    expect(
+      httpStatus,
+      `Expected error status from PUT /api/organisations/${blankId}. Received status=${httpStatus}`
+    ).toBeGreaterThanOrEqual(400);
+  });
+
+  test('DELETE /api/organisations/:id with blank id returns an error', async ({ apiRequest }) => {
+    const blankId = '%20';
+    const response = await apiRequest.delete(`/api/organisations/${blankId}`, {
+      data: {},
+      failOnStatusCode: false
+    });
+
+    const httpStatus = response.status();
+    expect(
+      httpStatus,
+      `Expected error status from DELETE /api/organisations/${blankId}. Received status=${httpStatus}`
+    ).toBeGreaterThanOrEqual(400);
+  });
 });

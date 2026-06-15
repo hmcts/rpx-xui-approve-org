@@ -175,4 +175,44 @@ test.describe('Playwright API positive: pba status', { tag: ['@pba-status', '@po
       expect(Object.keys(firstOrganisation).length).toBeGreaterThan(0);
     }
   });
+
+  test.skip('EXUI-4766 POST /api/pba/status without status returns a search envelope', async ({ apiRequest }) => {
+    const xsrfHeaders = await getXsrfHeaders(apiRequest);
+    const response = await apiRequest.post('/api/pba/status', {
+      failOnStatusCode: false,
+      headers: {
+        ...xsrfHeaders,
+        accept: 'application/json'
+      },
+      data: createPbaSearchPayload({
+        searchFilter: 'active',
+        pageNumber: 1,
+        pageSize: 10
+      })
+    });
+
+    const httpStatus = response.status();
+    expect(
+      httpStatus,
+      `Expected 200 from POST /api/pba/status without status. Received status=${httpStatus}`
+    ).toBe(200);
+
+    const contentType = resolveHeader(response.headers(), 'content-type');
+    expect(
+      contentType,
+      `Expected JSON content-type for POST /api/pba/status without status. Received content-type=${contentType}`
+    ).toContain('application/json');
+
+    const payload = await response.json();
+    const shapeErrors = searchEnvelopeShapeErrors(payload);
+    expect(
+      shapeErrors,
+      `Expected pba search envelope shape to be valid without status. shapeErrors=${JSON.stringify(shapeErrors)}`
+    ).toEqual([]);
+
+    const responsePayload = payload as { organisations: unknown[]; total_records: unknown };
+    const totalRecords = toTotalRecordsNumber(responsePayload.total_records);
+    expect(totalRecords, 'Expected total_records to be coercible to a finite number').not.toBeNull();
+    expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
+  });
 });

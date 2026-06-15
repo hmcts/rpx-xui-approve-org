@@ -80,6 +80,31 @@ test.describe('Playwright API negative: reinvite user', { tag: ['@reinvite-user'
     }
   });
 
+  test('POST /api/reinviteUser with empty payload returns error', async ({ apiRequest }) => {
+    let organisationId: string | undefined;
+
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'Reinvite',
+        lastName: 'EmptyPayload'
+      });
+      organisationId = provisioned.organisationId;
+
+      const response = await apiRequest.post('/api/reinviteUser', {
+        params: { organisationId: provisioned.organisationId },
+        data: {},
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        httpStatus,
+        `Expected error status for empty payload. Received status=${httpStatus}`
+      ).toBeGreaterThanOrEqual(400);
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
+  });
+
   test('POST /api/reinviteUser without organisationId parameter returns error', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 
@@ -143,7 +168,7 @@ test.describe('Playwright API negative: reinvite user', { tag: ['@reinvite-user'
     }
   });
 
-  test('POST /api/reinviteUser for provisioned-org user returns throttled error', async ({ apiRequest }) => {
+  test('POST /api/reinviteUser for provisioned-org user after registration returns throttled error', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 
     try {

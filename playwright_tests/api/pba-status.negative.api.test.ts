@@ -1,7 +1,8 @@
 import { test, expect } from './helpers/api.fixtures';
 import {
   createPbaSearchPayload,
-  DENIED_HTTP_STATUSES
+  DENIED_HTTP_STATUSES,
+  getXsrfHeaders
 } from './helpers/search.helpers';
 
 test.describe('Playwright API negative: pba status', { tag: ['@pba-status', '@negative'] }, () => {
@@ -89,5 +90,20 @@ test.describe('Playwright API negative: pba status', { tag: ['@pba-status', '@ne
       httpStatus,
       `Expected error status from malformed POST /api/pba/status/PENDING search payload. Received status=${httpStatus}`
     ).toBeGreaterThanOrEqual(400);
+  });
+
+  test('POST /api/pba/status/PENDING with empty payload returns an error', async ({ apiRequest }) => {
+    const xsrfHeaders = await getXsrfHeaders(apiRequest);
+    const response = await apiRequest.post('/api/pba/status/PENDING', {
+      failOnStatusCode: false,
+      headers: xsrfHeaders,
+      data: {}
+    });
+
+    const httpStatus = response.status();
+    expect(
+      httpStatus,
+      `Expected 500 from POST /api/pba/status/PENDING with empty payload. Received status=${httpStatus}`
+    ).toBe(500);
   });
 });

@@ -51,6 +51,19 @@ test.describe('Playwright API negative: update pba status', { tag: ['@update-pba
     ).toBeGreaterThanOrEqual(400);
   });
 
+  test('PUT /api/pba/status with empty payload returns error', async ({ apiRequest }) => {
+    const response = await apiRequest.put(PBA_STATUS_ENDPOINT, {
+      data: {},
+      failOnStatusCode: false
+    });
+
+    const httpStatus = response.status();
+    expect(
+      httpStatus,
+      `Expected error status for empty payload. Received status=${httpStatus}`
+    ).toBeGreaterThanOrEqual(400);
+  });
+
   test('PUT /api/pba/status with missing orgId returns error', async ({ apiRequest }) => {
     const payload = {
       pbaNumbers: [{ pbaNumber: 'PBA123456', status: 'accepted', statusMessage: '' }]

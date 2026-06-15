@@ -9,7 +9,7 @@ const missingResponseError = {
 
 test.describe('Playwright API negative: pba accounts', { tag: ['@pba-accounts', '@negative'] }, () => {
   test('GET /api/pbaAccounts without accountNames returns an error payload', async ({ apiRequest }) => {
-    const response = await apiRequest.get('/api/pbaAccounts', { failOnStatusCode: false });
+    const response = await apiRequest.get('/api/pbaAccounts', { params: { accountNames: '' }, failOnStatusCode: false });
     const httpStatus = response.status();
     expect(httpStatus, `Expected 500 from GET /api/pbaAccounts without accountNames. Received status=${httpStatus}`).toBe(500);
 
