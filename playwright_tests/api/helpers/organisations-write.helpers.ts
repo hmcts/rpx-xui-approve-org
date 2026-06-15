@@ -1,6 +1,5 @@
 import { randomBytes } from 'node:crypto';
 import type { APIRequestContext } from '@playwright/test';
-import { expect } from '@playwright/test';
 import { registerOrganisationViaExternalApi } from '../../helpers/register-org';
 import { createOrganisationSearchPayload, getXsrfHeaders } from './search.helpers';
 
@@ -140,13 +139,6 @@ async function findPendingOrganisationBySeed(
   }
 
   return null;
-}
-
-export function assertUnauthenticatedDenied(httpStatus: number, messageContext: string): void {
-  expect(
-    [302, 401, 403],
-    `Expected denied status to be one of 302/401/403 for ${messageContext}. Received status=${httpStatus}`
-  ).toContain(httpStatus);
 }
 
 export async function provisionPendingOrganisation(

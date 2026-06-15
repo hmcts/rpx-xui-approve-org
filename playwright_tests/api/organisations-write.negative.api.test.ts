@@ -1,5 +1,4 @@
 import { test, expect } from './helpers/api.fixtures';
-import { assertUnauthenticatedDenied } from './helpers/organisations-write.helpers';
 
 const ORGANISATION_ID = process.env.PW_API_ORGANISATION_ID || 'FWRJEOF';
 
@@ -15,7 +14,10 @@ test.describe('Playwright API negative: organisations write', { tag: ['@organisa
       response.ok(),
       `Expected unauthenticated PUT /api/organisations/${ORGANISATION_ID} to be denied. Received ok=${response.ok()} status=${httpStatus}`
     ).toBe(false);
-    assertUnauthenticatedDenied(httpStatus, 'unauthenticated organisation update request');
+    expect(
+      [302, 401, 403],
+      `Expected denied status to be one of 302/401/403 for unauthenticated organisation update request. Received status=${httpStatus}`
+    ).toContain(httpStatus);
 
     if (httpStatus === 302) {
       const location = response.headers().location ?? '';
@@ -37,7 +39,10 @@ test.describe('Playwright API negative: organisations write', { tag: ['@organisa
       response.ok(),
       `Expected unauthenticated DELETE /api/organisations/${ORGANISATION_ID} to be denied. Received ok=${response.ok()} status=${httpStatus}`
     ).toBe(false);
-    assertUnauthenticatedDenied(httpStatus, 'unauthenticated organisation delete request');
+    expect(
+      [302, 401, 403],
+      `Expected denied status to be one of 302/401/403 for unauthenticated organisation delete request. Received status=${httpStatus}`
+    ).toContain(httpStatus);
 
     if (httpStatus === 302) {
       const location = response.headers().location ?? '';
