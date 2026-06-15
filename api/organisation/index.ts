@@ -192,11 +192,12 @@ async function handleDeleteOrganisationRoute(req: EnhancedRequest, res: Response
       await req.http.delete(delOrganisationsUrl, req.body);
       res.status(200).send({ value: 'Resource deleted successfully' });
     } catch (error) {
+      const statusCode = Number(error?.status) || 500;
       const errReport = {
-        apiError: error.data.message, apiStatusCode: error.status,
+        apiError: error?.data?.message, apiStatusCode: statusCode,
         message: 'handleDeleteOrganisationRoute error'
       };
-      res.status(error.status).send(errReport);
+      res.status(statusCode).send(errReport);
     }
   }
 }
@@ -230,11 +231,12 @@ async function handleGetOrganisationDeletableStatusRoute(req: EnhancedRequest, r
         organisationDeletable
       });
     } catch (error) {
+      const statusCode = Number(error?.status) || 500;
       const errReport = {
-        apiError: error.data.message, apiStatusCode: error.status,
+        apiError: error?.data?.message, apiStatusCode: statusCode,
         message: 'handleGetOrganisationDeletableStatusRoute error'
       };
-      res.status(error.status).send(errReport);
+      res.status(statusCode).send(errReport);
     }
   }
 }

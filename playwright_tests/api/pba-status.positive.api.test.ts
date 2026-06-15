@@ -1,9 +1,15 @@
 import { test, expect } from './helpers/api.fixtures';
-import { resolveHeader } from './helpers/json-contracts';
+import { resolveHeader, searchEnvelopeShapeErrors } from './helpers/json-contracts';
+import {
+  createPbaSearchPayload,
+  getXsrfHeaders,
+  isSearchPostAllowedStatus,
+  toTotalRecordsNumber
+} from './helpers/search.helpers';
 
 const statusValues = ['PENDING', 'ACCEPTED'] as const;
-
-test.describe('Playwright API positive: pba status', () => {
+const searchStatus = 'PENDING' as const;
+test.describe('Playwright API positive: pba status', { tag: ['@pba-status', '@positive'] }, () => {
   for (const statusValue of statusValues) {
     test(`GET /api/pba/status/${statusValue} returns a list`, async ({ apiRequest }) => {
       const response = await apiRequest.get(`/api/pba/status/${statusValue}`, { failOnStatusCode: false });
@@ -38,4 +44,89 @@ test.describe('Playwright API positive: pba status', () => {
       }
     });
   }
+
+  test('POST /api/pba/status/PENDING returns a search envelope (drill-down search)', async ({ apiRequest }) => {
+    const xsrfHeaders = await getXsrfHeaders(apiRequest);
+    const response = await apiRequest.post(`/api/pba/status/${searchStatus}`, {
+      failOnStatusCode: false,
+      headers: xsrfHeaders,
+      data: createPbaSearchPayload({
+        searchFilter: 'active',
+        pageNumber: 1,
+        pageSize: 10,
+        drillDownSearch: [{ field_name: 'pbaPendings', search_filter: 'PBA' }]
+      })
+    });
+
+    const httpStatus = response.status();
+    expect(
+      isSearchPostAllowedStatus(httpStatus),
+      `Expected POST /api/pba/status/${searchStatus} to return 200. Received status=${httpStatus}`
+    ).toBe(true);
+
+    const contentType = resolveHeader(response.headers(), 'content-type');
+    expect(
+      contentType,
+      `Expected JSON content-type for POST /api/pba/status/${searchStatus}. Received content-type=${contentType}`
+    ).toContain('application/json');
+
+    const payload = await response.json();
+    const shapeErrors = searchEnvelopeShapeErrors(payload);
+    expect(
+      shapeErrors,
+      `Expected pba search envelope shape to be valid. shapeErrors=${JSON.stringify(shapeErrors)}`
+    ).toEqual([]);
+
+    const responsePayload = payload as { organisations: unknown[]; total_records: unknown };
+    const totalRecords = toTotalRecordsNumber(responsePayload.total_records);
+    expect(totalRecords, 'Expected total_records to be coercible to a finite number').not.toBeNull();
+    expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
+
+    const firstOrganisation = responsePayload.organisations[0] as Record<string, unknown> | undefined;
+    if (firstOrganisation && typeof firstOrganisation === 'object') {
+      expect(Object.keys(firstOrganisation).length).toBeGreaterThan(0);
+    }
+  });
+
+  test('POST /api/pba/status/PENDING returns a search envelope (without drill-down search)', async ({ apiRequest }) => {
+    const xsrfHeaders = await getXsrfHeaders(apiRequest);
+    const response = await apiRequest.post(`/api/pba/status/${searchStatus}`, {
+      failOnStatusCode: false,
+      headers: xsrfHeaders,
+      data: createPbaSearchPayload({
+        searchFilter: 'active',
+        pageNumber: 1,
+        pageSize: 10
+      })
+    });
+
+    const httpStatus = response.status();
+    expect(
+      isSearchPostAllowedStatus(httpStatus),
+      `Expected POST /api/pba/status/${searchStatus} to return 200. Received status=${httpStatus}`
+    ).toBe(true);
+
+    const contentType = resolveHeader(response.headers(), 'content-type');
+    expect(
+      contentType,
+      `Expected JSON content-type for POST /api/pba/status/${searchStatus}. Received content-type=${contentType}`
+    ).toContain('application/json');
+
+    const payload = await response.json();
+    const shapeErrors = searchEnvelopeShapeErrors(payload);
+    expect(
+      shapeErrors,
+      `Expected pba search envelope shape to be valid. shapeErrors=${JSON.stringify(shapeErrors)}`
+    ).toEqual([]);
+
+    const responsePayload = payload as { organisations: unknown[]; total_records: unknown };
+    const totalRecords = toTotalRecordsNumber(responsePayload.total_records);
+    expect(totalRecords, 'Expected total_records to be coercible to a finite number').not.toBeNull();
+    expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
+
+    const firstOrganisation = responsePayload.organisations[0] as Record<string, unknown> | undefined;
+    if (firstOrganisation && typeof firstOrganisation === 'object') {
+      expect(Object.keys(firstOrganisation).length).toBeGreaterThan(0);
+    }
+  });
 });
