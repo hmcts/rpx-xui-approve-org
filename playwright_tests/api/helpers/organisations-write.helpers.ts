@@ -37,6 +37,8 @@ export type ProvisionedOrganisation = {
   pbaNumbers: string[];
 };
 
+const CLEANUP_DELETE_ACCEPTED_STATUSES = [200, 404] as const;
+
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -244,12 +246,18 @@ export async function cleanupProvisionedOrganisation(
     return;
   }
 
-  try {
-    await apiRequest.delete(`/api/organisations/${organisationId}`, {
-      data: {},
-      failOnStatusCode: false
-    });
-  } catch {
-    // Best-effort cleanup must not hide the test failure that triggered it.
+  const response = await apiRequest.delete(`/api/organisations/${organisationId}`, {
+    data: {},
+    failOnStatusCode: false
+  });
+  const httpStatus = response.status();
+
+  if (!CLEANUP_DELETE_ACCEPTED_STATUSES.includes(httpStatus as typeof CLEANUP_DELETE_ACCEPTED_STATUSES[number])) {
+    const rawBody = await response.text().catch(() => 'Unable to read response body');
+    throw new Error(
+      `Unable to cleanup provisioned organisation id=${organisationId}. ` +
+      `Expected 200 from DELETE /api/organisations/${organisationId} or 404 for already-cleaned data, ` +
+      `received ${httpStatus} body=${rawBody}`
+    );
   }
 }

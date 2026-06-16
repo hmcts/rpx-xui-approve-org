@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { chromium, type APIRequestContext, type Browser, type Page } from '@playwright/test';
+import { config } from '../../config/config';
 import {
   loadOrganisationById,
   provisionPendingOrganisation
@@ -27,7 +28,8 @@ type ManageOrgOrganisationDetails = {
   status?: unknown;
 };
 
-const MANAGE_ORG_AAT_URL = 'https://manage-org.aat.platform.hmcts.net/';
+const HMCTS_SERVICE_HOST_PATTERN = /^(administer-orgs|xui-ao-webapp|manage-org)(?:-pr-(\d+))?\.(.+)$/;
+const MANAGE_ORG_URL = config.registerUrl.endsWith('/') ? config.registerUrl : `${config.registerUrl}/`;
 
 function generatePbaNumber(): string {
   const suffix = String(randomBytes(4).readUInt32BE(0) % 10000000).padStart(7, '0');
@@ -61,6 +63,31 @@ function asStringArray(value: unknown): string[] {
     : [];
 }
 
+function resolveEnvironmentKey(rawUrl: string): string {
+  const url = new URL(rawUrl);
+  const host = url.hostname.toLowerCase();
+  const hmctsServiceHost = HMCTS_SERVICE_HOST_PATTERN.exec(host);
+
+  if (!hmctsServiceHost) {
+    return url.origin.toLowerCase();
+  }
+
+  const [, , previewPrNumber, environmentHost] = hmctsServiceHost;
+  return `hmcts:${environmentHost}:pr:${previewPrNumber ?? ''}`;
+}
+
+function assertManageOrgMatchesApproveOrgEnvironment(): void {
+  const approveOrgEnvironment = resolveEnvironmentKey(config.baseUrl);
+  const manageOrgEnvironment = resolveEnvironmentKey(MANAGE_ORG_URL);
+
+  if (approveOrgEnvironment !== manageOrgEnvironment) {
+    throw new Error(
+      'Unable to setup pending PBAs because approve-org and Manage Org target different environments. ' +
+      `TEST_URL=${config.baseUrl} TEST_REGISTER_URL=${MANAGE_ORG_URL}`
+    );
+  }
+}
+
 async function launchBrowser(): Promise<Browser> {
   try {
     return await chromium.launch({ headless: true, channel: 'chrome' });
@@ -70,7 +97,7 @@ async function launchBrowser(): Promise<Browser> {
 }
 
 async function hasManageOrgApiSession(page: Page): Promise<boolean> {
-  const response = await page.request.get(new URL('api/organisation/v1', MANAGE_ORG_AAT_URL).toString(), {
+  const response = await page.request.get(new URL('api/organisation/v1', MANAGE_ORG_URL).toString(), {
     failOnStatusCode: false
   }).catch(() => null);
 
@@ -78,7 +105,7 @@ async function hasManageOrgApiSession(page: Page): Promise<boolean> {
 }
 
 async function signInToManageOrg(page: Page, credentials: ManageOrgCredentials): Promise<void> {
-  await page.goto(MANAGE_ORG_AAT_URL, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
+  await page.goto(MANAGE_ORG_URL, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
   if (await hasManageOrgApiSession(page)) {
     return;
   }
@@ -103,7 +130,7 @@ async function signInToManageOrg(page: Page, credentials: ManageOrgCredentials):
 
       await page.waitForLoadState('domcontentloaded').catch(() => undefined);
     } else {
-      await page.goto(MANAGE_ORG_AAT_URL, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
+      await page.goto(MANAGE_ORG_URL, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
     }
 
     if (await hasManageOrgApiSession(page)) {
@@ -117,7 +144,7 @@ async function signInToManageOrg(page: Page, credentials: ManageOrgCredentials):
 }
 
 async function loadManageOrgOrganisationDetails(page: Page): Promise<ManageOrgOrganisationDetails> {
-  const response = await page.request.get(new URL('api/organisation/v1', MANAGE_ORG_AAT_URL).toString(), {
+  const response = await page.request.get(new URL('api/organisation/v1', MANAGE_ORG_URL).toString(), {
     failOnStatusCode: false
   });
   const rawBody = await response.text();
@@ -139,10 +166,10 @@ function resolveOrganisationId(organisationDetails: ManageOrgOrganisationDetails
 }
 
 async function postManageOrgPbaChanges(page: Page, pendingAddPaymentAccount: string[], pendingRemovePaymentAccount: string[]): Promise<void> {
-  const cookies = await page.context().cookies(MANAGE_ORG_AAT_URL);
+  const cookies = await page.context().cookies(MANAGE_ORG_URL);
   const xsrfToken = cookies.find((cookie) => cookie.name === 'XSRF-TOKEN')?.value;
-  const origin = new URL(MANAGE_ORG_AAT_URL).origin;
-  const response = await page.request.post(new URL('api/pba/addDeletePBA', MANAGE_ORG_AAT_URL).toString(), {
+  const origin = new URL(MANAGE_ORG_URL).origin;
+  const response = await page.request.post(new URL('api/pba/addDeletePBA', MANAGE_ORG_URL).toString(), {
     data: {
       pendingPaymentAccount: {
         pendingAddPaymentAccount,
@@ -152,7 +179,7 @@ async function postManageOrgPbaChanges(page: Page, pendingAddPaymentAccount: str
     failOnStatusCode: false,
     headers: xsrfToken ? {
       origin,
-      referer: MANAGE_ORG_AAT_URL,
+      referer: MANAGE_ORG_URL,
       'X-XSRF-TOKEN': xsrfToken
     } : undefined
   });
@@ -166,10 +193,11 @@ async function postManageOrgPbaChanges(page: Page, pendingAddPaymentAccount: str
 }
 
 async function withManageOrgPage<T>(action: (page: Page) => Promise<T>): Promise<T> {
+  assertManageOrgMatchesApproveOrgEnvironment();
   const browser = await launchBrowser();
   try {
     const context = await browser.newContext({
-      baseURL: MANAGE_ORG_AAT_URL,
+      baseURL: MANAGE_ORG_URL,
       ignoreHTTPSErrors: true
     });
 
