@@ -59,6 +59,20 @@ escape_env_value() {
   printf '"%s"' "$escaped_value"
 }
 
+fallback_secret_name_for_env_key() {
+  case "$1" in
+    TEST_ROO_EMAIL)
+      echo "test-roo-email"
+      ;;
+    TEST_ROO_PASSWORD)
+      echo "test-roo-password"
+      ;;
+    *)
+      echo ""
+      ;;
+  esac
+}
+
 if [[ $# -lt 1 || $# -gt 3 ]]; then
   usage
   exit 1
@@ -119,6 +133,19 @@ while IFS= read -r env_key; do
     --output tsv)"
 
   if [[ -z "$secret_ids" ]]; then
+    fallback_secret_name="$(fallback_secret_name_for_env_key "$env_key")"
+    if [[ -n "$fallback_secret_name" ]]; then
+      if secret_value="$(az keyvault secret show --vault-name "$vault_name" --name "$fallback_secret_name" --query value --output tsv 2>/dev/null)"; then
+        if [[ "$secret_value" == "null" ]]; then
+          secret_value=""
+        fi
+
+        echo "$env_key=$(escape_env_value "$secret_value")" >> "$temp_output"
+        resolved_count=$((resolved_count + 1))
+        continue
+      fi
+    fi
+
     echo "Warning: No secret found in $vault_name with tags.e2e=$env_key. Writing blank value." >&2
     echo "$env_key=" >> "$temp_output"
     missing_count=$((missing_count + 1))

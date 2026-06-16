@@ -146,6 +146,8 @@ def secrets = [
     secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
     secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
     secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
+    secret('test-roo-email', 'TEST_ROO_EMAIL'),
+    secret('test-roo-password', 'TEST_ROO_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
     secret('ao-idam-client-secret', 'IDAM_SECRET'),

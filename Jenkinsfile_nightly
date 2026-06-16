@@ -158,6 +158,8 @@ Map<String, List<Map<String, Object>>> secrets = [
     secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
     secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
     secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
+    secret('test-roo-email', 'TEST_ROO_EMAIL'),
+    secret('test-roo-password', 'TEST_ROO_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
   ]

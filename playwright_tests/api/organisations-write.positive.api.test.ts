@@ -2,9 +2,11 @@ import { test, expect } from './helpers/api.fixtures';
 import {
   cleanupProvisionedOrganisation,
   loadOrganisationById,
+  provisionActiveOrganisation,
   provisionPendingOrganisation,
   type OrganisationRecord
 } from './helpers/organisations-write.helpers';
+import { resolveHeader } from './helpers/json-contracts';
 
 test.describe('Playwright API positive: organisations write', { tag: ['@organisations-write', '@positive'] }, () => {
   test('PUT /api/organisations/:id approves a pending organisation', async ({ apiRequest }) => {
@@ -92,6 +94,49 @@ test.describe('Playwright API positive: organisations write', { tag: ['@organisa
 
       const rawBody = await response.text();
       expect(typeof rawBody, 'Expected delete route to return a serialised body or an empty string.').toBe('string');
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
+  });
+
+  test('GET /api/organisations/:id/isDeletable returns deletable status', async ({ apiRequest }) => {
+    let organisationId: string | undefined;
+
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'Delete',
+        lastName: 'Status'
+      });
+      organisationId = provisioned.organisationId;
+
+      const response = await apiRequest.get(`/api/organisations/${provisioned.organisationId}/isDeletable`, {
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        httpStatus,
+        `Expected 200 from GET /api/organisations/${provisioned.organisationId}/isDeletable. Received status=${httpStatus}`
+      ).toBe(200);
+
+      const contentType = resolveHeader(response.headers(), 'content-type');
+      expect(
+        contentType,
+        `Expected JSON content-type from GET /api/organisations/${provisioned.organisationId}/isDeletable. Received content-type=${contentType}`
+      ).toContain('application/json');
+
+      const payload = await response.json();
+      expect(
+        typeof payload,
+        `Expected object payload from GET /api/organisations/${provisioned.organisationId}/isDeletable. Received payloadType=${typeof payload}`
+      ).toBe('object');
+      expect(
+        Array.isArray(payload),
+        `Expected deletable status payload to be an object, not an array. payload=${JSON.stringify(payload)}`
+      ).toBe(false);
+      expect(
+        typeof payload.organisationDeletable,
+        `Expected organisationDeletable boolean in response. payload=${JSON.stringify(payload)}`
+      ).toBe('boolean');
     } finally {
       await cleanupProvisionedOrganisation(apiRequest, organisationId);
     }
