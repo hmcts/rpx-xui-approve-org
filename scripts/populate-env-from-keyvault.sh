@@ -62,7 +62,7 @@ escape_env_value() {
 fallback_secret_name_for_env_key() {
   case "$1" in
     TEST_ROO_EMAIL)
-      echo "test-roo-email"
+      echo "test-roo-username"
       ;;
     TEST_ROO_PASSWORD)
       echo "test-roo-password"

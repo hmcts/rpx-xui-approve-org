@@ -1,6 +1,9 @@
 import { randomBytes } from 'node:crypto';
 import { chromium, type APIRequestContext, type Browser, type Page } from '@playwright/test';
-import { provisionPendingOrganisation } from './organisations-write.helpers';
+import {
+  loadOrganisationById,
+  provisionPendingOrganisation
+} from './organisations-write.helpers';
 
 export type PbaStatusTarget = {
   orgId: string;
@@ -15,17 +18,16 @@ export type PbaUpdateTarget = {
 type ManageOrgCredentials = {
   username: string;
   password: string;
-  source: string;
 };
 
 type ManageOrgOrganisationDetails = {
   organisationIdentifier?: unknown;
+  paymentAccount?: unknown;
+  pendingPaymentAccount?: unknown;
   status?: unknown;
-  [key: string]: unknown;
 };
 
-const DEFAULT_MANAGE_ORG_AAT_URL = 'https://manage-org.aat.platform.hmcts.net/';
-const MANAGE_ORG_SESSION_RETRIES = 5;
+const MANAGE_ORG_AAT_URL = 'https://manage-org.aat.platform.hmcts.net/';
 
 function generatePbaNumber(): string {
   const suffix = String(randomBytes(4).readUInt32BE(0) % 10000000).padStart(7, '0');
@@ -42,61 +44,21 @@ function generatePbaNumbers(count: number): string[] {
   return Array.from(pbaNumbers);
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function resolveUrl(rawValue: string | undefined, fallback: string, envName: string): string {
-  const candidate = (rawValue ?? '').trim() || fallback;
-  try {
-    return new URL(candidate).toString();
-  } catch {
-    throw new Error(`Invalid ${envName} value: "${rawValue ?? ''}"`);
-  }
-}
-
-function resolveManageOrgSetupUrl(): string {
-  return resolveUrl(
-    process.env.PBA_SETUP_MANAGE_ORG_URL ?? process.env.MANAGE_ORG_TEST_URL,
-    DEFAULT_MANAGE_ORG_AAT_URL,
-    'PBA_SETUP_MANAGE_ORG_URL'
-  );
-}
-
-function resolveCredentialPair(
-  usernameEnvName: string,
-  passwordEnvName: string,
-  fallbackUsername: string,
-  fallbackPassword: string
-): ManageOrgCredentials | null {
-  const username = (process.env[usernameEnvName] ?? fallbackUsername).trim();
-  const password = (process.env[passwordEnvName] ?? fallbackPassword).trim();
+function resolveManageOrgCredentials(): ManageOrgCredentials {
+  const username = (process.env.TEST_ROO_EMAIL ?? '').trim();
+  const password = (process.env.TEST_ROO_PASSWORD ?? '').trim();
 
   if (!username || !password) {
-    return null;
+    throw new Error('Unable to setup pending PBAs. Set TEST_ROO_EMAIL and TEST_ROO_PASSWORD.');
   }
 
-  return {
-    username,
-    password,
-    source: `${usernameEnvName}/${passwordEnvName}`
-  };
+  return { username, password };
 }
 
-function resolveManageOrgCredentials(): ManageOrgCredentials {
-  const credentialCandidates = [
-    resolveCredentialPair('TEST_ROO_EMAIL', 'TEST_ROO_PASSWORD', '', '')
-  ];
-  const credentials = credentialCandidates.find((candidate): candidate is ManageOrgCredentials => candidate !== null);
-
-  if (!credentials) {
-    throw new Error(
-      'Unable to create Manage Org pending PBA setup. ' +
-      'Set the Manage Org Playwright user secrets TEST_ROO_EMAIL/TEST_ROO_PASSWORD.'
-    );
-  }
-
-  return credentials;
+function asStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string' && item.trim() !== '')
+    : [];
 }
 
 async function launchBrowser(): Promise<Browser> {
@@ -107,144 +69,68 @@ async function launchBrowser(): Promise<Browser> {
   }
 }
 
-async function hasManageOrgApiSession(page: Page, manageOrgUrl: string): Promise<boolean> {
-  const response = await page.request.get(new URL('api/organisation/v1', manageOrgUrl).toString(), {
+async function hasManageOrgApiSession(page: Page): Promise<boolean> {
+  const response = await page.request.get(new URL('api/organisation/v1', MANAGE_ORG_AAT_URL).toString(), {
     failOnStatusCode: false
   }).catch(() => null);
 
   return response?.status() === 200;
 }
 
-async function waitForManageOrgApiSession(page: Page, manageOrgUrl: string): Promise<void> {
-  let lastStatus = 0;
-  for (let attempt = 1; attempt <= MANAGE_ORG_SESSION_RETRIES; attempt += 1) {
-    const response = await page.request.get(new URL('api/organisation/v1', manageOrgUrl).toString(), {
-      failOnStatusCode: false
-    }).catch(() => null);
-    lastStatus = response?.status() ?? 0;
-
-    if (lastStatus === 200) {
-      return;
-    }
-
-    await sleep(1000 * attempt);
-  }
-
-  throw new Error(`Manage Org API session was not ready after login. Last status=${lastStatus}`);
-}
-
-async function fillVisibleLoginForm(page: Page, credentials: ManageOrgCredentials): Promise<boolean> {
-  const namedUsernameInput = page.locator('input[name="username"]').first();
-  const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i }).first();
-  const fallbackEmailInput = page.locator('input[type="email"]').first();
-  const passwordInput = page.locator('input[name="password"], input[type="password"]').first();
-
-  const usernameInput = await namedUsernameInput.isVisible().catch(() => false)
-    ? namedUsernameInput
-    : await roleEmailInput.isVisible().catch(() => false)
-      ? roleEmailInput
-      : fallbackEmailInput;
-
-  if (!await usernameInput.isVisible().catch(() => false) || !await passwordInput.isVisible().catch(() => false)) {
-    return false;
-  }
-
-  await usernameInput.fill(credentials.username);
-  await passwordInput.fill(credentials.password);
-
-  const legacySubmitButton = page.locator('#login-submit-btn').first();
-  const redirectedToManageOrg = page.waitForURL((url) =>
-    !url.hostname.includes('idam') &&
-    !url.pathname.includes('/login'), { timeout: 30000 }
-  ).catch(() => undefined);
-
-  if (await legacySubmitButton.isVisible().catch(() => false)) {
-    await legacySubmitButton.click();
-  } else {
-    await page.getByRole('button', { name: /sign in/i }).click();
-  }
-
-  await redirectedToManageOrg;
-  await page.waitForLoadState('domcontentloaded').catch(() => undefined);
-
-  return true;
-}
-
-function isExpectedManageOrgRedirectInterruption(error: unknown, manageOrgUrl: string): boolean {
-  const message = error instanceof Error ? error.message : String(error);
-  return (
-    message.includes('interrupted by another navigation') && message.includes('idam')
-  ) || (
-    message.includes('net::ERR_ABORTED') && message.includes(manageOrgUrl)
-  );
-}
-
-async function goToManageOrg(page: Page, manageOrgUrl: string): Promise<void> {
-  try {
-    await page.goto(manageOrgUrl, { waitUntil: 'domcontentloaded' });
-  } catch (error) {
-    if (!isExpectedManageOrgRedirectInterruption(error, manageOrgUrl)) {
-      throw error;
-    }
-  }
-
-  await page.waitForLoadState('domcontentloaded').catch(() => undefined);
-}
-
-async function signInToManageOrg(page: Page, manageOrgUrl: string, credentials: ManageOrgCredentials): Promise<void> {
-  await goToManageOrg(page, manageOrgUrl);
-  if (await hasManageOrgApiSession(page, manageOrgUrl)) {
+async function signInToManageOrg(page: Page, credentials: ManageOrgCredentials): Promise<void> {
+  await page.goto(MANAGE_ORG_AAT_URL, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
+  if (await hasManageOrgApiSession(page)) {
     return;
   }
 
   for (let attempt = 1; attempt <= 4; attempt += 1) {
-    const filledLoginForm = await fillVisibleLoginForm(page, credentials);
-    if (!filledLoginForm) {
-      await goToManageOrg(page, manageOrgUrl);
+    const namedUsernameInput = page.locator('input[name="username"]').first();
+    const emailInput = await namedUsernameInput.isVisible().catch(() => false)
+      ? namedUsernameInput
+      : page.locator('input[type="email"]').first();
+    const passwordInput = page.locator('input[name="password"], input[type="password"]').first();
+
+    if (await emailInput.isVisible().catch(() => false) && await passwordInput.isVisible().catch(() => false)) {
+      await emailInput.fill(credentials.username);
+      await passwordInput.fill(credentials.password);
+
+      const submitButton = page.locator('#login-submit-btn').first();
+      if (await submitButton.isVisible().catch(() => false)) {
+        await submitButton.click();
+      } else {
+        await page.getByRole('button', { name: /sign in/i }).click();
+      }
+
+      await page.waitForLoadState('domcontentloaded').catch(() => undefined);
+    } else {
+      await page.goto(MANAGE_ORG_AAT_URL, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
     }
 
-    if (await hasManageOrgApiSession(page, manageOrgUrl)) {
+    if (await hasManageOrgApiSession(page)) {
       return;
     }
 
-    await sleep(1000 * attempt);
+    await page.waitForTimeout(1000 * attempt);
   }
 
-  throw new Error(
-    `Unable to authenticate Manage Org setup user from ${credentials.source}. ` +
-    `Current URL=${page.url()} title=${await page.title().catch(() => 'unknown')}`
-  );
+  throw new Error(`Unable to authenticate Manage Org setup user ${credentials.username}.`);
 }
 
-async function getXsrfToken(page: Page, manageOrgUrl: string): Promise<string> {
-  const cookies = await page.context().cookies(manageOrgUrl);
-  const xsrfToken = cookies.find((cookie) => cookie.name === 'XSRF-TOKEN')?.value;
-
-  if (!xsrfToken) {
-    throw new Error(`Unable to resolve Manage Org XSRF token for ${manageOrgUrl}`);
-  }
-
-  return xsrfToken;
-}
-
-async function loadManageOrgOrganisationDetails(page: Page, manageOrgUrl: string): Promise<ManageOrgOrganisationDetails> {
-  const response = await page.request.get(new URL('api/organisation/v1', manageOrgUrl).toString(), {
+async function loadManageOrgOrganisationDetails(page: Page): Promise<ManageOrgOrganisationDetails> {
+  const response = await page.request.get(new URL('api/organisation/v1', MANAGE_ORG_AAT_URL).toString(), {
     failOnStatusCode: false
   });
   const rawBody = await response.text();
 
   if (response.status() !== 200) {
-    throw new Error(
-      `Unable to load Manage Org organisation details. Expected 200, received ${response.status()} body=${rawBody}`
-    );
+    throw new Error(`Unable to load Manage Org organisation details. Expected 200, received ${response.status()} body=${rawBody}`);
   }
 
   return JSON.parse(rawBody) as ManageOrgOrganisationDetails;
 }
 
-function extractOrganisationId(organisationDetails: ManageOrgOrganisationDetails): string {
+function resolveOrganisationId(organisationDetails: ManageOrgOrganisationDetails): string {
   const organisationId = organisationDetails.organisationIdentifier;
-
   if (typeof organisationId !== 'string' || organisationId.trim() === '') {
     throw new Error(`Manage Org organisation details did not include organisationIdentifier=${String(organisationId)}`);
   }
@@ -252,32 +138,50 @@ function extractOrganisationId(organisationDetails: ManageOrgOrganisationDetails
   return organisationId;
 }
 
-async function addPendingPbasInManageOrg(page: Page, manageOrgUrl: string, pbaNumbers: string[]): Promise<void> {
-  const xsrfToken = await getXsrfToken(page, manageOrgUrl);
-  const origin = new URL(manageOrgUrl).origin;
-  const response = await page.request.post(new URL('api/pba/addDeletePBA', manageOrgUrl).toString(), {
+async function postManageOrgPbaChanges(page: Page, pendingAddPaymentAccount: string[], pendingRemovePaymentAccount: string[]): Promise<void> {
+  const cookies = await page.context().cookies(MANAGE_ORG_AAT_URL);
+  const xsrfToken = cookies.find((cookie) => cookie.name === 'XSRF-TOKEN')?.value;
+  const origin = new URL(MANAGE_ORG_AAT_URL).origin;
+  const response = await page.request.post(new URL('api/pba/addDeletePBA', MANAGE_ORG_AAT_URL).toString(), {
     data: {
       pendingPaymentAccount: {
-        pendingAddPaymentAccount: pbaNumbers,
-        pendingRemovePaymentAccount: []
+        pendingAddPaymentAccount,
+        pendingRemovePaymentAccount
       }
     },
     failOnStatusCode: false,
-    headers: {
-      accept: 'application/json, text/plain, */*',
-      'content-type': 'application/json',
+    headers: xsrfToken ? {
       origin,
-      referer: `${origin}/`,
-      'x-xsrf-token': xsrfToken
-    }
+      referer: MANAGE_ORG_AAT_URL,
+      'X-XSRF-TOKEN': xsrfToken
+    } : undefined
   });
   const rawBody = await response.text();
 
-  if (response.status() !== 200) {
+  if (![200, 202].includes(response.status())) {
     throw new Error(
-      'Unable to add pending PBAs in Manage Org. Expected 200 from POST api/pba/addDeletePBA, ' +
-      `received ${response.status()} body=${rawBody}`
+      `Unable to update pending PBAs in Manage Org. Expected 200/202 from POST api/pba/addDeletePBA, received ${response.status()} body=${rawBody}`
     );
+  }
+}
+
+async function withManageOrgPage<T>(action: (page: Page) => Promise<T>): Promise<T> {
+  const browser = await launchBrowser();
+  try {
+    const context = await browser.newContext({
+      baseURL: MANAGE_ORG_AAT_URL,
+      ignoreHTTPSErrors: true
+    });
+
+    try {
+      const page = await context.newPage();
+      await signInToManageOrg(page, resolveManageOrgCredentials());
+      return await action(page);
+    } finally {
+      await context.close();
+    }
+  } finally {
+    await browser.close();
   }
 }
 
@@ -293,35 +197,58 @@ export async function resolvePbaUpdateTarget(apiRequest: APIRequestContext, paym
   };
 }
 
-export async function resolvePbaStatusUpdateTarget(paymentAccountCount: number = 1): Promise<PbaStatusTarget> {
-  const manageOrgUrl = resolveManageOrgSetupUrl();
-  const credentials = resolveManageOrgCredentials();
-  const browser = await launchBrowser();
+export async function resolvePbaStatusUpdateTarget(
+  paymentAccountCount: number = 1
+): Promise<PbaStatusTarget> {
+  const pbaNumbers = generatePbaNumbers(paymentAccountCount);
 
-  try {
-    const context = await browser.newContext({
-      baseURL: manageOrgUrl,
-      ignoreHTTPSErrors: true
+  return withManageOrgPage(async (page) => {
+    const organisationDetails = await loadManageOrgOrganisationDetails(page);
+    const orgId = resolveOrganisationId(organisationDetails);
+
+    await postManageOrgPbaChanges(page, pbaNumbers, []);
+    return {
+      orgId,
+      pbaNumbers
+    };
+  });
+}
+
+export async function cleanupPbaStatusUpdateTarget(
+  apiRequest: APIRequestContext,
+  target: PbaStatusTarget
+): Promise<void> {
+  const targetPbas = new Set(target.pbaNumbers);
+  const organisation = await loadOrganisationById(apiRequest, target.orgId);
+  const paymentAccounts = asStringArray(organisation?.paymentAccount);
+  const remainingPaymentAccounts = paymentAccounts.filter((paymentAccount) => !targetPbas.has(paymentAccount));
+
+  if (paymentAccounts.length !== remainingPaymentAccounts.length) {
+    const response = await apiRequest.put('/api/updatePba', {
+      data: {
+        orgId: target.orgId,
+        paymentAccounts: remainingPaymentAccounts
+      },
+      failOnStatusCode: false
     });
-    const page = await context.newPage();
+    const rawBody = await response.text();
 
-    try {
-      await signInToManageOrg(page, manageOrgUrl, credentials);
-      await waitForManageOrgApiSession(page, manageOrgUrl);
-      const organisationDetails = await loadManageOrgOrganisationDetails(page, manageOrgUrl);
-      const orgId = extractOrganisationId(organisationDetails);
-      const pbaNumbers = generatePbaNumbers(paymentAccountCount);
-
-      await addPendingPbasInManageOrg(page, manageOrgUrl, pbaNumbers);
-
-      return {
-        orgId,
-        pbaNumbers
-      };
-    } finally {
-      await context.close();
+    if (response.status() !== 200) {
+      throw new Error(`Unable to remove accepted test PBAs from orgId=${target.orgId}. Expected 200 from PUT /api/updatePba, received ${response.status()} body=${rawBody}`);
     }
-  } finally {
-    await browser.close();
   }
+
+  await withManageOrgPage(async (page) => {
+    const organisationDetails = await loadManageOrgOrganisationDetails(page);
+    const orgId = resolveOrganisationId(organisationDetails);
+    if (orgId !== target.orgId) {
+      throw new Error(`Manage Org cleanup session resolved orgId=${orgId}, expected orgId=${target.orgId}.`);
+    }
+
+    const pendingPaymentAccounts = asStringArray(organisationDetails.pendingPaymentAccount);
+    const pendingPbasToRemove = pendingPaymentAccounts.filter((paymentAccount) => targetPbas.has(paymentAccount));
+    if (pendingPbasToRemove.length > 0) {
+      await postManageOrgPbaChanges(page, [], pendingPbasToRemove);
+    }
+  });
 }

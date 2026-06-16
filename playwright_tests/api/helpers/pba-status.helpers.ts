@@ -13,6 +13,7 @@ const ORGANISATION_PBA_FIELDS = [
 ] as const;
 
 export type PbaReviewStatus = 'accepted' | 'rejected';
+type PbaStatusValue = PbaReviewStatus | 'pending';
 
 export type PbaStatusUpdateScenario = {
   name: string;
@@ -97,7 +98,7 @@ export function extractOrganisationPbaRecords(organisation: OrganisationRecord):
 export function pbaRecordsContainStatus(
   pbaRecords: OrganisationPbaRecord[],
   pbaNumber: string,
-  expectedStatus: PbaReviewStatus
+  expectedStatus: PbaStatusValue
 ): boolean {
   return pbaRecords.some((pbaRecord) =>
     pbaRecord.pbaNumber === pbaNumber && pbaRecord.status === expectedStatus
@@ -110,6 +111,16 @@ export function pbaRecordsContainField(
   field: string
 ): boolean {
   return pbaRecords.some((pbaRecord) => pbaRecord.pbaNumber === pbaNumber && pbaRecord.field === field);
+}
+
+export function pbaRecordsContainPendingState(
+  pbaRecords: OrganisationPbaRecord[],
+  pbaNumber: string
+): boolean {
+  return pbaRecordsContainStatus(pbaRecords, pbaNumber, 'pending') ||
+    pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingPaymentAccount') ||
+    pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingAddPaymentAccount') ||
+    pbaRecordsContainField(pbaRecords, pbaNumber, 'pbaNumbers');
 }
 
 function hasExpectedOrganisationPbaState(
@@ -127,9 +138,36 @@ function hasExpectedOrganisationPbaState(
     (
       !pbaRecordsContainField(pbaRecords, pbaNumber, 'paymentAccount') &&
       !pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingPaymentAccount') &&
-      !pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingAddPaymentAccount')
+      !pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingAddPaymentAccount') &&
+      !pbaRecordsContainField(pbaRecords, pbaNumber, 'pbaNumbers')
     )
   );
+}
+
+function hasExpectedPendingPbaState(organisation: OrganisationRecord, pbaNumbers: string[]): boolean {
+  const pbaRecords = extractOrganisationPbaRecords(organisation);
+  return pbaNumbers.every((pbaNumber) => pbaRecordsContainPendingState(pbaRecords, pbaNumber));
+}
+
+export async function loadOrganisationWithPendingPbaState(
+  apiRequest: APIRequestContext,
+  organisationId: string,
+  pbaNumbers: string[]
+): Promise<OrganisationRecord | null> {
+  let lastOrganisation: OrganisationRecord | null = null;
+
+  for (let attempt = 1; attempt <= ORGANISATION_READ_RETRIES; attempt += 1) {
+    const organisation = await loadOrganisationById(apiRequest, organisationId);
+    lastOrganisation = organisation;
+
+    if (organisation && hasExpectedPendingPbaState(organisation, pbaNumbers)) {
+      return organisation;
+    }
+
+    await sleep(500 * attempt);
+  }
+
+  return lastOrganisation;
 }
 
 export async function loadOrganisationWithExpectedPbaState(

@@ -2,10 +2,16 @@ import { test, expect } from './helpers/api.fixtures';
 import {
   extractOrganisationPbaRecords,
   loadOrganisationWithExpectedPbaState,
+  loadOrganisationWithPendingPbaState,
   pbaRecordsContainField,
+  pbaRecordsContainPendingState,
   pbaRecordsContainStatus
 } from './helpers/pba-status.helpers';
-import { resolvePbaStatusUpdateTarget } from './helpers/pba-test-data.helpers';
+import {
+  cleanupPbaStatusUpdateTarget,
+  type PbaStatusTarget,
+  resolvePbaStatusUpdateTarget
+} from './helpers/pba-test-data.helpers';
 
 const PBA_STATUS_ENDPOINT = '/api/pba/status';
 
@@ -25,6 +31,21 @@ const pbaStatusUpdateScenarios = [
 ] as const;
 
 test.describe('Playwright API positive: update pba status', { tag: ['@update-pba-status', '@positive'] }, () => {
+  test.describe.configure({ mode: 'serial' });
+
+  let cleanupTarget: PbaStatusTarget | null = null;
+
+  test.afterEach(async ({ apiRequest }) => {
+    const target = cleanupTarget;
+    cleanupTarget = null;
+
+    if (!target) {
+      return;
+    }
+
+    await cleanupPbaStatusUpdateTarget(apiRequest, target);
+  });
+
   for (const scenario of pbaStatusUpdateScenarios) {
     test(`PUT /api/pba/status ${scenario.name}`, async ({ apiRequest }) => {
       const setupTarget = await resolvePbaStatusUpdateTarget(scenario.statuses.length);
@@ -36,6 +57,35 @@ test.describe('Playwright API positive: update pba status', { tag: ['@update-pba
           statusMessage: ''
         }))
       };
+      const acceptedPbaNumbers = payload.pbaNumbers
+        .filter((pbaNumber) => pbaNumber.status === 'accepted')
+        .map((pbaNumber) => pbaNumber.pbaNumber);
+      const rejectedPbaNumbers = payload.pbaNumbers
+        .filter((pbaNumber) => pbaNumber.status === 'rejected')
+        .map((pbaNumber) => pbaNumber.pbaNumber);
+      cleanupTarget = setupTarget;
+
+      const pendingOrganisation = await loadOrganisationWithPendingPbaState(
+        apiRequest,
+        setupTarget.orgId,
+        setupTarget.pbaNumbers
+      );
+
+      expect(
+        pendingOrganisation,
+        `Expected generated PBAs to be pending on orgId=${setupTarget.orgId} before PUT ${PBA_STATUS_ENDPOINT}. pbaNumbers=${setupTarget.pbaNumbers.join(',')}`
+      ).toBeTruthy();
+      if (!pendingOrganisation) {
+        return;
+      }
+
+      const pendingPbaRecords = extractOrganisationPbaRecords(pendingOrganisation);
+      for (const pbaNumber of setupTarget.pbaNumbers) {
+        expect(
+          pbaRecordsContainPendingState(pendingPbaRecords, pbaNumber),
+          `Expected orgId=${setupTarget.orgId} pbaNumber=${pbaNumber} to be pending before status update. Received pbaRecords=${JSON.stringify(pendingPbaRecords)}`
+        ).toBe(true);
+      }
 
       const response = await apiRequest.put(PBA_STATUS_ENDPOINT, {
         data: payload,
@@ -49,12 +99,6 @@ test.describe('Playwright API positive: update pba status', { tag: ['@update-pba
       ).toBe(200);
       expect(typeof rawBody).toBe('string');
 
-      const acceptedPbaNumbers = payload.pbaNumbers
-        .filter((pbaNumber) => pbaNumber.status === 'accepted')
-        .map((pbaNumber) => pbaNumber.pbaNumber);
-      const rejectedPbaNumbers = payload.pbaNumbers
-        .filter((pbaNumber) => pbaNumber.status === 'rejected')
-        .map((pbaNumber) => pbaNumber.pbaNumber);
       const updatedOrganisation = await loadOrganisationWithExpectedPbaState(
         apiRequest,
         setupTarget.orgId,
@@ -85,9 +129,10 @@ test.describe('Playwright API positive: update pba status', { tag: ['@update-pba
             (
               !pbaRecordsContainField(pbaRecords, pbaNumber, 'paymentAccount') &&
               !pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingPaymentAccount') &&
-              !pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingAddPaymentAccount')
+              !pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingAddPaymentAccount') &&
+              !pbaRecordsContainField(pbaRecords, pbaNumber, 'pbaNumbers')
             ),
-          `Expected orgId=${setupTarget.orgId} pbaNumber=${pbaNumber} to be rejected on the org. Received pbaRecords=${JSON.stringify(pbaRecords)}`
+          `Expected orgId=${setupTarget.orgId} pbaNumber=${pbaNumber} to be rejected or removed from pending/accepted org fields. Received pbaRecords=${JSON.stringify(pbaRecords)}`
         ).toBe(true);
       }
     });
