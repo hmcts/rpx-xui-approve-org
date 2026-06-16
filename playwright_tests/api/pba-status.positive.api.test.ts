@@ -1,6 +1,6 @@
-import type { APIRequestContext } from '@playwright/test';
 import { test, expect } from './helpers/api.fixtures';
 import { resolveHeader, searchEnvelopeShapeErrors } from './helpers/json-contracts';
+import { getPbaStatusList } from './helpers/pba-status.helpers';
 import {
   createPbaSearchPayload,
   getXsrfHeaders,
@@ -10,51 +10,6 @@ import {
 
 const statusValues = ['PENDING', 'pending', 'ACCEPTED'] as const;
 const searchStatus = 'pending' as const;
-
-type PbaStatusListResult = {
-  contentType: string;
-  httpStatus: number;
-  payload: unknown;
-  rawBody: string;
-};
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
-  if (!contentType.toLowerCase().includes('application/json')) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(rawBody);
-  } catch {
-    return null;
-  }
-}
-
-async function getPbaStatusList(apiRequest: APIRequestContext, statusValue: string): Promise<PbaStatusListResult> {
-  let lastResult: PbaStatusListResult | null = null;
-
-  for (let attempt = 1; attempt <= 3; attempt += 1) {
-    const response = await apiRequest.get(`/api/pba/status/${statusValue}`, { failOnStatusCode: false });
-    const httpStatus = response.status();
-    const contentType = resolveHeader(response.headers(), 'content-type');
-    const rawBody = await response.text();
-    const payload = parseJsonIfPresent(contentType, rawBody);
-    const result = { contentType, httpStatus, payload, rawBody };
-
-    if (httpStatus === 200 && Array.isArray(payload)) {
-      return result;
-    }
-
-    lastResult = result;
-    await sleep(500 * attempt);
-  }
-
-  return lastResult as PbaStatusListResult;
-}
 
 test.describe('Playwright API positive: pba status', { tag: ['@pba-status', '@positive'] }, () => {
   for (const statusValue of statusValues) {

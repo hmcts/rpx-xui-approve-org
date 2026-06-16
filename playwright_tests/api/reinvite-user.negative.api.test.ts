@@ -1,21 +1,10 @@
 import { test, expect } from './helpers/api.fixtures';
 import { cleanupProvisionedOrganisation, provisionActiveOrganisation } from './helpers/organisations-write.helpers';
+import { parseJsonIfPresent } from './helpers/json-contracts';
 import { createMissingReinviteEmail } from './helpers/reinvite-user.helpers';
 
 const UNAUTHENTICATED_ORG_ID = 'UNAUTHENTICATED_REINVITE_ORG';
 const UNAUTHENTICATED_EMAIL = createMissingReinviteEmail();
-
-function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
-  if (!contentType.toLowerCase().includes('application/json')) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(rawBody);
-  } catch {
-    return null;
-  }
-}
 
 test.describe('Playwright API negative: reinvite user', { tag: ['@reinvite-user', '@negative'] }, () => {
   test('POST /api/reinviteUser without auth is denied', async ({ apiAnonymousRequest }) => {

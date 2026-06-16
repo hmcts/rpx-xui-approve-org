@@ -1,34 +1,15 @@
-import type { APIRequestContext } from '@playwright/test';
 import { test, expect } from './helpers/api.fixtures';
-import { loadOrganisationById, type OrganisationRecord } from './helpers/organisations-write.helpers';
+import {
+  extractOrganisationPbaRecords,
+  loadOrganisationWithExpectedPbaState,
+  pbaRecordsContainField,
+  pbaRecordsContainStatus
+} from './helpers/pba-status.helpers';
 import { resolvePbaStatusUpdateTarget } from './helpers/pba-test-data.helpers';
 
 const PBA_STATUS_ENDPOINT = '/api/pba/status';
-const ORGANISATION_READ_RETRIES = 6;
-const ORGANISATION_PBA_FIELDS = [
-  'paymentAccount',
-  'pendingPaymentAccount',
-  'pendingAddPaymentAccount',
-  'pendingRemovePaymentAccount',
-  'pbaNumbers'
-] as const;
 
-type PbaReviewStatus = 'accepted' | 'rejected';
-type OrganisationPbaRecord = {
-  field: string;
-  pbaNumber: string;
-  status?: string;
-};
-type PbaRecordValue = {
-  pbaNumber?: unknown;
-  paymentAccount?: unknown;
-  status?: unknown;
-};
-
-const pbaStatusUpdateScenarios: Array<{
-  name: string;
-  statuses: PbaReviewStatus[];
-}> = [
+const pbaStatusUpdateScenarios = [
   {
     name: 'accepts two pba numbers',
     statuses: ['accepted', 'accepted']
@@ -41,123 +22,7 @@ const pbaStatusUpdateScenarios: Array<{
     name: 'rejects two pba numbers',
     statuses: ['rejected', 'rejected']
   }
-];
-
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-function normaliseStatus(status: string): string {
-  return status.toLowerCase();
-}
-
-function extractPbaNumber(value: unknown): string | null {
-  if (typeof value === 'string' && value.trim() !== '') {
-    return value;
-  }
-
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return null;
-  }
-
-  const pbaRecord = value as PbaRecordValue;
-  if (typeof pbaRecord.pbaNumber === 'string' && pbaRecord.pbaNumber.trim() !== '') {
-    return pbaRecord.pbaNumber;
-  }
-
-  if (typeof pbaRecord.paymentAccount === 'string' && pbaRecord.paymentAccount.trim() !== '') {
-    return pbaRecord.paymentAccount;
-  }
-
-  return null;
-}
-
-function extractPbaStatus(value: unknown): string | undefined {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return undefined;
-  }
-
-  const status = (value as PbaRecordValue).status;
-  return typeof status === 'string' && status.trim() !== '' ? normaliseStatus(status) : undefined;
-}
-
-function extractOrganisationPbaRecords(organisation: OrganisationRecord): OrganisationPbaRecord[] {
-  return ORGANISATION_PBA_FIELDS.flatMap((field) => {
-    const value = organisation[field];
-    const fieldValues = Array.isArray(value) ? value : [];
-
-    return fieldValues
-      .map((fieldValue) => {
-        const pbaNumber = extractPbaNumber(fieldValue);
-        return pbaNumber ? {
-          field,
-          pbaNumber,
-          status: extractPbaStatus(fieldValue)
-        } : null;
-      })
-      .filter((pbaRecord): pbaRecord is OrganisationPbaRecord => pbaRecord !== null);
-  });
-}
-
-function pbaRecordsContainStatus(
-  pbaRecords: OrganisationPbaRecord[],
-  pbaNumber: string,
-  expectedStatus: PbaReviewStatus
-): boolean {
-  return pbaRecords.some((pbaRecord) =>
-    pbaRecord.pbaNumber === pbaNumber && pbaRecord.status === expectedStatus
-  );
-}
-
-function pbaRecordsContainField(
-  pbaRecords: OrganisationPbaRecord[],
-  pbaNumber: string,
-  field: string
-): boolean {
-  return pbaRecords.some((pbaRecord) => pbaRecord.pbaNumber === pbaNumber && pbaRecord.field === field);
-}
-
-function hasExpectedOrganisationPbaState(
-  organisation: OrganisationRecord,
-  acceptedPbaNumbers: string[],
-  rejectedPbaNumbers: string[]
-): boolean {
-  const pbaRecords = extractOrganisationPbaRecords(organisation);
-
-  return acceptedPbaNumbers.every((pbaNumber) =>
-    pbaRecordsContainStatus(pbaRecords, pbaNumber, 'accepted') ||
-    pbaRecordsContainField(pbaRecords, pbaNumber, 'paymentAccount')
-  ) && rejectedPbaNumbers.every((pbaNumber) =>
-    pbaRecordsContainStatus(pbaRecords, pbaNumber, 'rejected') ||
-    (
-      !pbaRecordsContainField(pbaRecords, pbaNumber, 'paymentAccount') &&
-      !pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingPaymentAccount') &&
-      !pbaRecordsContainField(pbaRecords, pbaNumber, 'pendingAddPaymentAccount')
-    )
-  );
-}
-
-async function loadOrganisationWithExpectedPbaState(
-  apiRequest: APIRequestContext,
-  organisationId: string,
-  acceptedPbaNumbers: string[],
-  rejectedPbaNumbers: string[]
-): Promise<OrganisationRecord | null> {
-  let lastOrganisation: OrganisationRecord | null = null;
-
-  for (let attempt = 1; attempt <= ORGANISATION_READ_RETRIES; attempt += 1) {
-    const organisation = await loadOrganisationById(apiRequest, organisationId);
-    lastOrganisation = organisation;
-
-    if (organisation && hasExpectedOrganisationPbaState(organisation, acceptedPbaNumbers, rejectedPbaNumbers)) {
-      return organisation;
-    }
-
-    await sleep(500 * attempt);
-  }
-
-  return lastOrganisation;
-}
+] as const;
 
 test.describe('Playwright API positive: update pba status', { tag: ['@update-pba-status', '@positive'] }, () => {
   for (const scenario of pbaStatusUpdateScenarios) {
@@ -201,8 +66,11 @@ test.describe('Playwright API positive: update pba status', { tag: ['@update-pba
         updatedOrganisation,
         `Expected to load updated org-specific payload for orgId=${setupTarget.orgId}.`
       ).toBeTruthy();
+      if (!updatedOrganisation) {
+        return;
+      }
 
-      const pbaRecords = extractOrganisationPbaRecords(updatedOrganisation as OrganisationRecord);
+      const pbaRecords = extractOrganisationPbaRecords(updatedOrganisation);
       for (const pbaNumber of acceptedPbaNumbers) {
         expect(
           pbaRecordsContainStatus(pbaRecords, pbaNumber, 'accepted') ||

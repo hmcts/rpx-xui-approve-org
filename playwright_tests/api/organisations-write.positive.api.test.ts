@@ -3,8 +3,7 @@ import {
   cleanupProvisionedOrganisation,
   loadOrganisationById,
   provisionActiveOrganisation,
-  provisionPendingOrganisation,
-  type OrganisationRecord
+  provisionPendingOrganisation
 } from './helpers/organisations-write.helpers';
 import { resolveHeader } from './helpers/json-contracts';
 
@@ -18,7 +17,7 @@ test.describe('Playwright API positive: organisations write', { tag: ['@organisa
       const sourceOrganisation = await loadOrganisationById(apiRequest, organisationId);
       expect(sourceOrganisation, `Unable to load organisation payload for id=${organisationId}.`).toBeTruthy();
 
-      const updatePayload: OrganisationRecord = {
+      const updatePayload = {
         ...sourceOrganisation,
         status: 'ACTIVE'
       };
