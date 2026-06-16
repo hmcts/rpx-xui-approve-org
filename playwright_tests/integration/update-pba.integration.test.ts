@@ -1,6 +1,11 @@
-import { test, expect } from './helpers/integration.fixtures';
+import { test } from './helpers/integration.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { config } from '../config/config';
+import {
+  assertOrganisationDetailsUrl,
+  assertUpdatePbaPageReady,
+  assertUpdatePbaPayload
+} from './helpers/update-pba.helpers';
 import {
   createMockOrganisation,
   setupCommonOrganisationApiMocks,
@@ -51,22 +56,14 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
     const editPbaUrl = new URL(`/change/pba/${UPDATE_PBA_ORG_ID}/${EXISTING_PBA}`, config.baseUrl).toString();
     await page.goto(editPbaUrl);
 
-    await expect(page.getByRole('heading', { name: 'Organisation payment by account (PBA) number' })).toBeVisible();
-
-    const pbaInput = page.locator('#pba1');
-    await expect(pbaInput).toBeVisible();
-    await expect(pbaInput).toHaveValue(EXISTING_PBA);
+    const pbaInput = await assertUpdatePbaPageReady(page, EXISTING_PBA);
     await pbaInput.fill(updatedPba);
 
     const updateResponse = waitForUpdatePbaResponse(page);
     await page.getByRole('button', { name: 'Submit' }).click();
     await updateResponse;
 
-    expect(updatePbaApiMock.getLastPayload()).toEqual({
-      paymentAccounts: [updatedPba],
-      orgId: UPDATE_PBA_ORG_ID
-    });
-
-    await expect(page).toHaveURL(new RegExp(`/organisation-details/${UPDATE_PBA_ORG_ID}`));
+    assertUpdatePbaPayload(updatePbaApiMock, updatedPba, UPDATE_PBA_ORG_ID);
+    await assertOrganisationDetailsUrl(page, UPDATE_PBA_ORG_ID);
   });
 });

@@ -1,6 +1,12 @@
-import { test, expect } from './helpers/integration.fixtures';
+import { test } from './helpers/integration.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { config } from '../config/config';
+import {
+  assertPendingDecisionConfirmPage,
+  assertPendingDecisionDetailsPage,
+  assertPendingDecisionRequest,
+  assertPendingDecisionSuccess
+} from './helpers/pending-decisions.helpers';
 import {
   createMockOrganisation,
   setupCommonOrganisationApiMocks,
@@ -9,37 +15,7 @@ import {
   setupPendingOrganisationDecisionApiMock,
   waitForPendingOrganisationDecisionResponse
 } from './mocks';
-
-type DecisionScenario = {
-  idSuffix: string;
-  decisionLabel: string | RegExp;
-  expectedMethod: 'PUT' | 'DELETE';
-  expectedStatus?: 'ACTIVE' | 'REVIEW';
-  successBannerText: RegExp;
-};
-
-const decisionScenarios: DecisionScenario[] = [
-  {
-    idSuffix: 'approve',
-    decisionLabel: 'Approve it',
-    expectedMethod: 'PUT',
-    expectedStatus: 'ACTIVE',
-    successBannerText: /Registration approved/i
-  },
-  {
-    idSuffix: 'reject',
-    decisionLabel: 'Reject it',
-    expectedMethod: 'DELETE',
-    successBannerText: /Registration rejected/i
-  },
-  {
-    idSuffix: 'review',
-    decisionLabel: /Place registration under review/i,
-    expectedMethod: 'PUT',
-    expectedStatus: 'REVIEW',
-    successBannerText: /Registration put under review/i
-  }
-];
+import { decisionScenarios } from './test-data/pending-decisions.data';
 
 test.describe('Playwright integration: pending decision matrix', { tag: ['@integration', '@organisations', '@pending-decisions'] }, () => {
   for (const scenario of decisionScenarios) {
@@ -67,25 +43,22 @@ test.describe('Playwright integration: pending decision matrix', { tag: ['@integ
       const organisationDetailsUrl = new URL(`/organisation-details/${organisationId}`, config.baseUrl).toString();
       await page.goto(organisationDetailsUrl);
 
-      await expect(page.getByRole('heading', { name: 'Approve organisation' })).toBeVisible();
+      await assertPendingDecisionDetailsPage(page);
       await page.getByLabel(scenario.decisionLabel).check();
       await page.getByRole('button', { name: 'Submit' }).click();
-      await expect(page.getByRole('heading', { name: 'Confirm your decision' })).toBeVisible();
+      await assertPendingDecisionConfirmPage(page);
 
       const decisionResponse = waitForPendingOrganisationDecisionResponse(page, organisationId);
       await page.getByRole('button', { name: 'Confirm' }).click();
       await decisionResponse;
 
-      expect(decisionApiMock.getLastMethod()).toBe(scenario.expectedMethod);
-
-      if (scenario.expectedStatus) {
-        const lastPayload = decisionApiMock.getLastPayload() as { organisationIdentifier?: string; status?: string } | undefined;
-        expect(lastPayload?.organisationIdentifier).toBe(organisationId);
-        expect(lastPayload?.status).toBe(scenario.expectedStatus);
-      }
-
-      await expect(page).toHaveURL(/\/organisation\/pending/);
-      await expect(page.getByText(scenario.successBannerText)).toBeVisible();
+      assertPendingDecisionRequest(
+        decisionApiMock,
+        scenario.expectedMethod,
+        organisationId,
+        scenario.expectedStatus
+      );
+      await assertPendingDecisionSuccess(page, scenario.successBannerText);
     });
   }
 });

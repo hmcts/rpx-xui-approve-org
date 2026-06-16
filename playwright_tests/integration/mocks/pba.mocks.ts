@@ -1,4 +1,5 @@
 import type { Page, Response } from '@playwright/test';
+import { paginateMockItems } from './pagination.mocks';
 
 type UpdatePbaApiMockState = {
   status?: number;
@@ -177,6 +178,7 @@ export async function setupPendingPbaStatusApiMock(
     }
 
     const filteredPendingPbaOrganisations = filterPendingPbaOrganisations(pendingPbaOrganisations, lastPayload);
+    const paginatedPendingPbaOrganisations = paginateMockItems(filteredPendingPbaOrganisations, lastPayload);
     const shouldApplyOverride = state.onlyWhenSearchTermPresent
       ? Boolean(resolvePendingPbaSearchTerm(lastPayload))
       : true;
@@ -184,11 +186,11 @@ export async function setupPendingPbaStatusApiMock(
     const resolvedStatusCode = shouldApplyOverride ? (state.status ?? 200) : 200;
     const body = shouldApplyOverride
       ? (state.responseBody ?? (resolvedStatusCode === 200 ? {
-        organisations: filteredPendingPbaOrganisations,
+        organisations: paginatedPendingPbaOrganisations,
         total_records: filteredPendingPbaOrganisations.length
       } : {}))
       : {
-        organisations: filteredPendingPbaOrganisations,
+        organisations: paginatedPendingPbaOrganisations,
         total_records: filteredPendingPbaOrganisations.length
       };
 

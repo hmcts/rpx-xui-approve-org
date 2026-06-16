@@ -1,56 +1,21 @@
-import { test, expect } from './helpers/integration.fixtures';
+import { test } from './helpers/integration.fixtures';
 import {
   waitForOrganisationStatusResponseWithHttpStatus,
   waitForPendingPbaStatusResponseWithHttpStatus
 } from './mocks';
-import { setupOrganisationSearchIntegrationPage } from './helpers/organisation-search.helpers';
-import { ORGANISATION_SEARCH_TERMS } from './test-data/organisation-search.data';
-
-type SearchStatusCodeScenario = {
-  statusCode: number;
-  expectedRedirectPath: RegExp;
-};
-
-const pendingOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] = [
-  {
-    statusCode: 401,
-    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
-  },
-  {
-    statusCode: 500,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
-  },
-  {
-    statusCode: 503,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
-  }
-];
-
-const activeOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] = [
-  {
-    statusCode: 401,
-    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
-  },
-  {
-    statusCode: 500,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
-  },
-  {
-    statusCode: 503,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
-  }
-];
-
-const pendingPbaStatusCodeScenarios: SearchStatusCodeScenario[] = [
-  {
-    statusCode: 403,
-    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
-  },
-  {
-    statusCode: 500,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
-  }
-];
+import {
+  assertActiveOrganisationRowVisible,
+  assertPendingOrganisationEmptyState,
+  assertPendingPbaEmptyState,
+  assertSearchRedirect,
+  setupOrganisationSearchIntegrationPage
+} from './helpers/organisation-search.helpers';
+import {
+  ORGANISATION_SEARCH_TERMS,
+  activeOrganisationStatusCodeScenarios,
+  pendingOrganisationStatusCodeScenarios,
+  pendingPbaStatusCodeScenarios
+} from './test-data/organisation-search.data';
 
 test.describe('Playwright integration: organisation search negative paths', { tag: ['@integration', '@organisations', '@search-negative'] }, () => {
   for (const scenario of pendingOrganisationStatusCodeScenarios) {
@@ -71,7 +36,7 @@ test.describe('Playwright integration: organisation search negative paths', { ta
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
       await failedSearchResponse;
 
-      await expect(page).toHaveURL(scenario.expectedRedirectPath);
+      await assertSearchRedirect(page, scenario.expectedRedirectPath);
     });
   }
 
@@ -95,7 +60,7 @@ test.describe('Playwright integration: organisation search negative paths', { ta
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaByName);
       await failedSearchResponse;
 
-      await expect(page).toHaveURL(scenario.expectedRedirectPath);
+      await assertSearchRedirect(page, scenario.expectedRedirectPath);
     });
   }
 
@@ -121,7 +86,7 @@ test.describe('Playwright integration: organisation search negative paths', { ta
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
       await failedSearchResponse;
 
-      await expect(page).toHaveURL(scenario.expectedRedirectPath);
+      await assertSearchRedirect(page, scenario.expectedRedirectPath);
     });
   }
 
@@ -150,7 +115,7 @@ test.describe('Playwright integration: organisation search negative paths', { ta
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
     await pendingSearchResponse;
 
-    await expect(page.getByText('There are no new registrations.')).toBeVisible();
+    await assertPendingOrganisationEmptyState(page);
   });
 
   test('Active organisation search with incomplete response object still renders returned row', async ({ page }) => {
@@ -182,7 +147,7 @@ test.describe('Playwright integration: organisation search negative paths', { ta
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
     await activeSearchResponse;
 
-    await expect(organisationApprovalsPage.activeOrganisationRowsByText('Incomplete Active Org').first()).toBeVisible();
+    await assertActiveOrganisationRowVisible(organisationApprovalsPage, 'Incomplete Active Org');
   });
 
   test('Pending PBA search with incomplete response object shows fallback empty-state', async ({ page }) => {
@@ -218,6 +183,6 @@ test.describe('Playwright integration: organisation search negative paths', { ta
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaByName);
     await pendingPbaSearchResponse;
 
-    await expect(page.getByText('There are no new PBA requests.')).toBeVisible();
+    await assertPendingPbaEmptyState(page);
   });
 });

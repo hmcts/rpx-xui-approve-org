@@ -5,6 +5,11 @@ import {
   type MockPendingPbaOrganisation
 } from '../mocks';
 
+type SearchStatusCodeScenario = {
+  statusCode: number;
+  expectedRedirectPath: RegExp;
+};
+
 export const ORGANISATION_SEARCH_TERMS = {
   pendingByName: 'Search Pending',
   activeByName: 'Search Active',
@@ -150,3 +155,44 @@ export function buildPendingPbaPaginationOrganisations(total: number = 11): Mock
     });
   });
 }
+
+export const pendingOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 401,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+  },
+  {
+    statusCode: 503,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+  }
+];
+
+export const activeOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 401,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+  },
+  {
+    statusCode: 503,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+  }
+];
+
+export const pendingPbaStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 403,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+  }
+];

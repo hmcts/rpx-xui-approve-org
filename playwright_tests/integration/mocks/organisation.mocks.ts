@@ -1,4 +1,5 @@
 import { expect, type Page, type Request, type Response, type Route } from '@playwright/test';
+import { paginateMockItems } from './pagination.mocks';
 
 export const PENDING_ORGANISATIONS_TABLE_SELECTOR = 'table.pending-organisations';
 export const ACTIVE_ORGANISATIONS_TABLE_SELECTOR = 'table.active-organisations';
@@ -72,9 +73,14 @@ type PendingDecisionApiMockState = {
   responseBody?: unknown;
 };
 
+type PendingOrganisationDecisionPayload = {
+  organisationIdentifier?: string;
+  status?: string;
+};
+
 type PendingDecisionApiMockControl = {
   getLastMethod: () => string | undefined;
-  getLastPayload: () => unknown;
+  getLastPayload: () => PendingOrganisationDecisionPayload | undefined;
 };
 
 export function createMockOrganisation(overrides: Partial<MockOrganisation>): MockOrganisation {
@@ -184,9 +190,14 @@ function resolveNormalisedStatusFromUrl(url: string): string {
 }
 
 async function fulfillOrganisationStatusRequest(route: Route, request: Request, organisations: MockOrganisation[]): Promise<void> {
-  const payload = request.method().toUpperCase() === 'POST'
+  const requestPayload = extractOrganisationSearchPayload(request);
+  const paginatedOrganisations = request.method().toUpperCase() === 'POST'
+    ? paginateMockItems(organisations, requestPayload)
+    : organisations;
+
+  const responseBody = request.method().toUpperCase() === 'POST'
     ? {
-      organisations,
+      organisations: paginatedOrganisations,
       total_records: organisations.length
     }
     : organisations;
@@ -194,7 +205,7 @@ async function fulfillOrganisationStatusRequest(route: Route, request: Request, 
   await route.fulfill({
     status: 200,
     contentType: 'application/json',
-    body: JSON.stringify(payload)
+    body: JSON.stringify(responseBody)
   });
 }
 
@@ -217,6 +228,7 @@ async function fulfillOrganisationSearchResponse(
   route: Route,
   request: Request,
   organisations: MockOrganisation[],
+  payload: OrganisationSearchApiRequestPayload | undefined,
   searchTerm: string | undefined,
   override: SearchResponseOverride | undefined
 ): Promise<void> {
@@ -226,8 +238,9 @@ async function fulfillOrganisationSearchResponse(
   }
 
   const statusCode = override?.status ?? 200;
+  const paginatedOrganisations = paginateMockItems(organisations, payload);
   const responseBody = override?.body ?? (statusCode === 200 ? {
-    organisations,
+    organisations: paginatedOrganisations,
     total_records: organisations.length
   } : {});
 
@@ -297,6 +310,7 @@ export async function setupCommonOrganisationApiMocks(
         route,
         request,
         filteredActiveOrganisations,
+        lastActiveSearchPayload,
         searchTerm,
         state.activeSearchResponse
       );
@@ -311,6 +325,7 @@ export async function setupCommonOrganisationApiMocks(
         route,
         request,
         filteredPendingOrganisations,
+        lastPendingSearchPayload,
         searchTerm,
         state.pendingSearchResponse
       );
@@ -335,7 +350,7 @@ export async function setupPendingOrganisationDecisionApiMock(
   state: PendingDecisionApiMockState
 ): Promise<PendingDecisionApiMockControl> {
   let lastMethod: string | undefined;
-  let lastPayload: unknown;
+  let lastPayload: PendingOrganisationDecisionPayload | undefined;
 
   await page.route('**/api/organisations/**', async (route, request) => {
     const method = request.method().toUpperCase();
@@ -345,7 +360,7 @@ export async function setupPendingOrganisationDecisionApiMock(
     if ((method === 'PUT' || method === 'DELETE') && pathName === expectedPath) {
       lastMethod = method;
       try {
-        lastPayload = request.postDataJSON();
+        lastPayload = request.postDataJSON() as PendingOrganisationDecisionPayload;
       } catch {
         lastPayload = undefined;
       }
