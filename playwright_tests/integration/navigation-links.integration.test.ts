@@ -1,15 +1,8 @@
+import { expect } from '@playwright/test';
 import { test } from './helpers/integration.fixtures';
 import {
-  assertActiveOrganisationDetailsPage,
-  assertActiveOrganisationListPage,
-  assertActiveOrganisationListReady,
-  assertActiveOrganisationUsersVisible,
-  assertApproveOrganisationConfirmPage,
-  assertDeleteOrganisationAvailable,
-  assertDeleteOrganisationConfirmPage,
-  assertPendingOrganisationDetailsPage,
-  assertPendingOrganisationListPage,
-  assertPendingOrganisationListReady,
+  activeListUrlPattern,
+  pendingListUrlPattern,
   setupNavigationLinksIntegrationPage
 } from './helpers/navigation-links.helpers';
 
@@ -23,12 +16,16 @@ test.describe('Playwright integration: organisation backlink navigation', {
       pendingOrganisationName
     } = await setupNavigationLinksIntegrationPage(page);
 
-    await assertPendingOrganisationListReady(organisationApprovalsPage, pendingOrganisationName);
+    await expect(organisationApprovalsPage.heading).toBeVisible();
+    await expect(organisationApprovalsPage.tabPanel).toBeVisible();
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingOrganisationName).first()).toBeVisible();
     await organisationApprovalsPage.openFirstPendingOrganisation();
-    await assertPendingOrganisationDetailsPage(page, organisationApprovalsPage, pendingOrganisationId);
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${pendingOrganisationId}`));
+    await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
 
     await organisationApprovalsPage.clickBackLink();
-    await assertPendingOrganisationListPage(page, organisationApprovalsPage, pendingOrganisationName);
+    await expect(page).toHaveURL(pendingListUrlPattern);
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingOrganisationName).first()).toBeVisible();
   });
 
   test('Active org details back link returns to active list', async ({ page }) => {
@@ -39,12 +36,16 @@ test.describe('Playwright integration: organisation backlink navigation', {
     } = await setupNavigationLinksIntegrationPage(page);
 
     await organisationApprovalsPage.openActiveOrganisationsTab();
-    await assertActiveOrganisationListReady(organisationApprovalsPage, activeOrganisationName);
+    await expect(organisationApprovalsPage.heading).toBeVisible();
+    await expect(organisationApprovalsPage.tabPanel).toBeVisible();
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeOrganisationName).first()).toBeVisible();
     await organisationApprovalsPage.openFirstActiveOrganisation();
-    await assertActiveOrganisationDetailsPage(page, organisationApprovalsPage, activeOrganisationId);
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${activeOrganisationId}`));
+    await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
 
     await organisationApprovalsPage.clickBackLink();
-    await assertActiveOrganisationListPage(page, organisationApprovalsPage, activeOrganisationName);
+    await expect(page).toHaveURL(activeListUrlPattern);
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeOrganisationName).first()).toBeVisible();
   });
 
   test('Confirm decision back link returns to pending details', async ({ page }) => {
@@ -54,17 +55,22 @@ test.describe('Playwright integration: organisation backlink navigation', {
       pendingOrganisationName
     } = await setupNavigationLinksIntegrationPage(page);
 
-    await assertPendingOrganisationListReady(organisationApprovalsPage, pendingOrganisationName);
+    await expect(organisationApprovalsPage.heading).toBeVisible();
+    await expect(organisationApprovalsPage.tabPanel).toBeVisible();
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingOrganisationName).first()).toBeVisible();
     await organisationApprovalsPage.openFirstPendingOrganisation();
-    await assertPendingOrganisationDetailsPage(page, organisationApprovalsPage, pendingOrganisationId);
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${pendingOrganisationId}`));
+    await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
 
     await organisationApprovalsPage.chooseDecision('Approve it');
     await organisationApprovalsPage.submitDecision();
 
-    await assertApproveOrganisationConfirmPage(page, organisationApprovalsPage);
+    await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+    await expect(page).toHaveURL(/\/approve-organisations(?:\/?|\?.*)$/);
 
     await organisationApprovalsPage.clickBackLink();
-    await assertPendingOrganisationDetailsPage(page, organisationApprovalsPage, pendingOrganisationId);
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${pendingOrganisationId}`));
+    await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
   });
 
   test('Delete confirm page back link returns to active details', async ({ page }) => {
@@ -75,16 +81,21 @@ test.describe('Playwright integration: organisation backlink navigation', {
     } = await setupNavigationLinksIntegrationPage(page);
 
     await organisationApprovalsPage.openActiveOrganisationsTab();
-    await assertActiveOrganisationListReady(organisationApprovalsPage, activeOrganisationName);
+    await expect(organisationApprovalsPage.heading).toBeVisible();
+    await expect(organisationApprovalsPage.tabPanel).toBeVisible();
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeOrganisationName).first()).toBeVisible();
     await organisationApprovalsPage.openFirstActiveOrganisation();
-    await assertActiveOrganisationDetailsPage(page, organisationApprovalsPage, activeOrganisationId);
-    await assertDeleteOrganisationAvailable(organisationApprovalsPage);
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${activeOrganisationId}`));
+    await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+    await expect(organisationApprovalsPage.deleteOrganisationDetailsButton).toBeVisible();
 
     await organisationApprovalsPage.deleteActiveOrganisation();
-    await assertDeleteOrganisationConfirmPage(page, organisationApprovalsPage);
+    await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+    await expect(page).toHaveURL(/\/delete-organisation(?:\/?|\?.*)$/);
 
     await organisationApprovalsPage.clickBackLink();
-    await assertActiveOrganisationDetailsPage(page, organisationApprovalsPage, activeOrganisationId);
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${activeOrganisationId}`));
+    await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
   });
 
   test('Active users tab back link returns to active list, then pending list, then pending details', async ({ page }) => {
@@ -96,19 +107,24 @@ test.describe('Playwright integration: organisation backlink navigation', {
     } = await setupNavigationLinksIntegrationPage(page);
 
     await organisationApprovalsPage.openActiveOrganisationsTab();
-    await assertActiveOrganisationListReady(organisationApprovalsPage, activeOrganisationName);
+    await expect(organisationApprovalsPage.heading).toBeVisible();
+    await expect(organisationApprovalsPage.tabPanel).toBeVisible();
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeOrganisationName).first()).toBeVisible();
     await organisationApprovalsPage.openFirstActiveOrganisation();
 
     await organisationApprovalsPage.openUsersTab();
-    await assertActiveOrganisationUsersVisible(organisationApprovalsPage);
+    await expect(organisationApprovalsPage.usersList).toBeVisible();
 
     await organisationApprovalsPage.clickBackLink();
-    await assertActiveOrganisationListPage(page, organisationApprovalsPage, activeOrganisationName);
+    await expect(page).toHaveURL(activeListUrlPattern);
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeOrganisationName).first()).toBeVisible();
 
     await organisationApprovalsPage.openPendingOrganisationsTab();
-    await assertPendingOrganisationListPage(page, organisationApprovalsPage, pendingOrganisationName);
+    await expect(page).toHaveURL(pendingListUrlPattern);
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingOrganisationName).first()).toBeVisible();
 
     await organisationApprovalsPage.openFirstPendingOrganisation();
-    await assertPendingOrganisationDetailsPage(page, organisationApprovalsPage, pendingOrganisationId);
+    await expect(page).toHaveURL(new RegExp(`/organisation-details/${pendingOrganisationId}`));
+    await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
   });
 });

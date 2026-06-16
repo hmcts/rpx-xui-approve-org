@@ -1,21 +1,14 @@
+import { expect } from '@playwright/test';
 import { test } from './helpers/integration.fixtures';
 import {
   waitForOrganisationStatusResponse,
   waitForPendingPbaStatusResponse
 } from './mocks';
 import {
-  assertActiveOrganisationPageRequested,
-  assertActiveOrganisationPageRows,
-  assertActiveOrganisationSearchResult,
-  assertPaginatedOrganisationIds,
-  assertPaginationSummary,
-  assertPendingOrganisationPageRequested,
-  assertPendingOrganisationPageRows,
-  assertPendingOrganisationSearchResult,
-  assertPendingPbaPageRequested,
-  assertPendingPbaPageRows,
-  assertPendingPbaSearchResult,
+  getPaginationLocator,
+  getPaginationSummaryPattern,
   openPaginationPage,
+  readPaginatedOrganisationResponse,
   setupOrganisationSearchIntegrationPage
 } from './helpers/organisation-search.helpers';
 import {
@@ -42,13 +35,9 @@ test.describe('Playwright integration: organisation search', { tag: ['@integrati
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
     await pendingSearchResponse;
 
-    await assertPendingOrganisationSearchResult(
-      organisationApprovalsPage,
-      standardApiMocks,
-      pendingSearchMatchOrganisation.name,
-      pendingNonMatchingOrganisation.name,
-      ORGANISATION_SEARCH_TERMS.pendingByName
-    );
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingSearchMatchOrganisation.name).first()).toBeVisible();
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingNonMatchingOrganisation.name)).toHaveCount(0);
+    expect(standardApiMocks.getLastPendingOrganisationSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.pendingByName.toLowerCase());
   });
 
   test('Search by organisation in active organisations uses mocked search API', async ({ page }) => {
@@ -65,13 +54,9 @@ test.describe('Playwright integration: organisation search', { tag: ['@integrati
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
     await activeSearchResponse;
 
-    await assertActiveOrganisationSearchResult(
-      organisationApprovalsPage,
-      standardApiMocks,
-      activeSearchMatchOrganisation.name,
-      activeNonMatchingOrganisation.name,
-      ORGANISATION_SEARCH_TERMS.activeByName
-    );
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeSearchMatchOrganisation.name).first()).toBeVisible();
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeNonMatchingOrganisation.name)).toHaveCount(0);
+    expect(standardApiMocks.getLastActiveOrganisationSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.activeByName.toLowerCase());
   });
 
   test('Search by address in new registrations uses mocked search API', async ({ page }) => {
@@ -84,13 +69,9 @@ test.describe('Playwright integration: organisation search', { tag: ['@integrati
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByAddress);
     await pendingSearchResponse;
 
-    await assertPendingOrganisationSearchResult(
-      organisationApprovalsPage,
-      standardApiMocks,
-      pendingSearchMatchOrganisation.name,
-      pendingNonMatchingOrganisation.name,
-      ORGANISATION_SEARCH_TERMS.pendingByAddress
-    );
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingSearchMatchOrganisation.name).first()).toBeVisible();
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingNonMatchingOrganisation.name)).toHaveCount(0);
+    expect(standardApiMocks.getLastPendingOrganisationSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.pendingByAddress.toLowerCase());
   });
 
   test('Search by organisation in new PBAs uses mocked search API', async ({ page }) => {
@@ -107,13 +88,9 @@ test.describe('Playwright integration: organisation search', { tag: ['@integrati
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaByName);
     await pendingPbaSearchResponse;
 
-    await assertPendingPbaSearchResult(
-      organisationApprovalsPage,
-      standardApiMocks,
-      pendingPbaSearchMatchOrganisation.organisationName,
-      pendingPbaNonMatchingOrganisation.organisationName,
-      ORGANISATION_SEARCH_TERMS.pendingPbaByName
-    );
+    await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaSearchMatchOrganisation.organisationName).first()).toBeVisible();
+    await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaNonMatchingOrganisation.organisationName)).toHaveCount(0);
+    expect(standardApiMocks.getLastPendingPbaSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.pendingPbaByName.toLowerCase());
   });
 
   test('Pagination in new registrations keeps search term and requests page 2', async ({ page }) => {
@@ -129,34 +106,28 @@ test.describe('Playwright integration: organisation search', { tag: ['@integrati
 
     const pendingSearchResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPagination);
-    await assertPaginatedOrganisationIds(
-      pendingSearchResponse,
-      pendingPaginationOrganisations.length,
+    const pendingSearchBody = await readPaginatedOrganisationResponse(pendingSearchResponse);
+    expect(pendingSearchBody.total_records).toBe(pendingPaginationOrganisations.length);
+    expect(pendingSearchBody.organisations.map((organisation) => organisation.organisationIdentifier)).toEqual(
       pendingPaginationOrganisations.slice(0, 10).map((organisation) => organisation.organisationIdentifier)
     );
 
-    await assertPendingOrganisationPageRows(
-      organisationApprovalsPage,
-      pendingPaginationOrganisations[0].name,
-      pendingPaginationOrganisations[10].name
-    );
-    await assertPaginationSummary(page, 1, 10, pendingPaginationOrganisations.length);
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingPaginationOrganisations[0].name).first()).toBeVisible();
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingPaginationOrganisations[10].name)).toHaveCount(0);
+    await expect(getPaginationLocator(page)).toContainText(getPaginationSummaryPattern(1, 10, pendingPaginationOrganisations.length));
 
     const pageTwoResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
     await openPaginationPage(page, 2);
-    await assertPaginatedOrganisationIds(
-      pageTwoResponse,
-      pendingPaginationOrganisations.length,
+    const pendingPageTwoBody = await readPaginatedOrganisationResponse(pageTwoResponse);
+    expect(pendingPageTwoBody.total_records).toBe(pendingPaginationOrganisations.length);
+    expect(pendingPageTwoBody.organisations.map((organisation) => organisation.organisationIdentifier)).toEqual(
       pendingPaginationOrganisations.slice(10).map((organisation) => organisation.organisationIdentifier)
     );
 
-    assertPendingOrganisationPageRequested(standardApiMocks, 2);
-    await assertPendingOrganisationPageRows(
-      organisationApprovalsPage,
-      pendingPaginationOrganisations[10].name,
-      pendingPaginationOrganisations[0].name
-    );
-    await assertPaginationSummary(page, 11, 11, pendingPaginationOrganisations.length);
+    expect(standardApiMocks.getLastPendingOrganisationSearchPayload()?.searchRequest?.pagination_parameters?.page_number).toEqual(2);
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingPaginationOrganisations[10].name).first()).toBeVisible();
+    await expect(organisationApprovalsPage.pendingOrganisationRowsByName(pendingPaginationOrganisations[0].name)).toHaveCount(0);
+    await expect(getPaginationLocator(page)).toContainText(getPaginationSummaryPattern(11, 11, pendingPaginationOrganisations.length));
   });
 
   test('Pagination in active organisations keeps search term and requests page 2', async ({ page }) => {
@@ -176,34 +147,28 @@ test.describe('Playwright integration: organisation search', { tag: ['@integrati
 
     const activeSearchResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activePagination);
-    await assertPaginatedOrganisationIds(
-      activeSearchResponse,
-      activePaginationOrganisations.length,
+    const activeSearchBody = await readPaginatedOrganisationResponse(activeSearchResponse);
+    expect(activeSearchBody.total_records).toBe(activePaginationOrganisations.length);
+    expect(activeSearchBody.organisations.map((organisation) => organisation.organisationIdentifier)).toEqual(
       activePaginationOrganisations.slice(0, 10).map((organisation) => organisation.organisationIdentifier)
     );
 
-    await assertActiveOrganisationPageRows(
-      organisationApprovalsPage,
-      activePaginationOrganisations[0].name,
-      activePaginationOrganisations[10].name
-    );
-    await assertPaginationSummary(page, 1, 10, activePaginationOrganisations.length);
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[0].name).first()).toBeVisible();
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[10].name)).toHaveCount(0);
+    await expect(getPaginationLocator(page)).toContainText(getPaginationSummaryPattern(1, 10, activePaginationOrganisations.length));
 
     const pageTwoResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
     await openPaginationPage(page, 2);
-    await assertPaginatedOrganisationIds(
-      pageTwoResponse,
-      activePaginationOrganisations.length,
+    const activePageTwoBody = await readPaginatedOrganisationResponse(pageTwoResponse);
+    expect(activePageTwoBody.total_records).toBe(activePaginationOrganisations.length);
+    expect(activePageTwoBody.organisations.map((organisation) => organisation.organisationIdentifier)).toEqual(
       activePaginationOrganisations.slice(10).map((organisation) => organisation.organisationIdentifier)
     );
 
-    assertActiveOrganisationPageRequested(standardApiMocks, 2);
-    await assertActiveOrganisationPageRows(
-      organisationApprovalsPage,
-      activePaginationOrganisations[10].name,
-      activePaginationOrganisations[0].name
-    );
-    await assertPaginationSummary(page, 11, 11, activePaginationOrganisations.length);
+    expect(standardApiMocks.getLastActiveOrganisationSearchPayload()?.searchRequest?.pagination_parameters?.page_number).toEqual(2);
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[10].name).first()).toBeVisible();
+    await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[0].name)).toHaveCount(0);
+    await expect(getPaginationLocator(page)).toContainText(getPaginationSummaryPattern(11, 11, activePaginationOrganisations.length));
   });
 
   test('Pagination in new PBAs keeps search term and requests page 2', async ({ page }) => {
@@ -221,33 +186,27 @@ test.describe('Playwright integration: organisation search', { tag: ['@integrati
 
     const pendingPbaSearchResponse = waitForPendingPbaStatusResponse(page);
     await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaPagination);
-    await assertPaginatedOrganisationIds(
-      pendingPbaSearchResponse,
-      pendingPbaPaginationOrganisations.length,
+    const pendingPbaSearchBody = await readPaginatedOrganisationResponse(pendingPbaSearchResponse);
+    expect(pendingPbaSearchBody.total_records).toBe(pendingPbaPaginationOrganisations.length);
+    expect(pendingPbaSearchBody.organisations.map((organisation) => organisation.organisationIdentifier)).toEqual(
       pendingPbaPaginationOrganisations.slice(0, 10).map((organisation) => organisation.organisationIdentifier)
     );
 
-    await assertPendingPbaPageRows(
-      organisationApprovalsPage,
-      pendingPbaPaginationOrganisations[0].organisationName,
-      pendingPbaPaginationOrganisations[10].organisationName
-    );
-    await assertPaginationSummary(page, 1, 10, pendingPbaPaginationOrganisations.length);
+    await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaPaginationOrganisations[0].organisationName).first()).toBeVisible();
+    await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaPaginationOrganisations[10].organisationName)).toHaveCount(0);
+    await expect(getPaginationLocator(page)).toContainText(getPaginationSummaryPattern(1, 10, pendingPbaPaginationOrganisations.length));
 
     const pageTwoResponse = waitForPendingPbaStatusResponse(page);
     await openPaginationPage(page, 2);
-    await assertPaginatedOrganisationIds(
-      pageTwoResponse,
-      pendingPbaPaginationOrganisations.length,
+    const pendingPbaPageTwoBody = await readPaginatedOrganisationResponse(pageTwoResponse);
+    expect(pendingPbaPageTwoBody.total_records).toBe(pendingPbaPaginationOrganisations.length);
+    expect(pendingPbaPageTwoBody.organisations.map((organisation) => organisation.organisationIdentifier)).toEqual(
       pendingPbaPaginationOrganisations.slice(10).map((organisation) => organisation.organisationIdentifier)
     );
 
-    assertPendingPbaPageRequested(standardApiMocks, 2);
-    await assertPendingPbaPageRows(
-      organisationApprovalsPage,
-      pendingPbaPaginationOrganisations[10].organisationName,
-      pendingPbaPaginationOrganisations[0].organisationName
-    );
-    await assertPaginationSummary(page, 11, 11, pendingPbaPaginationOrganisations.length);
+    expect(standardApiMocks.getLastPendingPbaSearchPayload()?.searchRequest?.pagination_parameters?.page_number).toEqual(2);
+    await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaPaginationOrganisations[10].organisationName).first()).toBeVisible();
+    await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaPaginationOrganisations[0].organisationName)).toHaveCount(0);
+    await expect(getPaginationLocator(page)).toContainText(getPaginationSummaryPattern(11, 11, pendingPbaPaginationOrganisations.length));
   });
 });

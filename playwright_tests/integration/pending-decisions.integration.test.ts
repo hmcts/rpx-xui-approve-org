@@ -1,12 +1,8 @@
+import { expect } from '@playwright/test';
 import { test } from './helpers/integration.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { config } from '../config/config';
-import {
-  assertPendingDecisionConfirmPage,
-  assertPendingDecisionDetailsPage,
-  assertPendingDecisionRequest,
-  assertPendingDecisionSuccess
-} from './helpers/pending-decisions.helpers';
+import { OrganisationApprovalsPage } from '../page-objects/pages';
 import {
   createMockOrganisation,
   setupCommonOrganisationApiMocks,
@@ -42,23 +38,25 @@ test.describe('Playwright integration: pending decision matrix', { tag: ['@integ
       await ensureAuthenticatedPage(page, 'base');
       const organisationDetailsUrl = new URL(`/organisation-details/${organisationId}`, config.baseUrl).toString();
       await page.goto(organisationDetailsUrl);
+      const organisationApprovalsPage = new OrganisationApprovalsPage(page);
 
-      await assertPendingDecisionDetailsPage(page);
-      await page.getByLabel(scenario.decisionLabel).check();
-      await page.getByRole('button', { name: 'Submit' }).click();
-      await assertPendingDecisionConfirmPage(page);
+      await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
+      await organisationApprovalsPage.chooseDecision(scenario.decisionLabel);
+      await organisationApprovalsPage.submitDecision();
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
 
       const decisionResponse = waitForPendingOrganisationDecisionResponse(page, organisationId);
-      await page.getByRole('button', { name: 'Confirm' }).click();
+      await organisationApprovalsPage.confirmDecision();
       await decisionResponse;
 
-      assertPendingDecisionRequest(
-        decisionApiMock,
-        scenario.expectedMethod,
-        organisationId,
-        scenario.expectedStatus
-      );
-      await assertPendingDecisionSuccess(page, scenario.successBannerText);
+      expect(decisionApiMock.getLastMethod()).toEqual(scenario.expectedMethod);
+      if (scenario.expectedStatus) {
+        const lastPayload = decisionApiMock.getLastPayload();
+        expect(lastPayload?.organisationIdentifier).toEqual(organisationId);
+        expect(lastPayload?.status).toEqual(scenario.expectedStatus);
+      }
+      await expect(page).toHaveURL(/\/organisation\/pending/);
+      await expect(organisationApprovalsPage.successBanner(scenario.successBannerText)).toBeVisible();
     });
   }
 });
