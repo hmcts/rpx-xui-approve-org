@@ -49,7 +49,7 @@ describe('S2S Auth API', () => {
       } catch (e) {
         pactSetUp.provider.verify();
         pactSetUp.provider.finalize();
-        throw new Error(e);
+        throw new Error('S2S lease request failed', { cause: e });
       }
     });
   });
