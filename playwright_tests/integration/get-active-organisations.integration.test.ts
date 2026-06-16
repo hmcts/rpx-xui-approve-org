@@ -2,31 +2,35 @@ import { expect } from '@playwright/test';
 import { test } from './helpers/integration.fixtures';
 import { openOrganisationApprovalsPage } from './helpers/organisation-approvals.helpers';
 import {
-  ACTIVE_ORGANISATIONS_TABLE_SELECTOR,
-  PENDING_ORGANISATIONS_TABLE_SELECTOR,
   setupCommonOrganisationApiMocks,
-  waitForOrganisationNameInTable,
   waitForOrganisationStatusResponse
 } from './mocks';
 
 test.describe('Playwright integration seed: get active organisations', { tag: ['@integration', '@organisations'] }, () => {
   test('Organisation approvals renders mocked pending and active organisations', async ({ page }) => {
-    const { pendingOrganisations, activeOrganisations } = await setupCommonOrganisationApiMocks(page);
-    const pendingResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
+    const { pendingOrganisations, activeOrganisations } = await test.step('Setup mocked organisation APIs', async () =>
+      setupCommonOrganisationApiMocks(page)
+    );
 
-    const organisationApprovalsPage = await openOrganisationApprovalsPage(page);
-    await expect(organisationApprovalsPage.heading).toBeVisible();
-    await expect(organisationApprovalsPage.tabPanel).toBeVisible();
-    await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
-    await expect(organisationApprovalsPage.newPbasTab).toBeVisible();
-    await expect(organisationApprovalsPage.activeOrganisationsTab).toBeVisible();
-    await pendingResponse;
-    await waitForOrganisationNameInTable(page, PENDING_ORGANISATIONS_TABLE_SELECTOR, pendingOrganisations[0].name);
+    const organisationApprovalsPage = await test.step('Open approvals page and verify pending organisations', async () => {
+      const pendingResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
+      const approvalsPage = await openOrganisationApprovalsPage(page);
+      await expect(approvalsPage.heading).toBeVisible();
+      await expect(approvalsPage.tabPanel).toBeVisible();
+      await expect(approvalsPage.pendingOverviewPanel).toBeVisible();
+      await expect(approvalsPage.newPbasTab).toBeVisible();
+      await expect(approvalsPage.activeOrganisationsTab).toBeVisible();
+      await pendingResponse;
+      await expect(approvalsPage.pendingOrganisationRowByName(pendingOrganisations[0].name)).toBeVisible();
+      return approvalsPage;
+    });
 
-    const activeResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
-    await organisationApprovalsPage.openActiveOrganisationsTab();
-    await activeResponse;
-    await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
-    await waitForOrganisationNameInTable(page, ACTIVE_ORGANISATIONS_TABLE_SELECTOR, activeOrganisations[0].name);
+    await test.step('Open active organisations tab and verify active organisations', async () => {
+      const activeResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await activeResponse;
+      await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
+      await expect(organisationApprovalsPage.activeOrganisationRowByText(activeOrganisations[0].name)).toBeVisible();
+    });
   });
 });

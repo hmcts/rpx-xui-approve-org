@@ -1,4 +1,4 @@
-import type { Locator, Page, Response } from '@playwright/test';
+import type { Page, Response } from '@playwright/test';
 import { ensureAuthenticatedPage } from '../../helpers/sessionCapture';
 import { OrganisationApprovalsPage } from '../../page-objects/pages';
 import {
@@ -71,30 +71,6 @@ export async function setupOrganisationSearchIntegrationPage(
     organisationApprovalsPage,
     standardApiMocks
   };
-}
-
-export async function openPaginationPage(page: Page, pageNumber: number): Promise<void> {
-  const pagination = getPaginationLocator(page);
-  await pagination.waitFor({ state: 'visible' });
-
-  const pageNumberText = String(pageNumber);
-  const linkCandidate = pagination.getByRole('link', { name: pageNumberText }).first();
-  if (await linkCandidate.count()) {
-    await linkCandidate.click();
-    return;
-  }
-
-  const buttonCandidate = pagination.getByRole('button', { name: pageNumberText }).first();
-  if (await buttonCandidate.count()) {
-    await buttonCandidate.click();
-    return;
-  }
-
-  await pagination.locator('a, button').filter({ hasText: pageNumberText }).first().click();
-}
-
-export function getPaginationLocator(page: Page): Locator {
-  return page.locator('xuilib-hmcts-pagination');
 }
 
 export function getPaginationSummaryPattern(

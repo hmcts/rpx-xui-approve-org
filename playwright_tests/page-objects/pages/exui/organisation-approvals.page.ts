@@ -69,6 +69,9 @@ export class OrganisationApprovalsPage extends BasePage {
 
   readonly notificationBannerMessage = this.page.locator('app-notification-banner-component .hmcts-banner__message');
   readonly deletedOrganisationBannerTitle = this.contentMain.locator('.govuk-panel--confirmation .govuk-panel__title');
+  readonly pagination = this.page.locator('xuilib-hmcts-pagination');
+  readonly pendingOrganisationEmptyState = this.page.getByText('There are no new registrations.');
+  readonly pendingPbaEmptyState = this.page.getByText('There are no new PBA requests.');
   readonly organisationNameSummaryValue = this.detailsPanel
     .locator('.govuk-summary-list__row .govuk-summary-list__value')
     .first();
@@ -89,8 +92,16 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.pendingOrganisationRows.filter({ hasText: organisationName });
   }
 
+  pendingOrganisationRowByName(organisationName: string): Locator {
+    return this.pendingOrganisationRowsByName(organisationName).first();
+  }
+
   activeOrganisationRowsByText(searchText: string): Locator {
     return this.activeOrganisationRows.filter({ hasText: searchText });
+  }
+
+  activeOrganisationRowByText(searchText: string): Locator {
+    return this.activeOrganisationRowsByText(searchText).first();
   }
 
   activeOrganisationViewLink(): Locator {
@@ -99,6 +110,10 @@ export class OrganisationApprovalsPage extends BasePage {
 
   pendingPbaRowsByText(searchText: string): Locator {
     return this.pendingPbaRows.filter({ hasText: searchText });
+  }
+
+  pendingPbaRowByText(searchText: string): Locator {
+    return this.pendingPbaRowsByText(searchText).first();
   }
 
   successBanner(messageText: RegExp | string): Locator {
@@ -112,6 +127,25 @@ export class OrganisationApprovalsPage extends BasePage {
   async searchForOrganisation(organisationName: string): Promise<void> {
     await this.searchInput.fill(organisationName);
     await this.searchButton.click();
+  }
+
+  async openPaginationPage(pageNumber: number): Promise<void> {
+    await this.pagination.waitFor({ state: 'visible' });
+
+    const pageNumberText = String(pageNumber);
+    const linkCandidate = this.pagination.getByRole('link', { name: pageNumberText }).first();
+    if (await linkCandidate.count()) {
+      await linkCandidate.click();
+      return;
+    }
+
+    const buttonCandidate = this.pagination.getByRole('button', { name: pageNumberText }).first();
+    if (await buttonCandidate.count()) {
+      await buttonCandidate.click();
+      return;
+    }
+
+    await this.pagination.locator('a, button').filter({ hasText: pageNumberText }).first().click();
   }
 
   async openFirstPendingOrganisation(): Promise<void> {
