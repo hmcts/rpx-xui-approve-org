@@ -28,7 +28,12 @@ type ManageOrgOrganisationDetails = {
   status?: unknown;
 };
 
+const SHARED_REGISTER_ENVIRONMENT_KEYS = new Set([
+  'hmcts:aat.platform.hmcts.net',
+  'hmcts:demo.platform.hmcts.net'
+]);
 const HMCTS_SERVICE_HOST_PATTERN = /^(administer-orgs|xui-ao-webapp|manage-org)(?:-pr-(\d+))?\.(.+)$/;
+const PREVIEW_APPROVE_ORG_HOST_PATTERN = /^xui-ao-webapp-pr-\d+\.preview\.platform\.hmcts\.net$/;
 const MANAGE_ORG_URL = config.registerUrl.endsWith('/') ? config.registerUrl : `${config.registerUrl}/`;
 
 function generatePbaNumber(): string {
@@ -73,17 +78,30 @@ function resolveEnvironmentKey(rawUrl: string): string {
   }
 
   const [, , previewPrNumber, environmentHost] = hmctsServiceHost;
-  return `hmcts:${environmentHost}:pr:${previewPrNumber ?? ''}`;
+  return previewPrNumber
+    ? `hmcts:${environmentHost}:pr:${previewPrNumber}`
+    : `hmcts:${environmentHost}`;
+}
+
+function resolveApproveOrgEnvironmentKey(manageOrgEnvironment: string): string {
+  const approveOrgHost = new URL(config.baseUrl).hostname.toLowerCase();
+
+  if (PREVIEW_APPROVE_ORG_HOST_PATTERN.test(approveOrgHost) && SHARED_REGISTER_ENVIRONMENT_KEYS.has(manageOrgEnvironment)) {
+    return manageOrgEnvironment;
+  }
+
+  return resolveEnvironmentKey(config.baseUrl);
 }
 
 function assertManageOrgMatchesApproveOrgEnvironment(): void {
-  const approveOrgEnvironment = resolveEnvironmentKey(config.baseUrl);
   const manageOrgEnvironment = resolveEnvironmentKey(MANAGE_ORG_URL);
+  const approveOrgEnvironment = resolveApproveOrgEnvironmentKey(manageOrgEnvironment);
 
   if (approveOrgEnvironment !== manageOrgEnvironment) {
     throw new Error(
       'Unable to setup pending PBAs because approve-org and Manage Org target different environments. ' +
-      `TEST_URL=${config.baseUrl} TEST_REGISTER_URL=${MANAGE_ORG_URL}`
+      `TEST_URL=${config.baseUrl} TEST_REGISTER_URL=${MANAGE_ORG_URL} ` +
+      `approveOrgEnvironment=${approveOrgEnvironment} manageOrgEnvironment=${manageOrgEnvironment}`
     );
   }
 }
