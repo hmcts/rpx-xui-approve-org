@@ -148,7 +148,7 @@ export async function provisionPendingOrganisation(
   const organisationSeed = buildOrganisationSeed();
   const firstName = options.firstName ?? 'Api';
   const lastName = options.lastName ?? 'Test';
-  const workEmailAddress = options.workEmailAddress ?? `${organisationSeed}@mailinator.com`;
+  const workEmailAddress = options.workEmailAddress ?? `${organisationSeed}@example.com`;
   const timeoutMs = options.timeoutMs ?? 120000;
   const pollIntervalMs = options.pollIntervalMs ?? 5000;
 

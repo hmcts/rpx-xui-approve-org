@@ -175,7 +175,7 @@ function isSraRegulated(regulators: Regulator[]): boolean {
 
 function buildRegisterOrganisationPayload(input: RegisterOrganisationInput): RegisterOrganisationPayload {
   const companyName = input.companyName ?? `${input.userName}`;
-  const workEmailAddress = input.workEmailAddress ?? `${input.userName}@mailinator.com`;
+  const workEmailAddress = input.workEmailAddress ?? `${input.userName}@example.com`;
   const firstName = input.firstName ?? 'Test';
   const lastName = input.lastName ?? 'User';
   const hasPBA = input.hasPBA ?? Boolean(input.pbaNumbers?.length);
