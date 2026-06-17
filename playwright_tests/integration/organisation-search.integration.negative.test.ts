@@ -1,9 +1,4 @@
-import { expect } from '@playwright/test';
-import { test } from './helpers/integration.fixtures';
-import {
-  waitForOrganisationStatusResponseWithHttpStatus,
-  waitForPendingPbaStatusResponseWithHttpStatus
-} from './mocks';
+import { test, expect } from '../page-objects/page.fixtures';
 import { setupOrganisationSearchIntegrationPage } from './helpers/organisation-search.helpers';
 import {
   ORGANISATION_SEARCH_TERMS,
@@ -14,10 +9,8 @@ import {
 
 test.describe('Playwright integration: organisation search negative paths', { tag: ['@integration', '@organisations', '@search-negative'] }, () => {
   for (const scenario of pendingOrganisationStatusCodeScenarios) {
-    test(`Pending organisation search handles HTTP ${scenario.statusCode}`, async ({ page }) => {
-      const {
-        organisationApprovalsPage
-      } = await test.step('Setup mocked pending organisation search failure', async () => setupOrganisationSearchIntegrationPage(page, {
+    test(`Pending organisation search handles HTTP ${scenario.statusCode}`, async ({ page, organisationApprovalsPage }) => {
+      await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
           pendingSearchResponse: {
             status: scenario.statusCode,
@@ -25,12 +18,10 @@ test.describe('Playwright integration: organisation search negative paths', { ta
             onlyWhenSearchTermPresent: true
           }
         }
-      }));
+      });
 
-      await test.step(`Search pending organisations and wait for HTTP ${scenario.statusCode}`, async () => {
-        const failedSearchResponse = waitForOrganisationStatusResponseWithHttpStatus(page, 'PENDING,REVIEW', scenario.statusCode);
+      await test.step(`Search pending organisations with HTTP ${scenario.statusCode} mock`, async () => {
         await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
-        await failedSearchResponse;
       });
 
       await test.step('Verify pending search redirects to expected error page', async () => {
@@ -40,27 +31,22 @@ test.describe('Playwright integration: organisation search negative paths', { ta
   }
 
   for (const scenario of pendingPbaStatusCodeScenarios) {
-    test(`Pending PBA search handles HTTP ${scenario.statusCode}`, async ({ page }) => {
-      const {
-        organisationApprovalsPage
-      } = await test.step('Setup mocked pending PBA search failure', async () => setupOrganisationSearchIntegrationPage(page, {
+    test(`Pending PBA search handles HTTP ${scenario.statusCode}`, async ({ page, organisationApprovalsPage }) => {
+      await setupOrganisationSearchIntegrationPage(page, {
         pendingPbaSearchResponse: {
           status: scenario.statusCode,
           body: { message: `mock pending pba search error ${scenario.statusCode}` },
           onlyWhenSearchTermPresent: true
         }
-      }));
-
-      await test.step('Open new PBAs tab', async () => {
-        const pendingPbaInitialResponse = waitForPendingPbaStatusResponseWithHttpStatus(page, 200);
-        await organisationApprovalsPage.openNewPbasTab();
-        await pendingPbaInitialResponse;
       });
 
-      await test.step(`Search pending PBAs and wait for HTTP ${scenario.statusCode}`, async () => {
-        const failedSearchResponse = waitForPendingPbaStatusResponseWithHttpStatus(page, scenario.statusCode);
+      await test.step('Open new PBAs tab', async () => {
+        await organisationApprovalsPage.openNewPbasTab();
+        await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
+      });
+
+      await test.step(`Search pending PBAs with HTTP ${scenario.statusCode} mock`, async () => {
         await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaByName);
-        await failedSearchResponse;
       });
 
       await test.step('Verify pending PBA search redirects to expected error page', async () => {
@@ -70,10 +56,8 @@ test.describe('Playwright integration: organisation search negative paths', { ta
   }
 
   for (const scenario of activeOrganisationStatusCodeScenarios) {
-    test(`Active organisation search handles HTTP ${scenario.statusCode}`, async ({ page }) => {
-      const {
-        organisationApprovalsPage
-      } = await test.step('Setup mocked active organisation search failure', async () => setupOrganisationSearchIntegrationPage(page, {
+    test(`Active organisation search handles HTTP ${scenario.statusCode}`, async ({ page, organisationApprovalsPage }) => {
+      await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
           activeSearchResponse: {
             status: scenario.statusCode,
@@ -81,18 +65,15 @@ test.describe('Playwright integration: organisation search negative paths', { ta
             onlyWhenSearchTermPresent: true
           }
         }
-      }));
-
-      await test.step('Open active organisations tab', async () => {
-        const activeInitialResponse = waitForOrganisationStatusResponseWithHttpStatus(page, 'ACTIVE', 200);
-        await organisationApprovalsPage.openActiveOrganisationsTab();
-        await activeInitialResponse;
       });
 
-      await test.step(`Search active organisations and wait for HTTP ${scenario.statusCode}`, async () => {
-        const failedSearchResponse = waitForOrganisationStatusResponseWithHttpStatus(page, 'ACTIVE', scenario.statusCode);
+      await test.step('Open active organisations tab', async () => {
+        await organisationApprovalsPage.openActiveOrganisationsTab();
+        await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
+      });
+
+      await test.step(`Search active organisations with HTTP ${scenario.statusCode} mock`, async () => {
         await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
-        await failedSearchResponse;
       });
 
       await test.step('Verify active search redirects to expected error page', async () => {
@@ -101,10 +82,8 @@ test.describe('Playwright integration: organisation search negative paths', { ta
     });
   }
 
-  test('Pending organisation search with incomplete response object shows fallback empty-state', async ({ page }) => {
-    const {
-      organisationApprovalsPage
-    } = await test.step('Setup incomplete pending organisation search response', async () => setupOrganisationSearchIntegrationPage(page, {
+  test('Pending organisation search with incomplete response object shows fallback empty-state', async ({ page, organisationApprovalsPage }) => {
+    await setupOrganisationSearchIntegrationPage(page, {
       organisations: {
         pendingSearchResponse: {
           status: 200,
@@ -120,12 +99,10 @@ test.describe('Playwright integration: organisation search negative paths', { ta
           onlyWhenSearchTermPresent: true
         }
       }
-    }));
+    });
 
     await test.step('Search pending organisations with incomplete response', async () => {
-      const pendingSearchResponse = waitForOrganisationStatusResponseWithHttpStatus(page, 'PENDING,REVIEW', 200);
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
-      await pendingSearchResponse;
     });
 
     await test.step('Verify pending empty state is shown', async () => {
@@ -133,10 +110,8 @@ test.describe('Playwright integration: organisation search negative paths', { ta
     });
   });
 
-  test('Active organisation search with incomplete response object still renders returned row', async ({ page }) => {
-    const {
-      organisationApprovalsPage
-    } = await test.step('Setup incomplete active organisation search response', async () => setupOrganisationSearchIntegrationPage(page, {
+  test('Active organisation search with incomplete response object still renders returned row', async ({ page, organisationApprovalsPage }) => {
+    await setupOrganisationSearchIntegrationPage(page, {
       organisations: {
         activeSearchResponse: {
           status: 200,
@@ -152,18 +127,15 @@ test.describe('Playwright integration: organisation search negative paths', { ta
           onlyWhenSearchTermPresent: true
         }
       }
-    }));
+    });
 
     await test.step('Open active organisations tab', async () => {
-      const activeInitialResponse = waitForOrganisationStatusResponseWithHttpStatus(page, 'ACTIVE', 200);
       await organisationApprovalsPage.openActiveOrganisationsTab();
-      await activeInitialResponse;
+      await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
     });
 
     await test.step('Search active organisations with incomplete response', async () => {
-      const activeSearchResponse = waitForOrganisationStatusResponseWithHttpStatus(page, 'ACTIVE', 200);
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
-      await activeSearchResponse;
     });
 
     await test.step('Verify incomplete active organisation row is shown', async () => {
@@ -171,10 +143,8 @@ test.describe('Playwright integration: organisation search negative paths', { ta
     });
   });
 
-  test('Pending PBA search with incomplete response object shows fallback empty-state', async ({ page }) => {
-    const {
-      organisationApprovalsPage
-    } = await test.step('Setup incomplete pending PBA search response', async () => setupOrganisationSearchIntegrationPage(page, {
+  test('Pending PBA search with incomplete response object shows fallback empty-state', async ({ page, organisationApprovalsPage }) => {
+    await setupOrganisationSearchIntegrationPage(page, {
       pendingPbaSearchResponse: {
         status: 200,
         body: {
@@ -194,18 +164,15 @@ test.describe('Playwright integration: organisation search negative paths', { ta
         },
         onlyWhenSearchTermPresent: true
       }
-    }));
+    });
 
     await test.step('Open new PBAs tab', async () => {
-      const pendingPbaInitialResponse = waitForPendingPbaStatusResponseWithHttpStatus(page, 200);
       await organisationApprovalsPage.openNewPbasTab();
-      await pendingPbaInitialResponse;
+      await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
     });
 
     await test.step('Search pending PBAs with incomplete response', async () => {
-      const pendingPbaSearchResponse = waitForPendingPbaStatusResponseWithHttpStatus(page, 200);
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaByName);
-      await pendingPbaSearchResponse;
     });
 
     await test.step('Verify pending PBA empty state is shown', async () => {

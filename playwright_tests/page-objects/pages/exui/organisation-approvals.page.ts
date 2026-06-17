@@ -191,21 +191,30 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.staffDetailsHeaderTab().click();
   }
 
+  private async checkDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
+    await decisionRadio.check({ trial: true });
+    await decisionRadio.check();
+
+    if (!(await decisionRadio.isChecked())) {
+      throw new Error(`Unable to select decision radio: ${decisionName}`);
+    }
+  }
+
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
     const normalizedDecision = (typeof decisionLabel === 'string' ? decisionLabel : decisionLabel.source).toLowerCase();
 
     if (normalizedDecision.includes('approve')) {
-      await this.approveDecisionRadio.check();
+      await this.checkDecisionRadio(this.approveDecisionRadio, 'approve');
       return;
     }
 
     if (normalizedDecision.includes('reject')) {
-      await this.rejectDecisionRadio.check();
+      await this.checkDecisionRadio(this.rejectDecisionRadio, 'reject');
       return;
     }
 
     if (normalizedDecision.includes('review') || normalizedDecision.includes('hold')) {
-      await this.reviewDecisionRadio.check();
+      await this.checkDecisionRadio(this.reviewDecisionRadio, 'review');
       return;
     }
 

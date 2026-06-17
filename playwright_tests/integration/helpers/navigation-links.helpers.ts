@@ -1,6 +1,5 @@
 import type { Page } from '@playwright/test';
 import { ensureAuthenticatedPage } from '../../helpers/sessionCapture';
-import { OrganisationApprovalsPage } from '../../page-objects/pages';
 import {
   createMockOrganisation,
   setupStandardOrganisationApprovalsApiMocks
@@ -41,7 +40,6 @@ export const pendingListUrlPattern = /\/(?:organisation\/pending|pending-organis
 export const activeListUrlPattern = /\/(?:organisation\/active|active-organisation)(?:\/?|\?.*)$/;
 
 export type NavigationLinksIntegrationSetup = {
-  organisationApprovalsPage: OrganisationApprovalsPage;
   pendingOrganisationId: string;
   pendingOrganisationName: string;
   activeOrganisationId: string;
@@ -85,10 +83,8 @@ export async function setupNavigationLinksIntegrationPage(page: Page): Promise<N
   await setupOrganisationUsersApiMocks(page);
 
   await ensureAuthenticatedPage(page, 'base');
-  const organisationApprovalsPage = new OrganisationApprovalsPage(page);
 
   return {
-    organisationApprovalsPage,
     pendingOrganisationId: pendingBacklinkOrganisation.organisationIdentifier,
     pendingOrganisationName: pendingBacklinkOrganisation.name,
     activeOrganisationId: activeBacklinkOrganisation.organisationIdentifier,

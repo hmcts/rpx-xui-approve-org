@@ -1,5 +1,4 @@
-import { expect } from '@playwright/test';
-import { test } from './helpers/integration.fixtures';
+import { test, expect } from '../page-objects/page.fixtures';
 import {
   activeListUrlPattern,
   pendingListUrlPattern,
@@ -9,12 +8,11 @@ import {
 test.describe('Playwright integration: organisation backlink navigation', {
   tag: ['@integration', '@organisations', '@navigation-links']
 }, () => {
-  test('Pending org details back link returns to pending list', async ({ page }) => {
+  test('Pending org details back link returns to pending list', async ({ page, organisationApprovalsPage }) => {
     const {
-      organisationApprovalsPage,
       pendingOrganisationId,
       pendingOrganisationName
-    } = await test.step('Setup mocked navigation data', async () => setupNavigationLinksIntegrationPage(page));
+    } = await setupNavigationLinksIntegrationPage(page);
 
     await test.step('Open pending organisation details', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
@@ -32,12 +30,11 @@ test.describe('Playwright integration: organisation backlink navigation', {
     });
   });
 
-  test('Active org details back link returns to active list', async ({ page }) => {
+  test('Active org details back link returns to active list', async ({ page, organisationApprovalsPage }) => {
     const {
-      organisationApprovalsPage,
       activeOrganisationId,
       activeOrganisationName
-    } = await test.step('Setup mocked navigation data', async () => setupNavigationLinksIntegrationPage(page));
+    } = await setupNavigationLinksIntegrationPage(page);
 
     await test.step('Open active organisation details', async () => {
       await organisationApprovalsPage.openActiveOrganisationsTab();
@@ -56,12 +53,11 @@ test.describe('Playwright integration: organisation backlink navigation', {
     });
   });
 
-  test('Confirm decision back link returns to pending details', async ({ page }) => {
+  test('Confirm decision back link returns to pending details', async ({ page, organisationApprovalsPage }) => {
     const {
-      organisationApprovalsPage,
       pendingOrganisationId,
       pendingOrganisationName
-    } = await test.step('Setup mocked navigation data', async () => setupNavigationLinksIntegrationPage(page));
+    } = await setupNavigationLinksIntegrationPage(page);
 
     await test.step('Open pending organisation details', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
@@ -87,12 +83,11 @@ test.describe('Playwright integration: organisation backlink navigation', {
     });
   });
 
-  test('Delete confirm page back link returns to active details', async ({ page }) => {
+  test('Delete confirm page back link returns to active details', async ({ page, organisationApprovalsPage }) => {
     const {
-      organisationApprovalsPage,
       activeOrganisationId,
       activeOrganisationName
-    } = await test.step('Setup mocked navigation data', async () => setupNavigationLinksIntegrationPage(page));
+    } = await setupNavigationLinksIntegrationPage(page);
 
     await test.step('Open active organisation details', async () => {
       await organisationApprovalsPage.openActiveOrganisationsTab();
@@ -118,13 +113,12 @@ test.describe('Playwright integration: organisation backlink navigation', {
     });
   });
 
-  test('Active users tab back link returns to active list, then pending list, then pending details', async ({ page }) => {
+  test('Active users tab back link returns to active list, then pending list, then pending details', async ({ page, organisationApprovalsPage }) => {
     const {
-      organisationApprovalsPage,
       pendingOrganisationId,
       pendingOrganisationName,
       activeOrganisationName
-    } = await test.step('Setup mocked navigation data', async () => setupNavigationLinksIntegrationPage(page));
+    } = await setupNavigationLinksIntegrationPage(page);
 
     await test.step('Open active organisation users tab', async () => {
       await organisationApprovalsPage.openActiveOrganisationsTab();

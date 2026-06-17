@@ -1,6 +1,5 @@
-import type { Page, Response } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { ensureAuthenticatedPage } from '../../helpers/sessionCapture';
-import { OrganisationApprovalsPage } from '../../page-objects/pages';
 import {
   setupStandardOrganisationApprovalsApiMocks,
   type StandardOrganisationApprovalsApiMockResult,
@@ -15,13 +14,7 @@ import {
 } from '../test-data/organisation-search.data';
 
 export type OrganisationSearchIntegrationPageSetup = {
-  organisationApprovalsPage: OrganisationApprovalsPage;
   standardApiMocks: StandardOrganisationApprovalsApiMockResult;
-};
-
-export type PaginatedOrganisationResponse = {
-  organisations: Array<{ organisationIdentifier?: string }>;
-  total_records: number;
 };
 
 function mergeSingleOrganisationByIdOverrides(
@@ -63,12 +56,7 @@ export async function setupOrganisationSearchIntegrationPage(
 
   await ensureAuthenticatedPage(page, 'base');
 
-  const organisationApprovalsPage = new OrganisationApprovalsPage(page);
-  await organisationApprovalsPage.heading.waitFor({ state: 'visible' });
-  await organisationApprovalsPage.tabPanel.waitFor({ state: 'visible' });
-
   return {
-    organisationApprovalsPage,
     standardApiMocks
   };
 }
@@ -82,11 +70,4 @@ export function getPaginationSummaryPattern(
     `Showing\\s*${startResult}\\s*to\\s*${endResult}\\s*of\\s*${totalResults}\\s*results`,
     'i'
   );
-}
-
-export async function readPaginatedOrganisationResponse(
-  responsePromise: Promise<Response>
-): Promise<PaginatedOrganisationResponse> {
-  const response = await responsePromise;
-  return response.json() as Promise<PaginatedOrganisationResponse>;
 }
