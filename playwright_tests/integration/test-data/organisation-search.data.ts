@@ -8,7 +8,11 @@ import {
 type SearchStatusCodeScenario = {
   statusCode: number;
   expectedRedirectPath: RegExp;
+  expectedErrorHeading: string;
 };
+
+const NOT_AUTHORISED_ERROR_HEADING = 'Sorry, you\'re not authorised to perform this action';
+const SERVICE_DOWN_ERROR_HEADING = 'Sorry, there is a problem with the service';
 
 export const ORGANISATION_SEARCH_TERMS = {
   pendingByName: 'Search Pending',
@@ -159,40 +163,48 @@ export function buildPendingPbaPaginationOrganisations(total: number = 11): Mock
 export const pendingOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] = [
   {
     statusCode: 401,
-    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
   },
   {
     statusCode: 500,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
   },
   {
     statusCode: 503,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
   }
 ];
 
 export const activeOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] = [
   {
     statusCode: 401,
-    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
   },
   {
     statusCode: 500,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
   },
   {
     statusCode: 503,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
   }
 ];
 
 export const pendingPbaStatusCodeScenarios: SearchStatusCodeScenario[] = [
   {
     statusCode: 403,
-    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
   },
   {
     statusCode: 500,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
   }
 ];

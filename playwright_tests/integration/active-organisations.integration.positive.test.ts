@@ -1,6 +1,16 @@
 import { test, expect } from '../page-objects/page.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
+import {
+  getPaginationSummaryPattern,
+  setupOrganisationSearchIntegrationPage
+} from './helpers/organisation-search.helpers';
 import { createMockOrganisation, setupCommonOrganisationApiMocks } from './mocks';
+import {
+  ORGANISATION_SEARCH_TERMS,
+  activeNonMatchingOrganisation,
+  activeSearchMatchOrganisation,
+  buildActivePaginationOrganisations
+} from './test-data/organisation-search.data';
 
 const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
   view: 'ACTIVE',
@@ -41,7 +51,7 @@ const ACTIVE_ORGANISATION = createMockOrganisation({
   dateApproved: '2024-05-21T00:00:00.000Z'
 });
 
-test.describe('Playwright integration seed: get active organisations', { tag: ['@integration', '@organisations'] }, () => {
+test.describe('Playwright integration: active organisations', { tag: ['@integration', '@organisations'] }, () => {
   test('Organisation approvals renders mocked pending and active organisations', async ({ page, organisationApprovalsPage }) => {
     const organisationApiMock = await setupCommonOrganisationApiMocks(page, {
       activeOrganisations: [ACTIVE_ORGANISATION]
@@ -87,6 +97,56 @@ test.describe('Playwright integration seed: get active organisations', { tag: ['
       await expect(organisationApprovalsPage.activeOrganisationStatusCell(activeOrganisations[0].organisationIdentifier))
         .toContainText(activeOrganisations[0].status);
       expect(organisationApiMock.getLastActiveSearchPayload()).toEqual(ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD);
+    });
+  });
+});
+
+test.describe('Playwright integration: active organisations search', { tag: ['@integration', '@organisations', '@search'] }, () => {
+  test('Search by organisation in active organisations uses mocked search API', async ({ page, organisationApprovalsPage }) => {
+    const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page);
+
+    await test.step('Open active organisations tab', async () => {
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
+    });
+
+    await test.step('Search active organisations by name', async () => {
+      await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
+    });
+
+    await test.step('Verify active organisation search result', async () => {
+      await expect(organisationApprovalsPage.activeOrganisationRowByText(activeSearchMatchOrganisation.name)).toBeVisible();
+      await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeNonMatchingOrganisation.name)).toHaveCount(0);
+      expect(standardApiMocks.getLastActiveOrganisationSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.activeByName.toLowerCase());
+    });
+  });
+
+  test('Pagination in active organisations keeps search term and requests page 2', async ({ page, organisationApprovalsPage }) => {
+    const activePaginationOrganisations = buildActivePaginationOrganisations(11);
+    const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
+      organisations: {
+        activeOrganisations: activePaginationOrganisations
+      }
+    });
+
+    await test.step('Open active organisations tab', async () => {
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
+    });
+
+    await test.step('Search active organisations and verify first page', async () => {
+      await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activePagination);
+      await expect(organisationApprovalsPage.activeOrganisationRowByText(activePaginationOrganisations[0].name)).toBeVisible();
+      await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[10].name)).toHaveCount(0);
+      await expect(organisationApprovalsPage.pagination).toContainText(getPaginationSummaryPattern(1, 10, activePaginationOrganisations.length));
+    });
+
+    await test.step('Open active organisation page 2 and verify rows', async () => {
+      await organisationApprovalsPage.openPaginationPage(2);
+      expect(standardApiMocks.getLastActiveOrganisationSearchPayload()?.searchRequest?.pagination_parameters?.page_number).toEqual(2);
+      await expect(organisationApprovalsPage.activeOrganisationRowByText(activePaginationOrganisations[10].name)).toBeVisible();
+      await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[0].name)).toHaveCount(0);
+      await expect(organisationApprovalsPage.pagination).toContainText(getPaginationSummaryPattern(11, 11, activePaginationOrganisations.length));
     });
   });
 });
