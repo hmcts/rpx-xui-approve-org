@@ -20,33 +20,39 @@ const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
 const ACTIVE_ORGANISATIONS_LOAD_ERROR_SCENARIOS = [
   {
     statusCode: 400,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: 'Sorry, there is a problem with the service'
   },
   {
     statusCode: 401,
-    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: 'Sorry, you\'re not authorised to perform this action'
   },
   {
     statusCode: 403,
-    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: 'Sorry, you\'re not authorised to perform this action'
   },
   {
     statusCode: 404,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: 'Sorry, there is a problem with the service'
   },
   {
     statusCode: 500,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: 'Sorry, there is a problem with the service'
   },
   {
     statusCode: 503,
-    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: 'Sorry, there is a problem with the service'
   }
 ];
 
 test.describe('Playwright integration: get active organisations negative paths', { tag: ['@integration', '@organisations', '@negative'] }, () => {
   for (const scenario of ACTIVE_ORGANISATIONS_LOAD_ERROR_SCENARIOS) {
-    test(`Active organisations load handles HTTP ${scenario.statusCode}`, async ({ page, organisationApprovalsPage }) => {
+    test(`Active organisations load handles HTTP ${scenario.statusCode}`, async ({ page, errorPage, organisationApprovalsPage }) => {
       const organisationApiMock = await setupCommonOrganisationApiMocks(page, {
         activeSearchResponse: {
           status: scenario.statusCode,
@@ -70,8 +76,10 @@ test.describe('Playwright integration: get active organisations negative paths',
       });
 
       await test.step('Verify active organisations request and error route', async () => {
-        expect(organisationApiMock.getLastActiveSearchPayload()).toEqual(ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD);
         await expect(page).toHaveURL(scenario.expectedRedirectPath);
+        expect(organisationApiMock.getLastActiveSearchPayload()).toEqual(ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD);
+        await expect(errorPage.heading).toHaveText(scenario.expectedErrorHeading);
+        await expect(errorPage.body).toHaveText('Try again later.');
       });
     });
   }
