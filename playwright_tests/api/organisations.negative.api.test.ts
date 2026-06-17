@@ -61,9 +61,10 @@ test.describe('Playwright API negative: organisations', { tag: ['@organisations'
   test('POST /api/organisations?status=PENDING,REVIEW with malformed payload returns an error', async ({ apiRequest }) => {
     const response = await apiRequest.post('/api/organisations?status=PENDING,REVIEW', {
       failOnStatusCode: false,
-      data: {
-        view: 'NEW'
-      }
+      headers: {
+        'content-type': 'application/json'
+      },
+      data: '{"view":"NEW"'
     });
 
     const httpStatus = response.status();
