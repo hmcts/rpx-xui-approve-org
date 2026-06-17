@@ -58,7 +58,6 @@ describe('Get a list of organisations based on status', async () => {
 });
 
 function assertResponse(dto: Organisation[]): void {
-  // eslint-disable-next-line no-unused-expressions
   expect(dto).to.be.not.null;
   for (const element of dto) {
     expect(element.companyNumber).to.equal('A1000');
