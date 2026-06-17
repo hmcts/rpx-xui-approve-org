@@ -1,13 +1,22 @@
 import { test, expect } from '../page-objects/page.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
-import { setupOrganisationSearchIntegrationPage } from './helpers/organisation-search.helpers';
-import { setupCommonOrganisationApiMocks } from './mocks';
+import { config } from '../config/config';
+import {
+  clearOrganisationSearchSession,
+  setupOrganisationSearchIntegrationPage
+} from './helpers/organisation-search.helpers';
+import {
+  setupCommonOrganisationApiMocks,
+  waitForOrganisationStatusResponse,
+  waitForOrganisationStatusResponseWithHttpStatus
+} from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   activeOrganisationStatusCodeScenarios
 } from './test-data/organisation-search.data';
 
 const ERROR_PAGE_BODY = 'Try again later.';
+const ACTIVE_ORGANISATIONS_URL = new URL('/organisation/active', config.baseUrl).toString();
 
 const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
   view: 'ACTIVE',
@@ -73,13 +82,16 @@ test.describe('Playwright integration: active organisations load negative paths'
       });
 
       await test.step('Open approvals page', async () => {
+        await clearOrganisationSearchSession(page);
         await ensureAuthenticatedPage(page, 'base');
         await expect(organisationApprovalsPage.heading).toBeVisible();
         await expect(organisationApprovalsPage.activeOrganisationsTab).toBeVisible();
       });
 
-      await test.step(`Open active organisations tab with HTTP ${scenario.statusCode} mock`, async () => {
-        await organisationApprovalsPage.openActiveOrganisationsTab();
+      await test.step(`Open active organisations route with HTTP ${scenario.statusCode} mock`, async () => {
+        const activeOrganisationsResponse = waitForOrganisationStatusResponseWithHttpStatus(page, 'ACTIVE', scenario.statusCode);
+        await page.goto(ACTIVE_ORGANISATIONS_URL);
+        await activeOrganisationsResponse;
       });
 
       await test.step('Verify active organisations request and error route', async () => {
@@ -106,12 +118,17 @@ test.describe('Playwright integration: active organisations search negative path
       });
 
       await test.step('Open active organisations tab', async () => {
-        await organisationApprovalsPage.openActiveOrganisationsTab();
+        await clearOrganisationSearchSession(page);
+        const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
+        await page.goto(ACTIVE_ORGANISATIONS_URL);
+        await activeOrganisationsResponse;
         await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
       });
 
       await test.step(`Search active organisations with HTTP ${scenario.statusCode} mock`, async () => {
+        const activeOrganisationsResponse = waitForOrganisationStatusResponseWithHttpStatus(page, 'ACTIVE', scenario.statusCode);
         await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
+        await activeOrganisationsResponse;
       });
 
       await test.step('Verify active search shows expected error page', async () => {
@@ -144,7 +161,10 @@ test.describe('Playwright integration: active organisations search negative path
     });
 
     await test.step('Open active organisations tab', async () => {
-      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await clearOrganisationSearchSession(page);
+      const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
+      await page.goto(ACTIVE_ORGANISATIONS_URL);
+      await activeOrganisationsResponse;
       await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
     });
 

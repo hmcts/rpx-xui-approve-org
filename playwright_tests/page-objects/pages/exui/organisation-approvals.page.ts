@@ -2,6 +2,8 @@ import type { Locator, Page } from '@playwright/test';
 import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
+const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
+
 export class OrganisationApprovalsPage extends BasePage {
   private readonly exuiSpinner: ExuiSpinnerComponent;
   private readonly waitUtils: WaitUtils;
@@ -301,7 +303,14 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openActiveOrganisationsTab(): Promise<void> {
-    await this.activeOrganisationsTab.click();
+    const routeWait = ACTIVE_ORGANISATIONS_ROUTE_PATTERN.test(this.page.url())
+      ? Promise.resolve()
+      : this.page.waitForURL(ACTIVE_ORGANISATIONS_ROUTE_PATTERN);
+
+    await Promise.all([
+      routeWait,
+      this.activeOrganisationsTab.click()
+    ]);
   }
 
   async openUsersTab(): Promise<void> {

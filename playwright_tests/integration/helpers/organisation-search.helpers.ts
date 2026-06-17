@@ -17,6 +17,16 @@ export type OrganisationSearchIntegrationPageSetup = {
   standardApiMocks: StandardOrganisationApprovalsApiMockResult;
 };
 
+export async function clearOrganisationSearchSession(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    window.sessionStorage.removeItem('searchString');
+  });
+
+  await page.evaluate(() => {
+    window.sessionStorage.removeItem('searchString');
+  }).catch(() => undefined);
+}
+
 function mergeSingleOrganisationByIdOverrides(
   organisations: MockOrganisation[],
   explicitById: Record<string, MockOrganisation> | undefined
@@ -51,6 +61,8 @@ export async function setupOrganisationSearchIntegrationPage(
   page: Page,
   state: StandardOrganisationApprovalsApiMockState = {}
 ): Promise<OrganisationSearchIntegrationPageSetup> {
+  await clearOrganisationSearchSession(page);
+
   const resolvedState = resolveStandardSearchMockState(state);
   const standardApiMocks = await setupStandardOrganisationApprovalsApiMocks(page, resolvedState);
 
