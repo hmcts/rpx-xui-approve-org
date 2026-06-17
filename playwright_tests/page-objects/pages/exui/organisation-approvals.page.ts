@@ -22,6 +22,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
   readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
+  readonly confirmDecisionErrorSummary = this.contentMain.locator('.govuk-error-summary').first();
+  readonly confirmDecisionErrorSummaryTitle = this.confirmDecisionErrorSummary.locator('.govuk-error-summary__title').first();
   readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
   readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
   readonly approveDecisionRadio = this.page.locator('#reason-0');
@@ -102,6 +104,36 @@ export class OrganisationApprovalsPage extends BasePage {
 
   activeOrganisationRowByText(searchText: string): Locator {
     return this.activeOrganisationRowsByText(searchText).first();
+  }
+
+  activeOrganisationRowById(organisationId: string): Locator {
+    return this.activeOrganisationRows
+      .filter({ has: this.page.locator(`a.govuk-link[href*="/organisation-details/${organisationId}"]`) })
+      .first();
+  }
+
+  activeOrganisationCellByIndex(organisationId: string, cellIndex: number): Locator {
+    return this.activeOrganisationRowById(organisationId).locator('td.govuk-table__cell').nth(cellIndex);
+  }
+
+  activeOrganisationNameCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 0);
+  }
+
+  activeOrganisationAddressCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 1);
+  }
+
+  activeOrganisationAdministratorCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 2);
+  }
+
+  activeOrganisationDateApprovedCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 3);
+  }
+
+  activeOrganisationStatusCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 4);
   }
 
   activeOrganisationViewLink(): Locator {
