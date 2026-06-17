@@ -124,6 +124,14 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.deletedOrganisationBannerTitle.filter({ hasText: organisationName }).first();
   }
 
+  organisationDetailsPbaRow(pbaNumber: string): Locator {
+    return this.detailsPanel
+      .locator('.govuk-summary-list__row')
+      .filter({ hasText: 'PBA number' })
+      .filter({ hasText: pbaNumber })
+      .first();
+  }
+
   async searchForOrganisation(organisationName: string): Promise<void> {
     await this.searchInput.fill(organisationName);
     await this.searchButton.click();

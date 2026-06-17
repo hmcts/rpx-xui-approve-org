@@ -1,9 +1,11 @@
 import type { Page, Response } from '@playwright/test';
 import { paginateMockItems } from './pagination.mocks';
+import type { MockOrganisation } from './organisation.mocks';
 
 type UpdatePbaApiMockState = {
   status?: number;
   responseBody?: unknown;
+  singleOrganisationsById?: Record<string, Pick<MockOrganisation, 'paymentAccount' | 'pendingPaymentAccount'>>;
 };
 
 export type PendingPbaStatusApiRequestPayload = {
@@ -121,14 +123,24 @@ export async function setupUpdatePbaApiMock(
   let lastPayload: UpdatePbaApiPayload | undefined;
 
   await page.route('**/api/updatePba**', async (route, request) => {
+    const statusCode = state.status ?? 200;
+
     try {
       lastPayload = request.postDataJSON() as UpdatePbaApiPayload;
     } catch {
       lastPayload = undefined;
     }
 
+    if (statusCode >= 200 && statusCode < 300 && lastPayload?.orgId) {
+      const updatedOrganisation = state.singleOrganisationsById?.[lastPayload.orgId];
+      if (updatedOrganisation) {
+        updatedOrganisation.paymentAccount = lastPayload.paymentAccounts;
+        updatedOrganisation.pendingPaymentAccount = [];
+      }
+    }
+
     await route.fulfill({
-      status: state.status ?? 200,
+      status: statusCode,
       contentType: 'application/json',
       body: JSON.stringify(state.responseBody ?? { ok: true })
     });
