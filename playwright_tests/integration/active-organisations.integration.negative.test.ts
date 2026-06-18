@@ -7,13 +7,13 @@ import {
   setupCommonOrganisationApiMocks,
   waitForOrganisationStatusResponse,
   waitForOrganisationStatusResponseWithHttpStatus,
-  waitForSingleOrganisationResponseWithHttpStatus,
+  waitForSingleOrganisationResponseWithHttpStatus
 } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   activeOrganisationLoadStatusCodeScenarios,
   activeOrganisationStatusCodeScenarios,
-  organisationDetailsStatusCodeScenarios,
+  organisationDetailsStatusCodeScenarios
 } from './test-data/organisation-search.data';
 
 const ERROR_PAGE_BODY = 'Try again later.';
@@ -24,7 +24,7 @@ const ACTIVE_DETAILS_ORGANISATION = createMockOrganisation({
   name: 'Active details negative org',
   status: 'ACTIVE',
   paymentAccount: ['PBA2222222'],
-  pendingPaymentAccount: [],
+  pendingPaymentAccount: []
 });
 
 const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
@@ -34,14 +34,14 @@ const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
     sorting_parameters: [
       {
         sort_by: 'organisationId',
-        sort_order: 'asc',
-      },
+        sort_order: 'asc'
+      }
     ],
     pagination_parameters: {
       page_number: 1,
-      page_size: 10,
-    },
-  },
+      page_size: 10
+    }
+  }
 };
 
 test.describe('Playwright integration: active organisations load negative paths', { tag: ['@active-orgs', '@negative'] }, () => {
@@ -49,7 +49,7 @@ test.describe('Playwright integration: active organisations load negative paths'
     test(`Active organisations load handles HTTP ${scenario.statusCode}`, async ({
       page,
       errorPage,
-      organisationApprovalsPage,
+      organisationApprovalsPage
     }) => {
       const organisationApiMock = await setupCommonOrganisationApiMocks(page, {
         activeSearchResponse: {
@@ -58,9 +58,9 @@ test.describe('Playwright integration: active organisations load negative paths'
             error: 'Active organisations search failed',
             errorDescription: `Unable to retrieve active organisations for status ${scenario.statusCode}`,
             status: scenario.statusCode,
-            timestamp: '2024-05-21T10:00:00.000Z',
-          },
-        },
+            timestamp: '2024-05-21T10:00:00.000Z'
+          }
+        }
       });
 
       await test.step('Open approvals page', async () => {
@@ -96,19 +96,19 @@ test.describe(
       test(`Active organisation View link handles details API status ${scenario.statusCode}`, async ({
         page,
         errorPage,
-        organisationApprovalsPage,
+        organisationApprovalsPage
       }) => {
         const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
           organisations: {
             activeOrganisations: [ACTIVE_DETAILS_ORGANISATION],
             singleOrganisationsById: {
-              [ACTIVE_DETAILS_ORGANISATION.organisationIdentifier]: ACTIVE_DETAILS_ORGANISATION,
+              [ACTIVE_DETAILS_ORGANISATION.organisationIdentifier]: ACTIVE_DETAILS_ORGANISATION
             },
             singleOrganisationResponse: {
               status: scenario.statusCode,
-              body: { message: `mock active details error ${scenario.statusCode}` },
-            },
-          },
+              body: { message: `mock active details error ${scenario.statusCode}` }
+            }
+          }
         });
 
         await test.step('Open active organisation details from View link', async () => {
@@ -128,7 +128,7 @@ test.describe(
           await expect(page).toHaveURL(scenario.expectedRedirectPath, { timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS });
           await expect(errorPage.heading).toBeVisible({ timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS });
           await expect(errorPage.heading).toHaveText(scenario.expectedErrorHeading, {
-            timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS,
+            timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS
           });
           await expect(errorPage.body).toBeVisible({ timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS });
           await expect(errorPage.body).toHaveText(ERROR_PAGE_BODY, { timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS });
@@ -146,16 +146,16 @@ test.describe(
       test(`Active organisation search handles HTTP ${scenario.statusCode}`, async ({
         page,
         errorPage,
-        organisationApprovalsPage,
+        organisationApprovalsPage
       }) => {
         const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
           organisations: {
             activeSearchResponse: {
               status: scenario.statusCode,
               body: { message: `mock active search error ${scenario.statusCode}` },
-              onlyWhenSearchTermPresent: true,
-            },
-          },
+              onlyWhenSearchTermPresent: true
+            }
+          }
         });
 
         await test.step('Open active organisations tab', async () => {
@@ -191,7 +191,7 @@ test.describe(
 
     test('Active organisation search with incomplete response object still renders returned row', async ({
       page,
-      organisationApprovalsPage,
+      organisationApprovalsPage
     }) => {
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
@@ -204,13 +204,13 @@ test.describe(
                   name: 'Incomplete Active Org',
                   status: 'ACTIVE',
                   paymentAccount: [],
-                  pendingPaymentAccount: [],
-                },
-              ],
+                  pendingPaymentAccount: []
+                }
+              ]
             },
-            onlyWhenSearchTermPresent: true,
-          },
-        },
+            onlyWhenSearchTermPresent: true
+          }
+        }
       });
 
       await test.step('Open active organisations tab', async () => {
