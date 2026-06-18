@@ -4,7 +4,11 @@ import {
   getPaginationSummaryPattern,
   setupOrganisationSearchIntegrationPage
 } from './helpers/organisation-search.helpers';
-import { createMockOrganisation, setupCommonOrganisationApiMocks } from './mocks';
+import {
+  createMockOrganisation,
+  setupCommonOrganisationApiMocks,
+  waitForOrganisationStatusResponse
+} from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   activeNonMatchingOrganisation,
@@ -110,8 +114,12 @@ test.describe('Playwright integration: active organisations search', { tag: ['@i
       await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
     });
 
-    await test.step('Search active organisations by name', async () => {
+    await test.step('Search active organisations by name and verify request', async () => {
+      const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
+      await activeOrganisationsResponse;
+      expect(standardApiMocks.getLastActiveOrganisationSearchPayload()?.searchRequest?.search_filter)
+        .toEqual(ORGANISATION_SEARCH_TERMS.activeByName);
     });
 
     await test.step('Verify active organisation search result', async () => {
@@ -134,17 +142,37 @@ test.describe('Playwright integration: active organisations search', { tag: ['@i
       await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
     });
 
-    await test.step('Search active organisations and verify first page', async () => {
+    await test.step('Search active organisations and verify first-page request', async () => {
+      const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activePagination);
+      await activeOrganisationsResponse;
+      expect(standardApiMocks.getLastActiveOrganisationSearchPayload()?.searchRequest).toMatchObject({
+        search_filter: ORGANISATION_SEARCH_TERMS.activePagination,
+        pagination_parameters: {
+          page_number: 1,
+          page_size: 10
+        }
+      });
       await expect(organisationApprovalsPage.activeOrganisationRowByText(activePaginationOrganisations[0].name)).toBeVisible();
       await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[10].name)).toHaveCount(0);
       await expect(organisationApprovalsPage.pagination).toContainText(getPaginationSummaryPattern(1, 10, activePaginationOrganisations.length));
     });
 
-    await test.step('Open active organisation page 2 and verify rows', async () => {
+    await test.step('Open active organisation page 2 and verify request', async () => {
+      const expectedSecondPageOrganisation = activePaginationOrganisations[10];
+      const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
       await organisationApprovalsPage.openPaginationPage(2);
-      expect(standardApiMocks.getLastActiveOrganisationSearchPayload()?.searchRequest?.pagination_parameters?.page_number).toEqual(2);
-      await expect(organisationApprovalsPage.activeOrganisationRowByText(activePaginationOrganisations[10].name)).toBeVisible();
+      await activeOrganisationsResponse;
+      expect(standardApiMocks.getLastActiveOrganisationSearchPayload()?.searchRequest).toMatchObject({
+        search_filter: ORGANISATION_SEARCH_TERMS.activePagination,
+        pagination_parameters: {
+          page_number: 2,
+          page_size: 10
+        }
+      });
+      await expect(organisationApprovalsPage.activeOrganisationDataRows).toHaveCount(1);
+      await expect(organisationApprovalsPage.activeOrganisationDataRows.first()).toContainText(expectedSecondPageOrganisation.name);
+      await expect(organisationApprovalsPage.activeOrganisationDataRows.first()).toContainText(expectedSecondPageOrganisation.organisationIdentifier);
       await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[0].name)).toHaveCount(0);
       await expect(organisationApprovalsPage.pagination).toContainText(getPaginationSummaryPattern(11, 11, activePaginationOrganisations.length));
     });
