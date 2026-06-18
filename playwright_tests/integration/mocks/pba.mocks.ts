@@ -243,6 +243,15 @@ export function waitForPendingPbaStatusResponseWithHttpStatus(
 export function waitForUpdatePbaResponse(page: Page): Promise<Response> {
   return page.waitForResponse((response) => {
     const request = response.request();
-    return request.method() === 'PUT' && request.url().includes('/api/updatePba') && response.status() < 500;
+    return request.method().toUpperCase() === 'PUT' && request.url().includes('/api/updatePba') && response.status() < 500;
+  });
+}
+
+export function waitForUpdatePbaResponseWithHttpStatus(page: Page, expectedHttpStatus: number): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method().toUpperCase() === 'PUT'
+      && request.url().includes('/api/updatePba')
+      && response.status() === expectedHttpStatus;
   });
 }

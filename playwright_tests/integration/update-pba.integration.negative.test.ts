@@ -1,7 +1,12 @@
 import { test, expect } from '../page-objects/page.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { config } from '../config/config';
-import { createMockOrganisation, setupCommonOrganisationApiMocks, setupUpdatePbaApiMock } from './mocks';
+import {
+  createMockOrganisation,
+  setupCommonOrganisationApiMocks,
+  setupUpdatePbaApiMock,
+  waitForUpdatePbaResponseWithHttpStatus
+} from './mocks';
 
 const UPDATE_PBA_ORG_ID = process.env.PW_INTEGRATION_UPDATE_PBA_ORG_ID || process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
 const EXISTING_PBA = process.env.PW_INTEGRATION_EXISTING_PBA || 'PBA1234567';
@@ -13,31 +18,31 @@ const UPDATE_PBA_API_FIELD_ERROR_SCENARIOS = [
     responseBody: {
       errorDescription: `PBANumber:${UPDATED_PBA} failed validation`,
       errorMessage: 'PBA number already exists',
-      timestamp: '2026-06-17T00:00:00.000Z',
-    },
+      timestamp: '2026-06-17T00:00:00.000Z'
+    }
   },
   {
     statusCode: 409,
     responseBody: {
       errorDescription: `PBANumber:${UPDATED_PBA} is already associated to another organisation`,
       errorMessage: 'Conflict: PBA number already exists',
-      timestamp: '2026-06-17T00:00:00.000Z',
-    },
+      timestamp: '2026-06-17T00:00:00.000Z'
+    }
   },
   {
     statusCode: 422,
     responseBody: {
       errorDescription: `PBANumber:${UPDATED_PBA} cannot be updated for this organisation`,
       errorMessage: 'PBA_NUMBER Invalid or already exists',
-      timestamp: '2026-06-17T00:00:00.000Z',
-    },
-  },
+      timestamp: '2026-06-17T00:00:00.000Z'
+    }
+  }
 ];
 const UPDATE_PBA_SERVER_ERROR_RESPONSE = {
   timestamp: '2026-06-17T00:00:00.000Z',
   status: 500,
   error: 'Internal Server Error',
-  message: 'Internal server error',
+  message: 'Internal server error'
 };
 const PBA_ALREADY_USED_ERROR_MESSAGE =
   'This PBA number PBA7654321 has already been used. You should check that the PBA has been entered correctly. You should also check if your organisationhas already been registered. If you are still having problems, contact HMCTS.';
@@ -52,14 +57,14 @@ test.describe('Playwright integration: update pba negative paths', { tag: ['@int
         name: 'Update PBA UI Mock Org',
         status: 'ACTIVE',
         paymentAccount: [EXISTING_PBA],
-        pendingPaymentAccount: [],
+        pendingPaymentAccount: []
       });
 
       await setupCommonOrganisationApiMocks(page, {
         activeOrganisations: [mockedOrganisation],
         singleOrganisationsById: {
-          [UPDATE_PBA_ORG_ID]: mockedOrganisation,
-        },
+          [UPDATE_PBA_ORG_ID]: mockedOrganisation
+        }
       });
 
       updatePbaApiMock = await setupUpdatePbaApiMock(page);
@@ -90,7 +95,7 @@ test.describe('Playwright integration: update pba negative paths', { tag: ['@int
   for (const scenario of UPDATE_PBA_API_FIELD_ERROR_SCENARIOS) {
     test(`Change PBA UI shows API error when update request returns HTTP ${scenario.statusCode}`, async ({
       page,
-      updatePbaPage,
+      updatePbaPage
     }) => {
       let updatePbaApiMock: { getLastPayload: any };
 
@@ -100,19 +105,19 @@ test.describe('Playwright integration: update pba negative paths', { tag: ['@int
           name: 'Update PBA UI Mock Org',
           status: 'ACTIVE',
           paymentAccount: [EXISTING_PBA],
-          pendingPaymentAccount: [],
+          pendingPaymentAccount: []
         });
 
         await setupCommonOrganisationApiMocks(page, {
           activeOrganisations: [mockedOrganisation],
           singleOrganisationsById: {
-            [UPDATE_PBA_ORG_ID]: mockedOrganisation,
-          },
+            [UPDATE_PBA_ORG_ID]: mockedOrganisation
+          }
         });
 
         updatePbaApiMock = await setupUpdatePbaApiMock(page, {
           status: scenario.statusCode,
-          responseBody: scenario.responseBody,
+          responseBody: scenario.responseBody
         });
       });
 
@@ -128,13 +133,15 @@ test.describe('Playwright integration: update pba negative paths', { tag: ['@int
       await test.step('Submit updated PBA', async () => {
         await updatePbaPage.updatePbaNumber(UPDATED_PBA);
         await expect(updatePbaPage.pbaInput).toHaveValue(UPDATED_PBA);
+        const updatePbaResponse = waitForUpdatePbaResponseWithHttpStatus(page, scenario.statusCode);
         await updatePbaPage.submit();
+        await updatePbaResponse;
       });
 
       await test.step('Verify API error state', async () => {
         expect(updatePbaApiMock?.getLastPayload()).toEqual({
           paymentAccounts: [UPDATED_PBA],
-          orgId: UPDATE_PBA_ORG_ID,
+          orgId: UPDATE_PBA_ORG_ID
         });
         await expect(updatePbaPage.validationSummary).toBeVisible();
         await expect(updatePbaPage.pbaInputError).toBeVisible();
@@ -152,19 +159,19 @@ test.describe('Playwright integration: update pba negative paths', { tag: ['@int
         name: 'Update PBA UI Mock Org',
         status: 'ACTIVE',
         paymentAccount: [EXISTING_PBA],
-        pendingPaymentAccount: [],
+        pendingPaymentAccount: []
       });
 
       await setupCommonOrganisationApiMocks(page, {
         activeOrganisations: [mockedOrganisation],
         singleOrganisationsById: {
-          [UPDATE_PBA_ORG_ID]: mockedOrganisation,
-        },
+          [UPDATE_PBA_ORG_ID]: mockedOrganisation
+        }
       });
 
       updatePbaApiMock = await setupUpdatePbaApiMock(page, {
         status: 500,
-        responseBody: UPDATE_PBA_SERVER_ERROR_RESPONSE,
+        responseBody: UPDATE_PBA_SERVER_ERROR_RESPONSE
       });
     });
 
@@ -180,13 +187,15 @@ test.describe('Playwright integration: update pba negative paths', { tag: ['@int
     await test.step('Submit updated PBA', async () => {
       await updatePbaPage.updatePbaNumber(UPDATED_PBA);
       await expect(updatePbaPage.pbaInput).toHaveValue(UPDATED_PBA);
+      const updatePbaResponse = waitForUpdatePbaResponseWithHttpStatus(page, 500);
       await updatePbaPage.submit();
+      await updatePbaResponse;
     });
 
     await test.step('Verify server error does not redirect or show field validation', async () => {
       expect(updatePbaApiMock?.getLastPayload()).toEqual({
         paymentAccounts: [UPDATED_PBA],
-        orgId: UPDATE_PBA_ORG_ID,
+        orgId: UPDATE_PBA_ORG_ID
       });
       await expect(page).toHaveURL(new RegExp(`/change/pba/${UPDATE_PBA_ORG_ID}/${EXISTING_PBA}`));
       await expect(updatePbaPage.pbaInput).toHaveValue(UPDATED_PBA);

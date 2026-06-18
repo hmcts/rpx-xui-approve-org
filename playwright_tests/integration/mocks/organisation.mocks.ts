@@ -37,6 +37,7 @@ export type CommonOrganisationApiMockState = {
   activeOrganisations?: MockOrganisation[];
   pendingOrganisations?: MockOrganisation[];
   singleOrganisationsById?: Record<string, MockOrganisation>;
+  singleOrganisationResponse?: SearchResponseOverride;
   activeSearchResponse?: SearchResponseOverride;
   pendingSearchResponse?: SearchResponseOverride;
 };
@@ -67,6 +68,7 @@ export type CommonOrganisationApiMockControl = {
   getLastActiveSearchPayload: () => OrganisationSearchApiRequestPayload | undefined;
   getLastPendingSearchTerm: () => string | undefined;
   getLastActiveSearchTerm: () => string | undefined;
+  getLastSingleOrganisationId: () => string | undefined;
 };
 
 type PendingDecisionApiMockState = {
@@ -262,6 +264,7 @@ export async function setupCommonOrganisationApiMocks(
   const singleOrganisationsById = state.singleOrganisationsById ?? {};
   let lastPendingSearchPayload: OrganisationSearchApiRequestPayload | undefined;
   let lastActiveSearchPayload: OrganisationSearchApiRequestPayload | undefined;
+  let lastSingleOrganisationId: string | undefined;
 
   const pendingOrganisations = state.pendingOrganisations ?? [
     createMockOrganisation({
@@ -288,6 +291,17 @@ export async function setupCommonOrganisationApiMocks(
     const organisationId = (requestUrl.searchParams.get('organisationId') ?? '').trim();
 
     if (organisationId) {
+      lastSingleOrganisationId = organisationId;
+
+      if (state.singleOrganisationResponse) {
+        await route.fulfill({
+          status: state.singleOrganisationResponse.status ?? 200,
+          contentType: 'application/json',
+          body: JSON.stringify(state.singleOrganisationResponse.body ?? {})
+        });
+        return;
+      }
+
       const resolvedOrganisation = singleOrganisationsById[organisationId]
         ?? activeOrganisations.find((organisation) => organisation.organisationIdentifier === organisationId)
         ?? pendingOrganisations.find((organisation) => organisation.organisationIdentifier === organisationId)
@@ -345,7 +359,8 @@ export async function setupCommonOrganisationApiMocks(
     getLastPendingSearchPayload: () => lastPendingSearchPayload,
     getLastActiveSearchPayload: () => lastActiveSearchPayload,
     getLastPendingSearchTerm: () => resolveSearchTermFromPayload(lastPendingSearchPayload),
-    getLastActiveSearchTerm: () => resolveSearchTermFromPayload(lastActiveSearchPayload)
+    getLastActiveSearchTerm: () => resolveSearchTermFromPayload(lastActiveSearchPayload),
+    getLastSingleOrganisationId: () => lastSingleOrganisationId
   };
 }
 
@@ -387,6 +402,22 @@ export async function setupPendingOrganisationDecisionApiMock(
 }
 
 export function waitForPendingOrganisationDecisionResponse(page: Page, organisationId: string): Promise<Response> {
+  return waitForPendingOrganisationDecisionResponseMatching(page, organisationId, (response) => response.status() < 500);
+}
+
+export function waitForPendingOrganisationDecisionResponseWithHttpStatus(
+  page: Page,
+  organisationId: string,
+  expectedHttpStatus: number
+): Promise<Response> {
+  return waitForPendingOrganisationDecisionResponseMatching(page, organisationId, (response) => response.status() === expectedHttpStatus);
+}
+
+function waitForPendingOrganisationDecisionResponseMatching(
+  page: Page,
+  organisationId: string,
+  responseMatches: (response: Response) => boolean
+): Promise<Response> {
   const expectedPath = `/api/organisations/${organisationId}`;
 
   return page.waitForResponse((response) => {
@@ -397,7 +428,25 @@ export function waitForPendingOrganisationDecisionResponse(page: Page, organisat
     }
 
     const pathName = new URL(request.url()).pathname;
-    return pathName === expectedPath && response.status() < 500;
+    return pathName === expectedPath && responseMatches(response);
+  });
+}
+
+export function waitForSingleOrganisationResponseWithHttpStatus(
+  page: Page,
+  organisationId: string,
+  expectedHttpStatus: number
+): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    if (request.method().toUpperCase() !== 'GET') {
+      return false;
+    }
+
+    const requestUrl = new URL(request.url());
+    return requestUrl.pathname.endsWith('/api/organisations')
+      && requestUrl.searchParams.get('organisationId') === organisationId
+      && response.status() === expectedHttpStatus;
   });
 }
 

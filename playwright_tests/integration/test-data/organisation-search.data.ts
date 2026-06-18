@@ -275,11 +275,72 @@ export const activeOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] =
   }
 ];
 
+export const activeOrganisationLoadStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 400,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 401,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 403,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 404,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 503,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  }
+];
+
 export const pendingPbaStatusCodeScenarios: SearchStatusCodeScenario[] = [
   {
     statusCode: 403,
     expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
     expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  }
+];
+
+export const organisationDetailsStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 400,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 401,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 403,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 404,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
   },
   {
     statusCode: 500,

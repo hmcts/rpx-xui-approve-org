@@ -5,7 +5,7 @@ import {
   getPaginationSummaryPattern,
   organisationTableRowsFromMockData,
   pendingOrganisationDecisionPayloadFromMockData,
-  setupOrganisationSearchIntegrationPage,
+  setupOrganisationSearchIntegrationPage
 } from './helpers/organisation-search.helpers';
 import {
   createMockOrganisation,
@@ -14,12 +14,13 @@ import {
   setupPbaAccountsApiMock,
   setupPendingOrganisationDecisionApiMock,
   waitForOrganisationStatusResponse,
+  waitForPendingOrganisationDecisionResponse
 } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   buildPendingAddressSearchOrganisations,
   buildPendingPaginationOrganisations,
-  buildPendingSearchOrganisations,
+  buildPendingSearchOrganisations
 } from './test-data/organisation-search.data';
 import { decisionScenarios } from './test-data/pending-decisions.data';
 
@@ -36,18 +37,18 @@ const PENDING_ORGANISATIONS = [
         townCity: 'Cardiff',
         county: 'South Glamorgan',
         postCode: 'CF1 1AA',
-        dxAddress: [{ dxNumber: 'DX 810', dxExchange: 'Cardiff' }],
-      },
+        dxAddress: [{ dxNumber: 'DX 810', dxExchange: 'Cardiff' }]
+      }
     ],
     superUser: {
       userIdentifier: 'pending-table-admin-one-id',
       firstName: 'Pending',
       lastName: 'Admin',
-      email: 'pending.admin@example.com',
+      email: 'pending.admin@example.com'
     },
     paymentAccount: [],
     pendingPaymentAccount: ['PBA8100001'],
-    dateReceived: '2024-04-15T00:00:00.000Z',
+    dateReceived: '2024-04-15T00:00:00.000Z'
   }),
   createMockOrganisation({
     organisationIdentifier: 'PENDINGTABLE02',
@@ -61,25 +62,25 @@ const PENDING_ORGANISATIONS = [
         townCity: 'Liverpool',
         county: 'Merseyside',
         postCode: 'L1 1AA',
-        dxAddress: [{ dxNumber: 'DX 811', dxExchange: 'Liverpool' }],
-      },
+        dxAddress: [{ dxNumber: 'DX 811', dxExchange: 'Liverpool' }]
+      }
     ],
     superUser: {
       userIdentifier: 'pending-table-admin-two-id',
       firstName: 'Review',
       lastName: 'Admin',
-      email: 'review.admin@example.com',
+      email: 'review.admin@example.com'
     },
     paymentAccount: [],
     pendingPaymentAccount: ['PBA8100002'],
-    dateReceived: '2024-04-16T00:00:00.000Z',
-  }),
+    dateReceived: '2024-04-16T00:00:00.000Z'
+  })
 ];
 
 test.describe('Playwright integration: pending organisations', { tag: ['@integration', '@organisations'] }, () => {
   test('New registrations tab renders mocked pending organisations', async ({ page, organisationApprovalsPage }) => {
     const { pendingOrganisations } = await setupCommonOrganisationApiMocks(page, {
-      pendingOrganisations: PENDING_ORGANISATIONS,
+      pendingOrganisations: PENDING_ORGANISATIONS
     });
 
     await ensureAuthenticatedPage(page, 'base');
@@ -102,8 +103,8 @@ test.describe(
       const pendingSearchOrganisations = buildPendingSearchOrganisations(10);
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
-          pendingOrganisations: pendingSearchOrganisations,
-        },
+          pendingOrganisations: pendingSearchOrganisations
+        }
       });
 
       await test.step('Search pending organisations by name and verify request', async () => {
@@ -133,8 +134,8 @@ test.describe(
       const pendingAddressSearchOrganisations = buildPendingAddressSearchOrganisations(10);
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
-          pendingOrganisations: pendingAddressSearchOrganisations,
-        },
+          pendingOrganisations: pendingAddressSearchOrganisations
+        }
       });
 
       await test.step('Search pending organisations by address and verify request', async () => {
@@ -164,8 +165,8 @@ test.describe(
       const pendingPaginationOrganisations = buildPendingPaginationOrganisations(11);
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
-          pendingOrganisations: pendingPaginationOrganisations,
-        },
+          pendingOrganisations: pendingPaginationOrganisations
+        }
       });
 
       await test.step('Search pending organisations and verify first-page request', async () => {
@@ -176,8 +177,8 @@ test.describe(
           search_filter: ORGANISATION_SEARCH_TERMS.pendingPagination,
           pagination_parameters: {
             page_number: 1,
-            page_size: 10,
-          },
+            page_size: 10
+          }
         });
         expect(await organisationApprovalsPage.pendingOrganisationTableRows()).toEqual(
           organisationTableRowsFromMockData(pendingPaginationOrganisations.slice(0, 10))
@@ -196,8 +197,8 @@ test.describe(
           search_filter: ORGANISATION_SEARCH_TERMS.pendingPagination,
           pagination_parameters: {
             page_number: 2,
-            page_size: 10,
-          },
+            page_size: 10
+          }
         });
         await expect(organisationApprovalsPage.searchInput).toHaveValue(ORGANISATION_SEARCH_TERMS.pendingPagination);
         expect(await organisationApprovalsPage.pendingOrganisationTableRows()).toEqual(
@@ -223,7 +224,7 @@ test.describe(
           name: `Pending ${scenario.idSuffix} org`,
           status: 'PENDING',
           paymentAccount: [],
-          pendingPaymentAccount: ['PBA1111111'],
+          pendingPaymentAccount: ['PBA1111111']
         });
         let decisionApiMock: { getLastMethod: any; getLastPayload: any };
 
@@ -231,8 +232,8 @@ test.describe(
           await setupCommonOrganisationApiMocks(page, {
             pendingOrganisations: [mockedPendingOrganisation],
             singleOrganisationsById: {
-              [organisationId]: mockedPendingOrganisation,
-            },
+              [organisationId]: mockedPendingOrganisation
+            }
           });
           await setupPbaAccountsApiMock(page, ['Mock Liberata Account']);
           await setupLovRefDataApiMock(page, []);
@@ -251,7 +252,9 @@ test.describe(
           await organisationApprovalsPage.submitDecision();
           await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
 
+          const decisionResponse = waitForPendingOrganisationDecisionResponse(page, organisationId);
           await organisationApprovalsPage.confirmDecision();
+          await decisionResponse;
         });
 
         await test.step('Verify decision request and success banner', async () => {

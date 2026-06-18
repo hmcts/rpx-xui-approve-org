@@ -41,6 +41,7 @@ export type StandardOrganisationApprovalsApiMockResult = {
   getLastPendingOrganisationSearchTerm: () => string | undefined;
   getLastActiveOrganisationSearchTerm: () => string | undefined;
   getLastPendingPbaSearchTerm: () => string | undefined;
+  getLastSingleOrganisationId: () => string | undefined;
   pendingPbaStatusApiMock: PendingPbaStatusApiMockControl;
 };
 
@@ -104,6 +105,7 @@ export async function setupStandardOrganisationApprovalsApiMocks(
     getLastPendingOrganisationSearchTerm: organisationMocks.getLastPendingSearchTerm,
     getLastActiveOrganisationSearchTerm: organisationMocks.getLastActiveSearchTerm,
     getLastPendingPbaSearchTerm: pendingPbaStatusApiMock.getLastSearchTerm,
+    getLastSingleOrganisationId: organisationMocks.getLastSingleOrganisationId,
     pendingPbaStatusApiMock
   };
 }
