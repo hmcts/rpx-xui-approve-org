@@ -88,7 +88,7 @@ test.describe('Playwright integration: active organisations load negative paths'
 
 test.describe(
   'Playwright integration: active organisation details negative paths',
-  { tag: ['@active-orgs', '@details', '@negative'] },
+  { tag: ['@active-orgs', '@negative'] },
   () => {
     test.skip(true, 'EXUI-4809: details API errors from View links are not routed to error pages');
 
@@ -140,7 +140,7 @@ test.describe(
 
 test.describe(
   'Playwright integration: active organisations search negative paths',
-  { tag: ['@active-orgs', '@search-negative'] },
+  { tag: ['@active-orgs', '@search', '@negative'] },
   () => {
     for (const scenario of activeOrganisationStatusCodeScenarios) {
       test(`Active organisation search handles HTTP ${scenario.statusCode}`, async ({

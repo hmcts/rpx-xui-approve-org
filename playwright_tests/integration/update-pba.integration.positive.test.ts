@@ -15,7 +15,7 @@ const SECOND_EXISTING_PBA = 'PBA2222222';
 const UPDATED_PBA = 'PBA7654321';
 const ADDED_PBA = 'PBA3333333';
 
-test.describe('Playwright integration seed: update pba', { tag: ['@update-pba'] }, () => {
+test.describe('Playwright integration seed: update pba', { tag: ['@update-pba', '@positive'] }, () => {
   test('Change PBA UI submits updated payment account payload', async ({ page, updatePbaPage, organisationApprovalsPage }) => {
     let updatePbaApiMock: { getLastPayload: any };
 

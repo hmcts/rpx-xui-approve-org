@@ -82,7 +82,7 @@ const ACTIVE_ORGANISATIONS = [
   })
 ];
 
-test.describe('Playwright integration: active organisations', { tag: ['@active-orgs'] }, () => {
+test.describe('Playwright integration: active organisations', { tag: ['@active-orgs', '@positive'] }, () => {
   test('Active organisations tab renders mocked active organisations', async ({ page, organisationApprovalsPage }) => {
     const organisationApiMock = await setupCommonOrganisationApiMocks(page, {
       activeOrganisations: ACTIVE_ORGANISATIONS
@@ -111,7 +111,7 @@ test.describe('Playwright integration: active organisations', { tag: ['@active-o
 
 test.describe(
   'Playwright integration: active organisations search',
-  { tag: ['@active-orgs', '@search'] },
+  { tag: ['@active-orgs', '@search', '@positive'] },
   () => {
     test('Search by organisation in active organisations uses mocked search API', async ({ page, organisationApprovalsPage }) => {
       const activeSearchOrganisations = buildActiveSearchOrganisations(10);

@@ -37,7 +37,7 @@ const PENDING_DETAILS_ORGANISATION = createMockOrganisation({
 
 test.describe(
   'Playwright integration: pending organisations search negative paths',
-  { tag: ['@pending-orgs', '@search-negative'] },
+  { tag: ['@pending-orgs', '@search', '@negative'] },
   () => {
     for (const scenario of pendingOrganisationStatusCodeScenarios) {
       test(`Pending organisation search handles HTTP ${scenario.statusCode}`, async ({
@@ -120,7 +120,7 @@ test.describe(
 
 test.describe(
   'Playwright integration: pending organisation details negative paths',
-  { tag: ['@pending-orgs', '@details', '@negative'] },
+  { tag: ['@pending-orgs', '@negative'] },
   () => {
     test.skip(true, 'EXUI-4809: details API errors from View links are not routed to error pages');
 

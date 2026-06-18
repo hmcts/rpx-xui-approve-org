@@ -5,10 +5,10 @@
     "@active-orgs",
     "@pending-orgs",
     "@pending-pbas",
-    "@details",
     "@pending-decisions",
     "@nav-links",
     "@search",
-    "@search-negative"
+    "@positive",
+    "@negative"
   ]
 }

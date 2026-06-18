@@ -31,7 +31,7 @@ const PENDING_PBA_DETAILS_SINGLE_ORGANISATION = createMockOrganisation({
 
 test.describe(
   'Playwright integration: pending PBAs search negative paths',
-  { tag: ['@pending-pbas', '@search-negative'] },
+  { tag: ['@pending-pbas', '@search', '@negative'] },
   () => {
     for (const scenario of pendingPbaStatusCodeScenarios) {
       test(`Pending PBA search handles HTTP ${scenario.statusCode}`, async ({ page, errorPage, organisationApprovalsPage }) => {
@@ -118,7 +118,7 @@ test.describe(
 
 test.describe(
   'Playwright integration: pending PBA details negative paths',
-  { tag: ['@pending-pbas', '@details', '@negative'] },
+  { tag: ['@pending-pbas', '@negative'] },
   () => {
     test.skip(true, 'EXUI-4809: details API errors from View links are not routed to error pages');
 

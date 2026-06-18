@@ -8,7 +8,7 @@ import {
 test.describe(
   'Playwright integration: organisation backlink navigation',
   {
-    tag: ['@nav-links']
+    tag: ['@nav-links', '@positive']
   },
   () => {
     test('Pending org details back link returns to pending list', async ({ page, organisationApprovalsPage }) => {

@@ -80,7 +80,7 @@ const PENDING_ORGANISATIONS = [
   })
 ];
 
-test.describe('Playwright integration: pending organisations', { tag: ['@pending-orgs'] }, () => {
+test.describe('Playwright integration: pending organisations', { tag: ['@pending-orgs', '@positive'] }, () => {
   test('New registrations tab renders mocked pending organisations', async ({ page, organisationApprovalsPage }) => {
     const { pendingOrganisations } = await setupCommonOrganisationApiMocks(page, {
       pendingOrganisations: PENDING_ORGANISATIONS
@@ -98,7 +98,7 @@ test.describe('Playwright integration: pending organisations', { tag: ['@pending
   });
 });
 
-test.describe('Playwright integration: pending organisations search', { tag: ['@pending-orgs', '@search'] }, () => {
+test.describe('Playwright integration: pending organisations search', { tag: ['@pending-orgs', '@search', '@positive'] }, () => {
   test('Search by organisation in new registrations uses mocked search API', async ({ page, organisationApprovalsPage }) => {
     const pendingSearchOrganisations = buildPendingSearchOrganisations(10);
     const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
@@ -325,7 +325,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
   });
 });
 
-test.describe('Playwright integration: pending decision matrix', { tag: ['@pending-decisions'] }, () => {
+test.describe('Playwright integration: pending decision matrix', { tag: ['@pending-decisions', '@positive'] }, () => {
   for (const scenario of decisionScenarios) {
     test(`Pending registration decision: ${scenario.idSuffix}`, async ({ page, organisationApprovalsPage }) => {
       const organisationId = `PENDING-${scenario.idSuffix.toUpperCase()}-001`;

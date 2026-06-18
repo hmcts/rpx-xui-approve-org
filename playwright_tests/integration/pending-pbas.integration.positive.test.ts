@@ -11,7 +11,7 @@ import {
   buildPendingPbaSearchOrganisations
 } from './test-data/organisation-search.data';
 
-test.describe('Playwright integration: pending PBAs search', { tag: ['@pending-pbas', '@search'] }, () => {
+test.describe('Playwright integration: pending PBAs search', { tag: ['@pending-pbas', '@search', '@positive'] }, () => {
   test('Search by organisation in new PBAs uses mocked search API', async ({ page, organisationApprovalsPage }) => {
     const pendingPbaSearchOrganisations = buildPendingPbaSearchOrganisations(10);
     const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
