@@ -32,7 +32,7 @@ const SHARED_REGISTER_ENVIRONMENT_KEYS = new Set([
   'hmcts:aat.platform.hmcts.net',
   'hmcts:demo.platform.hmcts.net'
 ]);
-const HMCTS_SERVICE_HOST_PATTERN = /^(administer-orgs|xui-ao-webapp|manage-org)(?:-pr-(\d+))?\.(.+)$/;
+const HMCTS_SERVICE_HOST_PATTERN = /^(administer-orgs|xui-ao-webapp|manage-org)(?:-(staging)|-pr-(\d+))?\.(.+)$/;
 const PREVIEW_APPROVE_ORG_HOST_PATTERN = /^xui-ao-webapp-pr-\d+\.preview\.platform\.hmcts\.net$/;
 const MANAGE_ORG_URL = config.registerUrl.endsWith('/') ? config.registerUrl : `${config.registerUrl}/`;
 
@@ -77,7 +77,7 @@ function resolveEnvironmentKey(rawUrl: string): string {
     return url.origin.toLowerCase();
   }
 
-  const [, , previewPrNumber, environmentHost] = hmctsServiceHost;
+  const [, , , previewPrNumber, environmentHost] = hmctsServiceHost;
   return previewPrNumber
     ? `hmcts:${environmentHost}:pr:${previewPrNumber}`
     : `hmcts:${environmentHost}`;
