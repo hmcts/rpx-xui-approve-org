@@ -16,6 +16,18 @@ export function resolveHeader(headers: Record<string, string>, key: string): str
   return '';
 }
 
+export function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
+  if (!contentType.toLowerCase().includes('application/json')) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawBody);
+  } catch {
+    return null;
+  }
+}
+
 export function organisationsListShapeErrors(payload: unknown): string[] {
   const errors: string[] = [];
 
@@ -96,6 +108,28 @@ export function pbaAccountsMissingParameterErrors(payload: unknown): string[] {
 
   if (payload.message !== undefined && typeof payload.message !== 'string') {
     errors.push('payload.message is not a string');
+  }
+
+  return errors;
+}
+
+export function searchEnvelopeShapeErrors(payload: unknown): string[] {
+  const errors: string[] = [];
+
+  if (!isObject(payload)) {
+    errors.push('payload is not an object');
+    return errors;
+  }
+
+  if (!Array.isArray(payload.organisations)) {
+    errors.push('payload.organisations is not an array');
+  }
+
+  const totalRecords = payload.total_records;
+  const isNumber = typeof totalRecords === 'number';
+  const isNumericString = typeof totalRecords === 'string' && totalRecords.trim() !== '' && !Number.isNaN(Number(totalRecords));
+  if (!isNumber && !isNumericString) {
+    errors.push('payload.total_records is not a number or numeric string');
   }
 
   return errors;

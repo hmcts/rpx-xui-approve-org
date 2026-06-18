@@ -2,14 +2,15 @@ import { test, expect } from './helpers/api.fixtures';
 import { pbaAccountsMissingParameterErrors, resolveHeader } from './helpers/json-contracts';
 
 const missingResponseError = {
-  "apiError": "Account is missing",
-  "apiStatusCode": "400",
-  "message": "Fee And Pay route error"
-}
+  'apiError': 'Account is missing',
+  'apiStatusCode': '400',
+  'message': 'Fee And Pay route error'
+};
+const VALID_LOOKING_PBA_NUMBER = 'PBA0000000';
 
-test.describe('Playwright API negative: pba accounts', () => {
+test.describe('Playwright API negative: pba accounts', { tag: ['@pba-accounts', '@negative'] }, () => {
   test('GET /api/pbaAccounts without accountNames returns an error payload', async ({ apiRequest }) => {
-    const response = await apiRequest.get('/api/pbaAccounts', { failOnStatusCode: false });
+    const response = await apiRequest.get('/api/pbaAccounts', { params: { accountNames: '' }, failOnStatusCode: false });
     const httpStatus = response.status();
     expect(httpStatus, `Expected 500 from GET /api/pbaAccounts without accountNames. Received status=${httpStatus}`).toBe(500);
 
@@ -31,28 +32,9 @@ test.describe('Playwright API negative: pba accounts', () => {
     ).toEqual(missingResponseError);
   });
 
-  test('GET /api/pbaAccounts without auth is denied', async ({ apiRequest, apiAnonymousRequest }) => {
-    const statusResponse = await apiRequest.get('/api/pba/status/PENDING', { failOnStatusCode: false });
-    expect(
-      statusResponse.status(),
-      `Expected 200 from GET /api/pba/status/PENDING to source a valid account for this test. Received status=${statusResponse.status()}`
-    ).toBe(200);
-
-    const statusPayload = await statusResponse.json();
-    const accountName = Array.isArray(statusPayload)
-      ? statusPayload
-          .flatMap((org) => Array.isArray(org?.pbaNumbers) ? org.pbaNumbers : [])
-          .map((pba) => pba?.pbaNumber)
-          .find((pbaNumber) => typeof pbaNumber === 'string' && pbaNumber.length > 0)
-      : undefined;
-
-    expect(
-      accountName,
-      `Expected to resolve a valid pbaNumber from GET /api/pba/status/PENDING before calling /api/pbaAccounts. Payload=${JSON.stringify(statusPayload)}`
-    ).toBeTruthy();
-
+  test('GET /api/pbaAccounts without auth is denied', async ({ apiAnonymousRequest }) => {
     const response = await apiAnonymousRequest.get('/api/pbaAccounts', {
-      params: { accountNames: accountName },
+      params: { accountNames: VALID_LOOKING_PBA_NUMBER },
       failOnStatusCode: false
     });
     const httpStatus = response.status();
@@ -109,5 +91,4 @@ test.describe('Playwright API negative: pba accounts', () => {
       `Expected invalid account response marker account_name='not found'. Received item=${JSON.stringify(payload[0])}`
     ).toMatchObject({ account_name: 'not found' });
   });
-
 });

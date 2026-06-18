@@ -27,10 +27,20 @@ function resolveSessionMaxAgeMs(): number {
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
 }
 
+function resolveCredentialHint(user: string): string {
+  if (user === 'api') {
+    return 'Set APPROVE_ORG_API_USERNAME/APPROVE_ORG_API_PASSWORD.';
+  }
+
+  return 'Set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD.';
+}
+
 function getUserConfig(user: string): UserConfig {
   const account = (config as unknown as Record<string, UserConfig>)[user];
   if (!account?.username || !account?.password) {
-    throw new Error(`Missing Playwright credentials for user "${user}".`);
+    throw new Error(
+      `Missing Playwright credentials for user "${user}". ${resolveCredentialHint(user)}`
+    );
   }
   return account;
 }
@@ -104,26 +114,46 @@ async function launchBrowserForSessionCapture(): Promise<Browser> {
 }
 
 async function completeLoginOnPage(page: Page, username: string, password: string): Promise<void> {
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+  await page.goto(config.baseUrl, { waitUntil: 'networkidle' });
 
   if (await isAuthenticatedByApi(page)) {
     return;
   }
 
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    const namedUsernameInput = page.locator('input[name="username"]');
+    const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
+    const fallbackEmailInput = page.locator('input[type="email"]').first();
+    const hasNamedUsernameInput = await namedUsernameInput.isVisible().catch(() => false);
+    const hasRoleEmailInput = await roleEmailInput.isVisible().catch(() => false);
+    const hasFallbackEmailInput = await fallbackEmailInput.isVisible().catch(() => false);
     const isOnLoginSurface =
       page.url().includes('idam') ||
       page.url().includes('/login') ||
-      (await page.getByRole('textbox', { name: 'Email address' }).isVisible().catch(() => false));
+      hasNamedUsernameInput ||
+      hasRoleEmailInput ||
+      hasFallbackEmailInput;
 
     if (!isOnLoginSurface && (await isAuthenticatedByApi(page))) {
       return;
     }
 
     if (isOnLoginSurface) {
-      await page.getByRole('textbox', { name: 'Email address' }).fill(username);
-      await page.getByRole('textbox', { name: 'Password' }).fill(password);
-      await page.getByRole('button', { name: 'Sign in' }).click();
+      if (hasNamedUsernameInput) {
+        await namedUsernameInput.fill(username);
+        await page.locator('input[name="password"]').fill(password);
+        await page.locator('#login-submit-btn').click();
+        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+      } else if (hasRoleEmailInput || hasFallbackEmailInput) {
+        const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
+        await emailInput.fill(username);
+        await page.locator('input[type="password"], input[name="password"]').first().fill(password);
+        await page.getByRole('button', { name: 'Sign in' }).click();
+        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+      } else {
+        // Login page can be in a transition state; retry instead of timing out on non-visible inputs.
+        await page.waitForTimeout(500 * attempt);
+      }
     }
 
     await page.waitForTimeout(1000 * attempt);
@@ -209,12 +239,27 @@ export async function applySessionCookies(page: Page, user: string = 'base', opt
 }
 
 export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
-  await applySessionCookies(page, user, options);
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+  const isLoginUrl = (): boolean => page.url().includes('idam') || page.url().includes('/login');
 
-  if (page.url().includes('idam') || page.url().includes('/login')) {
-    await sessionCapture(user, { ...options, force: true });
-    await applySessionCookies(page, user, options);
+  const gotoAndVerify = async (): Promise<boolean> => {
     await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+    if (isLoginUrl()) {
+      return false;
+    }
+
+    return isAuthenticatedByApi(page);
+  };
+
+  await applySessionCookies(page, user, options);
+  if (await gotoAndVerify()) {
+    return;
   }
+
+  await sessionCapture(user, { ...options, force: true });
+  await applySessionCookies(page, user, options);
+  if (await gotoAndVerify()) {
+    return;
+  }
+
+  throw new Error(`Unable to ensure authenticated page for user "${user}".`);
 }

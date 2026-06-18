@@ -1,4 +1,3 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 import * as Mocha from 'mocha';
 import * as tunnel from '../../../api/lib/tunnel';
 import { config } from '../config';
@@ -11,13 +10,7 @@ if (config.proxy) {
 
 const mocha = new Mocha({
   ui: 'tdd',
-  // reporter: 'spec',
-  // bail: 'yes',
-  reporter: 'mochawesome',
-  reporterOptions: {
-    reportDir: 'reports/tests/api_functional/',
-    reportName: 'XUI_AO_Integration_tests'
-  }
+  reporter: 'spec'
 });
 
 mocha.addFile('test/integration/tests/get_Pending_Organisations.ts');

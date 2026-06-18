@@ -2,7 +2,7 @@ import { test, expect } from './helpers/api.fixtures';
 
 const ORGANISATION_ID = process.env.PW_API_ORGANISATION_ID || 'FWRJEOF';
 
-test.describe('Playwright API negative: organisations by id', () => {
+test.describe('Playwright API negative: organisations by id', { tag: ['@organisations-by-id', '@negative'] }, () => {
   test('GET /api/organisations?organisationId=<id> without auth is denied', async ({ apiAnonymousRequest }) => {
     const response = await apiAnonymousRequest.get('/api/organisations', {
       params: {
@@ -82,5 +82,30 @@ test.describe('Playwright API negative: organisations by id', () => {
       payload.message,
       `Expected message property in error response. Received message=${payload?.message}`
     ).toBeTruthy();
+  });
+
+  test('GET /api/organisations?organisationId=<blank>&version=v2 returns 500 with 400 apiStatusCode', async ({ apiRequest }) => {
+    const response = await apiRequest.get('/api/organisations', {
+      params: {
+        organisationId: ' ',
+        version: 'v2'
+      },
+      failOnStatusCode: false
+    });
+    const httpStatus = response.status();
+    expect(
+      httpStatus,
+      `Expected 500 from GET /api/organisations with blank organisationId. Received status=${httpStatus}`
+    ).toBe(500);
+
+    const payload = await response.json();
+    expect(
+      payload.apiStatusCode,
+      `Expected apiStatusCode=400 in error response for blank organisationId. Received apiStatusCode=${payload?.apiStatusCode}`
+    ).toBe(400);
+    expect(
+      payload.message,
+      `Expected handlePostOrganisationsRoute error message. Received message=${payload?.message}`
+    ).toBe('handlePostOrganisationsRoute error');
   });
 });
