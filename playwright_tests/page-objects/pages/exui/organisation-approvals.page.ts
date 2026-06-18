@@ -52,6 +52,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
   readonly staffDetailsPageHeading = this.page.locator('app-prd-caseworker-details .govuk-heading-l');
   readonly activeOrganisationRows = this.activeOrganisationsPanel.locator('table.active-organisations tr');
+  readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator('table.active-organisations tr.govuk-radios');
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
