@@ -3,13 +3,13 @@ import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import {
   getPaginationSummaryPattern,
   organisationTableRowsFromMockData,
-  setupOrganisationSearchIntegrationPage,
+  setupOrganisationSearchIntegrationPage
 } from './helpers/organisation-search.helpers';
 import { createMockOrganisation, setupCommonOrganisationApiMocks, waitForOrganisationStatusResponse } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   buildActivePaginationOrganisations,
-  buildActiveSearchOrganisations,
+  buildActiveSearchOrganisations
 } from './test-data/organisation-search.data';
 
 const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
@@ -19,14 +19,14 @@ const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
     sorting_parameters: [
       {
         sort_by: 'organisationId',
-        sort_order: 'asc',
-      },
+        sort_order: 'asc'
+      }
     ],
     pagination_parameters: {
       page_number: 1,
-      page_size: 10,
-    },
-  },
+      page_size: 10
+    }
+  }
 };
 
 const ACTIVE_ORGANISATIONS = [
@@ -42,18 +42,18 @@ const ACTIVE_ORGANISATIONS = [
         townCity: 'Birmingham',
         county: 'West Midlands',
         postCode: 'B1 1AA',
-        dxAddress: [{ dxNumber: 'DX 720', dxExchange: 'Birmingham' }],
-      },
+        dxAddress: [{ dxNumber: 'DX 720', dxExchange: 'Birmingham' }]
+      }
     ],
     superUser: {
       userIdentifier: 'active-table-admin-one-id',
       firstName: 'Table',
       lastName: 'Admin',
-      email: 'table.admin@example.com',
+      email: 'table.admin@example.com'
     },
     paymentAccount: ['PBA7200001'],
     pendingPaymentAccount: [],
-    dateApproved: '2024-05-21T00:00:00.000Z',
+    dateApproved: '2024-05-21T00:00:00.000Z'
   }),
   createMockOrganisation({
     organisationIdentifier: 'ACTIVETABLE02',
@@ -67,25 +67,25 @@ const ACTIVE_ORGANISATIONS = [
         townCity: 'Manchester',
         county: 'Greater Manchester',
         postCode: 'M1 1AA',
-        dxAddress: [{ dxNumber: 'DX 721', dxExchange: 'Manchester' }],
-      },
+        dxAddress: [{ dxNumber: 'DX 721', dxExchange: 'Manchester' }]
+      }
     ],
     superUser: {
       userIdentifier: 'active-table-admin-two-id',
       firstName: 'Second',
       lastName: 'Admin',
-      email: 'second.admin@example.com',
+      email: 'second.admin@example.com'
     },
     paymentAccount: ['PBA7200002'],
     pendingPaymentAccount: [],
-    dateApproved: '2024-05-22T00:00:00.000Z',
-  }),
+    dateApproved: '2024-05-22T00:00:00.000Z'
+  })
 ];
 
-test.describe('Playwright integration: active organisations', { tag: ['@integration', '@organisations'] }, () => {
+test.describe('Playwright integration: active organisations', { tag: ['@active-orgs'] }, () => {
   test('Active organisations tab renders mocked active organisations', async ({ page, organisationApprovalsPage }) => {
     const organisationApiMock = await setupCommonOrganisationApiMocks(page, {
-      activeOrganisations: ACTIVE_ORGANISATIONS,
+      activeOrganisations: ACTIVE_ORGANISATIONS
     });
     const { activeOrganisations } = organisationApiMock;
 
@@ -111,14 +111,14 @@ test.describe('Playwright integration: active organisations', { tag: ['@integrat
 
 test.describe(
   'Playwright integration: active organisations search',
-  { tag: ['@integration', '@organisations', '@search'] },
+  { tag: ['@active-orgs', '@search'] },
   () => {
     test('Search by organisation in active organisations uses mocked search API', async ({ page, organisationApprovalsPage }) => {
       const activeSearchOrganisations = buildActiveSearchOrganisations(10);
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
-          activeOrganisations: activeSearchOrganisations,
-        },
+          activeOrganisations: activeSearchOrganisations
+        }
       });
 
       await test.step('Open active organisations tab', async () => {
@@ -151,12 +151,12 @@ test.describe(
 
     test('Search by organisation in active organisations shows empty table for empty 200 response', async ({
       page,
-      organisationApprovalsPage,
+      organisationApprovalsPage
     }) => {
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
-          activeOrganisations: [],
-        },
+          activeOrganisations: []
+        }
       });
 
       await test.step('Open active organisations tab', async () => {
@@ -172,8 +172,8 @@ test.describe(
           search_filter: ORGANISATION_SEARCH_TERMS.activeByName,
           pagination_parameters: {
             page_number: 1,
-            page_size: 10,
-          },
+            page_size: 10
+          }
         });
       });
 
@@ -185,13 +185,13 @@ test.describe(
 
     test('Pagination in active organisations keeps search term and requests page 2', async ({
       page,
-      organisationApprovalsPage,
+      organisationApprovalsPage
     }) => {
       const activePaginationOrganisations = buildActivePaginationOrganisations(11);
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
-          activeOrganisations: activePaginationOrganisations,
-        },
+          activeOrganisations: activePaginationOrganisations
+        }
       });
 
       await test.step('Open active organisations tab', async () => {
@@ -207,8 +207,8 @@ test.describe(
           search_filter: ORGANISATION_SEARCH_TERMS.activePagination,
           pagination_parameters: {
             page_number: 1,
-            page_size: 10,
-          },
+            page_size: 10
+          }
         });
         expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual(
           organisationTableRowsFromMockData(activePaginationOrganisations.slice(0, 10))
@@ -227,8 +227,8 @@ test.describe(
           search_filter: ORGANISATION_SEARCH_TERMS.activePagination,
           pagination_parameters: {
             page_number: 2,
-            page_size: 10,
-          },
+            page_size: 10
+          }
         });
         await expect(organisationApprovalsPage.searchInput).toHaveValue(ORGANISATION_SEARCH_TERMS.activePagination);
         expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual(

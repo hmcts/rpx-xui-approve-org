@@ -3,7 +3,7 @@ import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { config } from '../config/config';
 import {
   pendingOrganisationDecisionPayloadFromMockData,
-  setupOrganisationSearchIntegrationPage
+  setupOrganisationSearchIntegrationPage,
 } from './helpers/organisation-search.helpers';
 import {
   createMockOrganisation,
@@ -14,12 +14,12 @@ import {
   waitForOrganisationStatusResponse,
   waitForOrganisationStatusResponseWithHttpStatus,
   waitForPendingOrganisationDecisionResponseWithHttpStatus,
-  waitForSingleOrganisationResponseWithHttpStatus
+  waitForSingleOrganisationResponseWithHttpStatus,
 } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   organisationDetailsStatusCodeScenarios,
-  pendingOrganisationStatusCodeScenarios
+  pendingOrganisationStatusCodeScenarios,
 } from './test-data/organisation-search.data';
 
 const ERROR_PAGE_BODY = 'Try again later.';
@@ -32,27 +32,27 @@ const PENDING_DETAILS_ORGANISATION = createMockOrganisation({
   name: 'Pending details negative org',
   status: 'PENDING',
   paymentAccount: [],
-  pendingPaymentAccount: ['PBA1111111']
+  pendingPaymentAccount: ['PBA1111111'],
 });
 
 test.describe(
   'Playwright integration: pending organisations search negative paths',
-  { tag: ['@integration', '@organisations', '@search-negative'] },
+  { tag: ['@pending-orgs', '@search-negative'] },
   () => {
     for (const scenario of pendingOrganisationStatusCodeScenarios) {
       test(`Pending organisation search handles HTTP ${scenario.statusCode}`, async ({
         page,
         errorPage,
-        organisationApprovalsPage
+        organisationApprovalsPage,
       }) => {
         const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
           organisations: {
             pendingSearchResponse: {
               status: scenario.statusCode,
               body: { message: `mock pending search error ${scenario.statusCode}` },
-              onlyWhenSearchTermPresent: true
-            }
-          }
+              onlyWhenSearchTermPresent: true,
+            },
+          },
         });
 
         await test.step(`Search pending organisations with HTTP ${scenario.statusCode} mock`, async () => {
@@ -63,8 +63,9 @@ test.describe(
           );
           await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
           await pendingOrganisationsResponse;
-          expect(standardApiMocks.getLastPendingOrganisationSearchPayload()?.searchRequest?.search_filter)
-            .toEqual(ORGANISATION_SEARCH_TERMS.pendingByName);
+          expect(standardApiMocks.getLastPendingOrganisationSearchPayload()?.searchRequest?.search_filter).toEqual(
+            ORGANISATION_SEARCH_TERMS.pendingByName
+          );
         });
 
         await test.step('Verify pending search shows expected error page', async () => {
@@ -79,7 +80,7 @@ test.describe(
 
     test('Pending organisation search with incomplete response object shows fallback empty-state', async ({
       page,
-      organisationApprovalsPage
+      organisationApprovalsPage,
     }) => {
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
@@ -92,21 +93,22 @@ test.describe(
                   name: 'Incomplete Pending Org',
                   status: 'PENDING',
                   paymentAccount: [],
-                  pendingPaymentAccount: []
-                }
-              ]
+                  pendingPaymentAccount: [],
+                },
+              ],
             },
-            onlyWhenSearchTermPresent: true
-          }
-        }
+            onlyWhenSearchTermPresent: true,
+          },
+        },
       });
 
       await test.step('Search pending organisations with incomplete response', async () => {
         const pendingOrganisationsResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
         await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
         await pendingOrganisationsResponse;
-        expect(standardApiMocks.getLastPendingOrganisationSearchPayload()?.searchRequest?.search_filter)
-          .toEqual(ORGANISATION_SEARCH_TERMS.pendingByName);
+        expect(standardApiMocks.getLastPendingOrganisationSearchPayload()?.searchRequest?.search_filter).toEqual(
+          ORGANISATION_SEARCH_TERMS.pendingByName
+        );
       });
 
       await test.step('Verify pending empty state is shown', async () => {
@@ -118,7 +120,7 @@ test.describe(
 
 test.describe(
   'Playwright integration: pending organisation details negative paths',
-  { tag: ['@integration', '@organisations', '@negative'] },
+  { tag: ['@pending-orgs', '@details', '@negative'] },
   () => {
     test.skip(true, 'EXUI-4809: details API errors from View links are not routed to error pages');
 
@@ -126,19 +128,19 @@ test.describe(
       test(`Pending organisation View link handles details API status ${scenario.statusCode}`, async ({
         page,
         errorPage,
-        organisationApprovalsPage
+        organisationApprovalsPage,
       }) => {
         const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
           organisations: {
             pendingOrganisations: [PENDING_DETAILS_ORGANISATION],
             singleOrganisationsById: {
-              [PENDING_DETAILS_ORGANISATION.organisationIdentifier]: PENDING_DETAILS_ORGANISATION
+              [PENDING_DETAILS_ORGANISATION.organisationIdentifier]: PENDING_DETAILS_ORGANISATION,
             },
             singleOrganisationResponse: {
               status: scenario.statusCode,
-              body: { message: `mock pending details error ${scenario.statusCode}` }
-            }
-          }
+              body: { message: `mock pending details error ${scenario.statusCode}` },
+            },
+          },
         });
 
         await test.step('Open pending organisation details from View link', async () => {
@@ -167,7 +169,7 @@ test.describe(
 
 test.describe(
   'Playwright integration: pending organisation decision negative paths',
-  { tag: ['@integration', '@organisations', '@pending-decisions', '@negative'] },
+  { tag: ['@pending-decisions', '@negative'] },
   () => {
     for (const apiStatusCode of PENDING_ORGANISATION_DECISION_API_ERROR_STATUSES) {
       test(`Pending registration approval handles API status ${apiStatusCode}`, async ({ page, organisationApprovalsPage }) => {
@@ -177,15 +179,15 @@ test.describe(
           name: PENDING_ORGANISATION_NAME,
           status: 'PENDING',
           paymentAccount: [],
-          pendingPaymentAccount: ['PBA1111111']
+          pendingPaymentAccount: ['PBA1111111'],
         });
 
         await test.step('Setup mocked pending organisation APIs', async () => {
           await setupCommonOrganisationApiMocks(page, {
             pendingOrganisations: [mockedPendingOrganisation],
             singleOrganisationsById: {
-              [PENDING_ORGANISATION_ID]: mockedPendingOrganisation
-            }
+              [PENDING_ORGANISATION_ID]: mockedPendingOrganisation,
+            },
           });
           await setupPbaAccountsApiMock(page, ['Mock Liberata Account']);
           await setupLovRefDataApiMock(page, []);
@@ -195,8 +197,8 @@ test.describe(
             responseBody: {
               apiError: `Mock pending organisation approval error ${apiStatusCode}`,
               apiStatusCode,
-              message: 'handlePutOrganisationRoute error'
-            }
+              message: 'handlePutOrganisationRoute error',
+            },
           });
         });
 

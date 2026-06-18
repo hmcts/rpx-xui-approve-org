@@ -6,7 +6,7 @@ import {
   setupCommonOrganisationApiMocks,
   setupPbaAccountsApiMock,
   setupUpdatePbaApiMock,
-  waitForUpdatePbaResponse
+  waitForUpdatePbaResponse,
 } from './mocks';
 
 const UPDATE_PBA_ORG_ID = process.env.PW_INTEGRATION_UPDATE_PBA_ORG_ID || process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
@@ -15,7 +15,7 @@ const SECOND_EXISTING_PBA = 'PBA2222222';
 const UPDATED_PBA = 'PBA7654321';
 const ADDED_PBA = 'PBA3333333';
 
-test.describe('Playwright integration seed: update pba', { tag: ['@integration', '@update-pba'] }, () => {
+test.describe('Playwright integration seed: update pba', { tag: ['@update-pba'] }, () => {
   test('Change PBA UI submits updated payment account payload', async ({ page, updatePbaPage, organisationApprovalsPage }) => {
     let updatePbaApiMock: { getLastPayload: any };
 
@@ -25,15 +25,15 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
         name: 'Update PBA UI Mock Org',
         status: 'ACTIVE',
         paymentAccount: [EXISTING_PBA],
-        pendingPaymentAccount: []
+        pendingPaymentAccount: [],
       });
       const singleOrganisationsById = {
-        [UPDATE_PBA_ORG_ID]: mockedOrganisation
+        [UPDATE_PBA_ORG_ID]: mockedOrganisation,
       };
 
       await setupCommonOrganisationApiMocks(page, {
         activeOrganisations: [mockedOrganisation],
-        singleOrganisationsById
+        singleOrganisationsById,
       });
       await setupPbaAccountsApiMock(page);
 
@@ -41,12 +41,12 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(false)
+          body: JSON.stringify(false),
         });
       });
 
       updatePbaApiMock = await setupUpdatePbaApiMock(page, {
-        singleOrganisationsById
+        singleOrganisationsById,
       });
     });
 
@@ -72,7 +72,7 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
       await expect(page).toHaveURL(new RegExp(`/organisation-details/${UPDATE_PBA_ORG_ID}`));
       expect(updatePbaApiMock?.getLastPayload()).toEqual({
         paymentAccounts: [UPDATED_PBA],
-        orgId: UPDATE_PBA_ORG_ID
+        orgId: UPDATE_PBA_ORG_ID,
       });
     });
 
@@ -84,7 +84,7 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
   test('Change PBA UI submits updated payload when removing a payment account', async ({
     page,
     updatePbaPage,
-    organisationApprovalsPage
+    organisationApprovalsPage,
   }) => {
     let updatePbaApiMock: { getLastPayload: any };
     const mockedOrganisation = createMockOrganisation({
@@ -92,16 +92,16 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
       name: 'Remove PBA UI Mock Org',
       status: 'ACTIVE',
       paymentAccount: [EXISTING_PBA, SECOND_EXISTING_PBA],
-      pendingPaymentAccount: []
+      pendingPaymentAccount: [],
     });
     const singleOrganisationsById = {
-      [UPDATE_PBA_ORG_ID]: mockedOrganisation
+      [UPDATE_PBA_ORG_ID]: mockedOrganisation,
     };
 
     await test.step('Setup mocked organisation APIs with multiple PBAs', async () => {
       await setupCommonOrganisationApiMocks(page, {
         activeOrganisations: [mockedOrganisation],
-        singleOrganisationsById
+        singleOrganisationsById,
       });
       await setupPbaAccountsApiMock(page);
 
@@ -109,12 +109,12 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(false)
+          body: JSON.stringify(false),
         });
       });
 
       updatePbaApiMock = await setupUpdatePbaApiMock(page, {
-        singleOrganisationsById
+        singleOrganisationsById,
       });
     });
 
@@ -144,7 +144,7 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
       await expect(page).toHaveURL(new RegExp(`/organisation-details/${UPDATE_PBA_ORG_ID}`));
       expect(updatePbaApiMock?.getLastPayload()).toEqual({
         paymentAccounts: [SECOND_EXISTING_PBA],
-        orgId: UPDATE_PBA_ORG_ID
+        orgId: UPDATE_PBA_ORG_ID,
       });
       expect(mockedOrganisation.paymentAccount).toEqual([SECOND_EXISTING_PBA]);
     });
@@ -158,7 +158,7 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
   test('Change PBA UI submits updated payload when adding another payment account', async ({
     page,
     updatePbaPage,
-    organisationApprovalsPage
+    organisationApprovalsPage,
   }) => {
     let updatePbaApiMock: { getLastPayload: any };
 
@@ -168,15 +168,15 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
         name: 'Add PBA UI Mock Org',
         status: 'ACTIVE',
         paymentAccount: [EXISTING_PBA],
-        pendingPaymentAccount: []
+        pendingPaymentAccount: [],
       });
       const singleOrganisationsById = {
-        [UPDATE_PBA_ORG_ID]: mockedOrganisation
+        [UPDATE_PBA_ORG_ID]: mockedOrganisation,
       };
 
       await setupCommonOrganisationApiMocks(page, {
         activeOrganisations: [mockedOrganisation],
-        singleOrganisationsById
+        singleOrganisationsById,
       });
       await setupPbaAccountsApiMock(page);
 
@@ -184,12 +184,12 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(false)
+          body: JSON.stringify(false),
         });
       });
 
       updatePbaApiMock = await setupUpdatePbaApiMock(page, {
-        singleOrganisationsById
+        singleOrganisationsById,
       });
     });
 
@@ -215,7 +215,7 @@ test.describe('Playwright integration seed: update pba', { tag: ['@integration',
       await expect(page).toHaveURL(new RegExp(`/organisation-details/${UPDATE_PBA_ORG_ID}`));
       expect(updatePbaApiMock?.getLastPayload()).toEqual({
         paymentAccounts: [EXISTING_PBA, ADDED_PBA],
-        orgId: UPDATE_PBA_ORG_ID
+        orgId: UPDATE_PBA_ORG_ID,
       });
     });
 

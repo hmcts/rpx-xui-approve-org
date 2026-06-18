@@ -2,13 +2,13 @@ import { test, expect } from '../page-objects/page.fixtures';
 import {
   activeListUrlPattern,
   pendingListUrlPattern,
-  setupNavigationLinksIntegrationPage,
+  setupNavigationLinksIntegrationPage
 } from './helpers/navigation-links.helpers';
 
 test.describe(
   'Playwright integration: organisation backlink navigation',
   {
-    tag: ['@integration', '@organisations', '@navigation-links'],
+    tag: ['@nav-links']
   },
   () => {
     test('Pending org details back link returns to pending list', async ({ page, organisationApprovalsPage }) => {
@@ -106,7 +106,7 @@ test.describe(
 
     test('Active users tab back link returns to active list, then pending list, then pending details', async ({
       page,
-      organisationApprovalsPage,
+      organisationApprovalsPage
     }) => {
       const { pendingOrganisationId, pendingOrganisationName, activeOrganisationName } =
         await setupNavigationLinksIntegrationPage(page);

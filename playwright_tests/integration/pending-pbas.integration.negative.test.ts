@@ -5,12 +5,12 @@ import {
   createMockPendingPbaOrganisation,
   waitForPendingPbaStatusResponse,
   waitForPendingPbaStatusResponseWithHttpStatus,
-  waitForSingleOrganisationResponseWithHttpStatus
+  waitForSingleOrganisationResponseWithHttpStatus,
 } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   organisationDetailsStatusCodeScenarios,
-  pendingPbaStatusCodeScenarios
+  pendingPbaStatusCodeScenarios,
 } from './test-data/organisation-search.data';
 
 const ERROR_PAGE_BODY = 'Try again later.';
@@ -19,19 +19,19 @@ const PENDING_PBA_DETAILS_ORGANISATION_ID = 'PBA-DETAILS-NEGATIVE-001';
 const PENDING_PBA_DETAILS_ORGANISATION = createMockPendingPbaOrganisation({
   organisationIdentifier: PENDING_PBA_DETAILS_ORGANISATION_ID,
   organisationName: 'Pending PBA details negative org',
-  pbaNumbers: [{ pbaNumber: 'PBA9090909', dateCreated: '2024-03-01T00:00:00.000Z' }]
+  pbaNumbers: [{ pbaNumber: 'PBA9090909', dateCreated: '2024-03-01T00:00:00.000Z' }],
 });
 const PENDING_PBA_DETAILS_SINGLE_ORGANISATION = createMockOrganisation({
   organisationIdentifier: PENDING_PBA_DETAILS_ORGANISATION_ID,
   name: PENDING_PBA_DETAILS_ORGANISATION.organisationName,
   status: 'ACTIVE',
   paymentAccount: [],
-  pendingPaymentAccount: ['PBA9090909']
+  pendingPaymentAccount: ['PBA9090909'],
 });
 
 test.describe(
   'Playwright integration: pending PBAs search negative paths',
-  { tag: ['@integration', '@organisations', '@search-negative'] },
+  { tag: ['@pending-pbas', '@search-negative'] },
   () => {
     for (const scenario of pendingPbaStatusCodeScenarios) {
       test(`Pending PBA search handles HTTP ${scenario.statusCode}`, async ({ page, errorPage, organisationApprovalsPage }) => {
@@ -39,8 +39,8 @@ test.describe(
           pendingPbaSearchResponse: {
             status: scenario.statusCode,
             body: { message: `mock pending pba search error ${scenario.statusCode}` },
-            onlyWhenSearchTermPresent: true
-          }
+            onlyWhenSearchTermPresent: true,
+          },
         });
 
         await test.step('Open new PBAs tab', async () => {
@@ -52,7 +52,9 @@ test.describe(
           const pendingPbaResponse = waitForPendingPbaStatusResponseWithHttpStatus(page, scenario.statusCode);
           await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaByName);
           await pendingPbaResponse;
-          expect(standardApiMocks.getLastPendingPbaSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.pendingPbaByName.toLowerCase());
+          expect(standardApiMocks.getLastPendingPbaSearchTerm()).toEqual(
+            ORGANISATION_SEARCH_TERMS.pendingPbaByName.toLowerCase()
+          );
         });
 
         await test.step('Verify pending PBA search shows expected error page', async () => {
@@ -67,7 +69,7 @@ test.describe(
 
     test('Pending PBA search with incomplete response object shows fallback empty-state', async ({
       page,
-      organisationApprovalsPage
+      organisationApprovalsPage,
     }) => {
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         pendingPbaSearchResponse: {
@@ -80,19 +82,19 @@ test.describe(
                 superUser: {
                   firstName: 'Incomplete',
                   lastName: 'Admin',
-                  email: 'incomplete-pba-admin@example.com'
+                  email: 'incomplete-pba-admin@example.com',
                 },
                 pbaNumbers: [
                   {
                     pbaNumber: 'PBA9090909',
-                    dateCreated: '2024-03-01T00:00:00.000Z'
-                  }
-                ]
-              }
-            ]
+                    dateCreated: '2024-03-01T00:00:00.000Z',
+                  },
+                ],
+              },
+            ],
           },
-          onlyWhenSearchTermPresent: true
-        }
+          onlyWhenSearchTermPresent: true,
+        },
       });
 
       await test.step('Open new PBAs tab', async () => {
@@ -116,7 +118,7 @@ test.describe(
 
 test.describe(
   'Playwright integration: pending PBA details negative paths',
-  { tag: ['@integration', '@organisations', '@negative'] },
+  { tag: ['@pending-pbas', '@details', '@negative'] },
   () => {
     test.skip(true, 'EXUI-4809: details API errors from View links are not routed to error pages');
 
@@ -124,24 +126,26 @@ test.describe(
       test(`Pending PBA View link handles details API status ${scenario.statusCode}`, async ({
         page,
         errorPage,
-        organisationApprovalsPage
+        organisationApprovalsPage,
       }) => {
         const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
           pendingPbaOrganisations: [PENDING_PBA_DETAILS_ORGANISATION],
           organisations: {
             singleOrganisationsById: {
-              [PENDING_PBA_DETAILS_ORGANISATION_ID]: PENDING_PBA_DETAILS_SINGLE_ORGANISATION
+              [PENDING_PBA_DETAILS_ORGANISATION_ID]: PENDING_PBA_DETAILS_SINGLE_ORGANISATION,
             },
             singleOrganisationResponse: {
               status: scenario.statusCode,
-              body: { message: `mock pending pba details error ${scenario.statusCode}` }
-            }
-          }
+              body: { message: `mock pending pba details error ${scenario.statusCode}` },
+            },
+          },
         });
 
         await test.step('Open pending PBA details from View link', async () => {
           await organisationApprovalsPage.openNewPbasTab();
-          await expect(organisationApprovalsPage.pendingPbaRowByText(PENDING_PBA_DETAILS_ORGANISATION.organisationName)).toBeVisible();
+          await expect(
+            organisationApprovalsPage.pendingPbaRowByText(PENDING_PBA_DETAILS_ORGANISATION.organisationName)
+          ).toBeVisible();
           const detailsResponse = waitForSingleOrganisationResponseWithHttpStatus(
             page,
             PENDING_PBA_DETAILS_ORGANISATION_ID,
