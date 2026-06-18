@@ -79,7 +79,7 @@ properties([
 
 String type      = 'nodejs'
 String product   = 'xui'
-String component = 'webapp'
+String component = 'ao-webapp'
 String channel   = '#xui-pipeline'
 String playwrightReportDir = 'functional-output/tests/playwright-e2e'
 String playwrightApiReportDir = 'functional-output/tests/playwright-api'
@@ -104,9 +104,9 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
                     yarnBuilder.yarn('test:integration:playwright:raw')
                 }
             },
-            e2e: {
-                stage('Nightly E2E Playwright Tests') {
-                    yarnBuilder.yarn('test:functional:e2e:raw')
+            crossBrowser: {
+                stage('Nightly Cross Browser Playwright Tests') {
+                    yarnBuilder.yarn('test:crossbrowser')
                 }
             },
             accessibility: {
@@ -185,8 +185,7 @@ withNightlyPipeline(type, product, component) {
     enableFullFunctionalTest(60)
     // mutation test no longer running as it is not required
     // enableMutationTest()
-    enableCrossBrowserTest()
-    env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
+    env.TEST_URL = 'https://xui-ao-webapp-staging.aat.platform.hmcts.net'
     afterSuccess('checkout') { sh 'yarn cache clean' }
     afterSuccess('build') {
         sh 'npm run build'
@@ -254,6 +253,15 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : htmlIndexReportFile,
             reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
         ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightNightlyReportDir,
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'XUI Approve Organisation Cross Browser Tests'
+        ])
     }
 
     /* afterSuccess('mutationTest') {
@@ -266,17 +274,6 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
     } */
-
-    afterSuccess('crossBrowserTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightNightlyReportDir,
-                        reportFiles          : htmlIndexReportFile,
-            reportName           : 'XUI Approve Organisation Cross Browser Tests'
-      ])
-    }
 
     afterSuccess('securityScan') {
             publishHTML([
