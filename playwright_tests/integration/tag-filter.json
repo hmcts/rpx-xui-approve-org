@@ -1,12 +1,14 @@
 {
   "excludedTags": [],
   "availableTags": [
-    "@integration",
     "@update-pba",
-    "@organisations",
+    "@active-orgs",
+    "@pending-orgs",
+    "@pending-pbas",
     "@pending-decisions",
-    "@navigation-links",
+    "@nav-links",
     "@search",
-    "@search-negative"
+    "@positive",
+    "@negative"
   ]
 }
