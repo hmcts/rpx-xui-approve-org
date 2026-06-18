@@ -41,6 +41,44 @@ test.describe('Playwright integration: pending PBAs search', { tag: ['@integrati
     });
   });
 
+  test('Search by organisation in new PBAs shows empty state for empty 200 response', async ({
+    page,
+    organisationApprovalsPage,
+  }) => {
+    const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
+      pendingPbaOrganisations: [],
+    });
+
+    await test.step('Open new PBAs tab', async () => {
+      await organisationApprovalsPage.openNewPbasTab();
+      await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
+    });
+
+    await test.step('Search pending PBAs and verify empty response request', async () => {
+      const pendingPbaResponse = waitForPendingPbaStatusResponse(page);
+      await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaByName);
+      await pendingPbaResponse;
+      expect(standardApiMocks.getLastPendingPbaSearchPayload()?.searchRequest).toMatchObject({
+        drill_down_search: [
+          {
+            field_name: 'pbaPendings',
+            search_filter: ORGANISATION_SEARCH_TERMS.pendingPbaByName,
+          },
+        ],
+        pagination_parameters: {
+          page_number: 1,
+          page_size: 10,
+        },
+      });
+    });
+
+    await test.step('Verify pending PBAs empty response state', async () => {
+      await expect(organisationApprovalsPage.pendingPbaEmptyState).toBeVisible();
+      expect(await organisationApprovalsPage.pendingPbaTableRows()).toEqual([]);
+      await expect(organisationApprovalsPage.pagination).toHaveCount(0);
+    });
+  });
+
   test('Pagination in new PBAs keeps search term and requests page 2', async ({ page, organisationApprovalsPage }) => {
     const pendingPbaPaginationOrganisations = buildPendingPbaPaginationOrganisations(11);
     const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {

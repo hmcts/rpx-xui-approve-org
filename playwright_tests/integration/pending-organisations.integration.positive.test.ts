@@ -161,6 +161,36 @@ test.describe(
       });
     });
 
+    test('Search by organisation in new registrations shows empty state for empty 200 response', async ({
+      page,
+      organisationApprovalsPage
+    }) => {
+      const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
+        organisations: {
+          pendingOrganisations: []
+        }
+      });
+
+      await test.step('Search pending organisations and verify empty response request', async () => {
+        const pendingOrganisationsResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
+        await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
+        await pendingOrganisationsResponse;
+        expect(standardApiMocks.getLastPendingOrganisationSearchPayload()?.searchRequest).toMatchObject({
+          search_filter: ORGANISATION_SEARCH_TERMS.pendingByName,
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10
+          }
+        });
+      });
+
+      await test.step('Verify pending organisations empty response state', async () => {
+        await expect(organisationApprovalsPage.pendingOrganisationEmptyState).toBeVisible();
+        expect(await organisationApprovalsPage.pendingOrganisationTableRows()).toEqual([]);
+        await expect(organisationApprovalsPage.pagination).toHaveCount(0);
+      });
+    });
+
     test('Pagination in new registrations keeps search term and requests page 2', async ({ page, organisationApprovalsPage }) => {
       const pendingPaginationOrganisations = buildPendingPaginationOrganisations(11);
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {

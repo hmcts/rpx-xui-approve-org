@@ -149,6 +149,40 @@ test.describe(
       });
     });
 
+    test('Search by organisation in active organisations shows empty table for empty 200 response', async ({
+      page,
+      organisationApprovalsPage,
+    }) => {
+      const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
+        organisations: {
+          activeOrganisations: [],
+        },
+      });
+
+      await test.step('Open active organisations tab', async () => {
+        await organisationApprovalsPage.openActiveOrganisationsTab();
+        await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
+      });
+
+      await test.step('Search active organisations and verify empty response request', async () => {
+        const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
+        await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
+        await activeOrganisationsResponse;
+        expect(standardApiMocks.getLastActiveOrganisationSearchPayload()?.searchRequest).toMatchObject({
+          search_filter: ORGANISATION_SEARCH_TERMS.activeByName,
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10,
+          },
+        });
+      });
+
+      await test.step('Verify active organisations empty response state', async () => {
+        expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual([]);
+        await expect(organisationApprovalsPage.pagination).toHaveCount(0);
+      });
+    });
+
     test('Pagination in active organisations keeps search term and requests page 2', async ({
       page,
       organisationApprovalsPage,
