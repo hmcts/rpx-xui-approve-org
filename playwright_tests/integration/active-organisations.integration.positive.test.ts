@@ -2,6 +2,7 @@ import { test, expect } from '../page-objects/page.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import {
   getPaginationSummaryPattern,
+  organisationTableRowsFromMockData,
   setupOrganisationSearchIntegrationPage
 } from './helpers/organisation-search.helpers';
 import {
@@ -11,9 +12,8 @@ import {
 } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
-  activeNonMatchingOrganisation,
-  activeSearchMatchOrganisation,
-  buildActivePaginationOrganisations
+  buildActivePaginationOrganisations,
+  buildActiveSearchOrganisations
 } from './test-data/organisation-search.data';
 
 const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
@@ -31,75 +31,77 @@ const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
   }
 };
 
-const ACTIVE_ORGANISATION = createMockOrganisation({
-  organisationIdentifier: 'ACTIVETABLE01',
-  name: 'Active Table Mock Org',
-  status: 'ACTIVE',
-  contactInformation: [{
-    addressLine1: '72 Active Avenue',
-    addressLine2: 'Table Quarter',
-    addressLine3: 'Suite 4',
-    townCity: 'Birmingham',
-    county: 'West Midlands',
-    postCode: 'B1 1AA',
-    dxAddress: [{ dxNumber: 'DX 720', dxExchange: 'Birmingham' }]
-  }],
-  superUser: {
-    userIdentifier: 'active-table-admin-id',
-    firstName: 'Table',
-    lastName: 'Admin',
-    email: 'table.admin@example.com'
-  },
-  paymentAccount: ['PBA7200001'],
-  pendingPaymentAccount: [],
-  dateApproved: '2024-05-21T00:00:00.000Z'
-});
+const ACTIVE_ORGANISATIONS = [
+  createMockOrganisation({
+    organisationIdentifier: 'ACTIVETABLE01',
+    name: 'Active Table Mock Org One',
+    status: 'ACTIVE',
+    contactInformation: [{
+      addressLine1: '72 Active Avenue',
+      addressLine2: 'Table Quarter',
+      addressLine3: 'Suite 4',
+      townCity: 'Birmingham',
+      county: 'West Midlands',
+      postCode: 'B1 1AA',
+      dxAddress: [{ dxNumber: 'DX 720', dxExchange: 'Birmingham' }]
+    }],
+    superUser: {
+      userIdentifier: 'active-table-admin-one-id',
+      firstName: 'Table',
+      lastName: 'Admin',
+      email: 'table.admin@example.com'
+    },
+    paymentAccount: ['PBA7200001'],
+    pendingPaymentAccount: [],
+    dateApproved: '2024-05-21T00:00:00.000Z'
+  }),
+  createMockOrganisation({
+    organisationIdentifier: 'ACTIVETABLE02',
+    name: 'Active Table Mock Org Two',
+    status: 'ACTIVE',
+    contactInformation: [{
+      addressLine1: '14 Second Street',
+      addressLine2: 'Active Quarter',
+      addressLine3: 'Floor 2',
+      townCity: 'Manchester',
+      county: 'Greater Manchester',
+      postCode: 'M1 1AA',
+      dxAddress: [{ dxNumber: 'DX 721', dxExchange: 'Manchester' }]
+    }],
+    superUser: {
+      userIdentifier: 'active-table-admin-two-id',
+      firstName: 'Second',
+      lastName: 'Admin',
+      email: 'second.admin@example.com'
+    },
+    paymentAccount: ['PBA7200002'],
+    pendingPaymentAccount: [],
+    dateApproved: '2024-05-22T00:00:00.000Z'
+  })
+];
 
 test.describe('Playwright integration: active organisations', { tag: ['@integration', '@organisations'] }, () => {
-  test('Organisation approvals renders mocked pending and active organisations', async ({ page, organisationApprovalsPage }) => {
+  test('Active organisations tab renders mocked active organisations', async ({ page, organisationApprovalsPage }) => {
     const organisationApiMock = await setupCommonOrganisationApiMocks(page, {
-      activeOrganisations: [ACTIVE_ORGANISATION]
+      activeOrganisations: ACTIVE_ORGANISATIONS
     });
-    const { pendingOrganisations, activeOrganisations } = organisationApiMock;
+    const { activeOrganisations } = organisationApiMock;
 
-    await test.step('Open approvals page and verify pending organisations', async () => {
+    await test.step('Open approvals page and verify active organisations tab is available', async () => {
       await ensureAuthenticatedPage(page, 'base');
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await expect(organisationApprovalsPage.tabPanel).toBeVisible();
       await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
       await expect(organisationApprovalsPage.newPbasTab).toBeVisible();
       await expect(organisationApprovalsPage.activeOrganisationsTab).toBeVisible();
-      await expect(organisationApprovalsPage.pendingOrganisationRowByName(pendingOrganisations[0].name)).toBeVisible();
     });
 
     await test.step('Open active organisations tab and verify active organisations', async () => {
       await organisationApprovalsPage.openActiveOrganisationsTab();
       await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
-      await expect(organisationApprovalsPage.activeOrganisationRowById(activeOrganisations[0].organisationIdentifier)).toBeVisible();
-      await expect(organisationApprovalsPage.activeOrganisationNameCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].name);
-      await expect(organisationApprovalsPage.activeOrganisationNameCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].organisationIdentifier);
-      await expect(organisationApprovalsPage.activeOrganisationAddressCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].contactInformation[0].addressLine1);
-      await expect(organisationApprovalsPage.activeOrganisationAddressCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].contactInformation[0].addressLine2);
-      await expect(organisationApprovalsPage.activeOrganisationAddressCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].contactInformation[0].addressLine3);
-      await expect(organisationApprovalsPage.activeOrganisationAddressCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].contactInformation[0].townCity);
-      await expect(organisationApprovalsPage.activeOrganisationAddressCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].contactInformation[0].county);
-      await expect(organisationApprovalsPage.activeOrganisationAddressCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].contactInformation[0].postCode);
-      await expect(organisationApprovalsPage.activeOrganisationAdministratorCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(`${activeOrganisations[0].superUser.firstName} ${activeOrganisations[0].superUser.lastName}`);
-      await expect(organisationApprovalsPage.activeOrganisationAdministratorCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].superUser.email);
-      await expect(organisationApprovalsPage.activeOrganisationDateApprovedCell(activeOrganisations[0].organisationIdentifier))
-        .toHaveText('21/05/2024');
-      await expect(organisationApprovalsPage.activeOrganisationStatusCell(activeOrganisations[0].organisationIdentifier))
-        .toContainText(activeOrganisations[0].status);
+      expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual(
+        organisationTableRowsFromMockData(activeOrganisations)
+      );
       expect(organisationApiMock.getLastActiveSearchPayload()).toEqual(ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD);
     });
   });
@@ -107,7 +109,12 @@ test.describe('Playwright integration: active organisations', { tag: ['@integrat
 
 test.describe('Playwright integration: active organisations search', { tag: ['@integration', '@organisations', '@search'] }, () => {
   test('Search by organisation in active organisations uses mocked search API', async ({ page, organisationApprovalsPage }) => {
-    const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page);
+    const activeSearchOrganisations = buildActiveSearchOrganisations(10);
+    const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
+      organisations: {
+        activeOrganisations: activeSearchOrganisations
+      }
+    });
 
     await test.step('Open active organisations tab', async () => {
       await organisationApprovalsPage.openActiveOrganisationsTab();
@@ -122,10 +129,15 @@ test.describe('Playwright integration: active organisations search', { tag: ['@i
         .toEqual(ORGANISATION_SEARCH_TERMS.activeByName);
     });
 
-    await test.step('Verify active organisation search result', async () => {
-      await expect(organisationApprovalsPage.activeOrganisationRowByText(activeSearchMatchOrganisation.name)).toBeVisible();
-      await expect(organisationApprovalsPage.activeOrganisationRowsByText(activeNonMatchingOrganisation.name)).toHaveCount(0);
+    await test.step('Verify active organisation search results', async () => {
+      const activeOrganisationRows = await organisationApprovalsPage.activeOrganisationTableRows();
+      expect(activeOrganisationRows).toEqual(organisationTableRowsFromMockData(activeSearchOrganisations));
       expect(standardApiMocks.getLastActiveOrganisationSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.activeByName.toLowerCase());
+    });
+
+    await test.step('Verify pagination is not shown for 10 active organisations', async () => {
+      expect(await organisationApprovalsPage.activeOrganisationTableRows()).toHaveLength(10);
+      await expect(organisationApprovalsPage.pagination).toHaveCount(0);
     });
   });
 
@@ -153,8 +165,8 @@ test.describe('Playwright integration: active organisations search', { tag: ['@i
           page_size: 10
         }
       });
-      await expect(organisationApprovalsPage.activeOrganisationRowByText(activePaginationOrganisations[0].name)).toBeVisible();
-      await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[10].name)).toHaveCount(0);
+      expect(await organisationApprovalsPage.activeOrganisationTableRows())
+        .toEqual(organisationTableRowsFromMockData(activePaginationOrganisations.slice(0, 10)));
       await expect(organisationApprovalsPage.pagination).toContainText(getPaginationSummaryPattern(1, 10, activePaginationOrganisations.length));
     });
 
@@ -170,10 +182,9 @@ test.describe('Playwright integration: active organisations search', { tag: ['@i
           page_size: 10
         }
       });
-      await expect(organisationApprovalsPage.activeOrganisationDataRows).toHaveCount(1);
-      await expect(organisationApprovalsPage.activeOrganisationDataRows.first()).toContainText(expectedSecondPageOrganisation.name);
-      await expect(organisationApprovalsPage.activeOrganisationDataRows.first()).toContainText(expectedSecondPageOrganisation.organisationIdentifier);
-      await expect(organisationApprovalsPage.activeOrganisationRowsByText(activePaginationOrganisations[0].name)).toHaveCount(0);
+      expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual(
+        organisationTableRowsFromMockData([expectedSecondPageOrganisation])
+      );
       await expect(organisationApprovalsPage.pagination).toContainText(getPaginationSummaryPattern(11, 11, activePaginationOrganisations.length));
     });
   });

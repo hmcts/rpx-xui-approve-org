@@ -1,32 +1,43 @@
 import { test, expect } from '../page-objects/page.fixtures';
 import {
   getPaginationSummaryPattern,
+  pendingPbaTableRowsFromMockData,
   setupOrganisationSearchIntegrationPage
 } from './helpers/organisation-search.helpers';
+import { waitForPendingPbaStatusResponse } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   buildPendingPbaPaginationOrganisations,
-  pendingPbaNonMatchingOrganisation,
-  pendingPbaSearchMatchOrganisation
+  buildPendingPbaSearchOrganisations
 } from './test-data/organisation-search.data';
 
 test.describe('Playwright integration: pending PBAs search', { tag: ['@integration', '@organisations', '@search'] }, () => {
   test('Search by organisation in new PBAs uses mocked search API', async ({ page, organisationApprovalsPage }) => {
-    const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page);
+    const pendingPbaSearchOrganisations = buildPendingPbaSearchOrganisations(10);
+    const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
+      pendingPbaOrganisations: pendingPbaSearchOrganisations
+    });
 
     await test.step('Open new PBAs tab', async () => {
       await organisationApprovalsPage.openNewPbasTab();
       await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
     });
 
-    await test.step('Search pending PBAs by organisation name', async () => {
+    await test.step('Search pending PBAs by organisation name and verify request', async () => {
+      const pendingPbaResponse = waitForPendingPbaStatusResponse(page);
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaByName);
+      await pendingPbaResponse;
+      expect(standardApiMocks.getLastPendingPbaSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.pendingPbaByName.toLowerCase());
     });
 
-    await test.step('Verify pending PBA search result', async () => {
-      await expect(organisationApprovalsPage.pendingPbaRowByText(pendingPbaSearchMatchOrganisation.organisationName)).toBeVisible();
-      await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaNonMatchingOrganisation.organisationName)).toHaveCount(0);
-      expect(standardApiMocks.getLastPendingPbaSearchTerm()).toEqual(ORGANISATION_SEARCH_TERMS.pendingPbaByName.toLowerCase());
+    await test.step('Verify pending PBA search results', async () => {
+      const pendingPbaRows = await organisationApprovalsPage.pendingPbaTableRows();
+      expect(pendingPbaRows).toEqual(pendingPbaTableRowsFromMockData(pendingPbaSearchOrganisations));
+    });
+
+    await test.step('Verify pagination is not shown for 10 pending PBAs', async () => {
+      expect(await organisationApprovalsPage.pendingPbaTableRows()).toHaveLength(10);
+      await expect(organisationApprovalsPage.pagination).toHaveCount(0);
     });
   });
 
@@ -41,18 +52,35 @@ test.describe('Playwright integration: pending PBAs search', { tag: ['@integrati
       await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
     });
 
-    await test.step('Search pending PBAs and verify first page', async () => {
+    await test.step('Search pending PBAs and verify first-page request', async () => {
+      const pendingPbaResponse = waitForPendingPbaStatusResponse(page);
       await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPbaPagination);
-      await expect(organisationApprovalsPage.pendingPbaRowByText(pendingPbaPaginationOrganisations[0].organisationName)).toBeVisible();
-      await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaPaginationOrganisations[10].organisationName)).toHaveCount(0);
+      await pendingPbaResponse;
+      expect(standardApiMocks.getLastPendingPbaSearchPayload()?.searchRequest).toMatchObject({
+        pagination_parameters: {
+          page_number: 1,
+          page_size: 10
+        }
+      });
+      expect(await organisationApprovalsPage.pendingPbaTableRows())
+        .toEqual(pendingPbaTableRowsFromMockData(pendingPbaPaginationOrganisations.slice(0, 10)));
       await expect(organisationApprovalsPage.pagination).toContainText(getPaginationSummaryPattern(1, 10, pendingPbaPaginationOrganisations.length));
     });
 
-    await test.step('Open pending PBA page 2 and verify rows', async () => {
+    await test.step('Open pending PBA page 2 and verify request', async () => {
+      const expectedSecondPageOrganisation = pendingPbaPaginationOrganisations[10];
+      const pendingPbaResponse = waitForPendingPbaStatusResponse(page);
       await organisationApprovalsPage.openPaginationPage(2);
-      expect(standardApiMocks.getLastPendingPbaSearchPayload()?.searchRequest?.pagination_parameters?.page_number).toEqual(2);
-      await expect(organisationApprovalsPage.pendingPbaRowByText(pendingPbaPaginationOrganisations[10].organisationName)).toBeVisible();
-      await expect(organisationApprovalsPage.pendingPbaRowsByText(pendingPbaPaginationOrganisations[0].organisationName)).toHaveCount(0);
+      await pendingPbaResponse;
+      expect(standardApiMocks.getLastPendingPbaSearchPayload()?.searchRequest).toMatchObject({
+        pagination_parameters: {
+          page_number: 2,
+          page_size: 10
+        }
+      });
+      expect(await organisationApprovalsPage.pendingPbaTableRows()).toEqual(
+        pendingPbaTableRowsFromMockData([expectedSecondPageOrganisation])
+      );
       await expect(organisationApprovalsPage.pagination).toContainText(getPaginationSummaryPattern(11, 11, pendingPbaPaginationOrganisations.length));
     });
   });

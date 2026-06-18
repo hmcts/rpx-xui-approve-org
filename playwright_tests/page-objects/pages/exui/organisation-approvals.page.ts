@@ -4,6 +4,24 @@ import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
 
+export type OrganisationTableRow = {
+  name: string;
+  organisationIdentifier: string;
+  address: string;
+  administrator: string;
+  administratorEmail: string;
+  date: string;
+  status: string;
+};
+
+export type PendingPbaTableRow = {
+  organisationName: string;
+  pbaNumbers: string[];
+  administrator: string;
+  administratorEmail: string;
+  dateReceived: string;
+};
+
 export class OrganisationApprovalsPage extends BasePage {
   private readonly exuiSpinner: ExuiSpinnerComponent;
   private readonly waitUtils: WaitUtils;
@@ -19,6 +37,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly tabPanel = this.page.locator('.govuk-tabs > .govuk-tabs__panel[role="tabpanel"]');
   readonly pendingOverviewPanel = this.page.locator('app-pending-overview-component');
   readonly pendingOrganisationRows = this.pendingOverviewPanel.locator('table.pending-organisations tr');
+  readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator('table.pending-organisations tr.govuk-radios');
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
@@ -80,6 +99,73 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly organisationNameSummaryValue = this.detailsPanel
     .locator('.govuk-summary-list__row .govuk-summary-list__value')
     .first();
+
+  private normaliseCellText(value: string): string {
+    return value.replace(/\s+/g, ' ').trim();
+  }
+
+  private splitCellLines(value: string): string[] {
+    return value
+      .split('\n')
+      .map((line) => this.normaliseCellText(line))
+      .filter(Boolean);
+  }
+
+  private async readTableCells(rows: Locator): Promise<string[][]> {
+    const rowCount = await rows.count();
+    const tableRows: string[][] = [];
+
+    for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
+      tableRows.push(await rows.nth(rowIndex).locator('td.govuk-table__cell').allInnerTexts());
+    }
+
+    return tableRows;
+  }
+
+  private mapOrganisationTableRow(cells: string[]): OrganisationTableRow {
+    const [organisationCell, addressCell, administratorCell, dateCell, statusCell] = cells;
+    const [name = '', organisationIdentifier = ''] = this.splitCellLines(organisationCell);
+    const [administrator = '', administratorEmail = ''] = this.splitCellLines(administratorCell);
+
+    return {
+      name,
+      organisationIdentifier,
+      address: this.normaliseCellText(addressCell),
+      administrator,
+      administratorEmail,
+      date: this.normaliseCellText(dateCell),
+      status: this.normaliseCellText(statusCell)
+    };
+  }
+
+  async pendingOrganisationTableRows(): Promise<OrganisationTableRow[]> {
+    const rows = await this.readTableCells(this.pendingOrganisationDataRows);
+
+    return rows.map((cells) => this.mapOrganisationTableRow(cells));
+  }
+
+  async activeOrganisationTableRows(): Promise<OrganisationTableRow[]> {
+    const rows = await this.readTableCells(this.activeOrganisationDataRows);
+
+    return rows.map((cells) => this.mapOrganisationTableRow(cells));
+  }
+
+  async pendingPbaTableRows(): Promise<PendingPbaTableRow[]> {
+    const rows = await this.readTableCells(this.pendingPbaRows);
+
+    return rows.map((cells) => {
+      const [organisationName = '', pbaNumbersCell = '', administratorCell = '', dateReceivedCell = ''] = cells;
+      const [administrator = '', administratorEmail = ''] = this.splitCellLines(administratorCell);
+
+      return {
+        organisationName: this.normaliseCellText(organisationName),
+        pbaNumbers: this.splitCellLines(pbaNumbersCell),
+        administrator,
+        administratorEmail,
+        dateReceived: this.normaliseCellText(dateReceivedCell)
+      };
+    });
+  }
 
   pendingOrganisationViewLink(): Locator {
     return this.pendingOrganisationViewLinkLocator;
