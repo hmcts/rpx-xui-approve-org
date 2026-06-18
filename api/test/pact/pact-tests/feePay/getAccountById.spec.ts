@@ -67,7 +67,7 @@ describe('Get Account Status for a Account Name', async () => {
       const resp = getOperation(taskUrl);
       resp.then((axResponse) => {
         expect(axResponse.status).to.be.equal(200);
-        const responseDto: AccountDetailsResponse = <AccountDetailsResponse>axResponse.data;
+        const responseDto: AccountDetailsResponse = axResponse.data as AccountDetailsResponse;
         assertResponse(responseDto);
       }).then(() => {
         pactSetUp.provider.verify();

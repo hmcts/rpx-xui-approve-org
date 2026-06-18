@@ -44,7 +44,7 @@ describe('Get a list of organisations based on status', async () => {
       const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations?status=Active`;
       const resp = getOperation(path);
       resp.then((response) => {
-        const responseDto: Organisation[] = <Organisation[]>response.data;
+        const responseDto: Organisation[] = response.data as Organisation[];
         assertResponse(responseDto);
       }).then(() => {
         pactSetUp.provider.verify();
@@ -87,4 +87,3 @@ const organisations = [
     paymentAccount: somethingLike(['abckd'])
   }
 ] as Organisation[];
-

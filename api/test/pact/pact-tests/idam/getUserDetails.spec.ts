@@ -52,7 +52,7 @@ describe('Idam API user details', async () => {
       const response = idamGetUserDetails(taskUrl);
 
       response.then((axiosResponse) => {
-        const dto: IdamGetDetailsResponseDto = <IdamGetDetailsResponseDto>axiosResponse.data;
+        const dto: IdamGetDetailsResponseDto = axiosResponse.data as IdamGetDetailsResponseDto;
         assertResponses(dto);
       }).then(() => {
         pactSetUp.provider.verify();
