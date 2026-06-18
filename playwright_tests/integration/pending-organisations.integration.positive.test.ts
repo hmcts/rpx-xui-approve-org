@@ -14,12 +14,15 @@ import {
   setupPbaAccountsApiMock,
   setupPendingOrganisationDecisionApiMock,
   waitForOrganisationStatusResponse,
+  waitForPendingPbaStatusResponse,
   waitForPendingOrganisationDecisionResponse
 } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
+  buildActiveSearchOrganisations,
   buildPendingAddressSearchOrganisations,
   buildPendingPaginationOrganisations,
+  buildPendingPbaSearchOrganisations,
   buildPendingSearchOrganisations
 } from './test-data/organisation-search.data';
 import { decisionScenarios } from './test-data/pending-decisions.data';
@@ -237,6 +240,90 @@ test.describe(
         await expect(organisationApprovalsPage.pagination).toContainText(
           getPaginationSummaryPattern(11, 11, pendingPaginationOrganisations.length)
         );
+      });
+    });
+
+    test('Switching tabs sends tab-specific requests and resets pagination to page 1', async ({
+      page,
+      organisationApprovalsPage
+    }) => {
+      const pendingPaginationOrganisations = buildPendingPaginationOrganisations(11);
+      const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
+        organisations: {
+          pendingOrganisations: pendingPaginationOrganisations,
+          activeOrganisations: buildActiveSearchOrganisations(10)
+        },
+        pendingPbaOrganisations: buildPendingPbaSearchOrganisations(10)
+      });
+
+      await test.step('Search pending organisations and move to page 2', async () => {
+        const pendingOrganisationsResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
+        await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingPagination);
+        await pendingOrganisationsResponse;
+
+        const pendingOrganisationsPageTwoResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
+        await organisationApprovalsPage.openPaginationPage(2);
+        await pendingOrganisationsPageTwoResponse;
+        expect(standardApiMocks.getLastPendingOrganisationSearchPayload()).toMatchObject({
+          view: 'NEW',
+          searchRequest: {
+            search_filter: ORGANISATION_SEARCH_TERMS.pendingPagination,
+            pagination_parameters: {
+              page_number: 2,
+              page_size: 10
+            }
+          }
+        });
+      });
+
+      await test.step('Switch to active organisations and verify isolated active request', async () => {
+        const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
+        await organisationApprovalsPage.openActiveOrganisationsTab();
+        await activeOrganisationsResponse;
+        expect(standardApiMocks.getLastActiveOrganisationSearchPayload()).toMatchObject({
+          view: 'ACTIVE',
+          searchRequest: {
+            search_filter: ORGANISATION_SEARCH_TERMS.pendingPagination,
+            pagination_parameters: {
+              page_number: 1,
+              page_size: 10
+            }
+          }
+        });
+      });
+
+      await test.step('Switch to new PBAs and verify isolated PBA request', async () => {
+        const pendingPbaResponse = waitForPendingPbaStatusResponse(page);
+        await organisationApprovalsPage.openNewPbasTab();
+        await pendingPbaResponse;
+        expect(standardApiMocks.getLastPendingPbaSearchPayload()?.searchRequest).toMatchObject({
+          drill_down_search: [
+            {
+              field_name: 'pbaPendings',
+              search_filter: ORGANISATION_SEARCH_TERMS.pendingPagination
+            }
+          ],
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10
+          }
+        });
+      });
+
+      await test.step('Switch back to pending organisations and verify pagination is reset', async () => {
+        const pendingOrganisationsResponse = waitForOrganisationStatusResponse(page, 'PENDING,REVIEW');
+        await organisationApprovalsPage.openPendingOrganisationsTab();
+        await pendingOrganisationsResponse;
+        expect(standardApiMocks.getLastPendingOrganisationSearchPayload()).toMatchObject({
+          view: 'NEW',
+          searchRequest: {
+            search_filter: ORGANISATION_SEARCH_TERMS.pendingPagination,
+            pagination_parameters: {
+              page_number: 1,
+              page_size: 10
+            }
+          }
+        });
       });
     });
   }
