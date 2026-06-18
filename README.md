@@ -187,7 +187,7 @@ This repository now uses Playwright for the functional/liveliness test path.
 - Override catalog paths with `E2E_PW_TAG_FILTER_CONFIG`, `INTEGRATION_PW_TAG_FILTER_CONFIG`, `API_PW_TAG_FILTER_CONFIG`, and `A11Y_PW_TAG_FILTER_CONFIG` when needed.
 - `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
-- `TEST_REGISTER_URL` can be set for registration flow tests.
+- `TEST_REGISTER_URL` can be set for registration flow tests; when unset, Playwright derives the Manage Org URL from `TEST_URL` for AAT and Demo, with preview defaulting to AAT unless overridden.
 - `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` are the Playwright auth credentials for E2E and integration suites.
 - `APPROVE_ORG_API_USERNAME` and `APPROVE_ORG_API_PASSWORD` are the Playwright auth credentials for API suites.
 - `PW_INTEGRATION_UPDATE_PBA_ORG_ID` can override the org id used by the seeded integration write scenario.
