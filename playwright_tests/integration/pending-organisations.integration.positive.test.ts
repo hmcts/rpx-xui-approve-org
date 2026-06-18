@@ -183,6 +183,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
           page_size: 10
         }
       });
+      await expect(organisationApprovalsPage.searchInput).toHaveValue(ORGANISATION_SEARCH_TERMS.pendingPagination);
       expect(await organisationApprovalsPage.pendingOrganisationTableRows()).toEqual(
         organisationTableRowsFromMockData([expectedSecondPageOrganisation])
       );

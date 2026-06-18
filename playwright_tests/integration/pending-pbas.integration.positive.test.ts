@@ -78,6 +78,7 @@ test.describe('Playwright integration: pending PBAs search', { tag: ['@integrati
           page_size: 10
         }
       });
+      await expect(organisationApprovalsPage.searchInput).toHaveValue(ORGANISATION_SEARCH_TERMS.pendingPbaPagination);
       expect(await organisationApprovalsPage.pendingPbaTableRows()).toEqual(
         pendingPbaTableRowsFromMockData([expectedSecondPageOrganisation])
       );
