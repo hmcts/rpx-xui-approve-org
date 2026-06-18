@@ -1,4 +1,3 @@
-// exception-formatter is CommonJS-only, so this import form is required here.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import exceptionFormatter = require('exception-formatter');
 
