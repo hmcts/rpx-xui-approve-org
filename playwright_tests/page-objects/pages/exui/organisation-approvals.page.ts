@@ -3,6 +3,7 @@ import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
 export class OrganisationApprovalsPage extends BasePage {
+  private static readonly invalidPbaMessage = 'PBA numbers must start with PBA/pba and be followed by 7 alphanumeric characters';
   private readonly exuiSpinner: ExuiSpinnerComponent;
   private readonly waitUtils: WaitUtils;
 
@@ -38,6 +39,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pending"]');
   readonly newPbasTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pbas"]');
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
+  readonly pendingPbasRows = this.pendingPbasPanel.locator('table.govuk-table tbody tr');
   readonly pendingPbaViewLinkLocator = this.pendingPbasPanel.locator('table.govuk-table a.govuk-link[href*="/new/"]').first();
   readonly pendingPbaDecisionRows = this.page.locator('app-pba-account-approval');
   readonly pendingPbaContinueButton = this.page.locator('app-new-pbas-info button[type="submit"].govuk-button').first();
@@ -72,6 +74,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly organisationNameSummaryValue = this.detailsPanel
     .locator('.govuk-summary-list__row .govuk-summary-list__value')
     .first();
+
+  readonly validationSummary = this.page.locator('#errorSummary');
 
   pendingOrganisationViewLink(): Locator {
     return this.pendingOrganisationViewLinkLocator;
@@ -134,6 +138,16 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstPendingPba(): Promise<void> {
     await this.pendingPbaViewLink().click();
+  }
+
+  async approveFirstInvalidPbaAndExpectValidationError(): Promise<void> {
+    await this.openNewPbasTab();
+    await this.pendingPbaViewLink().waitFor({ state: 'visible', timeout: 30_000 });
+    await this.openFirstPendingPba();
+    await this.approveAllPendingPbas();
+    await this.continuePendingPbaDecision();
+    await this.confirmDecisionHeading.waitFor({ state: 'visible' });
+    await this.confirmButton.click();
   }
 
   async approveAllPendingPbas(): Promise<void> {
