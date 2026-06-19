@@ -185,7 +185,6 @@ This repository now uses Playwright for the functional/liveliness test path.
 - Include tags per suite with `E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS`, and `A11Y_PW_INCLUDE_TAGS`.
 - Override excluded tags per suite with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE` (`@none` clears file-based excludes).
 - Override catalog paths with `E2E_PW_TAG_FILTER_CONFIG`, `INTEGRATION_PW_TAG_FILTER_CONFIG`, `API_PW_TAG_FILTER_CONFIG`, and `A11Y_PW_TAG_FILTER_CONFIG` when needed.
-- `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests; when unset, Playwright derives the Manage Org URL from `TEST_URL` for AAT and Demo, with preview defaulting to AAT unless overridden.
 - `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` are the Playwright auth credentials for E2E and integration suites.
