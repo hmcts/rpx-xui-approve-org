@@ -25,7 +25,7 @@
     "lint:test": "yarn eslint playwright_tests",
     "ng": "ng",
     "pre-push": "yarn lint && yarn build:prod && ng test organisation-manager --code-coverage",
-    "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error node -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts dotenv_config_defaults=./api/.env.defaults",
+    "publish-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error DOTENV_CONFIG_DEFAULTS=./api/.env.defaults node -r ts-node/register -r dotenv-extended/config api/test/pact/publish/publish.ts",
     "run:docker": "yarn build:docker && yarn start:docker",
     "sonar-scan": "node_modules/sonar-scanner/bin/sonar-scanner",
     "start": "node ./dist/organisation-manager/api/server.bundle.js",
@@ -56,7 +56,7 @@
     "test:ng:watch": "ng test --watch",
     "test:node": "cd api && yarn test",
     "test:node:watch": "cd api && yarn test:watch",
-    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config dotenv_config_defaults=./api/.env.defaults api/test/pact/pact-tests/**/*.spec.ts",
+    "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error DOTENV_CONFIG_DEFAULTS=./api/.env.defaults mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/pact-tests/**/*.spec.ts",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
     "test:smoke": "yarn playwright install chromium && E2E_PW_INCLUDE_TAGS='@smoke' E2E_PW_EXCLUDED_TAGS_OVERRIDE='@none' npx playwright test playwright_tests/e2e/login.test.ts -c playwright.config.ts"
   },
