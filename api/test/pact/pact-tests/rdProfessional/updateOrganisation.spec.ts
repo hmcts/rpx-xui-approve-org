@@ -60,27 +60,22 @@ describe('Update an organisation', () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('Update an organisation and returns response', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId;
 
-      const resp = putOperation(taskUrl, mockRequest);
-
-      resp.then((response) => {
-        try {
-          expect(response.status).to.be.equal(201);
-        } catch (e) {
-          console.log('error occurred in asserting response...' + e);
-        }
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      }).finally(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      const response = await putOperation(taskUrl, mockRequest);
+      expect(response.status).to.be.equal(200);
     });
   });
 });

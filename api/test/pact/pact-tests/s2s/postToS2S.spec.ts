@@ -36,7 +36,15 @@ describe('S2S Auth API', () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('returns the correct response', async () => {
@@ -44,11 +52,7 @@ describe('S2S Auth API', () => {
       try {
         const resp = await postS2SLease(s2sUrl, mockRequest);
         assertResponse(resp.data);
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
       } catch (e) {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
         throw new Error('S2S lease request failed', { cause: e });
       }
     });
