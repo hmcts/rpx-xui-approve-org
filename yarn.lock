@@ -21373,7 +21373,7 @@ __metadata:
     redis: "npm:^3.0.2"
     request: "npm:@cypress/request@^3.0.9"
     rpx-xui-translation: "npm:1.2.0-angular-20.3.14"
-    rxjs: "npm:^7.8.1"
+    rxjs: "npm:^7.8.2"
     sinon: "npm:^7.2.3"
     sinon-chai: "npm:^3.3.0"
     sinon-express-mock: "npm:^2.2.0"
@@ -23805,7 +23805,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:7.8.2, rxjs@npm:^7.5.5, rxjs@npm:^7.8.1, rxjs@npm:~7.8.1":
+"rxjs@npm:7.8.2, rxjs@npm:^7.5.5, rxjs@npm:^7.8.1, rxjs@npm:^7.8.2, rxjs@npm:~7.8.1":
   version: 7.8.2
   resolution: "rxjs@npm:7.8.2"
   dependencies:
