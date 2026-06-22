@@ -9,9 +9,11 @@ const SESSION_CAPTURE_LOCK_STALE_MS = 120_000;
 const SESSION_CAPTURE_LOCK_RETRY_MS = 500;
 const AUTHENTICATION_TIMEOUT_MS = 30_000;
 const AUTHENTICATION_POLL_INTERVAL_MS = 500;
+const LOGIN_REDIRECT_TIMEOUT_MS = 45_000;
 const SESSION_DIR = process.env.PW_SESSION_DIR
   ? path.resolve(process.env.PW_SESSION_DIR)
   : path.resolve(__dirname, '../../.sessions');
+const OAUTH_CALLBACK_ROUTE_PATTERN = /\/oauth2\/callback(?:[/?#]|$)/;
 
 type UserConfig = {
   username: string;
@@ -254,14 +256,74 @@ async function loginFailureContext(page: Page): Promise<string> {
   return context.join(' | ');
 }
 
+function isOAuthCallbackUrl(url: string): boolean {
+  return OAUTH_CALLBACK_ROUTE_PATTERN.test(url);
+}
+
+function isIdamUrl(url: string): boolean {
+  try {
+    return new URL(url).hostname.includes('idam');
+  } catch {
+    return url.includes('idam');
+  }
+}
+
+async function isLoginInputVisible(page: Page): Promise<boolean> {
+  const namedUsernameInput = page.locator('input[name="username"]');
+  const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
+  const fallbackEmailInput = page.locator('input[type="email"]').first();
+
+  return (await namedUsernameInput.isVisible().catch(() => false)) ||
+    (await roleEmailInput.isVisible().catch(() => false)) ||
+    (await fallbackEmailInput.isVisible().catch(() => false));
+}
+
+async function isOnLoginOrCallbackSurface(page: Page): Promise<boolean> {
+  const currentUrl = page.url();
+  return currentUrl.includes('/login') ||
+    isIdamUrl(currentUrl) ||
+    isOAuthCallbackUrl(currentUrl) ||
+    await isLoginInputVisible(page);
+}
+
+async function waitForLoginRedirectToSettle(page: Page, timeoutMs = LOGIN_REDIRECT_TIMEOUT_MS): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    const currentUrl = page.url();
+    const onLoginOrCallbackSurface = await isOnLoginOrCallbackSurface(page);
+    const pageTitle = await page.title().catch(() => '');
+
+    if (isOAuthCallbackUrl(currentUrl) && pageTitle.toLowerCase() === 'error') {
+      return;
+    }
+
+    if (!onLoginOrCallbackSurface) {
+      return;
+    }
+
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) {
+      break;
+    }
+
+    await sleep(Math.min(AUTHENTICATION_POLL_INTERVAL_MS, remainingMs));
+  }
+}
+
 async function completeLoginOnPage(page: Page, username: string, password: string): Promise<void> {
   await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
 
-  if (await waitForAuthenticatedByApi(page, 5_000)) {
+  if (!(await isOnLoginOrCallbackSurface(page)) && await waitForAuthenticatedByApi(page, 5_000)) {
     return;
   }
 
   for (let attempt = 1; attempt <= 4; attempt += 1) {
+    if (attempt > 1) {
+      await page.context().clearCookies();
+      await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+    }
+
     const namedUsernameInput = page.locator('input[name="username"]');
     const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
     const fallbackEmailInput = page.locator('input[type="email"]').first();
@@ -285,19 +347,21 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
         await page.locator('input[name="password"]').fill(password);
         await page.locator('#login-submit-btn').click();
         await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
+        await waitForLoginRedirectToSettle(page);
       } else if (hasRoleEmailInput || hasFallbackEmailInput) {
         const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
         await emailInput.fill(username);
         await page.locator('input[type="password"], input[name="password"]').first().fill(password);
         await page.getByRole('button', { name: 'Sign in' }).click();
         await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
+        await waitForLoginRedirectToSettle(page);
       } else {
         // Login page can be in a transition state; retry instead of timing out on non-visible inputs.
         await sleep(500 * attempt);
       }
     }
 
-    if (await waitForAuthenticatedByApi(page)) {
+    if (!(await isOnLoginOrCallbackSurface(page)) && await waitForAuthenticatedByApi(page, 5_000)) {
       return;
     }
   }
