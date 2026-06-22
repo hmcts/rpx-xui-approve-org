@@ -1,8 +1,11 @@
 import type { Page, Response } from '@playwright/test';
+import { paginateMockItems } from './pagination.mocks';
+import type { MockOrganisation } from './organisation.mocks';
 
 type UpdatePbaApiMockState = {
   status?: number;
   responseBody?: unknown;
+  singleOrganisationsById?: Record<string, Pick<MockOrganisation, 'paymentAccount' | 'pendingPaymentAccount'>>;
 };
 
 export type PendingPbaStatusApiRequestPayload = {
@@ -120,14 +123,24 @@ export async function setupUpdatePbaApiMock(
   let lastPayload: UpdatePbaApiPayload | undefined;
 
   await page.route('**/api/updatePba**', async (route, request) => {
+    const statusCode = state.status ?? 200;
+
     try {
       lastPayload = request.postDataJSON() as UpdatePbaApiPayload;
     } catch {
       lastPayload = undefined;
     }
 
+    if (statusCode >= 200 && statusCode < 300 && lastPayload?.orgId) {
+      const updatedOrganisation = state.singleOrganisationsById?.[lastPayload.orgId];
+      if (updatedOrganisation) {
+        updatedOrganisation.paymentAccount = lastPayload.paymentAccounts;
+        updatedOrganisation.pendingPaymentAccount = [];
+      }
+    }
+
     await route.fulfill({
-      status: state.status ?? 200,
+      status: statusCode,
       contentType: 'application/json',
       body: JSON.stringify(state.responseBody ?? { ok: true })
     });
@@ -177,6 +190,7 @@ export async function setupPendingPbaStatusApiMock(
     }
 
     const filteredPendingPbaOrganisations = filterPendingPbaOrganisations(pendingPbaOrganisations, lastPayload);
+    const paginatedPendingPbaOrganisations = paginateMockItems(filteredPendingPbaOrganisations, lastPayload);
     const shouldApplyOverride = state.onlyWhenSearchTermPresent
       ? Boolean(resolvePendingPbaSearchTerm(lastPayload))
       : true;
@@ -184,11 +198,11 @@ export async function setupPendingPbaStatusApiMock(
     const resolvedStatusCode = shouldApplyOverride ? (state.status ?? 200) : 200;
     const body = shouldApplyOverride
       ? (state.responseBody ?? (resolvedStatusCode === 200 ? {
-        organisations: filteredPendingPbaOrganisations,
+        organisations: paginatedPendingPbaOrganisations,
         total_records: filteredPendingPbaOrganisations.length
       } : {}))
       : {
-        organisations: filteredPendingPbaOrganisations,
+        organisations: paginatedPendingPbaOrganisations,
         total_records: filteredPendingPbaOrganisations.length
       };
 
@@ -229,6 +243,15 @@ export function waitForPendingPbaStatusResponseWithHttpStatus(
 export function waitForUpdatePbaResponse(page: Page): Promise<Response> {
   return page.waitForResponse((response) => {
     const request = response.request();
-    return request.method() === 'PUT' && request.url().includes('/api/updatePba') && response.status() < 500;
+    return request.method().toUpperCase() === 'PUT' && request.url().includes('/api/updatePba') && response.status() < 500;
+  });
+}
+
+export function waitForUpdatePbaResponseWithHttpStatus(page: Page, expectedHttpStatus: number): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method().toUpperCase() === 'PUT'
+      && request.url().includes('/api/updatePba')
+      && response.status() === expectedHttpStatus;
   });
 }

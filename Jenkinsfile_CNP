@@ -53,7 +53,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@DTSPO-30107-jenkins-agents")
+@Library('Infrastructure')
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
@@ -68,7 +68,6 @@ String playwrightApiReportDir = 'functional-output/tests/playwright-api'
 String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
 final String htmlIndexReportFile = 'index.html'
-final String ngIntegrationReportDir = 'reports/tests/ngIntegration/'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -146,6 +145,8 @@ def secrets = [
     secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
     secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
     secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
+    secret('test-roo-username', 'TEST_ROO_EMAIL'),
+    secret('test-roo-password', 'TEST_ROO_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
     secret('ao-idam-client-secret', 'IDAM_SECRET'),
@@ -288,14 +289,6 @@ withPipeline(type, product, component) {
             reportName           : 'PREVIEW Accessibility Playwright Test'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : ngIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
-            reportName           : 'PREVIEW NG Integration Test'
-        ])
     }
 
 
@@ -355,13 +348,5 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Accessibility Playwright Test'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : ngIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
-            reportName           : 'AAT NG Integration Test'
-        ])
     }
 }
