@@ -8,7 +8,6 @@ const integrationTagFilters = resolveTagFilters({
   excludedTagsEnvVar: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
   defaultConfigPath: 'playwright_tests/integration/tag-filter.json',
-  suiteTag: '@integration',
 });
 
 module.exports = defineConfig({
