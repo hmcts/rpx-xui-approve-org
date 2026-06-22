@@ -7,7 +7,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalInternal', port: 8000 });
 
-describe('Get a list of organisations based on status', async () => {
+describe('Get a list of organisations based on status', () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
@@ -37,22 +37,22 @@ describe('Get a list of organisations based on status', async () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('Returns a list of organisations based on status', async () => {
       const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations?status=Active`;
-      const resp = getOperation(path);
-      resp.then((response) => {
-        const responseDto: Organisation[] = <Organisation[]>response.data;
-        assertResponse(responseDto);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      }).finally(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      const response = await getOperation(path);
+      const responseDto = (response.data as { organisations: Organisation[] }).organisations;
+      assertResponse(responseDto);
     });
   });
 });
@@ -86,4 +86,3 @@ const organisations = [
     paymentAccount: somethingLike(['abckd'])
   }
 ] as Organisation[];
-
