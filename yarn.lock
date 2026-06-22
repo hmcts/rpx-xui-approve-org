@@ -17200,7 +17200,7 @@ __metadata:
     axios: "npm:^1.15.0"
     axios-mock-adapter: "npm:^1.18.2"
     chai: "npm:^4.3.8"
-    config: "npm:^3.2.5"
+    config: "npm:^4.4.1"
     cookie-parser: "npm:^1.4.7"
     core-js: "npm:^3.49.0"
     crypto-js: "npm:^4.2.0"
