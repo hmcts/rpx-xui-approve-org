@@ -260,6 +260,10 @@ function isOAuthCallbackUrl(url: string): boolean {
   return OAUTH_CALLBACK_ROUTE_PATTERN.test(url);
 }
 
+function authLoginUrl(): string {
+  return new URL('auth/login', config.baseUrl).toString();
+}
+
 function isIdamUrl(url: string): boolean {
   try {
     return new URL(url).hostname.includes('idam');
@@ -312,7 +316,7 @@ async function waitForLoginRedirectToSettle(page: Page, timeoutMs = LOGIN_REDIRE
 }
 
 async function completeLoginOnPage(page: Page, username: string, password: string): Promise<void> {
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+  await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
 
   if (!(await isOnLoginOrCallbackSurface(page)) && await waitForAuthenticatedByApi(page, 5_000)) {
     return;
@@ -321,7 +325,7 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
   for (let attempt = 1; attempt <= 4; attempt += 1) {
     if (attempt > 1) {
       await page.context().clearCookies();
-      await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+      await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
     }
 
     const namedUsernameInput = page.locator('input[name="username"]');
