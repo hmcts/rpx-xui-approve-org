@@ -8115,13 +8115,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:^0.0.36":
-  version: 0.0.36
-  resolution: "@types/config@npm:0.0.36"
-  checksum: 10/52e268117eb89d9e51e4592f997b8c9cb9a890161ecdc00c28899c30001f509e596e928867e67592769a49e99d1f3659316d0d208a5a9c24055799fa3e5487bf
-  languageName: node
-  linkType: hard
-
 "@types/connect-history-api-fallback@npm:^1.5.4":
   version: 1.5.4
   resolution: "@types/connect-history-api-fallback@npm:1.5.4"
@@ -10865,12 +10858,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"config@npm:^3.2.5":
-  version: 3.3.12
-  resolution: "config@npm:3.3.12"
+"config@npm:^4.4.1":
+  version: 4.4.1
+  resolution: "config@npm:4.4.1"
   dependencies:
     json5: "npm:^2.2.3"
-  checksum: 10/f7973d1192c98d9b8d49e273bef816b4c74a6bab6e7c500792d3fe239e87fa3a80fac89ee552b7da7e2c3d9f6f8f3568e856f08ebd9861917cf47a655cee3e6a
+  checksum: 10/b237298b107111f88f8b4226c6412298a93052642c8e67a352e36f64be02fb4644351890f57e518338d1491e83064c6fb8fe31f676c7355491ef969e174ec9f1
   languageName: node
   linkType: hard
 
@@ -17255,7 +17248,6 @@ __metadata:
     "@stryker-mutator/mocha-runner": "npm:8.6.0"
     "@stryker-mutator/typescript": "npm:4.0.0"
     "@types/chai": "npm:^4.3.6"
-    "@types/config": "npm:^0.0.36"
     "@types/cookie-parser": "npm:^1.4.2"
     "@types/crypto-js": "npm:^3.1.43"
     "@types/ejs": "npm:^2.6.3"
@@ -17276,7 +17268,7 @@ __metadata:
     axios-mock-adapter: "npm:^1.18.2"
     chai: "npm:^4.3.8"
     chai-as-promised: "npm:7.1.1"
-    config: "npm:^3.2.5"
+    config: "npm:^4.4.1"
     cookie-parser: "npm:^1.4.7"
     core-js: "npm:^3.49.0"
     crypto-js: "npm:^4.2.0"
