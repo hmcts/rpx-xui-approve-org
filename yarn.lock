@@ -10456,17 +10456,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai-as-promised@npm:7.1.1":
-  version: 7.1.1
-  resolution: "chai-as-promised@npm:7.1.1"
-  dependencies:
-    check-error: "npm:^1.0.2"
-  peerDependencies:
-    chai: ">= 2.1.2 < 5"
-  checksum: 10/5d9ecab37b313047f5ea25d00b1cb6e7f2710c6e2f57d91aed7cfed5008d995cb65ea723af4e5d782bafd9a6eff5a4267af53dfe7212dc10dd1d92b9127bc531
-  languageName: node
-  linkType: hard
-
 "chai@npm:^4.3.8":
   version: 4.5.0
   resolution: "chai@npm:4.5.0"
@@ -15216,6 +15205,15 @@ __metadata:
   peerDependencies:
     rxjs: ^7.0.0
   checksum: 10/52a9565dd619d1b9b89611ef93b11344de159cdebffccb2ead4051c1f2d66f415a784bf6f22452d8616504cb1267d87e4c94268e136da2b7376cf0f0d7c97c06
+  languageName: node
+  linkType: hard
+
+"jasmine-spec-reporter@npm:~7.0.0":
+  version: 7.0.0
+  resolution: "jasmine-spec-reporter@npm:7.0.0"
+  dependencies:
+    colors: "npm:1.4.0"
+  checksum: 10/69afad4935977c941b4d72fa81cc640d5f22cd35c7797468420d837cb94b469f9e6e767faa4112414511cc64e75ca9c7d641eba7df41e0d41c10b0c9bf4d0508
   languageName: node
   linkType: hard
 
