@@ -8286,26 +8286,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:*":
-  version: 6.0.0
-  resolution: "@types/jasmine@npm:6.0.0"
-  checksum: 10/22a838ab8d3221da78629819744b7a0065ce6381d198d745258c3ec29974470240160d47fb06b629c1653f285ed23c15c101f0f6939d2817abc02f253ff491b7
-  languageName: node
-  linkType: hard
-
 "@types/jasmine@npm:~4.3.5":
   version: 4.3.6
   resolution: "@types/jasmine@npm:4.3.6"
   checksum: 10/2ca3b7931d71b329b13ac753de086f97b2520d98ce3d3cb74dd2dbeaf7b336e9625dd29b425daa83e0fe485a736f3a59c85e0c57f7f8d9ad489fec79ff804d89
-  languageName: node
-  linkType: hard
-
-"@types/jasminewd2@npm:~2.0.3":
-  version: 2.0.13
-  resolution: "@types/jasminewd2@npm:2.0.13"
-  dependencies:
-    "@types/jasmine": "npm:*"
-  checksum: 10/a661e1add2d7c0582b05e79fcdbc0297fa4292b38b1273e2970d88d0775c85ecc322e1417c84826b5e6caeceab4dc267f5f00300c0c11d0fc459601057698700
   languageName: node
   linkType: hard
 
@@ -10569,7 +10553,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"check-error@npm:^1.0.2, check-error@npm:^1.0.3":
+"check-error@npm:^1.0.3":
   version: 1.0.3
   resolution: "check-error@npm:1.0.3"
   dependencies:
@@ -11336,19 +11320,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-select@npm:^5.1.0":
-  version: 5.2.2
-  resolution: "css-select@npm:5.2.2"
-  dependencies:
-    boolbase: "npm:^1.0.0"
-    css-what: "npm:^6.1.0"
-    domhandler: "npm:^5.0.2"
-    domutils: "npm:^3.0.1"
-    nth-check: "npm:^2.0.1"
-  checksum: 10/ebb6a88446433312d1a16301afd1c5f75090805b730dbbdccb0338b0d6ca7922410375f16dde06673ef7da086e2cf3b9ad91afe9a8e0d2ee3625795cb5e0170d
-  languageName: node
-  linkType: hard
-
 "css-select@npm:^6.0.0":
   version: 6.0.0
   resolution: "css-select@npm:6.0.0"
@@ -11359,13 +11330,6 @@ __metadata:
     domutils: "npm:^3.2.2"
     nth-check: "npm:^2.1.1"
   checksum: 10/361b07f67bdf2a30771a58adf3a7b1e8d4ba52a9e2a020c9fd0cd846e9a6b9149dc9a043b6fc02a6c07e47d58a3a606b97051ecddabddeadafc06a9e88c96e70
-  languageName: node
-  linkType: hard
-
-"css-what@npm:^6.1.0":
-  version: 6.2.2
-  resolution: "css-what@npm:6.2.2"
-  checksum: 10/3c5a53be94728089bd1716f915f7f96adde5dd8bf374610eb03982266f3d860bf1ebaf108cda30509d02ef748fe33eaa59aa75911e2c49ee05a85ef1f9fb5223
   languageName: node
   linkType: hard
 
@@ -11844,7 +11808,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"domutils@npm:^3.0.1, domutils@npm:^3.2.2":
+"domutils@npm:^3.2.2":
   version: 3.2.2
   resolution: "domutils@npm:3.2.2"
   dependencies:
@@ -14163,7 +14127,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"he@npm:1.2.0, he@npm:^1.2.0":
+"he@npm:^1.2.0":
   version: 1.2.0
   resolution: "he@npm:1.2.0"
   bin:
@@ -15252,15 +15216,6 @@ __metadata:
   peerDependencies:
     rxjs: ^7.0.0
   checksum: 10/52a9565dd619d1b9b89611ef93b11344de159cdebffccb2ead4051c1f2d66f415a784bf6f22452d8616504cb1267d87e4c94268e136da2b7376cf0f0d7c97c06
-  languageName: node
-  linkType: hard
-
-"jasmine-spec-reporter@npm:~7.0.0":
-  version: 7.0.0
-  resolution: "jasmine-spec-reporter@npm:7.0.0"
-  dependencies:
-    colors: "npm:1.4.0"
-  checksum: 10/69afad4935977c941b4d72fa81cc640d5f22cd35c7797468420d837cb94b469f9e6e767faa4112414511cc64e75ca9c7d641eba7df41e0d41c10b0c9bf4d0508
   languageName: node
   linkType: hard
 
@@ -17408,16 +17363,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-html-parser@npm:^6.1.11":
-  version: 6.1.13
-  resolution: "node-html-parser@npm:6.1.13"
-  dependencies:
-    css-select: "npm:^5.1.0"
-    he: "npm:1.2.0"
-  checksum: 10/f5ebc5cea22e819e7b726b483e12241039ebdeac6eba198ebdb55a0921536798c1acd9c6f543e82f77542dc44fb2230f55891b1baae218c17969dd08f7295d14
-  languageName: node
-  linkType: hard
-
 "node-html-to-image@npm:^3.3.0":
   version: 3.4.0
   resolution: "node-html-to-image@npm:3.4.0"
@@ -17621,7 +17566,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nth-check@npm:^2.0.1, nth-check@npm:^2.1.1":
+"nth-check@npm:^2.1.1":
   version: 2.1.1
   resolution: "nth-check@npm:2.1.1"
   dependencies:
@@ -17955,7 +17900,6 @@ __metadata:
     "@types/express-session": "npm:^1.19.0"
     "@types/global-agent": "npm:^3.0.0"
     "@types/jasmine": "npm:~4.3.5"
-    "@types/jasminewd2": "npm:~2.0.3"
     "@types/mocha": "npm:^10.0.1"
     "@types/node": "npm:^20.10.0"
     "@types/passport": "npm:^1.0.17"
@@ -17967,7 +17911,6 @@ __metadata:
     axios: "npm:^1.15.0"
     axios-mock-adapter: "npm:^1.18.2"
     chai: "npm:^4.3.8"
-    chai-as-promised: "npm:7.1.1"
     config: "npm:^4.4.1"
     cookie-parser: "npm:^1.4.7"
     core-js: "npm:^3.49.0"
@@ -18005,7 +17948,6 @@ __metadata:
     ngx-logger: "npm:^5.0.12"
     ngx-pagination: "npm:^6.0.3"
     node-fetch: "npm:^2.6.1"
-    node-html-parser: "npm:^6.1.11"
     nodemon: "npm:^2.0.19"
     odhin-reports-playwright: "npm:^1.1.8"
     otp: "npm:^0.1.3"
@@ -18017,7 +17959,6 @@ __metadata:
     rxjs: "npm:^7.8.1"
     sinon: "npm:^7.2.3"
     sinon-chai: "npm:^3.3.0"
-    sinon-express-mock: "npm:^2.2.0"
     sonar-scanner: "npm:3.1.0"
     source-map-support: "npm:^0.5.19"
     terser-webpack-plugin: "npm:^5.3.3"
@@ -20497,15 +20438,6 @@ __metadata:
     chai: ^4.0.0
     sinon: ">=4.0.0"
   checksum: 10/028853eb8a545ca613c6863014a40f07d1e6b81467e20939fefcd13f170206d24165b91099fb297aeb4d137745e321da25daa8e2d665cc0a78f90d5b877e8bbe
-  languageName: node
-  linkType: hard
-
-"sinon-express-mock@npm:^2.2.0":
-  version: 2.2.1
-  resolution: "sinon-express-mock@npm:2.2.1"
-  peerDependencies:
-    sinon: "*"
-  checksum: 10/50eb5ba366c1a222b046dabfea621c13d4774da51c7fb3cc5cdb0a3a8ec3e919b38706e54c121cb412a88a16d961afaa12d3ac57ef3f752ffc272825e2e9167e
   languageName: node
   linkType: hard
 
