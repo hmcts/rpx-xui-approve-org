@@ -8,6 +8,7 @@ type AuthRequestFixtures = {
 };
 
 const authSessionUser = (process.env.PW_AUTH_SESSION_USER ?? 'base').trim() || 'base';
+const authSessionPartitionKey = 'api';
 
 function cookieMatchesHost(cookieDomain: string | undefined, hostName: string): boolean {
   if (!cookieDomain) {
@@ -46,7 +47,10 @@ async function isAuthenticatedRequestContext(requestContext: APIRequestContext):
 }
 
 async function createAuthenticatedApiContext(forceRefresh = false): Promise<APIRequestContext> {
-  const storageStatePath = await sessionCapture(authSessionUser, { force: forceRefresh });
+  const storageStatePath = await sessionCapture(authSessionUser, {
+    force: forceRefresh,
+    partitionKey: authSessionPartitionKey
+  });
   const csrfBootstrapContext = await playwrightRequest.newContext({
     baseURL: config.baseUrl,
     ignoreHTTPSErrors: true,
