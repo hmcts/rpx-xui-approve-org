@@ -43,7 +43,7 @@ const ACCESSIBILITY_PENDING_PBA_DETAILS = createMockOrganisation({
   pendingPaymentAccount: ACCESSIBILITY_PENDING_PBA_ORGANISATION.pbaNumbers.map(({ pbaNumber }) => pbaNumber)
 });
 
-test.describe('Accessibility: organisation tab states and user upload', { tag: ['@accessibility'] }, () => {
+test.describe('Accessibility: organisation tab states and user upload', { tag: ['@accessibility', '@wave-a11y', '@lighthouse-a11y'] }, () => {
   test.beforeEach(async ({ page }) => {
     await clearOrganisationSearchSession(page);
     await setupStandardOrganisationApprovalsApiMocks(page, {
@@ -76,17 +76,17 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     test(
       'Pending organisations tab passes baseline accessibility scan',
       { tag: ['@tabs-states'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await expect(organisationApprovalsPage.heading).toBeVisible();
         await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
-        await accessibilityCheck(page, 'Pending organisations tab');
+        await accessibilityCheck(page, 'Pending organisations tab', testInfo);
       }
     );
 
     test(
       'Viewing a new registration organisation from pending list passes baseline accessibility scan',
       { tag: ['@tabs-states'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openPendingOrganisationsTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
@@ -94,14 +94,14 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
         await organisationApprovalsPage.openFirstPendingOrganisation();
         await expect(page).toHaveURL(/\/organisation-details\/[^/?#]+(?:\/?|\?.*)$/);
         await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
-        await accessibilityCheck(page, 'Pending registration details view');
+        await accessibilityCheck(page, 'Pending registration details view', testInfo);
       }
     );
 
     test(
       'Approving a new registration organisation opens confirmation page and passes baseline accessibility scan',
       { tag: ['@tabs-states'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openPendingOrganisationsTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
@@ -115,7 +115,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
 
         await expect(organisationApprovalsPage.confirmDecisionHeading).toHaveText(/Confirm your decision/i);
         await expect(organisationApprovalsPage.confirmButton).toBeVisible();
-        await accessibilityCheck(page, 'Pending registration approval confirmation');
+        await accessibilityCheck(page, 'Pending registration approval confirmation', testInfo);
       }
     );
   });
@@ -124,17 +124,17 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     test(
       'New pbas list tab passes baseline accessibility scan',
       { tag: ['@tabs-states'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openNewPbasTab();
         await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
-        await accessibilityCheck(page, 'New PBAs tab');
+        await accessibilityCheck(page, 'New PBAs tab', testInfo);
       }
     );
 
     test(
       'Viewing a PBA from the new PBAs list passes baseline accessibility scan',
       { tag: ['@tabs-states'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openNewPbasTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
@@ -143,14 +143,14 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
         await expect(page).toHaveURL(/\/(?:organisation\/)?pbas\/new\/[^/?#]+(?:\/?|\?.*)$/);
         await expect(organisationApprovalsPage.newPbaDetailsPageHeading).toBeVisible();
         await expect(organisationApprovalsPage.newPbaAccountsHeading).toBeVisible();
-        await accessibilityCheck(page, 'Pending PBA details view');
+        await accessibilityCheck(page, 'Pending PBA details view', testInfo);
       }
     );
 
     test(
       'Approving a new PBA opens confirmation page and passes baseline accessibility scan',
       { tag: ['@tabs-states'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openNewPbasTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
@@ -164,7 +164,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
 
         await expect(organisationApprovalsPage.confirmDecisionHeading).toHaveText(/Confirm your decision/i);
         await expect(organisationApprovalsPage.confirmButton).toBeVisible();
-        await accessibilityCheck(page, 'Pending PBA approval confirmation');
+        await accessibilityCheck(page, 'Pending PBA approval confirmation', testInfo);
       }
     );
   });
@@ -173,31 +173,31 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     test(
       'Active organisations tab passes baseline accessibility scan',
       { tag: ['@tabs-states'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openActiveOrganisationsTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
-        await accessibilityCheck(page, 'Active organisations tab');
+        await accessibilityCheck(page, 'Active organisations tab', testInfo);
       }
     );
 
     test(
       'Viewing an organisation from active tab passes baseline accessibility scan',
       { tag: ['@tabs-states'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openActiveOrganisationsTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
         await organisationApprovalsPage.openFirstActiveOrganisation();
         await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
-        await accessibilityCheck(page, 'Active organisation details view');
+        await accessibilityCheck(page, 'Active organisation details view', testInfo);
       }
     );
 
     test(
       'Active organisation user list passes baseline accessibility scan',
       { tag: ['@staff-details'] },
-      async ({ organisationApprovalsPage, page }) => {
+      async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openActiveOrganisationsTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
@@ -207,7 +207,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
         await organisationApprovalsPage.openUsersTab();
         await expect(organisationApprovalsPage.usersList).toBeVisible();
 
-        await accessibilityCheck(page, 'User upload surface');
+        await accessibilityCheck(page, 'User upload surface', testInfo);
       }
     );
   });
