@@ -1,7 +1,6 @@
 import { ReporterDescription } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus, totalmem } from 'node:os';
-import { version as appVersion } from './package.json';
 
 /**
  * Resolves the test environment from the baseURL
@@ -170,7 +169,8 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
         : 'playwright_tests';
 
   const defaultReporter = resolveDefaultReporter();
-  const releaseTag = process.env.PLAYWRIGHT_REPORT_RELEASE || `${appVersion} | branch=${resolveBranchName()}`;
+  const packageVersion = process.env.npm_package_version || '0.0.0';
+  const releaseTag = process.env.PLAYWRIGHT_REPORT_RELEASE || `${packageVersion} | branch=${resolveBranchName()}`;
   const odhinOutputFolder = resolveReportRoot(reportType);
 
   const reporters: ReporterDescription[] = [
