@@ -3,70 +3,22 @@ import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { accessibilityCheck } from '../helpers/accessibility';
 import { clearOrganisationSearchSession } from '../integration/helpers/organisation-search.helpers';
 import {
-  createMockOrganisation,
-  createMockOrganisationUser,
-  createMockPendingPbaOrganisation,
   setupPbaStatusUpdateApiMock,
   setupPendingOrganisationDecisionApiMock,
   setupStandardOrganisationApprovalsApiMocks
 } from '../integration/mocks';
-
-const ACCESSIBILITY_PENDING_ORGANISATION = createMockOrganisation({
-  organisationIdentifier: 'A11YPENDING01',
-  name: 'Accessibility Pending Org',
-  status: 'PENDING',
-  paymentAccount: [],
-  pendingPaymentAccount: ['PBA4100001'],
-  dateReceived: '2024-06-01T00:00:00.000Z'
-});
-
-const ACCESSIBILITY_ACTIVE_ORGANISATION = createMockOrganisation({
-  organisationIdentifier: 'A11YACTIVE01',
-  name: 'Accessibility Active Org',
-  status: 'ACTIVE',
-  paymentAccount: ['PBA4200001'],
-  pendingPaymentAccount: [],
-  dateApproved: '2024-06-02T00:00:00.000Z'
-});
-
-const ACCESSIBILITY_PENDING_PBA_ORGANISATION = createMockPendingPbaOrganisation({
-  organisationIdentifier: 'A11YPBA01',
-  organisationName: 'Accessibility PBA Org',
-  pbaNumbers: [{ pbaNumber: 'PBA4300001', dateCreated: new Date('2024-06-03T00:00:00.000Z').toISOString() }]
-});
-
-const ACCESSIBILITY_PENDING_PBA_DETAILS = createMockOrganisation({
-  organisationIdentifier: ACCESSIBILITY_PENDING_PBA_ORGANISATION.organisationIdentifier,
-  name: ACCESSIBILITY_PENDING_PBA_ORGANISATION.organisationName,
-  status: 'ACTIVE',
-  paymentAccount: [],
-  pendingPaymentAccount: ACCESSIBILITY_PENDING_PBA_ORGANISATION.pbaNumbers.map(({ pbaNumber }) => pbaNumber)
-});
+import {
+  ACCESSIBILITY_APPROVALS_MOCK_STATE,
+  ACCESSIBILITY_PENDING_ORGANISATION_ID,
+  ACCESSIBILITY_VISIBLE_PAGE_ROWS
+} from './test-data/accessibility-approvals.mock-data';
 
 test.describe('Accessibility: organisation tab states and user upload', { tag: ['@accessibility', '@wave-a11y', '@lighthouse-a11y'] }, () => {
   test.beforeEach(async ({ page }) => {
     await clearOrganisationSearchSession(page);
-    await setupStandardOrganisationApprovalsApiMocks(page, {
-      organisations: {
-        pendingOrganisations: [ACCESSIBILITY_PENDING_ORGANISATION],
-        activeOrganisations: [ACCESSIBILITY_ACTIVE_ORGANISATION],
-        singleOrganisationsById: {
-          [ACCESSIBILITY_PENDING_ORGANISATION.organisationIdentifier]: ACCESSIBILITY_PENDING_ORGANISATION,
-          [ACCESSIBILITY_ACTIVE_ORGANISATION.organisationIdentifier]: ACCESSIBILITY_ACTIVE_ORGANISATION,
-          [ACCESSIBILITY_PENDING_PBA_DETAILS.organisationIdentifier]: ACCESSIBILITY_PENDING_PBA_DETAILS
-        }
-      },
-      pendingPbaOrganisations: [ACCESSIBILITY_PENDING_PBA_ORGANISATION],
-      organisationUsers: [
-        createMockOrganisationUser({
-          firstName: 'Accessibility',
-          lastName: 'User',
-          email: 'accessibility.user@example.com'
-        })
-      ]
-    });
+    await setupStandardOrganisationApprovalsApiMocks(page, ACCESSIBILITY_APPROVALS_MOCK_STATE);
     await setupPendingOrganisationDecisionApiMock(page, {
-      organisationId: ACCESSIBILITY_PENDING_ORGANISATION.organisationIdentifier
+      organisationId: ACCESSIBILITY_PENDING_ORGANISATION_ID
     });
     await setupPbaStatusUpdateApiMock(page);
     await ensureAuthenticatedPage(page, 'base');
@@ -79,6 +31,8 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await expect(organisationApprovalsPage.heading).toBeVisible();
         await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
+        await expect(organisationApprovalsPage.pendingOrganisationDataRows).toHaveCount(ACCESSIBILITY_VISIBLE_PAGE_ROWS);
+        await expect(organisationApprovalsPage.pagination).toBeVisible();
         await accessibilityCheck(page, 'Pending organisations tab', testInfo);
       }
     );
@@ -127,6 +81,8 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openNewPbasTab();
         await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
+        await expect(organisationApprovalsPage.pendingPbaRows).toHaveCount(ACCESSIBILITY_VISIBLE_PAGE_ROWS);
+        await expect(organisationApprovalsPage.pagination).toBeVisible();
         await accessibilityCheck(page, 'New PBAs tab', testInfo);
       }
     );
@@ -177,6 +133,8 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
         await organisationApprovalsPage.openActiveOrganisationsTab();
         await organisationApprovalsPage.waitForSpinnerToHide(60_000);
         await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
+        await expect(organisationApprovalsPage.activeOrganisationDataRows).toHaveCount(ACCESSIBILITY_VISIBLE_PAGE_ROWS);
+        await expect(organisationApprovalsPage.pagination).toBeVisible();
         await accessibilityCheck(page, 'Active organisations tab', testInfo);
       }
     );
