@@ -7,13 +7,13 @@ if (extraArgs[0] === '--') {
   extraArgs.shift();
 }
 
-const strictMode = ['1', 'true', 'yes', 'on'].includes((process.env.A11Y_STRICT || '').trim().toLowerCase());
 const isListOnlyRun = extraArgs.includes('--list');
+const defaultEngines = 'axe,wave-like';
 
 const env = {
   ...process.env,
-  A11Y_ENGINES: process.env.A11Y_ENGINES || process.env.PLAYWRIGHT_A11Y_ENGINES || 'all',
-  PLAYWRIGHT_A11Y_ENGINES: process.env.PLAYWRIGHT_A11Y_ENGINES || process.env.A11Y_ENGINES || 'all',
+  A11Y_ENGINES: process.env.A11Y_ENGINES || process.env.PLAYWRIGHT_A11Y_ENGINES || defaultEngines,
+  PLAYWRIGHT_A11Y_ENGINES: process.env.PLAYWRIGHT_A11Y_ENGINES || process.env.A11Y_ENGINES || defaultEngines,
   A11Y_PW_INCLUDE_TAGS: process.env.A11Y_PW_INCLUDE_TAGS || '@accessibility',
   PLAYWRIGHT_JUNIT_OUTPUT:
     process.env.PLAYWRIGHT_JUNIT_OUTPUT || 'functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml',
@@ -37,11 +37,4 @@ const result = spawnSync(
 );
 
 const status = result.status ?? 1;
-if (status !== 0 && !strictMode) {
-  process.stderr.write(
-    `[accessibility-report] Accessibility pack completed with status ${status}; A11Y_STRICT is off so the run is report-only.\n`
-  );
-  process.exit(0);
-}
-
 process.exit(status);
