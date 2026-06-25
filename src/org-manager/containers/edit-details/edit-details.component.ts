@@ -90,9 +90,11 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
         if (value) {
           this.orgId = value.organisationId;
           this.pbaNumbers = [];
-          value.status === 'ACTIVE' ?
-            value.pbaNumber.forEach((number) => this.pbaNumbers.push(number as string)) :
+          if (value.status === 'ACTIVE') {
+            value.pbaNumber.forEach((number) => this.pbaNumbers.push(number as string));
+          } else {
             value.pendingPaymentAccount.forEach((number) => this.pbaNumbers.push(number as string));
+          }
           this.createPbaForm();
           this.saveDisabled = !value.pbaNumber;
           this.orgDetails$ = of(value);
@@ -185,14 +187,13 @@ export class EditDetailsComponent implements OnInit, OnDestroy {
 
   public onSubmitPba(): void {
     this.resetErrors();
-    let isValid = true;
     const duplicationValidation = this.duplicateValidator();
     const characterValidation = this.charactorLengthValidator();
     const { value } = this.changePbaFG;
     const paymentAccounts: string[] = Object.keys(value).map((key) => value[key]).filter((item) => item !== '');
     const paymentAccountUpdated: string[] = [];
 
-    isValid = duplicationValidation && characterValidation;
+    const isValid = duplicationValidation && characterValidation;
     paymentAccounts.forEach((paymentAccount) => {
       if (typeof paymentAccount === 'string') {
         paymentAccountUpdated.push(paymentAccount.toString());

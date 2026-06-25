@@ -27,7 +27,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     private readonly organisationService: OrganisationService,
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly route: ActivatedRoute,
-    public readonly pbaAccountDetails: PbaAccountDetails,
+    public readonly pbaAccountDetails: PbaAccountDetails
   ) {
     this.route.params.subscribe((params) => {
       this.organisationId = params.orgId ? params.orgId : '';

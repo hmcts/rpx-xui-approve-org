@@ -16,15 +16,6 @@ export const ROUTES: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'caseworker-details',
-    canActivate: [AuthGuard, RoleGuard],
-    loadChildren: () => import('../caseworker-ref-data/caseworker-ref-data.module').then((m) => m.CaseWorkerRefDataModule),
-    data: {
-      needsRole: ['cwd-admin'],
-      roleMatching: RoleMatching.ALL
-    }
-  },
-  {
     canActivate: [AuthGuard],
     path: 'home',
     component: RedirectComponent

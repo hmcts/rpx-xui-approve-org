@@ -122,36 +122,6 @@ describe('AppRoutes', () => {
     expect(router.url).toEqual('/cookies');
   });
 
-  describe('caseworker-details', () => {
-    it('should navigate to root when correct auth (but not role) present', async () => {
-      authServiceMock.authenticated = true;
-      roleGuardMock.activate = false;
-      await router.navigateByUrl('caseworker-details');
-      fixture.detectChanges();
-
-      expect(router.url).toEqual('/');
-    });
-
-    it('should navigate to root when unauthenticated', async () => {
-      authServiceMock.authenticated = false;
-      roleGuardMock.activate = false;
-      await router.navigateByUrl('caseworker-details');
-      fixture.detectChanges();
-
-      expect(router.url).toEqual('/');
-    });
-
-    it('should navigate caseworker-details when auth/role present', async () => {
-      authServiceMock.authenticated = true;
-      roleGuardMock.activate = true;
-
-      await router.navigateByUrl('caseworker-details');
-      fixture.detectChanges();
-
-      expect(router.url).toEqual('/caseworker-details');
-    });
-  });
-
   describe('organisation', () => {
     it('should navigate to root when correct auth (but not role) present', async () => {
       authServiceMock.authenticated = true;

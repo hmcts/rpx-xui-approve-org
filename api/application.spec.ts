@@ -3,6 +3,11 @@ import 'mocha';
 import * as sinon from 'sinon';
 import { createConfigMock } from './test/shared/configMocks';
 
+function getRouterStack(app: any): any[] {
+  const router = app.router || app._router;
+  return router?.stack || [];
+}
+
 describe('application', () => {
   let configMock: any;
   let consoleLogStub: any;
@@ -186,10 +191,14 @@ describe('application', () => {
 
       expect(application.app).to.exist;
 
-      // Simulate the robots.txt route call
-      application.app._router.stack.find((layer) =>
+      const robotsRoute = getRouterStack(application.app).find((layer) =>
         layer.route && layer.route.path === '/robots.txt'
-      ).route.stack[0].handle(mockReq, mockRes, mockNext);
+      );
+
+      expect(robotsRoute).to.exist;
+
+      // Simulate the robots.txt route call
+      robotsRoute.route.stack[0].handle(mockReq, mockRes, mockNext);
 
       expect(mockRes.type).to.have.been.calledWith('text/plain');
       expect(mockRes.send).to.have.been.calledWith('User-agent: *\nDisallow: /');
@@ -244,7 +253,7 @@ describe('application', () => {
       expect(application.app).to.exist;
 
       // Verify authentication middleware is attached
-      const middlewares = application.app._router.stack;
+      const middlewares = getRouterStack(application.app);
       const hasAttachMiddleware = middlewares.some((layer) =>
         layer.name === 'attachMiddleware' ||
         (layer.handle && layer.handle.name === 'attach')
@@ -254,7 +263,7 @@ describe('application', () => {
       expect(middlewares.length).to.be.greaterThan(0);
 
       // Verify that authentication-related routes are accessible
-      expect(application.app).to.have.property('_router');
+      expect(hasAttachMiddleware).to.be.true;
     });
 
     it('should construct correct URLs from configuration', () => {

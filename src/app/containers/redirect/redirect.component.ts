@@ -26,8 +26,6 @@ export class RedirectComponent implements OnInit {
       const roles = AppUtils.getRoles(encodedRoles);
       if (roles.includes('prd-admin')) {
         return 'organisation';
-      } else if (roles.includes('cwd-admin')) {
-        return 'caseworker-details';
       }
       return null;
     }
