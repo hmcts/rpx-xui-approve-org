@@ -49,6 +49,11 @@ properties([
             name: 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE',
             defaultValue: '',
             description: 'Optional accessibility excluded tags override (@none clears file defaults)'
+        ),
+        booleanParam(
+            name: 'RUN_ACCESSIBILITY_TESTS',
+            defaultValue: false,
+            description: 'Run accessibility (axe) Playwright tests'
         )
     ])
 ])
@@ -71,10 +76,15 @@ final String htmlIndexReportFile = 'index.html'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+def shouldRunAccessibilityTests = {
+    def configured = params.RUN_ACCESSIBILITY_TESTS
+    return configured == null ? false : configured.toString().toBoolean()
+}
+
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
-        parallel(
+        def playwrightBranches = [
             failFast: false,
             api: {
                 stage("${environmentLabel} API Playwright Tests") {
@@ -90,15 +100,22 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
                 stage("${environmentLabel} E2E Playwright Tests") {
                     yarnBuilder.yarn('test:functional:e2e:raw')
                 }
-            },
-            accessibility: {
+            }
+        ]
+
+        if (shouldRunAccessibilityTests()) {
+            playwrightBranches.accessibility = {
                 stage("${environmentLabel} Accessibility Playwright Tests") {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         yarnBuilder.yarn('test:accessibility:playwright:raw')
                     }
                 }
             }
-        )
+        } else {
+            echo "[playwright-a11y] ${environmentLabel} Accessibility Playwright Tests skipped; RUN_ACCESSIBILITY_TESTS=false"
+        }
+
+        parallel(playwrightBranches)
     }
 }
 
@@ -131,7 +148,8 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
         "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
             " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
-        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
+        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "A11Y enabled=${shouldRunAccessibilityTests()}"
     ].join(' | '))
 }
 
