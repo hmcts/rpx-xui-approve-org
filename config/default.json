@@ -19,6 +19,7 @@
   "services": {
     "ccdDataApi": "http://ccd-data-store-api-prod.service.core-compute-prod.internal",
     "ccdDefApi": "http://ccd-definition-store-api-prod.service.core-compute-prod.internal",
+    "hmctsAccessApi": "https://hmcts-access.prod.platform.hmcts.net",
     "idamApi": "https://idam-api.platform.hmcts.net",
     "idamWeb": "https://hmcts-access.service.gov.uk",
     "rdProfessionalApi": "http://rd-professional-api-prod.service.core-compute-prod.internal",

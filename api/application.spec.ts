@@ -26,6 +26,7 @@ describe('application', () => {
       'idam.client': 'xui_webapp',
       'services.idam.apiPath': 'https://idam-api.example.com',
       'services.idam.web': 'https://idam-web.example.com',
+      'services.hmctsAccessApi': 'https://hmcts-access.example.com',
       'services.s2s.path': 'https://s2s.example.com',
       'services.rdProfessionalApi': 'https://rd-prof.example.com',
       'services.iss.path': 'https://iss.example.com',
