@@ -1,40 +1,79 @@
-import { test as base, chromium } from '@playwright/test';
+import { test as base } from '@playwright/test';
 import { randomBytes } from 'node:crypto';
 import { pageFixtures, type PageFixtures } from '../page-objects/page.fixtures';
-import { registerOrganisationViaExternalEndpoint } from './register-org';
+import { registerOrganisationViaExternalApi } from './register-org';
 
 /**
  * We’ll give tests an extra parameter:
- *   • userName  – the user name created when registering
+ *   • userName                – the user name created when registering
+ *   • organisationIdentifier – the organisation id returned by registration
  */
+
+type RegisteredOrganisationFixture = {
+  userName: string;
+  organisationIdentifier: string;
+  pbaNumbers: string[];
+};
+
+function formatSetupError(error: unknown): string {
+  if (error instanceof Error) {
+    return error.stack ?? error.message;
+  }
+
+  return String(error);
+}
+
 export const test = base.extend<{
-  userName: string; // value we return from setup
+  registeredOrganisation: RegisteredOrganisationFixture;
+  userName: string;
+  organisationIdentifier: string;
 } & PageFixtures>({
 
   ...pageFixtures,
 
-  /* -------- fixture: log into MO and register org -------- */
-  userName: [
-    async ({ browserName }, use) => {
+  /* -------- fixture: register org -------- */
+  registeredOrganisation: [
+    async ({ browserName }, use, testInfo) => {
       void browserName;
       const userName = `xui-ao-test-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`;
-      const ctx = await chromium.launchPersistentContext('', {
-        headless: true
-      });
 
       try {
-        const page = await ctx.newPage();
-        await registerOrganisationViaExternalEndpoint(page, {
+        const registration = await registerOrganisationViaExternalApi({
           userName,
           firstName: 'Test',
           lastName: 'User'
         });
+        const organisationIdentifier = registration.organisationIdentifier?.trim();
 
-        await use(userName);
-      } finally {
-        await ctx.close();
+        if (!organisationIdentifier) {
+          throw new Error(
+            'Registration completed without an organisationIdentifier. ' +
+            `userName=${userName} pbaNumbers=${registration.pbaNumbers.join(',') || 'none'}`
+          );
+        }
+
+        await use({
+          userName,
+          organisationIdentifier,
+          pbaNumbers: registration.pbaNumbers
+        });
+      } catch (error) {
+        throw new Error(
+          `Unable to register organisation for workflow test '${testInfo.title}'. ` +
+          `Generated userName=${userName}. Root cause: ${formatSetupError(error)}`
+        );
       }
-    }, { auto: true }]
+    },
+    { auto: true }
+  ],
+
+  userName: async ({ registeredOrganisation }, use) => {
+    await use(registeredOrganisation.userName);
+  },
+
+  organisationIdentifier: async ({ registeredOrganisation }, use) => {
+    await use(registeredOrganisation.organisationIdentifier);
+  }
 });
 
 export { expect } from '@playwright/test';
