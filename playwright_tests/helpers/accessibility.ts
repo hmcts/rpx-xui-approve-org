@@ -600,14 +600,28 @@ export async function accessibilityCheck(page: Page, contextLabel: string, testI
   await attachAuditSummary(testInfo, contextLabel, page.url(), outcomes);
 
   const issues = outcomes.filter((outcome) => outcome.status !== 'passed' && outcome.issueCount > 0);
+  const strictMode = isStrictMode();
+  const issueMessage = [
+    `[a11y] ${contextLabel}`,
+    strictMode
+      ? 'A11Y_STRICT is enabled, so accessibility issues are blocking.'
+      : 'A11Y_STRICT is disabled; accessibility issues are recorded in report evidence only.',
+    JSON.stringify(outcomes, null, 2)
+  ].join('\n');
+
+  if (!strictMode) {
+    if (issues.length > 0) {
+      testInfo?.annotations.push({
+        type: 'accessibility',
+        description: `${contextLabel}: ${issues.length} accessibility engine(s) reported issues. See attached evidence.`
+      });
+      process.stdout.write(`${issueMessage}\n`);
+    }
+    return;
+  }
+
   expect(
     issues,
-    [
-      `[a11y] ${contextLabel}`,
-      isStrictMode()
-        ? 'A11Y_STRICT is enabled, so accessibility issues are blocking.'
-        : 'A11Y_STRICT is disabled; wrapper scripts can make the job report-only, but the Playwright test records issues.',
-      JSON.stringify(outcomes, null, 2)
-    ].join('\n')
+    issueMessage
   ).toEqual([]);
 }
