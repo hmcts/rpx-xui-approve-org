@@ -75,7 +75,7 @@ properties([
     ])
 ])
 
-@Library('Infrastructure')
+@Library('Infrastructure@2.2.0')
 
 String type      = 'nodejs'
 String product   = 'xui'
