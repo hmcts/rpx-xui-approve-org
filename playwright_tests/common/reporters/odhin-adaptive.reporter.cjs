@@ -1,5 +1,6 @@
 /* global clearTimeout, process, require, module, setTimeout */
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
