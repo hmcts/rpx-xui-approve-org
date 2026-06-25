@@ -9,7 +9,7 @@ const accessibilityTagFilters = resolveTagFilters({
   excludedTagsEnvVar: 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'A11Y_PW_TAG_FILTER_CONFIG',
   defaultConfigPath: 'playwright_tests/accessibility/tag-filter.json',
-  suiteTag: '@accessibility',
+  suiteTag: '@accessibility'
 });
 
 module.exports = defineConfig({
@@ -20,7 +20,7 @@ module.exports = defineConfig({
   retries: 0,
   timeout: 120_000,
   expect: {
-    timeout: 60_000,
+    timeout: 60_000
   },
   reportSlowTests: null,
   workers: resolveWorkerCount(),
@@ -35,8 +35,8 @@ module.exports = defineConfig({
         channel: 'chrome',
         headless: headlessMode,
         screenshot: 'only-on-failure',
-        trace: 'retain-on-failure',
-      },
-    },
-  ],
+        trace: 'off'
+      }
+    }
+  ]
 });

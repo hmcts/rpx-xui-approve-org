@@ -49,11 +49,16 @@ properties([
             name: 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE',
             defaultValue: '',
             description: 'Optional accessibility excluded tags override (@none clears file defaults)'
+        ),
+        booleanParam(
+            name: 'RUN_ACCESSIBILITY_TESTS',
+            defaultValue: false,
+            description: 'Run accessibility (axe) Playwright tests'
         )
     ])
 ])
 
-@Library("Infrastructure@DTSPO-30107-jenkins-agents")
+@Library('Infrastructure')
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
@@ -68,14 +73,18 @@ String playwrightApiReportDir = 'functional-output/tests/playwright-api'
 String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
 final String htmlIndexReportFile = 'index.html'
-final String ngIntegrationReportDir = 'reports/tests/ngIntegration/'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+
+def shouldRunAccessibilityTests = {
+    def configured = params.RUN_ACCESSIBILITY_TESTS
+    return configured == null ? false : configured.toString().toBoolean()
+}
 
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
-        parallel(
+        def playwrightBranches = [
             failFast: false,
             api: {
                 stage("${environmentLabel} API Playwright Tests") {
@@ -91,15 +100,22 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
                 stage("${environmentLabel} E2E Playwright Tests") {
                     yarnBuilder.yarn('test:functional:e2e:raw')
                 }
-            },
-            accessibility: {
+            }
+        ]
+
+        if (shouldRunAccessibilityTests()) {
+            playwrightBranches.accessibility = {
                 stage("${environmentLabel} Accessibility Playwright Tests") {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         yarnBuilder.yarn('test:accessibility:playwright:raw')
                     }
                 }
             }
-        )
+        } else {
+            echo "[playwright-a11y] ${environmentLabel} Accessibility Playwright Tests skipped; RUN_ACCESSIBILITY_TESTS=false"
+        }
+
+        parallel(playwrightBranches)
     }
 }
 
@@ -132,7 +148,8 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
         "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
             " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
-        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
+        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "A11Y enabled=${shouldRunAccessibilityTests()}"
     ].join(' | '))
 }
 
@@ -146,6 +163,8 @@ def secrets = [
     secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
     secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
     secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
+    secret('test-roo-username', 'TEST_ROO_EMAIL'),
+    secret('test-roo-password', 'TEST_ROO_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
     secret('ao-idam-client-secret', 'IDAM_SECRET'),
@@ -288,14 +307,6 @@ withPipeline(type, product, component) {
             reportName           : 'PREVIEW Accessibility Playwright Test'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : ngIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
-            reportName           : 'PREVIEW NG Integration Test'
-        ])
     }
 
 
@@ -355,13 +366,5 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Accessibility Playwright Test'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : ngIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
-            reportName           : 'AAT NG Integration Test'
-        ])
     }
 }
