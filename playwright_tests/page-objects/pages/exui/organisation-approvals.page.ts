@@ -187,6 +187,18 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.pendingOrganisationRowsByName(organisationName).first();
   }
 
+  pendingOrganisationRowById(organisationId: string): Locator {
+    return this.pendingOrganisationRows
+      .filter({ has: this.page.locator(`a.govuk-link[href*="/organisation-details/${organisationId}"]`) })
+      .first();
+  }
+
+  pendingOrganisationViewLinkById(organisationId: string): Locator {
+    return this.pendingOrganisationRowById(organisationId)
+      .locator('a.govuk-link[href*="/organisation-details/"]')
+      .first();
+  }
+
   activeOrganisationRowsByText(searchText: string): Locator {
     return this.activeOrganisationRows.filter({ hasText: searchText });
   }
@@ -279,6 +291,10 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstPendingOrganisation(): Promise<void> {
     await this.pendingOrganisationViewLink().click();
+  }
+
+  async openPendingOrganisationById(organisationId: string): Promise<void> {
+    await this.pendingOrganisationViewLinkById(organisationId).click();
   }
 
   async clickBackLink(): Promise<void> {
