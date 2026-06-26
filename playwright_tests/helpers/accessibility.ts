@@ -34,6 +34,23 @@ type EngineOutcome = {
   evidenceFiles?: string[];
 };
 
+type EvidenceManifestEntry = {
+  engine: string;
+  feature: string;
+  pageState: string;
+  testTitle: string;
+  attachmentPrefix: string;
+  htmlFileName: string;
+  jsonFileName: string;
+  screenshotFileName: string;
+  reportFileName: string;
+  violationCount: number;
+  status: string;
+  summary: string;
+  rules: string[];
+  targets: string[];
+};
+
 const ENGINE_ALIASES: Record<string, AccessibilityEngine> = {
   ax: 'axe',
   axe: 'axe',
@@ -124,6 +141,168 @@ function evidenceDir(): string {
   );
 }
 
+function asRecord(value: unknown): Record<string, unknown> {
+  return value && typeof value === 'object' ? value as Record<string, unknown> : {};
+}
+
+function asRecordArray(value: unknown): Array<Record<string, unknown>> {
+  return Array.isArray(value) ? value.map(asRecord) : [];
+}
+
+function uniqueStrings(values: unknown[]): string[] {
+  return Array.from(
+    new Set(
+      values
+        .flatMap((value) => Array.isArray(value) ? value : [value])
+        .map((value) => String(value ?? '').trim())
+        .filter(Boolean)
+    )
+  );
+}
+
+function resolveEvidenceEngine(name: string, json: Record<string, unknown>): string {
+  if (typeof json.engine === 'string' && json.engine.trim()) {
+    return json.engine.trim();
+  }
+  const normalized = name.toLowerCase();
+  if (normalized.includes('wave')) {
+    return 'wave-like';
+  }
+  if (normalized.includes('lighthouse')) {
+    return 'lighthouse';
+  }
+  if (normalized.includes('summary')) {
+    return 'summary';
+  }
+  return 'axe';
+}
+
+function extractViolationRules(json: Record<string, unknown>): string[] {
+  const violations = asRecordArray(json.violations);
+  const outcomeRules = asRecordArray(json.outcomes).flatMap((outcome) => outcome.rules ?? []);
+  return uniqueStrings([
+    ...violations.map((violation) => violation.id ?? violation.rule),
+    ...outcomeRules,
+    json.rule
+  ]);
+}
+
+function extractViolationTargets(json: Record<string, unknown>): string[] {
+  const violations = asRecordArray(json.violations);
+  return uniqueStrings(
+    violations.flatMap((violation) => {
+      const selector = violation.selector;
+      const nodes = asRecordArray(violation.nodes);
+      return [
+        selector,
+        ...nodes.flatMap((node) => Array.isArray(node.target) ? node.target : [])
+      ];
+    })
+  ).slice(0, 20);
+}
+
+function resolveViolationCount(json: Record<string, unknown>): number {
+  if (typeof json.violationCount === 'number' && Number.isFinite(json.violationCount)) {
+    return json.violationCount;
+  }
+  if (Array.isArray(json.violations)) {
+    return json.violations.length;
+  }
+  const outcomes = asRecordArray(json.outcomes);
+  if (outcomes.length) {
+    return outcomes.reduce((sum, outcome) => {
+      const count = typeof outcome.issueCount === 'number' && Number.isFinite(outcome.issueCount) ? outcome.issueCount : 0;
+      return sum + count;
+    }, 0);
+  }
+  return typeof json.error === 'string' && json.error ? 1 : 0;
+}
+
+function resolveEvidenceStatus(json: Record<string, unknown>, violationCount: number): string {
+  if (typeof json.status === 'string' && json.status.trim()) {
+    return json.status.trim();
+  }
+  const outcomes = asRecordArray(json.outcomes);
+  if (outcomes.length) {
+    return violationCount > 0 ? 'issues-found' : 'passed';
+  }
+  return violationCount > 0 ? 'issues-found' : 'passed';
+}
+
+function resolveEvidenceSummary(json: Record<string, unknown>, rules: string[]): string {
+  if (typeof json.summary === 'string' && json.summary.trim()) {
+    return json.summary.trim();
+  }
+  if (typeof json.error === 'string' && json.error.trim()) {
+    return json.error.trim();
+  }
+  const outcomeMessages = asRecordArray(json.outcomes)
+    .map((outcome) => outcome.message)
+    .filter((message): message is string => typeof message === 'string' && message.trim().length > 0);
+  if (outcomeMessages.length) {
+    return outcomeMessages.join('\n');
+  }
+  return rules.join(', ');
+}
+
+function resolveTestTitle(testInfo: TestInfo | undefined, fallback: string): string {
+  return testInfo?.title || fallback;
+}
+
+function resolveFeatureName(testInfo: TestInfo | undefined): string {
+  const titlePath = typeof testInfo?.titlePath === 'function' ? testInfo.titlePath() : [];
+  return titlePath.length > 1 ? titlePath.slice(0, -1).join(' / ') : '';
+}
+
+function buildEvidenceManifestEntry(
+  testInfo: TestInfo | undefined,
+  name: string,
+  json: unknown,
+  extraFiles: Array<{ fileName: string; body: string | Buffer }>
+): EvidenceManifestEntry {
+  const jsonRecord = asRecord(json);
+  const rules = extractViolationRules(jsonRecord);
+  const violationCount = resolveViolationCount(jsonRecord);
+  const reportFileName =
+    typeof jsonRecord.reportFileName === 'string'
+      ? jsonRecord.reportFileName
+      : extraFiles.find((file) => file.fileName.endsWith('.html'))?.fileName ?? '';
+
+  return {
+    engine: resolveEvidenceEngine(name, jsonRecord),
+    feature: resolveFeatureName(testInfo),
+    pageState: String(jsonRecord.contextLabel ?? ''),
+    testTitle: resolveTestTitle(testInfo, name),
+    attachmentPrefix: name,
+    htmlFileName: `${name}.html`,
+    jsonFileName: `${name}.json`,
+    screenshotFileName: extraFiles.find((file) => /\.(png|jpe?g|webp)$/i.test(file.fileName))?.fileName ?? '',
+    reportFileName,
+    violationCount,
+    status: resolveEvidenceStatus(jsonRecord, violationCount),
+    summary: resolveEvidenceSummary(jsonRecord, rules),
+    rules,
+    targets: extractViolationTargets(jsonRecord)
+  };
+}
+
+async function writeEvidenceManifest(dir: string, entry: EvidenceManifestEntry): Promise<void> {
+  const entryFileName = `manifest-entry-${sanitiseFileName(`${entry.testTitle}-${entry.attachmentPrefix}`)}.json`;
+  await fs.writeFile(path.join(dir, entryFileName), JSON.stringify(entry, null, 2));
+
+  const manifestPath = path.join(dir, 'manifest.json');
+  const existing = await fs.readFile(manifestPath, 'utf8')
+    .then((value) => JSON.parse(value) as EvidenceManifestEntry[])
+    .catch(() => []);
+  const retainedEntries = Array.isArray(existing)
+    ? existing.filter(
+      (candidate) =>
+        candidate?.testTitle !== entry.testTitle || candidate?.attachmentPrefix !== entry.attachmentPrefix
+    )
+    : [];
+  await fs.writeFile(manifestPath, JSON.stringify([...retainedEntries, entry], null, 2));
+}
+
 async function attachEvidence(
   testInfo: TestInfo | undefined,
   name: string,
@@ -158,6 +337,7 @@ async function attachEvidence(
   for (const file of extraFiles) {
     await fs.writeFile(path.join(dir, file.fileName), file.body);
   }
+  await writeEvidenceManifest(dir, buildEvidenceManifestEntry(testInfo, name, json, extraFiles));
   await writeEvidenceIndex(dir);
 
   return attachedFileNames;

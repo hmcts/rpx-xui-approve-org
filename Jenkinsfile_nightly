@@ -95,6 +95,41 @@ String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-ac
 
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+Closure<Void> ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    withEnv([
+        "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
+        "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
+        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}"
+    ]) {
+        sh '''
+            node scripts/ensure-odhin-report.js \
+              --report-dir "$PW_ODHIN_ENSURE_REPORT_DIR" \
+              --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
+              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
+        '''
+    }
+}
+
+Closure<Void> publishPlaywrightAccessibilityReport = { String reportName ->
+    try {
+        ensureHtmlReportForPublishing(
+            playwrightAccessibilityReportDir,
+            playwrightAccessibilityReportFile,
+            reportName
+        )
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "${playwrightAccessibilityReportDir}/",
+            reportFiles          : playwrightAccessibilityReportFile,
+            reportName           : reportName
+        ])
+    } catch (Exception e) {
+        echo "[playwright-accessibility] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+}
+
 Closure<Boolean> shouldRunAccessibilityTests = {
     Object configured = params."${runAccessibilityTestsParamName}"
     return configured == null ? true : configured.toString().toBoolean()
@@ -255,14 +290,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : playwrightAccessibilityReportFile,
-            reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
-        ])
+        publishPlaywrightAccessibilityReport('XUI Approve Organisation Full functional Accessibility Playwright Tests')
 
         publishHTML([
             allowMissing         : true,

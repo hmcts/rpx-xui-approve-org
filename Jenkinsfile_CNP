@@ -77,6 +77,41 @@ final String htmlIndexReportFile = 'index.html'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    withEnv([
+        "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
+        "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
+        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}"
+    ]) {
+        sh '''
+            node scripts/ensure-odhin-report.js \
+              --report-dir "$PW_ODHIN_ENSURE_REPORT_DIR" \
+              --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
+              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
+        '''
+    }
+}
+
+def publishPlaywrightAccessibilityReport = { String reportName ->
+    try {
+        ensureHtmlReportForPublishing(
+            playwrightAccessibilityReportDir,
+            playwrightAccessibilityReportFile,
+            reportName
+        )
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "${playwrightAccessibilityReportDir}/",
+            reportFiles          : playwrightAccessibilityReportFile,
+            reportName           : reportName
+        ])
+    } catch (Exception e) {
+        echo "[playwright-accessibility] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+}
+
 def shouldRunAccessibilityTests = {
     def configured = params.RUN_PLAYWRIGHT_ACCESSIBILITY
     if (configured == null) {
@@ -302,14 +337,7 @@ withPipeline(type, product, component) {
             reportName           : 'PREVIEW Integration Playwright Test'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : playwrightAccessibilityReportFile,
-            reportName           : 'PREVIEW Accessibility Playwright Test'
-        ])
+        publishPlaywrightAccessibilityReport('PREVIEW Accessibility Playwright Test')
 
     }
 
@@ -361,14 +389,7 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Integration Playwright Test'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : playwrightAccessibilityReportFile,
-            reportName           : 'AAT Accessibility Playwright Test'
-        ])
+        publishPlaywrightAccessibilityReport('AAT Accessibility Playwright Test')
 
     }
 }

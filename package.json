@@ -164,6 +164,7 @@
     "ng-packagr": "^20.0.0",
     "ngrx-store-freeze": "^0.2.4",
     "node-fetch": "^2.6.1",
+    "node-html-parser": "^7.0.0",
     "nodemon": "^2.0.19",
     "odhin-reports-playwright": "^1.1.8",
     "playwright": "1.58.1",

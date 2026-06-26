@@ -1,6 +1,11 @@
 #!/usr/bin/env node
 
+/* global process, require */
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { spawnSync } = require('node:child_process');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { enhanceGeneratedReport } = require('../playwright_tests/common/reporters/odhin-report-enhancer.cjs');
 
 const extraArgs = process.argv.slice(2);
 if (extraArgs[0] === '--') {
@@ -35,6 +40,13 @@ const result = spawnSync(
   ['playwright', 'test', '-c', 'playwright-accessibility.config.ts', '--grep', '@accessibility', ...extraArgs, '--retries=0'],
   { env, stdio: 'inherit' }
 );
+
+try {
+  enhanceGeneratedReport(env.PLAYWRIGHT_REPORT_FOLDER, []);
+} catch (error) {
+  const message = error instanceof Error ? error.message : String(error);
+  process.stderr.write(`[accessibility-report] Unable to enhance generated Odhín report: ${message}\n`);
+}
 
 const status = result.status ?? 1;
 process.exit(status);
