@@ -24,7 +24,6 @@ const accessibilityTagFilters = resolveTagFilters({
 
 module.exports = defineConfig({
   testDir: './playwright_tests/accessibility',
-  globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,

@@ -10,6 +10,7 @@ const SESSION_CAPTURE_LOCK_RETRY_MS = 500;
 const AUTHENTICATION_TIMEOUT_MS = 30_000;
 const AUTHENTICATION_POLL_INTERVAL_MS = 500;
 const LOGIN_REDIRECT_TIMEOUT_MS = 45_000;
+const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const SESSION_DIR = process.env.PW_SESSION_DIR
   ? path.resolve(process.env.PW_SESSION_DIR)
   : path.resolve(__dirname, '../../.sessions');
@@ -39,6 +40,52 @@ function normaliseSessionStorageKey(value: string): string {
 function resolveSessionMaxAgeMs(): number {
   const configured = Number(process.env.PW_SESSION_MAX_AGE_MS);
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
+}
+
+function resolveSessionCaptureFailureTtlMs(): number {
+  const configured = Number(process.env.PW_SESSION_CAPTURE_FAILURE_TTL_MS);
+  return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
+}
+
+function recentSessionCaptureFailureMessage(failurePath: string, now = Date.now()): string | undefined {
+  const ttlMs = resolveSessionCaptureFailureTtlMs();
+  if (ttlMs === 0 || !fs.existsSync(failurePath)) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(failurePath, 'utf8')) as { timestamp?: number; message?: string };
+    if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
+      return undefined;
+    }
+    return parsed.message?.trim() || 'previous session capture failed';
+  } catch {
+    return undefined;
+  }
+}
+
+function writeSessionCaptureFailure(failurePath: string, error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error);
+
+  try {
+    fs.writeFileSync(
+      failurePath,
+      JSON.stringify({
+        timestamp: Date.now(),
+        message
+      })
+    );
+  } catch {
+    // Best effort only; the original login failure is the useful error.
+  }
+}
+
+function clearSessionCaptureFailure(failurePath: string): void {
+  try {
+    fs.rmSync(failurePath, { force: true });
+  } catch {
+    // Best effort only.
+  }
 }
 
 function resolveCredentialHint(user: string): string {
@@ -388,36 +435,59 @@ export async function sessionCapture(user: string = 'base', options: SessionCapt
   const partitionKey = resolveSessionPartitionKey(options.partitionKey);
   const storageStatePath = getSessionStatePath(user, partitionKey);
   const lockPath = `${storageStatePath}.lock`;
+  const failurePath = `${storageStatePath}.capture-failed.json`;
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
 
   if (!options.force && isSessionFresh(storageStatePath)) {
+    clearSessionCaptureFailure(failurePath);
     console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
     return storageStatePath;
   }
 
+  const recentFailureMessage = recentSessionCaptureFailureMessage(failurePath);
+  if (recentFailureMessage) {
+    throw new Error(
+      `Recent session capture failed for user "${user}"; refusing repeated login attempt for now: ${recentFailureMessage}`
+    );
+  }
+
   return withSessionCaptureLock(lockPath, async () => {
     if (!options.force && isSessionFresh(storageStatePath)) {
+      clearSessionCaptureFailure(failurePath);
       console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
       return storageStatePath;
+    }
+
+    const lockedRecentFailureMessage = recentSessionCaptureFailureMessage(failurePath);
+    if (lockedRecentFailureMessage) {
+      throw new Error(
+        `Recent session capture failed for user "${user}"; refusing repeated login attempt for now: ${lockedRecentFailureMessage}`
+      );
     }
 
     const { username, password } = getUserConfig(user);
     const partitionSuffix = partitionKey ? ` [${partitionKey}]` : '';
     console.log(`[playwright-session] Capturing session for ${username}${partitionSuffix} -> ${storageStatePath}`);
-    const browser = await launchBrowserForSessionCapture();
-    const context = await browser.newContext();
-    const page = await context.newPage();
+    let browser: Browser | undefined;
 
     try {
+      browser = await launchBrowserForSessionCapture();
+      const context = await browser.newContext();
+      const page = await context.newPage();
+
       await completeLoginOnPage(page, username, password);
       const authenticated = await isAuthenticatedByApi(page);
       if (!authenticated) {
         throw new Error(`Session capture did not create an authenticated session for "${username}".`);
       }
       await persistSessionState(context, storageStatePath);
+      clearSessionCaptureFailure(failurePath);
       return storageStatePath;
+    } catch (error) {
+      writeSessionCaptureFailure(failurePath, error);
+      throw error;
     } finally {
-      await browser.close();
+      await browser?.close();
     }
   });
 }
