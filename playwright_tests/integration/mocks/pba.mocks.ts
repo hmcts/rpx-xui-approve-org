@@ -53,8 +53,26 @@ type UpdatePbaApiPayload = {
   orgId: string;
 };
 
+type PbaStatusUpdateApiMockState = {
+  status?: number;
+  responseBody?: unknown;
+};
+
+type PbaStatusUpdatePayload = {
+  pbaNumbers?: Array<{
+    pbaNumber?: string;
+    status?: string;
+    statusMessage?: string;
+  }>;
+  orgId?: string;
+};
+
 type UpdatePbaApiMockControl = {
   getLastPayload: () => UpdatePbaApiPayload | undefined;
+};
+
+type PbaStatusUpdateApiMockControl = {
+  getLastPayload: () => PbaStatusUpdatePayload | undefined;
 };
 
 function normaliseSearchTerm(value: string | undefined): string {
@@ -159,6 +177,36 @@ export async function setupPbaAccountsApiMock(page: Page, accountNames: string[]
       body: JSON.stringify(accountNames.map((accountName) => ({ account_name: accountName })))
     });
   });
+}
+
+export async function setupPbaStatusUpdateApiMock(
+  page: Page,
+  state: PbaStatusUpdateApiMockState = {}
+): Promise<PbaStatusUpdateApiMockControl> {
+  let lastPayload: PbaStatusUpdatePayload | undefined;
+
+  await page.route('**/api/pba/status', async (route, request) => {
+    if (request.method().toUpperCase() !== 'PUT') {
+      await route.fallback();
+      return;
+    }
+
+    try {
+      lastPayload = request.postDataJSON() as PbaStatusUpdatePayload;
+    } catch {
+      lastPayload = undefined;
+    }
+
+    await route.fulfill({
+      status: state.status ?? 200,
+      contentType: 'application/json',
+      body: JSON.stringify(state.responseBody ?? { ok: true })
+    });
+  });
+
+  return {
+    getLastPayload: () => lastPayload
+  };
 }
 
 export async function setupPendingPbaStatusApiMock(

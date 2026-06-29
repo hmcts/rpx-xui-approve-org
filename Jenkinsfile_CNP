@@ -49,11 +49,16 @@ properties([
             name: 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE',
             defaultValue: '',
             description: 'Optional accessibility excluded tags override (@none clears file defaults)'
+        ),
+        booleanParam(
+            name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
+            defaultValue: false,
+            description: 'Optional: run the non-blocking unified Playwright accessibility pack on this PR build.'
         )
     ])
 ])
 
-@Library('Infrastructure')
+@Library('Infrastructure@2.0.0')
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
@@ -66,15 +71,24 @@ String channel   = '#xui-pipeline'
 String playwrightReportDir = 'functional-output/tests/playwright-e2e'
 String playwrightApiReportDir = 'functional-output/tests/playwright-api'
 String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
-String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
+String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightAccessibilityReportFile = 'xui-ao-playwright-accessibility.html'
 final String htmlIndexReportFile = 'index.html'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+def shouldRunAccessibilityTests = {
+    def configured = params.RUN_PLAYWRIGHT_ACCESSIBILITY
+    if (configured == null) {
+        configured = params.RUN_ACCESSIBILITY_TESTS
+    }
+    return configured == null ? false : configured.toString().toBoolean()
+}
+
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
-        parallel(
+        def playwrightBranches = [
             failFast: false,
             api: {
                 stage("${environmentLabel} API Playwright Tests") {
@@ -90,15 +104,22 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
                 stage("${environmentLabel} E2E Playwright Tests") {
                     yarnBuilder.yarn('test:functional:e2e:raw')
                 }
-            },
-            accessibility: {
+            }
+        ]
+
+        if (shouldRunAccessibilityTests()) {
+            playwrightBranches.accessibility = {
                 stage("${environmentLabel} Accessibility Playwright Tests") {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                        yarnBuilder.yarn('test:accessibility:playwright:raw')
+                        yarnBuilder.yarn('test:accessibility:playwright')
                     }
                 }
             }
-        )
+        } else {
+            echo "[playwright-a11y] ${environmentLabel} Accessibility Playwright Tests skipped; RUN_PLAYWRIGHT_ACCESSIBILITY=false"
+        }
+
+        parallel(playwrightBranches)
     }
 }
 
@@ -131,7 +152,8 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
         "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
             " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
-        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}"
+        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "A11Y enabled=${shouldRunAccessibilityTests()}"
     ].join(' | '))
 }
 
@@ -285,7 +307,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightAccessibilityReportFile,
             reportName           : 'PREVIEW Accessibility Playwright Test'
         ])
 
@@ -344,7 +366,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightAccessibilityReportFile,
             reportName           : 'AAT Accessibility Playwright Test'
         ])
 
