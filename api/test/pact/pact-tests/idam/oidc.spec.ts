@@ -3,21 +3,23 @@ import { assert } from 'chai';
 import mockResponse from '../../mocks/openid-well-known-configuration.mock';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
+const pactSetUp = new PactTestSetup({ pactfileWriteMode: 'overwrite', provider: 'Idam_api', port: 8000 });
 
-describe('OpenId Connect API', async() => {
+describe('OpenId Connect API', () => {
   // Setup the provider
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
 
   // Write Pact when all tests done
-  after(async () => pactSetUp.provider.finalize());
+  after(async () => {
+    await pactSetUp.provider.finalize();
+  });
 
   describe('when a request to .well-known endpoint is made', () => {
-    before(async() => {
+    before(async () => {
       await pactSetUp.provider.setup();
-      pactSetUp.provider.addInteraction({
+      await pactSetUp.provider.addInteraction({
         state: '.well-known endpoint',
         uponReceiving: 'a request for configuration',
         withRequest: {
@@ -31,7 +33,9 @@ describe('OpenId Connect API', async() => {
         }
       });
     });
-    afterEach(() => pactSetUp.provider.verify());
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
 
     it('returns a json configuration', async () => {
       const oidcUrl = `${pactSetUp.provider.mockService.baseUrl}/o`;

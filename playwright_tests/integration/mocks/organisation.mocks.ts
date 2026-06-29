@@ -1,4 +1,5 @@
 import { expect, type Page, type Request, type Response, type Route } from '@playwright/test';
+import { paginateMockItems } from './pagination.mocks';
 
 export const PENDING_ORGANISATIONS_TABLE_SELECTOR = 'table.pending-organisations';
 export const ACTIVE_ORGANISATIONS_TABLE_SELECTOR = 'table.active-organisations';
@@ -27,13 +28,27 @@ export type MockOrganisation = {
   };
   paymentAccount: string[];
   pendingPaymentAccount: string[];
+  dateReceived?: string;
+  dateApproved?: string;
   orgAttributes: Array<{ key: string; value: string }>;
+};
+
+export type MockOrganisationUser = {
+  userIdentifier: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  idamStatus: string;
+  idamStatusCode: string;
+  idamMessage: string;
+  roles: string[];
 };
 
 export type CommonOrganisationApiMockState = {
   activeOrganisations?: MockOrganisation[];
   pendingOrganisations?: MockOrganisation[];
   singleOrganisationsById?: Record<string, MockOrganisation>;
+  singleOrganisationResponse?: SearchResponseOverride;
   activeSearchResponse?: SearchResponseOverride;
   pendingSearchResponse?: SearchResponseOverride;
 };
@@ -64,6 +79,7 @@ export type CommonOrganisationApiMockControl = {
   getLastActiveSearchPayload: () => OrganisationSearchApiRequestPayload | undefined;
   getLastPendingSearchTerm: () => string | undefined;
   getLastActiveSearchTerm: () => string | undefined;
+  getLastSingleOrganisationId: () => string | undefined;
 };
 
 type PendingDecisionApiMockState = {
@@ -72,9 +88,14 @@ type PendingDecisionApiMockState = {
   responseBody?: unknown;
 };
 
+type PendingOrganisationDecisionPayload = {
+  organisationIdentifier?: string;
+  status?: string;
+};
+
 type PendingDecisionApiMockControl = {
   getLastMethod: () => string | undefined;
-  getLastPayload: () => unknown;
+  getLastPayload: () => PendingOrganisationDecisionPayload | undefined;
 };
 
 export function createMockOrganisation(overrides: Partial<MockOrganisation>): MockOrganisation {
@@ -104,7 +125,26 @@ export function createMockOrganisation(overrides: Partial<MockOrganisation>): Mo
     },
     paymentAccount: overrides.paymentAccount ?? ['PBA1234567'],
     pendingPaymentAccount: overrides.pendingPaymentAccount ?? [],
+    dateReceived: overrides.dateReceived,
+    dateApproved: overrides.dateApproved,
     orgAttributes: overrides.orgAttributes ?? []
+  };
+}
+
+export function createMockOrganisationUser(overrides: Partial<MockOrganisationUser> = {}): MockOrganisationUser {
+  return {
+    userIdentifier: overrides.userIdentifier ?? 'mock-user-list-id',
+    firstName: overrides.firstName ?? 'Mock',
+    lastName: overrides.lastName ?? 'Caseworker',
+    email: overrides.email ?? 'mock.caseworker@example.com',
+    idamStatus: overrides.idamStatus ?? 'ACTIVE',
+    idamStatusCode: overrides.idamStatusCode ?? '200',
+    idamMessage: overrides.idamMessage ?? '',
+    roles: overrides.roles ?? [
+      'pui-organisation-manager',
+      'pui-user-manager',
+      'pui-case-manager'
+    ]
   };
 }
 
@@ -184,9 +224,14 @@ function resolveNormalisedStatusFromUrl(url: string): string {
 }
 
 async function fulfillOrganisationStatusRequest(route: Route, request: Request, organisations: MockOrganisation[]): Promise<void> {
-  const payload = request.method().toUpperCase() === 'POST'
+  const requestPayload = extractOrganisationSearchPayload(request);
+  const paginatedOrganisations = request.method().toUpperCase() === 'POST'
+    ? paginateMockItems(organisations, requestPayload)
+    : organisations;
+
+  const responseBody = request.method().toUpperCase() === 'POST'
     ? {
-      organisations,
+      organisations: paginatedOrganisations,
       total_records: organisations.length
     }
     : organisations;
@@ -194,7 +239,7 @@ async function fulfillOrganisationStatusRequest(route: Route, request: Request, 
   await route.fulfill({
     status: 200,
     contentType: 'application/json',
-    body: JSON.stringify(payload)
+    body: JSON.stringify(responseBody)
   });
 }
 
@@ -217,6 +262,7 @@ async function fulfillOrganisationSearchResponse(
   route: Route,
   request: Request,
   organisations: MockOrganisation[],
+  payload: OrganisationSearchApiRequestPayload | undefined,
   searchTerm: string | undefined,
   override: SearchResponseOverride | undefined
 ): Promise<void> {
@@ -226,8 +272,9 @@ async function fulfillOrganisationSearchResponse(
   }
 
   const statusCode = override?.status ?? 200;
+  const paginatedOrganisations = paginateMockItems(organisations, payload);
   const responseBody = override?.body ?? (statusCode === 200 ? {
-    organisations,
+    organisations: paginatedOrganisations,
     total_records: organisations.length
   } : {});
 
@@ -245,6 +292,7 @@ export async function setupCommonOrganisationApiMocks(
   const singleOrganisationsById = state.singleOrganisationsById ?? {};
   let lastPendingSearchPayload: OrganisationSearchApiRequestPayload | undefined;
   let lastActiveSearchPayload: OrganisationSearchApiRequestPayload | undefined;
+  let lastSingleOrganisationId: string | undefined;
 
   const pendingOrganisations = state.pendingOrganisations ?? [
     createMockOrganisation({
@@ -271,6 +319,17 @@ export async function setupCommonOrganisationApiMocks(
     const organisationId = (requestUrl.searchParams.get('organisationId') ?? '').trim();
 
     if (organisationId) {
+      lastSingleOrganisationId = organisationId;
+
+      if (state.singleOrganisationResponse) {
+        await route.fulfill({
+          status: state.singleOrganisationResponse.status ?? 200,
+          contentType: 'application/json',
+          body: JSON.stringify(state.singleOrganisationResponse.body ?? {})
+        });
+        return;
+      }
+
       const resolvedOrganisation = singleOrganisationsById[organisationId]
         ?? activeOrganisations.find((organisation) => organisation.organisationIdentifier === organisationId)
         ?? pendingOrganisations.find((organisation) => organisation.organisationIdentifier === organisationId)
@@ -297,6 +356,7 @@ export async function setupCommonOrganisationApiMocks(
         route,
         request,
         filteredActiveOrganisations,
+        lastActiveSearchPayload,
         searchTerm,
         state.activeSearchResponse
       );
@@ -311,6 +371,7 @@ export async function setupCommonOrganisationApiMocks(
         route,
         request,
         filteredPendingOrganisations,
+        lastPendingSearchPayload,
         searchTerm,
         state.pendingSearchResponse
       );
@@ -326,8 +387,38 @@ export async function setupCommonOrganisationApiMocks(
     getLastPendingSearchPayload: () => lastPendingSearchPayload,
     getLastActiveSearchPayload: () => lastActiveSearchPayload,
     getLastPendingSearchTerm: () => resolveSearchTermFromPayload(lastPendingSearchPayload),
-    getLastActiveSearchTerm: () => resolveSearchTermFromPayload(lastActiveSearchPayload)
+    getLastActiveSearchTerm: () => resolveSearchTermFromPayload(lastActiveSearchPayload),
+    getLastSingleOrganisationId: () => lastSingleOrganisationId
   };
+}
+
+export async function setupOrganisationUsersApiMock(
+  page: Page,
+  users: MockOrganisationUser[] = [createMockOrganisationUser()]
+): Promise<void> {
+  const responseBody = JSON.stringify({ users });
+
+  await page.route('**/api/allUserListWithoutRoles?**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: responseBody
+    });
+  });
+
+  await page.route('**/api/organisations?**', async (route, request) => {
+    const requestUrl = new URL(request.url());
+    if (!requestUrl.searchParams.has('usersOrgId')) {
+      await route.fallback();
+      return;
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: responseBody
+    });
+  });
 }
 
 export async function setupPendingOrganisationDecisionApiMock(
@@ -335,7 +426,7 @@ export async function setupPendingOrganisationDecisionApiMock(
   state: PendingDecisionApiMockState
 ): Promise<PendingDecisionApiMockControl> {
   let lastMethod: string | undefined;
-  let lastPayload: unknown;
+  let lastPayload: PendingOrganisationDecisionPayload | undefined;
 
   await page.route('**/api/organisations/**', async (route, request) => {
     const method = request.method().toUpperCase();
@@ -345,7 +436,7 @@ export async function setupPendingOrganisationDecisionApiMock(
     if ((method === 'PUT' || method === 'DELETE') && pathName === expectedPath) {
       lastMethod = method;
       try {
-        lastPayload = request.postDataJSON();
+        lastPayload = request.postDataJSON() as PendingOrganisationDecisionPayload;
       } catch {
         lastPayload = undefined;
       }
@@ -368,6 +459,22 @@ export async function setupPendingOrganisationDecisionApiMock(
 }
 
 export function waitForPendingOrganisationDecisionResponse(page: Page, organisationId: string): Promise<Response> {
+  return waitForPendingOrganisationDecisionResponseMatching(page, organisationId, (response) => response.status() < 500);
+}
+
+export function waitForPendingOrganisationDecisionResponseWithHttpStatus(
+  page: Page,
+  organisationId: string,
+  expectedHttpStatus: number
+): Promise<Response> {
+  return waitForPendingOrganisationDecisionResponseMatching(page, organisationId, (response) => response.status() === expectedHttpStatus);
+}
+
+function waitForPendingOrganisationDecisionResponseMatching(
+  page: Page,
+  organisationId: string,
+  responseMatches: (response: Response) => boolean
+): Promise<Response> {
   const expectedPath = `/api/organisations/${organisationId}`;
 
   return page.waitForResponse((response) => {
@@ -378,7 +485,25 @@ export function waitForPendingOrganisationDecisionResponse(page: Page, organisat
     }
 
     const pathName = new URL(request.url()).pathname;
-    return pathName === expectedPath && response.status() < 500;
+    return pathName === expectedPath && responseMatches(response);
+  });
+}
+
+export function waitForSingleOrganisationResponseWithHttpStatus(
+  page: Page,
+  organisationId: string,
+  expectedHttpStatus: number
+): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    if (request.method().toUpperCase() !== 'GET') {
+      return false;
+    }
+
+    const requestUrl = new URL(request.url());
+    return requestUrl.pathname.endsWith('/api/organisations')
+      && requestUrl.searchParams.get('organisationId') === organisationId
+      && response.status() === expectedHttpStatus;
   });
 }
 

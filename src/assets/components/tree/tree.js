@@ -104,7 +104,7 @@ Tree.prototype.onTreeItemClick = function(e) {
 
 Tree.prototype.getNextItem = function() {
   const current = this.container.find('[tabindex="0"]');
-  let next = null;
+  let next;
   if (current.hasClass('jui-tree__item')) {
     if (current.hasClass('jui-tree__item--open')) {
       // Grab first child

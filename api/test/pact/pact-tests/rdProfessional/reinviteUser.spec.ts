@@ -4,7 +4,7 @@ import { PactTestSetup } from '../settings/provider.mock';
 
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalInternal', port: 8000 });
 
-describe('Reinvite a User', async () => {
+describe('Reinvite a User', () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
@@ -42,28 +42,21 @@ describe('Reinvite a User', async () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('Reinvite a user for an organisation', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId + '/users/';
-
-      const resp = postOperation(taskUrl, mockRequest);
-
-      resp.then((response) => {
-        try {
-          expect(response.status).to.be.equal(201);
-        } catch (e) {
-          console.log('error occurred in asserting response...' + e);
-        }
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      }).finally(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      const response = await postOperation(taskUrl, mockRequest);
+      expect(response.status).to.be.equal(201);
     });
   });
 });
-
