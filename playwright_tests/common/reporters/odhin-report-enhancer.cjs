@@ -1274,7 +1274,7 @@ function buildTestEvidencePanel(entries, navigation = {}) {
     <div class="odhin-a11y-test-evidence" data-a11y-test-evidence-link="${escapeAttribute(marker)}">
       <h2>Accessibility findings for this test</h2>
       ${buildTestEvidenceNavigation(navigation)}
-      <p><strong>Pipeline unstable:</strong> Playwright marks this test red and Jenkins marks the accessibility stage unstable instead of failed.</p>
+      <p><strong>Accessibility stage unstable:</strong> Playwright marks this test red and Jenkins marks only the accessibility stage unstable instead of failed.</p>
       <h3>Unique issue groups</h3>
       <ul>${engineSummaries}</ul>
       <p><strong>DOM target(s):</strong> <code>${escapeHtml(targetSummary)}</code></p>

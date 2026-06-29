@@ -130,7 +130,9 @@ A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable inste
     expect(failedModal?.getAttribute('class')).toContain('modal');
     expect(failedModal?.querySelector('.modal-content .result-header')).toBeTruthy();
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')).toBeTruthy();
-    expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain('Pipeline unstable');
+    expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain(
+      'Accessibility stage unstable'
+    );
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain(
       'failed-page-axe-highlighted-screenshot.png'
     );

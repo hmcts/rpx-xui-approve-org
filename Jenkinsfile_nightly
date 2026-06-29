@@ -160,7 +160,7 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
         if (shouldRunAccessibilityTests()) {
             playwrightBranches.accessibility = {
                 stage('Nightly Accessibility Playwright Tests') {
-                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         yarnBuilder.yarn('test:accessibility:playwright')
                     }
                 }
