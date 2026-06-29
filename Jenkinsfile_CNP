@@ -51,14 +51,14 @@ properties([
             description: 'Optional accessibility excluded tags override (@none clears file defaults)'
         ),
         booleanParam(
-            name: 'RUN_ACCESSIBILITY_TESTS',
+            name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
             defaultValue: false,
-            description: 'Run accessibility (axe) Playwright tests'
+            description: 'Optional: run the non-blocking unified Playwright accessibility pack on this PR build.'
         )
     ])
 ])
 
-@Library('Infrastructure')
+@Library('Infrastructure@2.0.0')
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
@@ -71,13 +71,17 @@ String channel   = '#xui-pipeline'
 String playwrightReportDir = 'functional-output/tests/playwright-e2e'
 String playwrightApiReportDir = 'functional-output/tests/playwright-api'
 String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
-String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
+String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightAccessibilityReportFile = 'xui-ao-playwright-accessibility.html'
 final String htmlIndexReportFile = 'index.html'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 def shouldRunAccessibilityTests = {
-    def configured = params.RUN_ACCESSIBILITY_TESTS
+    def configured = params.RUN_PLAYWRIGHT_ACCESSIBILITY
+    if (configured == null) {
+        configured = params.RUN_ACCESSIBILITY_TESTS
+    }
     return configured == null ? false : configured.toString().toBoolean()
 }
 
@@ -107,12 +111,12 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
             playwrightBranches.accessibility = {
                 stage("${environmentLabel} Accessibility Playwright Tests") {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                        yarnBuilder.yarn('test:accessibility:playwright:raw')
+                        yarnBuilder.yarn('test:accessibility:playwright')
                     }
                 }
             }
         } else {
-            echo "[playwright-a11y] ${environmentLabel} Accessibility Playwright Tests skipped; RUN_ACCESSIBILITY_TESTS=false"
+            echo "[playwright-a11y] ${environmentLabel} Accessibility Playwright Tests skipped; RUN_PLAYWRIGHT_ACCESSIBILITY=false"
         }
 
         parallel(playwrightBranches)
@@ -303,7 +307,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightAccessibilityReportFile,
             reportName           : 'PREVIEW Accessibility Playwright Test'
         ])
 
@@ -362,7 +366,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightAccessibilityReportFile,
             reportName           : 'AAT Accessibility Playwright Test'
         ])
 
