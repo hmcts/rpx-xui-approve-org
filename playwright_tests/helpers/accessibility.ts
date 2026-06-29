@@ -1629,7 +1629,7 @@ function formatAccessibilityIssueMessage(contextLabel: string, strictMode: boole
     `Accessibility issues found for "${contextLabel}".`,
     strictMode
       ? 'A11Y_STRICT is enabled, so this Playwright run is blocking.'
-      : 'A11Y_STRICT is disabled, so the accessibility wrapper keeps Jenkins non-blocking.',
+      : 'A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable instead of failed.',
     ...issueSummaries,
     'Open the accessibility evidence links in the report for the full results, highlighted HTML, and screenshots.'
   ].join('\n');

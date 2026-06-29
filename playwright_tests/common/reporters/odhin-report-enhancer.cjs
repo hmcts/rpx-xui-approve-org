@@ -532,7 +532,7 @@ function compactAccessibilityAssertionText(text) {
   const engineSummary = engines.length ? ` Engines with issues: ${engines.join(', ')}.` : '';
   const strictMessage = normalizedText.includes('A11Y_STRICT is enabled')
     ? 'A11Y_STRICT is enabled, so this Playwright run is blocking.'
-    : 'A11Y_STRICT is disabled, so the accessibility wrapper keeps Jenkins non-blocking.';
+    : 'A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable instead of failed.';
 
   return [
     `Error: Accessibility issues found for "${context}".`,
@@ -1274,7 +1274,7 @@ function buildTestEvidencePanel(entries, navigation = {}) {
     <div class="odhin-a11y-test-evidence" data-a11y-test-evidence-link="${escapeAttribute(marker)}">
       <h2>Accessibility findings for this test</h2>
       ${buildTestEvidenceNavigation(navigation)}
-      <p><strong>Pipeline non-blocking:</strong> Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled.</p>
+      <p><strong>Pipeline unstable:</strong> Playwright marks this test red and Jenkins marks the accessibility stage unstable instead of failed.</p>
       <h3>Unique issue groups</h3>
       <ul>${engineSummaries}</ul>
       <p><strong>DOM target(s):</strong> <code>${escapeHtml(targetSummary)}</code></p>

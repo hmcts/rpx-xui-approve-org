@@ -13,7 +13,6 @@ if (extraArgs[0] === '--') {
 }
 
 const defaultEngines = 'axe,wave-like,screen-reader';
-const strictMode = ['1', 'true', 'yes', 'on'].includes((process.env.A11Y_STRICT || '').trim().toLowerCase());
 
 const env = {
   ...process.env,
@@ -49,11 +48,10 @@ try {
 }
 
 const status = result.status ?? 1;
-if (status !== 0 && !strictMode) {
+if (status !== 0) {
   process.stderr.write(
-    `[accessibility-report] Accessibility pack completed with status ${status}; A11Y_STRICT is off so the run is report-only.\n`
+    `[accessibility-report] Accessibility pack completed with status ${status}; returning failure so Jenkins can mark the accessibility stage unstable.\n`
   );
-  process.exit(0);
 }
 
 process.exit(status);

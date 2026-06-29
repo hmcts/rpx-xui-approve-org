@@ -13,7 +13,7 @@ test.describe('odhin report enhancer', () => {
   test('repairs escaped Tests tab content and orphaned failed modal fragments', () => {
     const failedModalId = 'run-id-failed-0';
     const accessibilityAssertion = `[a11y] Failed page
-A11Y_STRICT is disabled, so Playwright marks this test red but the accessibility wrapper keeps Jenkins non-blocking.
+A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable instead of failed.
 [
   {
     "engine": "axe",
@@ -130,8 +130,7 @@ A11Y_STRICT is disabled, so Playwright marks this test red but the accessibility
     expect(failedModal?.getAttribute('class')).toContain('modal');
     expect(failedModal?.querySelector('.modal-content .result-header')).toBeTruthy();
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')).toBeTruthy();
-    expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain('Pipeline non-blocking');
-    expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain('<code>A11Y_STRICT</code>');
+    expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain('Pipeline unstable');
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain(
       'failed-page-axe-highlighted-screenshot.png'
     );

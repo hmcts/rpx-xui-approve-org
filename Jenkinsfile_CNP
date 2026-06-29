@@ -145,7 +145,7 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
         if (shouldRunAccessibilityTests()) {
             playwrightBranches.accessibility = {
                 stage("${environmentLabel} Accessibility Playwright Tests") {
-                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
                         yarnBuilder.yarn('test:accessibility:playwright')
                     }
                 }
