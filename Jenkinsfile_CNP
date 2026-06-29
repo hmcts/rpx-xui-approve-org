@@ -53,7 +53,7 @@ properties([
         booleanParam(
             name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
             defaultValue: false,
-            description: 'Optional: run the non-blocking unified Playwright accessibility pack on this PR build.'
+            description: 'Optional: run the non-blocking Playwright accessibility pack (axe, WAVE-like and screen-reader checks) on this PR build.'
         )
     ])
 ])
@@ -68,10 +68,13 @@ String type      = 'nodejs'
 String product   = 'xui'
 String component = 'ao-webapp'
 String channel   = '#xui-pipeline'
-String playwrightReportDir = 'functional-output/tests/playwright-e2e'
-String playwrightApiReportDir = 'functional-output/tests/playwright-api'
-String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
+String playwrightReportDir = 'functional-output/tests/playwright-e2e/odhin-report'
+String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-report'
+String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightE2eReportFile = 'xui-ao-playwright-e2e.html'
+String playwrightApiReportFile = 'xui-ao-playwright-api.html'
+String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
 String playwrightAccessibilityReportFile = 'xui-ao-playwright-accessibility.html'
 final String htmlIndexReportFile = 'index.html'
 
@@ -296,7 +299,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'DEMO Smoke Test'
         ])
     }
@@ -307,7 +310,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'PREVIEW Smoke Test'
         ])
     }
@@ -325,7 +328,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightApiReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightApiReportFile,
             reportName           : 'PREVIEW API Playwright Test'
         ])
 
@@ -334,7 +337,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'PREVIEW Functional E2E Test'
         ])
 
@@ -343,11 +346,15 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightIntegrationReportFile,
             reportName           : 'PREVIEW Integration Playwright Test'
         ])
 
-        publishPlaywrightAccessibilityReport('PREVIEW Accessibility Playwright Test')
+        if (shouldRunAccessibilityTests()) {
+            publishPlaywrightAccessibilityReport('PREVIEW Accessibility Playwright Test')
+        } else {
+            echo '[playwright-a11y] PREVIEW Accessibility Playwright Test report publish skipped because accessibility tests were not run'
+        }
 
     }
 
@@ -358,7 +365,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'AAT Smoke Test'
         ])
     }
@@ -377,7 +384,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightApiReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightApiReportFile,
             reportName           : 'AAT API Playwright Test'
         ])
 
@@ -386,7 +393,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'AAT Functional E2ETest'
         ])
 
@@ -395,11 +402,15 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightIntegrationReportFile,
             reportName           : 'AAT Integration Playwright Test'
         ])
 
-        publishPlaywrightAccessibilityReport('AAT Accessibility Playwright Test')
+        if (shouldRunAccessibilityTests()) {
+            publishPlaywrightAccessibilityReport('AAT Accessibility Playwright Test')
+        } else {
+            echo '[playwright-a11y] AAT Accessibility Playwright Test report publish skipped because accessibility tests were not run'
+        }
 
     }
 }
