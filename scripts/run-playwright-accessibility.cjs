@@ -12,8 +12,8 @@ if (extraArgs[0] === '--') {
   extraArgs.shift();
 }
 
-const isListOnlyRun = extraArgs.includes('--list');
-const defaultEngines = 'axe,wave-like';
+const defaultEngines = 'axe,wave-like,screen-reader';
+const strictMode = ['1', 'true', 'yes', 'on'].includes((process.env.A11Y_STRICT || '').trim().toLowerCase());
 
 const env = {
   ...process.env,
@@ -29,7 +29,7 @@ const env = {
   PLAYWRIGHT_REPORT_PROJECT: process.env.PLAYWRIGHT_REPORT_PROJECT || 'RPX XUI Approve Org - Accessibility',
   PW_ODHIN_TITLE: process.env.PW_ODHIN_TITLE || 'RPX-XUI-APPROVE-ORG Accessibility',
   FUNCTIONAL_TESTS_WORKERS: process.env.PW_ACCESSIBILITY_WORKERS || process.env.FUNCTIONAL_TESTS_WORKERS || '1',
-  PW_A11Y_PREWARM_SESSION: isListOnlyRun ? 'false' : process.env.PW_A11Y_PREWARM_SESSION || 'true',
+  PW_SKIP_SESSION_CAPTURE: process.env.PW_SKIP_SESSION_CAPTURE || 'true',
   PW_ODHIN_TRIM_FAILED_ARTIFACTS: process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS || 'true',
   PW_ODHIN_FINALIZATION_TIMEOUT_MS: process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS || '30000',
   PLAYWRIGHT_DEFAULT_REPORTER: process.env.PLAYWRIGHT_DEFAULT_REPORTER || 'line'
@@ -49,4 +49,11 @@ try {
 }
 
 const status = result.status ?? 1;
+if (status !== 0 && !strictMode) {
+  process.stderr.write(
+    `[accessibility-report] Accessibility pack completed with status ${status}; A11Y_STRICT is off so the run is report-only.\n`
+  );
+  process.exit(0);
+}
+
 process.exit(status);

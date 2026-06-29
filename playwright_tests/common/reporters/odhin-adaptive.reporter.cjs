@@ -2,6 +2,8 @@
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 
@@ -79,6 +81,12 @@ class OdhinAdaptiveReporter {
       } catch (error) {
         process.stderr.write(`[odhin-profile] onEnd failed: ${formatErrorMessage(error)}\n`);
       }
+    }
+
+    try {
+      enhanceGeneratedReport(this.options.outputFolder, []);
+    } catch (error) {
+      process.stderr.write(`[odhin-profile] report enhancement failed: ${formatErrorMessage(error)}\n`);
     }
   }
 

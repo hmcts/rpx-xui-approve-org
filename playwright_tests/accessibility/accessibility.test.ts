@@ -1,6 +1,6 @@
 import { test, expect } from '../page-objects/page.fixtures';
-import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { accessibilityCheck } from '../helpers/accessibility';
+import { openAccessibilityMockApp, setupAccessibilityMockSession } from './helpers/accessibility-mock-session';
 import { clearOrganisationSearchSession } from '../integration/helpers/organisation-search.helpers';
 import {
   setupPbaStatusUpdateApiMock,
@@ -16,17 +16,18 @@ import {
 test.describe('Accessibility: organisation tab states and user upload', { tag: ['@accessibility', '@wave-a11y', '@lighthouse-a11y'] }, () => {
   test.beforeEach(async ({ page }) => {
     await clearOrganisationSearchSession(page);
+    await setupAccessibilityMockSession(page);
     await setupStandardOrganisationApprovalsApiMocks(page, ACCESSIBILITY_APPROVALS_MOCK_STATE);
     await setupPendingOrganisationDecisionApiMock(page, {
       organisationId: ACCESSIBILITY_PENDING_ORGANISATION_ID
     });
     await setupPbaStatusUpdateApiMock(page);
-    await ensureAuthenticatedPage(page, 'base');
+    await openAccessibilityMockApp(page);
   });
 
   test.describe('Pending organisations', () => {
     test(
-      'Pending organisations tab passes baseline accessibility scan',
+      'pending organisations - pending organisations tab',
       { tag: ['@tabs-states'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await expect(organisationApprovalsPage.heading).toBeVisible();
@@ -38,7 +39,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     );
 
     test(
-      'Viewing a new registration organisation from pending list passes baseline accessibility scan',
+      'pending organisations - pending registration details view',
       { tag: ['@tabs-states'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openPendingOrganisationsTab();
@@ -53,7 +54,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     );
 
     test(
-      'Approving a new registration organisation opens confirmation page and passes baseline accessibility scan',
+      'pending organisations - pending registration approval confirmation',
       { tag: ['@tabs-states'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openPendingOrganisationsTab();
@@ -76,7 +77,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
 
   test.describe('New PBAs', () => {
     test(
-      'New pbas list tab passes baseline accessibility scan',
+      'new PBAs - new PBAs tab',
       { tag: ['@tabs-states'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openNewPbasTab();
@@ -88,7 +89,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     );
 
     test(
-      'Viewing a PBA from the new PBAs list passes baseline accessibility scan',
+      'new PBAs - pending PBA details view',
       { tag: ['@tabs-states'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openNewPbasTab();
@@ -104,7 +105,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     );
 
     test(
-      'Approving a new PBA opens confirmation page and passes baseline accessibility scan',
+      'new PBAs - pending PBA approval confirmation',
       { tag: ['@tabs-states'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openNewPbasTab();
@@ -127,7 +128,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
 
   test.describe('Active organisations', () => {
     test(
-      'Active organisations tab passes baseline accessibility scan',
+      'active organisations - active organisations tab',
       { tag: ['@tabs-states'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openActiveOrganisationsTab();
@@ -140,7 +141,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     );
 
     test(
-      'Viewing an organisation from active tab passes baseline accessibility scan',
+      'active organisations - active organisation details view',
       { tag: ['@tabs-states'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openActiveOrganisationsTab();
@@ -153,7 +154,7 @@ test.describe('Accessibility: organisation tab states and user upload', { tag: [
     );
 
     test(
-      'Active organisation user list passes baseline accessibility scan',
+      'active organisations - user upload surface',
       { tag: ['@staff-details'] },
       async ({ organisationApprovalsPage, page }, testInfo) => {
         await organisationApprovalsPage.openActiveOrganisationsTab();

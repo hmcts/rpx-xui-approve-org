@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-unused-vars, comma-dangle, indent, quotes */
+/* eslint-disable @typescript-eslint/no-require-imports, comma-dangle, indent, quotes */
 /* global require, module */
 
 const fs = require('fs');
@@ -114,6 +114,198 @@ function escapeHtml(value) {
 
 function escapeAttribute(value) {
   return escapeHtml(value).replace(/`/g, '&#96;');
+}
+
+function normalizeText(value) {
+  return String(value ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function testTitleKey(value) {
+  return normalizeText(value).toLowerCase();
+}
+
+function selectorAttributeValue(value) {
+  return String(value ?? '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function findElementById(root, id) {
+  const safeId = String(id ?? '').trim();
+  return safeId ? root.querySelector(`[id="${selectorAttributeValue(safeId)}"]`) : null;
+}
+
+function elementHasClass(node, className) {
+  return String(node?.getAttribute?.('class') ?? '')
+    .split(/\s+/)
+    .includes(className);
+}
+
+function isDescendantOf(node, ancestor) {
+  let current = node?.parentNode;
+  while (current) {
+    if (current === ancestor) {
+      return true;
+    }
+    current = current.parentNode;
+  }
+  return false;
+}
+
+function isDocumentContainer(node) {
+  const tagName = String(node?.rawTagName ?? '').toLowerCase();
+  return !node?.parentNode || tagName === 'html' || tagName === 'body';
+}
+
+function isBlankNode(node) {
+  return !node?.rawTagName && !normalizeText(node?.text ?? node?.toString?.());
+}
+
+function isEmptyOrphanModalDialog(node) {
+  return (
+    elementHasClass(node, 'modal-dialog') &&
+    !elementHasClass(node?.parentNode, 'modal') &&
+    !node.querySelector?.('.modal-content')
+  );
+}
+
+function findTestsContentContainer(table, testsTab) {
+  let current = table;
+  let candidate = table;
+  while (current?.parentNode && current.parentNode !== testsTab && !isDocumentContainer(current.parentNode)) {
+    candidate = current.parentNode;
+    current = current.parentNode;
+  }
+  return current?.parentNode === testsTab ? null : candidate;
+}
+
+function repairTestsTabContent(root) {
+  const testsTab = root.querySelector('#TabTests');
+  const table = root.querySelector('#test-list-table');
+  if (!testsTab || !table || isDescendantOf(table, testsTab)) {
+    return false;
+  }
+
+  const contentContainer = findTestsContentContainer(table, testsTab);
+  if (!contentContainer || contentContainer === testsTab) {
+    return false;
+  }
+
+  const contentHtml = contentContainer.toString();
+  contentContainer.remove();
+  testsTab.insertAdjacentHTML('beforeend', contentHtml);
+  return true;
+}
+
+function nodeContainsElementId(node, id) {
+  return Boolean(node?.querySelector?.(`[id="${selectorAttributeValue(id)}"]`));
+}
+
+function isRootModalBoundary(node) {
+  return elementHasClass(node, 'modal') || elementHasClass(node, 'modal-dialog') || node?.rawTagName === 'script';
+}
+
+function findModalFragmentRange(children, modalId) {
+  const labelIndex = children.findIndex((node) => nodeContainsElementId(node, `${modalId}Label`));
+  if (labelIndex < 0) {
+    return null;
+  }
+
+  let start = labelIndex;
+  while (start > 0 && (isBlankNode(children[start - 1]) || isEmptyOrphanModalDialog(children[start - 1]))) {
+    start -= 1;
+  }
+
+  let end = labelIndex + 1;
+  for (let index = labelIndex + 1; index < children.length; index += 1) {
+    const node = children[index];
+    if (isBlankNode(node)) {
+      end = index + 1;
+      continue;
+    }
+    if (isRootModalBoundary(node)) {
+      break;
+    }
+    end = index + 1;
+  }
+
+  return { start, end };
+}
+
+function buildRepairedModalHtml(modalId, contentHtml) {
+  return `
+    <div class="modal fade" id="${escapeAttribute(modalId)}" tabindex="-1" aria-labelledby="${escapeAttribute(modalId)}Label" aria-hidden="true">
+      <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+        <div class="modal-content">${contentHtml}</div>
+      </div>
+    </div>
+  `;
+}
+
+function repairOrphanedTestModals(root) {
+  const container = root.querySelector('body') ?? root.querySelector('html') ?? root;
+  let repairedCount = 0;
+
+  readTestListRows(root).forEach((row) => {
+    if (!row.targetId || findElementById(root, row.targetId)) {
+      return;
+    }
+
+    const children = Array.from(container.childNodes ?? []);
+    const range = findModalFragmentRange(children, row.targetId);
+    if (!range) {
+      return;
+    }
+
+    const fragmentNodes = children.slice(range.start, range.end);
+    const contentHtml = fragmentNodes
+      .filter((node) => !isBlankNode(node) && !isEmptyOrphanModalDialog(node))
+      .map((node) => node.toString())
+      .join('');
+
+    if (!contentHtml) {
+      return;
+    }
+
+    const replacementIndex = fragmentNodes.findIndex((node) => typeof node.replaceWith === 'function');
+    if (replacementIndex < 0) {
+      return;
+    }
+
+    fragmentNodes[replacementIndex].replaceWith(parse(buildRepairedModalHtml(row.targetId, contentHtml)));
+    fragmentNodes.forEach((node, index) => {
+      if (index !== replacementIndex) {
+        node.remove?.();
+      }
+    });
+    repairedCount += 1;
+  });
+
+  return repairedCount;
+}
+
+function normalizeModalBodyContent(root) {
+  let normalizedCount = 0;
+  root.querySelectorAll('.modal-content').forEach((modalContent) => {
+    const directChildren = Array.from(modalContent.childNodes ?? []);
+    const modalBodyIndex = directChildren.findIndex((node) => elementHasClass(node, 'modal-body'));
+    if (modalBodyIndex < 0) {
+      return;
+    }
+
+    const modalBody = directChildren[modalBodyIndex];
+    const trailingNodes = directChildren.slice(modalBodyIndex + 1).filter((node) => !isBlankNode(node));
+    const bodyFragments = trailingNodes.filter((node) => !elementHasClass(node, 'modal-footer'));
+    if (!bodyFragments.length) {
+      return;
+    }
+
+    bodyFragments.forEach((node) => {
+      modalBody.insertAdjacentHTML('beforeend', node.toString());
+      node.remove?.();
+      normalizedCount += 1;
+    });
+  });
+
+  return normalizedCount;
 }
 
 function injectEnhancerStyles(root) {
@@ -650,80 +842,6 @@ function issueLabel(engine, count) {
   return `${count} ${engineLabel(engine)} issue(s)`;
 }
 
-function buildAccessibilityEvidenceBlock(entries) {
-  const normalizedEntries = normalizeEvidenceEntries(entries);
-  if (!normalizedEntries.length) {
-    return '';
-  }
-
-  const cards = normalizedEntries
-    .map((entry) => {
-      const screenshotPath = entry.screenshotFileName ? `./accessibility-evidence/${entry.screenshotFileName}` : '';
-      const evidenceLinks = [
-        `<a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}"${evidenceLinkAttributes}>${entry.engine === 'summary' ? 'open page summary' : 'issue detail'}</a>`,
-        entry.reportFileName
-          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.reportFileName}`)}"${evidenceLinkAttributes}>native Lighthouse HTML</a>`
-          : '',
-        screenshotPath ? `<a href="${escapeAttribute(screenshotPath)}"${evidenceLinkAttributes}>screenshot</a>` : '',
-        entry.jsonFileName
-          ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}"${evidenceLinkAttributes}>${jsonLinkLabel(entry.engine)}</a>`
-          : '',
-      ]
-        .filter(Boolean)
-        .join('\n');
-      return `
-        <article class="odhin-a11y-evidence-card" data-engine="${escapeAttribute(entry.engine)}">
-          <div class="odhin-a11y-evidence-card-body">
-            <span class="odhin-a11y-evidence-engine">${escapeHtml(engineLabel(entry.engine))}</span>
-            <div class="odhin-a11y-evidence-title">${escapeHtml(entry.testTitle)}</div>
-            <p class="odhin-a11y-evidence-meta">
-              ${escapeHtml(issueLabel(entry.engine, entry.violationCount))}: ${escapeHtml(entry.rules.join(', ') || entry.summary || 'no rule recorded')}
-            </p>
-            ${
-              entry.feature || entry.pageState
-                ? `<p class="odhin-a11y-evidence-meta">${escapeHtml([entry.feature, entry.pageState].filter(Boolean).join(' / '))}</p>`
-                : ''
-            }
-            <p class="odhin-a11y-evidence-meta">
-              Targets: ${escapeHtml(entry.targets.join(', ') || 'no target recorded')}
-            </p>
-            <div class="odhin-a11y-evidence-links">
-              ${evidenceLinks}
-            </div>
-          </div>
-        </article>
-      `;
-    })
-    .join('');
-
-  return `
-    <div class="col-12">
-      <div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-accessibility-evidence">
-        <div class="info-box-header">Accessibility Evidence</div>
-        <div class="odhin-table">
-          <div class="odhin-a11y-evidence-grid">${cards}</div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function injectAccessibilityEvidence(root, evidenceEntries) {
-  const evidenceHtml = buildAccessibilityEvidenceBlock(evidenceEntries);
-  if (!evidenceHtml || root.querySelector('#odhin-accessibility-evidence')) {
-    return false;
-  }
-
-  const dashboardRow =
-    root.querySelector('#TabDashboard .row') ?? root.querySelector('#TabDashboard') ?? root.querySelector('body');
-  if (!dashboardRow) {
-    return false;
-  }
-
-  dashboardRow.appendChild(parse(evidenceHtml));
-  return true;
-}
-
 function removeDashboardAccessibilityEvidence(root) {
   root.querySelectorAll('#odhin-accessibility-evidence').forEach((node) => node.remove());
 }
@@ -855,9 +973,7 @@ function buildAccessibilityModalNavigationScript() {
 function buildTestEvidencePanel(entries, navigation = {}) {
   const normalizedEntries = normalizeEvidenceEntries(entries);
   const firstEntry = normalizedEntries[0];
-  const issueEntries = normalizedEntries.some((entry) => entry.engine !== 'summary')
-    ? normalizedEntries.filter((entry) => entry.engine !== 'summary')
-    : normalizedEntries;
+  const issueEntries = issueEntriesOnly(normalizedEntries);
   const engineSummaries = issueEntries
     .map((entry) => {
       const ruleSummary =
@@ -894,7 +1010,7 @@ function buildTestEvidencePanel(entries, navigation = {}) {
     })
     .join('');
 
-  if (!firstEntry) {
+  if (!firstEntry || !issueEntries.length) {
     return '';
   }
 
@@ -915,11 +1031,16 @@ function buildTestEvidencePanel(entries, navigation = {}) {
   `;
 }
 
+function hasRecordedIssue(entry) {
+  const status = String(entry?.status ?? '').toLowerCase();
+  return Number(entry?.violationCount ?? 0) > 0 && status !== 'passed';
+}
+
 function issueEntriesOnly(entries) {
   const normalizedEntries = normalizeEvidenceEntries(entries);
-  return normalizedEntries.some((entry) => entry.engine !== 'summary')
-    ? normalizedEntries.filter((entry) => entry.engine !== 'summary')
-    : normalizedEntries;
+  const issueEntries = normalizedEntries.filter(hasRecordedIssue);
+  const nonSummaryIssueEntries = issueEntries.filter((entry) => entry.engine !== 'summary');
+  return nonSummaryIssueEntries.length ? nonSummaryIssueEntries : issueEntries;
 }
 
 function ruleCountsByEngine(entries) {
@@ -1171,9 +1292,10 @@ function injectAccessibilityIssueColumns(root, evidenceEntries) {
 
   const entriesByTitle = new Map();
   normalizedEntries.forEach((entry) => {
-    const entries = entriesByTitle.get(entry.testTitle) ?? [];
+    const titleKey = testTitleKey(entry.testTitle);
+    const entries = entriesByTitle.get(titleKey) ?? [];
     entries.push(entry);
-    entriesByTitle.set(entry.testTitle, entries);
+    entriesByTitle.set(titleKey, entries);
   });
 
   const globalRuleCounts = ruleCountsByEngine(normalizedEntries);
@@ -1185,10 +1307,11 @@ function injectAccessibilityIssueColumns(root, evidenceEntries) {
     if (!title || !statusCell) {
       return;
     }
-    const entries = entriesByTitle.get(title) ?? [];
-    const issueGroups = entries.length ? buildIssueGroupsText(entries, globalRuleCounts) : '';
-    const issueRules = uniqueValues(ruleIssueKeys(entries).map((item) => ruleLabel(item.rule))).join(' ');
-    const fixHint = entries.length ? buildFixHintText(entries, globalRuleCounts) : '';
+    const entries = entriesByTitle.get(testTitleKey(title)) ?? [];
+    const issueEntries = issueEntriesOnly(entries);
+    const issueGroups = issueEntries.length ? buildIssueGroupsText(entries, globalRuleCounts) : '';
+    const issueRules = issueEntries.length ? uniqueValues(ruleIssueKeys(entries).map((item) => ruleLabel(item.rule))).join(' ') : '';
+    const fixHint = issueEntries.length ? buildFixHintText(entries, globalRuleCounts) : '';
     statusCell.insertAdjacentHTML(
       'afterend',
       `<td class="odhin-a11y-table-issues" data-a11y-issue-rules="${escapeAttribute(issueRules)}">${issueGroups}</td><td class="odhin-a11y-table-hint">${escapeHtml(fixHint)}</td>`
@@ -1199,6 +1322,72 @@ function injectAccessibilityIssueColumns(root, evidenceEntries) {
   return updatedRows;
 }
 
+function groupEntriesByIssueTitle(entries) {
+  const groupedEntries = new Map();
+  normalizeEvidenceEntries(entries).forEach((entry) => {
+    const title = normalizeText(entry.testTitle);
+    if (!title) {
+      return;
+    }
+    const titleEntries = groupedEntries.get(title) ?? [];
+    titleEntries.push(entry);
+    groupedEntries.set(title, titleEntries);
+  });
+
+  Array.from(groupedEntries.entries()).forEach(([title, titleEntries]) => {
+    if (!issueEntriesOnly(titleEntries).length) {
+      groupedEntries.delete(title);
+    }
+  });
+
+  return groupedEntries;
+}
+
+function readTestListRows(root) {
+  return root
+    .querySelectorAll('#test-list-table tbody tr')
+    .map((row, index) => {
+      const cells = row.querySelectorAll('td');
+      const title = normalizeText(cells[0]?.text);
+      const status = normalizeText(cells[1]?.text);
+      const target = normalizeText(row.getAttribute('data-bs-target') || row.getAttribute('data-target'));
+      return {
+        index,
+        row,
+        title,
+        titleKey: testTitleKey(title),
+        status,
+        targetId: target.replace(/^#/, '')
+      };
+    })
+    .filter((row) => row.title);
+}
+
+function rowsByTitle(root) {
+  const rows = new Map();
+  readTestListRows(root).forEach((row) => {
+    if (!rows.has(row.titleKey)) {
+      rows.set(row.titleKey, row);
+    }
+  });
+  return rows;
+}
+
+function findModalContentForTitle(root, modalContents, tableRowsByTitle, title) {
+  const row = tableRowsByTitle.get(testTitleKey(title));
+  const targetModal = row?.targetId ? findElementById(root, row.targetId) : null;
+  const targetModalContent = targetModal?.querySelector('.modal-content');
+  if (targetModalContent) {
+    return targetModalContent;
+  }
+
+  return (
+    modalContents.find(
+      (modalContent) => testTitleKey(modalContent.querySelector('.header-col-center')?.text) === testTitleKey(title)
+    ) ?? null
+  );
+}
+
 function injectAccessibilityEvidenceIntoTestModals(root, evidenceEntries) {
   const normalizedEntries = normalizeEvidenceEntries(evidenceEntries);
   if (!normalizedEntries.length) {
@@ -1206,36 +1395,32 @@ function injectAccessibilityEvidenceIntoTestModals(root, evidenceEntries) {
   }
 
   let injectedCount = 0;
-  const modalContents = root.querySelectorAll('.modal-content');
   root.querySelectorAll('.odhin-a11y-test-evidence').forEach((node) => node.remove());
   root.querySelectorAll('#odhin-a11y-modal-nav-script').forEach((node) => node.remove());
-  const entriesByTestTitle = new Map();
-  normalizedEntries.forEach((entry) => {
-    const entries = entriesByTestTitle.get(entry.testTitle) ?? [];
-    entries.push(entry);
-    entriesByTestTitle.set(entry.testTitle, entries);
-  });
+  const entriesByTestTitle = groupEntriesByIssueTitle(normalizedEntries);
+  const modalContents = root.querySelectorAll('.modal-content');
+  const tableRowsByTitle = rowsByTitle(root);
   const testTitles = Array.from(entriesByTestTitle.keys());
 
   entriesByTestTitle.forEach((entries, testTitle) => {
-    const matchingModal = modalContents.find(
-      (modalContent) => modalContent.querySelector('.header-col-center')?.text.trim() === testTitle
-    );
-    const modalBody = matchingModal?.querySelector('.modal-body.odhin-bg-2');
+    const matchingModal = findModalContentForTitle(root, modalContents, tableRowsByTitle, testTitle);
+    const modalBody = matchingModal?.querySelector('.modal-body.odhin-bg-2') ?? matchingModal?.querySelector('.modal-body');
     if (!modalBody) {
       return;
     }
 
     const currentIndex = testTitles.indexOf(testTitle);
-    modalBody.insertAdjacentHTML(
-      'afterbegin',
-      buildTestEvidencePanel(entries, {
-        currentTitle: testTitle,
-        previousTitle: currentIndex > 0 ? testTitles[currentIndex - 1] : '',
-        nextTitle: currentIndex >= 0 && currentIndex < testTitles.length - 1 ? testTitles[currentIndex + 1] : '',
-        position: currentIndex >= 0 ? `${currentIndex + 1} of ${testTitles.length} accessibility findings` : '',
-      })
-    );
+    const evidencePanel = buildTestEvidencePanel(entries, {
+      currentTitle: testTitle,
+      previousTitle: currentIndex > 0 ? testTitles[currentIndex - 1] : '',
+      nextTitle: currentIndex >= 0 && currentIndex < testTitles.length - 1 ? testTitles[currentIndex + 1] : '',
+      position: currentIndex >= 0 ? `${currentIndex + 1} of ${testTitles.length} accessibility findings` : '',
+    });
+    if (!evidencePanel) {
+      return;
+    }
+
+    modalBody.insertAdjacentHTML('afterbegin', evidencePanel);
     injectedCount += 1;
   });
 
@@ -1318,6 +1503,9 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   }
 
   const root = parse(htmlWithDefaultTestRows);
+  repairTestsTabContent(root);
+  repairOrphanedTestModals(root);
+  normalizeModalBodyContent(root);
   injectEnhancerStyles(root);
   removeDashboardAccessibilityEvidence(root);
   removeAccessibilityTableEnhancements(root);
@@ -1401,7 +1589,6 @@ module.exports = {
   __test__: {
     buildFeatureOverviewBlock,
     buildIssueSummaryBlock,
-    buildAccessibilityEvidenceBlock,
     createEmptyFeatureStat,
     defaultTestListRowsPerPage,
     deriveFeatureName,
