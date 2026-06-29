@@ -72,8 +72,13 @@ class OdhinAdaptiveReporter {
   }
 
   async onEnd(result) {
-    process.stdout.write(`[odhin-profile] Finalizing Odhin report statusCounts=${JSON.stringify(this.statusCounts)}\n`);
     await this.pendingInnerCallbacks;
+
+    if (!this.hasRecordedTests()) {
+      return;
+    }
+
+    process.stdout.write(`[odhin-profile] Finalizing Odhin report statusCounts=${JSON.stringify(this.statusCounts)}\n`);
 
     if (typeof this.inner.onEnd === 'function') {
       try {
@@ -110,6 +115,10 @@ class OdhinAdaptiveReporter {
       default:
         this.statusCounts.other += 1;
     }
+  }
+
+  hasRecordedTests() {
+    return Object.values(this.statusCounts).some((count) => count > 0);
   }
 
   enqueueInnerCallback(hookName, invoke, context = {}) {
