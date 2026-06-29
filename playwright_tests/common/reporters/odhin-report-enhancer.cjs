@@ -282,9 +282,119 @@ function repairOrphanedTestModals(root) {
   return repairedCount;
 }
 
+function modalIdForContent(modalContent) {
+  const modal = modalContent?.closest?.('.modal');
+  const modalId = modal?.getAttribute?.('id');
+  if (modalId) {
+    return modalId;
+  }
+
+  const tab = modalContent?.querySelector?.('[id^="TabRunInfo-"], [id^="TabSteps-"], [id^="TabErrors-"]');
+  const tabId = tab?.getAttribute?.('id') ?? '';
+  const match = tabId.match(/^Tab[A-Za-z]+-(.+)$/);
+  if (match?.[1]) {
+    return match[1];
+  }
+
+  const label = modalContent?.querySelector?.('[id$="Label"]');
+  return String(label?.getAttribute?.('id') ?? '').replace(/Label$/, '');
+}
+
+function tabClassNameForModal(modalId) {
+  return `result-tabcontent-${modalId}`;
+}
+
+function isResultTabNodeForModal(node, modalId) {
+  const id = node?.getAttribute?.('id') ?? '';
+  return Boolean(modalId && /^Tab[A-Za-z]+-/.test(id) && id.endsWith(`-${modalId}`));
+}
+
+function addClass(node, className) {
+  const classes = new Set(
+    String(node?.getAttribute?.('class') ?? '')
+      .split(/\s+/)
+      .filter(Boolean)
+  );
+  classes.add(className);
+  node?.setAttribute?.('class', Array.from(classes).join(' '));
+}
+
+function normalizeResultTabNode(node, modalId) {
+  if (!node || !modalId || !isResultTabNodeForModal(node, modalId)) {
+    return;
+  }
+
+  addClass(node, 'result-tabcontent');
+  addClass(node, tabClassNameForModal(modalId));
+  const id = node.getAttribute('id') ?? '';
+  if (!node.getAttribute('style')) {
+    node.setAttribute('style', id.startsWith('TabRunInfo-') ? 'display: block' : 'display: none');
+  }
+}
+
+function createStepsTab(modalId) {
+  return parse(
+    `<div id="TabSteps-${escapeAttribute(modalId)}" style="display: none" class="result-tabcontent ${escapeAttribute(tabClassNameForModal(modalId))}"></div>`
+  );
+}
+
+function findOrCreateStepsTab(modalBody, modalId) {
+  const existing = modalBody.querySelector(`[id="${selectorAttributeValue(`TabSteps-${modalId}`)}"]`);
+  if (existing) {
+    normalizeResultTabNode(existing, modalId);
+    return existing;
+  }
+
+  const stepsTab = createStepsTab(modalId);
+  const runInfo = modalBody.querySelector(`[id="${selectorAttributeValue(`TabRunInfo-${modalId}`)}"]`);
+  if (runInfo) {
+    runInfo.insertAdjacentHTML('afterend', stepsTab.toString());
+    return modalBody.querySelector(`[id="${selectorAttributeValue(`TabSteps-${modalId}`)}"]`);
+  }
+
+  modalBody.appendChild(stepsTab);
+  return stepsTab;
+}
+
+function moveNodeIntoStepsTab(modalBody, modalId, node) {
+  const stepsTab = findOrCreateStepsTab(modalBody, modalId);
+  if (!stepsTab) {
+    return false;
+  }
+
+  stepsTab.insertAdjacentHTML('beforeend', node.toString());
+  node.remove?.();
+  return true;
+}
+
+function isAlwaysVisibleModalBodyNode(node) {
+  return (
+    isBlankNode(node) ||
+    elementHasClass(node, 'odhin-a11y-test-evidence') ||
+    elementHasClass(node, 'modal-footer') ||
+    String(node?.rawTagName ?? '').toLowerCase() === 'script'
+  );
+}
+
+function normalizeModalBodyTabs(modalBody, modalId) {
+  Array.from(modalBody?.childNodes ?? []).forEach((node) => {
+    if (isAlwaysVisibleModalBodyNode(node)) {
+      return;
+    }
+    if (isResultTabNodeForModal(node, modalId)) {
+      normalizeResultTabNode(node, modalId);
+      return;
+    }
+    if (node?.rawTagName) {
+      moveNodeIntoStepsTab(modalBody, modalId, node);
+    }
+  });
+}
+
 function normalizeModalBodyContent(root) {
   let normalizedCount = 0;
   root.querySelectorAll('.modal-content').forEach((modalContent) => {
+    const modalId = modalIdForContent(modalContent);
     const directChildren = Array.from(modalContent.childNodes ?? []);
     const modalBodyIndex = directChildren.findIndex((node) => elementHasClass(node, 'modal-body'));
     if (modalBodyIndex < 0) {
@@ -299,13 +409,158 @@ function normalizeModalBodyContent(root) {
     }
 
     bodyFragments.forEach((node) => {
-      modalBody.insertAdjacentHTML('beforeend', node.toString());
+      if (modalId && isResultTabNodeForModal(node, modalId)) {
+        normalizeResultTabNode(node, modalId);
+        modalBody.insertAdjacentHTML('beforeend', node.toString());
+      } else if (modalId && node?.rawTagName) {
+        moveNodeIntoStepsTab(modalBody, modalId, node);
+        normalizedCount += 1;
+        return;
+      } else {
+        modalBody.insertAdjacentHTML('beforeend', node.toString());
+      }
       node.remove?.();
       normalizedCount += 1;
     });
+
+    if (modalId) {
+      normalizeModalBodyTabs(modalBody, modalId);
+    }
   });
 
   return normalizedCount;
+}
+
+function containsAccessibilityAssertionPayload(node) {
+  const text = normalizeText(node?.text ?? node?.toString?.());
+  return text.includes('[a11y]') && text.includes('A11Y_STRICT') && /\bengine\b/.test(text);
+}
+
+function closestRemovableAccessibilityBlock(node, boundary) {
+  let current = node;
+  let candidate = null;
+
+  while (current && current !== boundary) {
+    const tagName = String(current.rawTagName ?? '').toLowerCase();
+
+    if (elementHasClass(current, 'accordion-item') || tagName === 'tr') {
+      return current;
+    }
+
+    if (
+      elementHasClass(current, 'stepLine') ||
+      elementHasClass(current, 'row') ||
+      tagName === 'pre' ||
+      tagName === 'code'
+    ) {
+      candidate = current;
+    }
+
+    current = current.parentNode;
+  }
+
+  return candidate;
+}
+
+function isPreferredAccessibilityRemovalNode(node) {
+  const tagName = String(node?.rawTagName ?? '').toLowerCase();
+  return (
+    elementHasClass(node, 'accordion-item') ||
+    elementHasClass(node, 'stepLine') ||
+    tagName === 'tr' ||
+    tagName === 'pre' ||
+    tagName === 'code'
+  );
+}
+
+function removeAccessibilityAssertionPayloadFromTab(tab) {
+  const removableBlocks = new Set();
+
+  Array.from(tab.querySelectorAll('*')).forEach((node) => {
+    if (!containsAccessibilityAssertionPayload(node)) {
+      return;
+    }
+
+    const matchingDescendants = Array.from(node.querySelectorAll?.('*') ?? []).filter(containsAccessibilityAssertionPayload);
+    if (matchingDescendants.length && !isPreferredAccessibilityRemovalNode(node)) {
+      return;
+    }
+
+    const block = closestRemovableAccessibilityBlock(node, tab);
+    if (block && block !== tab) {
+      removableBlocks.add(block);
+    }
+  });
+
+  Array.from(tab.childNodes ?? []).forEach((node) => {
+    if (!containsAccessibilityAssertionPayload(node)) {
+      return;
+    }
+
+    if (node.rawTagName) {
+      const matchingDescendants = Array.from(node.querySelectorAll?.('*') ?? []).filter(containsAccessibilityAssertionPayload);
+      if (matchingDescendants.length) {
+        return;
+      }
+
+      const block = closestRemovableAccessibilityBlock(node, tab) ?? node;
+      if (block && block !== tab) {
+        removableBlocks.add(block);
+      }
+      return;
+    }
+
+    node.remove?.();
+  });
+
+  Array.from(removableBlocks)
+    .filter((block) => !Array.from(removableBlocks).some((other) => other !== block && isDescendantOf(block, other)))
+    .forEach((block) => block.remove?.());
+}
+
+function removeDuplicatedAccessibilityAssertions(root) {
+  root
+    .querySelectorAll('[id^="TabSteps-"], [id^="TabRunInfo-"], [id^="TabStdout-"], [id^="TabStderr-"]')
+    .forEach(removeAccessibilityAssertionPayloadFromTab);
+}
+
+function compactAccessibilityAssertionText(text) {
+  const normalizedText = String(text ?? '');
+  const contextMatch = normalizedText.match(/\[a11y]\s*([^\n\r]+)/);
+  const context = normalizeText(contextMatch?.[1] ?? 'this test');
+  const engines = Array.from(new Set(Array.from(normalizedText.matchAll(/"engine"\s*:\s*"([^"]+)"/g)).map((match) => match[1])));
+  const engineSummary = engines.length ? ` Engines with issues: ${engines.join(', ')}.` : '';
+  const strictMessage = normalizedText.includes('A11Y_STRICT is enabled')
+    ? 'A11Y_STRICT is enabled, so this Playwright run is blocking.'
+    : 'A11Y_STRICT is disabled, so the accessibility wrapper keeps Jenkins non-blocking.';
+
+  return [
+    `Error: Accessibility issues found for "${context}".`,
+    strictMessage,
+    `${engineSummary} Open the accessibility evidence links in this report for the full results, highlighted HTML, and screenshots.`
+  ].join('\n');
+}
+
+function compactAccessibilityAssertionPayloadInErrorTab(tab) {
+  const replacementTargets = new Set();
+
+  Array.from(tab.querySelectorAll('pre, code, .stepLine')).forEach((node) => {
+    if (containsAccessibilityAssertionPayload(node)) {
+      replacementTargets.add(node);
+    }
+  });
+
+  if (!replacementTargets.size && containsAccessibilityAssertionPayload(tab)) {
+    replacementTargets.add(tab);
+  }
+
+  replacementTargets.forEach((node) => {
+    node.set_content(escapeHtml(compactAccessibilityAssertionText(node.text ?? node.toString?.())));
+  });
+}
+
+function compactAccessibilityAssertionsInErrorTabs(root) {
+  root.querySelectorAll('[id^="TabErrors-"]').forEach(compactAccessibilityAssertionPayloadInErrorTab);
 }
 
 function injectEnhancerStyles(root) {
@@ -1498,7 +1753,16 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
   const hasDashboardAccessibilityEvidence = htmlWithDefaultTestRows.includes('id="odhin-accessibility-evidence"');
-  if (!normalizedStats.length && !normalizedEvidenceEntries.length && !hasDashboardAccessibilityEvidence) {
+  const hasAccessibilityAssertionText =
+    htmlWithDefaultTestRows.includes('[a11y]') &&
+    htmlWithDefaultTestRows.includes('A11Y_STRICT') &&
+    /\bengine\b/.test(htmlWithDefaultTestRows);
+  if (
+    !normalizedStats.length &&
+    !normalizedEvidenceEntries.length &&
+    !hasDashboardAccessibilityEvidence &&
+    !hasAccessibilityAssertionText
+  ) {
     return htmlWithDefaultTestRows;
   }
 
@@ -1506,6 +1770,8 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   repairTestsTabContent(root);
   repairOrphanedTestModals(root);
   normalizeModalBodyContent(root);
+  removeDuplicatedAccessibilityAssertions(root);
+  compactAccessibilityAssertionsInErrorTabs(root);
   injectEnhancerStyles(root);
   removeDashboardAccessibilityEvidence(root);
   removeAccessibilityTableEnhancements(root);

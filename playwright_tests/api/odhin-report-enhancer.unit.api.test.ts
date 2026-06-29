@@ -12,6 +12,14 @@ const enhancerTest = (enhancerModule as {
 test.describe('odhin report enhancer', () => {
   test('repairs escaped Tests tab content and orphaned failed modal fragments', () => {
     const failedModalId = 'run-id-failed-0';
+    const accessibilityAssertion = `[a11y] Failed page
+A11Y_STRICT is disabled, so Playwright marks this test red but the accessibility wrapper keeps Jenkins non-blocking.
+[
+  {
+    "engine": "axe",
+    "status": "issues-found"
+  }
+]`;
     const html = `
       <html lang="en">
         <head></head>
@@ -58,11 +66,27 @@ test.describe('odhin report enhancer', () => {
         <div class="modal-body odhin-bg-2">
           <div id="TabRunInfo-${failedModalId}" style="display: block" class="result-tabcontent">
             run info
+            <table>
+              <tbody>
+                <tr>
+                  <td>Actionable error</td>
+                  <td><pre>${accessibilityAssertion}</pre></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <div class="row m-0 p-0">escaped steps wrapper</div>
+        <div class="row m-0 p-0">
+          escaped steps wrapper
+          <div class="accordion-item">
+            <h2 class="accordion-header">failed step</h2>
+            <div class="accordion-body">
+              <p class="stepLine">${accessibilityAssertion}</p>
+            </div>
+          </div>
+        </div>
         <div id="TabErrors-${failedModalId}" style="display: none" class="result-tabcontent">
-          full failure detail should be hidden in the modal
+          <pre>${accessibilityAssertion}</pre>
         </div>
       </html>
     `;
@@ -96,8 +120,26 @@ test.describe('odhin report enhancer', () => {
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')).toBeTruthy();
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain('Pipeline non-blocking');
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain('<code>A11Y_STRICT</code>');
+    expect(failedModal?.querySelector('.modal-body #TabSteps-run-id-failed-0')).toBeTruthy();
+    expect(failedModal?.querySelector('.modal-body #TabSteps-run-id-failed-0')?.getAttribute('class')).toContain(
+      'result-tabcontent-run-id-failed-0'
+    );
+    expect(failedModal?.querySelector('.modal-body #TabSteps-run-id-failed-0')?.text).toContain('escaped steps wrapper');
+    expect(failedModal?.querySelector('.modal-body #TabSteps-run-id-failed-0')?.text).not.toContain('[a11y]');
+    expect(failedModal?.querySelector('.modal-body #TabRunInfo-run-id-failed-0')?.text).not.toContain('[a11y]');
     expect(failedModal?.querySelector('.modal-body #TabErrors-run-id-failed-0')).toBeTruthy();
-    expect(failedModal?.querySelector('.modal-body .row.m-0.p-0')?.text).toContain('escaped steps wrapper');
+    expect(failedModal?.querySelector('.modal-body #TabErrors-run-id-failed-0')?.getAttribute('class')).toContain(
+      'result-tabcontent-run-id-failed-0'
+    );
+    expect(failedModal?.querySelector('.modal-body #TabErrors-run-id-failed-0')?.text).toContain(
+      'Accessibility issues found for "Failed page".'
+    );
+    expect(failedModal?.querySelector('.modal-body #TabErrors-run-id-failed-0')?.text).toContain(
+      'Open the accessibility evidence links'
+    );
+    expect(failedModal?.querySelector('.modal-body #TabErrors-run-id-failed-0')?.text).not.toContain('[a11y]');
+    expect(failedModal?.querySelector('.modal-body #TabErrors-run-id-failed-0')?.text).not.toContain('"engine"');
+    expect(failedModal?.querySelector('.modal-body > .row.m-0.p-0')).toBeNull();
     expect(
       root.querySelectorAll('.modal-dialog').filter((dialog) => !dialog.closest('.modal'))
     ).toHaveLength(0);

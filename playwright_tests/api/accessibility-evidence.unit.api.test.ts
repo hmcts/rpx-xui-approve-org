@@ -66,6 +66,34 @@ test.describe('accessibility evidence publisher', () => {
 
     fs.rmSync(evidenceDir, { recursive: true, force: true });
   });
+
+  test('formats failing accessibility assertions without raw engine JSON', () => {
+    const message = accessibilityTest.formatAccessibilityIssueMessage(
+      'Active organisation details view',
+      false,
+      [
+        {
+          engine: 'axe',
+          status: 'issues-found',
+          issueCount: 1,
+          unexpectedIssueCount: 1,
+          rules: ['definition-list'],
+          evidenceFiles: [
+            'active-organisation-details-view-axe.json',
+            'active-organisation-details-view-axe.html',
+            'active-organisation-details-view-axe-highlighted-screenshot.png'
+          ]
+        }
+      ]
+    );
+
+    expect(message).toContain('Accessibility issues found for "Active organisation details view".');
+    expect(message).toContain('axe: issues-found; 1 issue(s); rules: definition-list');
+    expect(message).toContain('Open the accessibility evidence links');
+    expect(message).not.toContain('[a11y]');
+    expect(message).not.toContain('"engine"');
+    expect(message).not.toContain('JSON.stringify');
+  });
 });
 
 function fakeTestInfo(title: string): TestInfo {

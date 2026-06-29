@@ -1596,32 +1596,45 @@ export async function accessibilityCheck(page: Page, contextLabel: string, testI
 
   const issues = outcomes.filter((outcome) => outcome.status !== 'passed' && (outcome.unexpectedIssueCount ?? outcome.issueCount) > 0);
   const strictMode = isStrictMode();
-  const issueMessage = [
-    `[a11y] ${contextLabel}`,
-    strictMode
-      ? 'A11Y_STRICT is enabled, so the test and wrapper command are blocking.'
-      : 'A11Y_STRICT is disabled, so Playwright marks this test red but the accessibility wrapper keeps Jenkins non-blocking.',
-    JSON.stringify(outcomes, null, 2)
-  ].join('\n');
+  const issueMessage = formatAccessibilityIssueMessage(contextLabel, strictMode, issues);
 
   if (issues.length > 0) {
     testInfo?.annotations.push({
       type: 'accessibility',
       description: `${contextLabel}: ${issues.length} accessibility engine(s) reported issues. See attached evidence.`
     });
-    if (!strictMode) {
-      process.stdout.write(`${issueMessage}\n`);
-    }
   }
 
   expect(
-    issues,
+    issues.length,
     issueMessage
-  ).toEqual([]);
+  ).toBe(0);
+}
+
+function formatAccessibilityIssueMessage(contextLabel: string, strictMode: boolean, issues: EngineOutcome[]): string {
+  const issueSummaries = issues.map((issue) => {
+    const issueCount = issue.unexpectedIssueCount ?? issue.issueCount;
+    const rules = issue.rules.length ? `; rules: ${issue.rules.slice(0, 5).join(', ')}` : '';
+    const evidence = issue.evidenceFiles?.length ? `; evidence files: ${issue.evidenceFiles.slice(0, 3).join(', ')}` : '';
+    const extraRules = issue.rules.length > 5 ? `, +${issue.rules.length - 5} more` : '';
+    const extraEvidence = issue.evidenceFiles && issue.evidenceFiles.length > 3 ? `, +${issue.evidenceFiles.length - 3} more` : '';
+
+    return `- ${issue.engine}: ${issue.status}; ${issueCount} issue(s)${rules}${extraRules}${evidence}${extraEvidence}`;
+  });
+
+  return [
+    `Accessibility issues found for "${contextLabel}".`,
+    strictMode
+      ? 'A11Y_STRICT is enabled, so this Playwright run is blocking.'
+      : 'A11Y_STRICT is disabled, so the accessibility wrapper keeps Jenkins non-blocking.',
+    ...issueSummaries,
+    'Open the accessibility evidence links in the report for the full results, highlighted HTML, and screenshots.'
+  ].join('\n');
 }
 
 export const __test__ = {
   attachAuditSummary,
   evidenceFileBaseName,
+  formatAccessibilityIssueMessage,
   sanitiseFileName
 };
