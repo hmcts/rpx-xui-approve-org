@@ -67,6 +67,49 @@ test.describe('accessibility evidence publisher', () => {
     fs.rmSync(evidenceDir, { recursive: true, force: true });
   });
 
+  test('does not write page summary screenshots when no accessibility issues are found', async () => {
+    const evidenceDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-a11y-evidence-'));
+    process.env.PW_A11Y_EVIDENCE_DIR = evidenceDir;
+
+    const testInfo = fakeTestInfo('Booking - Booking UI work access page');
+    await accessibilityTest.attachAuditSummary(
+      fakePage({
+        screenshot: async () => {
+          throw new Error('Clean accessibility summaries should not capture screenshots');
+        }
+      }),
+      testInfo,
+      'Booking UI work access page',
+      'https://example.test/booking',
+      [
+        {
+          engine: 'axe',
+          status: 'passed',
+          issueCount: 0,
+          unexpectedIssueCount: 0,
+          rules: []
+        }
+      ]
+    );
+
+    const expectedBaseName =
+      'booking---booking-ui-work-access-page-booking-booking-ui-work-access-page-page-summary';
+    const manifest = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'manifest.json'), 'utf8'));
+    const html = fs.readFileSync(path.join(evidenceDir, `${expectedBaseName}.html`), 'utf8');
+
+    expect(manifest).toHaveLength(1);
+    expect(manifest[0]).toMatchObject({
+      violationCount: 0,
+      status: 'passed',
+      screenshotFileName: ''
+    });
+    expect(fs.existsSync(path.join(evidenceDir, `${expectedBaseName}-screenshot.png`))).toBe(false);
+    expect(html).not.toContain('Accessibility evidence screenshot');
+    expect(html).not.toContain('data:image/png;base64,');
+
+    fs.rmSync(evidenceDir, { recursive: true, force: true });
+  });
+
   test('formats failing accessibility assertions without raw engine JSON', () => {
     const message = accessibilityTest.formatAccessibilityIssueMessage(
       'Active organisation details view',
@@ -103,12 +146,12 @@ function fakeTestInfo(title: string): TestInfo {
   } as unknown as TestInfo;
 }
 
-function fakePage(): Page {
+function fakePage(options: { screenshot?: () => Buffer | Promise<Buffer> } = {}): Page {
   return {
     evaluate: async () => {
       throw new Error('No browser DOM in unit test');
     },
-    screenshot: async () => Buffer.from('fake-png'),
+    screenshot: options.screenshot ?? (async () => Buffer.from('fake-png')),
     url: () => 'https://example.test/booking'
   } as unknown as Page;
 }

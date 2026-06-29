@@ -849,7 +849,7 @@ function buildPageSummaryHtml(summary: {
   outcomes: EngineOutcome[];
   snapshot: PageSnapshot;
 }, screenshot: Buffer): string {
-  const screenshotDataUrl = `data:image/png;base64,${(screenshot.length ? screenshot : TRANSPARENT_PIXEL).toString('base64')}`;
+  const screenshotDataUrl = screenshot.length ? `data:image/png;base64,${screenshot.toString('base64')}` : undefined;
   const outcomeCards = summary.outcomes
     .map(
       (outcome) => `
@@ -884,7 +884,7 @@ function buildEvidenceShell(context: {
   bannerClass: string;
   summary: string;
   snapshot: PageSnapshot;
-  screenshotDataUrl: string;
+  screenshotDataUrl?: string;
   body: string;
 }): string {
   const axTreeItems =
@@ -892,6 +892,11 @@ function buildEvidenceShell(context: {
       .slice(0, 30)
       .map((node) => `<li><span class="token">${escapeHtml(node.role || '-')}</span>${escapeHtml(node.name || '(unnamed)')}</li>`)
       .join('') || '<li>Chromium accessibility tree was not available.</li>';
+  const screenshotSection = context.screenshotDataUrl
+    ? `<section class="visual">
+        <img alt="Accessibility evidence screenshot" src="${context.screenshotDataUrl}" />
+      </section>`
+    : '';
 
   return `
     <html>
@@ -960,9 +965,7 @@ function buildEvidenceShell(context: {
               <h1>${escapeHtml(context.title)}</h1>
               <p>${escapeHtml(context.summary)}</p>
             </div>
-            <section class="visual">
-              <img alt="Accessibility evidence screenshot" src="${context.screenshotDataUrl}" />
-            </section>
+            ${screenshotSection}
             ${context.body}
           </main>
         </div>
@@ -980,7 +983,7 @@ async function runAxeEngine(page: Page, contextLabel: string, testInfo?: TestInf
     .analyze();
   const violations = analysis.violations as A11yViolation[];
   const evidenceName = `${evidencePrefix(testInfo, contextLabel)}-axe`;
-  const screenshot = await captureHighlightedIssueScreenshot(page, axeIssueMarkers(violations));
+  const screenshot = violations.length ? await captureHighlightedIssueScreenshot(page, axeIssueMarkers(violations)) : Buffer.alloc(0);
   const screenshotFileName = `${evidenceFileBaseName(testInfo, evidenceName)}-highlighted-screenshot.png`;
   const evidenceFiles = await attachEvidence(
     testInfo,
@@ -1168,7 +1171,7 @@ async function runWaveLikeEngine(page: Page, contextLabel: string, testInfo?: Te
   const metadata = evidenceMetadata(testInfo, contextLabel);
   const violations = await collectWaveLikeAccessibilityViolations(page);
   const evidenceName = `${evidencePrefix(testInfo, contextLabel)}-wave-like`;
-  const screenshot = await captureHighlightedIssueScreenshot(page, waveIssueMarkers(violations));
+  const screenshot = violations.length ? await captureHighlightedIssueScreenshot(page, waveIssueMarkers(violations)) : Buffer.alloc(0);
   const screenshotFileName = `${evidenceFileBaseName(testInfo, evidenceName)}-highlighted-screenshot.png`;
   const evidenceFiles = await attachEvidence(
     testInfo,
@@ -1365,7 +1368,7 @@ async function collectScreenReaderLikeAccessibilityViolations(page: Page): Promi
 }
 
 function buildScreenReaderEvidenceHtml(evidence: ScreenReaderLikeEvidence, screenshot: Buffer): string {
-  const screenshotDataUrl = `data:image/png;base64,${(screenshot.length ? screenshot : TRANSPARENT_PIXEL).toString('base64')}`;
+  const screenshotDataUrl = screenshot.length ? `data:image/png;base64,${screenshot.toString('base64')}` : undefined;
   const issueCards = evidence.violations
     .map(
       (violation, index) => `
@@ -1403,7 +1406,7 @@ async function runScreenReaderLikeEngine(page: Page, contextLabel: string, testI
     snapshot
   };
   const evidenceName = `${evidencePrefix(testInfo, contextLabel)}-screen-reader`;
-  const screenshot = await captureHighlightedIssueScreenshot(page, waveIssueMarkers(violations));
+  const screenshot = violations.length ? await captureHighlightedIssueScreenshot(page, waveIssueMarkers(violations)) : Buffer.alloc(0);
   const screenshotFileName = `${evidenceFileBaseName(testInfo, evidenceName)}-screenshot.png`;
   const evidenceFiles = await attachEvidence(
     testInfo,
@@ -1557,7 +1560,7 @@ async function attachAuditSummary(
     snapshot: await collectPageSnapshot(page),
     summary: `${outcomes.length} engine(s), ${unexpectedCount} unexpected issue(s)`
   };
-  const screenshot = await capturePageSummaryScreenshot(page, issueFindings);
+  const screenshot = issueFindings.length ? await capturePageSummaryScreenshot(page, issueFindings) : Buffer.alloc(0);
   const attachmentPrefix = `${sanitiseFileName(feature)}-${sanitiseFileName(pageState)}-page-summary`;
   const screenshotFileName = `${evidenceFileBaseName(testInfo, attachmentPrefix)}-screenshot.png`;
 

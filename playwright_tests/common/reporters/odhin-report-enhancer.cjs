@@ -1227,7 +1227,6 @@ function buildAccessibilityModalNavigationScript() {
 
 function buildTestEvidencePanel(entries, navigation = {}) {
   const normalizedEntries = normalizeEvidenceEntries(entries);
-  const firstEntry = normalizedEntries[0];
   const issueEntries = issueEntriesOnly(normalizedEntries);
   const engineSummaries = issueEntries
     .map((entry) => {
@@ -1243,7 +1242,7 @@ function buildTestEvidencePanel(entries, navigation = {}) {
   const hintItems = buildDeveloperHint(issueEntries)
     .map((hint) => `<li>${escapeHtml(hint)}</li>`)
     .join('');
-  const links = normalizedEntries
+  const links = issueEntries
     .map((entry) => {
       const screenshotLink = entry.screenshotFileName
         ? `<a href="${escapeAttribute(`./accessibility-evidence/${entry.screenshotFileName}`)}"${evidenceLinkAttributes}>Open screenshot</a>`
@@ -1265,11 +1264,11 @@ function buildTestEvidencePanel(entries, navigation = {}) {
     })
     .join('');
 
-  if (!firstEntry || !issueEntries.length) {
+  if (!issueEntries.length) {
     return '';
   }
 
-  const marker = uniqueValues(normalizedEntries.map((entry) => entry.htmlFileName)).join('|');
+  const marker = uniqueValues(issueEntries.map((entry) => entry.htmlFileName)).join('|');
 
   return `
     <div class="odhin-a11y-test-evidence" data-a11y-test-evidence-link="${escapeAttribute(marker)}">

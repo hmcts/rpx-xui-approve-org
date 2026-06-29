@@ -100,10 +100,22 @@ A11Y_STRICT is disabled, so Playwright marks this test red but the accessibility
           testTitle: 'Viewing a failed accessibility page passes baseline accessibility scan',
           htmlFileName: 'failed-page-axe.html',
           jsonFileName: 'failed-page-axe.json',
+          screenshotFileName: 'failed-page-axe-highlighted-screenshot.png',
           violationCount: 1,
           status: 'issues-found',
           rules: ['definition-list'],
           targets: ['dl']
+        },
+        {
+          engine: 'wave-like',
+          testTitle: 'Viewing a failed accessibility page passes baseline accessibility scan',
+          htmlFileName: 'passed-page-wave-like.html',
+          jsonFileName: 'passed-page-wave-like.json',
+          screenshotFileName: 'passed-page-wave-like-highlighted-screenshot.png',
+          violationCount: 0,
+          status: 'passed',
+          rules: [],
+          targets: []
         }
       ]
     );
@@ -120,6 +132,12 @@ A11Y_STRICT is disabled, so Playwright marks this test red but the accessibility
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')).toBeTruthy();
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain('Pipeline non-blocking');
     expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain('<code>A11Y_STRICT</code>');
+    expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).toContain(
+      'failed-page-axe-highlighted-screenshot.png'
+    );
+    expect(failedModal?.querySelector('.odhin-a11y-test-evidence')?.toString()).not.toContain(
+      'passed-page-wave-like-highlighted-screenshot.png'
+    );
     expect(failedModal?.querySelector('.modal-body #TabSteps-run-id-failed-0')).toBeTruthy();
     expect(failedModal?.querySelector('.modal-body #TabSteps-run-id-failed-0')?.getAttribute('class')).toContain(
       'result-tabcontent-run-id-failed-0'
