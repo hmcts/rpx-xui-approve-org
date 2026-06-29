@@ -28,9 +28,8 @@ properties([
         displayName  : 'Expert UI Approve Organisations',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-approve-org'
     ],
-    pipelineTriggers([
-    cron('H 07 * * 1-5')
-    ]),
+    // Keep master scheduled, but leave nightly-dev and PR branches manual-only.
+    pipelineTriggers(env.BRANCH_NAME == 'master' ? [cron('15 17 * * 1-5')] : []),
     parameters([
         string(
             name: e2ePwIncludeTagsEnvName,
@@ -75,7 +74,7 @@ properties([
     ])
 ])
 
-@Library('Infrastructure@DTSPO-30107-jenkins-agents')
+@Library('Infrastructure')
 
 String type      = 'nodejs'
 String product   = 'xui'
@@ -104,9 +103,9 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
                     yarnBuilder.yarn('test:integration:playwright:raw')
                 }
             },
-            e2e: {
-                stage('Nightly E2E Playwright Tests') {
-                    yarnBuilder.yarn('test:functional:e2e:raw')
+            crossBrowser: {
+                stage('Nightly Cross Browser Playwright Tests') {
+                    yarnBuilder.yarn('test:crossbrowser')
                 }
             },
             accessibility: {
@@ -156,8 +155,8 @@ Map<String, List<Map<String, Object>>> secrets = [
     (vaultSecretsKey): [
     secret('approve-org-admin-username', 'APPROVE_ORG_ADMIN_USERNAME'),
     secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
-    secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
-    secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
+    secret('test-api-email-adminuser', 'APPROVE_ORG_API_USERNAME'),
+    secret('test-api-password-adminuser', 'APPROVE_ORG_API_PASSWORD'),
     secret('test-roo-username', 'TEST_ROO_EMAIL'),
     secret('test-roo-password', 'TEST_ROO_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
@@ -185,7 +184,6 @@ withNightlyPipeline(type, product, component) {
     enableFullFunctionalTest(60)
     // mutation test no longer running as it is not required
     // enableMutationTest()
-    enableCrossBrowserTest()
     env.TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net'
     afterSuccess('checkout') { sh 'yarn cache clean' }
     afterSuccess('build') {
@@ -232,15 +230,6 @@ withNightlyPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : playwrightReportDir,
-            reportFiles          : htmlIndexReportFile,
-            reportName           : 'XUI Approve Organisation Full functional E2E Tests'
-        ])
-
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
             reportDir            : playwrightIntegrationReportDir,
             reportFiles          : htmlIndexReportFile,
             reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
@@ -254,6 +243,15 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : htmlIndexReportFile,
             reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
         ])
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightNightlyReportDir,
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'XUI Approve Organisation Cross Browser Tests'
+        ])
     }
 
     /* afterSuccess('mutationTest') {
@@ -266,17 +264,6 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
     } */
-
-    afterSuccess('crossBrowserTest') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightNightlyReportDir,
-                        reportFiles          : htmlIndexReportFile,
-            reportName           : 'XUI Approve Organisation Cross Browser Tests'
-      ])
-    }
 
     afterSuccess('securityScan') {
             publishHTML([
