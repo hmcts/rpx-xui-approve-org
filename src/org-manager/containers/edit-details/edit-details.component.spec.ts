@@ -19,7 +19,6 @@ describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
   let fixture: ComponentFixture<EditDetailsComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let updatePbaServices: any;
   let mockedOrganisationService: any;
 
