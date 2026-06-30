@@ -3171,7 +3171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/playwright-common@npm:^1.1.2":
+"@hmcts/playwright-common@npm:^1.1.3":
   version: 1.1.3
   resolution: "@hmcts/playwright-common@npm:1.1.3"
   dependencies:
@@ -16996,7 +16996,7 @@ __metadata:
     "@faker-js/faker": "npm:^10.4.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.59"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
-    "@hmcts/playwright-common": "npm:^1.1.2"
+    "@hmcts/playwright-common": "npm:^1.1.3"
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.12"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.16"
