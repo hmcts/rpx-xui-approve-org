@@ -178,14 +178,14 @@ This repository now uses Playwright for the functional/liveliness test path.
 - `yarn test:crossbrowser` runs cross-browser Playwright tests using `playwright-nightly.config.ts`.
 - `yarn test:api:playwright` runs the Playwright API suite (`playwright_tests/api`) using `playwright-api.config.ts`.
 - `yarn test:integration:playwright` runs the Playwright integration suite (`playwright_tests/integration`) using `playwright-integration.config.ts`.
-- `yarn test:accessibility:playwright` runs the Playwright accessibility suite (`playwright_tests/accessibility`) using `playwright-accessibility.config.ts`.
+- `yarn test:accessibility:playwright` runs the Playwright accessibility suite (`playwright_tests/accessibility`) using `playwright-accessibility.config.ts`. The default pack runs axe, WAVE-like and screen-reader checks.
+- `yarn test:lighthouse-a11y:playwright` runs the same accessibility suite with the Lighthouse engine only. Set `A11Y_ENGINES=all` or `PLAYWRIGHT_A11Y_ENGINES=all` to include Lighthouse in the unified accessibility pack.
 - Playwright API specs use filename split in one folder (`*.positive.api.test.ts` and `*.negative.api.test.ts`) under `playwright_tests/api`.
 - Playwright integration specs use shared authenticated request fixtures from `playwright_tests/framework/fixtures/auth-request.fixtures.ts`.
 - Tag catalogs are stored in JSON files: `playwright_tests/e2e/tag-filter.json`, `playwright_tests/integration/tag-filter.json`, `playwright_tests/api/tag-filter.json`, and `playwright_tests/accessibility/tag-filter.json`.
 - Include tags per suite with `E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS`, and `A11Y_PW_INCLUDE_TAGS`.
 - Override excluded tags per suite with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE` (`@none` clears file-based excludes).
 - Override catalog paths with `E2E_PW_TAG_FILTER_CONFIG`, `INTEGRATION_PW_TAG_FILTER_CONFIG`, `API_PW_TAG_FILTER_CONFIG`, and `A11Y_PW_TAG_FILTER_CONFIG` when needed.
-- `yarn test:api` remains the legacy Mocha integration API suite (`test/integration/tests/`).
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests; when unset, Playwright derives the Manage Org URL from `TEST_URL` for AAT and Demo, with preview defaulting to AAT unless overridden.
 - `APPROVE_ORG_ADMIN_USERNAME` and `APPROVE_ORG_ADMIN_PASSWORD` are the Playwright auth credentials for E2E and integration suites.
@@ -327,11 +327,11 @@ If credentials are required in both `aat` and `demo`, add them to both `rpx-aat`
 
 CI/Jenkins notes:
 
-- `smoketest:*` and nightly cross-browser stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e`.
-- `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e`), Playwright API (`functional-output/tests/playwright-api`), Playwright integration (`functional-output/tests/playwright-integration`), and Playwright accessibility (`functional-output/tests/playwright-a11y`) HTML reports.
+- `smoketest:*` stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e/odhin-report`, and nightly cross-browser publishes from `functional-output/tests/playwright-nightly/odhin-report`.
+- `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e/odhin-report`), Playwright API (`functional-output/tests/playwright-api/odhin-report`), Playwright integration (`functional-output/tests/playwright-integration/odhin-report`), and Playwright accessibility (`functional-output/tests/playwright-accessibility/odhin-report`) HTML reports.
 - PR and nightly functional stages run API, integration, E2E, and accessibility as separate parallel Jenkins branches.
 - CNP and nightly Jenkins pipelines expose optional build parameters for tag filtering: `E2E_PW_INCLUDE_TAGS`, `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_INCLUDE_TAGS`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_INCLUDE_TAGS`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, `A11Y_PW_INCLUDE_TAGS`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE`.
-- Accessibility branch failures are informational: the accessibility branch is marked `UNSTABLE` but does not fail the overall build.
+- Accessibility stage failures are informational: the accessibility stage is marked `UNSTABLE` but does not fail the overall build.
 - Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 
 ## Integration Documentation

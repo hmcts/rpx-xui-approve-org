@@ -98,7 +98,7 @@ export default defineConfig(
     }
   },
   {
-    files: ["**/*.js"],
+    files: ["**/*.js", "**/*.cjs"],
     languageOptions: {
       parserOptions: {
         project: null
