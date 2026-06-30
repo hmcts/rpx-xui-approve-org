@@ -1,6 +1,6 @@
 import { Request } from 'express';
 import { getConfigValue } from './configuration';
-import { SERVICES_IDAM_API_PATH } from './configuration/references';
+import { SERVICES_IDAM_WEB } from './configuration/references';
 import { http } from './lib/http';
 import * as log4jui from './lib/log4jui';
 
@@ -10,11 +10,11 @@ export const IDAM_CHECK_MAX_DURATION_MS = 10 * 60 * 1000; // 10 minutes
 const wait = (delay: number) => new Promise((resolve) => setTimeout(resolve, delay));
 
 export const idamCheck = async (): Promise<void> => {
-  const idamApiUrl = getConfigValue(SERVICES_IDAM_API_PATH);
+  const idamWebUrl = getConfigValue(SERVICES_IDAM_WEB);
   const axiosInstance = http({} as unknown as Request);
   const logger = log4jui.getLogger('idam-check');
 
-  const targetUrl = `${idamApiUrl}/o/.well-known/openid-configuration`;
+  const targetUrl = `${idamWebUrl}/o/.well-known/openid-configuration`;
   const deadline = Date.now() + IDAM_CHECK_MAX_DURATION_MS;
   let lastError: unknown;
 
@@ -31,14 +31,14 @@ export const idamCheck = async (): Promise<void> => {
       }
 
       const nextDelay = Math.min(IDAM_CHECK_BASE_DELAY_MS, remainingWindow);
-      logger.warn(`idam api check failed (attempt ${attempt}, retrying in ${nextDelay}ms)`, err);
+      logger.warn(`idam oidc discovery check failed (attempt ${attempt}, retrying in ${nextDelay}ms)`, err);
       await wait(nextDelay);
     }
   }
 
-  logger.error('idam api check failed after retries', lastError);
+  logger.error('idam oidc discovery check failed after retries', lastError);
   if (lastError) {
     throw lastError;
   }
-  throw new Error('idam api check failed after retries');
+  throw new Error('idam oidc discovery check failed after retries');
 };
