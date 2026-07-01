@@ -13,11 +13,12 @@ const e2eTagFilters = resolveTagFilters({
   excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
   defaultConfigPath: 'playwright_tests/e2e/tag-filter.json',
-  suiteTag: '@e2e',
+  suiteTag: '@e2e'
 });
 
 module.exports = defineConfig({
   testDir: './playwright_tests/e2e',
+  testMatch: /.*\.test\.ts/,
   globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
