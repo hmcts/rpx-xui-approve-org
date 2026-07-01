@@ -147,7 +147,7 @@
     "@types/multer": "^2.1.0",
     "@types/node": "^20.10.0",
     "@types/passport": "^1.0.17",
-    "@types/shortid": "0.0.29",
+    "@types/shortid": "0.0.32",
     "@types/sinon": "^7.0.13",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
     "@typescript-eslint/parser": "^5.57.0",
