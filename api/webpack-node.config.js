@@ -37,7 +37,12 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js']
   },
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals(),
+    {
+      '@azure/functions-core': 'commonjs @azure/functions-core'
+    }
+  ],
   module: {
     rules: [
       {

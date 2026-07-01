@@ -5020,7 +5020,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-web@npm:^3.3.9":
+"@microsoft/applicationinsights-web@npm:^3.4.1":
   version: 3.4.2
   resolution: "@microsoft/applicationinsights-web@npm:3.4.2"
   dependencies:
@@ -9387,7 +9387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"applicationinsights@npm:^3.7.0":
+"applicationinsights@npm:^3.14.0":
   version: 3.15.1
   resolution: "applicationinsights@npm:3.15.1"
   dependencies:
@@ -11175,6 +11175,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"data-uri-to-buffer@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "data-uri-to-buffer@npm:4.0.1"
+  checksum: 10/0d0790b67ffec5302f204c2ccca4494f70b4e2d940fea3d36b09f0bb2b8539c2e86690429eb1f1dc4bcc9e4df0644193073e63d9ee48ac9fce79ec1506e4aa4c
+  languageName: node
+  linkType: hard
+
 "date-format@npm:^4.0.14":
   version: 4.0.14
   resolution: "date-format@npm:4.0.14"
@@ -11718,14 +11725,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ejs@npm:~3.1.7":
-  version: 3.1.10
-  resolution: "ejs@npm:3.1.10"
-  dependencies:
-    jake: "npm:^10.8.5"
+"ejs@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "ejs@npm:5.0.2"
   bin:
     ejs: bin/cli.js
-  checksum: 10/a9cb7d7cd13b7b1cd0be5c4788e44dd10d92f7285d2f65b942f33e127230c054f99a42db4d99f766d8dbc6c57e94799593ee66a14efd7c8dd70c4812bf6aa384
+  checksum: 10/ca0f0bde379ae0ca5b69df22533ef9fc76655677f6bf0adae5e11325783d28fca4fef0e02a2523329f6c0a6e44aeee1e7d4aa669edc3ffd3cc04706f4cd00b17
   languageName: node
   linkType: hard
 
@@ -12652,12 +12657,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"exception-formatter@npm:^1.0.7":
-  version: 1.0.7
-  resolution: "exception-formatter@npm:1.0.7"
+"exception-formatter@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "exception-formatter@npm:2.1.2"
   dependencies:
     colors: "npm:^1.0.3"
-  checksum: 10/ad7325fae381639e34718d2e7e85931237784cd85546c8f4a3b223554dd877fa0612271ac799e22178964fe09636d4ff7945e69e93df91501e1aaee9af877a19
+  checksum: 10/01de8d58d36e1d72f9532babac223dd83347b3fd8cb5570fef9f14b77c7ac437164ce507a55f23e55cfe283701e57c116509491514bcde6cbeede865ec4e3d95
   languageName: node
   linkType: hard
 
@@ -13067,6 +13072,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fetch-blob@npm:^3.1.2, fetch-blob@npm:^3.1.4":
+  version: 3.2.0
+  resolution: "fetch-blob@npm:3.2.0"
+  dependencies:
+    node-domexception: "npm:^1.0.0"
+    web-streams-polyfill: "npm:^3.0.3"
+  checksum: 10/5264ecceb5fdc19eb51d1d0359921f12730941e333019e673e71eb73921146dceabcb0b8f534582be4497312d656508a439ad0f5edeec2b29ab2e10c72a1f86b
+  languageName: node
+  linkType: hard
+
 "fetch@npm:^1.1.0":
   version: 1.1.0
   resolution: "fetch@npm:1.1.0"
@@ -13113,15 +13128,6 @@ __metadata:
   version: 4.0.0
   resolution: "file-url@npm:4.0.0"
   checksum: 10/4c6c5b0d25c1e7836d63dc6575d2a859615ec1f5242d63d156ce936fb85fb2cc688dec467c6dddedcdf3ced791e4e15c34b16a61770a9d1eb829b26f3cf420d1
-  languageName: node
-  linkType: hard
-
-"filelist@npm:^1.0.4":
-  version: 1.0.6
-  resolution: "filelist@npm:1.0.6"
-  dependencies:
-    minimatch: "npm:^5.0.1"
-  checksum: 10/84a0be69efe6724c105f18c34e8a772370d9c45e53a1ba8ced7eecf4addd2c5a357347d94bfd8bfa9cbc36b09392cad70d82206305263e26bba184eea4ca8042
   languageName: node
   linkType: hard
 
@@ -13291,6 +13297,15 @@ __metadata:
     hasown: "npm:^2.0.4"
     mime-types: "npm:^2.1.35"
   checksum: 10/de6614c8537c92fa5fa3ee7e827758f98f5a9c033f348b7de81855ef36e5cb867e75d9f405d9483ab8d724a4a20d4e79926a299fa8dbba38f530eb659f0884e4
+  languageName: node
+  linkType: hard
+
+"formdata-polyfill@npm:^4.0.10":
+  version: 4.0.10
+  resolution: "formdata-polyfill@npm:4.0.10"
+  dependencies:
+    fetch-blob: "npm:^3.1.2"
+  checksum: 10/9b5001d2edef3c9449ac3f48bd4f8cc92e7d0f2e7c1a5c8ba555ad4e77535cc5cf621fabe49e97f304067037282dd9093b9160a3cb533e46420b446c4e6bc06f
   languageName: node
   linkType: hard
 
@@ -13922,10 +13937,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"helmet@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "helmet@npm:7.2.0"
-  checksum: 10/37419351755a66f48af0f7c1f25b8e55ceaf2087efb1309ab29d6f664ea72f3a6fecbbcc0c9231e45b9e2f7079d3403eb35040463a45293c876e776d0574b538
+"helmet@npm:^8.1.0":
+  version: 8.2.0
+  resolution: "helmet@npm:8.2.0"
+  checksum: 10/bc34f2e04369625ab7c441273a1f44ee80548ee6da5fcec8b073f351daa930b02809f9fb186c7f3f80a12a3e0944f05c24eebaa642e1b5e805325ce13042d164
   languageName: node
   linkType: hard
 
@@ -14980,19 +14995,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jake@npm:^10.8.5":
-  version: 10.9.4
-  resolution: "jake@npm:10.9.4"
-  dependencies:
-    async: "npm:^3.2.6"
-    filelist: "npm:^1.0.4"
-    picocolors: "npm:^1.1.1"
-  bin:
-    jake: bin/cli.js
-  checksum: 10/97e48f73f5e315a3b6e1a48b4bcc0cdf2c2cf82100ec9e76a032fd5d614dcd32c4315572cfcb66e9f9bdecca3900aaa61fe72b781a74b06aefd3ec4c1c917f0b
-  languageName: node
-  linkType: hard
-
 "jasmine-core@npm:^4.1.0":
   version: 4.6.1
   resolution: "jasmine-core@npm:4.6.1"
@@ -15380,17 +15382,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwt-decode@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "jwt-decode@npm:2.2.0"
-  checksum: 10/2d368aeb1d355b58af73a422e10c44d1adfd444f77f3a95bdc124696bde9cfe8423a9e43cdbce8761eb667252e25a59b5e36d30ebf4b6d2a8f8b107c2f25f358
-  languageName: node
-  linkType: hard
-
 "jwt-decode@npm:^3.1.2":
   version: 3.1.2
   resolution: "jwt-decode@npm:3.1.2"
   checksum: 10/20a4b072d44ce3479f42d0d2c8d3dabeb353081ba4982e40b83a779f2459a70be26441be6c160bfc8c3c6eadf9f6380a036fbb06ac5406b5674e35d8c4205eeb
+  languageName: node
+  linkType: hard
+
+"jwt-decode@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "jwt-decode@npm:4.0.0"
+  checksum: 10/87b569e4a9a0067fb0d592bcf3b2ac3e638e49beee28620eeb07bef1b4470f4077dea68c15d191dd68e076846c3af8394be3bcaecffedc6e97433b221fdbbcf3
   languageName: node
   linkType: hard
 
@@ -17154,6 +17156,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-domexception@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "node-domexception@npm:1.0.0"
+  checksum: 10/e332522f242348c511640c25a6fc7da4f30e09e580c70c6b13cb0be83c78c3e71c8d4665af2527e869fc96848924a4316ae7ec9014c091e2156f41739d4fa233
+  languageName: node
+  linkType: hard
+
 "node-fetch@npm:2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
@@ -17179,6 +17188,17 @@ __metadata:
     encoding:
       optional: true
   checksum: 10/b24f8a3dc937f388192e59bcf9d0857d7b6940a2496f328381641cb616efccc9866e89ec43f2ec956bbd6c3d3ee05524ce77fe7b29ccd34692b3a16f237d6676
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "node-fetch@npm:3.3.2"
+  dependencies:
+    data-uri-to-buffer: "npm:^4.0.0"
+    fetch-blob: "npm:^3.1.4"
+    formdata-polyfill: "npm:^4.0.10"
+  checksum: 10/24207ca8c81231c7c59151840e3fded461d67a31cf3e3b3968e12201a42f89ce4a0b5fb7079b1fa0a4655957b1ca9257553200f03a9f668b45ebad265ca5593d
   languageName: node
   linkType: hard
 
@@ -17762,7 +17782,7 @@ __metadata:
     "@hmcts/properties-volume": "npm:^0.0.13"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.12"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.16"
-    "@microsoft/applicationinsights-web": "npm:^3.3.9"
+    "@microsoft/applicationinsights-web": "npm:^3.4.1"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
     "@ngrx/effects": "npm:^20.0.0"
@@ -17794,7 +17814,7 @@ __metadata:
     "@types/sinon": "npm:^7.0.13"
     "@typescript-eslint/eslint-plugin": "npm:^5.57.0"
     "@typescript-eslint/parser": "npm:^5.57.0"
-    applicationinsights: "npm:^3.7.0"
+    applicationinsights: "npm:^3.14.0"
     axios: "npm:^1.15.0"
     axios-mock-adapter: "npm:^1.18.2"
     base-64: "npm:^1.0.0"
@@ -17804,22 +17824,22 @@ __metadata:
     core-js: "npm:^3.49.0"
     crypto-js: "npm:^4.2.0"
     dotenv-extended: "npm:^3.1.0"
-    ejs: "npm:~3.1.7"
+    ejs: "npm:^5.0.2"
     eslint: "npm:^10.0.0"
-    exception-formatter: "npm:^1.0.7"
+    exception-formatter: "npm:^2.1.2"
     express: "npm:^5.2.1"
     form-data: "npm:^4.0.5"
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^4.1.3"
     govuk-frontend: "npm:4.0.1"
-    helmet: "npm:^7.2.0"
+    helmet: "npm:^8.1.0"
     isomorphic-fetch: "npm:^3.0.0"
     jasmine-core: "npm:~5.1.0"
     jasmine-marbles: "npm:^0.9.2"
     jasmine-spec-reporter: "npm:~7.0.0"
     json-server: "npm:^0.14.2"
     jsonwebtoken: "npm:^9.0.3"
-    jwt-decode: "npm:^2.2.0"
+    jwt-decode: "npm:^4.0.0"
     karma: "npm:~6.4.0"
     karma-chrome-launcher: "npm:~3.1.0"
     karma-coverage: "npm:~2.0.3"
@@ -17836,7 +17856,7 @@ __metadata:
     ngx-cookie: "npm:6.0.1"
     ngx-logger: "npm:^5.0.12"
     ngx-pagination: "npm:^6.0.3"
-    node-fetch: "npm:^2.6.1"
+    node-fetch: "npm:^3.3.2"
     node-html-parser: "npm:^7.0.0"
     nodemon: "npm:^2.0.19"
     odhin-reports-playwright: "npm:^1.1.8"
@@ -22116,6 +22136,13 @@ __metadata:
   version: 3.32.0
   resolution: "web-features@npm:3.32.0"
   checksum: 10/1a5bd5b159a45b32cc949cab4eec59285104b8b8d40d5e7383137d9d5c714cd918322412fa4eca0e73fd09ea4e2728d8926b7886b237a686b89377075ecf19b4
+  languageName: node
+  linkType: hard
+
+"web-streams-polyfill@npm:^3.0.3":
+  version: 3.3.3
+  resolution: "web-streams-polyfill@npm:3.3.3"
+  checksum: 10/8e7e13501b3834094a50abe7c0b6456155a55d7571312b89570012ef47ec2a46d766934768c50aabad10a9c30dd764a407623e8bfcc74fcb58495c29130edea9
   languageName: node
   linkType: hard
 
