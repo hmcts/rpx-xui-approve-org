@@ -2,7 +2,7 @@ import type { Locator, Page } from '@playwright/test';
 import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
-const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
+const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/organisation\/active(?:\/?|\?.*)$/;
 
 export type OrganisationTableRow = {
   name: string;
@@ -267,6 +267,7 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async searchForOrganisation(organisationName: string): Promise<void> {
     await this.searchInput.fill(organisationName);
+    await this.waitForSpinnerToHide(60_000);
     await this.searchButton.click();
   }
 
@@ -320,11 +321,12 @@ export class OrganisationApprovalsPage extends BasePage {
     const pendingPbaCount = await this.pendingPbaDecisionRows.count();
 
     for (let index = 0; index < pendingPbaCount; index += 1) {
-      await this.pendingPbaDecisionRows
+      const approveRadio = this.pendingPbaDecisionRows
         .nth(index)
         .locator('input.govuk-radios__input')
-        .first()
-        .check({ force: true });
+        .first();
+
+      await this.checkDecisionRadio(approveRadio, `pending PBA approval row ${index + 1}`);
     }
   }
 
@@ -406,6 +408,8 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openActiveOrganisationsTab(): Promise<void> {
+    await this.waitForSpinnerToHide(60_000);
+
     const routeWait = ACTIVE_ORGANISATIONS_ROUTE_PATTERN.test(this.page.url())
       ? Promise.resolve()
       : this.page.waitForURL(ACTIVE_ORGANISATIONS_ROUTE_PATTERN);
