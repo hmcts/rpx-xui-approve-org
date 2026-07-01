@@ -26,11 +26,12 @@ const apiTagFilters = resolveTagFilters({
   includeTagsEnvVar: 'API_PW_INCLUDE_TAGS',
   excludedTagsEnvVar: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
-  defaultConfigPath: 'playwright_tests/api/tag-filter.json',
+  defaultConfigPath: 'playwright_tests/api/tag-filter.json'
 });
 
 module.exports = defineConfig({
   testDir: './playwright_tests/api',
+  testMatch: /.*\.(positive|negative)\.api\.test\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: resolveApiRetries(),
