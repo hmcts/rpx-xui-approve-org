@@ -17866,7 +17866,7 @@ __metadata:
     playwright: "npm:1.61.1"
     playwright-core: "npm:1.61.1"
     redis: "npm:^3.0.2"
-    rpx-xui-translation: "npm:1.2.0-angular-20.3.14"
+    rpx-xui-translation: "npm:1.2.4"
     rxjs: "npm:^7.8.2"
     sinon: "npm:^7.2.3"
     sinon-chai: "npm:^3.3.0"
@@ -19790,9 +19790,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rpx-xui-translation@npm:1.2.0-angular-20.3.14":
-  version: 1.2.0-angular-20.3.14
-  resolution: "rpx-xui-translation@npm:1.2.0-angular-20.3.14"
+"rpx-xui-translation@npm:1.2.4":
+  version: 1.2.4
+  resolution: "rpx-xui-translation@npm:1.2.4"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -19800,7 +19800,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.14
     "@angular/core": ^20.3.14
-  checksum: 10/6c66db44fdcbc1bcf95ff219db399b7b6e3db6832870247c63f402efe4c156ee8e8888b33dc2da991264d66598e2064adc9df9a8fbf1a4ede431193cfc705ec5
+  checksum: 10/43497c9d8dbec5aac5fea41824493e0aae859775dd232dd0af945afb6698286b59e5165743ecd8d95ab633a4a05936b1cd373a47ca04ca5e7f4126f6e6070590
   languageName: node
   linkType: hard
 
