@@ -68,17 +68,17 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
   }
 
   test('GET /api/organisations?status= returns a JSON list', async ({ apiRequest }) => {
-    const response = await apiRequest.get('/api/organisations?status=', { failOnStatusCode: false });
+    const response = await apiRequest.get('/api/organisations?status=&page=1&size=10', { failOnStatusCode: false });
     const httpStatus = response.status();
     expect(
       httpStatus,
-      `Expected 200 from GET /api/organisations?status=. Received status=${httpStatus}`
+      `Expected 200 from GET /api/organisations?status=&page=1&size=10. Received status=${httpStatus}`
     ).toBe(200);
 
     const contentType = resolveHeader(response.headers(), 'content-type');
     expect(
       contentType,
-      `Expected JSON content-type for GET /api/organisations?status=. Received content-type=${contentType}`
+      `Expected JSON content-type for GET /api/organisations?status=&page=1&size=10. Received content-type=${contentType}`
     ).toContain('application/json');
 
     const payload = await response.json();

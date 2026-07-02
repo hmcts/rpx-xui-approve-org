@@ -444,7 +444,7 @@ export async function sessionCapture(user: string = 'base', options: SessionCapt
     return storageStatePath;
   }
 
-  const recentFailureMessage = recentSessionCaptureFailureMessage(failurePath);
+  const recentFailureMessage = !options.force ? recentSessionCaptureFailureMessage(failurePath) : undefined;
   if (recentFailureMessage) {
     throw new Error(
       `Recent session capture failed for user "${user}"; refusing repeated login attempt for now: ${recentFailureMessage}`
@@ -458,7 +458,7 @@ export async function sessionCapture(user: string = 'base', options: SessionCapt
       return storageStatePath;
     }
 
-    const lockedRecentFailureMessage = recentSessionCaptureFailureMessage(failurePath);
+    const lockedRecentFailureMessage = !options.force ? recentSessionCaptureFailureMessage(failurePath) : undefined;
     if (lockedRecentFailureMessage) {
       throw new Error(
         `Recent session capture failed for user "${user}"; refusing repeated login attempt for now: ${lockedRecentFailureMessage}`
