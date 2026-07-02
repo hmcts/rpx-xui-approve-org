@@ -2307,6 +2307,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@edium/fsm@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@edium/fsm@npm:3.0.2"
+  dependencies:
+    lodash-es: "npm:^4.18.1"
+  checksum: 10/7664b53489c40e36b7404fb6de6e73053d518ab683bb77a9d7d0e74c136a0710dfb98e40fa04e82da7f53d4138716ed62009cbc5467404c4c1ca2448da2c5678
+  languageName: node
+  linkType: hard
+
 "@esbuild/aix-ppc64@npm:0.25.12":
   version: 0.25.12
   resolution: "@esbuild/aix-ppc64@npm:0.25.12"
@@ -3129,12 +3138,92 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.59":
-  version: 7.3.59
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.59"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.68":
+  version: 7.3.68
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.68"
+  dependencies:
+    "@edium/fsm": "npm:^3.0.2"
+    "@hmcts/ccpay-web-component": "npm:6.5.17"
+    "@hmcts/media-viewer": "npm:4.2.21"
+    file-saver: "npm:^2.0.2"
+    govuk-frontend: "npm:^4.9.0"
+    lz-string: "npm:^1.5.0"
+    marked: "npm:^17.0.3"
+    pegjs: "npm:^0.10.0"
+    tslib: "npm:^2.3.0"
+    yargs: "npm:17.7.2"
+    yargs-parser: "npm:^21.1.1"
+  peerDependencies:
+    "@angular-material-components/datetime-picker": 16.0.1
+    "@angular-material-components/moment-adapter": 16.0.1
+    "@angular/animations": ^20.3.18
+    "@angular/cdk": 17.3.5
+    "@angular/common": ^20.3.18
+    "@angular/compiler": ^20.3.18
+    "@angular/core": ^20.3.18
+    "@angular/forms": ^20.3.18
+    "@angular/localize": ^20.3.18
+    "@angular/material": ^16.2.0
+    "@angular/platform-browser": ^20.3.18
+    "@angular/platform-browser-dynamic": ^20.3.18
+    "@angular/router": ^20.3.18
+    "@angular/upgrade": ^20.3.18
+    "@ngrx/effects": ^20.1.0
+    "@ngrx/store": ^20.1.0
+    "@nicky-lenaers/ngx-scroll-to": ^14.0.0
+    govuk-elements-sass: ^3.1.2
+    moment: ^2.30.1
+    moment-timezone: ^0.5.31
+    ngx-chips: ^3.0.0
+    ngx-markdown: ^20
+    ngx-pagination: 6.0.3
+    rpx-xui-translation: 1.2.4
+    rxjs: ^7.8.1
+    rxjs-compat: ^6.6.7
+    underscore: ^1.9.1
+    zone.js: ^0.15.1
+  checksum: 10/685ce5190a9afc4db1d1161dfb628ce5140b1e2490134c961ddf17ba46c2b39679c7bae9825ede0ed3c1887844a8a30501fc8e5b95648507cdb3492114e5d988
+  languageName: node
+  linkType: hard
+
+"@hmcts/ccpay-web-component@npm:6.5.17":
+  version: 6.5.17
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.17"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/18575f2f508acbc5a6b401678f8fd3536459f1e785b6b9e155e31029b8a59aba7147103a59806cd613b0ad3c7abf9c6433d237894fcc629a4877bf00eee23c5b
+  peerDependencies:
+    "@angular/common": ^20.3.1
+    "@angular/core": ~20.3.1
+  checksum: 10/7be62fd80d676934e2217985ab414f107aeaf8c6e44a9a128d41a856a4417b8ab0b5ba5be57af529a207ac2599c0e47fa52b204b461dc7002dd9d9585a5667df
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.21":
+  version: 4.2.21
+  resolution: "@hmcts/media-viewer@npm:4.2.21"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^20.0.0"
+    moment-timezone: "npm:^0.5.28"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.0.3"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@angular/router": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.2.3
+    rxjs: ^7.8.1
+  checksum: 10/537dac35ec49f0a94e6b3377fd3a7c6ae758a47bcc2e4e1674fb563844d9f7fbe442b6e838e49c8f9646e78fef45ecbaa6071b1dfcd7360360cfda56ff224998
   languageName: node
   linkType: hard
 
@@ -5121,6 +5210,129 @@ __metadata:
   version: 3.0.4
   resolution: "@msgpackr-extract/msgpackr-extract-win32-x64@npm:3.0.4"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-android-arm64@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-android-arm64@npm:0.1.100"
+  conditions: os=android & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-darwin-arm64@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-darwin-arm64@npm:0.1.100"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-darwin-x64@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-darwin-x64@npm:0.1.100"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-linux-arm-gnueabihf@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-linux-arm-gnueabihf@npm:0.1.100"
+  conditions: os=linux & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-linux-arm64-gnu@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-linux-arm64-gnu@npm:0.1.100"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-linux-arm64-musl@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-linux-arm64-musl@npm:0.1.100"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-linux-riscv64-gnu@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-linux-riscv64-gnu@npm:0.1.100"
+  conditions: os=linux & cpu=riscv64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-linux-x64-gnu@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-linux-x64-gnu@npm:0.1.100"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-linux-x64-musl@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-linux-x64-musl@npm:0.1.100"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-win32-arm64-msvc@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-win32-arm64-msvc@npm:0.1.100"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas-win32-x64-msvc@npm:0.1.100":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas-win32-x64-msvc@npm:0.1.100"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@napi-rs/canvas@npm:^0.1.65":
+  version: 0.1.100
+  resolution: "@napi-rs/canvas@npm:0.1.100"
+  dependencies:
+    "@napi-rs/canvas-android-arm64": "npm:0.1.100"
+    "@napi-rs/canvas-darwin-arm64": "npm:0.1.100"
+    "@napi-rs/canvas-darwin-x64": "npm:0.1.100"
+    "@napi-rs/canvas-linux-arm-gnueabihf": "npm:0.1.100"
+    "@napi-rs/canvas-linux-arm64-gnu": "npm:0.1.100"
+    "@napi-rs/canvas-linux-arm64-musl": "npm:0.1.100"
+    "@napi-rs/canvas-linux-riscv64-gnu": "npm:0.1.100"
+    "@napi-rs/canvas-linux-x64-gnu": "npm:0.1.100"
+    "@napi-rs/canvas-linux-x64-musl": "npm:0.1.100"
+    "@napi-rs/canvas-win32-arm64-msvc": "npm:0.1.100"
+    "@napi-rs/canvas-win32-x64-msvc": "npm:0.1.100"
+  dependenciesMeta:
+    "@napi-rs/canvas-android-arm64":
+      optional: true
+    "@napi-rs/canvas-darwin-arm64":
+      optional: true
+    "@napi-rs/canvas-darwin-x64":
+      optional: true
+    "@napi-rs/canvas-linux-arm-gnueabihf":
+      optional: true
+    "@napi-rs/canvas-linux-arm64-gnu":
+      optional: true
+    "@napi-rs/canvas-linux-arm64-musl":
+      optional: true
+    "@napi-rs/canvas-linux-riscv64-gnu":
+      optional: true
+    "@napi-rs/canvas-linux-x64-gnu":
+      optional: true
+    "@napi-rs/canvas-linux-x64-musl":
+      optional: true
+    "@napi-rs/canvas-win32-arm64-msvc":
+      optional: true
+    "@napi-rs/canvas-win32-x64-msvc":
+      optional: true
+    canvas:
+      built: true
+    skia-canvas:
+      built: true
+  checksum: 10/27fb6d96162d990eb05b108711532ef3000028310d81f9a108db2f9f7a7162c488bcb86986801617d7f598cc13921f59b5393f602b430a6221301db3e0b6024a
   languageName: node
   linkType: hard
 
@@ -7885,6 +8097,20 @@ __metadata:
   version: 8.6.0
   resolution: "@stryker-mutator/util@npm:8.6.0"
   checksum: 10/5520a75b3b59af3ec9cca889b2b133eb40da9a2be6362118713f198827fc586b787c7fe3ed4d497bb6f6605ba1b9ef178e72e0182e1101f941d8bb1617663e2c
+  languageName: node
+  linkType: hard
+
+"@swimlane/ngx-datatable@npm:^20.0.0":
+  version: 20.1.0
+  resolution: "@swimlane/ngx-datatable@npm:20.1.0"
+  dependencies:
+    tslib: "npm:^2.0.0"
+  peerDependencies:
+    "@angular/common": ">=11.0.2"
+    "@angular/core": ">=11.0.2"
+    "@angular/platform-browser": ">=11.0.2"
+    rxjs: ^6.6.3 || ^7.4.0
+  checksum: 10/e3d500f986096c5d5062480e755568984147123f0665c141ad517d52de3f6b1ef3ab306f355e4a8fef14c8305d85e6de7d0c4c8e0437acc3556765a59ee3577e
   languageName: node
   linkType: hard
 
@@ -11808,6 +12034,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"engine.io-client@npm:~6.6.1":
+  version: 6.6.6
+  resolution: "engine.io-client@npm:6.6.6"
+  dependencies:
+    "@socket.io/component-emitter": "npm:~3.1.0"
+    debug: "npm:~4.4.1"
+    engine.io-parser: "npm:~5.2.1"
+    ws: "npm:~8.21.0"
+    xmlhttprequest-ssl: "npm:~2.1.1"
+  checksum: 10/9fe1af84a19838af5888d919fadba15a61aa22b8b145fc1bee8090c8226b2d9a1c6b84600705bd9d794f89791997008c222557a8d8aaed4c3165794b286b3704
+  languageName: node
+  linkType: hard
+
 "engine.io-parser@npm:~5.2.1":
   version: 5.2.3
   resolution: "engine.io-parser@npm:5.2.3"
@@ -13117,6 +13356,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"file-saver@npm:^2.0.2":
+  version: 2.0.5
+  resolution: "file-saver@npm:2.0.5"
+  checksum: 10/fbba443d9b682fec0be6676c048a7ac688b9bd33b105c02e8e1a1cb3e354ed441198dc1f15dcbc137fa044bea73f8a7549f2617e3a952fa7d96390356d54a7c3
+  languageName: node
+  linkType: hard
+
 "file-size@npm:0.0.5":
   version: 0.0.5
   resolution: "file-size@npm:0.0.5"
@@ -13783,6 +14029,13 @@ __metadata:
   version: 4.0.1
   resolution: "govuk-frontend@npm:4.0.1"
   checksum: 10/4a3717b039ab604bb9e17afdb0c76a982da82428d1e9adb98c2bfa1a897993251c53a852f54bcba059a66e8bb1d0218188e922fb88a97941e7ea398c6cf3b383
+  languageName: node
+  linkType: hard
+
+"govuk-frontend@npm:^4.9.0":
+  version: 4.10.1
+  resolution: "govuk-frontend@npm:4.10.1"
+  checksum: 10/7fc16896b73134d227e3c8f6ed4017015293dd12e81262b6dea30b97156727523fb6c133f95f34461846a32cafe516cccf1d94100d936ae1c48a9059177e79cc
   languageName: node
   linkType: hard
 
@@ -15890,7 +16143,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.21":
+"lodash-es@npm:^4.17.21, lodash-es@npm:^4.18.1":
   version: 4.18.1
   resolution: "lodash-es@npm:4.18.1"
   checksum: 10/8bfad225ef09ef42b04283cdaf7830efcc2ba29ae41b56501c74422155ee1ccaa1f0f6e8319def3451a1fe54dec501c8e4bee622bae2b2d98ac993731e0a5cce
@@ -16190,6 +16443,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lz-string@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "lz-string@npm:1.5.0"
+  bin:
+    lz-string: bin/bin.js
+  checksum: 10/e86f0280e99a8d8cd4eef24d8601ddae15ce54e43ac9990dfcb79e1e081c255ad24424a30d78d2ad8e51a8ce82a66a930047fed4b4aa38c6f0b392ff9300edfc
+  languageName: node
+  linkType: hard
+
 "magic-string@npm:0.30.17":
   version: 0.30.17
   resolution: "magic-string@npm:0.30.17"
@@ -16276,6 +16538,15 @@ __metadata:
   dependencies:
     p-defer: "npm:^1.0.0"
   checksum: 10/cb2804a5bcb3cbdfe4b59066ea6d19f5e7c8c196cd55795ea4c28f792b192e4c442426ae52524e5e1acbccf393d3bddacefc3d41f803e66453f6c4eda3650bc1
+  languageName: node
+  linkType: hard
+
+"marked@npm:^17.0.3":
+  version: 17.0.6
+  resolution: "marked@npm:17.0.6"
+  bin:
+    marked: bin/marked.js
+  checksum: 10/46dac9481c028b6ab36f093084842f5c020329eb5529fa96ed22112f1f3a79b51b2f2c169a8b104b28c3ed09842ef372260dee08946fb1f7b1c70a7fb6f5cdc0
   languageName: node
   linkType: hard
 
@@ -16768,6 +17039,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"moment-timezone@npm:^0.5.28":
+  version: 0.5.48
+  resolution: "moment-timezone@npm:0.5.48"
+  dependencies:
+    moment: "npm:^2.29.4"
+  checksum: 10/8e0b7a05577623552293b28eeee4e60634b8be87fdb74084fa6d5ccc516771eb42d88f29c5a5e50a94c494048d14cdef94f94526a9dfd5e1b0050ff29d0a6c0a
+  languageName: node
+  linkType: hard
+
 "moment@npm:^2.19.3, moment@npm:^2.29.4":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
@@ -16896,6 +17176,19 @@ __metadata:
   bin:
     mustache: bin/mustache
   checksum: 10/6e668bd5803255ab0779c3983b9412b5c4f4f90e822230e0e8f414f5449ed7a137eed29430e835aa689886f663385cfe05f808eb34b16e1f3a95525889b05cd3
+  languageName: node
+  linkType: hard
+
+"mutable-div@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "mutable-div@npm:2.0.0"
+  dependencies:
+    tslib: "npm:^2.0.0"
+  peerDependencies:
+    "@angular/common": ^16.2.12
+    "@angular/core": ^16.2.12
+    hammerjs: ^2.0.8
+  checksum: 10/d1d30ef2a2413d7a30b73e71391d5d344e246b0fed96a14d97a478dcf13b5cbabc9f79d7cdf47766374c75c939c8b82b68e37ff55f796c1652b042ddfd973494
   languageName: node
   linkType: hard
 
@@ -17776,7 +18069,7 @@ __metadata:
     "@angular/platform-browser-dynamic": "npm:^20.3.18"
     "@angular/router": "npm:^20.3.18"
     "@faker-js/faker": "npm:^10.4.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.59"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.68"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.6"
     "@hmcts/playwright-common": "npm:^1.1.3"
     "@hmcts/properties-volume": "npm:^0.0.13"
@@ -18309,6 +18602,27 @@ __metadata:
   version: 0.0.1
   resolution: "pause@npm:0.0.1"
   checksum: 10/e96ee581b68085e6f2ba5adbcb4d4a41fe88e5b514061e76df2fe1905f0f65f4fe5a843b538e9551122c6b9184ff4be266c2ee0ea4614702f9a3d04466d9f462
+  languageName: node
+  linkType: hard
+
+"pdfjs-dist@npm:^4.10.38":
+  version: 4.10.38
+  resolution: "pdfjs-dist@npm:4.10.38"
+  dependencies:
+    "@napi-rs/canvas": "npm:^0.1.65"
+  dependenciesMeta:
+    "@napi-rs/canvas":
+      optional: true
+  checksum: 10/2fee929540863a32a368c02fe445550ce6f0992a08ccfaa05f2e2e185e8ac98b43eda6f88c94c366b86fe99149478eeff7ebb57793270b030c7af54169a4a54c
+  languageName: node
+  linkType: hard
+
+"pegjs@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "pegjs@npm:0.10.0"
+  bin:
+    pegjs: bin/pegjs
+  checksum: 10/edc12c9da9afa68ea1274350c3843026355ef3678de0e24213ba0598ee660d40f6752548ba5ddfbcdefee1904545c8a23bb59f331a5e8b3543bee29c21051f67
   languageName: node
   linkType: hard
 
@@ -20373,6 +20687,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"socket.io-client@npm:^4.8.0":
+  version: 4.8.3
+  resolution: "socket.io-client@npm:4.8.3"
+  dependencies:
+    "@socket.io/component-emitter": "npm:~3.1.0"
+    debug: "npm:~4.4.1"
+    engine.io-client: "npm:~6.6.1"
+    socket.io-parser: "npm:~4.2.4"
+  checksum: 10/ee83c08cb3a6f6c450e484b03036a0d853ceb62825f8f1093146298b63eccf86c7fdd1958d68940f8b7a8766b80bb4b30c7815b2811733edda74b21ff002e1d4
+  languageName: node
+  linkType: hard
+
 "socket.io-parser@npm:~4.2.4":
   version: 4.2.6
   resolution: "socket.io-parser@npm:4.2.6"
@@ -21964,6 +22290,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:^11.0.3":
+  version: 11.1.1
+  resolution: "uuid@npm:11.1.1"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 10/16411d3dc12a08d6691616c09a75e66a7f900ba1beef6628a76fe0602f82fae2ee537b564d0b7bc95c24f58d059ca9b58c75a1e806118efb50e17822ff00ddd2
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^3.3.2":
   version: 3.4.0
   resolution: "uuid@npm:3.4.0"
@@ -22720,6 +23055,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"xmlhttprequest-ssl@npm:~2.1.1":
+  version: 2.1.2
+  resolution: "xmlhttprequest-ssl@npm:2.1.2"
+  checksum: 10/708a177fe41c6c8cd4ec7c04d965b4c01801d87f44383ec639be58bdc14418142969841659e0850db44feee8bec0a3d3e7d33fed22519415f3d0daab04d3f160
+  languageName: node
+  linkType: hard
+
 "xmlhttprequest@npm:^1.8.0":
   version: 1.8.0
   resolution: "xmlhttprequest@npm:1.8.0"
@@ -22818,6 +23160,21 @@ __metadata:
     flat: "npm:^5.0.2"
     is-plain-obj: "npm:^2.1.0"
   checksum: 10/68f9a542c6927c3768c2f16c28f71b19008710abd6b8f8efbac6dcce26bbb68ab6503bed1d5994bdbc2df9a5c87c161110c1dfe04c6a3fe5c6ad1b0e15d9a8a3
+  languageName: node
+  linkType: hard
+
+"yargs@npm:17.7.2":
+  version: 17.7.2
+  resolution: "yargs@npm:17.7.2"
+  dependencies:
+    cliui: "npm:^8.0.1"
+    escalade: "npm:^3.1.1"
+    get-caller-file: "npm:^2.0.5"
+    require-directory: "npm:^2.1.1"
+    string-width: "npm:^4.2.3"
+    y18n: "npm:^5.0.5"
+    yargs-parser: "npm:^21.1.1"
+  checksum: 10/abb3e37678d6e38ea85485ed86ebe0d1e3464c640d7d9069805ea0da12f69d5a32df8e5625e370f9c96dd1c2dc088ab2d0a4dd32af18222ef3c4224a19471576
   languageName: node
   linkType: hard
 
