@@ -5,6 +5,7 @@ import {
   COOKIE_TOKEN,
   COOKIES_USERID,
   COOKIE_ROLES,
+  HMCTS_ACCESS_API,
   MAX_LINES,
   SERVICES_ISS_PATH
 } from './references';
@@ -17,6 +18,10 @@ describe('configuration/references', () => {
 
     it('should define SERVICES_ISS_PATH reference', () => {
       expect(SERVICES_ISS_PATH).to.equal('iss');
+    });
+
+    it('should define HMCTS_ACCESS_API reference', () => {
+      expect(HMCTS_ACCESS_API).to.equal('services.hmctsAccessApi');
     });
   });
 
@@ -47,6 +52,7 @@ describe('configuration/references', () => {
       COOKIE_TOKEN,
       COOKIES_USERID,
       COOKIE_ROLES,
+      HMCTS_ACCESS_API,
       MAX_LINES
     ];
 
