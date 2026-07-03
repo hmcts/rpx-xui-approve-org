@@ -40,9 +40,14 @@ module.exports = {
       "@azure/functions-core": false
     }
   },
-  externals: [nodeExternals({
-    allowlist: ['otp']
-  })],
+  externals: [
+    nodeExternals({
+      allowlist: ['otp']
+    }),
+    {
+      '@azure/functions-core': 'commonjs @azure/functions-core'
+    }
+  ],
   module: {
     rules: [
       {
