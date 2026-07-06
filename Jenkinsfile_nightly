@@ -11,6 +11,7 @@ final String a11yPwExcludedTagsOverrideEnvName = 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE
 final String runAccessibilityTestsParamName = 'RUN_ACCESSIBILITY_TESTS'
 final String noneTagFallback = '<none>'
 final String htmlIndexReportFile = 'index.html'
+final String playwrightAccessibilityReportFile = 'xui-ao-playwright-accessibility.html'
 
 final List<String> playwrightTagFilterEnvNames = [
     e2ePwIncludeTagsEnvName,
@@ -75,7 +76,7 @@ properties([
         booleanParam(
             name: runAccessibilityTestsParamName,
             defaultValue: true,
-            description: 'Run accessibility (axe) Playwright tests'
+            description: 'Run the unified accessibility Playwright pack (axe, WAVE-like and screen-reader checks)'
         )
     ])
 ])
@@ -86,11 +87,14 @@ String type      = 'nodejs'
 String product   = 'xui'
 String component = 'webapp'
 String channel   = '#xui-pipeline'
-String playwrightReportDir = 'functional-output/tests/playwright-e2e'
-String playwrightApiReportDir = 'functional-output/tests/playwright-api'
-String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
-String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
-String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-a11y'
+String playwrightReportDir = 'functional-output/tests/playwright-e2e/odhin-report'
+String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-report'
+String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
+String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly/odhin-report'
+String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightApiReportFile = 'xui-ao-playwright-api.html'
+String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
+String playwrightNightlyReportFile = 'xui-ao-playwright-nightly.html'
 
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -125,7 +129,7 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
             playwrightBranches.accessibility = {
                 stage('Nightly Accessibility Playwright Tests') {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                        yarnBuilder.yarn('test:accessibility:playwright:raw')
+                        yarnBuilder.yarn('test:accessibility:playwright')
                     }
                 }
             }
@@ -241,7 +245,7 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightApiReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightApiReportFile,
             reportName           : 'XUI Approve Organisation Full functional API Playwright Tests'
         ])
 
@@ -250,25 +254,29 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightIntegrationReportFile,
             reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : htmlIndexReportFile,
-            reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
-        ])
+        if (shouldRunAccessibilityTests()) {
+            publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "${playwrightAccessibilityReportDir}/",
+                reportFiles          : playwrightAccessibilityReportFile,
+                reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
+            ])
+        } else {
+            echo "[playwright-a11y] Full functional Accessibility Playwright Test report publish skipped because ${runAccessibilityTestsParamName}=false"
+        }
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightNightlyReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightNightlyReportFile,
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
         ])
     }

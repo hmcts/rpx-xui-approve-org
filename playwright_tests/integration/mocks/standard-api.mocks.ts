@@ -2,7 +2,10 @@ import type { Page } from '@playwright/test';
 import {
   type OrganisationSearchApiRequestPayload,
   type CommonOrganisationApiMockState,
+  createMockOrganisationUser,
   type MockOrganisation,
+  type MockOrganisationUser,
+  setupOrganisationUsersApiMock,
   setupCommonOrganisationApiMocks
 } from './organisation.mocks';
 import {
@@ -27,6 +30,7 @@ export type StandardOrganisationApprovalsApiMockState = {
   pendingPbaSearchResponse?: PendingPbaSearchResponseOverride;
   listOfValues?: unknown[];
   accountNames?: string[];
+  organisationUsers?: MockOrganisationUser[];
   organisationDeletableById?: Record<string, boolean>;
   defaultOrganisationDeletable?: boolean;
 };
@@ -78,6 +82,7 @@ export async function setupStandardOrganisationApprovalsApiMocks(
 
   await setupPbaAccountsApiMock(page, state.accountNames ?? ['Mock Liberata Account']);
   await setupLovRefDataApiMock(page, state.listOfValues ?? []);
+  await setupOrganisationUsersApiMock(page, state.organisationUsers ?? [createMockOrganisationUser()]);
 
   const defaultOrganisationDeletable = state.defaultOrganisationDeletable ?? false;
 
