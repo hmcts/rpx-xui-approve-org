@@ -33,6 +33,17 @@ export type MockOrganisation = {
   orgAttributes: Array<{ key: string; value: string }>;
 };
 
+export type MockOrganisationUser = {
+  userIdentifier: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  idamStatus: string;
+  idamStatusCode: string;
+  idamMessage: string;
+  roles: string[];
+};
+
 export type CommonOrganisationApiMockState = {
   activeOrganisations?: MockOrganisation[];
   pendingOrganisations?: MockOrganisation[];
@@ -117,6 +128,23 @@ export function createMockOrganisation(overrides: Partial<MockOrganisation>): Mo
     dateReceived: overrides.dateReceived,
     dateApproved: overrides.dateApproved,
     orgAttributes: overrides.orgAttributes ?? []
+  };
+}
+
+export function createMockOrganisationUser(overrides: Partial<MockOrganisationUser> = {}): MockOrganisationUser {
+  return {
+    userIdentifier: overrides.userIdentifier ?? 'mock-user-list-id',
+    firstName: overrides.firstName ?? 'Mock',
+    lastName: overrides.lastName ?? 'Caseworker',
+    email: overrides.email ?? 'mock.caseworker@example.com',
+    idamStatus: overrides.idamStatus ?? 'ACTIVE',
+    idamStatusCode: overrides.idamStatusCode ?? '200',
+    idamMessage: overrides.idamMessage ?? '',
+    roles: overrides.roles ?? [
+      'pui-organisation-manager',
+      'pui-user-manager',
+      'pui-case-manager'
+    ]
   };
 }
 
@@ -362,6 +390,35 @@ export async function setupCommonOrganisationApiMocks(
     getLastActiveSearchTerm: () => resolveSearchTermFromPayload(lastActiveSearchPayload),
     getLastSingleOrganisationId: () => lastSingleOrganisationId
   };
+}
+
+export async function setupOrganisationUsersApiMock(
+  page: Page,
+  users: MockOrganisationUser[] = [createMockOrganisationUser()]
+): Promise<void> {
+  const responseBody = JSON.stringify({ users });
+
+  await page.route('**/api/allUserListWithoutRoles?**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: responseBody
+    });
+  });
+
+  await page.route('**/api/organisations?**', async (route, request) => {
+    const requestUrl = new URL(request.url());
+    if (!requestUrl.searchParams.has('usersOrgId')) {
+      await route.fallback();
+      return;
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: responseBody
+    });
+  });
 }
 
 export async function setupPendingOrganisationDecisionApiMock(
