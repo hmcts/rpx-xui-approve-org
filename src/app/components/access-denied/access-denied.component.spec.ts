@@ -28,9 +28,9 @@ describe('AccessDeniedComponent', () => {
     const headingElement = fixture.debugElement.query(By.css('.govuk-heading-xl')).nativeElement;
     const bodyElements = fixture.debugElement.queryAll(By.css('.govuk-body'));
 
-    expect(headingElement.textContent).toContain('You cannot use Manage Cases with this account');
+    expect(headingElement.textContent).toContain('You cannot use Approve Organisation with this account');
     expect(bodyElements[0].nativeElement.textContent).toContain(
-      'You signed in successfully, but this account is not authorised to use Manage Cases.'
+      'You signed in successfully, but this account is not authorised to use Approve Organisation.'
     );
     expect(bodyElements[1].nativeElement.textContent).toContain('Sign in with a different account');
     expect(bodyElements[1].nativeElement.textContent).toContain(
