@@ -193,6 +193,55 @@ This repository now uses Playwright for the functional/liveliness test path.
 - `PW_INTEGRATION_UPDATE_PBA_ORG_ID` can override the org id used by the seeded integration write scenario.
 - `FUNCTIONAL_TESTS_WORKERS` can be set to override Playwright worker count.
 
+### Running Playwright against AAT, DEMO, ITHC and LOCAL
+
+Use `TEST_URL` for the Approve Organisation app and `TEST_REGISTER_URL` for the Manage Organisation registration host used by registration flows. If `TEST_REGISTER_URL` is not set, the framework derives it for AAT and DEMO from `TEST_URL`; set it explicitly for ITHC and preview-style targets.
+
+| Environment | `TEST_URL` | `TEST_REGISTER_URL` |
+| ----------- | ---------- | ------------------- |
+| AAT         | `https://administer-orgs.aat.platform.hmcts.net/` | `https://manage-org.aat.platform.hmcts.net/` |
+| DEMO        | `https://administer-orgs.demo.platform.hmcts.net/` | `https://manage-org.demo.platform.hmcts.net/` |
+| ITHC        | `https://administer-orgs.ithc.platform.hmcts.net/` | `https://manage-org.ithc.platform.hmcts.net/` |
+| LOCAL       | `http://localhost:3000` | `http://localhost:3000` |
+
+Populate and source local secrets before shared-environment runs:
+
+```bash
+# AAT
+yarn env:populate:aat
+set -a; source .env; set +a
+
+# DEMO
+yarn env:populate:demo
+set -a; source .env; set +a
+```
+
+For ITHC, export the required credentials through an approved local secret mechanism. Do not commit credentials or paste passwords into commands.
+
+Common commands:
+
+```bash
+# AAT
+yarn test:functional:e2e:raw
+yarn test:api:playwright:raw
+yarn test:integration:playwright:raw
+
+# DEMO
+TEST_URL=https://administer-orgs.demo.platform.hmcts.net/ \
+TEST_REGISTER_URL=https://manage-org.demo.platform.hmcts.net/ \
+yarn test:functional:e2e:raw
+
+# ITHC
+TEST_URL=https://administer-orgs.ithc.platform.hmcts.net/ \
+TEST_REGISTER_URL=https://manage-org.ithc.platform.hmcts.net/ \
+yarn test:functional:e2e:raw
+
+# LOCAL
+TEST_URL=http://localhost:3000 \
+TEST_REGISTER_URL=http://localhost:3000 \
+yarn test:functional:e2e:raw
+```
+
 ### Local selector-check runs
 
 Use these when validating against a specific deployment target.

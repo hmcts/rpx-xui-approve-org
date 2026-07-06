@@ -2,6 +2,7 @@ import { chromium, type Browser, type BrowserContext, type Page } from '@playwri
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { config } from '../config/config';
+import { completeIdamLogin } from './idamLogin';
 
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
 const SESSION_CAPTURE_LOCK_TIMEOUT_MS = 120_000;
@@ -393,17 +394,8 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
     }
 
     if (isOnLoginSurface) {
-      if (hasNamedUsernameInput) {
-        await namedUsernameInput.fill(username);
-        await page.locator('input[name="password"]').fill(password);
-        await page.locator('#login-submit-btn').click();
-        await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
-        await waitForLoginRedirectToSettle(page);
-      } else if (hasRoleEmailInput || hasFallbackEmailInput) {
-        const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
-        await emailInput.fill(username);
-        await page.locator('input[type="password"], input[name="password"]').first().fill(password);
-        await page.getByRole('button', { name: 'Sign in' }).click();
+      if (hasNamedUsernameInput || hasRoleEmailInput || hasFallbackEmailInput) {
+        await completeIdamLogin(page, username, password);
         await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
         await waitForLoginRedirectToSettle(page);
       } else {
