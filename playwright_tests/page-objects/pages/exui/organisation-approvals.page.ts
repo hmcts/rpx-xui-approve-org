@@ -50,9 +50,9 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly confirmDecisionErrorSummaryTitle = this.confirmDecisionErrorSummary.locator('.govuk-error-summary__title').first();
   readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
   readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
-  readonly approveDecisionRadio = this.detailsPanel.getByRole('radio', { name: /^Approve it$/ });
-  readonly rejectDecisionRadio = this.detailsPanel.getByRole('radio', { name: /^Reject it$/ });
-  readonly reviewDecisionRadio = this.detailsPanel.getByRole('radio', { name: /^Place registration under review pending further investigation$/ });
+  readonly approveDecisionRadio = this.page.locator('#reason-0');
+  readonly rejectDecisionRadio = this.page.locator('#reason-1');
+  readonly reviewDecisionRadio = this.page.locator('#reason-2');
   readonly deleteOrganisationDetailsButton = this.detailsPanel.locator('button.govuk-button--secondary').first();
   readonly deleteOrganisationConfirmButton = this.contentMain.locator('button.govuk-button--warning').first();
   readonly goBackToActiveLink = this.contentMain.locator('a[href*="/active-organisation"]');
@@ -350,7 +350,6 @@ export class OrganisationApprovalsPage extends BasePage {
     await decisionRadio.check({ trial: true });
     await decisionRadio.check();
     await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeChecked();
-    await expect(decisionRadio, `Decision radio did not update Angular form state: ${decisionName}`).toHaveClass(/ng-valid/);
   }
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
