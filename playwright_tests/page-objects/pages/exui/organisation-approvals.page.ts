@@ -3,6 +3,7 @@ import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
+const ORGANISATION_DETAILS_ROUTE_PATTERN = /\/organisation-details\/[^/?#]+(?:\/?|\?.*)$/;
 
 export type OrganisationTableRow = {
   name: string;
@@ -306,11 +307,11 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openFirstPendingOrganisation(): Promise<void> {
-    await this.pendingOrganisationViewLink().click();
+    await this.openOrganisationDetails(this.pendingOrganisationViewLink());
   }
 
   async openPendingOrganisationById(organisationId: string): Promise<void> {
-    await this.pendingOrganisationViewLinkById(organisationId).click();
+    await this.openOrganisationDetails(this.pendingOrganisationViewLinkById(organisationId));
   }
 
   async clickBackLink(): Promise<void> {
@@ -324,7 +325,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openFirstActiveOrganisation(): Promise<void> {
-    await this.activeOrganisationViewLink().click();
+    await this.openOrganisationDetails(this.activeOrganisationViewLink());
   }
 
   async openFirstPendingPba(): Promise<void> {
@@ -352,10 +353,20 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.staffDetailsHeaderTab().click();
   }
 
+  private async openOrganisationDetails(viewLink: Locator): Promise<void> {
+    await Promise.all([
+      this.page.waitForURL(ORGANISATION_DETAILS_ROUTE_PATTERN),
+      viewLink.click()
+    ]);
+    await this.waitForSpinnerToHide(60_000);
+    await expect(this.detailsPanel).toBeVisible();
+  }
+
   private async selectDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
     await expect(this.decisionOptionsGroup).toBeVisible();
     await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeVisible();
     await decisionRadio.click();
+    await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeChecked();
   }
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
@@ -381,6 +392,7 @@ export class OrganisationApprovalsPage extends BasePage {
 
     await this.selectedDecisionRadio.click();
     await this.submitButton.click();
+    await expect(this.confirmDecisionHeading).toBeVisible();
   }
 
   async confirmDecision(): Promise<void> {
