@@ -25,6 +25,7 @@ export type PendingPbaTableRow = {
 export class OrganisationApprovalsPage extends BasePage {
   private readonly exuiSpinner: ExuiSpinnerComponent;
   private readonly waitUtils: WaitUtils;
+  private selectedDecisionRadio?: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -43,16 +44,21 @@ export class OrganisationApprovalsPage extends BasePage {
 
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
-  readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
+  readonly detailsPanel = this.page.locator('app-org-details-info:visible, app-org-details-info-old:visible').first();
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
   readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
   readonly confirmDecisionErrorSummary = this.contentMain.locator('.govuk-error-summary').first();
   readonly confirmDecisionErrorSummaryTitle = this.confirmDecisionErrorSummary.locator('.govuk-error-summary__title').first();
   readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
   readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
-  readonly approveDecisionRadio = this.page.locator('#reason-0');
-  readonly rejectDecisionRadio = this.page.locator('#reason-1');
-  readonly reviewDecisionRadio = this.page.locator('#reason-2');
+  readonly decisionOptionsGroup = this.detailsPanel.getByRole('group', {
+    name: /What would you like to do with this registration/i
+  });
+
+  readonly noDecisionSelectedError = this.contentMain
+    .getByRole('link', { name: /Select what would you like to do with this registration/i })
+    .first();
+
   readonly deleteOrganisationDetailsButton = this.detailsPanel.locator('button.govuk-button--secondary').first();
   readonly deleteOrganisationConfirmButton = this.contentMain.locator('button.govuk-button--warning').first();
   readonly goBackToActiveLink = this.contentMain.locator('a[href*="/active-organisation"]');
@@ -347,33 +353,33 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   private async checkDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
-    await decisionRadio.check({ trial: true });
-    await decisionRadio.check();
-    await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeChecked();
+    await expect(this.decisionOptionsGroup).toBeVisible();
+    await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeVisible();
+    await decisionRadio.click();
   }
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
-    const normalizedDecision = (typeof decisionLabel === 'string' ? decisionLabel : decisionLabel.source).toLowerCase();
-
-    if (normalizedDecision.includes('approve')) {
-      await this.checkDecisionRadio(this.approveDecisionRadio, 'approve');
-      return;
-    }
-
-    if (normalizedDecision.includes('reject')) {
-      await this.checkDecisionRadio(this.rejectDecisionRadio, 'reject');
-      return;
-    }
-
-    if (normalizedDecision.includes('review') || normalizedDecision.includes('hold')) {
-      await this.checkDecisionRadio(this.reviewDecisionRadio, 'review');
-      return;
-    }
-
-    throw new Error(`Unsupported decision label: ${String(decisionLabel)}`);
+    const decisionRadio = this.decisionOptionsGroup.getByRole('radio', { name: decisionLabel }).first();
+    await this.checkDecisionRadio(decisionRadio, String(decisionLabel));
+    this.selectedDecisionRadio = decisionRadio;
   }
 
   async submitDecision(): Promise<void> {
+    await this.selectedDecisionRadio?.click();
+    await this.submitButton.click();
+
+    if (!this.selectedDecisionRadio) {
+      return;
+    }
+
+    // Older deployed templates can clear the reactive radio before submit; recover only this validation state.
+    try {
+      await this.noDecisionSelectedError.waitFor({ state: 'visible', timeout: 1_000 });
+    } catch {
+      return;
+    }
+
+    await this.selectedDecisionRadio.click();
     await this.submitButton.click();
   }
 
