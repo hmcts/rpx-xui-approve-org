@@ -60,7 +60,7 @@
     "test:node:watch": "cd api && yarn test:watch",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error DOTENV_CONFIG_DEFAULTS=./api/.env.defaults mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/pact-tests/**/*.spec.ts",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
-    "test:smoke": "yarn playwright install chromium && E2E_PW_INCLUDE_TAGS='@smoke' E2E_PW_EXCLUDED_TAGS_OVERRIDE='@none' npx playwright test playwright_tests/e2e/login.test.ts -c playwright.config.ts"
+    "test:smoke": "yarn playwright install chromium && PW_SKIP_SESSION_CAPTURE=true E2E_PW_INCLUDE_TAGS='@smoke' E2E_PW_EXCLUDED_TAGS_OVERRIDE='@none' npx playwright test playwright_tests/e2e/login.test.ts -c playwright.config.ts"
   },
   "private": true,
   "dependencies": {
