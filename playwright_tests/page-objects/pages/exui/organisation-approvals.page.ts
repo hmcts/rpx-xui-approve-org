@@ -40,6 +40,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator(
     'table.pending-organisations tr.govuk-table__row:has(td.govuk-table__cell)'
   );
+
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
@@ -49,9 +50,9 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly confirmDecisionErrorSummaryTitle = this.confirmDecisionErrorSummary.locator('.govuk-error-summary__title').first();
   readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
   readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
-  readonly approveDecisionRadio = this.page.locator('#reason-0');
-  readonly rejectDecisionRadio = this.page.locator('#reason-1');
-  readonly reviewDecisionRadio = this.page.locator('#reason-2');
+  readonly approveDecisionRadio = this.detailsPanel.getByRole('radio', { name: /^Approve it$/ });
+  readonly rejectDecisionRadio = this.detailsPanel.getByRole('radio', { name: /^Reject it$/ });
+  readonly reviewDecisionRadio = this.detailsPanel.getByRole('radio', { name: /^Place registration under review pending further investigation$/ });
   readonly deleteOrganisationDetailsButton = this.detailsPanel.locator('button.govuk-button--secondary').first();
   readonly deleteOrganisationConfirmButton = this.contentMain.locator('button.govuk-button--warning').first();
   readonly goBackToActiveLink = this.contentMain.locator('a[href*="/active-organisation"]');
@@ -76,6 +77,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator(
     'table.active-organisations tr.govuk-table__row:has(td.govuk-table__cell)'
   );
+
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
@@ -348,6 +350,7 @@ export class OrganisationApprovalsPage extends BasePage {
     await decisionRadio.check({ trial: true });
     await decisionRadio.check();
     await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeChecked();
+    await expect(decisionRadio, `Decision radio did not update Angular form state: ${decisionName}`).toHaveClass(/ng-valid/);
   }
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
