@@ -6,8 +6,9 @@ import { buildPlaywrightReporters } from './playwright-reporting';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
-const sharedStorageStatePath = getSessionStatePath('base');
-const sharedStorageState = fs.existsSync(sharedStorageStatePath) ? sharedStorageStatePath : undefined;
+const skipSessionCapture = (process.env.PW_SKIP_SESSION_CAPTURE ?? '').toLowerCase() === 'true';
+const sharedStorageStatePath = skipSessionCapture ? undefined : getSessionStatePath('base');
+const sharedStorageState = sharedStorageStatePath && fs.existsSync(sharedStorageStatePath) ? sharedStorageStatePath : undefined;
 const e2eTagFilters = resolveTagFilters({
   includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
   excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
