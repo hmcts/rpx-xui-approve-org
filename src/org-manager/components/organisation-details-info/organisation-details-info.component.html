@@ -226,21 +226,24 @@
           </div>
           <div class="govuk-radios__item" id="options">
             <input class="govuk-radios__input" id="reason-0" name="radioSelected" type="radio"
-              [value]="registrationRequest[0].request" formControlName="radioSelected" (change)="onChange()" />
+              [value]="registrationRequest[0].request" formControlName="radioSelected"
+              [checked]="registrationRequest[0].checked" (change)="onChange()" />
             <label class="govuk-label govuk-radios__label" for="reason-0">
               {{ registrationRequest[0].request }}
             </label>
           </div>
           <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="reason-1" name="radioSelected" type="radio"
-              [value]="registrationRequest[1].request" formControlName="radioSelected" (change)="onChange()" />
+              [value]="registrationRequest[1].request" formControlName="radioSelected"
+              [checked]="registrationRequest[1].checked" (change)="onChange()" />
             <label class="govuk-label govuk-radios__label" for="reason-1">
               {{ registrationRequest[1].request }}
             </label>
           </div>
           <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="reason-2" name="radioSelected" type="radio"
-              [value]="registrationRequest[2].request" formControlName="radioSelected" (change)="onChange()" />
+              [value]="registrationRequest[2].request" formControlName="radioSelected"
+              [checked]="registrationRequest[2].checked" (change)="onChange()" />
             <label class="govuk-label govuk-radios__label" for="reason-2">
               {{ registrationRequest[2].request }}
             </label>
