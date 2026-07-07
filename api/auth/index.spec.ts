@@ -2,6 +2,8 @@ import { expect } from '../test/shared/testSetup';
 import 'mocha';
 import * as sinon from 'sinon';
 import { attach } from './index';
+import * as appInsights from '../lib/appInsights';
+import * as log4jui from '../lib/log4jui';
 import { createMockEnhancedRequest, createMockResponse, createMockNextFunction } from '../test/shared/authMocks';
 import { createMockAxiosInstance } from '../test/shared/httpMocks';
 import { createConfigMock } from '../test/shared/configMocks';
@@ -12,6 +14,8 @@ describe('auth/index', () => {
   let mockAxiosInstance: any;
   let xuiNodeStub: any;
   let authStub: any;
+  let appInsightsClientStub: any;
+  let loggerStub: any;
 
   beforeEach(() => {
     configMock = createConfigMock({
@@ -23,7 +27,8 @@ describe('auth/index', () => {
 
     authStub = {
       EVENT: {
-        AUTHENTICATE_SUCCESS: 'auth.authenticate.success'
+        AUTHENTICATE_SUCCESS: 'auth.authenticate.success',
+        AUTHENTICATE_ACCESS_DENIED: 'auth.authenticate.access_denied'
       }
     };
 
@@ -31,8 +36,20 @@ describe('auth/index', () => {
       on: sinon.stub()
     };
 
+    appInsightsClientStub = {
+      trackEvent: sinon.stub()
+    };
+
+    loggerStub = {
+      warn: sinon.stub(),
+      info: sinon.stub(),
+      error: sinon.stub()
+    };
+
     sinon.stub(require('../configuration'), 'getConfigValue').callsFake(configMock.getConfigValue);
     sinon.stub(require('../lib/http'), 'http').callsFake(httpStub);
+    sinon.stub(appInsights, 'client').value(appInsightsClientStub);
+    sinon.stub(log4jui, 'getLogger').returns(loggerStub);
     const rpxXuiNodeLib = require('@hmcts/rpx-xui-node-lib');
     sinon.stub(rpxXuiNodeLib, 'xuiNode').value(xuiNodeStub);
 
@@ -91,14 +108,18 @@ describe('auth/index', () => {
   });
 
   describe('success callback registration', () => {
-    it('should register authentication success event handler', () => {
+    it('should register authentication success and access denied event handlers', () => {
       // Re-import to trigger event registration
       delete require.cache[require.resolve('./index')];
       require('./index');
 
-      expect(xuiNodeStub.on).to.have.been.calledOnce;
+      expect(xuiNodeStub.on).to.have.callCount(2);
       expect(xuiNodeStub.on).to.have.been.calledWith(
         'auth.authenticate.success',
+        sinon.match.func
+      );
+      expect(xuiNodeStub.on).to.have.been.calledWith(
+        'auth.authenticate.access_denied',
         sinon.match.func
       );
 
@@ -106,6 +127,56 @@ describe('auth/index', () => {
       const registeredCallback = xuiNodeStub.on.getCall(0).args[1];
       expect(registeredCallback).to.be.a('function');
       expect(registeredCallback.length).to.equal(3); // Should accept req, res, next
+    });
+  });
+
+  describe('access denied callback function', () => {
+    let accessDeniedCallback: any;
+
+    beforeEach(() => {
+      delete require.cache[require.resolve('./index')];
+      require('./index');
+      accessDeniedCallback = xuiNodeStub.on.getCall(1).args[1];
+    });
+
+    it('should track citizen access denied details', () => {
+      const mockRequest = createMockEnhancedRequest();
+      const mockResponse = createMockResponse();
+      const mockNext = createMockNextFunction();
+
+      accessDeniedCallback(mockRequest, mockResponse, mockNext, {
+        allowRolesRegex: 'prd-admin|cwd-admin',
+        roles: ['citizen']
+      });
+
+      expect(loggerStub.warn).to.have.been.calledWith(
+        'Post-auth role denied: user has no role matching prd-admin|cwd-admin'
+      );
+      expect(appInsightsClientStub.trackEvent).to.have.been.calledWith({
+        name: 'ManageCasePostAuthRoleDenied',
+        properties: {
+          isCitizen: true,
+          requiredRoleMatcher: 'prd-admin|cwd-admin',
+          roles: 'citizen'
+        }
+      });
+    });
+
+    it('should handle missing access denied details', () => {
+      const mockRequest = createMockEnhancedRequest();
+      const mockResponse = createMockResponse();
+      const mockNext = createMockNextFunction();
+
+      accessDeniedCallback(mockRequest, mockResponse, mockNext);
+
+      expect(appInsightsClientStub.trackEvent).to.have.been.calledWith({
+        name: 'ManageCasePostAuthRoleDenied',
+        properties: {
+          isCitizen: false,
+          requiredRoleMatcher: '',
+          roles: ''
+        }
+      });
     });
   });
 
