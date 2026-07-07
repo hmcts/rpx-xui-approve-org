@@ -27,9 +27,9 @@ export class OrganisationDetailsInfoOldComponent implements OnInit {
 
   constructor(private readonly fb: FormBuilder) {
     this.registrationRequest = [
-      { request: RequestType.APPROVE_REQUEST, checked: false },
-      { request: RequestType.REJECT_REQUEST, checked: false },
-      { request: RequestType.REVIEW_REQUEST, checked: false }
+      { request: RequestType.APPROVE_REQUEST },
+      { request: RequestType.REJECT_REQUEST },
+      { request: RequestType.REVIEW_REQUEST }
     ];
   }
 

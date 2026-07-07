@@ -352,7 +352,7 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.staffDetailsHeaderTab().click();
   }
 
-  private async checkDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
+  private async selectDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
     await expect(this.decisionOptionsGroup).toBeVisible();
     await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeVisible();
     await decisionRadio.click();
@@ -360,7 +360,7 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
     const decisionRadio = this.decisionOptionsGroup.getByRole('radio', { name: decisionLabel }).first();
-    await this.checkDecisionRadio(decisionRadio, String(decisionLabel));
+    await this.selectDecisionRadio(decisionRadio, String(decisionLabel));
     this.selectedDecisionRadio = decisionRadio;
   }
 

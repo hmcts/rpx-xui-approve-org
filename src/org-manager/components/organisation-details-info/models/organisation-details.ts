@@ -10,7 +10,6 @@ export interface ErrorMessage {
 }
 export interface DisplayedRequest {
   request: RequestType;
-  checked: boolean;
 }
 export enum RequestErrors {
   NO_SELECTION = 'Select what would you like to do with this registration',
