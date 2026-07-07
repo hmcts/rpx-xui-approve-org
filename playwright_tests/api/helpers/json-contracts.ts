@@ -16,6 +16,18 @@ export function resolveHeader(headers: Record<string, string>, key: string): str
   return '';
 }
 
+export function parseJsonIfPresent(contentType: string, rawBody: string): unknown {
+  if (!contentType.toLowerCase().includes('application/json')) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(rawBody);
+  } catch {
+    return null;
+  }
+}
+
 export function organisationsListShapeErrors(payload: unknown): string[] {
   const errors: string[] = [];
 

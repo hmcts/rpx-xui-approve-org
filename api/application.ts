@@ -11,7 +11,7 @@ import { attach } from './auth';
 import { environmentCheckText, getConfigValue, getEnvironment, showFeature } from './configuration';
 import { ERROR_NODE_CONFIG_ENV } from './configuration/constants';
 import {
-  APP_INSIGHTS_CONNECTION_STRING, COOKIE_TOKEN, COOKIES_USERID, FEATURE_APP_INSIGHTS_ENABLED,
+  COOKIE_TOKEN, COOKIES_USERID, FEATURE_APP_INSIGHTS_ENABLED,
   FEATURE_HELMET_ENABLED,
   FEATURE_OIDC_ENABLED,
   FEATURE_PROXY_ENABLED,
@@ -302,7 +302,7 @@ app.use(
   express.static(staticRoot, { index: false })
 );
 // Catch-all handler for every URL that the static middleware didn’t serve
-app.use('/*', (req, res) => {
+app.use('/{*splat}', (req, res) => {
   const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
   res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
 });
