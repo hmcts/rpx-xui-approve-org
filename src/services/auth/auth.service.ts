@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';

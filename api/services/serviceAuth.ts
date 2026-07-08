@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import * as express from 'express';
-import * as otp from 'otp';
+import { OTP } from 'otp';
 import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { getHealth, getInfo } from '../lib/util';
@@ -30,7 +30,7 @@ export async function postS2SLease() {
   } as unknown as express.Request);
 
   try {
-    const oneTimePassword = otp({ secret: s2sSecret }).totp();
+    const oneTimePassword = await new OTP({ secret: s2sSecret }).totp(Date.now());
     logger.info('generating from secret  :', s2sSecret, microservice, oneTimePassword);
     response = await axiosInstance.post(`${url}/lease`, {
       microservice,

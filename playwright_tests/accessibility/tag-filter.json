@@ -3,7 +3,9 @@
   "availableTags": [
     "@accessibility",
     "@tabs-states",
-    "@user-upload",
-    "@staff-details"
+    "@interaction-states",
+    "@staff-details",
+    "@wave-a11y",
+    "@lighthouse-a11y"
   ]
 }
