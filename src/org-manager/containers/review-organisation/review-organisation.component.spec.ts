@@ -9,7 +9,6 @@ import { ReviewOrganisationComponent } from './review-organisation.component';
 describe('ReviewOrganisationComponent', () => {
   let component: ReviewOrganisationComponent;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storePipeMock: any;
   let storeDispatchMock: any;
   let router;

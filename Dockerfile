@@ -1,23 +1,25 @@
-FROM hmctsprod.azurecr.io/base/node:20-alpine as base
+ARG REGISTRY_NAME=hmctsprod
+FROM ${REGISTRY_NAME}.azurecr.io/base/node:20-alpine AS base
 LABEL maintainer = "HMCTS Expert UI <https://github.com/hmcts>"
 
-USER root
-RUN corepack enable
+ARG DEV_MODE=false
+
 USER hmcts
 
 COPY --chown=hmcts:hmcts .yarn ./.yarn
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml tsconfig.json ./
+COPY --chown=hmcts:hmcts api/package.json ./api/package.json
 
-RUN yarn
+RUN PUPPETEER_SKIP_DOWNLOAD=true node .yarn/releases/yarn-4.10.3.cjs install --immutable
 
-FROM base as build
+FROM base AS build
 
 COPY --chown=hmcts:hmcts . .
 
-RUN yarn build && rm -r node_modules/ && yarn cache clean
+RUN node .yarn/releases/yarn-4.10.3.cjs build && rm -r node_modules/ && node .yarn/releases/yarn-4.10.3.cjs cache clean
 
-FROM base as runtime
+FROM base AS runtime
 COPY --from=build $WORKDIR ./
 USER hmcts
 EXPOSE 3000
-CMD [ "yarn", "start" ]
+CMD [ "node", ".yarn/releases/yarn-4.10.3.cjs", "start" ]
