@@ -33,6 +33,6 @@ export class EditDetailsEffects {
     ofType(fromActions.SUBMIT_PBA_SUCCESS),
     map(() => {
       return new fromRood.Back();
-    }),
+    })
   ));
 }

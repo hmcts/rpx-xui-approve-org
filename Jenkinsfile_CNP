@@ -8,32 +8,180 @@ properties([
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']
+    ]),
+    parameters([
+        string(
+            name: 'E2E_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional E2E include tags (space/comma separated)'
+        ),
+        string(
+            name: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional E2E excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'INTEGRATION_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional integration include tags (space/comma separated)'
+        ),
+        string(
+            name: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional integration excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'API_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional API include tags (space/comma separated)'
+        ),
+        string(
+            name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional API excluded tags override (@none clears file defaults)'
+        ),
+        string(
+            name: 'A11Y_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional accessibility include tags (space/comma separated)'
+        ),
+        string(
+            name: 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional accessibility excluded tags override (@none clears file defaults)'
+        ),
+        booleanParam(
+            name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
+            defaultValue: false,
+            description: 'Optional: run the non-blocking Playwright accessibility pack (axe, WAVE-like and screen-reader checks) on this PR build.'
+        )
     ])
 ])
 
-@Library("Infrastructure")
+@Library('Infrastructure')
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
 import uk.gov.hmcts.contino.Environment
 
-def type      = "nodejs"
-def product   = "xui"
-def component = "ao-webapp"
-def vault = "rpx"
-def channel   = '#xui-pipeline'
-def playwrightReportDir = 'functional-output/tests/playwright-e2e'
+String type      = 'nodejs'
+String product   = 'xui'
+String component = 'ao-webapp'
+String channel   = '#xui-pipeline'
+String playwrightReportDir = 'functional-output/tests/playwright-e2e/odhin-report'
+String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-report'
+String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
+String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightE2eReportFile = 'xui-ao-playwright-e2e.html'
+String playwrightApiReportFile = 'xui-ao-playwright-api.html'
+String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
+String playwrightAccessibilityReportFile = 'xui-ao-playwright-accessibility.html'
+final String htmlIndexReportFile = 'index.html'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
+def isEnabledValue = { value ->
+    return value != null && ['1', 'true', 'yes', 'y', 'on'].contains(value.toString().trim().toLowerCase())
+}
+
+def shouldRunAccessibilityTests = {
+    return [
+        params.RUN_PLAYWRIGHT_ACCESSIBILITY,
+        params.RUN_ACCESSIBILITY_TESTS,
+        env.RUN_PLAYWRIGHT_ACCESSIBILITY,
+        env.RUN_ACCESSIBILITY_TESTS
+    ].any { configured -> isEnabledValue(configured) }
+}
+
+def runPlaywrightFunctionalInParallel = { String environmentLabel ->
+    stage("${environmentLabel} Functional Tests (Parallel)") {
+        env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        def playwrightBranches = [
+            failFast: false,
+            api: {
+                stage("${environmentLabel} API Playwright Tests") {
+                    yarnBuilder.yarn('test:api:playwright:raw')
+                }
+            },
+            integration: {
+                stage("${environmentLabel} Integration Playwright Tests") {
+                    yarnBuilder.yarn('test:integration:playwright:raw')
+                }
+            },
+            e2e: {
+                stage("${environmentLabel} E2E Playwright Tests") {
+                    yarnBuilder.yarn('test:functional:e2e:raw')
+                }
+            }
+        ]
+
+        if (shouldRunAccessibilityTests()) {
+            playwrightBranches.accessibility = {
+                stage("${environmentLabel} Accessibility Playwright Tests") {
+                    catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                        yarnBuilder.yarn('test:accessibility:playwright')
+                    }
+                }
+            }
+        } else {
+            echo "[playwright-a11y] ${environmentLabel} Accessibility Playwright Tests skipped; RUN_PLAYWRIGHT_ACCESSIBILITY=false and RUN_ACCESSIBILITY_TESTS=false"
+        }
+
+        parallel(playwrightBranches)
+    }
+}
+
+def runWithFunctionalFailureCapture = { Closure functionalExecution ->
+    catchError(stageResult: 'FAILURE') {
+        functionalExecution()
+    }
+}
+
+def resolveParamOrEnv = { String envName ->
+    def paramValue = params."${envName}"?.trim()
+    return paramValue ?: (env."${envName}"?.trim() ?: '')
+}
+
+def applyPlaywrightTagFilterEnv = {
+    env.E2E_PW_INCLUDE_TAGS = resolveParamOrEnv('E2E_PW_INCLUDE_TAGS')
+    env.E2E_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('E2E_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.INTEGRATION_PW_INCLUDE_TAGS = resolveParamOrEnv('INTEGRATION_PW_INCLUDE_TAGS')
+    env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.API_PW_INCLUDE_TAGS = resolveParamOrEnv('API_PW_INCLUDE_TAGS')
+    env.API_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('API_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.A11Y_PW_INCLUDE_TAGS = resolveParamOrEnv('A11Y_PW_INCLUDE_TAGS')
+    env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('A11Y_PW_EXCLUDED_TAGS_OVERRIDE')
+}
+
+def logPlaywrightTagFilterEnv = { String contextLabel ->
+    def displayValue = { value -> value == null ? '<unset>' : value.toString() }
+    echo([
+        "[playwright-tags] ${contextLabel}",
+        "E2E include=${env.E2E_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
+            " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "A11Y enabled=${shouldRunAccessibilityTests()}",
+        "RUN_PLAYWRIGHT_ACCESSIBILITY=${displayValue(params.RUN_PLAYWRIGHT_ACCESSIBILITY)}",
+        "RUN_ACCESSIBILITY_TESTS=${displayValue(params.RUN_ACCESSIBILITY_TESTS)}",
+        "env.RUN_PLAYWRIGHT_ACCESSIBILITY=${displayValue(env.RUN_PLAYWRIGHT_ACCESSIBILITY)}",
+        "env.RUN_ACCESSIBILITY_TESTS=${displayValue(env.RUN_ACCESSIBILITY_TESTS)}"
+    ].join(' | '))
+}
+
 def branchesToSync = ['demo', 'perftest', 'ithc']
 
+String vaultSecretsKey = 'rpx-' + '$' + '{env}'
+
 def secrets = [
-  'rpx-${env}': [
-    secret('ao-test-email', 'TEST_EMAIL'),
-    secret('ao-test-password', 'TEST_PASSWORD'),
-    secret('test-api-email-adminuser', 'TEST_API_EMAIL_ADMIN'),
-    secret('test-api-password-adminuser', 'TEST_API_PASSWORD_ADMIN'),
+    (vaultSecretsKey): [
+    secret('approve-org-admin-username', 'APPROVE_ORG_ADMIN_USERNAME'),
+    secret('approve-org-admin-password', 'APPROVE_ORG_ADMIN_PASSWORD'),
+    secret('approve-org-api-username', 'APPROVE_ORG_API_USERNAME'),
+    secret('approve-org-api-password', 'APPROVE_ORG_API_PASSWORD'),
+    secret('test-roo-username', 'TEST_ROO_EMAIL'),
+    secret('test-roo-password', 'TEST_ROO_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
     secret('ao-s2s-client-secret', 'S2S_SECRET'),
     secret('ao-idam-client-secret', 'IDAM_SECRET'),
@@ -42,7 +190,7 @@ def secrets = [
   ]
 ]
 
-static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+static Map<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
       secretType: 'Secret',
       name: secretName,
@@ -54,7 +202,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    env.FUNCTIONAL_TESTS_WORKERS = '4'
+    env.FUNCTIONAL_TESTS_WORKERS = '5'
+    applyPlaywrightTagFilterEnv()
+    logPlaywrightTagFilterEnv('pipeline env')
     enableAksStagingDeployment()
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)
@@ -74,26 +224,26 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/coverage/node",
-            reportFiles          : "index.html",
-            reportName           : "node coverage tests"
+            reportDir            : 'reports/tests/coverage/node',
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'node coverage tests'
         ])
 
         publishHTML ( [
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/coverage/ng",
-            reportFiles          : "index.html",
-            reportName           : "ng coverage tests"
+            reportDir            : 'reports/tests/coverage/ng',
+            reportFiles          : htmlIndexReportFile,
+            reportName           : 'ng coverage tests'
         ])
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/mutation/node/",
-            reportFiles          : 'index.html',
+            reportDir            : 'reports/tests/mutation/node/',
+            reportFiles          : htmlIndexReportFile,
             reportName           : 'XUI Approve Organisation Mutation tests'
         ])
 
@@ -101,7 +251,7 @@ withPipeline(type, product, component) {
         //     allowMissing         : true,
         //     alwaysLinkToLastBuild: true,
         //     keepAll              : true,
-        //     reportDir            : "reports/tests/a11y/",
+        //     reportDir            : 'reports/tests/a11y/',
         //     reportFiles          : 'Report.html',
         //     reportName           : 'Approve Org a11y Test Report'
         // ])
@@ -114,7 +264,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'DEMO Smoke Test'
         ])
     }
@@ -125,28 +275,34 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'PREVIEW Smoke Test'
         ])
     }
 
-    afterSuccess('functionalTest:preview') {
+    before('functionalTest:preview') {
+        runWithFunctionalFailureCapture {
+            runPlaywrightFunctionalInParallel('PREVIEW')
+        }
+    }
 
-      publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'PREVIEW API Functional Test'
-      ])
+    afterAlways('functionalTest:preview') {
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightApiReportDir,
+            reportFiles          : playwrightApiReportFile,
+            reportName           : 'PREVIEW API Playwright Test'
+        ])
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'PREVIEW Functional E2E Test'
         ])
 
@@ -154,10 +310,24 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'PREVIEW NG Integration Test'
+            reportDir            : playwrightIntegrationReportDir,
+            reportFiles          : playwrightIntegrationReportFile,
+            reportName           : 'PREVIEW Integration Playwright Test'
         ])
+
+        if (shouldRunAccessibilityTests()) {
+            publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "${playwrightAccessibilityReportDir}/",
+                reportFiles          : playwrightAccessibilityReportFile,
+                reportName           : 'PREVIEW Accessibility Playwright Test'
+            ])
+        } else {
+            echo '[playwright-a11y] PREVIEW Accessibility Playwright Test report publish skipped because accessibility tests were not run'
+        }
+
     }
 
 
@@ -167,29 +337,35 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'AAT Smoke Test'
         ])
     }
 
+    before('functionalTest:aat') {
+        runWithFunctionalFailureCapture {
+            runPlaywrightFunctionalInParallel('AAT')
+        }
+    }
 
-    afterSuccess('functionalTest:aat') {
 
-      publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : "reports/tests/api_functional/",
-        reportFiles          : 'mochawesome.html',
-        reportName           : 'AAT API Functional Test'
-      ])
+    afterAlways('functionalTest:aat') {
 
-      publishHTML([
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : playwrightApiReportDir,
+            reportFiles          : playwrightApiReportFile,
+            reportName           : 'AAT API Playwright Test'
+        ])
+
+        publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightReportDir,
-            reportFiles          : 'index.html',
+            reportFiles          : playwrightE2eReportFile,
             reportName           : 'AAT Functional E2ETest'
         ])
 
@@ -197,9 +373,23 @@ withPipeline(type, product, component) {
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
-            reportDir            : "reports/tests/ngIntegration/",
-            reportFiles          : 'index.html',
-            reportName           : 'AAt NG Integration Test'
+            reportDir            : playwrightIntegrationReportDir,
+            reportFiles          : playwrightIntegrationReportFile,
+            reportName           : 'AAT Integration Playwright Test'
         ])
+
+        if (shouldRunAccessibilityTests()) {
+            publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "${playwrightAccessibilityReportDir}/",
+                reportFiles          : playwrightAccessibilityReportFile,
+                reportName           : 'AAT Accessibility Playwright Test'
+            ])
+        } else {
+            echo '[playwright-a11y] AAT Accessibility Playwright Test report publish skipped because accessibility tests were not run'
+        }
+
     }
 }
