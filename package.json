@@ -78,7 +78,7 @@
     "@babel/runtime": "^8.0.0",
     "@hmcts/ccd-case-ui-toolkit": "7.3.74",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
-    "@hmcts/properties-volume": "^0.0.13",
+    "@hmcts/properties-volume": "^0.0.14",
     "@hmcts/rpx-xui-common-lib": "3.2.13",
     "@hmcts/rpx-xui-node-lib": "2.30.19",
     "@microsoft/applicationinsights-web": "^3.4.1",
