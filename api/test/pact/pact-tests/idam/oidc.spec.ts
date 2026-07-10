@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import mockResponse from '../../mocks/openid-well-known-configuration.mock';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const pactSetUp = new PactTestSetup({ provider: 'Idam_api', port: 8000 });
+const pactSetUp = new PactTestSetup({ pactfileWriteMode: 'overwrite', provider: 'Idam_api', port: 8000 });
 
 const wait = (milliseconds: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
@@ -23,9 +23,9 @@ describe('OpenId Connect API', async() => {
   });
 
   describe('when a request to .well-known endpoint is made', () => {
-    before(async() => {
+    before(async () => {
       await pactSetUp.provider.setup();
-      pactSetUp.provider.addInteraction({
+      await pactSetUp.provider.addInteraction({
         state: '.well-known endpoint',
         uponReceiving: 'a request for configuration',
         withRequest: {

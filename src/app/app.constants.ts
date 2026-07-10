@@ -91,8 +91,6 @@ export const apiErrors = {
 };
 
 const featureNames = {
-  // note this is the only place where caseworker referred to as case-worker (due to feature settings)
-  caseworkerDetails: 'ao-case-worker-details',
   newRegisterOrg: 'mo-new-register-org'
 };
 
@@ -106,22 +104,11 @@ export const navItemsArray = [
       featureName: null
     },
     orderId: 0
-  },
-  {
-    text: 'Staff details',
-    href: '/caseworker-details',
-    active: false,
-    feature: {
-      isfeatureToggleable: false,
-      featureName: featureNames.caseworkerDetails
-    },
-    orderId: 1
   }
 ];
 
 const roleBasedNav = {
-  'prd-admin': navItemsArray[0],
-  'cwd-admin': navItemsArray[1]
+  'prd-admin': navItemsArray[0]
 };
 
 export class AppConstants {

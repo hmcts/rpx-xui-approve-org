@@ -7,7 +7,7 @@ const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalInternal', port: 8000 });
 
-describe('Get a list of organisations based on status', async () => {
+describe('Get a list of organisations based on status', () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
@@ -39,7 +39,15 @@ describe('Get a list of organisations based on status', async () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('Returns a list of organisations based on status', async () => {
@@ -56,7 +64,6 @@ describe('Get a list of organisations based on status', async () => {
 });
 
 function assertResponse(dto: Organisation[]): void {
-  // eslint-disable-next-line no-unused-expressions
   expect(dto).to.be.not.null;
   for (const element of dto) {
     expect(element.companyNumber).to.equal('A1000');

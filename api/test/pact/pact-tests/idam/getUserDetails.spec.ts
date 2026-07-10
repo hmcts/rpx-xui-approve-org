@@ -6,7 +6,7 @@ const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'idamApi_users', port: 8000 });
 
-describe('Idam API user details', async () => {
+describe('Idam API user details', () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
@@ -44,7 +44,15 @@ describe('Idam API user details', async () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('Returns the user details from IDAM', async () => {

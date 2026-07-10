@@ -7,8 +7,7 @@ const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike, like } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'payment_creditAccountPayment', port: 8000 });
 
-// @ts-ignore
-describe('Get Account Status for a Account Name', async () => {
+describe('Get Account Status for a Account Name', () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
@@ -59,7 +58,15 @@ describe('Get Account Status for a Account Name', async () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('Returns the Account details retrieved for an Account by number', async () => {

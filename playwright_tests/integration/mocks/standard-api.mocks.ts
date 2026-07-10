@@ -2,7 +2,10 @@ import type { Page } from '@playwright/test';
 import {
   type OrganisationSearchApiRequestPayload,
   type CommonOrganisationApiMockState,
+  createMockOrganisationUser,
   type MockOrganisation,
+  type MockOrganisationUser,
+  setupOrganisationUsersApiMock,
   setupCommonOrganisationApiMocks
 } from './organisation.mocks';
 import {
@@ -27,6 +30,7 @@ export type StandardOrganisationApprovalsApiMockState = {
   pendingPbaSearchResponse?: PendingPbaSearchResponseOverride;
   listOfValues?: unknown[];
   accountNames?: string[];
+  organisationUsers?: MockOrganisationUser[];
   organisationDeletableById?: Record<string, boolean>;
   defaultOrganisationDeletable?: boolean;
 };
@@ -41,6 +45,7 @@ export type StandardOrganisationApprovalsApiMockResult = {
   getLastPendingOrganisationSearchTerm: () => string | undefined;
   getLastActiveOrganisationSearchTerm: () => string | undefined;
   getLastPendingPbaSearchTerm: () => string | undefined;
+  getLastSingleOrganisationId: () => string | undefined;
   pendingPbaStatusApiMock: PendingPbaStatusApiMockControl;
 };
 
@@ -77,6 +82,7 @@ export async function setupStandardOrganisationApprovalsApiMocks(
 
   await setupPbaAccountsApiMock(page, state.accountNames ?? ['Mock Liberata Account']);
   await setupLovRefDataApiMock(page, state.listOfValues ?? []);
+  await setupOrganisationUsersApiMock(page, state.organisationUsers ?? [createMockOrganisationUser()]);
 
   const defaultOrganisationDeletable = state.defaultOrganisationDeletable ?? false;
 
@@ -104,6 +110,7 @@ export async function setupStandardOrganisationApprovalsApiMocks(
     getLastPendingOrganisationSearchTerm: organisationMocks.getLastPendingSearchTerm,
     getLastActiveOrganisationSearchTerm: organisationMocks.getLastActiveSearchTerm,
     getLastPendingPbaSearchTerm: pendingPbaStatusApiMock.getLastSearchTerm,
+    getLastSingleOrganisationId: organisationMocks.getLastSingleOrganisationId,
     pendingPbaStatusApiMock
   };
 }

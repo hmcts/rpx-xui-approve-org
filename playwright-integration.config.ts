@@ -7,12 +7,12 @@ const integrationTagFilters = resolveTagFilters({
   includeTagsEnvVar: 'INTEGRATION_PW_INCLUDE_TAGS',
   excludedTagsEnvVar: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
-  defaultConfigPath: 'playwright_tests/integration/tag-filter.json',
-  suiteTag: '@integration',
+  defaultConfigPath: 'playwright_tests/integration/tag-filter.json'
 });
 
 module.exports = defineConfig({
   testDir: './playwright_tests/integration',
+  testMatch: /.*\.integration\.(positive|negative)\.test\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 3,

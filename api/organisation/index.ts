@@ -18,7 +18,7 @@ const logger = log4jui.getLogger('return');
  * @param res - {organisations: [{org1}, {org2}]} OR {org1}
  * @param next
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response) {
   // if a search_filter is passed in the request it means we need to load the paged organisations list, filtered by the status
   if (req.query.search_filter) {
@@ -104,7 +104,7 @@ export function getActiveOrganisation(pageNumber: number, size: number, req: Enh
 async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
   const response = await req.http.get(url);
-  const chunkSize = 500;
+  const chunkSize = 1000;
   const total_records = response.headers.total_records;
   const counts = Math.floor(total_records / chunkSize) + 1;
   const organisationPromises = [];
