@@ -9,7 +9,7 @@ import {
 } from '@hmcts/rpx-xui-common-lib';
 import { CookieService } from 'ngx-cookie';
 import { of, Subject } from 'rxjs';
-import { EnvironmentConfig } from 'src/models/environmentConfig.model';
+import { EnvironmentConfig } from '../../../models/environmentConfig.model';
 import { EnvironmentService } from '../../services/environment.service';
 import * as fromRoot from '../../store';
 import { AppComponent } from './app.component';

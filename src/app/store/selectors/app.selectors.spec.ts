@@ -1,4 +1,4 @@
-import { UserModel } from 'src/models/user.model';
+import { UserModel } from '../../../models/user.model';
 import * as fromAppFeature from '../reducers/app.reducer';
 import * as fromRoot from '../reducers';
 import * as fromSelectors from './app.selectors';
