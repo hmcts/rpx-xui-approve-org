@@ -1,5 +1,11 @@
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
-import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent } from './components';
+import {
+  AccessibilityComponent,
+  AccessDeniedComponent,
+  CookiePolicyComponent,
+  PrivacyPolicyComponent,
+  TermsAndConditionsComponent
+} from './components';
 
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/services/auth/auth.guard';
@@ -14,15 +20,6 @@ export const ROUTES: Routes = [
     component: RedirectComponent,
     canActivate: [AuthGuard],
     pathMatch: 'full'
-  },
-  {
-    path: 'caseworker-details',
-    canActivate: [AuthGuard, RoleGuard],
-    loadChildren: () => import('../caseworker-ref-data/caseworker-ref-data.module').then((m) => m.CaseWorkerRefDataModule),
-    data: {
-      needsRole: ['cwd-admin'],
-      roleMatching: RoleMatching.ALL
-    }
   },
   {
     canActivate: [AuthGuard],
@@ -67,6 +64,13 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'access-denied',
+    component: AccessDeniedComponent,
+    data: {
+      title: 'Access denied'
+    }
+  },
+  {
     path: 'service-down',
     component: ServiceDownComponent,
     data: {
@@ -93,4 +97,3 @@ export const ROUTES: Routes = [
     pathMatch: 'full'
   }
 ];
-

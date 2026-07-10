@@ -5,6 +5,23 @@ import {
   type MockPendingPbaOrganisation
 } from '../mocks';
 
+type SearchStatusCodeScenario = {
+  statusCode: number;
+  expectedRedirectPath: RegExp;
+  expectedErrorHeading: string;
+};
+
+const NOT_AUTHORISED_ERROR_HEADING = 'Sorry, you\'re not authorised to perform this action';
+const SERVICE_DOWN_ERROR_HEADING = 'Sorry, there is a problem with the service';
+
+function pastIsoDateForSequence(sequence: number): string {
+  return new Date(Date.UTC(2024, 0, sequence)).toISOString();
+}
+
+function newRegistrationStatusForSequence(sequence: number): 'PENDING' | 'REVIEW' {
+  return sequence % 2 === 0 ? 'REVIEW' : 'PENDING';
+}
+
 export const ORGANISATION_SEARCH_TERMS = {
   pendingByName: 'Search Pending',
   activeByName: 'Search Active',
@@ -29,13 +46,14 @@ export const pendingSearchMatchOrganisation = createMockOrganisation({
     dxAddress: [{ dxNumber: 'DX 200', dxExchange: 'London' }]
   }],
   paymentAccount: [],
-  pendingPaymentAccount: ['PBA1000001']
+  pendingPaymentAccount: ['PBA1000001'],
+  dateReceived: pastIsoDateForSequence(1)
 });
 
 export const pendingNonMatchingOrganisation = createMockOrganisation({
   organisationIdentifier: 'PENDINGSEARCH02',
   name: 'Background Pending Org Two',
-  status: 'PENDING',
+  status: 'REVIEW',
   contactInformation: [{
     addressLine1: '99 Fallback Road',
     addressLine2: 'Fallback District',
@@ -46,7 +64,8 @@ export const pendingNonMatchingOrganisation = createMockOrganisation({
     dxAddress: [{ dxNumber: 'DX 201', dxExchange: 'Leeds' }]
   }],
   paymentAccount: [],
-  pendingPaymentAccount: ['PBA1000002']
+  pendingPaymentAccount: ['PBA1000002'],
+  dateReceived: pastIsoDateForSequence(2)
 });
 
 export const activeSearchMatchOrganisation = createMockOrganisation({
@@ -99,6 +118,74 @@ export function buildOrganisationByIdRecord(organisations: MockOrganisation[]): 
   }, {});
 }
 
+export function buildActiveSearchOrganisations(total: number = 10): MockOrganisation[] {
+  return Array.from({ length: total }, (_unused, index) => {
+    const sequence = index + 1;
+    const paddedSequence = sequence.toString().padStart(2, '0');
+    return createMockOrganisation({
+      organisationIdentifier: `ACTIVESEARCH${paddedSequence}`,
+      name: `${ORGANISATION_SEARCH_TERMS.activeByName} Org ${paddedSequence}`,
+      status: 'ACTIVE',
+      paymentAccount: [`PBA21${paddedSequence}001`],
+      pendingPaymentAccount: []
+    });
+  });
+}
+
+export function buildPendingSearchOrganisations(total: number = 10): MockOrganisation[] {
+  return Array.from({ length: total }, (_unused, index) => {
+    const sequence = index + 1;
+    const paddedSequence = sequence.toString().padStart(2, '0');
+    return createMockOrganisation({
+      organisationIdentifier: `PENDINGSEARCH${paddedSequence}`,
+      name: `${ORGANISATION_SEARCH_TERMS.pendingByName} Org ${paddedSequence}`,
+      status: newRegistrationStatusForSequence(sequence),
+      paymentAccount: [],
+      pendingPaymentAccount: [`PBA31${paddedSequence}001`],
+      dateReceived: pastIsoDateForSequence(sequence)
+    });
+  });
+}
+
+export function buildPendingAddressSearchOrganisations(total: number = 10): MockOrganisation[] {
+  return Array.from({ length: total }, (_unused, index) => {
+    const sequence = index + 1;
+    const paddedSequence = sequence.toString().padStart(2, '0');
+    return createMockOrganisation({
+      organisationIdentifier: `PENDINGADDRESS${paddedSequence}`,
+      name: `Address Pending Org ${paddedSequence}`,
+      status: newRegistrationStatusForSequence(sequence),
+      contactInformation: [{
+        addressLine1: `${sequence} Search Address Street`,
+        addressLine2: 'Search District',
+        addressLine3: 'Search Area',
+        townCity: 'London',
+        county: 'Greater London',
+        postCode: ORGANISATION_SEARCH_TERMS.pendingByAddress,
+        dxAddress: [{ dxNumber: `DX 3${paddedSequence}`, dxExchange: 'London' }]
+      }],
+      paymentAccount: [],
+      pendingPaymentAccount: [`PBA32${paddedSequence}001`],
+      dateReceived: pastIsoDateForSequence(sequence)
+    });
+  });
+}
+
+export function buildPendingPbaSearchOrganisations(total: number = 10): MockPendingPbaOrganisation[] {
+  return Array.from({ length: total }, (_unused, index) => {
+    const sequence = index + 1;
+    const paddedSequence = sequence.toString().padStart(2, '0');
+    return createMockPendingPbaOrganisation({
+      organisationIdentifier: `PBASEARCH${paddedSequence}`,
+      organisationName: `${ORGANISATION_SEARCH_TERMS.pendingPbaByName} Org ${paddedSequence}`,
+      pbaNumbers: [{
+        pbaNumber: `PBA33${paddedSequence}001`,
+        dateCreated: new Date(`2024-03-${paddedSequence}T00:00:00.000Z`).toISOString()
+      }]
+    });
+  });
+}
+
 export function buildPendingPaginationOrganisations(total: number = 11): MockOrganisation[] {
   return Array.from({ length: total }, (_unused, index) => {
     const sequence = index + 1;
@@ -106,7 +193,7 @@ export function buildPendingPaginationOrganisations(total: number = 11): MockOrg
     return createMockOrganisation({
       organisationIdentifier: `PENDINGPAGE${paddedSequence}`,
       name: `${ORGANISATION_SEARCH_TERMS.pendingPagination} Org ${paddedSequence}`,
-      status: 'PENDING',
+      status: newRegistrationStatusForSequence(sequence),
       contactInformation: [{
         addressLine1: `${sequence} Pagination Street`,
         addressLine2: 'Pagination District',
@@ -117,7 +204,8 @@ export function buildPendingPaginationOrganisations(total: number = 11): MockOrg
         dxAddress: [{ dxNumber: `DX 4${paddedSequence}`, dxExchange: 'London' }]
       }],
       paymentAccount: [],
-      pendingPaymentAccount: [`PBA41${paddedSequence}001`]
+      pendingPaymentAccount: [`PBA41${paddedSequence}001`],
+      dateReceived: pastIsoDateForSequence(sequence)
     });
   });
 }
@@ -150,3 +238,113 @@ export function buildPendingPbaPaginationOrganisations(total: number = 11): Mock
     });
   });
 }
+
+export const pendingOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 401,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 503,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  }
+];
+
+export const activeOrganisationStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 401,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 503,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  }
+];
+
+export const activeOrganisationLoadStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 400,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 401,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 403,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 404,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 503,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  }
+];
+
+export const pendingPbaStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 403,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  }
+];
+
+export const organisationDetailsStatusCodeScenarios: SearchStatusCodeScenario[] = [
+  {
+    statusCode: 400,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 401,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 403,
+    expectedRedirectPath: /\/not-authorised(?:\/?|\?.*)$/,
+    expectedErrorHeading: NOT_AUTHORISED_ERROR_HEADING
+  },
+  {
+    statusCode: 404,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  },
+  {
+    statusCode: 500,
+    expectedRedirectPath: /\/service-down(?:\/?|\?.*)$/,
+    expectedErrorHeading: SERVICE_DOWN_ERROR_HEADING
+  }
+];
