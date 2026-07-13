@@ -76,22 +76,25 @@ properties([
         booleanParam(
             name: runAccessibilityTestsParamName,
             defaultValue: true,
-            description: 'Run the unified accessibility Playwright pack (axe, WAVE-like checks and Lighthouse)'
+            description: 'Run the unified accessibility Playwright pack (axe, WAVE-like and screen-reader checks)'
         )
     ])
 ])
 
-@Library('Infrastructure@2.0.0')
+@Library("Infrastructure@2.4.0")
 
 String type      = 'nodejs'
 String product   = 'xui'
 String component = 'webapp'
 String channel   = '#xui-pipeline'
-String playwrightReportDir = 'functional-output/tests/playwright-e2e'
-String playwrightApiReportDir = 'functional-output/tests/playwright-api'
-String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
-String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
+String playwrightReportDir = 'functional-output/tests/playwright-e2e/odhin-report'
+String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-report'
+String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
+String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly/odhin-report'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightApiReportFile = 'xui-ao-playwright-api.html'
+String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
+String playwrightNightlyReportFile = 'xui-ao-playwright-nightly.html'
 
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -242,7 +245,7 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightApiReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightApiReportFile,
             reportName           : 'XUI Approve Organisation Full functional API Playwright Tests'
         ])
 
@@ -251,25 +254,29 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightIntegrationReportFile,
             reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : playwrightAccessibilityReportFile,
-            reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
-        ])
+        if (shouldRunAccessibilityTests()) {
+            publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "${playwrightAccessibilityReportDir}/",
+                reportFiles          : playwrightAccessibilityReportFile,
+                reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
+            ])
+        } else {
+            echo "[playwright-a11y] Full functional Accessibility Playwright Test report publish skipped because ${runAccessibilityTestsParamName}=false"
+        }
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightNightlyReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightNightlyReportFile,
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
         ])
     }
