@@ -2,6 +2,8 @@
 charts
 infrastructure
 node_modules
+payload.json
+payload.json.gz
 
 Jenkinsfile*
-README.md 
+README.md

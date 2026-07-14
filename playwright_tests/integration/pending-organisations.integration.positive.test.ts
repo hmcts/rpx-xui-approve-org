@@ -117,7 +117,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
     });
 
     await test.step('Verify pending organisation search results', async () => {
-      const pendingOrganisationRows = await organisationApprovalsPage.pendingOrganisationTableRows();
+      const pendingOrganisationRows = await organisationApprovalsPage.pendingOrganisationTableRows(10);
       expect(pendingOrganisationRows).toEqual(organisationTableRowsFromMockData(pendingSearchOrganisations));
       expect(standardApiMocks.getLastPendingOrganisationSearchTerm()).toEqual(
         ORGANISATION_SEARCH_TERMS.pendingByName.toLowerCase()
@@ -125,7 +125,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
     });
 
     await test.step('Verify pagination is not shown for 10 pending organisations', async () => {
-      expect(await organisationApprovalsPage.pendingOrganisationTableRows()).toHaveLength(10);
+      expect(await organisationApprovalsPage.pendingOrganisationTableRows(10)).toHaveLength(10);
       await expect(organisationApprovalsPage.pagination).toHaveCount(0);
     });
   });
@@ -148,7 +148,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
     });
 
     await test.step('Verify pending organisation address search results', async () => {
-      const pendingOrganisationRows = await organisationApprovalsPage.pendingOrganisationTableRows();
+      const pendingOrganisationRows = await organisationApprovalsPage.pendingOrganisationTableRows(10);
       expect(pendingOrganisationRows).toEqual(organisationTableRowsFromMockData(pendingAddressSearchOrganisations));
       expect(standardApiMocks.getLastPendingOrganisationSearchTerm()).toEqual(
         ORGANISATION_SEARCH_TERMS.pendingByAddress.toLowerCase()
@@ -156,7 +156,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
     });
 
     await test.step('Verify pagination is not shown for 10 pending organisations', async () => {
-      expect(await organisationApprovalsPage.pendingOrganisationTableRows()).toHaveLength(10);
+      expect(await organisationApprovalsPage.pendingOrganisationTableRows(10)).toHaveLength(10);
       await expect(organisationApprovalsPage.pagination).toHaveCount(0);
     });
   });
@@ -210,7 +210,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
           page_size: 10
         }
       });
-      expect(await organisationApprovalsPage.pendingOrganisationTableRows()).toEqual(
+      expect(await organisationApprovalsPage.pendingOrganisationTableRows(10)).toEqual(
         organisationTableRowsFromMockData(pendingPaginationOrganisations.slice(0, 10))
       );
       await expect(organisationApprovalsPage.pagination).toContainText(
@@ -231,7 +231,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
         }
       });
       await expect(organisationApprovalsPage.searchInput).toHaveValue(ORGANISATION_SEARCH_TERMS.pendingPagination);
-      expect(await organisationApprovalsPage.pendingOrganisationTableRows()).toEqual(
+      expect(await organisationApprovalsPage.pendingOrganisationTableRows(1)).toEqual(
         organisationTableRowsFromMockData([expectedSecondPageOrganisation])
       );
       await expect(organisationApprovalsPage.pagination).toContainText(

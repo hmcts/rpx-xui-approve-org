@@ -10,9 +10,10 @@ const DEFAULT_TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net/';
 const DEFAULT_REGISTER_URL = 'https://manage-org.aat.platform.hmcts.net';
 const REGISTER_URL_BY_ENVIRONMENT = {
   aat: DEFAULT_REGISTER_URL,
-  demo: 'https://manage-org.demo.platform.hmcts.net'
+  demo: 'https://manage-org.demo.platform.hmcts.net',
+  ithc: 'https://manage-org.ithc.platform.hmcts.net'
 };
-const HMCTS_APPROVE_ORG_HOST_PATTERN = /^(?:administer-orgs|xui-ao-webapp)(?:-(?:staging|pr-\d+))?\.(aat|demo|preview)\.platform\.hmcts\.net$/;
+const HMCTS_APPROVE_ORG_HOST_PATTERN = /^(?:administer-orgs|xui-ao-webapp)(?:-(?:staging|pr-\d+))?\.(aat|demo|ithc|preview)\.platform\.hmcts\.net$/;
 
 function resolveUrl(rawValue: string | undefined, fallback: string, envName: string): string {
   const value = (rawValue ?? '').trim();
@@ -37,6 +38,9 @@ function resolveRegisterUrl(rawValue: string | undefined, baseUrl: string): stri
   const environment = HMCTS_APPROVE_ORG_HOST_PATTERN.exec(approveOrgHost)?.[1];
   if (environment === 'demo') {
     return REGISTER_URL_BY_ENVIRONMENT.demo;
+  }
+  if (environment === 'ithc') {
+    return REGISTER_URL_BY_ENVIRONMENT.ithc;
   }
 
   return REGISTER_URL_BY_ENVIRONMENT.aat;

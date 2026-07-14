@@ -136,7 +136,7 @@ test.describe(
       });
 
       await test.step('Verify active organisation search results', async () => {
-        const activeOrganisationRows = await organisationApprovalsPage.activeOrganisationTableRows();
+        const activeOrganisationRows = await organisationApprovalsPage.activeOrganisationTableRows(10);
         expect(activeOrganisationRows).toEqual(organisationTableRowsFromMockData(activeSearchOrganisations));
         expect(standardApiMocks.getLastActiveOrganisationSearchTerm()).toEqual(
           ORGANISATION_SEARCH_TERMS.activeByName.toLowerCase()
@@ -144,7 +144,7 @@ test.describe(
       });
 
       await test.step('Verify pagination is not shown for 10 active organisations', async () => {
-        expect(await organisationApprovalsPage.activeOrganisationTableRows()).toHaveLength(10);
+        expect(await organisationApprovalsPage.activeOrganisationTableRows(10)).toHaveLength(10);
         await expect(organisationApprovalsPage.pagination).toHaveCount(0);
       });
     });
@@ -210,7 +210,7 @@ test.describe(
             page_size: 10
           }
         });
-        expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual(
+        expect(await organisationApprovalsPage.activeOrganisationTableRows(10)).toEqual(
           organisationTableRowsFromMockData(activePaginationOrganisations.slice(0, 10))
         );
         await expect(organisationApprovalsPage.pagination).toContainText(
@@ -231,7 +231,7 @@ test.describe(
           }
         });
         await expect(organisationApprovalsPage.searchInput).toHaveValue(ORGANISATION_SEARCH_TERMS.activePagination);
-        expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual(
+        expect(await organisationApprovalsPage.activeOrganisationTableRows(1)).toEqual(
           organisationTableRowsFromMockData([expectedSecondPageOrganisation])
         );
         await expect(organisationApprovalsPage.pagination).toContainText(
