@@ -29,7 +29,7 @@ async function registerOrganisation(req, res) {
 /**
  * payload
  *
- * TODO: On the UI show an appropiate message to the user if we're;
+ * On the UI show an appropiate message to the user if we're;
  * 1. Unable to submit their request, this requires a more verbose status message back from the api, that currently
  * being looked at.
  * 2. The same data has been submitted twice, currently the Api will throw back a 500.

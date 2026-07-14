@@ -8,7 +8,7 @@
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "export NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
     "build:docker": "docker build . -t rpx-xui-approve-org",
     "build:ng": "ng build",
     "build:node": "cd api && yarn build",
