@@ -70,7 +70,7 @@ export interface OrganisationDeletedMessage {
   statusCode: number;
 }
 
-// TODO Remove if Not used ....
+// Remove if Not used ....
 export interface UserAddedResponse {
   idamStatus: string;
   userIdentifier: string;
