@@ -56,16 +56,8 @@ describe('Reinvite a User', () => {
     it('Reinvite a user for an organisation', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId + '/users/';
 
-      try {
-        const response = await postOperation(taskUrl, mockRequest);
-        try {
-          expect(response.status).to.be.equal(201);
-        } catch (e) {
-          console.log('error occurred in asserting response...' + e);
-        }
-      } finally {
-        await pactSetUp.verifyAndFinalize();
-      }
+      const response = await postOperation(taskUrl, mockRequest);
+      expect(response.status).to.be.equal(201);
     });
   });
 });

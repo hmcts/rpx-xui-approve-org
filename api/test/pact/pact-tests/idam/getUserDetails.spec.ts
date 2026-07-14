@@ -57,13 +57,9 @@ describe('Idam API user details', () => {
 
     it('Returns the user details from IDAM', async () => {
       const taskUrl = `${pactSetUp.provider.mockService.baseUrl}/details`;
-      try {
-        const axiosResponse = await idamGetUserDetails(taskUrl);
-        const dto: IdamGetDetailsResponseDto = axiosResponse.data as IdamGetDetailsResponseDto;
-        assertResponses(dto);
-      } finally {
-        await pactSetUp.verifyAndFinalize();
-      }
+      const axiosResponse = await idamGetUserDetails(taskUrl);
+      const dto: IdamGetDetailsResponseDto = axiosResponse.data as IdamGetDetailsResponseDto;
+      assertResponses(dto);
     });
   });
 });

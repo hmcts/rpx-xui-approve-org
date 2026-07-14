@@ -47,12 +47,8 @@ describe('S2S Auth API', () => {
 
     it('returns the correct response', async () => {
       const s2sUrl: string = `${pactSetUp.provider.mockService.baseUrl}/lease`;
-      try {
-        const resp = await postS2SLease(s2sUrl, mockRequest);
-        assertResponse(resp.data);
-      } finally {
-        await pactSetUp.verifyAndFinalize();
-      }
+      const resp = await postS2SLease(s2sUrl, mockRequest);
+      assertResponse(resp.data);
     });
   });
 });

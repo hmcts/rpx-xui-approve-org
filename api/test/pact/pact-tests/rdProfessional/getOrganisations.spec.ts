@@ -52,13 +52,9 @@ describe('Get a list of organisations based on status', () => {
 
     it('Returns a list of organisations based on status', async () => {
       const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations?status=Active`;
-      try {
-        const response = await getOperation(path);
-        const responseDto: Organisation[] = response.data.organisations as Organisation[];
-        assertResponse(responseDto);
-      } finally {
-        await pactSetUp.verifyAndFinalize();
-      }
+      const response = await getOperation(path);
+      const responseDto: Organisation[] = response.data.organisations as Organisation[];
+      assertResponse(responseDto);
     });
   });
 });

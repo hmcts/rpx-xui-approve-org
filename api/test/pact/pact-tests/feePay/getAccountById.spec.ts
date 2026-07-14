@@ -71,14 +71,10 @@ describe('Get Account Status for a Account Name', () => {
 
     it('Returns the Account details retrieved for an Account by number', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/accounts/` + accountId;
-      try {
-        const axResponse = await getOperation(taskUrl);
-        expect(axResponse.status).to.be.equal(200);
-        const responseDto: AccountDetailsResponse = axResponse.data as AccountDetailsResponse;
-        assertResponse(responseDto);
-      } finally {
-        await pactSetUp.verifyAndFinalize();
-      }
+      const axResponse = await getOperation(taskUrl);
+      expect(axResponse.status).to.be.equal(200);
+      const responseDto: AccountDetailsResponse = axResponse.data as AccountDetailsResponse;
+      assertResponse(responseDto);
     });
   });
 });

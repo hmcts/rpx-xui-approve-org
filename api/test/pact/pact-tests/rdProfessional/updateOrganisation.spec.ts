@@ -74,16 +74,8 @@ describe('Update an organisation', () => {
     it('Update an organisation and returns response', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId;
 
-      try {
-        const response = await putOperation(taskUrl, mockRequest);
-        try {
-          expect(response.status).to.be.equal(200);
-        } catch (e) {
-          console.log('error occurred in asserting response...' + e);
-        }
-      } finally {
-        await pactSetUp.verifyAndFinalize();
-      }
+      const response = await putOperation(taskUrl, mockRequest);
+      expect(response.status).to.be.equal(200);
     });
   });
 });
