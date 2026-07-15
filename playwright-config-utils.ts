@@ -4,10 +4,19 @@ import * as path from 'node:path';
 
 type EnvMap = NodeJS.ProcessEnv;
 const DEFAULT_WORKER_COUNT = 1;
-export const GLOBAL_EXCLUSION_TAG_CATALOG_PATHS = [
-  'playwright_tests/api/tag-filter.json',
-  'playwright_tests/e2e/tag-filter.json',
-  'playwright_tests/integration/tag-filter.json'
+const FUNCTIONAL_TAG_CATALOGS = [
+  {
+    configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests/api/tag-filter.json'
+  },
+  {
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests/e2e/tag-filter.json'
+  },
+  {
+    configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests/integration/tag-filter.json'
+  }
 ];
 
 type TagFilterConfig = {
@@ -342,6 +351,26 @@ export function resolveTagFilters({
         : 'file',
     configPath
   };
+}
+
+export function resolveFunctionalTagFilters({
+  env = process.env,
+  ...options
+}: Omit<
+  ResolveTagFiltersOptions,
+  'globalExcludedTagsEnvVar' | 'ignoreGlobalExcludesEnvVar' | 'globalTagCatalogPaths'
+>): ResolvedTagFilters {
+  const globalTagCatalogPaths = FUNCTIONAL_TAG_CATALOGS.map(({ configPathEnvVar, defaultConfigPath }) =>
+    resolveTagFilterConfigPath(env, configPathEnvVar, defaultConfigPath)
+  );
+
+  return resolveTagFilters({
+    ...options,
+    env,
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalTagCatalogPaths
+  });
 }
 
 function formatTagLogValue(tags: string[]): string {

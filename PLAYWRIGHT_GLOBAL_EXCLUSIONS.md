@@ -7,6 +7,7 @@ Use this as a temporary operational control when a tagged test area is blocking 
 ## Runtime contract
 
 - Key Vault secret: `xui-approve-org-playwright-global-excluded-tags`
+- Local-population tag: `e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`
 - Runtime env var: `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`
 - Bypass: `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true`
 - Clear/no-op value: `@none`
@@ -29,67 +30,59 @@ CI logs the resolved filters. Set `PLAYWRIGHT_LOG_TAG_FILTERS=true` for the same
 
 ## Key Vault commands
 
-Set the target vault and secret once. Values must be space-separated.
+Values must be space-separated. Run the view command before changing a value. The examples below show the complete value after the change, not a delta; preserve every unrelated current exclusion in `--value`.
 
-```bash
-vault_name='rpx-aat'
-secret_name='xui-approve-org-playwright-global-excluded-tags'
-incident_jira='EXUI-0000' # replace with the ticket tracking the current exclusion
-```
-
-View the current value:
+View the current AAT value:
 
 ```bash
 az keyvault secret show \
-  --vault-name "${vault_name}" \
-  --name "${secret_name}" \
+  --vault-name rpx-aat \
+  --name xui-approve-org-playwright-global-excluded-tags \
   --query value \
   --output tsv
 ```
 
-Add `@search` while preserving all current exclusions and removing duplicates:
+View the complete current metadata:
 
 ```bash
-tag_to_add='@search'
-current_value="$(az keyvault secret show --vault-name "${vault_name}" --name "${secret_name}" --query value --output tsv)"
-updated_value="$(printf '%s\n' "${current_value} ${tag_to_add}" |
-  tr ' ' '\n' |
-  awk 'NF && $0 != "@none" && !seen[$0]++' |
-  paste -sd ' ' -)"
-az keyvault secret set \
-  --vault-name "${vault_name}" \
-  --name "${secret_name}" \
-  --value "${updated_value:-@none}" \
-  --tags e2e=PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS purpose=playwright-global-exclusions jira="${incident_jira}"
+az keyvault secret show \
+  --vault-name rpx-aat \
+  --name xui-approve-org-playwright-global-excluded-tags \
+  --query tags \
+  --output json
 ```
 
-Remove only `@search` while preserving every other exclusion:
+After confirming the current value is `@organisations`, add `@search` while preserving `@organisations`:
 
 ```bash
-tag_to_remove='@search'
-current_value="$(az keyvault secret show --vault-name "${vault_name}" --name "${secret_name}" --query value --output tsv)"
-updated_value="$(printf '%s\n' "${current_value}" |
-  tr ' ' '\n' |
-  awk -v remove="${tag_to_remove}" 'NF && $0 != "@none" && $0 != remove && !seen[$0]++' |
-  paste -sd ' ' -)"
 az keyvault secret set \
-  --vault-name "${vault_name}" \
-  --name "${secret_name}" \
-  --value "${updated_value:-@none}" \
-  --tags e2e=PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS purpose=playwright-global-exclusions jira="${incident_jira}"
+  --vault-name rpx-aat \
+  --name xui-approve-org-playwright-global-excluded-tags \
+  --value '@organisations @search' \
+  --tags e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS file-encoding=utf-8 purpose=playwright-global-exclusions jira=EXUI-0000
+```
+
+After confirming the current value is `@organisations @search`, remove only `@search` while preserving `@organisations`:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name xui-approve-org-playwright-global-excluded-tags \
+  --value '@organisations' \
+  --tags e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS file-encoding=utf-8 purpose=playwright-global-exclusions
 ```
 
 Remove all global exclusions:
 
 ```bash
 az keyvault secret set \
-  --vault-name "${vault_name}" \
-  --name "${secret_name}" \
+  --vault-name rpx-aat \
+  --name xui-approve-org-playwright-global-excluded-tags \
   --value '@none' \
-  --tags e2e=PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS purpose=playwright-global-exclusions jira="${incident_jira}"
+  --tags e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS file-encoding=utf-8 purpose=playwright-global-exclusions
 ```
 
-Repeat an update only for the non-production vaults that need it. Always run the view command first and review `updated_value` before setting a new version. These commands do not use comma-separated values.
+Replace `rpx-aat` only when updating another non-production vault. The `jira=EXUI-0000` metadata shown in the add example is optional; preserve the current Jira tag when one is already present. Because `az keyvault secret set --tags` replaces the complete tag set, preserve the live `e2e`, `file-encoding`, `purpose` and any other metadata fields on every update. Review the complete explicit `--value` before creating a new secret version, and do not remove unrelated exclusions.
 
 ## Local verification
 

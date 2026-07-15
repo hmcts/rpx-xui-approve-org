@@ -1,8 +1,7 @@
 import { defineConfig } from '@playwright/test';
 import {
-  GLOBAL_EXCLUSION_TAG_CATALOG_PATHS,
   logResolvedTagFilters,
-  resolveTagFilters,
+  resolveFunctionalTagFilters,
   resolveWorkerCount
 } from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
@@ -27,14 +26,11 @@ function resolveApiWorkerCount(): number {
   return resolvePositiveInteger(process.env.API_PW_WORKERS) ?? resolveWorkerCount();
 }
 
-const apiTagFilters = resolveTagFilters({
+const apiTagFilters = resolveFunctionalTagFilters({
   includeTagsEnvVar: 'API_PW_INCLUDE_TAGS',
   excludedTagsEnvVar: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
-  defaultConfigPath: 'playwright_tests/api/tag-filter.json',
-  globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
-  ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
-  globalTagCatalogPaths: GLOBAL_EXCLUSION_TAG_CATALOG_PATHS
+  defaultConfigPath: 'playwright_tests/api/tag-filter.json'
 });
 logResolvedTagFilters('API', apiTagFilters);
 

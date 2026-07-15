@@ -1,21 +1,17 @@
 import { defineConfig, devices } from '@playwright/test';
 import {
-  GLOBAL_EXCLUSION_TAG_CATALOG_PATHS,
   logResolvedTagFilters,
-  resolveTagFilters,
+  resolveFunctionalTagFilters,
   resolveWorkerCount
 } from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
 
 const headlessMode = process.env.HEAD !== 'true';
-const integrationTagFilters = resolveTagFilters({
+const integrationTagFilters = resolveFunctionalTagFilters({
   includeTagsEnvVar: 'INTEGRATION_PW_INCLUDE_TAGS',
   excludedTagsEnvVar: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
-  defaultConfigPath: 'playwright_tests/integration/tag-filter.json',
-  globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
-  ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
-  globalTagCatalogPaths: GLOBAL_EXCLUSION_TAG_CATALOG_PATHS
+  defaultConfigPath: 'playwright_tests/integration/tag-filter.json'
 });
 logResolvedTagFilters('Integration', integrationTagFilters);
 

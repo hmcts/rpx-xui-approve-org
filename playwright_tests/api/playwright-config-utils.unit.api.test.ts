@@ -5,6 +5,7 @@ import * as path from 'node:path';
 
 import {
   logResolvedTagFilters,
+  resolveFunctionalTagFilters,
   resolveTagFilters,
   splitTagInput,
   type ResolvedTagFilters
@@ -139,6 +140,34 @@ test('applies a shared global tag to every suite catalog that declares it', () =
   expect(e2eFilters.globalExcludedTags).toEqual(['@search']);
   expect(integrationFilters.globalExcludedTags).toEqual(['@search']);
   expect(apiFilters.globalExcludedTags).toEqual(['@api-only']);
+});
+
+test('builds global validation from functional catalog path overrides', () => {
+  const configDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-functional-tag-filter-'));
+  const apiConfigPath = path.join(configDir, 'api.json');
+  const e2eConfigPath = path.join(configDir, 'e2e.json');
+  const integrationConfigPath = path.join(configDir, 'integration.json');
+  fs.writeFileSync(apiConfigPath, JSON.stringify({ availableTags: ['@custom-api'] }));
+  fs.writeFileSync(e2eConfigPath, JSON.stringify({ availableTags: ['@e2e', '@custom-e2e'] }));
+  fs.writeFileSync(integrationConfigPath, JSON.stringify({ availableTags: ['@custom-integration'] }));
+  temporaryConfigPaths.push(apiConfigPath);
+
+  const filters = resolveFunctionalTagFilters({
+    env: {
+      API_PW_TAG_FILTER_CONFIG: apiConfigPath,
+      E2E_PW_TAG_FILTER_CONFIG: e2eConfigPath,
+      INTEGRATION_PW_TAG_FILTER_CONFIG: integrationConfigPath,
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@custom-api @custom-e2e @custom-integration'
+    },
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'unused-e2e-catalog.json',
+    suiteTag: '@e2e'
+  });
+
+  expect(filters.globalExcludedTags).toEqual(['@custom-e2e']);
+  expect(filters.ignoredGlobalExcludedTags).toEqual(['@custom-api', '@custom-integration']);
 });
 
 test('logs applied, ignored and bypass diagnostics when requested', () => {
