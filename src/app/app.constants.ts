@@ -91,8 +91,6 @@ export const apiErrors = {
 };
 
 const featureNames = {
-  // note this is the only place where caseworker referred to as case-worker (due to feature settings)
-  caseworkerDetails: 'ao-case-worker-details',
   newRegisterOrg: 'mo-new-register-org'
 };
 
@@ -106,35 +104,24 @@ export const navItemsArray = [
       featureName: null
     },
     orderId: 0
-  },
-  {
-    text: 'Staff details',
-    href: '/caseworker-details',
-    active: false,
-    feature: {
-      isfeatureToggleable: false,
-      featureName: featureNames.caseworkerDetails
-    },
-    orderId: 1
   }
 ];
 
 const roleBasedNav = {
-  'prd-admin': navItemsArray[0],
-  'cwd-admin': navItemsArray[1]
+  'prd-admin': navItemsArray[0]
 };
 
 export class AppConstants {
-  public static FOOTER_DATA = footerData;
-  public static FOOTER_DATA_NAVIGATION = footerDataNavigation;
-  public static ENVIRONMENT_NAMES = environmentNames;
-  public static USER_ROLES = userRoles;
-  public static XUI_APPROVAL_ROLE = xuiApprovalRole;
-  public static CCD_ROLES = ccdRoles;
-  public static ERROR_MESSAGE_MAPPINGS = errorMessageMappings;
-  public static API_ERRORS = apiErrors;
-  public static SUPER_USER_ROLES = superUserRoles;
-  public static NAVITEMS = navItemsArray;
-  public static ROLES_BASED_NAV = roleBasedNav;
-  public static FEATURE_NAMES = featureNames;
+  public static readonly FOOTER_DATA = footerData;
+  public static readonly FOOTER_DATA_NAVIGATION = footerDataNavigation;
+  public static readonly ENVIRONMENT_NAMES = environmentNames;
+  public static readonly USER_ROLES = userRoles;
+  public static readonly XUI_APPROVAL_ROLE = xuiApprovalRole;
+  public static readonly CCD_ROLES = ccdRoles;
+  public static readonly ERROR_MESSAGE_MAPPINGS = errorMessageMappings;
+  public static readonly API_ERRORS = apiErrors;
+  public static readonly SUPER_USER_ROLES = superUserRoles;
+  public static readonly NAVITEMS = navItemsArray;
+  public static readonly ROLES_BASED_NAV = roleBasedNav;
+  public static readonly FEATURE_NAMES = featureNames;
 }

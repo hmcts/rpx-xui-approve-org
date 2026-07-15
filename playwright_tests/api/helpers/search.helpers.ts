@@ -1,6 +1,6 @@
 import type { APIRequestContext } from '@playwright/test';
 
-type SortDirection = 'ASC' | 'DESC';
+type SortDirection = 'ASC' | 'DESC' | 'asc' | 'desc';
 
 type SearchSortParameter = {
   sort_by: string;
@@ -37,6 +37,11 @@ const DEFAULT_SORT: SearchSortParameter = {
   sort_order: 'ASC'
 };
 
+const DEFAULT_PBA_SORT: SearchSortParameter = {
+  sort_by: 'organisationId',
+  sort_order: 'asc'
+};
+
 const DEFAULT_PAGE_SIZE = 10;
 
 export const DENIED_HTTP_STATUSES = [302, 401, 403] as const;
@@ -60,14 +65,19 @@ export function createOrganisationSearchPayload(options: OrganisationSearchPaylo
 }
 
 export function createPbaSearchPayload(options: PbaSearchPayloadOptions = {}): Record<string, unknown> {
+  const searchRequest: Record<string, unknown> = {
+    search_filter: options.searchFilter ?? 'active',
+    sorting_parameters: [DEFAULT_PBA_SORT],
+    pagination_parameters: buildPagination(options.pageNumber, options.pageSize)
+  };
+
+  if (options.drillDownSearch !== undefined) {
+    searchRequest.drill_down_search = options.drillDownSearch;
+  }
+
   return {
     view: options.view ?? 'pending',
-    searchRequest: {
-      search_filter: options.searchFilter ?? 'active',
-      sorting_parameters: [DEFAULT_SORT],
-      pagination_parameters: buildPagination(options.pageNumber, options.pageSize),
-      drill_down_search: options.drillDownSearch ?? []
-    }
+    searchRequest
   };
 }
 

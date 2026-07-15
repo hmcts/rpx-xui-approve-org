@@ -16,7 +16,6 @@ describe('DeleteOrganisationComponent', () => {
   let component: DeleteOrganisationComponent;
   let fixture: ComponentFixture<DeleteOrganisationComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storePipeMock: any;
   let storeDispatchMock: any;
 
@@ -51,7 +50,7 @@ describe('DeleteOrganisationComponent', () => {
       expect(storeDispatchMock).toHaveBeenCalledWith(new DeletePendingOrganisation(orgForReview));
     });
 
-    // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+    // this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
     it('should dispatch a review organisation "delete" action', () => {
       const orgForReview = reviewOrganisationsMockCollection[0];
       component.onDeleteOrganisationHandler(orgForReview);

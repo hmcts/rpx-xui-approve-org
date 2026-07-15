@@ -35,7 +35,6 @@ class AuthServiceMock {
     return of(this.authenticated);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public loginRedirect(): void {}
 }
 
@@ -46,11 +45,9 @@ class RoleGuardMock {
     return of(this.activate);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public loginRedirect(): void {}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 const windowMock: Window = { gtag: () => {} } as any;
 const idleMockService = jasmine.createSpyObj('idleService', ['appStateChanges']);
 const environmentMockService = jasmine.createSpyObj('environmentService', ['getEnv$']);
@@ -58,9 +55,7 @@ const cookieService = jasmine.createSpyObj('cookieSevice', ['get']);
 const titleService = jasmine.createSpyObj('titleService', ['setTitle', 'getTitle']);
 
 describe('AppRoutes', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let component: AppMockComponent;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let location: Location;
   let router: Router;
   let fixture;
@@ -120,36 +115,6 @@ describe('AppRoutes', () => {
     fixture.detectChanges();
 
     expect(router.url).toEqual('/cookies');
-  });
-
-  describe('caseworker-details', () => {
-    it('should navigate to root when correct auth (but not role) present', async () => {
-      authServiceMock.authenticated = true;
-      roleGuardMock.activate = false;
-      await router.navigateByUrl('caseworker-details');
-      fixture.detectChanges();
-
-      expect(router.url).toEqual('/');
-    });
-
-    it('should navigate to root when unauthenticated', async () => {
-      authServiceMock.authenticated = false;
-      roleGuardMock.activate = false;
-      await router.navigateByUrl('caseworker-details');
-      fixture.detectChanges();
-
-      expect(router.url).toEqual('/');
-    });
-
-    it('should navigate caseworker-details when auth/role present', async () => {
-      authServiceMock.authenticated = true;
-      roleGuardMock.activate = true;
-
-      await router.navigateByUrl('caseworker-details');
-      fixture.detectChanges();
-
-      expect(router.url).toEqual('/caseworker-details');
-    });
   });
 
   describe('organisation', () => {

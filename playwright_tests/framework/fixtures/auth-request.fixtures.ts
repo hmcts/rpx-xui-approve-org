@@ -8,6 +8,18 @@ type AuthRequestFixtures = {
 };
 
 const authSessionUser = (process.env.PW_AUTH_SESSION_USER ?? 'base').trim() || 'base';
+const authSessionPartitionKey = 'api';
+
+function cookieMatchesHost(cookieDomain: string | undefined, hostName: string): boolean {
+  if (!cookieDomain) {
+    return false;
+  }
+
+  const normalizedDomain = cookieDomain.replace(/^\./, '').toLowerCase();
+  const normalizedHost = hostName.toLowerCase();
+
+  return normalizedHost === normalizedDomain || normalizedHost.endsWith(`.${normalizedDomain}`);
+}
 
 async function isAuthenticatedRequestContext(requestContext: APIRequestContext): Promise<boolean> {
   try {
@@ -35,12 +47,38 @@ async function isAuthenticatedRequestContext(requestContext: APIRequestContext):
 }
 
 async function createAuthenticatedApiContext(forceRefresh = false): Promise<APIRequestContext> {
-  const storageStatePath = await sessionCapture(authSessionUser, { force: forceRefresh });
-  return playwrightRequest.newContext({
+  const storageStatePath = await sessionCapture(authSessionUser, {
+    force: forceRefresh,
+    partitionKey: authSessionPartitionKey
+  });
+  const csrfBootstrapContext = await playwrightRequest.newContext({
     baseURL: config.baseUrl,
     ignoreHTTPSErrors: true,
     storageState: storageStatePath
   });
+
+  try {
+    const environmentResponse = await csrfBootstrapContext.get('/api/environment', { failOnStatusCode: false });
+    const apiHostName = new URL(environmentResponse.url()).hostname;
+    const csrfStorageState = await csrfBootstrapContext.storageState();
+    const xsrfCookies = csrfStorageState.cookies.filter((cookie) => cookie.name === 'XSRF-TOKEN');
+    const xsrfToken = xsrfCookies.find((cookie) => cookieMatchesHost(cookie.domain, apiHostName))?.value;
+
+    if (!xsrfToken) {
+      throw new Error(`Unable to resolve XSRF token for authenticated API request context for user "${authSessionUser}".`);
+    }
+
+    return playwrightRequest.newContext({
+      baseURL: config.baseUrl,
+      ignoreHTTPSErrors: true,
+      storageState: csrfStorageState,
+      extraHTTPHeaders: {
+        'X-XSRF-TOKEN': xsrfToken
+      }
+    });
+  } finally {
+    await csrfBootstrapContext.dispose();
+  }
 }
 
 export const authRequestTest = base.extend<AuthRequestFixtures>({
