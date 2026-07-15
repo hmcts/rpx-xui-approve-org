@@ -11,6 +11,15 @@ const AUTHENTICATION_TIMEOUT_MS = 30_000;
 const AUTHENTICATION_POLL_INTERVAL_MS = 500;
 const LOGIN_REDIRECT_TIMEOUT_MS = 45_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
+const SESSION_CAPTURE_RETRYABLE_FAILURE_PATTERNS = [
+  /Session capture did not create an authenticated session/i,
+  /authStatus=5\d\d/i,
+  /authBody=no available server/i,
+  /no available server/i,
+  /net::/i,
+  /browserType\.launch/i,
+  /Target page, context or browser has been closed/i
+];
 const SESSION_DIR = process.env.PW_SESSION_DIR
   ? path.resolve(process.env.PW_SESSION_DIR)
   : path.resolve(__dirname, '../../.sessions');
@@ -47,6 +56,10 @@ function resolveSessionCaptureFailureTtlMs(): number {
   return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
 }
 
+function isRetryableSessionCaptureFailure(message: string): boolean {
+  return SESSION_CAPTURE_RETRYABLE_FAILURE_PATTERNS.some((pattern) => pattern.test(message));
+}
+
 function recentSessionCaptureFailureMessage(failurePath: string, now = Date.now()): string | undefined {
   const ttlMs = resolveSessionCaptureFailureTtlMs();
   if (ttlMs === 0 || !fs.existsSync(failurePath)) {
@@ -54,11 +67,19 @@ function recentSessionCaptureFailureMessage(failurePath: string, now = Date.now(
   }
 
   try {
-    const parsed = JSON.parse(fs.readFileSync(failurePath, 'utf8')) as { timestamp?: number; message?: string };
+    const parsed = JSON.parse(fs.readFileSync(failurePath, 'utf8')) as {
+      timestamp?: number;
+      message?: string;
+      retryable?: boolean;
+    };
+    const message = parsed.message?.trim();
+    if (parsed.retryable || (message && isRetryableSessionCaptureFailure(message))) {
+      return undefined;
+    }
     if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
       return undefined;
     }
-    return parsed.message?.trim() || 'previous session capture failed';
+    return message || 'previous session capture failed';
   } catch {
     return undefined;
   }
@@ -72,7 +93,8 @@ function writeSessionCaptureFailure(failurePath: string, error: unknown): void {
       failurePath,
       JSON.stringify({
         timestamp: Date.now(),
-        message
+        message,
+        retryable: isRetryableSessionCaptureFailure(message)
       })
     );
   } catch {
@@ -369,7 +391,10 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
     return;
   }
 
-  for (let attempt = 1; attempt <= 4; attempt += 1) {
+  const retryUntil = Date.now() + LOGIN_REDIRECT_TIMEOUT_MS;
+  let attempt = 1;
+
+  while (Date.now() < retryUntil) {
     if (attempt > 1) {
       await page.context().clearCookies();
       await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
@@ -398,23 +423,31 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
         await page.locator('input[name="password"]').fill(password);
         await page.locator('#login-submit-btn').click();
         await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
-        await waitForLoginRedirectToSettle(page);
+        await waitForLoginRedirectToSettle(page, Math.max(AUTHENTICATION_POLL_INTERVAL_MS, retryUntil - Date.now()));
       } else if (hasRoleEmailInput || hasFallbackEmailInput) {
         const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
         await emailInput.fill(username);
         await page.locator('input[type="password"], input[name="password"]').first().fill(password);
         await page.getByRole('button', { name: 'Sign in' }).click();
         await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
-        await waitForLoginRedirectToSettle(page);
+        await waitForLoginRedirectToSettle(page, Math.max(AUTHENTICATION_POLL_INTERVAL_MS, retryUntil - Date.now()));
       } else {
-        // Login page can be in a transition state; retry instead of timing out on non-visible inputs.
-        await sleep(500 * attempt);
+        // The app gateway can briefly serve /auth/login without rendering IDAM inputs.
+        const remainingMs = retryUntil - Date.now();
+        await sleep(Math.min(500 * attempt, 5_000, Math.max(0, remainingMs)));
       }
     }
 
-    if (!(await isOnLoginOrCallbackSurface(page)) && await waitForAuthenticatedByApi(page, 5_000)) {
+    const authCheckTimeout = Math.min(5_000, Math.max(0, retryUntil - Date.now()));
+    if (
+      authCheckTimeout > 0 &&
+      !(await isOnLoginOrCallbackSurface(page)) &&
+      await waitForAuthenticatedByApi(page, authCheckTimeout)
+    ) {
       return;
     }
+
+    attempt += 1;
   }
 
   throw new Error(
@@ -476,9 +509,11 @@ export async function sessionCapture(user: string = 'base', options: SessionCapt
       const page = await context.newPage();
 
       await completeLoginOnPage(page, username, password);
-      const authenticated = await isAuthenticatedByApi(page);
+      const authenticated = await waitForAuthenticatedByApi(page);
       if (!authenticated) {
-        throw new Error(`Session capture did not create an authenticated session for "${username}".`);
+        throw new Error(
+          `Session capture did not create an authenticated session for "${username}". ${await loginFailureContext(page)}`
+        );
       }
       await persistSessionState(context, storageStatePath);
       clearSessionCaptureFailure(failurePath);
