@@ -11,7 +11,16 @@ import {
   type ResolvedTagFilters
 } from '../../playwright-config-utils';
 
+let smokeRunner: {
+  buildSmokePlaywrightArgs: (env?: NodeJS.ProcessEnv, extraArgs?: string[]) => string[];
+};
+
 const temporaryConfigPaths: string[] = [];
+
+test.beforeAll(async () => {
+  const smokeModule = await import('../../scripts/run-playwright-smoke.cjs');
+  smokeRunner = (smokeModule.default ?? smokeModule) as typeof smokeRunner;
+});
 
 test.afterEach(() => {
   for (const configPath of temporaryConfigPaths.splice(0)) {
@@ -115,6 +124,41 @@ test('bypasses validation for an obsolete global exclusion', () => {
   expect(filters.globalExcludedTags).toEqual([]);
   expect(filters.ignoredGlobalExcludedTags).toEqual(['@obsolete-tag']);
   expect(filters.globalExcludesBypassed).toBe(true);
+});
+
+test('allows the smoke journey to be globally excluded through its safe package runner', () => {
+  const filters = resolveForCatalog(['@e2e', '@smoke'], { PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@smoke' });
+
+  expect(filters.globalExcludedTags).toEqual(['@smoke']);
+  expect(filters.grepInvert?.test('journey @smoke')).toBe(true);
+  expect(smokeRunner.buildSmokePlaywrightArgs({ PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@smoke' })).toEqual([
+    'test',
+    'playwright_tests/e2e/login.test.ts',
+    '-c',
+    'playwright.config.ts',
+    '--pass-with-no-tests',
+    '--reporter=list'
+  ]);
+  expect(
+    smokeRunner.buildSmokePlaywrightArgs({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@smoke',
+      PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'true'
+    })
+  ).toEqual(['test', 'playwright_tests/e2e/login.test.ts', '-c', 'playwright.config.ts']);
+  expect(
+    smokeRunner.buildSmokePlaywrightArgs(
+      { PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: 'smoke' },
+      ['--reporter=null', '--list']
+    )
+  ).toEqual([
+    'test',
+    'playwright_tests/e2e/login.test.ts',
+    '-c',
+    'playwright.config.ts',
+    '--reporter=null',
+    '--list',
+    '--pass-with-no-tests'
+  ]);
 });
 
 test('matches an excluded tag exactly without suppressing longer tag names', () => {
