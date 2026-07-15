@@ -58,7 +58,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.5")
+@Library("Infrastructure@2.4.4")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
