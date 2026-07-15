@@ -150,7 +150,7 @@ function resolveBooleanEnvFlag(rawValue?: string): boolean {
 }
 
 function mergeTags(...tagGroups: string[][]): string[] {
-  return [...new Set(tagGroups.flat())];
+  return Array.from(new Set(tagGroups.flat()));
 }
 
 function resolveTagFilterConfigPath(env: EnvMap, configPathEnvVar: string, defaultConfigPath: string): string {
