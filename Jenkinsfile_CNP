@@ -51,6 +51,11 @@ properties([
             description: 'Optional accessibility excluded tags override (@none clears file defaults)'
         ),
         booleanParam(
+            name: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+            defaultValue: false,
+            description: 'Bypass Key Vault-backed Playwright global exclusions while verifying a fix.'
+        ),
+        booleanParam(
             name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
             defaultValue: false,
             description: 'Optional: run the non-blocking Playwright accessibility pack (axe, WAVE-like and screen-reader checks) on this PR build.'
@@ -96,6 +101,9 @@ def shouldRunAccessibilityTests = {
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        stage("${environmentLabel} Playwright Config Unit Tests") {
+            yarnBuilder.yarn('test:playwright:unit')
+        }
         def playwrightBranches = [
             failFast: false,
             api: {
@@ -151,6 +159,7 @@ def applyPlaywrightTagFilterEnv = {
     env.API_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('API_PW_EXCLUDED_TAGS_OVERRIDE')
     env.A11Y_PW_INCLUDE_TAGS = resolveParamOrEnv('A11Y_PW_INCLUDE_TAGS')
     env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE = resolveParamOrEnv('A11Y_PW_EXCLUDED_TAGS_OVERRIDE')
+    env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES = params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'
 }
 
 def logPlaywrightTagFilterEnv = { String contextLabel ->
@@ -161,6 +170,8 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
         "Integration include=${env.INTEGRATION_PW_INCLUDE_TAGS ?: '<none>'}" +
             " exclude=${env.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "API include=${env.API_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
+        "Global exclude=${env.PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS ?: '<none>'}" +
+            " bypass=${env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES}",
         "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "A11Y enabled=${shouldRunAccessibilityTests()}",
         "RUN_PLAYWRIGHT_ACCESSIBILITY=${displayValue(params.RUN_PLAYWRIGHT_ACCESSIBILITY)}",
@@ -187,6 +198,7 @@ def secrets = [
     secret('ao-idam-client-secret', 'IDAM_SECRET'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
     secret('ao-webapp-redis6-connection-string', 'REDISCLOUD_URL'),
+    secret('xui-approve-org-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS'),
   ]
 ]
 

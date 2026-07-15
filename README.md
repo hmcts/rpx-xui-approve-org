@@ -185,6 +185,8 @@ This repository now uses Playwright for the functional/liveliness test path.
 - Tag catalogs are stored in JSON files: `playwright_tests/e2e/tag-filter.json`, `playwright_tests/integration/tag-filter.json`, `playwright_tests/api/tag-filter.json`, and `playwright_tests/accessibility/tag-filter.json`.
 - Include tags per suite with `E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS`, and `A11Y_PW_INCLUDE_TAGS`.
 - Override excluded tags per suite with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE` (`@none` clears file-based excludes).
+- `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` adds catalog-scoped exclusions to API, E2E, integration, and nightly cross-browser runs. Accessibility is deliberately excluded. See [Playwright global exclusions](PLAYWRIGHT_GLOBAL_EXCLUSIONS.md).
+- `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true` bypasses only the global layer for a verification run.
 - Override catalog paths with `E2E_PW_TAG_FILTER_CONFIG`, `INTEGRATION_PW_TAG_FILTER_CONFIG`, `API_PW_TAG_FILTER_CONFIG`, and `A11Y_PW_TAG_FILTER_CONFIG` when needed.
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests; when unset, Playwright derives the Manage Org URL from `TEST_URL` for AAT and Demo, with preview defaulting to AAT unless overridden.
@@ -331,6 +333,7 @@ CI/Jenkins notes:
 - `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e/odhin-report`), Playwright API (`functional-output/tests/playwright-api/odhin-report`), Playwright integration (`functional-output/tests/playwright-integration/odhin-report`), and Playwright accessibility (`functional-output/tests/playwright-accessibility/odhin-report`) HTML reports.
 - PR and nightly functional stages run API, integration, E2E, and accessibility as separate parallel Jenkins branches.
 - CNP and nightly Jenkins pipelines expose optional build parameters for tag filtering: `E2E_PW_INCLUDE_TAGS`, `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_INCLUDE_TAGS`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_INCLUDE_TAGS`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, `A11Y_PW_INCLUDE_TAGS`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE`.
+- CNP and nightly load `xui-approve-org-playwright-global-excluded-tags` as `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` and expose `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES` for fixing runs. Shared tags apply to every functional suite catalog that declares them.
 - Accessibility stage failures are informational: the accessibility stage is marked `UNSTABLE` but does not fail the overall build.
 - Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 

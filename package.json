@@ -41,6 +41,7 @@
     "test:api:playwright:raw": "PW_AUTH_SESSION_USER=api npx playwright test -c playwright-api.config.ts",
     "test:integration:playwright": "yarn playwright install chromium && yarn test:integration:playwright:raw",
     "test:integration:playwright:raw": "npx playwright test -c playwright-integration.config.ts",
+    "test:playwright:unit": "npx playwright test -c playwright-reporting-unit.config.ts",
     "test:accessibility:playwright": "yarn playwright install chromium && node scripts/run-playwright-accessibility.cjs",
     "test:accessibility:playwright:raw": "npx playwright test -c playwright-accessibility.config.ts",
     "test:wave-a11y:playwright": "node scripts/run-playwright-wave-a11y.cjs",

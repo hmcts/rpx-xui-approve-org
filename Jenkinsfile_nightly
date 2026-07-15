@@ -8,6 +8,7 @@ final String apiPwIncludeTagsEnvName = 'API_PW_INCLUDE_TAGS'
 final String apiPwExcludedTagsOverrideEnvName = 'API_PW_EXCLUDED_TAGS_OVERRIDE'
 final String a11yPwIncludeTagsEnvName = 'A11Y_PW_INCLUDE_TAGS'
 final String a11yPwExcludedTagsOverrideEnvName = 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE'
+final String ignoreGlobalExcludesEnvName = 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES'
 final String runAccessibilityTestsParamName = 'RUN_ACCESSIBILITY_TESTS'
 final String noneTagFallback = '<none>'
 final String htmlIndexReportFile = 'index.html'
@@ -74,6 +75,11 @@ properties([
             description: 'Optional accessibility excluded tags override (@none clears file defaults)'
         ),
         booleanParam(
+            name: ignoreGlobalExcludesEnvName,
+            defaultValue: false,
+            description: 'Bypass Key Vault-backed Playwright global exclusions while verifying a fix.'
+        ),
+        booleanParam(
             name: runAccessibilityTestsParamName,
             defaultValue: true,
             description: 'Run the unified accessibility Playwright pack (axe, WAVE-like and screen-reader checks)'
@@ -106,6 +112,9 @@ Closure<Boolean> shouldRunAccessibilityTests = {
 Closure<Void> runPlaywrightFunctionalInParallel = {
     stage('Nightly Functional Tests (Parallel)') {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        stage('Nightly Playwright Config Unit Tests') {
+            yarnBuilder.yarn('test:playwright:unit')
+        }
         Map<String, Object> playwrightBranches = [
             failFast: false,
             api: {
@@ -150,6 +159,7 @@ Closure<Void> applyPlaywrightTagFilterEnv = {
     playwrightTagFilterEnvNames.each { String envName ->
         env."${envName}" = resolveParamOrEnv(envName)
     }
+    env."${ignoreGlobalExcludesEnvName}" = params."${ignoreGlobalExcludesEnvName}" ? 'true' : 'false'
 }
 
 Closure<Void> logPlaywrightTagFilterEnv = { String contextLabel ->
@@ -161,12 +171,14 @@ Closure<Void> logPlaywrightTagFilterEnv = { String contextLabel ->
     String apiExclude = env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: noneTagFallback
     String a11yInclude = env.A11Y_PW_INCLUDE_TAGS ?: noneTagFallback
     String a11yExclude = env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: noneTagFallback
+    String globalExclude = env.PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS ?: noneTagFallback
 
     echo([
         "[playwright-tags] ${contextLabel}",
         "E2E include=${e2eInclude} exclude=${e2eExclude}",
         "Integration include=${integrationInclude} exclude=${integrationExclude}",
         "API include=${apiInclude} exclude=${apiExclude}",
+        "Global exclude=${globalExclude} bypass=${env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES}",
         "A11Y include=${a11yInclude} exclude=${a11yExclude}",
         "A11Y enabled=${shouldRunAccessibilityTests()}"
     ].join(' | '))
@@ -183,7 +195,8 @@ Map<String, List<Map<String, Object>>> secrets = [
     secret('test-roo-username', 'TEST_ROO_EMAIL'),
     secret('test-roo-password', 'TEST_ROO_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
-    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
+    secret('xui-approve-org-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS')
   ]
 ]
 
