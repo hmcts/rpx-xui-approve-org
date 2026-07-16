@@ -7,7 +7,7 @@
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <li>
-          <a routerLink="." [fragment]="errorMessage.fieldId">{{errorMessage.description}}</a>
+          <a [attr.href]="'#' + errorMessage.fieldId">{{errorMessage.description}}</a>
         </li>
       </ul>
     </div>
@@ -22,7 +22,7 @@
       <h1 class="govuk-heading-xl">Organisation details </h1>
     </ng-template>
     <div>
-      <h3 class="govuk-heading-m">Organisation details</h3>
+      <h2 class="govuk-heading-m">Organisation details</h2>
       <dl class="govuk-summary-list" *ngIf="org">
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
@@ -108,8 +108,6 @@
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
-        <div class="govuk-summary-list__row">
-        </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
             Company registration number
@@ -174,13 +172,9 @@
             </div>
           </dd>
         </div>
-        <div class="govuk-summary-list__row">
-        </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <br>
-          <br>
-          <h3 class="govuk-heading-m">Administrator details </h3>
-        </div>
+      </dl>
+      <h2 class="govuk-heading-m">Administrator details</h2>
+      <dl class="govuk-summary-list" *ngIf="org">
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
             First name(s)
@@ -211,8 +205,6 @@
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
-        <div class="govuk-summary-list__row">
-        </div>
       </dl>
       <div *ngIf="org.status !== 'ACTIVE'" class="govuk-form-group"
         [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">
@@ -224,7 +216,7 @@
             *ngIf="formGroup.get('radioSelected').invalid && submitted">
             {{ errorMessage.description }}
           </div>
-          <div class="govuk-radios__item" id="options">
+          <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="reason-0" name="radioSelected" type="radio"
               [value]="registrationRequest[0].request" formControlName="radioSelected"
               [checked]="registrationRequest[0].checked" (change)="onChange()" />
