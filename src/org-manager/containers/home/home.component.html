@@ -1,6 +1,7 @@
-<div class="hmcts-width-container">
+<div class="govuk-width-container">
   <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
-  <main class="govuk-main-wrapper" id="main-content" role="main">
+  <main class="govuk-main-wrapper" id="main-content" role="main" tabindex="-1">
+    <span id="content" class="govuk-visually-hidden" aria-hidden="true"></span>
     <h1 class="hmcts-page-heading__title govuk-heading-xl">
       Organisation approvals
     </h1>

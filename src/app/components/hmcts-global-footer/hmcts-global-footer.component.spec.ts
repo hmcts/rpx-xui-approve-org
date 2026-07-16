@@ -37,15 +37,37 @@ describe('HmctsGlobalFooterComponent', () => {
     expect(fixture).not.toBeNull();
   });
 
-  it('should show the logged-in user email when provided', () => {
+  it('should display the GOV.UK crown', () => {
+    const crown = fixture.nativeElement.querySelector('.govuk-footer__crown');
+    expect(crown).not.toBeNull();
+  });
+
+  it('should display the logged-in user email when supplied', () => {
     component.loggedInUserEmail = 'logged-in-user@example.com';
     fixture.detectChanges();
 
-    const loggedInUser = fixture.nativeElement.querySelector('footer > .hmcts-width-container > p');
+    const loggedInUser = fixture.nativeElement.querySelector('footer p');
     expect(loggedInUser.textContent).toContain('Logged in as: logged-in-user@example.com');
   });
 
-  it('should not show a logged-in user when an email is not provided', () => {
-    expect(fixture.nativeElement.textContent).not.toContain('Logged in as:');
+  it('should hide the logged-in user email when it is not supplied', () => {
+    expect(fixture.nativeElement.querySelector('footer p')).toBeNull();
+  });
+
+  it('should display the Open Government Licence statement', () => {
+    const licenceLogo = fixture.nativeElement.querySelector('.govuk-footer__licence-logo');
+    const licenceDescription = fixture.nativeElement.querySelector('.govuk-footer__licence-description');
+    const licenceLink = licenceDescription.querySelector('a');
+    const licenceText = licenceDescription.textContent.replace(/\s+/g, ' ').trim();
+
+    expect(licenceLogo).not.toBeNull();
+    expect(licenceLogo.getAttribute('aria-hidden')).toBe('true');
+    expect(licenceText).toBe(
+      'All content is available under the Open Government Licence v3.0, except where otherwise stated'
+    );
+    expect(licenceLink.getAttribute('href')).toBe(
+      'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/'
+    );
+    expect(licenceLink.getAttribute('rel')).toBe('license');
   });
 });
