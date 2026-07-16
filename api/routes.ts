@@ -1,7 +1,6 @@
 import { xuiNode } from '@hmcts/rpx-xui-node-lib';
 import * as express from 'express';
 import allUserListWithoutRolesRouter from './allUserListWithoutRoles';
-import caseWorkerDetailsRouter from './caseWorkerDetailsRouter';
 import environment from './environment';
 import healthCheck from './healthCheck';
 import getAppInsightsConnectionString from './monitoring-tools';
@@ -27,7 +26,6 @@ router.use('/updatePba', pbaRouter);
 router.use('/pbaAccounts', pbaAccounts);
 router.use('/monitoring-tools', getAppInsightsConnectionString);
 router.use('/reinviteUser', reinviteUserRouter);
-router.use('/caseworkerdetails', caseWorkerDetailsRouter);
 router.use('/allUserListWithoutRoles', allUserListWithoutRolesRouter);
 router.use('/getLovRefData', getLovRefDataRouter);
 

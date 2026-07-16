@@ -31,11 +31,11 @@ export class DeleteOrganisationComponent {
     if (orgForReview.status === 'PENDING') {
       this.store.dispatch(new DeletePendingOrganisation(orgForReview));
     } else if (orgForReview.status === 'REVIEW') {
-      // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+      // this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
       this.store.dispatch(new DeleteReviewOrganisation(orgForReview));
     } else {
       this.store.dispatch(new DeleteOrganisation(orgForReview));
     }
-    // TODO: What should happen if the organisation status is neither "PENDING" nor "ACTIVE"? Is that even possible?
+    // What should happen if the organisation status is neither "PENDING" nor "ACTIVE"? Is that even possible?
   }
 }

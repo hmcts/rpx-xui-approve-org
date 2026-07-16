@@ -2,6 +2,26 @@ import type { Locator, Page } from '@playwright/test';
 import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
+const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
+
+export type OrganisationTableRow = {
+  name: string;
+  organisationIdentifier: string;
+  address: string;
+  administrator: string;
+  administratorEmail: string;
+  date: string;
+  status: string;
+};
+
+export type PendingPbaTableRow = {
+  organisationName: string;
+  pbaNumbers: string[];
+  administrator: string;
+  administratorEmail: string;
+  dateReceived: string;
+};
+
 export class OrganisationApprovalsPage extends BasePage {
   private static readonly invalidPbaMessage = 'PBA numbers must start with PBA/pba and be followed by 7 alphanumeric characters';
   private readonly exuiSpinner: ExuiSpinnerComponent;
@@ -18,11 +38,14 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly tabPanel = this.page.locator('.govuk-tabs > .govuk-tabs__panel[role="tabpanel"]');
   readonly pendingOverviewPanel = this.page.locator('app-pending-overview-component');
   readonly pendingOrganisationRows = this.pendingOverviewPanel.locator('table.pending-organisations tr');
+  readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator('table.pending-organisations tr.govuk-radios');
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
   readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
+  readonly confirmDecisionErrorSummary = this.contentMain.locator('.govuk-error-summary').first();
+  readonly confirmDecisionErrorSummaryTitle = this.confirmDecisionErrorSummary.locator('.govuk-error-summary__title').first();
   readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
   readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
   readonly approveDecisionRadio = this.page.locator('#reason-0');
@@ -50,6 +73,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
   readonly staffDetailsPageHeading = this.page.locator('app-prd-caseworker-details .govuk-heading-l');
   readonly activeOrganisationRows = this.activeOrganisationsPanel.locator('table.active-organisations tr');
+  readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator('table.active-organisations tr.govuk-radios');
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
@@ -71,6 +95,9 @@ export class OrganisationApprovalsPage extends BasePage {
 
   readonly notificationBannerMessage = this.page.locator('app-notification-banner-component .hmcts-banner__message');
   readonly deletedOrganisationBannerTitle = this.contentMain.locator('.govuk-panel--confirmation .govuk-panel__title');
+  readonly pagination = this.page.locator('xuilib-hmcts-pagination');
+  readonly pendingOrganisationEmptyState = this.page.getByText('There are no new registrations.');
+  readonly pendingPbaEmptyState = this.page.getByText('There are no new PBA requests.');
   readonly organisationNameSummaryValue = this.detailsPanel
     .locator('.govuk-summary-list__row .govuk-summary-list__value')
     .first();
@@ -93,8 +120,58 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.pendingOrganisationRows.filter({ hasText: organisationName });
   }
 
+  pendingOrganisationRowByName(organisationName: string): Locator {
+    return this.pendingOrganisationRowsByName(organisationName).first();
+  }
+
+  pendingOrganisationRowById(organisationId: string): Locator {
+    return this.pendingOrganisationRows
+      .filter({ has: this.page.locator(`a.govuk-link[href*="/organisation-details/${organisationId}"]`) })
+      .first();
+  }
+
+  pendingOrganisationViewLinkById(organisationId: string): Locator {
+    return this.pendingOrganisationRowById(organisationId)
+      .locator('a.govuk-link[href*="/organisation-details/"]')
+      .first();
+  }
+
   activeOrganisationRowsByText(searchText: string): Locator {
     return this.activeOrganisationRows.filter({ hasText: searchText });
+  }
+
+  activeOrganisationRowByText(searchText: string): Locator {
+    return this.activeOrganisationRowsByText(searchText).first();
+  }
+
+  activeOrganisationRowById(organisationId: string): Locator {
+    return this.activeOrganisationRows
+      .filter({ has: this.page.locator(`a.govuk-link[href*="/organisation-details/${organisationId}"]`) })
+      .first();
+  }
+
+  activeOrganisationCellByIndex(organisationId: string, cellIndex: number): Locator {
+    return this.activeOrganisationRowById(organisationId).locator('td.govuk-table__cell').nth(cellIndex);
+  }
+
+  activeOrganisationNameCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 0);
+  }
+
+  activeOrganisationAddressCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 1);
+  }
+
+  activeOrganisationAdministratorCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 2);
+  }
+
+  activeOrganisationDateApprovedCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 3);
+  }
+
+  activeOrganisationStatusCell(organisationId: string): Locator {
+    return this.activeOrganisationCellByIndex(organisationId, 4);
   }
 
   activeOrganisationViewLink(): Locator {
@@ -105,6 +182,10 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.pendingPbaRows.filter({ hasText: searchText });
   }
 
+  pendingPbaRowByText(searchText: string): Locator {
+    return this.pendingPbaRowsByText(searchText).first();
+  }
+
   successBanner(messageText: RegExp | string): Locator {
     return this.notificationBannerMessage.filter({ hasText: messageText }).first();
   }
@@ -113,13 +194,44 @@ export class OrganisationApprovalsPage extends BasePage {
     return this.deletedOrganisationBannerTitle.filter({ hasText: organisationName }).first();
   }
 
+  organisationDetailsPbaRow(pbaNumber: string): Locator {
+    return this.detailsPanel
+      .locator('.govuk-summary-list__row')
+      .filter({ hasText: 'PBA number' })
+      .filter({ hasText: pbaNumber })
+      .first();
+  }
+
   async searchForOrganisation(organisationName: string): Promise<void> {
     await this.searchInput.fill(organisationName);
     await this.searchButton.click();
   }
 
+  async openPaginationPage(pageNumber: number): Promise<void> {
+    await this.pagination.waitFor({ state: 'visible' });
+
+    const pageNumberText = String(pageNumber);
+    const linkCandidate = this.pagination.getByRole('link', { name: pageNumberText }).first();
+    if (await linkCandidate.count()) {
+      await linkCandidate.click();
+      return;
+    }
+
+    const buttonCandidate = this.pagination.getByRole('button', { name: pageNumberText }).first();
+    if (await buttonCandidate.count()) {
+      await buttonCandidate.click();
+      return;
+    }
+
+    await this.pagination.locator('a, button').filter({ hasText: pageNumberText }).first().click();
+  }
+
   async openFirstPendingOrganisation(): Promise<void> {
     await this.pendingOrganisationViewLink().click();
+  }
+
+  async openPendingOrganisationById(organisationId: string): Promise<void> {
+    await this.pendingOrganisationViewLinkById(organisationId).click();
   }
 
   async clickBackLink(): Promise<void> {
@@ -171,21 +283,30 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.staffDetailsHeaderTab().click();
   }
 
+  private async checkDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
+    await decisionRadio.check({ trial: true });
+    await decisionRadio.check();
+
+    if (!(await decisionRadio.isChecked())) {
+      throw new Error(`Unable to select decision radio: ${decisionName}`);
+    }
+  }
+
   async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
     const normalizedDecision = (typeof decisionLabel === 'string' ? decisionLabel : decisionLabel.source).toLowerCase();
 
     if (normalizedDecision.includes('approve')) {
-      await this.approveDecisionRadio.check();
+      await this.checkDecisionRadio(this.approveDecisionRadio, 'approve');
       return;
     }
 
     if (normalizedDecision.includes('reject')) {
-      await this.rejectDecisionRadio.check();
+      await this.checkDecisionRadio(this.rejectDecisionRadio, 'reject');
       return;
     }
 
     if (normalizedDecision.includes('review') || normalizedDecision.includes('hold')) {
-      await this.reviewDecisionRadio.check();
+      await this.checkDecisionRadio(this.reviewDecisionRadio, 'review');
       return;
     }
 
@@ -232,7 +353,14 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openActiveOrganisationsTab(): Promise<void> {
-    await this.activeOrganisationsTab.click();
+    const routeWait = ACTIVE_ORGANISATIONS_ROUTE_PATTERN.test(this.page.url())
+      ? Promise.resolve()
+      : this.page.waitForURL(ACTIVE_ORGANISATIONS_ROUTE_PATTERN);
+
+    await Promise.all([
+      routeWait,
+      this.activeOrganisationsTab.click()
+    ]);
   }
 
   async openUsersTab(): Promise<void> {

@@ -4,9 +4,26 @@ import * as path from 'node:path';
 import { config } from '../config/config';
 
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
+const SESSION_CAPTURE_LOCK_TIMEOUT_MS = 120_000;
+const SESSION_CAPTURE_LOCK_STALE_MS = 120_000;
+const SESSION_CAPTURE_LOCK_RETRY_MS = 500;
+const AUTHENTICATION_TIMEOUT_MS = 30_000;
+const AUTHENTICATION_POLL_INTERVAL_MS = 500;
+const LOGIN_REDIRECT_TIMEOUT_MS = 45_000;
+const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
+const SESSION_CAPTURE_RETRYABLE_FAILURE_PATTERNS = [
+  /Session capture did not create an authenticated session/i,
+  /authStatus=5\d\d/i,
+  /authBody=no available server/i,
+  /no available server/i,
+  /net::/i,
+  /browserType\.launch/i,
+  /Target page, context or browser has been closed/i
+];
 const SESSION_DIR = process.env.PW_SESSION_DIR
   ? path.resolve(process.env.PW_SESSION_DIR)
   : path.resolve(__dirname, '../../.sessions');
+const OAUTH_CALLBACK_ROUTE_PATTERN = /\/oauth2\/callback(?:[/?#]|$)/;
 
 type UserConfig = {
   username: string;
@@ -18,6 +35,13 @@ type SessionCaptureOptions = {
   partitionKey?: string;
 };
 
+type AuthenticationState = {
+  authenticated: boolean;
+  status?: number;
+  body?: string;
+  error?: string;
+};
+
 function normaliseSessionStorageKey(value: string): string {
   return value.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
 }
@@ -25,6 +49,65 @@ function normaliseSessionStorageKey(value: string): string {
 function resolveSessionMaxAgeMs(): number {
   const configured = Number(process.env.PW_SESSION_MAX_AGE_MS);
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
+}
+
+function resolveSessionCaptureFailureTtlMs(): number {
+  const configured = Number(process.env.PW_SESSION_CAPTURE_FAILURE_TTL_MS);
+  return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
+}
+
+function isRetryableSessionCaptureFailure(message: string): boolean {
+  return SESSION_CAPTURE_RETRYABLE_FAILURE_PATTERNS.some((pattern) => pattern.test(message));
+}
+
+function recentSessionCaptureFailureMessage(failurePath: string, now = Date.now()): string | undefined {
+  const ttlMs = resolveSessionCaptureFailureTtlMs();
+  if (ttlMs === 0 || !fs.existsSync(failurePath)) {
+    return undefined;
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(failurePath, 'utf8')) as {
+      timestamp?: number;
+      message?: string;
+      retryable?: boolean;
+    };
+    const message = parsed.message?.trim();
+    if (parsed.retryable || (message && isRetryableSessionCaptureFailure(message))) {
+      return undefined;
+    }
+    if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
+      return undefined;
+    }
+    return message || 'previous session capture failed';
+  } catch {
+    return undefined;
+  }
+}
+
+function writeSessionCaptureFailure(failurePath: string, error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error);
+
+  try {
+    fs.writeFileSync(
+      failurePath,
+      JSON.stringify({
+        timestamp: Date.now(),
+        message,
+        retryable: isRetryableSessionCaptureFailure(message)
+      })
+    );
+  } catch {
+    // Best effort only; the original login failure is the useful error.
+  }
+}
+
+function clearSessionCaptureFailure(failurePath: string): void {
+  try {
+    fs.rmSync(failurePath, { force: true });
+  } catch {
+    // Best effort only.
+  }
 }
 
 function resolveCredentialHint(user: string): string {
@@ -113,14 +196,210 @@ async function launchBrowserForSessionCapture(): Promise<Browser> {
   }
 }
 
-async function completeLoginOnPage(page: Page, username: string, password: string): Promise<void> {
-  await page.goto(config.baseUrl, { waitUntil: 'networkidle' });
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-  if (await isAuthenticatedByApi(page)) {
+function isLockStale(lockPath: string): boolean {
+  try {
+    const stats = fs.statSync(lockPath);
+    return Date.now() - stats.mtimeMs > SESSION_CAPTURE_LOCK_STALE_MS;
+  } catch {
+    return false;
+  }
+}
+
+async function acquireSessionCaptureLock(lockPath: string): Promise<() => void> {
+  const startTime = Date.now();
+
+  while (Date.now() - startTime < SESSION_CAPTURE_LOCK_TIMEOUT_MS) {
+    try {
+      const fd = fs.openSync(lockPath, 'wx');
+      fs.writeFileSync(fd, JSON.stringify({ pid: process.pid, createdAt: new Date().toISOString() }));
+
+      return () => {
+        fs.closeSync(fd);
+        fs.rmSync(lockPath, { force: true });
+      };
+    } catch (error) {
+      const errorCode = (error as NodeJS.ErrnoException).code;
+      if (errorCode !== 'EEXIST') {
+        throw error;
+      }
+
+      if (isLockStale(lockPath)) {
+        fs.rmSync(lockPath, { force: true });
+      } else {
+        await sleep(SESSION_CAPTURE_LOCK_RETRY_MS);
+      }
+    }
+  }
+
+  throw new Error(`Timed out waiting for Playwright session capture lock: ${lockPath}`);
+}
+
+async function withSessionCaptureLock<T>(lockPath: string, callback: () => Promise<T>): Promise<T> {
+  const releaseLock = await acquireSessionCaptureLock(lockPath);
+  try {
+    return await callback();
+  } finally {
+    releaseLock();
+  }
+}
+
+async function getAuthenticationState(page: Page): Promise<AuthenticationState> {
+  try {
+    const authCheckUrl = new URL('auth/isAuthenticated', config.baseUrl).toString();
+    const response = await page.request.get(authCheckUrl, { failOnStatusCode: false });
+    const body = (await response.text()).trim();
+    const normalisedBody = body.toLowerCase();
+
+    if (response.status() !== 200) {
+      return { authenticated: false, status: response.status(), body };
+    }
+
+    if (normalisedBody === 'true') {
+      return { authenticated: true, status: response.status(), body };
+    }
+
+    if (normalisedBody === 'false' || normalisedBody.length === 0) {
+      return { authenticated: false, status: response.status(), body };
+    }
+
+    try {
+      return { authenticated: JSON.parse(normalisedBody) === true, status: response.status(), body };
+    } catch {
+      return { authenticated: false, status: response.status(), body };
+    }
+  } catch (error) {
+    return { authenticated: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+async function waitForAuthenticatedByApi(page: Page, timeoutMs = AUTHENTICATION_TIMEOUT_MS): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    if ((await getAuthenticationState(page)).authenticated) {
+      return true;
+    }
+
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) {
+      break;
+    }
+
+    await sleep(Math.min(AUTHENTICATION_POLL_INTERVAL_MS, remainingMs));
+  }
+
+  return false;
+}
+
+async function firstVisibleText(page: Page, selector: string): Promise<string | undefined> {
+  const locator = page.locator(selector).first();
+  if (!(await locator.isVisible().catch(() => false))) {
+    return undefined;
+  }
+
+  return locator.innerText().then((text) => text.replace(/\s+/g, ' ').trim()).catch(() => undefined);
+}
+
+async function loginFailureContext(page: Page): Promise<string> {
+  const authState = await getAuthenticationState(page);
+  const pageTitle = await page.title().catch(() => '<unavailable>');
+  const visibleErrorText = await firstVisibleText(
+    page,
+    '.govuk-error-summary, .error-summary, .error-message, .validation-error, [role="alert"]'
+  );
+  const context = [
+    `currentUrl=${page.url()}`,
+    `title=${pageTitle}`,
+    `authStatus=${authState.status ?? 'unavailable'}`,
+    `authBody=${authState.body ?? authState.error ?? '<empty>'}`
+  ];
+
+  if (visibleErrorText) {
+    context.push(`visibleError=${visibleErrorText}`);
+  }
+
+  return context.join(' | ');
+}
+
+function isOAuthCallbackUrl(url: string): boolean {
+  return OAUTH_CALLBACK_ROUTE_PATTERN.test(url);
+}
+
+function authLoginUrl(): string {
+  return new URL('auth/login', config.baseUrl).toString();
+}
+
+function isIdamUrl(url: string): boolean {
+  try {
+    return new URL(url).hostname.includes('idam');
+  } catch {
+    return url.includes('idam');
+  }
+}
+
+async function isLoginInputVisible(page: Page): Promise<boolean> {
+  const namedUsernameInput = page.locator('input[name="username"]');
+  const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
+  const fallbackEmailInput = page.locator('input[type="email"]').first();
+
+  return (await namedUsernameInput.isVisible().catch(() => false)) ||
+    (await roleEmailInput.isVisible().catch(() => false)) ||
+    (await fallbackEmailInput.isVisible().catch(() => false));
+}
+
+async function isOnLoginOrCallbackSurface(page: Page): Promise<boolean> {
+  const currentUrl = page.url();
+  return currentUrl.includes('/login') ||
+    isIdamUrl(currentUrl) ||
+    isOAuthCallbackUrl(currentUrl) ||
+    await isLoginInputVisible(page);
+}
+
+async function waitForLoginRedirectToSettle(page: Page, timeoutMs = LOGIN_REDIRECT_TIMEOUT_MS): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    const currentUrl = page.url();
+    const onLoginOrCallbackSurface = await isOnLoginOrCallbackSurface(page);
+    const pageTitle = await page.title().catch(() => '');
+
+    if (isOAuthCallbackUrl(currentUrl) && pageTitle.toLowerCase() === 'error') {
+      return;
+    }
+
+    if (!onLoginOrCallbackSurface) {
+      return;
+    }
+
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) {
+      break;
+    }
+
+    await sleep(Math.min(AUTHENTICATION_POLL_INTERVAL_MS, remainingMs));
+  }
+}
+
+async function completeLoginOnPage(page: Page, username: string, password: string): Promise<void> {
+  await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
+
+  if (!(await isOnLoginOrCallbackSurface(page)) && await waitForAuthenticatedByApi(page, 5_000)) {
     return;
   }
 
-  for (let attempt = 1; attempt <= 4; attempt += 1) {
+  const retryUntil = Date.now() + LOGIN_REDIRECT_TIMEOUT_MS;
+  let attempt = 1;
+
+  while (Date.now() < retryUntil) {
+    if (attempt > 1) {
+      await page.context().clearCookies();
+      await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
+    }
+
     const namedUsernameInput = page.locator('input[name="username"]');
     const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
     const fallbackEmailInput = page.locator('input[type="email"]').first();
@@ -143,51 +422,41 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
         await namedUsernameInput.fill(username);
         await page.locator('input[name="password"]').fill(password);
         await page.locator('#login-submit-btn').click();
-        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+        await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
+        await waitForLoginRedirectToSettle(page, Math.max(AUTHENTICATION_POLL_INTERVAL_MS, retryUntil - Date.now()));
       } else if (hasRoleEmailInput || hasFallbackEmailInput) {
         const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
         await emailInput.fill(username);
         await page.locator('input[type="password"], input[name="password"]').first().fill(password);
         await page.getByRole('button', { name: 'Sign in' }).click();
-        await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+        await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
+        await waitForLoginRedirectToSettle(page, Math.max(AUTHENTICATION_POLL_INTERVAL_MS, retryUntil - Date.now()));
       } else {
-        // Login page can be in a transition state; retry instead of timing out on non-visible inputs.
-        await page.waitForTimeout(500 * attempt);
+        // The app gateway can briefly serve /auth/login without rendering IDAM inputs.
+        const remainingMs = retryUntil - Date.now();
+        await sleep(Math.min(500 * attempt, 5_000, Math.max(0, remainingMs)));
       }
     }
 
-    await page.waitForTimeout(1000 * attempt);
-    if (await isAuthenticatedByApi(page)) {
+    const authCheckTimeout = Math.min(5_000, Math.max(0, retryUntil - Date.now()));
+    if (
+      authCheckTimeout > 0 &&
+      !(await isOnLoginOrCallbackSurface(page)) &&
+      await waitForAuthenticatedByApi(page, authCheckTimeout)
+    ) {
       return;
     }
+
+    attempt += 1;
   }
 
-  throw new Error(`Unable to authenticate "${username}" and capture Playwright session state.`);
+  throw new Error(
+    `Unable to authenticate "${username}" and capture Playwright session state. ${await loginFailureContext(page)}`
+  );
 }
 
 async function isAuthenticatedByApi(page: Page): Promise<boolean> {
-  try {
-    const authCheckUrl = new URL('auth/isAuthenticated', config.baseUrl).toString();
-    const response = await page.request.get(authCheckUrl, { failOnStatusCode: false });
-    if (response.status() !== 200) {
-      return false;
-    }
-    const rawBody = (await response.text()).trim().toLowerCase();
-    if (rawBody === 'true') {
-      return true;
-    }
-    if (rawBody === 'false' || rawBody.length === 0) {
-      return false;
-    }
-
-    try {
-      return JSON.parse(rawBody) === true;
-    } catch {
-      return false;
-    }
-  } catch {
-    return false;
-  }
+  return (await getAuthenticationState(page)).authenticated;
 }
 
 async function persistSessionState(context: BrowserContext, storageStatePath: string): Promise<void> {
@@ -198,31 +467,64 @@ async function persistSessionState(context: BrowserContext, storageStatePath: st
 export async function sessionCapture(user: string = 'base', options: SessionCaptureOptions = {}): Promise<string> {
   const partitionKey = resolveSessionPartitionKey(options.partitionKey);
   const storageStatePath = getSessionStatePath(user, partitionKey);
+  const lockPath = `${storageStatePath}.lock`;
+  const failurePath = `${storageStatePath}.capture-failed.json`;
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
 
   if (!options.force && isSessionFresh(storageStatePath)) {
+    clearSessionCaptureFailure(failurePath);
     console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
     return storageStatePath;
   }
 
-  const { username, password } = getUserConfig(user);
-  const partitionSuffix = partitionKey ? ` [${partitionKey}]` : '';
-  console.log(`[playwright-session] Capturing session for ${username}${partitionSuffix} -> ${storageStatePath}`);
-  const browser = await launchBrowserForSessionCapture();
-  const context = await browser.newContext();
-  const page = await context.newPage();
-
-  try {
-    await completeLoginOnPage(page, username, password);
-    const authenticated = await isAuthenticatedByApi(page);
-    if (!authenticated) {
-      throw new Error(`Session capture did not create an authenticated session for "${username}".`);
-    }
-    await persistSessionState(context, storageStatePath);
-    return storageStatePath;
-  } finally {
-    await browser.close();
+  const recentFailureMessage = recentSessionCaptureFailureMessage(failurePath);
+  if (recentFailureMessage) {
+    throw new Error(
+      `Recent session capture failed for user "${user}"; refusing repeated login attempt for now: ${recentFailureMessage}`
+    );
   }
+
+  return withSessionCaptureLock(lockPath, async () => {
+    if (!options.force && isSessionFresh(storageStatePath)) {
+      clearSessionCaptureFailure(failurePath);
+      console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
+      return storageStatePath;
+    }
+
+    const lockedRecentFailureMessage = recentSessionCaptureFailureMessage(failurePath);
+    if (lockedRecentFailureMessage) {
+      throw new Error(
+        `Recent session capture failed for user "${user}"; refusing repeated login attempt for now: ${lockedRecentFailureMessage}`
+      );
+    }
+
+    const { username, password } = getUserConfig(user);
+    const partitionSuffix = partitionKey ? ` [${partitionKey}]` : '';
+    console.log(`[playwright-session] Capturing session for ${username}${partitionSuffix} -> ${storageStatePath}`);
+    let browser: Browser | undefined;
+
+    try {
+      browser = await launchBrowserForSessionCapture();
+      const context = await browser.newContext();
+      const page = await context.newPage();
+
+      await completeLoginOnPage(page, username, password);
+      const authenticated = await waitForAuthenticatedByApi(page);
+      if (!authenticated) {
+        throw new Error(
+          `Session capture did not create an authenticated session for "${username}". ${await loginFailureContext(page)}`
+        );
+      }
+      await persistSessionState(context, storageStatePath);
+      clearSessionCaptureFailure(failurePath);
+      return storageStatePath;
+    } catch (error) {
+      writeSessionCaptureFailure(failurePath, error);
+      throw error;
+    } finally {
+      await browser?.close();
+    }
+  });
 }
 
 export async function applySessionCookies(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {

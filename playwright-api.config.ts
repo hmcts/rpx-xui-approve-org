@@ -1,5 +1,9 @@
 import { defineConfig } from '@playwright/test';
-import { resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
+import {
+  logResolvedTagFilters,
+  resolveFunctionalTagFilters,
+  resolveWorkerCount
+} from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
 
 process.env.PW_AUTH_SESSION_USER = process.env.PW_AUTH_SESSION_USER || 'api';
@@ -22,15 +26,17 @@ function resolveApiWorkerCount(): number {
   return resolvePositiveInteger(process.env.API_PW_WORKERS) ?? resolveWorkerCount();
 }
 
-const apiTagFilters = resolveTagFilters({
+const apiTagFilters = resolveFunctionalTagFilters({
   includeTagsEnvVar: 'API_PW_INCLUDE_TAGS',
   excludedTagsEnvVar: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
-  defaultConfigPath: 'playwright_tests/api/tag-filter.json',
+  defaultConfigPath: 'playwright_tests/api/tag-filter.json'
 });
+logResolvedTagFilters('API', apiTagFilters);
 
 module.exports = defineConfig({
   testDir: './playwright_tests/api',
+  testMatch: /.*\.(positive|negative)\.api\.test\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: resolveApiRetries(),

@@ -3,7 +3,7 @@
  * for better security.
  * When moving to a different proxy middleware, it is important to refactor this as well.
  */
-// TODO: remove this entire file in favour of middleware/proxy.ts
+// remove this entire file in favour of middleware/proxy.ts
 import { EnhancedRequest } from './models';
 
 export function setHeaders(req: EnhancedRequest): any {

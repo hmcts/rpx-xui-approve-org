@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
-import { Matchers } from '@pact-foundation/pact';
+import { MatchersV2 } from '@pact-foundation/pact';
 
-const { term, string, boolean, eachLike } = Matchers;
+const { term, string, boolean, eachLike } = MatchersV2;
 
 export default {
   'request_parameter_supported': boolean(true),

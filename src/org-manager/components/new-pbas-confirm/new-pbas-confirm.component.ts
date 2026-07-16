@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from 'src/caseworker-ref-data/utils/caseworker-utils';
-import { OrganisationVM } from 'src/org-manager/models/organisation';
+import { handleFatalErrors, WILDCARD_SERVICE_DOWN } from '../../../shared/utils/handle-fatal-errors';
+import { OrganisationVM } from '../../models/organisation';
 import { NotificationBannerType } from '../../../models/notification-banner-type.enum';
 import { PbaService } from '../../services';
 
