@@ -12,7 +12,6 @@ describe('DeleteOrganisationSuccessComponent', () => {
   let fixture: ComponentFixture<DeleteOrganisationSuccessComponent>;
   let store: Store<fromOrganisationPendingStore.OrganisationRootState>;
   let storePipeMock: any;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let storeDispatchMock: any;
 
   const reviewedOrganisationsDummy = reviewedOrganisationMockCollection;
