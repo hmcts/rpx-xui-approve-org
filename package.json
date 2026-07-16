@@ -41,6 +41,7 @@
     "test:api:playwright:raw": "PW_AUTH_SESSION_USER=api npx playwright test -c playwright-api.config.ts",
     "test:integration:playwright": "yarn playwright install chromium && yarn test:integration:playwright:raw",
     "test:integration:playwright:raw": "npx playwright test -c playwright-integration.config.ts",
+    "test:playwright:unit": "npx playwright test -c playwright-reporting-unit.config.ts",
     "test:accessibility:playwright": "yarn playwright install chromium && node scripts/run-playwright-accessibility.cjs",
     "test:accessibility:playwright:raw": "npx playwright test -c playwright-accessibility.config.ts",
     "test:wave-a11y:playwright": "node scripts/run-playwright-wave-a11y.cjs",
@@ -62,7 +63,7 @@
     "test:node:watch": "cd api && yarn test:watch",
     "test-pact": "NODE_PATH=. NODE_CONFIG_DIR=./config LOG_LEVEL=error DOTENV_CONFIG_DEFAULTS=./api/.env.defaults mocha --timeout 10000 -r ts-node/register -r dotenv-extended/config api/test/pact/pact-tests/**/*.spec.ts",
     "test:pact:run-and-publish": "yarn test-pact && yarn publish-pact",
-    "test:smoke": "yarn playwright install chromium && E2E_PW_INCLUDE_TAGS='@smoke' E2E_PW_EXCLUDED_TAGS_OVERRIDE='@none' npx playwright test playwright_tests/e2e/login.test.ts -c playwright.config.ts"
+    "test:smoke": "yarn playwright install chromium && E2E_PW_INCLUDE_TAGS='@smoke' E2E_PW_EXCLUDED_TAGS_OVERRIDE='@none' node scripts/run-playwright-smoke.cjs"
   },
   "private": true,
   "dependencies": {
