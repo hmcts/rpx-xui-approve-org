@@ -7,7 +7,7 @@ Use this as a temporary operational control when a tagged test area is blocking 
 ## Runtime contract
 
 - Key Vault secret: `xui-approve-org-playwright-global-excluded-tags`
-- Local-population tag: `e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`
+- Inventory metadata: `e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`
 - Runtime env var: `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`
 - Bypass: `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true`
 - Clear/no-op value: `@none`
@@ -15,6 +15,8 @@ Use this as a temporary operational control when a tagged test area is blocking 
 Global exclusions are additive. Each suite first resolves its checked-in defaults or replacement-style suite override, then adds global tags found in that suite's `availableTags` catalog.
 
 The API, E2E, and integration catalogs form the repo-wide known-tag union. An unknown global value fails config loading, which catches typos instead of silently skipping nothing. After validation, each suite intersects the global list with its own `availableTags` catalog.
+
+The global `@e2e` suite tag is rejected because it would leave the normal E2E command with no tests. The smoke-only `@smoke` tag remains supported because `yarn test:smoke` adds Playwright's no-tests pass flag while that global exclusion is active.
 
 The suite catalogs are the scope boundary because tags can be shared. For example, `@search` is declared by E2E and integration, so a global `@search` excludes matching tests in both suites. A valid tag owned only by another functional suite is ignored by the current suite and reported as `globalIgnored` in diagnostics.
 
@@ -27,6 +29,8 @@ Suite overrides retain their existing replacement behavior:
 `@none` in a suite override clears checked-in defaults before globals are added. `@none` in the global list is only a no-op. The bypass disables only the global layer.
 
 CI logs the resolved filters. Set `PLAYWRIGHT_LOG_TAG_FILTERS=true` for the same diagnostics locally.
+
+Jenkins and local population read only the exact secret name above. The `e2e` metadata supports inventory and operator identification; it is not a fallback lookup. If the exact local secret is unavailable, the generated value is `@none`.
 
 ## Key Vault commands
 
@@ -59,7 +63,7 @@ az keyvault secret set \
   --vault-name rpx-aat \
   --name xui-approve-org-playwright-global-excluded-tags \
   --value '@organisations @search' \
-  --tags e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS file-encoding=utf-8 purpose=playwright-global-exclusions jira=EXUI-0000
+  --tags e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS file-encoding=utf-8 purpose=playwright-global-exclusions jira=EXUI-4971
 ```
 
 After confirming the current value is `@organisations @search`, remove only `@search` while preserving `@organisations`:
@@ -82,7 +86,7 @@ az keyvault secret set \
   --tags e2e=APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS file-encoding=utf-8 purpose=playwright-global-exclusions
 ```
 
-Replace `rpx-aat` only when updating another non-production vault. The `jira=EXUI-0000` metadata shown in the add example is optional; preserve the current Jira tag when one is already present. Because `az keyvault secret set --tags` replaces the complete tag set, preserve the live `e2e`, `file-encoding`, `purpose` and any other metadata fields on every update. Review the complete explicit `--value` before creating a new secret version, and do not remove unrelated exclusions.
+Replace `rpx-aat` only when updating another non-production vault. The `jira=EXUI-4971` metadata shown in the add example is optional; preserve the current Jira tag when one is already present. Because `az keyvault secret set --tags` replaces the complete tag set, preserve the live `e2e`, `file-encoding`, `purpose` and any other metadata fields on every update. Review the complete explicit `--value` before creating a new secret version, and do not remove unrelated exclusions.
 
 ## Local verification
 

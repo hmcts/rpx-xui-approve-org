@@ -130,8 +130,8 @@ while IFS= read -r env_key; do
 
   if [[ "$env_key" == "PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS" ]]; then
     if secret_value="$(az keyvault secret show --vault-name "$vault_name" --name "xui-approve-org-playwright-global-excluded-tags" --query value --output tsv 2>/dev/null)"; then
-      if [[ "$secret_value" == "null" ]]; then
-        secret_value=""
+      if [[ -z "$secret_value" || "$secret_value" == "null" ]]; then
+        secret_value="@none"
       fi
 
       echo "$env_key=$(escape_env_value "$secret_value")" >> "$temp_output"
@@ -139,7 +139,10 @@ while IFS= read -r env_key; do
       continue
     fi
 
-    local_population_tag="APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS"
+    echo "Warning: Exact secret xui-approve-org-playwright-global-excluded-tags was not found in $vault_name. Writing @none without metadata fallback." >&2
+    echo "$env_key=$(escape_env_value "@none")" >> "$temp_output"
+    missing_count=$((missing_count + 1))
+    continue
   fi
 
   secret_ids="$(az keyvault secret list \

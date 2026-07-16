@@ -303,6 +303,9 @@ export function resolveTagFilters({
       tagSource: globalExcludedTagsEnvVar ?? 'Global excluded tags',
       configPath: knownGlobalTags.source
     });
+    if (configuredGlobalExcludedTags.includes('@e2e')) {
+      throw new Error(`${globalExcludedTagsEnvVar ?? 'Global excluded tags'} cannot exclude whole-suite tag(s): @e2e`);
+    }
   }
   const globalExcludedTags = globalExcludesBypassed
     ? []

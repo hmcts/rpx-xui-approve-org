@@ -126,6 +126,12 @@ test('bypasses validation for an obsolete global exclusion', () => {
   expect(filters.globalExcludesBypassed).toBe(true);
 });
 
+test('rejects the whole-suite @e2e tag as a global exclusion', () => {
+  expect(() =>
+    resolveForCatalog(['@e2e', '@smoke'], { PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e' })
+  ).toThrow(/PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS cannot exclude whole-suite tag\(s\): @e2e/);
+});
+
 test('allows the smoke journey to be globally excluded through its safe package runner', () => {
   const filters = resolveForCatalog(['@e2e', '@smoke'], { PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@smoke' });
 

@@ -247,7 +247,7 @@ A11Y_PW_INCLUDE_TAGS='@staff-details' yarn test:accessibility:playwright:raw
 
 ### Azure Key Vault env population
 
-This repo includes scripts to generate local env files from Azure Key Vault. Most template keys use a matching `tags.e2e` value. `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` resolves the exact `xui-approve-org-playwright-global-excluded-tags` secret first and otherwise uses the AO-only `APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` tag.
+This repo includes scripts to generate local env files from Azure Key Vault. Most template keys use a matching `tags.e2e` value. `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` is different: it reads only the exact `xui-approve-org-playwright-global-excluded-tags` secret and writes `@none` if that secret is unavailable. It never selects this value by metadata.
 
 Environment to vault mapping is fixed to:
 
@@ -305,7 +305,7 @@ Behavior notes:
 
 - Missing tagged secrets do not fail the run.
 - Missing keys are written as blank values and logged as warnings.
-- The global exclusion key never falls back to the shared `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` local-population tag used by other XUI repositories.
+- The global exclusion key never falls back to metadata or another XUI repository's secret.
 - Generated local env files include resolved values only at runtime and should not be committed.
 
 ### Add new username/password credentials to Key Vault
@@ -334,7 +334,7 @@ CI/Jenkins notes:
 - `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e/odhin-report`), Playwright API (`functional-output/tests/playwright-api/odhin-report`), Playwright integration (`functional-output/tests/playwright-integration/odhin-report`), and Playwright accessibility (`functional-output/tests/playwright-accessibility/odhin-report`) HTML reports.
 - PR and nightly functional stages run API, integration, E2E, and accessibility as separate parallel Jenkins branches.
 - CNP and nightly Jenkins pipelines expose optional build parameters for tag filtering: `E2E_PW_INCLUDE_TAGS`, `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_INCLUDE_TAGS`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_INCLUDE_TAGS`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, `A11Y_PW_INCLUDE_TAGS`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE`.
-- CNP and nightly load the exact `xui-approve-org-playwright-global-excluded-tags` secret as `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` and expose `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES` for fixing runs. Local population uses the AO-only `APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` tag. Shared tags apply to every functional suite catalog that declares them.
+- CNP, nightly, and local population read only the exact `xui-approve-org-playwright-global-excluded-tags` secret as `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`; the pipelines expose `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES` for fixing runs. Shared test tags apply to every functional suite catalog that declares them.
 - Accessibility stage failures are informational: the accessibility stage is marked `UNSTABLE` but does not fail the overall build.
 - Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 

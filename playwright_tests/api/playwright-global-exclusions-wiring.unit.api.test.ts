@@ -80,27 +80,22 @@ test('local env population prefers the exact AO exclusion secret', () => {
   expect(result.commandLog).not.toContain('tags.e2e==\'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS\'');
 });
 
-test('falls back only to the unique AO exclusion tag when the exact secret lookup fails', () => {
+test('does not use metadata fallback when the exact AO exclusion secret lookup fails', () => {
   const result = runLocalEnvPopulation([
     'if [[ "$1 $2 $3" == "keyvault secret show" && "$*" == *"--name xui-approve-org-playwright-global-excluded-tags"* ]]; then exit 1; fi',
     'if [[ "$1 $2 $3" == "keyvault secret list" && "$*" == *"tags.e2e==\'APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS\'"* ]]; then echo "https://vault/secrets/ao-global"; exit 0; fi',
-    'if [[ "$1 $2 $3" == "keyvault secret list" && "$*" == *"tags.e2e==\'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS\'"* ]]; then printf "%s\\n" "https://vault/secrets/ao-global" "https://vault/secrets/another-repo"; exit 0; fi',
-    'if [[ "$1 $2 $3" == "keyvault secret show" && "$*" == *"--id https://vault/secrets/ao-global"* ]]; then echo "@ao-fallback"; exit 0; fi',
-    'if [[ "$1 $2 $3" == "keyvault secret show" && "$*" == *"--id https://vault/secrets/another-repo"* ]]; then echo "@another-repo"; exit 0; fi'
+    'if [[ "$1 $2 $3" == "keyvault secret list" && "$*" == *"tags.e2e==\'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS\'"* ]]; then echo "https://vault/secrets/mc-global"; exit 0; fi',
+    'if [[ "$1 $2 $3" == "keyvault secret show" && "$*" == *"--id "* ]]; then echo "@foreign-value"; exit 0; fi'
   ]);
 
-  expect(result.output).toContain('PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS="@ao-fallback"');
-  expect(result.output).not.toContain('@another-repo');
-  const exactLookupIndex = result.commandLog.indexOf(
+  expect(result.output).toContain('PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS="@none"');
+  expect(result.output).not.toContain('@foreign-value');
+  expect(result.commandLog).toContain(
     'keyvault secret show --vault-name rpx-aat --name xui-approve-org-playwright-global-excluded-tags'
   );
-  const aoTagLookupIndex = result.commandLog.indexOf(
-    'tags.e2e==\'APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS\''
-  );
-  expect(exactLookupIndex).toBeGreaterThanOrEqual(0);
-  expect(aoTagLookupIndex).toBeGreaterThan(exactLookupIndex);
-  expect(result.commandLog).toContain('tags.e2e==\'APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS\'');
+  expect(result.commandLog).not.toContain('tags.e2e==\'APPROVE_ORG_PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS\'');
   expect(result.commandLog).not.toContain('tags.e2e==\'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS\'');
+  expect(result.commandLog).not.toContain('--id ');
 });
 
 function runLocalEnvPopulation(fakeAzBehavior: string[]): { output: string; commandLog: string } {
