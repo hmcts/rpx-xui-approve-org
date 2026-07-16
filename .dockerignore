@@ -1,9 +1,22 @@
+.git
 .github
+.angular
+.DS_Store
+.env
+
 charts
 infrastructure
 node_modules
-payload.json
-payload.json.gz
+api/node_modules
+dist
+out-tsc
+tmp
+test-results
+playwright-report
+functional-output
+reports
+coverage
+.stryker-tmp
 
 Jenkinsfile*
 README.md
