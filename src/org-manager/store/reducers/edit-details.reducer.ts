@@ -106,7 +106,7 @@ export function reducer(
       const pba = {
         ...state.pba.errorMessages,
         errorMessages
-      } as any; // todo revisit why this any
+      } as any; // revisit why this any
 
       return {
         ...state,

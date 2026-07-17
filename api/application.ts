@@ -67,12 +67,7 @@ if (!getEnvironment()) {
   console.log(ERROR_NODE_CONFIG_ENV);
 }
 
-/**
- * TODO: Implement a logger on the Node layer.
- */
 console.log(environmentCheckText());
-
-// TODO: Testing that we can get the environment variables on AAT from the .yaml file
 console.log('ENV PRINT');
 console.log(process.env.NODE_CONFIG_ENV);
 console.log('process.env.ALLOW_CONFIG_MUTATIONS');
@@ -167,7 +162,6 @@ const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`;
 const authorizationUrl = `${idamWebUrl}/login`;
 console.log('tokenUrl', tokenUrl);
 
-//TODO: we can move these out into proper config at some point to tidy up even further
 const options: AuthOptions = {
   // we only want to allow prd-admin roles
   allowRolesRegex: 'prd-admin|cwd-admin',

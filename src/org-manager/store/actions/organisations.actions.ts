@@ -23,7 +23,7 @@ export enum OrgActionTypes {
   NAV_TO_DELETE_ORGANISATION = '[Pending Organisations] Navigate to Delete an Organisation',
   NAV_TO_REVIEW_ORGANISATION = '[Pending Organisations] Navigate to Review an Organisation',
   DELETE_PENDING_ORGANISATION = '[Pending Organisations] Delete Pending Organisation',
-  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  // this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
   DELETE_REVIEW_ORGANISATION = '[Review Organisations] Delete Review Organisation',
 
   DELETE_PENDING_ORGANISATION_SUCCESS = '[Pending Organisations] Delete Pending Organisation Success',
@@ -59,7 +59,7 @@ export class LoadPendingOrganisationsSuccess implements Action {
 export class LoadPendingOrganisationsFail implements Action {
   public readonly type = OrgActionTypes.LOAD_PENDING_ORGANISATIONS_FAIL;
 
-  constructor(public payload: any) {} // TODO change type it needs to change in the service used
+  constructor(public payload: any) {} // change type it needs to change in the service used
 }
 
 export class AddReviewOrganisations implements Action {
@@ -71,7 +71,7 @@ export class AddReviewOrganisations implements Action {
 export class DisplayErrorMessageOrganisations implements Action {
   public readonly type = OrgActionTypes.DISPLAY_ERROR_MESSAGE_ORGANISATIONS;
 
-  constructor(public payload: any) {} // TODO change type it needs to change in the service used
+  constructor(public payload: any) {} // change type it needs to change in the service used
 }
 
 export class ApprovePendingOrganisations implements Action {
@@ -86,7 +86,7 @@ export class ApprovePendingOrganisationsSuccess implements Action {
 
 export class ApprovePendingOrganisationsFail implements Action {
   public readonly type = OrgActionTypes.APPROVE_PENDING_ORGANISATIONS_FAIL;
-  constructor(public payload: any) {} // TODO change type it needs to change in the service used
+  constructor(public payload: any) {} // change type it needs to change in the service used
 }
 
 export class PutReviewOrganisation implements Action {
@@ -219,7 +219,7 @@ export class UpdateOrganisationsSearchString implements Action {
   constructor(public payload: string) {}
 }
 
-// TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+// this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
 export class DeleteReviewOrganisation implements Action {
   public readonly type = OrgActionTypes.DELETE_REVIEW_ORGANISATION;
   constructor(public payload: OrganisationVM) {}
@@ -257,5 +257,5 @@ export type OrganisationsActions =
   | PutReviewOrganisation
   | PutReviewOrganisationSuccess
   | PutReviewOrganisationFail
-  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  // this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
   | DeleteReviewOrganisation;

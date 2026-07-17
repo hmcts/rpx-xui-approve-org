@@ -8,7 +8,7 @@ import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../models/enhanced-request.interface';
 
-//TODO: once both todo's below are complete, we can remove this file
+// once both todo's below are complete, we can remove this file
 const logger = log4jui.getLogger('auth');
 const POST_AUTH_ROLE_DENIED_EVENT = 'ManageCasePostAuthRoleDenied';
 
@@ -24,7 +24,6 @@ interface AccessDeniedDetails {
 const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { roles } = req.session.passport.user.userinfo;
 
-  //TODO: remove dependency on the roles cookie, can then remove this event handler entirely
   res.cookie(getConfigValue(COOKIE_ROLES), roles);
 
   if (!req.isRefresh) {
@@ -67,7 +66,6 @@ xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback);
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_ACCESS_DENIED, accessDeniedCallback);
 
 export async function attach(req: EnhancedRequest, res: express.Response, next: express.NextFunction) {
-  //TODO: req now has req.headers.Authorization/ServiceAuthorization, so might be worthwhile replacing this in future
   if (!req.http) {
     req.http = http(req);
   }
