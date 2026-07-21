@@ -12,6 +12,7 @@ const lighthousePort = Number.parseInt(process.env.PW_LIGHTHOUSE_PORT ?? '9222',
 const accessibilityTimeout = lighthouseEnabled
   ? Number.parseInt(process.env.PW_LIGHTHOUSE_A11Y_TEST_TIMEOUT_MS ?? '180000', 10)
   : Number.parseInt(process.env.PW_A11Y_TEST_TIMEOUT_MS ?? '120000', 10);
+const accessibilityWorkers = lighthouseEnabled ? 1 : resolveWorkerCount();
 
 const accessibilityTagFilters = resolveTagFilters({
   includeTagsEnvVar: 'A11Y_PW_INCLUDE_TAGS',
@@ -23,7 +24,7 @@ const accessibilityTagFilters = resolveTagFilters({
 
 module.exports = defineConfig({
   testDir: './playwright_tests/accessibility',
-  globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
+  testMatch: /.*\.test\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
@@ -32,7 +33,7 @@ module.exports = defineConfig({
     timeout: 60_000
   },
   reportSlowTests: null,
-  workers: resolveWorkerCount(),
+  workers: accessibilityWorkers,
   reporter: buildPlaywrightReporters('accessibility'),
   projects: [
     {

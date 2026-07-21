@@ -8,6 +8,7 @@ final String apiPwIncludeTagsEnvName = 'API_PW_INCLUDE_TAGS'
 final String apiPwExcludedTagsOverrideEnvName = 'API_PW_EXCLUDED_TAGS_OVERRIDE'
 final String a11yPwIncludeTagsEnvName = 'A11Y_PW_INCLUDE_TAGS'
 final String a11yPwExcludedTagsOverrideEnvName = 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE'
+final String ignoreGlobalExcludesEnvName = 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES'
 final String runAccessibilityTestsParamName = 'RUN_ACCESSIBILITY_TESTS'
 final String noneTagFallback = '<none>'
 final String htmlIndexReportFile = 'index.html'
@@ -74,24 +75,32 @@ properties([
             description: 'Optional accessibility excluded tags override (@none clears file defaults)'
         ),
         booleanParam(
+            name: ignoreGlobalExcludesEnvName,
+            defaultValue: false,
+            description: 'Bypass Key Vault-backed Playwright global exclusions while verifying a fix.'
+        ),
+        booleanParam(
             name: runAccessibilityTestsParamName,
             defaultValue: true,
-            description: 'Run the unified accessibility Playwright pack (axe, WAVE-like checks and Lighthouse)'
+            description: 'Run the unified accessibility Playwright pack (axe, WAVE-like and screen-reader checks)'
         )
     ])
 ])
 
-@Library('Infrastructure@2.0.0')
+@Library("Infrastructure@2.4.4")
 
 String type      = 'nodejs'
 String product   = 'xui'
 String component = 'webapp'
 String channel   = '#xui-pipeline'
-String playwrightReportDir = 'functional-output/tests/playwright-e2e'
-String playwrightApiReportDir = 'functional-output/tests/playwright-api'
-String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration'
-String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly'
+String playwrightReportDir = 'functional-output/tests/playwright-e2e/odhin-report'
+String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-report'
+String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
+String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly/odhin-report'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightApiReportFile = 'xui-ao-playwright-api.html'
+String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
+String playwrightNightlyReportFile = 'xui-ao-playwright-nightly.html'
 
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -103,6 +112,9 @@ Closure<Boolean> shouldRunAccessibilityTests = {
 Closure<Void> runPlaywrightFunctionalInParallel = {
     stage('Nightly Functional Tests (Parallel)') {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        stage('Nightly Playwright Config Unit Tests') {
+            yarnBuilder.yarn('test:playwright:unit')
+        }
         Map<String, Object> playwrightBranches = [
             failFast: false,
             api: {
@@ -147,6 +159,7 @@ Closure<Void> applyPlaywrightTagFilterEnv = {
     playwrightTagFilterEnvNames.each { String envName ->
         env."${envName}" = resolveParamOrEnv(envName)
     }
+    env."${ignoreGlobalExcludesEnvName}" = params."${ignoreGlobalExcludesEnvName}" ? 'true' : 'false'
 }
 
 Closure<Void> logPlaywrightTagFilterEnv = { String contextLabel ->
@@ -158,12 +171,14 @@ Closure<Void> logPlaywrightTagFilterEnv = { String contextLabel ->
     String apiExclude = env.API_PW_EXCLUDED_TAGS_OVERRIDE ?: noneTagFallback
     String a11yInclude = env.A11Y_PW_INCLUDE_TAGS ?: noneTagFallback
     String a11yExclude = env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: noneTagFallback
+    String globalExclude = env.PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS ?: noneTagFallback
 
     echo([
         "[playwright-tags] ${contextLabel}",
         "E2E include=${e2eInclude} exclude=${e2eExclude}",
         "Integration include=${integrationInclude} exclude=${integrationExclude}",
         "API include=${apiInclude} exclude=${apiExclude}",
+        "Global exclude=${globalExclude} bypass=${env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES}",
         "A11Y include=${a11yInclude} exclude=${a11yExclude}",
         "A11Y enabled=${shouldRunAccessibilityTests()}"
     ].join(' | '))
@@ -180,7 +195,8 @@ Map<String, List<Map<String, Object>>> secrets = [
     secret('test-roo-username', 'TEST_ROO_EMAIL'),
     secret('test-roo-password', 'TEST_ROO_PASSWORD'),
     secret('appinsights-connection-string-ao', 'APPINSIGHTS_CONNECTION_STRING'),
-    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID')
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
+    secret('xui-approve-org-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS')
   ]
 ]
 
@@ -242,7 +258,7 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightApiReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightApiReportFile,
             reportName           : 'XUI Approve Organisation Full functional API Playwright Tests'
         ])
 
@@ -251,25 +267,29 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightIntegrationReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightIntegrationReportFile,
             reportName           : 'XUI Approve Organisation Full functional Integration Playwright Tests'
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : playwrightAccessibilityReportDir,
-            reportFiles          : playwrightAccessibilityReportFile,
-            reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
-        ])
+        if (shouldRunAccessibilityTests()) {
+            publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "${playwrightAccessibilityReportDir}/",
+                reportFiles          : playwrightAccessibilityReportFile,
+                reportName           : 'XUI Approve Organisation Full functional Accessibility Playwright Tests'
+            ])
+        } else {
+            echo "[playwright-a11y] Full functional Accessibility Playwright Test report publish skipped because ${runAccessibilityTestsParamName}=false"
+        }
 
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : playwrightNightlyReportDir,
-            reportFiles          : htmlIndexReportFile,
+            reportFiles          : playwrightNightlyReportFile,
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
         ])
     }

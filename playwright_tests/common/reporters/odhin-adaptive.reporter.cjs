@@ -2,6 +2,8 @@
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 
@@ -70,8 +72,13 @@ class OdhinAdaptiveReporter {
   }
 
   async onEnd(result) {
-    process.stdout.write(`[odhin-profile] Finalizing Odhin report statusCounts=${JSON.stringify(this.statusCounts)}\n`);
     await this.pendingInnerCallbacks;
+
+    if (!this.hasRecordedTests()) {
+      return;
+    }
+
+    process.stdout.write(`[odhin-profile] Finalizing Odhin report statusCounts=${JSON.stringify(this.statusCounts)}\n`);
 
     if (typeof this.inner.onEnd === 'function') {
       try {
@@ -79,6 +86,12 @@ class OdhinAdaptiveReporter {
       } catch (error) {
         process.stderr.write(`[odhin-profile] onEnd failed: ${formatErrorMessage(error)}\n`);
       }
+    }
+
+    try {
+      enhanceGeneratedReport(this.options.outputFolder, []);
+    } catch (error) {
+      process.stderr.write(`[odhin-profile] report enhancement failed: ${formatErrorMessage(error)}\n`);
     }
   }
 
@@ -102,6 +115,10 @@ class OdhinAdaptiveReporter {
       default:
         this.statusCounts.other += 1;
     }
+  }
+
+  hasRecordedTests() {
+    return Object.values(this.statusCounts).some((count) => count > 0);
   }
 
   enqueueInnerCallback(hookName, invoke, context = {}) {

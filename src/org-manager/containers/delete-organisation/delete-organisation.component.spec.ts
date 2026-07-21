@@ -50,7 +50,7 @@ describe('DeleteOrganisationComponent', () => {
       expect(storeDispatchMock).toHaveBeenCalledWith(new DeletePendingOrganisation(orgForReview));
     });
 
-    // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+    // this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
     it('should dispatch a review organisation "delete" action', () => {
       const orgForReview = reviewOrganisationsMockCollection[0];
       component.onDeleteOrganisationHandler(orgForReview);

@@ -178,12 +178,15 @@ This repository now uses Playwright for the functional/liveliness test path.
 - `yarn test:crossbrowser` runs cross-browser Playwright tests using `playwright-nightly.config.ts`.
 - `yarn test:api:playwright` runs the Playwright API suite (`playwright_tests/api`) using `playwright-api.config.ts`.
 - `yarn test:integration:playwright` runs the Playwright integration suite (`playwright_tests/integration`) using `playwright-integration.config.ts`.
-- `yarn test:accessibility:playwright` runs the Playwright accessibility suite (`playwright_tests/accessibility`) using `playwright-accessibility.config.ts`.
+- `yarn test:accessibility:playwright` runs the Playwright accessibility suite (`playwright_tests/accessibility`) using `playwright-accessibility.config.ts`. The default pack runs axe, WAVE-like and screen-reader checks.
+- `yarn test:lighthouse-a11y:playwright` runs the same accessibility suite with the Lighthouse engine only. Set `A11Y_ENGINES=all` or `PLAYWRIGHT_A11Y_ENGINES=all` to include Lighthouse in the unified accessibility pack.
 - Playwright API specs use filename split in one folder (`*.positive.api.test.ts` and `*.negative.api.test.ts`) under `playwright_tests/api`.
 - Playwright integration specs use shared authenticated request fixtures from `playwright_tests/framework/fixtures/auth-request.fixtures.ts`.
 - Tag catalogs are stored in JSON files: `playwright_tests/e2e/tag-filter.json`, `playwright_tests/integration/tag-filter.json`, `playwright_tests/api/tag-filter.json`, and `playwright_tests/accessibility/tag-filter.json`.
 - Include tags per suite with `E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS`, and `A11Y_PW_INCLUDE_TAGS`.
 - Override excluded tags per suite with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE` (`@none` clears file-based excludes).
+- `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` adds catalog-scoped exclusions to API, E2E, integration, and nightly cross-browser runs. Accessibility is deliberately excluded. See [Playwright global exclusions](PLAYWRIGHT_GLOBAL_EXCLUSIONS.md).
+- `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true` bypasses only the global layer for a verification run.
 - Override catalog paths with `E2E_PW_TAG_FILTER_CONFIG`, `INTEGRATION_PW_TAG_FILTER_CONFIG`, `API_PW_TAG_FILTER_CONFIG`, and `A11Y_PW_TAG_FILTER_CONFIG` when needed.
 - `TEST_URL` can be set to target a different environment (default: AAT URL).
 - `TEST_REGISTER_URL` can be set for registration flow tests; when unset, Playwright derives the Manage Org URL from `TEST_URL` for AAT and Demo, with preview defaulting to AAT unless overridden.
@@ -244,7 +247,7 @@ A11Y_PW_INCLUDE_TAGS='@staff-details' yarn test:accessibility:playwright:raw
 
 ### Azure Key Vault env population
 
-This repo includes scripts to generate local env files by resolving template keys from Azure Key Vault secrets where `tags.e2e` matches the env key name.
+This repo includes scripts to generate local env files from Azure Key Vault. Most template keys use a matching `tags.e2e` value. `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS` is different: it reads only the exact `xui-approve-org-playwright-global-excluded-tags` secret and writes `@none` if that secret is unavailable. It never selects this value by metadata.
 
 Environment to vault mapping is fixed to:
 
@@ -302,6 +305,7 @@ Behavior notes:
 
 - Missing tagged secrets do not fail the run.
 - Missing keys are written as blank values and logged as warnings.
+- The global exclusion key never falls back to metadata or another XUI repository's secret.
 - Generated local env files include resolved values only at runtime and should not be committed.
 
 ### Add new username/password credentials to Key Vault
@@ -326,11 +330,12 @@ If credentials are required in both `aat` and `demo`, add them to both `rpx-aat`
 
 CI/Jenkins notes:
 
-- `smoketest:*` and nightly cross-browser stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e`.
-- `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e`), Playwright API (`functional-output/tests/playwright-api`), Playwright integration (`functional-output/tests/playwright-integration`), and Playwright accessibility (`functional-output/tests/playwright-a11y`) HTML reports.
+- `smoketest:*` stages publish Playwright E2E HTML reports from `functional-output/tests/playwright-e2e/odhin-report`, and nightly cross-browser publishes from `functional-output/tests/playwright-nightly/odhin-report`.
+- `functionalTest:*` stages publish Playwright E2E (`functional-output/tests/playwright-e2e/odhin-report`), Playwright API (`functional-output/tests/playwright-api/odhin-report`), Playwright integration (`functional-output/tests/playwright-integration/odhin-report`), and Playwright accessibility (`functional-output/tests/playwright-accessibility/odhin-report`) HTML reports.
 - PR and nightly functional stages run API, integration, E2E, and accessibility as separate parallel Jenkins branches.
 - CNP and nightly Jenkins pipelines expose optional build parameters for tag filtering: `E2E_PW_INCLUDE_TAGS`, `E2E_PW_EXCLUDED_TAGS_OVERRIDE`, `INTEGRATION_PW_INCLUDE_TAGS`, `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`, `API_PW_INCLUDE_TAGS`, `API_PW_EXCLUDED_TAGS_OVERRIDE`, `A11Y_PW_INCLUDE_TAGS`, and `A11Y_PW_EXCLUDED_TAGS_OVERRIDE`.
-- Accessibility branch failures are informational: the accessibility branch is marked `UNSTABLE` but does not fail the overall build.
+- CNP, nightly, and local population read only the exact `xui-approve-org-playwright-global-excluded-tags` secret as `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`; the pipelines expose `PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES` for fixing runs. Shared test tags apply to every functional suite catalog that declares them.
+- Accessibility stage failures are informational: the accessibility stage is marked `UNSTABLE` but does not fail the overall build.
 - Follow-up TODO: align browser install handling with `rpx-xui-webapp` (`test:setup:playwright-install-chromium` + `PLAYWRIGHT_SKIP_INSTALL=true` in parallel test branches) to avoid duplicate install work.
 
 ## Integration Documentation

@@ -126,10 +126,28 @@ total_count=0
 
 while IFS= read -r env_key; do
   total_count=$((total_count + 1))
+  local_population_tag="$env_key"
+
+  if [[ "$env_key" == "PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS" ]]; then
+    if secret_value="$(az keyvault secret show --vault-name "$vault_name" --name "xui-approve-org-playwright-global-excluded-tags" --query value --output tsv 2>/dev/null)"; then
+      if [[ -z "$secret_value" || "$secret_value" == "null" ]]; then
+        secret_value="@none"
+      fi
+
+      echo "$env_key=$(escape_env_value "$secret_value")" >> "$temp_output"
+      resolved_count=$((resolved_count + 1))
+      continue
+    fi
+
+    echo "Warning: Exact secret xui-approve-org-playwright-global-excluded-tags was not found in $vault_name. Writing @none without metadata fallback." >&2
+    echo "$env_key=$(escape_env_value "@none")" >> "$temp_output"
+    missing_count=$((missing_count + 1))
+    continue
+  fi
 
   secret_ids="$(az keyvault secret list \
     --vault-name "$vault_name" \
-    --query "[?tags.e2e=='$env_key'].id" \
+    --query "[?tags.e2e=='$local_population_tag'].id" \
     --output tsv)"
 
   if [[ -z "$secret_ids" ]]; then
@@ -146,7 +164,7 @@ while IFS= read -r env_key; do
       fi
     fi
 
-    echo "Warning: No secret found in $vault_name with tags.e2e=$env_key. Writing blank value." >&2
+    echo "Warning: No secret found in $vault_name with tags.e2e=$local_population_tag. Writing blank value." >&2
     echo "$env_key=" >> "$temp_output"
     missing_count=$((missing_count + 1))
     continue
@@ -154,7 +172,7 @@ while IFS= read -r env_key; do
 
   secret_count="$(printf '%s\n' "$secret_ids" | awk 'NF {count += 1} END {print count + 0}')"
   if [[ "$secret_count" -gt 1 ]]; then
-    echo "Warning: Multiple secrets found in $vault_name with tags.e2e=$env_key. Using the first match." >&2
+    echo "Warning: Multiple secrets found in $vault_name with tags.e2e=$local_population_tag. Using the first match." >&2
   fi
 
   first_secret_id="$(printf '%s\n' "$secret_ids" | awk 'NF {print; exit}')"
