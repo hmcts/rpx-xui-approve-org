@@ -1,0 +1,19 @@
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
+
+@Component({
+  selector: 'app-prd-upload-partial-success',
+  templateUrl: './upload-info-partial-success.html',
+  standalone: false
+})
+
+export class UploadInfoPartialSuccessComponent {
+  public readonly partialErrorResp: CaseWorkerRefDataUploadResponse;
+  constructor(private readonly router: Router) {
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras && navigation.extras.state) {
+      this.partialErrorResp = navigation.extras.state as CaseWorkerRefDataUploadResponse;
+    }
+  }
+}
