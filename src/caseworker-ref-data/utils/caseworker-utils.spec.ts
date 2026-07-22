@@ -1,6 +1,7 @@
-import { handleFatalErrors, REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './handle-fatal-errors';
+import { handleFatalErrors } from '../../shared/utils/handle-fatal-errors';
+import { REDIRECTS, treatAsFatal, WILDCARD_SERVICE_DOWN } from './caseworker-utils';
 
-describe('HandleFatalErrors', () => {
+describe('CaseWorkerUtils', () => {
   let mockRouter = {
     navigate: jasmine.createSpy('navigate')
   };
