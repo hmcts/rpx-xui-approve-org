@@ -30,6 +30,7 @@ export const SERVICES_CCD_DATA_API_PATH = 'services.ccdDataApi';
 export const SERVICES_CCD_DEF_API_PATH = 'services.ccdDefApi';
 export const SERVICES_IDAM_API_PATH = 'services.idamApi';
 export const SERVICES_IDAM_WEB = 'services.idamWeb';
+export const HMCTS_ACCESS_API = 'services.hmctsAccessApi';
 export const SERVICES_RD_PROFESSIONAL_API_PATH = 'services.rdProfessionalApi';
 export const SERVICES_FEE_AND_PAY_PATH = 'services.feeAndPayApi';
 export const SERVICE_S2S_PATH = 'services.s2s';

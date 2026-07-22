@@ -18,6 +18,7 @@ import {
   FEATURE_REDIS_ENABLED,
   FEATURE_SECURE_COOKIE_ENABLED,
   HELMET,
+  HMCTS_ACCESS_API,
   IDAM_CLIENT,
   IDAM_SECRET,
   MAX_LINES,
@@ -243,6 +244,7 @@ function healthcheckConfig(msUrl) {
 const healthChecks = {
   checks: {
     feeAndPayApi: healthcheckConfig(getConfigValue(SERVICES_FEE_AND_PAY_PATH)),
+    hmctsAccessApi: healthcheckConfig(getConfigValue(HMCTS_ACCESS_API)),
     idamApi: healthcheckConfig(getConfigValue(SERVICES_IDAM_API_PATH)),
     idamWeb: healthcheckConfig(getConfigValue(SERVICES_IDAM_WEB)),
     rdProfessionalApi: healthcheckConfig(getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)),
