@@ -3,11 +3,11 @@ import { Organisation } from '../../../pactFixtures';
 import { getOperation } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
+const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalInternal', port: 8000 });
 
-describe('Get a list of organisations based on status', async () => {
+describe('Get a list of organisations based on status', () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
@@ -21,7 +21,9 @@ describe('Get a list of organisations based on status', async () => {
         withRequest: {
           method: 'GET',
           path: '/refdata/internal/v1/organisations',
-          query: 'status=Active',
+          query: {
+            status: 'Active'
+          },
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer some-access-token',
@@ -37,28 +39,27 @@ describe('Get a list of organisations based on status', async () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('Returns a list of organisations based on status', async () => {
       const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations?status=Active`;
-      const resp = getOperation(path);
-      resp.then((response) => {
-        const responseDto: Organisation[] = <Organisation[]>response.data;
-        assertResponse(responseDto);
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      }).finally(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      const response = await getOperation(path);
+      const responseDto: Organisation[] = response.data.organisations as Organisation[];
+      assertResponse(responseDto);
     });
   });
 });
 
 function assertResponse(dto: Organisation[]): void {
-  // eslint-disable-next-line no-unused-expressions
   expect(dto).to.be.not.null;
   for (const element of dto) {
     expect(element.companyNumber).to.equal('A1000');
@@ -87,4 +88,3 @@ const organisations = [
     paymentAccount: somethingLike(['abckd'])
   }
 ] as Organisation[];
-

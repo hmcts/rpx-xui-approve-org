@@ -18,7 +18,6 @@ const logger = log4jui.getLogger('return');
  * @param res - {organisations: [{org1}, {org2}]} OR {org1}
  * @param next
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response) {
   // if a search_filter is passed in the request it means we need to load the paged organisations list, filtered by the status
   if (req.query.search_filter) {
@@ -70,6 +69,16 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         { organisations: [], total_records: 0 };
     } else {
       if (status && status === 'ACTIVE') {
+        const nameOnlySearch = isOrganisationNameOnlySearch(req.body.searchRequest.search_filter);
+        responseData = await getFilteredActiveOrganisations(req, req.body.searchRequest.search_filter, pageNumber, pageSize, nameOnlySearch);
+        if (responseData) {
+          res.send(responseData);
+          return;
+        }
+        if (nameOnlySearch) {
+          res.send({ organisations: [], total_records: 0 });
+          return;
+        }
         response = await getActiveOrganisations(req);
       } else {
         organisationsUri = getOrganisationUri(status, null, null, null);
@@ -101,10 +110,57 @@ export function getActiveOrganisation(pageNumber: number, size: number, req: Enh
   return promise;
 }
 
+async function getFilteredActiveOrganisations(
+  req: EnhancedRequest,
+  searchFilter: string,
+  pageNumber: number,
+  pageSize: number,
+  nameOnlySearch = false
+): Promise<any> {
+  const url = getFilteredActiveOrganisationUri(searchFilter, pageNumber, pageSize);
+  try {
+    const response = await req.http.get(url);
+    const organisations = response?.data?.organisations;
+    if (!Array.isArray(organisations)) {
+      return null;
+    }
+
+    const filteredOrganisations = nameOnlySearch ?
+      filterOrganisationsByName(organisations, searchFilter) :
+      filterOrganisations(organisations, searchFilter);
+    const totalRecords = Number(response?.headers?.total_records ?? filteredOrganisations.length);
+    if (organisations.length === 0 && totalRecords === 0) {
+      return { organisations: [], total_records: 0 };
+    }
+
+    if (nameOnlySearch) {
+      return {
+        organisations: filteredOrganisations,
+        total_records: filteredOrganisations.length === organisations.length ?
+          response?.headers?.total_records ?? filteredOrganisations.length :
+          filteredOrganisations.length
+      };
+    }
+
+    // If PRD ignored the query parameter it will return unfiltered rows; fall back to the legacy full scan.
+    if (filteredOrganisations.length !== organisations.length) {
+      return null;
+    }
+
+    return {
+      organisations: filteredOrganisations,
+      total_records: response?.headers?.total_records ?? filteredOrganisations.length
+    };
+  } catch (error) {
+    logger.warn(`Filtered active organisations search failed; falling back to full active organisation scan. ${error}`);
+    return null;
+  }
+}
+
 async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
   const response = await req.http.get(url);
-  const chunkSize = 500;
+  const chunkSize = 1000;
   const total_records = response.headers.total_records;
   const counts = Math.floor(total_records / chunkSize) + 1;
   const organisationPromises = [];
@@ -155,6 +211,16 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, vers
 
 function getOrganisationPagingUri(status, pageNumber, size): string {
   return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=${status}`;
+}
+
+function getFilteredActiveOrganisationUri(searchFilter: string, pageNumber: number, size: number): string {
+  const params = new URLSearchParams({
+    page: String(pageNumber),
+    size: String(size),
+    status: 'ACTIVE',
+    search_filter: searchFilter
+  });
+  return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?${params.toString()}`;
 }
 
 async function handlePutOrganisationRoute(req: EnhancedRequest, res: Response) {
@@ -277,6 +343,32 @@ export function filterOrganisations(orgs: any, searchFilter: string): any[] {
     }
     return false;
   });
+}
+
+export function filterOrganisationsByName(orgs: any, searchFilter: string): any[] {
+  if (!orgs) {
+    return [];
+  }
+  if (!searchFilter || searchFilter === '') {
+    return orgs;
+  }
+  const nameFilter = searchFilter.toLowerCase();
+  return orgs.filter((org: any) => org && textFieldMatches(org, 'name', nameFilter));
+}
+
+export function isOrganisationNameOnlySearch(searchFilter: string): boolean {
+  const value = searchFilter ? searchFilter.trim() : '';
+  if (value.length < 20 || !value.includes(' ') || !/[a-z]/i.test(value)) {
+    return false;
+  }
+
+  const compactValue = value.replace(/\s+/g, '');
+  const looksLikePba = /^pba\d+$/i.test(compactValue);
+  const looksLikeDx = /^dx[a-z0-9-]+$/i.test(compactValue);
+  const looksLikeEmail = value.includes('@');
+  const looksLikePostcode = /^[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}$/i.test(value);
+
+  return !looksLikePba && !looksLikeDx && !looksLikeEmail && !looksLikePostcode;
 }
 
 export function postCodeMatches(org: any, filter: string): boolean {
