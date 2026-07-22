@@ -23,6 +23,7 @@ export type PendingPbaTableRow = {
 };
 
 export class OrganisationApprovalsPage extends BasePage {
+  private static readonly invalidPbaMessage = 'PBA numbers must start with PBA/pba and be followed by 7 alphanumeric characters';
   private readonly exuiSpinner: ExuiSpinnerComponent;
   private readonly waitUtils: WaitUtils;
 
@@ -61,6 +62,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pending"]');
   readonly newPbasTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pbas"]');
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
+  readonly pendingPbasRows = this.pendingPbasPanel.locator('table.govuk-table tbody tr');
   readonly pendingPbaViewLinkLocator = this.pendingPbasPanel.locator('table.govuk-table a.govuk-link[href*="/new/"]').first();
   readonly pendingPbaDecisionRows = this.page.locator('app-pba-account-approval');
   readonly pendingPbaContinueButton = this.page.locator('app-new-pbas-info button[type="submit"].govuk-button').first();
@@ -100,72 +102,7 @@ export class OrganisationApprovalsPage extends BasePage {
     .locator('.govuk-summary-list__row .govuk-summary-list__value')
     .first();
 
-  private normaliseCellText(value: string): string {
-    return value.replace(/\s+/g, ' ').trim();
-  }
-
-  private splitCellLines(value: string): string[] {
-    return value
-      .split('\n')
-      .map((line) => this.normaliseCellText(line))
-      .filter(Boolean);
-  }
-
-  private async readTableCells(rows: Locator): Promise<string[][]> {
-    const rowCount = await rows.count();
-    const tableRows: string[][] = [];
-
-    for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
-      tableRows.push(await rows.nth(rowIndex).locator('td.govuk-table__cell').allInnerTexts());
-    }
-
-    return tableRows;
-  }
-
-  private mapOrganisationTableRow(cells: string[]): OrganisationTableRow {
-    const [organisationCell, addressCell, administratorCell, dateCell, statusCell] = cells;
-    const [name = '', organisationIdentifier = ''] = this.splitCellLines(organisationCell);
-    const [administrator = '', administratorEmail = ''] = this.splitCellLines(administratorCell);
-
-    return {
-      name,
-      organisationIdentifier,
-      address: this.normaliseCellText(addressCell),
-      administrator,
-      administratorEmail,
-      date: this.normaliseCellText(dateCell),
-      status: this.normaliseCellText(statusCell)
-    };
-  }
-
-  async pendingOrganisationTableRows(): Promise<OrganisationTableRow[]> {
-    const rows = await this.readTableCells(this.pendingOrganisationDataRows);
-
-    return rows.map((cells) => this.mapOrganisationTableRow(cells));
-  }
-
-  async activeOrganisationTableRows(): Promise<OrganisationTableRow[]> {
-    const rows = await this.readTableCells(this.activeOrganisationDataRows);
-
-    return rows.map((cells) => this.mapOrganisationTableRow(cells));
-  }
-
-  async pendingPbaTableRows(): Promise<PendingPbaTableRow[]> {
-    const rows = await this.readTableCells(this.pendingPbaRows);
-
-    return rows.map((cells) => {
-      const [organisationName = '', pbaNumbersCell = '', administratorCell = '', dateReceivedCell = ''] = cells;
-      const [administrator = '', administratorEmail = ''] = this.splitCellLines(administratorCell);
-
-      return {
-        organisationName: this.normaliseCellText(organisationName),
-        pbaNumbers: this.splitCellLines(pbaNumbersCell),
-        administrator,
-        administratorEmail,
-        dateReceived: this.normaliseCellText(dateReceivedCell)
-      };
-    });
-  }
+  readonly validationSummary = this.page.locator('#errorSummary');
 
   pendingOrganisationViewLink(): Locator {
     return this.pendingOrganisationViewLinkLocator;
@@ -313,6 +250,16 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstPendingPba(): Promise<void> {
     await this.pendingPbaViewLink().click();
+  }
+
+  async approveFirstInvalidPbaAndExpectValidationError(): Promise<void> {
+    await this.openNewPbasTab();
+    await this.pendingPbaViewLink().waitFor({ state: 'visible', timeout: 30_000 });
+    await this.openFirstPendingPba();
+    await this.approveAllPendingPbas();
+    await this.continuePendingPbaDecision();
+    await this.confirmDecisionHeading.waitFor({ state: 'visible' });
+    await this.confirmButton.click();
   }
 
   async approveAllPendingPbas(): Promise<void> {
