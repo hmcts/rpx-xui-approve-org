@@ -291,7 +291,7 @@ describe('caseWorkerDetailsRouter/index', () => {
       const module = require('./index');
 
       expect(module.uploadLimits).to.deep.equal({
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 1024 * 1024 * 1024,
         files: 1,
         parts: 6,
         fields: 5,
@@ -309,7 +309,7 @@ describe('caseWorkerDetailsRouter/index', () => {
 
       expect(mockResponse.status).to.have.been.calledWith(400);
       expect(mockResponse.send).to.have.been.calledWith({
-        errorDescription: 'The selected file must be smaller than 10MB.'
+        errorDescription: 'The selected file must be smaller than 1024MB.'
       });
       expect(next).not.to.have.been.called;
     });
@@ -328,17 +328,36 @@ describe('caseWorkerDetailsRouter/index', () => {
       expect(next).not.to.have.been.called;
     });
 
-    it('should allow xls and xlsx spreadsheet files', () => {
+    it('should allow Excel spreadsheet files in the document management whitelist', () => {
       const module = require('./index');
+      const allowedFiles = [
+        {
+          originalname: 'staff-details.xls',
+          mimetype: 'application/vnd.ms-excel'
+        },
+        {
+          originalname: 'staff-details.xlt',
+          mimetype: 'application/vnd.ms-excel'
+        },
+        {
+          originalname: 'staff-details.xla',
+          mimetype: 'application/vnd.ms-excel'
+        },
+        {
+          originalname: 'staff-details.xlsx',
+          mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        },
+        {
+          originalname: 'staff-details.xltx',
+          mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.template'
+        },
+        {
+          originalname: 'staff-details.xlsb',
+          mimetype: 'application/vnd.ms-excel'
+        }
+      ];
 
-      expect(module.isAllowedExcelFile({
-        originalname: 'staff-details.xls',
-        mimetype: 'application/vnd.ms-excel'
-      })).to.be.true;
-      expect(module.isAllowedExcelFile({
-        originalname: 'staff-details.xlsx',
-        mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      })).to.be.true;
+      allowedFiles.forEach((file) => expect(module.isAllowedExcelFile(file)).to.be.true);
     });
 
     it('should reject non-Excel upload files', () => {
@@ -371,7 +390,7 @@ describe('caseWorkerDetailsRouter/index', () => {
 
       expect(mockResponse.status).to.have.been.calledWith(400);
       expect(mockResponse.send).to.have.been.calledWith({
-        errorDescription: 'The selected file must be an Excel spreadsheet with .xls or .xlsx extension.'
+        errorDescription: 'The selected file must be an Excel spreadsheet with one of these extensions: .xls, .xlt, .xla, .xlsx, .xltx, .xlsb.'
       });
       expect(next).not.to.have.been.called;
     });

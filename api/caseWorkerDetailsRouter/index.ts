@@ -6,15 +6,18 @@ import { getConfigValue } from '../configuration';
 import { SERVICE_CASE_WORKER_PATH } from '../configuration/references';
 import { fieldName, getFormData, getHeaders, getUploadFileUrl } from './util';
 
-const MAX_UPLOAD_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+// Maximum file size for uploads is 1GB
+const MAX_UPLOAD_FILE_SIZE_BYTES = 1024 * 1024 * 1024;
 const INVALID_UPLOAD_FILE_TYPE_ERROR = 'INVALID_UPLOAD_FILE_TYPE';
 const missingUploadFileErrorDescription = 'You need to select a file to upload. Please try again.';
 const invalidUploadFileContentErrorDescription = 'The selected file must be a valid Excel spreadsheet.';
-const allowedExcelFileExtensions = ['.xls', '.xlsx'];
+const allowedExcelFileExtensions = ['.xls', '.xlt', '.xla', '.xlsx', '.xltx', '.xlsb'];
 const allowedExcelMimeTypes = [
   'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.template'
 ];
+const allowedExcelFileExtensionsDescription = allowedExcelFileExtensions.join(', ');
 const xlsxMagicBytes = Buffer.from([0x50, 0x4b]);
 const xlsMagicBytes = Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]);
 const storage = multer.memoryStorage();
@@ -79,7 +82,9 @@ export function handleUploadError(error: unknown, res: express.Response, next: e
   // Convert expected upload validation failures into client-displayable 400 responses.
   if (isInvalidUploadFileTypeError(error)) {
     res.status(400);
-    res.send({ errorDescription: 'The selected file must be an Excel spreadsheet with .xls or .xlsx extension.' });
+    res.send({
+      errorDescription: `The selected file must be an Excel spreadsheet with one of these extensions: ${allowedExcelFileExtensionsDescription}.`
+    });
     return;
   }
   if (error instanceof multer.MulterError && isUploadLimitErrorCode(error.code)) {
