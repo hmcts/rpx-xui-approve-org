@@ -52,7 +52,7 @@ export class OrganisationDetailsInfoOldComponent implements OnInit {
       this.errorMessage = {
         title: this.genericError,
         description: RequestErrors.NO_SELECTION,
-        fieldId: 'options'
+        fieldId: 'reason-0'
       };
     }
     if (this.formGroup.invalid) {
