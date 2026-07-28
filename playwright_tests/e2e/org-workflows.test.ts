@@ -9,7 +9,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
   test('I can reject a pending org', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
-      await organisationApprovalsPage.searchForOrganisation(userName);
+      await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
       await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
       await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
@@ -35,7 +35,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
 
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
-      await organisationApprovalsPage.searchForOrganisation(userName);
+      await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
       await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
       await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
@@ -63,7 +63,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
   test('I can approve a pending organisation', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
     await test.step('Pending organisation appears in active organisations tab', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
-      await organisationApprovalsPage.searchForOrganisation(userName);
+      await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
       await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
       await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
@@ -86,7 +86,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
 
     await test.step('Approve a pending organisation so it appears in active organisations', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
-      await organisationApprovalsPage.searchForOrganisation(userName);
+      await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
       await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
       await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
       organisationName = await organisationApprovalsPage.getOrganisationNameFromDetails();
