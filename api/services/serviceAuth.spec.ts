@@ -1,7 +1,6 @@
 import { expect } from '../test/shared/testSetup';
 import 'mocha';
 import * as sinon from 'sinon';
-import { postS2SLease } from './serviceAuth';
 import { createMockLogger } from '../test/shared/loggerMocks';
 import { createConfigMock } from '../test/shared/configMocks';
 import { createMockAxiosInstance, createMockAxiosResponse } from '../test/shared/httpMocks';
@@ -13,13 +12,14 @@ describe('serviceAuth', () => {
   let httpStub: any;
   let mockAxiosInstance: any;
   let otpStub: any;
+  let postS2SLease: () => Promise<any>;
 
   beforeEach(() => {
     mockLogger = createMockLogger();
     configMock = createConfigMock({
-      'SERVICE_S2S_PATH': 'http://localhost:4502',
-      'S2S_SECRET': '  test-secret-key  ',
-      'MICROSERVICE': 'xui_approveorg'
+      'services.s2s': 'http://localhost:4502',
+      'secrets.rpx.ao-s2s-client-secret': '  test-secret-key  ',
+      'microservice': 'xui_approveorg'
     });
 
     log4juiStub = {
@@ -36,10 +36,16 @@ describe('serviceAuth', () => {
     sinon.stub(require('../lib/log4jui'), 'getLogger').callsFake(log4juiStub.getLogger);
     sinon.stub(require('../configuration'), 'getConfigValue').callsFake(configMock.getConfigValue);
     sinon.stub(require('../lib/http'), 'http').callsFake(httpStub);
-    sinon.stub(require('otp')).callsFake(otpStub);
+
+    const otpModulePath = require.resolve('otp');
+    require(otpModulePath);
+    sinon.stub(require.cache[otpModulePath] as any, 'exports').value(otpStub);
+
+    postS2SLease = require('./serviceAuth').postS2SLease;
   });
 
   afterEach(() => {
+    delete require.cache[require.resolve('./serviceAuth')];
     sinon.restore();
   });
 

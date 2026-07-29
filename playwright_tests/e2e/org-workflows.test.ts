@@ -6,12 +6,12 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await ensureAuthenticatedPage(page, 'base');
   });
 
-  test('I can reject a pending org', async ({ organisationApprovalsPage, userName }) => {
+  test('I can reject a pending org', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
-      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
-      await organisationApprovalsPage.openFirstPendingOrganisation();
+      await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
+      await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
 
     await test.step('Reject the pending organisation', async () => {
@@ -26,14 +26,18 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
   });
 
-  test('I can place registration under review for a pending org', async ({ organisationApprovalsPage, userName }) => {
+  test('I can place registration under review for a pending org', async ({
+    organisationApprovalsPage,
+    userName,
+    organisationIdentifier
+  }) => {
     let organisationName = '';
 
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
-      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
-      await organisationApprovalsPage.openFirstPendingOrganisation();
+      await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
+      await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
 
     await test.step('Place the registration under review', async () => {
@@ -52,15 +56,16 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await organisationApprovalsPage.waitForSpinnerToHide(60_000);
       await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
       await expect(organisationApprovalsPage.pendingOrganisationRowsByName(organisationName).first()).toBeVisible();
+      await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
     });
   });
 
-  test('I can approve a pending organisation', async ({ organisationApprovalsPage, userName }) => {
+  test('I can approve a pending organisation', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
     await test.step('Pending organisation appears in active organisations tab', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
-      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
-      await organisationApprovalsPage.openFirstPendingOrganisation();
+      await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
+      await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
 
     await test.step('Approve a pending organisation so it appears in active organisations', async () => {
@@ -76,14 +81,14 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
   });
 
   // Skipping until EXUI-4610 and assoicated bug tickets have been resolved.
-  test.skip('i can delete an active org', async ({ organisationApprovalsPage, userName }) => {
+  test.skip('i can delete an active org', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
     let organisationName = '';
 
     await test.step('Approve a pending organisation so it appears in active organisations', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
-      await expect(organisationApprovalsPage.pendingOrganisationViewLink()).toBeVisible();
-      await organisationApprovalsPage.openFirstPendingOrganisation();
+      await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
+      await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
       organisationName = await organisationApprovalsPage.getOrganisationNameFromDetails();
       await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();

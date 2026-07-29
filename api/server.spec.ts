@@ -103,8 +103,8 @@ describe('server', () => {
       require('./server');
       await flushPromises();
 
-      expect(appMock.use).to.have.been.calledWith('/*');
-      expect(appMock.use.args.find((call) => call[0] === '/*')).to.exist;
+      expect(appMock.use).to.have.been.calledWith('/{*splat}');
+      expect(appMock.use.args.find((call) => call[0] === '/{*splat}')).to.exist;
     });
 
     it('should start server on default port 3000', async () => {
@@ -131,6 +131,18 @@ describe('server', () => {
       await flushPromises();
 
       expect(loggerMock.info).to.have.been.calledWith('Local server up at 3000');
+    });
+
+    it('should throw when app.listen provides an error', async () => {
+      const listenError = new Error('port unavailable');
+
+      require('./server');
+      await flushPromises();
+
+      const listenCallback = appMock.listen.firstCall.args[1];
+
+      expect(() => listenCallback(listenError)).to.throw(listenError);
+      expect(loggerMock.info).not.to.have.been.calledWith('Local server up at 3000');
     });
 
     it('should log initialization message', async () => {
@@ -172,7 +184,7 @@ describe('server', () => {
       await flushPromises();
 
       // Find the catch-all route handler
-      const catchAllCall = appMock.use.args.find((call) => call[0] === '/*');
+      const catchAllCall = appMock.use.args.find((call) => call[0] === '/{*splat}');
       routeHandler = catchAllCall[1];
 
       mockReq = {

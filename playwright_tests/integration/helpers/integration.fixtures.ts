@@ -1,5 +1,5 @@
 import type { APIRequestContext } from '@playwright/test';
-import { authRequestTest, expect } from '../../framework/fixtures/auth-request.fixtures';
+import { authRequestTest } from '../../framework/fixtures/auth-request.fixtures';
 
 type IntegrationFixtures = {
   integrationRequest: APIRequestContext;
@@ -15,5 +15,3 @@ export const test = authRequestTest.extend<IntegrationFixtures>({
     await use(anonymousRequest);
   }
 });
-
-export { expect };

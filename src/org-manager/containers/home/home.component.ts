@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(
     private readonly router: Router,
     protected organisationService: OrganisationService,
-    private readonly loadingService: LoadingService,
+    private readonly loadingService: LoadingService
   ) {}
 
   public ngOnInit(): void {

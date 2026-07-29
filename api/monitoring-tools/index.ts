@@ -15,7 +15,7 @@ async function handleConnectionStringRoute(req, res) {
       apiStatusCode: error.statusCode,
       message: 'List of users route error'
     });
-    res.send(errReport).status(500);
+    res.status(500).send(errReport);
   }
 }
 

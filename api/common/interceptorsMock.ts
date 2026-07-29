@@ -1,4 +1,5 @@
-import * as exceptionFormatter from 'exception-formatter';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import exceptionFormatter = require('exception-formatter');
 
 import { getConfigValue } from '../configuration';
 import { MAX_LOG_LINE } from '../configuration/references';

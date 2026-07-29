@@ -1,5 +1,11 @@
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
-import { AccessibilityComponent, CookiePolicyComponent, PrivacyPolicyComponent, TermsAndConditionsComponent } from './components';
+import {
+  AccessibilityComponent,
+  AccessDeniedComponent,
+  CookiePolicyComponent,
+  PrivacyPolicyComponent,
+  TermsAndConditionsComponent
+} from './components';
 
 import { Routes } from '@angular/router';
 import { AuthGuard } from 'src/services/auth/auth.guard';
@@ -67,6 +73,13 @@ export const ROUTES: Routes = [
     }
   },
   {
+    path: 'access-denied',
+    component: AccessDeniedComponent,
+    data: {
+      title: 'Access denied'
+    }
+  },
+  {
     path: 'service-down',
     component: ServiceDownComponent,
     data: {
@@ -93,4 +106,3 @@ export const ROUTES: Routes = [
     pathMatch: 'full'
   }
 ];
-

@@ -1,4 +1,6 @@
 import { ReporterDescription } from '@playwright/test';
+import { execSync } from 'node:child_process';
+import { cpus, totalmem } from 'node:os';
 
 /**
  * Resolves the test environment from the baseURL
@@ -54,67 +56,150 @@ function resolveTestEnvironment(): string {
   return 'local';
 }
 
+function resolveDefaultReporter(): string {
+  const configured = process.env.PLAYWRIGHT_DEFAULT_REPORTER?.trim();
+  if (configured && ['dot', 'list', 'line'].includes(configured)) {
+    return configured;
+  }
+
+  return process.env.CI ? 'dot' : 'list';
+}
+
+function resolveBranchName(): string {
+  const envBranch =
+    process.env.PLAYWRIGHT_REPORT_BRANCH ||
+    process.env.GIT_BRANCH ||
+    process.env.BRANCH_NAME ||
+    process.env.GITHUB_REF_NAME ||
+    process.env.GITHUB_HEAD_REF ||
+    process.env.BUILD_SOURCEBRANCHNAME;
+
+  if (envBranch) {
+    return envBranch.replace(/^refs\/heads\//, '').trim();
+  }
+
+  try {
+    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    })
+      .trim()
+      .replace(/^refs\/heads\//, '');
+
+    if (gitBranch && gitBranch !== 'HEAD') {
+      return gitBranch;
+    }
+  } catch {
+    // Fall back to local label when branch cannot be resolved.
+  }
+
+  return 'local';
+}
+
+function resolveReportRoot(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'accessibility'): string {
+  if (process.env.PLAYWRIGHT_REPORT_FOLDER?.trim()) {
+    return process.env.PLAYWRIGHT_REPORT_FOLDER.trim();
+  }
+
+  switch (reportType) {
+    case 'api':
+      return 'functional-output/tests/playwright-api/odhin-report';
+    case 'integration':
+      return 'functional-output/tests/playwright-integration/odhin-report';
+    case 'nightly':
+      return 'functional-output/tests/playwright-nightly/odhin-report';
+    case 'accessibility':
+      return 'functional-output/tests/playwright-accessibility/odhin-report';
+    case 'e2e':
+    default:
+      return 'functional-output/tests/playwright-e2e/odhin-report';
+  }
+}
+
+function resolveIndexFilename(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'accessibility'): string {
+  if (process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim()) {
+    return process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME.trim();
+  }
+
+  switch (reportType) {
+    case 'api':
+      return 'xui-ao-playwright-api.html';
+    case 'integration':
+      return 'xui-ao-playwright-integration.html';
+    case 'nightly':
+      return 'xui-ao-playwright-nightly.html';
+    case 'accessibility':
+      return 'xui-ao-playwright-accessibility.html';
+    case 'e2e':
+    default:
+      return 'xui-ao-playwright-e2e.html';
+  }
+}
+
+function resolveTitle(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'accessibility'): string {
+  if (process.env.PW_ODHIN_TITLE?.trim()) {
+    return process.env.PW_ODHIN_TITLE.trim();
+  }
+
+  return `XUI AO ${reportType.toUpperCase()} Report`;
+}
+
+function resolveTestEnvironmentLabel(workerCount = process.env.FUNCTIONAL_TESTS_WORKERS || 'auto'): string {
+  const environment = resolveTestEnvironment();
+  const runContext = process.env.CI ? 'ci' : 'local-run';
+  const cpuCores = cpus()?.length ?? 'unknown';
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+
+  return `${environment} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+}
+
 /**
  * Builds Playwright reporters array with Ohdin configured
  * @param reportType - Type of report (e2e, api, nightly, integration, or accessibility)
  * @returns Array of reporter configurations
  */
 export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'accessibility' = 'e2e'): ReporterDescription[] {
-  const isCI = !!process.env.CI;
-  const environment = resolveTestEnvironment();
-  const reportFolder = process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests';
-  const buildTag = process.env.BUILD_TAG || 'local-run';
-  const releaseTag = process.env.PLAYWRIGHT_RELEASE_TAG || buildTag;
   const disableOhdin = process.env.DISABLE_ODHIN_REPORTER === 'true';
-
-  const reportOutput = (() => {
-    switch (reportType) {
-      case 'api':
-        return `${reportFolder}/playwright-api`;
-      case 'integration':
-        return `${reportFolder}/playwright-integration`;
-      case 'nightly':
-        return `${reportFolder}/playwright-nightly`;
-      case 'accessibility':
-        return `${reportFolder}/playwright-a11y`;
-      case 'e2e':
-      default:
-        return `${reportFolder}/playwright-e2e`;
-    }
-  })();
-
   const testFolder = reportType === 'api'
     ? 'playwright_tests/api'
     : reportType === 'integration'
       ? 'playwright_tests/integration'
       : reportType === 'accessibility'
         ? 'playwright_tests/accessibility'
-      : 'playwright_tests';
+        : 'playwright_tests';
 
-  const odhinOutputFolder = reportOutput;
+  const defaultReporter = resolveDefaultReporter();
+  const packageVersion = process.env.npm_package_version || '0.0.0';
+  const releaseTag = process.env.PLAYWRIGHT_REPORT_RELEASE || `${packageVersion} | branch=${resolveBranchName()}`;
+  const odhinOutputFolder = resolveReportRoot(reportType);
 
   const reporters: ReporterDescription[] = [
-    [isCI ? 'dot' : 'list'],
+    [defaultReporter],
     [
-      'odhin-reports-playwright',
+      './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs',
       {
         outputFolder: odhinOutputFolder,
-        indexFilename: 'index.html',
+        indexFilename: resolveIndexFilename(reportType),
         testFolder,
-        title: `XUI AO ${reportType.toUpperCase()} Report`,
-        testEnvironment: environment,
-        project: process.env.ODHIN_PROJECT_NAME || 'rpx-xui-approve-org',
+        title: resolveTitle(reportType),
+        testEnvironment: resolveTestEnvironmentLabel(),
+        project: process.env.PLAYWRIGHT_REPORT_PROJECT || process.env.ODHIN_PROJECT_NAME || 'rpx-xui-approve-org',
         release: releaseTag,
-        // Disable server startup to prevent CI job hanging
         startServer: false,
         consoleLog: true,
-        simpleConsoleLog: isCI
+        consoleError: true,
+        simpleConsoleLog: !!process.env.CI,
+        testOutput: 'only-on-failure'
       }
     ]
   ];
 
   if (disableOhdin) {
-    return [[isCI ? 'dot' : 'list']];
+    return [[defaultReporter]];
+  }
+
+  if (process.env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
+    reporters.push(['junit', { outputFile: process.env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }
 
   return reporters;

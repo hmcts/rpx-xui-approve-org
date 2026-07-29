@@ -12,7 +12,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('PendingPBAsComponent', () => {
   let component: PendingPBAsComponent;
   let fixture: ComponentFixture<PendingPBAsComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   const pbaServiceSpy = jasmine.createSpyObj('PbaService', ['setPBAStatus', 'searchPbasWithPagination']);
 

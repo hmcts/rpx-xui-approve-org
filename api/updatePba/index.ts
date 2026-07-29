@@ -60,7 +60,7 @@ export async function handleUpdatePBARoute(req: EnhancedRequest, res: Response) 
     res.status(200).send();
   } catch (error) {
     console.error(error);
-    res.status(error.status).send(error.data);
+    res.status(Number(error?.status) || 500).send(error?.data);
   }
 }
 
@@ -78,7 +78,7 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
     // res.status(430).send('no permission');
   } catch (error) {
     console.error(error);
-    res.status(error.status).send(error.data);
+    res.status(Number(error?.status) || 500).send(error?.data);
   }
 }
 
@@ -89,12 +89,12 @@ export async function handleSetStatusPBARoute(req: EnhancedRequest, res: Respons
  */
 export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
   try {
-    const pbaStatus = req.params.status;
+    const pbaStatus = req.params.status as string;
     const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     res.status(status).send(data);
   } catch (error) {
     console.error(error);
-    res.status(error.status).send(error.data);
+    res.status(Number(error?.status) || 500).send(error?.data);
   }
 }
 
@@ -106,7 +106,7 @@ export async function handleGetPBAsByStatusRoute(req: EnhancedRequest, res: Resp
 export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Response) {
   try {
     let responseData = null;
-    const pbaStatus = req.params.status;
+    const pbaStatus = req.params.status as string;
     const { status, data } = await req.http.get(getByStatusUrl(pbaStatus));
     if (data) {
       const filteredOrganisations = filterOrganisations(data, req.body.searchRequest.search_filter, req.body.searchRequest.drill_down_search);
@@ -117,7 +117,7 @@ export async function handlePostPBAsByStatusRoute(req: EnhancedRequest, res: Res
     res.status(status).send(responseData);
   } catch (error) {
     console.error(error);
-    res.status(error.status).send(error.data);
+    res.status(Number(error?.status) || 500).send(error?.data);
   }
 }
 
@@ -131,9 +131,9 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
   }
   searchFilter = searchFilter.toLowerCase();
 
-  let drilldownFilterRelevent: string[];
-  if (drilldownFilters && drilldownFilters.length) {
-    drilldownFilterRelevent = drilldownFilters.filter((x) => x.field_name === 'pbaPendings').map((y) => y.search_filter);
+  const drilldownFilterRelevent: string[] = [];
+  if (drilldownFilters?.length) {
+    drilldownFilterRelevent.push(...drilldownFilters.filter((x) => x.field_name === 'pbaPendings').map((y) => y.search_filter));
   }
 
   return orgs.filter((org: any) => {
@@ -145,14 +145,14 @@ function filterOrganisations(orgs: any, searchFilter: string, drilldownFilters?:
       }
       if (org.pbaNumbers) {
         for (const pba of org.pbaNumbers) {
-          if (pba.pbaNumber.toLowerCase().includes(searchFilter) || (drilldownFilterRelevent &&
+          if ((searchFilter && pba.pbaNumber.toLowerCase().includes(searchFilter)) || (drilldownFilterRelevent &&
             drilldownFilterRelevent.filter((pnumber) => pba.pbaNumber.toLowerCase().includes(pnumber.toLowerCase())).length)) {
             return true;
           } else if (drilldownFilterRelevent && drilldownFilterRelevent.length) {
             return multipleFilter(org, drilldownFilterRelevent, TEXT_FIELDS_TO_CHECK);
           }
         }
-      } else {
+      } else if (drilldownFilterRelevent.length) {
         return multipleFilter(org, drilldownFilterRelevent, TEXT_FIELDS_TO_CHECK);
       }
 

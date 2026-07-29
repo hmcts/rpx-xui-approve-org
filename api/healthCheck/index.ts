@@ -15,7 +15,6 @@ router.get('/', healthCheckRoute);
     of api url's assigned to it.
 */
 
-// TODO: set actual check values and set healthcheckguard on front end
 const healthCheckEndpointDictionary = {
   '/organisation': ['rdProfessionalApi'],
   '/register-org/register/check': ['rdProfessionalApi'],
@@ -38,7 +37,6 @@ function getPromises(path, req): any[] {
   const Promises = [];
   if (healthCheckEndpointDictionary[path]) {
     healthCheckEndpointDictionary[path].forEach((endpoint) => {
-      // TODO: Have health config for this.
       console.log('healthEndpoints');
       console.log(healthEndpoints()[endpoint]);
       Promises.push(req.get(healthEndpoints()[endpoint]));
@@ -67,7 +65,7 @@ async function healthCheckRoute(req, res) {
   } catch (error) {
     console.log(error);
     logger.info('error', { healthState: false });
-    res.status(error.status).send({ healthState: false });
+    res.status(Number(error?.status) || 500).send({ healthState: false });
   }
 }
 export default router;

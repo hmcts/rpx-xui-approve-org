@@ -4,7 +4,7 @@ import { PactTestSetup } from '../settings/provider.mock';
 
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalInternal', port: 8000 });
 
-describe('Update the PBA for an organisation', async () => {
+describe('Update the PBA for an organisation', () => {
   before(async () => {
     await new Promise((resolve) => setTimeout(resolve, 3000));
   });
@@ -35,23 +35,22 @@ describe('Update the PBA for an organisation', async () => {
         }
       };
       // @ts-ignore
-      pactSetUp.provider.addInteraction(interaction);
+      await pactSetUp.provider.addInteraction(interaction);
+    });
+
+    afterEach(async () => {
+      await pactSetUp.provider.verify();
+    });
+
+    after(async () => {
+      await pactSetUp.provider.finalize();
     });
 
     it('Update an organisation`s PBA  and returns response', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId + '/pbas';
 
-      const resp = putOperation(taskUrl, mockRequest);
-      resp.then((response) => {
-        try {
-          expect(response.status).to.be.equal(200);
-        } catch (e) {
-          console.log('error occurred in asserting response...' + e);
-        }
-      }).then(() => {
-        pactSetUp.provider.verify();
-        pactSetUp.provider.finalize();
-      });
+      const response = await putOperation(taskUrl, mockRequest);
+      expect(response.status).to.be.equal(200);
     });
   });
 });

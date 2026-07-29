@@ -143,12 +143,15 @@ describe('reinviteUser/index', () => {
 
       const handler = router.stack[0].route.stack[0].handle;
 
-      try {
-        await handler(mockRequest, mockResponse);
-      } catch (e) {
-        // Error accessing error.data.errorMessage when data is undefined
-        expect(mockLogger.info).to.have.been.calledWith('error', error);
-      }
+      await handler(mockRequest, mockResponse);
+
+      expect(mockLogger.info).to.have.been.calledWith('error', error);
+      expect(mockResponse.status).to.have.been.calledWith(404);
+      expect(mockResponse.send).to.have.been.calledWith({
+        apiError: undefined,
+        apiStatusCode: 404,
+        message: undefined
+      });
     });
 
     it('should use correct RD Professional API URL', async () => {

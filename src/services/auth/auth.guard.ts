@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 })
 export class AuthGuard {
   constructor(
-    public authService: AuthService,
+    public authService: AuthService
   ) {}
 
   public canActivate(): Observable<boolean> {

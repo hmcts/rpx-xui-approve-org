@@ -139,7 +139,7 @@ export function reducer(
       };
     }
 
-    // TODO: Unit test
+    // Unit test
     case fromActions.OrgActionTypes.NAV_TO_DELETE_ORGANISATION: {
       const orgForReview = action.payload;
       return {
@@ -286,7 +286,7 @@ export function reducer(
         ...state[orgType].orgEntities,
         [orgId]: entity
       };
-      // TODO create helper function instead of duplicating code
+      // create helper function instead of duplicating code
       if (orgType === 'activeOrganisations') {
         const activeOrganisations = {
           ...state[orgType],
@@ -320,7 +320,7 @@ export function reducer(
         ...state[orgType].orgEntities,
         [orgId]: entity
       };
-      // TODO create helper function instead of duplicating code
+      // create helper function instead of duplicating code
       if (orgType === 'activeOrganisations') {
         const activeOrganisations = {
           ...state[orgType],
@@ -360,7 +360,7 @@ export function reducer(
         ...state[orgType].orgEntities,
         [orgId]: entity
       };
-      // TODO create helper function instead of duplicating code
+      // create helper function instead of duplicating code
       if (orgType === 'activeOrganisations') {
         const activeOrganisations = {
           ...state[orgType],

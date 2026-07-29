@@ -1,23 +1,29 @@
 import { defineConfig, devices } from '@playwright/test';
 import * as fs from 'node:fs';
 import { getSessionStatePath } from './playwright_tests/helpers/sessionCapture';
-import { resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
+import {
+  logResolvedTagFilters,
+  resolveFunctionalTagFilters,
+  resolveWorkerCount
+} from './playwright-config-utils';
 import { buildPlaywrightReporters } from './playwright-reporting';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 const sharedStorageStatePath = getSessionStatePath('base');
 const sharedStorageState = fs.existsSync(sharedStorageStatePath) ? sharedStorageStatePath : undefined;
-const e2eTagFilters = resolveTagFilters({
+const e2eTagFilters = resolveFunctionalTagFilters({
   includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
   excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
   configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
   defaultConfigPath: 'playwright_tests/e2e/tag-filter.json',
-  suiteTag: '@e2e',
+  suiteTag: '@e2e'
 });
+logResolvedTagFilters('E2E', e2eTagFilters);
 
 module.exports = defineConfig({
   testDir: './playwright_tests/e2e',
+  testMatch: /.*\.test\.ts/,
   globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,

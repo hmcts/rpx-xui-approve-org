@@ -1,12 +1,14 @@
 import { test, expect } from './helpers/api.fixtures';
+import { cleanupProvisionedOrganisation, provisionPendingOrganisation } from './helpers/organisations-write.helpers';
+import { UPDATE_PBA_MALFORMED_CASES } from './helpers/update-pba.helpers';
 
-const UPDATE_PBA_ORG_ID = process.env.PW_API_UPDATE_PBA_ORG_ID || 'FHFS7IZ';
+const UNAUTHENTICATED_ORG_ID = 'UPDATE_PBA_NEGATIVE_ORG';
 
 test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@negative'] }, () => {
   test('PUT /api/updatePba without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
       paymentAccounts: ['PBA33L6BNO'],
-      orgId: UPDATE_PBA_ORG_ID
+      orgId: UNAUTHENTICATED_ORG_ID
     };
 
     const response = await apiAnonymousRequest.put('/api/updatePba', {
@@ -32,49 +34,57 @@ test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@ne
     }
   });
 
-  test('PUT /api/updatePba with missing or invalid required fields returns 403 Forbidden', async ({ apiRequest }) => {
-    const testCases = [
-      {
-        name: 'missing paymentAccounts',
-        payload: { orgId: UPDATE_PBA_ORG_ID }
-      },
-      {
-        name: 'missing orgId',
-        payload: { paymentAccounts: ['PBA33L6BNO'] }
-      },
-      {
-        name: 'invalid orgId',
-        payload: { paymentAccounts: ['PBA33L6BNO'], orgId: 'INVALID_ORG_ID_12345' }
-      }
-    ];
+  for (const testCase of UPDATE_PBA_MALFORMED_CASES) {
+    test(`PUT /api/updatePba with ${testCase.name} returns an error`, async ({ apiRequest }) => {
+      let organisationId: string | undefined;
 
-    for (const testCase of testCases) {
+      try {
+        const provisioned = await provisionPendingOrganisation(apiRequest, {
+          firstName: 'Pba',
+          lastName: 'Negative'
+        });
+        organisationId = provisioned.organisationId;
+
+        const response = await apiRequest.put('/api/updatePba', {
+          data: testCase.buildPayload(provisioned.organisationId),
+          failOnStatusCode: false
+        });
+        const httpStatus = response.status();
+        expect(
+          testCase.expectedStatuses,
+          `Expected bounded error status for ${testCase.name}. Received status=${httpStatus}`
+        ).toContain(httpStatus);
+      } finally {
+        await cleanupProvisionedOrganisation(apiRequest, organisationId);
+      }
+    });
+  }
+
+  test('PUT /api/updatePba with empty paymentAccounts array passes validation', async ({ apiRequest }) => {
+    let organisationId: string | undefined;
+
+    try {
+      const provisioned = await provisionPendingOrganisation(apiRequest, {
+        firstName: 'Pba',
+        lastName: 'Empty'
+      });
+      organisationId = provisioned.organisationId;
+      const payload = {
+        paymentAccounts: [],
+        orgId: provisioned.organisationId
+      };
+
       const response = await apiRequest.put('/api/updatePba', {
-        data: testCase.payload,
+        data: payload,
         failOnStatusCode: false
       });
       const httpStatus = response.status();
       expect(
         httpStatus,
-        `Expected 403 Forbidden for ${testCase.name} (auth middleware validation). Received status=${httpStatus}`
-      ).toBe(403);
+        `Expected 200 for empty paymentAccounts because the request structure is valid. Received status=${httpStatus}`
+      ).toBe(200);
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
     }
-  });
-
-  test('PUT /api/updatePba with empty paymentAccounts array passes validation', async ({ apiRequest }) => {
-    const payload = {
-      paymentAccounts: [],
-      orgId: UPDATE_PBA_ORG_ID
-    };
-
-    const response = await apiRequest.put('/api/updatePba', {
-      data: payload,
-      failOnStatusCode: false
-    });
-    const httpStatus = response.status();
-    expect(
-      httpStatus,
-      `Expected success or downstream error for empty paymentAccounts (valid request structure). Received status=${httpStatus}`
-    ).toBeGreaterThanOrEqual(200);
   });
 });

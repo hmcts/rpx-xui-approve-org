@@ -112,7 +112,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
                   return orgUserListModel;
                 }));
               // eslint-disable-next-line no-empty
-            } catch (error) {}
+            } catch {}
           }
           this.orgs$ = of(organisationVM);
         });

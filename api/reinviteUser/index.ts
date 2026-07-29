@@ -14,12 +14,13 @@ async function reinviteUserRoute(req, res) {
     res.send(response.data);
   } catch (error) {
     logger.info('error', error);
+    const statusCode = Number(error?.status) || 500;
     const errReport = {
-      apiError: error.data.errorMessage,
-      apiStatusCode: error.status,
-      message: error.data.errorDescription
+      apiError: error?.data?.errorMessage,
+      apiStatusCode: statusCode,
+      message: error?.data?.errorDescription
     };
-    res.status(error.status).send(errReport);
+    res.status(statusCode).send(errReport);
   }
 }
 

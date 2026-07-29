@@ -28,12 +28,13 @@ async function handleAddressRoute(req, res) {
     });
   } catch (error) {
     console.error(error);
+    const statusCode = Number(error?.status) || 500;
     errReport = {
-      apiError: error && error.data && error.data.message ? error.data.message : error,
-      apiStatusCode: error && error.status ? error.status : '',
+      apiError: error?.data?.message ? error.data.message : error,
+      apiStatusCode: statusCode,
       message: 'Fee And Pay route error '
     };
-    res.status(error && error.status ? error.status : 500).send(errReport);
+    res.status(statusCode).send(errReport);
     return;
   }
   res.send(accounts);

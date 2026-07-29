@@ -20,7 +20,6 @@ export interface OrganisationPayload {
     },
     address: {
         /**
-         * TODO: houseNoBuildingName should be optional, remove when it is.
          * @see payloadBuilder.ts for descriptive comments.
          */
         houseNoBuildingName: string,
