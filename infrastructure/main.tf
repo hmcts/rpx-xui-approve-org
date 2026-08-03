@@ -26,7 +26,7 @@ resource "azurerm_key_vault_secret" "redis6_connection_string" {
 # lower environments. The application can be switched independently by
 # changing the Key Vault secret referenced by Flux.
 resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
-  for_each = toset(contains(["sandbox", "aat"], var.env) ? [var.env] : [])
+  for_each = toset(contains(["sandbox", "demo"], var.env) ? [var.env] : [])
 
   name         = "${var.component}-managed-redis-connection-string"
   value        = "rediss://:${urlencode(module.managed_redis[each.key].primary_access_key)}@${module.managed_redis[each.key].hostname}:${module.managed_redis[each.key].port}"
@@ -51,7 +51,7 @@ module "redis6-cache" {
 }
 
 module "managed_redis" {
-  for_each = toset(contains(["sandbox", "aat"], var.env) ? [var.env] : [])
+  for_each = toset(contains(["sandbox", "demo"], var.env) ? [var.env] : [])
   source   = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
 
   product     = var.product
