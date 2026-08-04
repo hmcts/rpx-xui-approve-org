@@ -6,12 +6,12 @@ import {
   setupPbaStatusUpdateApiMock,
   setupPendingOrganisationDecisionApiMock,
   setupStandardOrganisationApprovalsApiMocks,
-  waitForOrganisationStatusResponse,
+  waitForOrganisationStatusResponse
 } from '../integration/mocks';
 import {
   ACCESSIBILITY_APPROVALS_MOCK_STATE,
   ACCESSIBILITY_PENDING_ORGANISATION_ID,
-  ACCESSIBILITY_VISIBLE_PAGE_ROWS,
+  ACCESSIBILITY_VISIBLE_PAGE_ROWS
 } from './test-data/accessibility-approvals.mock-data';
 
 test.describe(
@@ -23,7 +23,7 @@ test.describe(
       await setupAccessibilityMockSession(page);
       await setupStandardOrganisationApprovalsApiMocks(page, ACCESSIBILITY_APPROVALS_MOCK_STATE);
       await setupPendingOrganisationDecisionApiMock(page, {
-        organisationId: ACCESSIBILITY_PENDING_ORGANISATION_ID,
+        organisationId: ACCESSIBILITY_PENDING_ORGANISATION_ID
       });
       await setupPbaStatusUpdateApiMock(page);
       await openAccessibilityMockApp(page);

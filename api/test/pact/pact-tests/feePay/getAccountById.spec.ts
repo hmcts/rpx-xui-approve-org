@@ -3,7 +3,7 @@ import { AccountDetailsResponse } from '../../../pactFixtures';
 import { getOperation } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
+const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike, like } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'payment_creditAccountPayment', port: 8000 });
 

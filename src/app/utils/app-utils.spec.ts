@@ -50,6 +50,27 @@ describe('AppUtils', () => {
     expect(organisationVM[0].addressLine3).toEqual(organisations[0].contactInformation[0].addressLine3);
   });
 
+  it('should map organisation when optional API fields are missing', () => {
+    const organisation = {
+      organisationIdentifier: 'ORG123',
+      name: 'Organisation without optional fields',
+      status: 'ACTIVE',
+      paymentAccount: [],
+      pendingPaymentAccount: [],
+      orgAttributes: []
+    } as Organisation;
+
+    const organisationVM = AppUtils.mapOrganisation(organisation);
+
+    expect(organisationVM.organisationId).toEqual('ORG123');
+    expect(organisationVM.name).toEqual('Organisation without optional fields');
+    expect(organisationVM.view).toEqual('View');
+    expect(organisationVM.adminEmail).toBeUndefined();
+    expect(organisationVM.addressLine1).toBeUndefined();
+    expect(organisationVM.dateReceived).toBeUndefined();
+    expect(organisationVM.dateApproved).toBeUndefined();
+  });
+
   it('should map organisation VM', () => {
     const organisationVM: [OrganisationVM] = [{
       organisationId: 'Id',
@@ -108,6 +129,31 @@ describe('AppUtils', () => {
     const userDetails = AppUtils.mapUsers(mockUser);
     expect(AppUtils.mapUsers(mockUser)).toEqual(mockUserResult);
     expect(userDetails[0].email).toEqual(mockUser[0].email);
+  });
+
+  it('should return an empty user list when users are not provided', () => {
+    expect(AppUtils.mapUsers(null as any)).toEqual([]);
+  });
+
+  it('should map users without role flags when user roles are missing', () => {
+    const mockUser = [{
+      userIdentifier: 'id',
+      firstName: 'hello',
+      lastName: 'world',
+      email: 'test@test.com',
+      idamStatus: 'ACTIVE',
+      idamStatusCode: 'code',
+      idamMessage: 'message'
+    } as OrganisationUser];
+
+    const userDetails = AppUtils.mapUsers(mockUser);
+
+    expect(userDetails[0].fullName).toEqual('hello world');
+    expect(userDetails[0].status).toEqual('Active');
+    expect(userDetails[0].resendInvite).toBeFalse();
+    expect(userDetails[0].manageCases).toBeUndefined();
+    expect(userDetails[0].manageUsers).toBeUndefined();
+    expect(userDetails[0].manageOrganisations).toBeUndefined();
   });
 
   it('should return 500 error org url', () => {
@@ -185,6 +231,36 @@ describe('getNavItemsBasedOnRole', () => {
     expect(navItems[0].orderId).toEqual(1);
   });
 
+  it('sorts nav items by order id', () => {
+    const navItem1 = {
+      text: 'text1',
+      href: 'href1',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature1'
+      },
+      orderId: 2
+    };
+    const navItem2 = {
+      text: 'text2',
+      href: 'href2',
+      active: false,
+      feature: {
+        isfeatureToggleable: true,
+        featureName: 'feature2'
+      },
+      orderId: 1
+    };
+    const roleBasedNav = {
+      role1: navItem1,
+      role2: navItem2
+    };
+    const navItems = AppUtils.getNavItemsBasedOnRole(roleBasedNav, ['role1', 'role2']);
+
+    expect(navItems).toEqual([navItem2, navItem1]);
+  });
+
   it('user with no roles', () => {
     const navItem = {
       text: 'text1',
@@ -228,6 +304,12 @@ describe('getRoles', () => {
 
   it('incorrect format roles', () => {
     const roles = AppUtils.getRoles('j%3A%5B%22prd-admin%22%5D%3A%5B%22test%22%5D');
+    expect(roles).toEqual([]);
+  });
+
+  it('returns no roles when encoded roles are not provided', () => {
+    const roles = AppUtils.getRoles(null);
+
     expect(roles).toEqual([]);
   });
 });

@@ -4,6 +4,20 @@ import * as path from 'node:path';
 
 type EnvMap = NodeJS.ProcessEnv;
 const DEFAULT_WORKER_COUNT = 1;
+const FUNCTIONAL_TAG_CATALOGS = [
+  {
+    configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests/api/tag-filter.json'
+  },
+  {
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests/e2e/tag-filter.json'
+  },
+  {
+    configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests/integration/tag-filter.json'
+  }
+];
 
 type TagFilterConfig = {
   excludedTags?: string[];
@@ -18,11 +32,17 @@ export type ResolveTagFiltersOptions = {
   configPathEnvVar: string;
   defaultConfigPath: string;
   suiteTag?: string;
+  globalExcludedTagsEnvVar?: string;
+  ignoreGlobalExcludesEnvVar?: string;
+  globalTagCatalogPaths?: string[];
 };
 
 export type ResolvedTagFilters = {
   includeTags: string[];
   excludedTags: string[];
+  globalExcludedTags: string[];
+  ignoredGlobalExcludedTags: string[];
+  globalExcludesBypassed: boolean;
   availableTags: string[];
   grep?: RegExp;
   grepInvert?: RegExp;
@@ -127,11 +147,19 @@ export function buildTagRegex(tags: string[]): RegExp | undefined {
     return undefined;
   }
 
-  return new RegExp(`(${tags.map(escapeRegex).join('|')})`);
+  return new RegExp(`(^|[^\\w-])(?:${tags.map(escapeRegex).join('|')})(?=$|[^\\w-])`);
 }
 
 function normalizeConfiguredTags(rawTags?: string[]): string[] {
   return splitTagInput(rawTags?.join(','));
+}
+
+function resolveBooleanEnvFlag(rawValue?: string): boolean {
+  return ['1', 'true', 'yes', 'on'].includes(rawValue?.trim().toLowerCase() ?? '');
+}
+
+function mergeTags(...tagGroups: string[][]): string[] {
+  return Array.from(new Set(tagGroups.flat()));
 }
 
 function resolveTagFilterConfigPath(env: EnvMap, configPathEnvVar: string, defaultConfigPath: string): string {
@@ -180,11 +208,35 @@ function resolveAvailableTags(config: TagFilterConfig, configPath: string): stri
   return availableTags;
 }
 
+function resolveKnownGlobalTags(catalogPaths: string[], fallbackTags: string[]): {
+  tags: Set<string>;
+  source: string;
+} {
+  if (!catalogPaths.length) {
+    return {
+      tags: new Set(fallbackTags),
+      source: 'the current suite catalog'
+    };
+  }
+
+  const resolvedPaths = catalogPaths.map((catalogPath) =>
+    path.isAbsolute(catalogPath) ? catalogPath : path.resolve(process.cwd(), catalogPath)
+  );
+  const knownTags = mergeTags(
+    ...resolvedPaths.map((catalogPath) => resolveAvailableTags(readTagFilterConfig(catalogPath), catalogPath))
+  );
+
+  return {
+    tags: new Set(knownTags),
+    source: resolvedPaths.join(', ')
+  };
+}
+
 function validateKnownTags({
   tags,
   allowedTags,
   tagSource,
-  configPath,
+  configPath
 }: {
   tags: string[];
   allowedTags: Set<string>;
@@ -214,6 +266,9 @@ export function resolveTagFilters({
   configPathEnvVar,
   defaultConfigPath,
   suiteTag,
+  globalExcludedTagsEnvVar,
+  ignoreGlobalExcludesEnvVar,
+  globalTagCatalogPaths = []
 }: ResolveTagFiltersOptions): ResolvedTagFilters {
   const includeTags = splitTagInput(env[includeTagsEnvVar]);
   const configPath = resolveTagFilterConfigPath(env, configPathEnvVar, defaultConfigPath);
@@ -234,35 +289,112 @@ export function resolveTagFilters({
     : overrideExcludedTags.length > 0
       ? overrideExcludedTags
       : configuredExcludedTags;
+  const configuredGlobalExcludedTags = globalExcludedTagsEnvVar
+    ? splitTagInput(env[globalExcludedTagsEnvVar]).filter((tag) => tag !== '@none')
+    : [];
+  const globalExcludesBypassed = globalExcludedTagsEnvVar
+    ? resolveBooleanEnvFlag(env[ignoreGlobalExcludesEnvVar ?? 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES'])
+    : false;
+  if (!globalExcludesBypassed) {
+    const knownGlobalTags = resolveKnownGlobalTags(globalTagCatalogPaths, availableTags);
+    validateKnownTags({
+      tags: configuredGlobalExcludedTags,
+      allowedTags: knownGlobalTags.tags,
+      tagSource: globalExcludedTagsEnvVar ?? 'Global excluded tags',
+      configPath: knownGlobalTags.source
+    });
+    if (configuredGlobalExcludedTags.includes('@e2e')) {
+      throw new Error(`${globalExcludedTagsEnvVar ?? 'Global excluded tags'} cannot exclude whole-suite tag(s): @e2e`);
+    }
+  }
+  const globalExcludedTags = globalExcludesBypassed
+    ? []
+    : configuredGlobalExcludedTags.filter((tag) => allowedTagSet.has(tag));
+  const ignoredGlobalExcludedTags = configuredGlobalExcludedTags.filter(
+    (tag) => globalExcludesBypassed || !allowedTagSet.has(tag)
+  );
+  const combinedExcludedTags = mergeTags(excludedTags, globalExcludedTags);
 
   validateKnownTags({
     tags: includeTags,
     allowedTags: allowedTagSet,
     tagSource: includeTagsEnvVar,
-    configPath,
+    configPath
   });
   validateKnownTags({
     tags: configuredExcludedTags,
     allowedTags: allowedTagSet,
     tagSource: `Config excludes in ${configPath}`,
-    configPath,
+    configPath
   });
   validateKnownTags({
     tags: excludedTags,
     allowedTags: allowedTagSet,
     tagSource: excludedTagsEnvVar,
-    configPath,
+    configPath
   });
 
   const normalizedIncludeTags = normalizeIncludedTags(includeTags, suiteTag);
 
   return {
     includeTags: normalizedIncludeTags,
-    excludedTags,
+    excludedTags: combinedExcludedTags,
+    globalExcludedTags,
+    ignoredGlobalExcludedTags,
+    globalExcludesBypassed,
     availableTags,
     grep: buildTagRegex(normalizedIncludeTags),
-    grepInvert: buildTagRegex(excludedTags),
-    excludedTagsSource: overrideExcludedTags.length > 0 || clearExcludedTagsOverride ? 'env' : 'file',
-    configPath,
+    grepInvert: buildTagRegex(combinedExcludedTags),
+    excludedTagsSource:
+      overrideExcludedTags.length > 0 ||
+      clearExcludedTagsOverride ||
+      globalExcludedTags.length > 0 ||
+      globalExcludesBypassed
+        ? 'env'
+        : 'file',
+    configPath
   };
+}
+
+export function resolveFunctionalTagFilters({
+  env = process.env,
+  ...options
+}: Omit<
+  ResolveTagFiltersOptions,
+  'globalExcludedTagsEnvVar' | 'ignoreGlobalExcludesEnvVar' | 'globalTagCatalogPaths'
+>): ResolvedTagFilters {
+  const globalTagCatalogPaths = FUNCTIONAL_TAG_CATALOGS.map(({ configPathEnvVar, defaultConfigPath }) =>
+    resolveTagFilterConfigPath(env, configPathEnvVar, defaultConfigPath)
+  );
+
+  return resolveTagFilters({
+    ...options,
+    env,
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalTagCatalogPaths
+  });
+}
+
+function formatTagLogValue(tags: string[]): string {
+  return tags.length ? tags.join(',') : '<none>';
+}
+
+export function logResolvedTagFilters(suiteName: string, filters: ResolvedTagFilters, env: EnvMap = process.env): void {
+  if (!env.CI && !resolveBooleanEnvFlag(env.PLAYWRIGHT_LOG_TAG_FILTERS)) {
+    return;
+  }
+
+  process.stdout.write(
+    [
+      `[playwright-tags] ${suiteName}`,
+      `include=${formatTagLogValue(filters.includeTags)}`,
+      `exclude=${formatTagLogValue(filters.excludedTags)}`,
+      `globalApplied=${formatTagLogValue(filters.globalExcludedTags)}`,
+      `globalIgnored=${formatTagLogValue(filters.ignoredGlobalExcludedTags)}`,
+      `globalBypassed=${filters.globalExcludesBypassed}`,
+      `source=${filters.excludedTagsSource}`,
+      `config=${path.relative(process.cwd(), filters.configPath)}`
+    ].join(' | ') + '\n'
+  );
 }

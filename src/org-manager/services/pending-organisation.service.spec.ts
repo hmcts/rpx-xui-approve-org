@@ -78,7 +78,7 @@ describe('PendingOrganisationService', () => {
     expect(httpClient.put).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc`, organisation);
   });
 
-  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  // this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
   it('should put pending organisation', () => {
     pendingOrganisationService.putPendingOrganisation(organisation);
     expect(httpClient.put).toHaveBeenCalledWith(`${mockEnvironment.organisationsUrl}abc`, organisation);
