@@ -87,7 +87,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.8")
+@Library("Infrastructure@2.4.9")
 
 String type      = 'nodejs'
 String product   = 'xui'
@@ -112,6 +112,7 @@ Closure<Boolean> shouldRunAccessibilityTests = {
 Closure<Void> runPlaywrightFunctionalInParallel = {
     stage('Nightly Functional Tests (Parallel)') {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        env.PLAYWRIGHT_ORGANISATION_CLEANUP_RUN_ID = env.BUILD_TAG ?: "${env.JOB_NAME}-${env.BUILD_NUMBER}"
         stage('Nightly Playwright Config Unit Tests') {
             yarnBuilder.yarn('test:playwright:unit')
         }
@@ -292,6 +293,11 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : playwrightNightlyReportFile,
             reportName           : 'XUI Approve Organisation Cross Browser Tests'
         ])
+
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+            yarnBuilder.yarn('test:playwright:organisation-cleanup')
+        }
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/organisation-cleanup/**/*'
     }
 
     /* afterSuccess('mutationTest') {
