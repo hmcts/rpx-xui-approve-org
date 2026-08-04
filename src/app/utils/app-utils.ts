@@ -35,7 +35,7 @@ export class AppUtils {
     organisationVm.organisationId = apiOrg.organisationIdentifier;
     organisationVm.view = 'View';
     organisationVm.status = apiOrg.status;
-    if (apiOrg.contactInformation && apiOrg.contactInformation[0]) {
+    if (apiOrg.contactInformation?.[0]) {
       organisationVm.dxNumber = apiOrg.contactInformation[0].dxAddress;
       organisationVm.addressLine1 = apiOrg.contactInformation[0].addressLine1;
       organisationVm.addressLine2 = apiOrg.contactInformation[0].addressLine2;
@@ -46,10 +46,10 @@ export class AppUtils {
     }
     organisationVm.sraId = apiOrg.sraId;
     organisationVm.orgAttributes = apiOrg.orgAttributes;
-    if (apiOrg.dateReceived){
+    if (apiOrg.dateReceived) {
       organisationVm.dateReceived = apiOrg.dateReceived;
     }
-    if (apiOrg.dateApproved){
+    if (apiOrg.dateApproved) {
       organisationVm.dateApproved = apiOrg.dateApproved;
     }
     return organisationVm;
@@ -168,13 +168,13 @@ export class AppUtils {
   // Util method to return Navitems
   // based on user's role
   public static getNavItemsBasedOnRole(roleBasedNav: UserRoleNav, userRoles: string[]): NavItem[] {
-    let roleNavItems: NavItem [] = [];
+    let roleNavItems: NavItem[] = [];
     userRoles.forEach((role) => {
       if (roleBasedNav.hasOwnProperty(role)) {
         roleNavItems = [...roleNavItems, roleBasedNav[role]];
       }
     });
-    return roleNavItems.sort((a, b) => (a.orderId > b.orderId) ? 1 : (a.orderId < b.orderId) ? -1 : 0);
+    return roleNavItems.sort((a, b) => a.orderId - b.orderId);
   }
 
   // Helper method to take the roles

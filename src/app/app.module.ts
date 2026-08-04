@@ -42,7 +42,9 @@ import { EnvironmentService } from './services/environment.service';
 import { LogOutKeepAliveService } from './services/keep-alive/keep-alive.service';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 
-export const metaReducers: MetaReducer<any>[] = !config.production
+const isDevelopment = !config.production;
+
+export const metaReducers: MetaReducer<any>[] = isDevelopment
   ? [storeFreeze]
   : [];
 
@@ -68,7 +70,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     SharedModule,
     StoreRouterConnectingModule.forRoot(),
     OrgManagerModule,
-    !environment.production ? StoreDevtoolsModule.instrument({ logOnly: true }) : [],
+    environment?.production ? [] : StoreDevtoolsModule.instrument({ logOnly: true }),
     LoggerModule.forRoot({
       level: NgxLoggerLevel.TRACE,
       disableConsoleLogging: false

@@ -103,7 +103,7 @@ export class OrganisationEffects {
     })
   ));
 
-  // TODO: this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
+  // this can be removed once the organisation delete endpoint allows 'under review organisation' has been developed
 
   public deleteReviewOrganisation$ = createEffect(() => this.actions$.pipe(
     ofType(pendingOrgActions.OrgActionTypes.DELETE_REVIEW_ORGANISATION),

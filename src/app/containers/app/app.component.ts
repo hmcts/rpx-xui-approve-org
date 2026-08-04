@@ -17,7 +17,6 @@ import { AppUtils } from '../../utils/app-utils';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
   standalone: false
 })
 export class AppComponent implements OnInit {
@@ -97,7 +96,7 @@ export class AppComponent implements OnInit {
     ]).subscribe(([routes, idleMilliseconds, timeout]) => {
       const isSignedOut: boolean = routes.indexOf('signed-out') !== -1;
       if (timeout && idleMilliseconds && !isSignedOut) {
-        const idleConfig: any = { // todo change this any
+        const idleConfig: any = {
           timeout,
           idleMilliseconds,
           keepAliveInSeconds: 5 * 60 * 60, // 5 hrs

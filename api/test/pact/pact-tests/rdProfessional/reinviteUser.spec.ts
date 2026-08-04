@@ -55,6 +55,7 @@ describe('Reinvite a User', () => {
 
     it('Reinvite a user for an organisation', async () => {
       const taskUrl: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations/` + orgnId + '/users/';
+
       const response = await postOperation(taskUrl, mockRequest);
       expect(response.status).to.be.equal(201);
     });
