@@ -2,6 +2,7 @@
   "excludedTags": [],
   "availableTags": [
     "@all-user-list-without-roles",
+    "@pba-status-auth-route",
     "@reinvite-user",
     "@organisations",
     "@organisations-by-id",
