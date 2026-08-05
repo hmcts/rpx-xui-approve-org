@@ -119,6 +119,23 @@ describe('organisation/index', () => {
       expect(mockRes.send).to.have.been.calledWith(orgList);
     });
 
+    it('should forward pagination for organisation list requests', async () => {
+      mockReq.query = { status: '', page: '1', size: '10' };
+      mockReq.params = {};
+      mockReq.http.get.resolves({ data: { organisations: [] } });
+
+      const router = require('./index').default;
+      const getHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.get
+      ).route.stack[0].handle;
+
+      await getHandler(mockReq, mockRes, mockNext);
+
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=&page=1&size=10'
+      );
+    });
+
     it('should handle API errors gracefully', async () => {
       mockReq.query = { organisationId: '12345' };
       mockReq.params = {};
