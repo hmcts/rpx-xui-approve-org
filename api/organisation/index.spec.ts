@@ -119,6 +119,48 @@ describe('organisation/index', () => {
       expect(mockRes.send).to.have.been.calledWith(orgList);
     });
 
+    it('should forward explicit page and size for a paginated organisation list request', async () => {
+      mockReq.query = { status: 'ACTIVE', page: '2', size: '10' };
+      mockReq.params = {};
+      const orgList = [{ name: 'Org 1', sraId: '123' }];
+
+      mockReq.http.get.resolves({
+        data: { organisations: orgList }
+      });
+
+      const router = require('./index').default;
+      const getHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.get
+      ).route.stack[0].handle;
+
+      await getHandler(mockReq, mockRes, mockNext);
+
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&page=2&size=10'
+      );
+      expect(mockRes.send).to.have.been.calledWith(orgList);
+    });
+
+    it('should preserve single organisation lookup without pagination parameters', async () => {
+      mockReq.query = { organisationId: '12345', page: '2', size: '10' };
+      mockReq.params = {};
+      const orgData = { name: 'Test Organisation', sraId: '123' };
+
+      mockReq.http.get.resolves({ data: orgData });
+
+      const router = require('./index').default;
+      const getHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.get
+      ).route.stack[0].handle;
+
+      await getHandler(mockReq, mockRes, mockNext);
+
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?id=12345'
+      );
+      expect(mockRes.send).to.have.been.calledWith(orgData);
+    });
+
     it('should handle API errors gracefully', async () => {
       mockReq.query = { organisationId: '12345' };
       mockReq.params = {};

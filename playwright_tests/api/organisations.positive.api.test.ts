@@ -38,7 +38,11 @@ const organisationSearchScenarios = [
 test.describe('Playwright API positive: organisations', { tag: ['@organisations', '@positive'] }, () => {
   for (const status of statuses) {
     test(`GET /api/organisations?status=${status} returns a JSON list`, async ({ apiRequest }) => {
-      const response = await apiRequest.get(`/api/organisations?status=${status}`, { failOnStatusCode: false });
+      const pageSize = ORGANISATION_SEARCH_PAGE_SIZE;
+      const response = await apiRequest.get('/api/organisations', {
+        params: { status, page: 1, size: pageSize },
+        failOnStatusCode: false
+      });
       const httpStatus = response.status();
       expect(
         httpStatus,
@@ -59,6 +63,10 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
       ).toEqual([]);
 
       const firstOrganisation = Array.isArray(payload) ? payload[0] : undefined;
+      expect(
+        Array.isArray(payload) ? payload.length : 0,
+        `Expected GET /api/organisations?status=${status} to honour size=${pageSize}`
+      ).toBeLessThanOrEqual(pageSize);
       if (firstOrganisation && typeof firstOrganisation === 'object') {
         expect(
           Object.keys(firstOrganisation),
