@@ -10,6 +10,7 @@ import {
 } from './helpers/search.helpers';
 
 const statuses = ['PENDING', 'ACTIVE', 'REVIEW', 'PENDING,REVIEW'] as const;
+const ORGANISATION_SEARCH_PAGE_SIZE = 10;
 
 const organisationSearchScenarios = [
   {
@@ -19,7 +20,7 @@ const organisationSearchScenarios = [
       view: 'NEW',
       searchFilter: 'test',
       pageNumber: 1,
-      pageSize: 10
+      pageSize: ORGANISATION_SEARCH_PAGE_SIZE
     })
   },
   {
@@ -29,7 +30,7 @@ const organisationSearchScenarios = [
       view: 'ACTIVE',
       searchFilter: '',
       pageNumber: 1,
-      pageSize: 10
+      pageSize: ORGANISATION_SEARCH_PAGE_SIZE
     })
   }
 ];
@@ -166,6 +167,7 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
       const totalRecords = toTotalRecordsNumber(responsePayload.total_records);
       expect(totalRecords, 'Expected total_records to be coercible to a finite number').not.toBeNull();
       expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
+      expect(responsePayload.organisations.length).toBeLessThanOrEqual(ORGANISATION_SEARCH_PAGE_SIZE);
 
       const firstOrganisation = responsePayload.organisations[0] as Record<string, unknown> | undefined;
       if (firstOrganisation && typeof firstOrganisation === 'object') {
@@ -183,7 +185,7 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
         view: 'ACTIVE',
         searchFilter: '',
         pageNumber: 1,
-        pageSize: 10
+        pageSize: ORGANISATION_SEARCH_PAGE_SIZE
       })
     });
 
@@ -210,6 +212,7 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
     const totalRecords = toTotalRecordsNumber(responsePayload.total_records);
     expect(totalRecords, 'Expected total_records to be coercible to a finite number').not.toBeNull();
     expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
+    expect(responsePayload.organisations.length).toBeLessThanOrEqual(ORGANISATION_SEARCH_PAGE_SIZE);
 
     const firstOrganisation = responsePayload.organisations[0] as Record<string, unknown> | undefined;
     if (firstOrganisation && typeof firstOrganisation === 'object') {
