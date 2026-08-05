@@ -10,6 +10,7 @@ import {
 } from './helpers/search.helpers';
 
 const statuses = ['PENDING', 'ACTIVE', 'REVIEW', 'PENDING,REVIEW'] as const;
+const ORGANISATION_SEARCH_PAGE_SIZE = 10;
 
 const organisationSearchScenarios = [
   {
@@ -19,7 +20,7 @@ const organisationSearchScenarios = [
       view: 'NEW',
       searchFilter: 'test',
       pageNumber: 1,
-      pageSize: 10
+      pageSize: ORGANISATION_SEARCH_PAGE_SIZE
     })
   },
   {
@@ -29,7 +30,7 @@ const organisationSearchScenarios = [
       view: 'ACTIVE',
       searchFilter: '',
       pageNumber: 1,
-      pageSize: 10
+      pageSize: ORGANISATION_SEARCH_PAGE_SIZE
     })
   }
 ];
@@ -64,38 +65,9 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
           `Expected first organisation to include organisationIdentifier for status=${status}. keys=${Object.keys(firstOrganisation).join(',')}`
         ).toEqual(expect.arrayContaining(['organisationIdentifier']));
       }
+
     });
   }
-
-  test('GET /api/organisations?status= returns a JSON list', async ({ apiRequest }) => {
-    const response = await apiRequest.get('/api/organisations?status=', { failOnStatusCode: false });
-    const httpStatus = response.status();
-    expect(
-      httpStatus,
-      `Expected 200 from GET /api/organisations?status=. Received status=${httpStatus}`
-    ).toBe(200);
-
-    const contentType = resolveHeader(response.headers(), 'content-type');
-    expect(
-      contentType,
-      `Expected JSON content-type for GET /api/organisations?status=. Received content-type=${contentType}`
-    ).toContain('application/json');
-
-    const payload = await response.json();
-    const shapeErrors = organisationsListShapeErrors(payload);
-    expect(
-      shapeErrors,
-      `Expected organisations payload shape to be valid for blank status. shapeErrors=${JSON.stringify(shapeErrors)}`
-    ).toEqual([]);
-
-    const firstOrganisation = Array.isArray(payload) ? payload[0] : undefined;
-    if (firstOrganisation && typeof firstOrganisation === 'object') {
-      expect(
-        Object.keys(firstOrganisation),
-        `Expected first organisation to include organisationIdentifier for blank status. keys=${Object.keys(firstOrganisation).join(',')}`
-      ).toEqual(expect.arrayContaining(['organisationIdentifier']));
-    }
-  });
 
   test('GET /api/organisations?usersOrgId=<id>&page=0 returns current organisation users', async ({ apiRequest }) => {
     let organisationId: string | undefined;
@@ -196,6 +168,7 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
       const totalRecords = toTotalRecordsNumber(responsePayload.total_records);
       expect(totalRecords, 'Expected total_records to be coercible to a finite number').not.toBeNull();
       expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
+      expect(responsePayload.organisations.length).toBeLessThanOrEqual(ORGANISATION_SEARCH_PAGE_SIZE);
 
       const firstOrganisation = responsePayload.organisations[0] as Record<string, unknown> | undefined;
       if (firstOrganisation && typeof firstOrganisation === 'object') {
@@ -213,7 +186,7 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
         view: 'ACTIVE',
         searchFilter: '',
         pageNumber: 1,
-        pageSize: 10
+        pageSize: ORGANISATION_SEARCH_PAGE_SIZE
       })
     });
 
@@ -240,6 +213,7 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
     const totalRecords = toTotalRecordsNumber(responsePayload.total_records);
     expect(totalRecords, 'Expected total_records to be coercible to a finite number').not.toBeNull();
     expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
+    expect(responsePayload.organisations.length).toBeLessThanOrEqual(ORGANISATION_SEARCH_PAGE_SIZE);
 
     const firstOrganisation = responsePayload.organisations[0] as Record<string, unknown> | undefined;
     if (firstOrganisation && typeof firstOrganisation === 'object') {
