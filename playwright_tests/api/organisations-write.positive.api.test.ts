@@ -8,6 +8,7 @@ import {
 import { resolveHeader } from './helpers/json-contracts';
 
 test.describe('Playwright API positive: organisations write', { tag: ['@organisations-write', '@positive'] }, () => {
+  test.describe.configure({ mode: 'serial' });
   test('PUT /api/organisations/:id approves a pending organisation', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 

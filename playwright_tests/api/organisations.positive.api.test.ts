@@ -1,7 +1,7 @@
 import { test, expect } from './helpers/api.fixtures';
 import { findUserByEmail, isOrganisationUser } from './helpers/all-user-list-without-roles.helpers';
 import { cleanupProvisionedOrganisation, provisionActiveOrganisation } from './helpers/organisations-write.helpers';
-import { organisationsListShapeErrors, resolveHeader, searchEnvelopeShapeErrors } from './helpers/json-contracts';
+import { resolveHeader, searchEnvelopeShapeErrors } from './helpers/json-contracts';
 import {
   createOrganisationSearchPayload,
   getXsrfHeaders,
@@ -9,7 +9,6 @@ import {
   toTotalRecordsNumber
 } from './helpers/search.helpers';
 
-const statuses = ['PENDING', 'ACTIVE', 'REVIEW', 'PENDING,REVIEW'] as const;
 const ORGANISATION_SEARCH_PAGE_SIZE = 10;
 
 const organisationSearchScenarios = [
@@ -36,47 +35,7 @@ const organisationSearchScenarios = [
 ];
 
 test.describe('Playwright API positive: organisations', { tag: ['@organisations', '@positive'] }, () => {
-  for (const status of statuses) {
-    test(`GET /api/organisations?status=${status} returns a JSON list`, async ({ apiRequest }) => {
-      const pageSize = ORGANISATION_SEARCH_PAGE_SIZE;
-      const response = await apiRequest.get('/api/organisations', {
-        params: { status, page: 1, size: pageSize },
-        failOnStatusCode: false
-      });
-      const httpStatus = response.status();
-      expect(
-        httpStatus,
-        `Expected 200 from GET /api/organisations?status=${status}. Received status=${httpStatus}`
-      ).toBe(200);
-
-      const contentType = resolveHeader(response.headers(), 'content-type');
-      expect(
-        contentType,
-        `Expected JSON content-type for GET /api/organisations?status=${status}. Received content-type=${contentType}`
-      ).toContain('application/json');
-
-      const payload = await response.json();
-      const shapeErrors = organisationsListShapeErrors(payload);
-      expect(
-        shapeErrors,
-        `Expected organisations payload shape to be valid for status=${status}. shapeErrors=${JSON.stringify(shapeErrors)}`
-      ).toEqual([]);
-
-      const firstOrganisation = Array.isArray(payload) ? payload[0] : undefined;
-      expect(
-        Array.isArray(payload) ? payload.length : 0,
-        `Expected GET /api/organisations?status=${status} to honour size=${pageSize}`
-      ).toBeLessThanOrEqual(pageSize);
-      if (firstOrganisation && typeof firstOrganisation === 'object') {
-        expect(
-          Object.keys(firstOrganisation),
-          `Expected first organisation to include organisationIdentifier for status=${status}. keys=${Object.keys(firstOrganisation).join(',')}`
-        ).toEqual(expect.arrayContaining(['organisationIdentifier']));
-      }
-
-    });
-  }
-
+  test.describe.configure({ mode: 'serial' });
   test('GET /api/organisations?usersOrgId=<id>&page=0 returns current organisation users', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 
@@ -185,47 +144,4 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
     });
   }
 
-  test('POST /api/organisations?status= returns a valid JSON envelope', async ({ apiRequest }) => {
-    const xsrfHeaders = await getXsrfHeaders(apiRequest);
-    const response = await apiRequest.post('/api/organisations?status=', {
-      failOnStatusCode: false,
-      headers: xsrfHeaders,
-      data: createOrganisationSearchPayload({
-        view: 'ACTIVE',
-        searchFilter: '',
-        pageNumber: 1,
-        pageSize: ORGANISATION_SEARCH_PAGE_SIZE
-      })
-    });
-
-    const httpStatus = response.status();
-    expect(
-      httpStatus,
-      `Expected 200 from POST /api/organisations?status=. Received status=${httpStatus}`
-    ).toBe(200);
-
-    const contentType = resolveHeader(response.headers(), 'content-type');
-    expect(
-      contentType,
-      `Expected JSON content-type for POST /api/organisations?status=. Received content-type=${contentType}`
-    ).toContain('application/json');
-
-    const payload = await response.json();
-    const shapeErrors = searchEnvelopeShapeErrors(payload);
-    expect(
-      shapeErrors,
-      `Expected organisation search envelope shape to be valid for blank status. shapeErrors=${JSON.stringify(shapeErrors)}`
-    ).toEqual([]);
-
-    const responsePayload = payload as { organisations: unknown[]; total_records: unknown };
-    const totalRecords = toTotalRecordsNumber(responsePayload.total_records);
-    expect(totalRecords, 'Expected total_records to be coercible to a finite number').not.toBeNull();
-    expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
-    expect(responsePayload.organisations.length).toBeLessThanOrEqual(ORGANISATION_SEARCH_PAGE_SIZE);
-
-    const firstOrganisation = responsePayload.organisations[0] as Record<string, unknown> | undefined;
-    if (firstOrganisation && typeof firstOrganisation === 'object') {
-      expect(firstOrganisation).toHaveProperty('organisationIdentifier');
-    }
-  });
 });

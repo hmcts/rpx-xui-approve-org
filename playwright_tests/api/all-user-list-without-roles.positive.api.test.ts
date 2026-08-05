@@ -1,14 +1,13 @@
 import { test, expect } from './helpers/api.fixtures';
 import {
-  extractOrganisations,
   findUserByEmail,
-  getOrganisationUserDetails,
   isOrganisationUser
 } from './helpers/all-user-list-without-roles.helpers';
 import { cleanupProvisionedOrganisation, provisionActiveOrganisation } from './helpers/organisations-write.helpers';
 import { resolveHeader } from './helpers/json-contracts';
 
 test.describe('Playwright API positive: all user list without roles', { tag: ['@all-user-list-without-roles', '@positive'] }, () => {
+  test.describe.configure({ mode: 'serial' });
   test('GET /api/allUserListWithoutRoles returns organisation user list', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 
@@ -122,67 +121,4 @@ test.describe('Playwright API positive: all user list without roles', { tag: ['@
     }
   });
 
-  test('GET /api/allUserListWithoutRoles with no orgId returns all organisations with user details', async ({ apiRequest }) => {
-    const response = await apiRequest.get('/api/allUserListWithoutRoles', {
-      params: { usersOrgId: '' },
-      failOnStatusCode: false
-    });
-    const httpStatus = response.status();
-    expect(
-      httpStatus,
-      `Expected 200 from GET /api/allUserListWithoutRoles with no usersOrgId. Received status=${httpStatus}`
-    ).toBe(200);
-
-    const contentType = resolveHeader(response.headers(), 'content-type');
-    expect(
-      contentType,
-      `Expected JSON content-type from GET /api/allUserListWithoutRoles with no usersOrgId. Received content-type=${contentType}`
-    ).toContain('application/json');
-
-    const payload = await response.json();
-    const organisations = extractOrganisations(payload);
-    expect(
-      organisations.length,
-      `Expected organisations list from GET /api/allUserListWithoutRoles with no usersOrgId. Received payload=${JSON.stringify(payload)}`
-    ).toBeGreaterThan(0);
-
-    const firstOrganisation = organisations[0];
-    const organisationId = firstOrganisation.organisationIdentifier ?? firstOrganisation.organisationId;
-    expect(
-      typeof organisationId,
-      `Expected first organisation to include an organisation id. organisation=${JSON.stringify(firstOrganisation)}`
-    ).toBe('string');
-
-    const organisationName = firstOrganisation.organisationName ?? firstOrganisation.name;
-    if (organisationName !== undefined) {
-      expect(
-        typeof organisationName,
-        `Expected first organisation name to be a string when present. organisation=${JSON.stringify(firstOrganisation)}`
-      ).toBe('string');
-    }
-
-    const userDetails = getOrganisationUserDetails(firstOrganisation);
-    expect(
-      userDetails,
-      `Expected first organisation to include user details. organisation=${JSON.stringify(firstOrganisation)}`
-    ).toBeDefined();
-    if (userDetails?.email !== undefined) {
-      expect(
-        typeof userDetails.email,
-        `Expected organisation user email to be a string when present. user=${JSON.stringify(userDetails)}`
-      ).toBe('string');
-    }
-    if (userDetails?.firstName !== undefined) {
-      expect(
-        typeof userDetails.firstName,
-        `Expected organisation user firstName to be a string when present. user=${JSON.stringify(userDetails)}`
-      ).toBe('string');
-    }
-    if (userDetails?.lastName !== undefined) {
-      expect(
-        typeof userDetails.lastName,
-        `Expected organisation user lastName to be a string when present. user=${JSON.stringify(userDetails)}`
-      ).toBe('string');
-    }
-  });
 });

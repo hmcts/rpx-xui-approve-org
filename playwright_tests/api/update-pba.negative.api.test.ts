@@ -5,6 +5,7 @@ import { UPDATE_PBA_MALFORMED_CASES } from './helpers/update-pba.helpers';
 const UNAUTHENTICATED_ORG_ID = 'UPDATE_PBA_NEGATIVE_ORG';
 
 test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@negative'] }, () => {
+  test.describe.configure({ mode: 'serial' });
   test('PUT /api/updatePba without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
       paymentAccounts: ['PBA33L6BNO'],

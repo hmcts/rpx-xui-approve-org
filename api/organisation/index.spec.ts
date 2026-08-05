@@ -117,6 +117,43 @@ describe('organisation/index', () => {
       await getHandler(mockReq, mockRes, mockNext);
 
       expect(mockRes.send).to.have.been.calledWith(orgList);
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&page=1&size=10'
+      );
+    });
+
+    it('should bound an organisation list when pagination is omitted', async () => {
+      mockReq.query = { status: 'ACTIVE' };
+      mockReq.params = {};
+      mockReq.http.get.resolves({ data: { organisations: [] } });
+
+      const router = require('./index').default;
+      const getHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.get
+      ).route.stack[0].handle;
+
+      await getHandler(mockReq, mockRes, mockNext);
+
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&page=1&size=10'
+      );
+    });
+
+    it('should clamp an oversized organisation list page', async () => {
+      mockReq.query = { status: 'ACTIVE', page: '0', size: '1000000' };
+      mockReq.params = {};
+      mockReq.http.get.resolves({ data: { organisations: [] } });
+
+      const router = require('./index').default;
+      const getHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.get
+      ).route.stack[0].handle;
+
+      await getHandler(mockReq, mockRes, mockNext);
+
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&page=1&size=100'
+      );
     });
 
     it('should forward explicit page and size for a paginated organisation list request', async () => {
@@ -318,6 +355,9 @@ describe('organisation/index', () => {
 
       await postHandler(mockReq, mockRes);
 
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=PENDING&page=1&size=10'
+      );
       expect(mockRes.send).to.have.been.calledWith({
         organisations: orgList,
         total_records: '20'

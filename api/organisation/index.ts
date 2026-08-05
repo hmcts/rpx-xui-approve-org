@@ -6,6 +6,9 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../models/enhanced-request.interface';
 
 const logger = log4jui.getLogger('return');
+const DEFAULT_ORGANISATION_PAGE = 1;
+const DEFAULT_ORGANISATION_PAGE_SIZE = 10;
+const MAX_ORGANISATION_PAGE_SIZE = 100;
 
 /**
  * Handle Get Organisation Route
@@ -68,7 +71,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
     let response = null;
     let organisationsUri;
     if (!req.body.searchRequest.search_filter || req.body.searchRequest.search_filter === '') {
-      organisationsUri = getOrganisationPagingUri(status, pageNumber, pageSize);
+      organisationsUri = getOrganisationUri(status, null, null, pageNumber, 'v1', pageSize);
       response = await req.http.get(organisationsUri);
       const organisationsList = response.data.organisations;
       responseData = response && response.data && response.data.organisations ?
@@ -88,7 +91,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         }
         response = await getActiveOrganisations(req);
       } else {
-        organisationsUri = getOrganisationUri(status, null, null, null);
+        organisationsUri = getOrganisationUri(status, null, null, pageNumber, 'v1', pageSize);
         response = await req.http.get(organisationsUri);
       }
       let organisations;
@@ -216,9 +219,9 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, vers
   if (organisationId) {
     queryParameters.set('id', organisationId);
   }
-  if (!organisationId && pageNumber !== undefined && pageSize !== undefined) {
-    queryParameters.set('page', pageNumber);
-    queryParameters.set('size', pageSize);
+  if (!organisationId) {
+    queryParameters.set('page', String(resolveOrganisationPage(pageNumber)));
+    queryParameters.set('size', String(resolveOrganisationPageSize(pageSize)));
   }
   const query = queryParameters.toString();
   if (query) {
@@ -227,8 +230,18 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, vers
   return url;
 }
 
-function getOrganisationPagingUri(status, pageNumber, size): string {
-  return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=${status}`;
+function resolveOrganisationPage(pageNumber: unknown): number {
+  const page = Number(pageNumber);
+  return Number.isInteger(page) && page > 0 ? page : DEFAULT_ORGANISATION_PAGE;
+}
+
+function resolveOrganisationPageSize(pageSize: unknown): number {
+  const size = Number(pageSize);
+  if (!Number.isInteger(size) || size <= 0) {
+    return DEFAULT_ORGANISATION_PAGE_SIZE;
+  }
+
+  return Math.min(size, MAX_ORGANISATION_PAGE_SIZE);
 }
 
 function getFilteredActiveOrganisationUri(searchFilter: string, pageNumber: number, size: number): string {
