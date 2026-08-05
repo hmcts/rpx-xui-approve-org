@@ -68,7 +68,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
 
-    await test.step('Approve a pending organisation so it appears in active organisations', async () => {
+    await test.step('Approve the pending organisation and find it through active search', async () => {
       await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
       await organisationApprovalsPage.chooseDecision('Approve it');
@@ -77,6 +77,12 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await organisationApprovalsPage.confirmDecision();
       await organisationApprovalsPage.waitForSpinnerToHide(60_000);
       await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
+
+      await organisationApprovalsPage.openActiveOrganisationsTab();
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await organisationApprovalsPage.searchForOrganisation(userName);
+      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+      await expect(organisationApprovalsPage.activeOrganisationRowById(organisationIdentifier)).toBeVisible();
     });
   });
 

@@ -1,4 +1,3 @@
-import { AxiosPromise } from 'axios';
 import { Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
@@ -79,21 +78,20 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         { organisations: [], total_records: 0 };
     } else {
       if (status && status === 'ACTIVE') {
-        const nameOnlySearch = isOrganisationNameOnlySearch(req.body.searchRequest.search_filter);
-        responseData = await getFilteredActiveOrganisations(req, req.body.searchRequest.search_filter, pageNumber, pageSize, nameOnlySearch);
-        if (responseData) {
-          res.send(responseData);
-          return;
-        }
-        if (nameOnlySearch) {
-          res.send({ organisations: [], total_records: 0 });
-          return;
-        }
-        response = await getActiveOrganisations(req);
-      } else {
-        organisationsUri = getOrganisationUri(status, null, null, pageNumber, 'v1', pageSize);
-        response = await req.http.get(organisationsUri);
+        responseData = await getFilteredActiveOrganisations(
+          req,
+          req.body.searchRequest.search_filter,
+          pageNumber,
+          pageSize,
+          isOrganisationNameOnlySearch(req.body.searchRequest.search_filter)
+        );
+        res.send(responseData);
+        return;
       }
+      // RefData does not support this proxy's broad local search fields for pending/review organisations.
+      // Fetching only the requested page before filtering makes a matching organisation on a later page invisible.
+      organisationsUri = getOrganisationSearchUri(status);
+      response = await req.http.get(organisationsUri);
       let organisations;
       if (response && response.data && response.data.organisations) {
         organisations = response.data.organisations;
@@ -114,11 +112,6 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
   }
 }
 
-export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
-  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
-  return req.http.get(url);
-}
-
 async function getFilteredActiveOrganisations(
   req: EnhancedRequest,
   searchFilter: string,
@@ -127,73 +120,31 @@ async function getFilteredActiveOrganisations(
   nameOnlySearch = false
 ): Promise<any> {
   const url = getFilteredActiveOrganisationUri(searchFilter, pageNumber, pageSize);
-  try {
-    const response = await req.http.get(url);
-    const organisations = response?.data?.organisations;
-    if (!Array.isArray(organisations)) {
-      return null;
-    }
-
-    const filteredOrganisations = nameOnlySearch ?
-      filterOrganisationsByName(organisations, searchFilter) :
-      filterOrganisations(organisations, searchFilter);
-    const totalRecords = Number(response?.headers?.total_records ?? filteredOrganisations.length);
-    if (organisations.length === 0 && totalRecords === 0) {
-      return { organisations: [], total_records: 0 };
-    }
-
-    if (nameOnlySearch) {
-      return {
-        organisations: filteredOrganisations,
-        total_records: filteredOrganisations.length === organisations.length ?
-          response?.headers?.total_records ?? filteredOrganisations.length :
-          filteredOrganisations.length
-      };
-    }
-
-    // If PRD ignored the query parameter it will return unfiltered rows; fall back to the legacy full scan.
-    if (filteredOrganisations.length !== organisations.length) {
-      return null;
-    }
-
-    return {
-      organisations: filteredOrganisations,
-      total_records: response?.headers?.total_records ?? filteredOrganisations.length
-    };
-  } catch (error) {
-    logger.warn(`Filtered active organisations search failed; falling back to full active organisation scan. ${error}`);
-    return null;
+  const response = await req.http.get(url);
+  const organisations = response?.data?.organisations;
+  if (!Array.isArray(organisations)) {
+    throw activeSearchContractError('Active organisation search returned an invalid response');
   }
+
+  const filteredOrganisations = nameOnlySearch ?
+    filterOrganisationsByName(organisations, searchFilter) :
+    filterOrganisations(organisations, searchFilter);
+  if (filteredOrganisations.length !== organisations.length) {
+    throw activeSearchContractError('Active organisation search did not honour the search filter');
+  }
+
+  return {
+    organisations: filteredOrganisations,
+    total_records: response?.headers?.total_records ?? filteredOrganisations.length
+  };
 }
 
-async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
-  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
-  const response = await req.http.get(url);
-  const chunkSize = 1000;
-  const totalRecords = Number(response.headers.total_records);
-  const pageCount = Number.isFinite(totalRecords) ? Math.ceil(totalRecords / chunkSize) : 0;
-  const allActiveOrgs = [];
-  try {
-    for (let pageNumber = 1; pageNumber <= pageCount; pageNumber++) {
-      const organisation = await getActiveOrganisation(pageNumber, chunkSize, req);
-      if (organisation.data.organisations) {
-        allActiveOrgs.push(...organisation.data.organisations);
-      }
-    }
-  } catch (error) {
-    logger.error(error);
-    if (error.message) {
-      logger.error('Error message: ' + error.message);
-    }
-    if (error.stack) {
-      logger.error('Error stack: ' + error.stack);
-    }
-    if (error.code) {
-      logger.error('Error code: ' + error.code);
-    }
-    throw error;
-  }
-  return allActiveOrgs;
+function activeSearchContractError(message: string): Error & { status: number; data: { message: string }; activeSearchContractError: true } {
+  const error = new Error(message) as Error & { status: number; data: { message: string }; activeSearchContractError: true };
+  error.status = 502;
+  error.data = { message };
+  error.activeSearchContractError = true;
+  return error;
 }
 
 function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, version = 'v1', pageSize?): string {
@@ -220,6 +171,16 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, vers
     url = `${url}?${query}`;
   }
   return url;
+}
+
+function getOrganisationSearchUri(status: unknown): string {
+  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`;
+  const queryParameters = new URLSearchParams();
+  if (typeof status === 'string' && status) {
+    queryParameters.set('status', status);
+  }
+
+  return `${url}?${queryParameters.toString()}`;
 }
 
 function resolveOrganisationPage(pageNumber: unknown): number {
@@ -395,6 +356,10 @@ export function isOrganisationNameOnlySearch(searchFilter: string): boolean {
 }
 
 export function postCodeMatches(org: any, filter: string): boolean {
+  if (!Array.isArray(org?.contactInformation)) {
+    return false;
+  }
+
   return org.contactInformation.map(({ postCode }) => {
     return postCode && postCode.split(' ').join('').toLowerCase();
   }).some((element) => element && element.indexOf(filter.split(' ').join('')) >= 0);
@@ -426,10 +391,10 @@ function logError(res: Response, error: any) {
     logger.error(`Error code: ${error.code}`);
   }
   const errReport = {
-    apiError: error?.data?.message, apiStatusCode: error?.status,
+    apiError: error?.data?.message ?? error?.message, apiStatusCode: error?.status ?? 500,
     message: 'handlePostOrganisationsRoute error'
   };
-  res.status(500).send(errReport);
+  res.status(error?.activeSearchContractError ? 502 : 500).send(errReport);
 }
 
 export const router = Router({ mergeParams: true });

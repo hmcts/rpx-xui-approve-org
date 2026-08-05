@@ -5,6 +5,7 @@ import * as path from 'node:path';
 
 import {
   logResolvedTagFilters,
+  resolveApiRetryCount,
   resolveFunctionalTagFilters,
   resolveTagFilters,
   splitTagInput,
@@ -33,6 +34,16 @@ test('deduplicates space and comma separated tags', () => {
     '@search',
     '@organisations'
   ]);
+});
+
+test('defaults API retries to zero and honours an explicit retry count', () => {
+  expect(resolveApiRetryCount({})).toBe(0);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: '0' })).toBe(0);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: '2' })).toBe(2);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: ' 3 ' })).toBe(3);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: '-1' })).toBe(0);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: '1.5' })).toBe(0);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: 'two' })).toBe(0);
 });
 
 test('adds catalog-scoped global exclusions to checked-in defaults', () => {

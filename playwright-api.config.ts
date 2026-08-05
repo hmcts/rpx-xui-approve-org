@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 import {
   logResolvedTagFilters,
+  resolveApiRetryCount,
   resolveFunctionalTagFilters,
   resolveWorkerCount
 } from './playwright-config-utils';
@@ -11,15 +12,6 @@ process.env.PW_AUTH_SESSION_USER = process.env.PW_AUTH_SESSION_USER || 'api';
 function resolvePositiveInteger(value: string | undefined): number | undefined {
   const parsed = Number.parseInt(value?.trim() ?? '', 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
-}
-
-function resolveApiRetries(): number {
-  const configured = resolvePositiveInteger(process.env.API_PW_RETRIES);
-  if (configured !== undefined) {
-    return configured;
-  }
-
-  return 3;
 }
 
 function resolveApiWorkerCount(): number {
@@ -39,7 +31,7 @@ module.exports = defineConfig({
   testMatch: /.*\.(positive|negative)\.api\.test\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: resolveApiRetries(),
+  retries: resolveApiRetryCount(),
   timeout: 180_000,
   expect: {
     timeout: 60_000

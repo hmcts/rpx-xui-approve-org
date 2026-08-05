@@ -120,5 +120,4 @@ test.describe('Playwright API positive: all user list without roles', { tag: ['@
       await cleanupProvisionedOrganisation(apiRequest, organisationId);
     }
   });
-
 });

@@ -64,6 +64,16 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
   return parsed;
 }
 
+export function resolveApiRetryCount(env: EnvMap = process.env): number {
+  const configured = env.API_PW_RETRIES?.trim();
+  if (!configured || !/^\d+$/.test(configured)) {
+    return 0;
+  }
+
+  const retries = Number(configured);
+  return Number.isSafeInteger(retries) ? retries : 0;
+}
+
 function resolveWorkerTargetEnvironment(env: EnvMap = process.env): string | undefined {
   const configuredTarget = env.TEST_TYPE?.trim().toLowerCase();
   if (configuredTarget) {

@@ -22,16 +22,6 @@ const organisationSearchScenarios = [
       pageSize: ORGANISATION_SEARCH_PAGE_SIZE
     })
   },
-  {
-    name: 'active organisation search with empty search term',
-    status: 'ACTIVE' as const,
-    payload: createOrganisationSearchPayload({
-      view: 'ACTIVE',
-      searchFilter: '',
-      pageNumber: 1,
-      pageSize: ORGANISATION_SEARCH_PAGE_SIZE
-    })
-  }
 ];
 
 test.describe('Playwright API positive: organisations', { tag: ['@organisations', '@positive'] }, () => {
@@ -144,4 +134,38 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
     });
   }
 
+  test('POST /api/organisations search finds a provisioned active organisation by a non-empty term', async ({ apiRequest }) => {
+    let organisationId: string | undefined;
+
+    try {
+      const provisioned = await provisionActiveOrganisation(apiRequest, {
+        firstName: 'ActiveSearch',
+        lastName: 'Bounded'
+      });
+      organisationId = provisioned.organisationId;
+      const response = await apiRequest.post('/api/organisations?status=ACTIVE', {
+        failOnStatusCode: false,
+        headers: await getXsrfHeaders(apiRequest),
+        data: createOrganisationSearchPayload({
+          view: 'ACTIVE',
+          searchFilter: provisioned.organisationSeed,
+          pageNumber: 1,
+          pageSize: ORGANISATION_SEARCH_PAGE_SIZE
+        })
+      });
+
+      expect(
+        response.status(),
+        `Expected bounded active search to return 200 for seed=${provisioned.organisationSeed}. Received status=${response.status()}`
+      ).toBe(200);
+
+      const payload = await response.json() as { organisations: Array<Record<string, unknown>>; total_records: unknown };
+      expect(searchEnvelopeShapeErrors(payload)).toEqual([]);
+      expect(payload.organisations).toHaveLength(1);
+      expect(payload.organisations[0]).toEqual(expect.objectContaining({ organisationIdentifier: provisioned.organisationId }));
+      expect(toTotalRecordsNumber(payload.total_records)).toBe(1);
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
+  });
 });
