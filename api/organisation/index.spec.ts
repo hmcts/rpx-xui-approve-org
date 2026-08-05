@@ -123,20 +123,28 @@ describe('organisation/index', () => {
     });
 
     it('should bound an organisation list when pagination is omitted', async () => {
-      mockReq.query = { status: 'ACTIVE' };
-      mockReq.params = {};
-      mockReq.http.get.resolves({ data: { organisations: [] } });
-
       const router = require('./index').default;
       const getHandler = router.stack.find((layer: any) =>
         layer.route && layer.route.path === '/' && layer.route.methods.get
       ).route.stack[0].handle;
 
-      await getHandler(mockReq, mockRes, mockNext);
+      for (const [status, expectedQuery] of [
+        ['ACTIVE', 'status=ACTIVE&page=1&size=10'],
+        ['PENDING,REVIEW', 'status=PENDING%2CREVIEW&page=1&size=10'],
+        ['', 'page=1&size=10'],
+        [undefined, 'page=1&size=10']
+      ]) {
+        mockReq.query = status === undefined ? {} : { status };
+        mockReq.params = {};
+        mockReq.http.get.resetHistory();
+        mockReq.http.get.resolves({ data: { organisations: [] } });
 
-      expect(mockReq.http.get).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&page=1&size=10'
-      );
+        await getHandler(mockReq, mockRes, mockNext);
+
+        expect(mockReq.http.get).to.have.been.calledWith(
+          `https://rd-professional-api.example.com/refdata/internal/v1/organisations?${expectedQuery}`
+        );
+      }
     });
 
     it('should clamp an oversized organisation list page', async () => {
@@ -404,7 +412,7 @@ describe('organisation/index', () => {
         searchRequest: {
           search_filter: 'test',
           pagination_parameters: {
-            page_number: 1,
+            page_number: 2,
             page_size: 10
           }
         }
@@ -426,10 +434,42 @@ describe('organisation/index', () => {
 
       expect(mockReq.http.get.callCount).to.equal(1);
       expect(mockReq.http.get.firstCall.args[0]).to.equal(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=10&status=ACTIVE&search_filter=test'
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=2&size=10&status=ACTIVE&search_filter=test'
       );
       expect(mockRes.send).to.have.been.calledWith({
         organisations: orgList,
+        total_records: '1'
+      });
+    });
+
+    it('should clamp an oversized ACTIVE search page before calling PRD', async () => {
+      mockReq.body = {
+        searchRequest: {
+          search_filter: 'test',
+          pagination_parameters: {
+            page_number: 0,
+            page_size: 1000000
+          }
+        }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+      mockReq.http.get.resolves({
+        data: { organisations: [{ name: 'Test Org', status: 'ACTIVE' }] },
+        headers: { total_records: '1' }
+      });
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=100&status=ACTIVE&search_filter=test'
+      );
+      expect(mockRes.send).to.have.been.calledWith({
+        organisations: [{ name: 'Test Org', status: 'ACTIVE' }],
         total_records: '1'
       });
     });
@@ -473,6 +513,101 @@ describe('organisation/index', () => {
       expect(mockRes.send).to.have.been.calledWith({
         organisations: [{ name: 'Matching Org', status: 'ACTIVE' }],
         total_records: 1
+      });
+    });
+
+    it('should fetch active fallback pages sequentially', async () => {
+      mockReq.body = {
+        searchRequest: {
+          search_filter: 'matching',
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10
+          }
+        }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+
+      let resolveFirstPage: (value: any) => void;
+      let resolveSecondPage: (value: any) => void;
+      mockReq.http.get.callsFake((url: string) => {
+        if (url.includes('search_filter=matching')) {
+          return Promise.resolve({
+            data: { organisations: [{ name: 'Unrelated Org', status: 'ACTIVE' }] },
+            headers: { total_records: '2000' }
+          });
+        }
+        if (url.includes('status=ACTIVE&size=1&page=1')) {
+          return Promise.resolve({ data: { organisations: [] }, headers: { total_records: '2000' } });
+        }
+        if (url.includes('page=1&size=1000&status=ACTIVE')) {
+          return new Promise((resolve) => {
+            resolveFirstPage = resolve;
+          });
+        }
+        if (url.includes('page=2&size=1000&status=ACTIVE')) {
+          return new Promise((resolve) => {
+            resolveSecondPage = resolve;
+          });
+        }
+        throw new Error(`Unexpected organisation URL: ${url}`);
+      });
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      const request = postHandler(mockReq, mockRes);
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      expect(mockReq.http.get.callCount).to.equal(3);
+
+      resolveFirstPage({ data: { organisations: [{ name: 'Matching Org', status: 'ACTIVE' }] } });
+      await new Promise<void>((resolve) => setImmediate(resolve));
+      expect(mockReq.http.get.callCount).to.equal(4);
+
+      resolveSecondPage({ data: { organisations: [{ name: 'Another Matching Org', status: 'ACTIVE' }] } });
+      await request;
+
+      expect(mockRes.send).to.have.been.calledWith({
+        organisations: [{ name: 'Matching Org', status: 'ACTIVE' }, { name: 'Another Matching Org', status: 'ACTIVE' }],
+        total_records: 2
+      });
+    });
+
+    it('should return a controlled error when an active fallback page fails', async () => {
+      mockReq.body = {
+        searchRequest: {
+          search_filter: 'matching',
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10
+          }
+        }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+      const upstreamError = Object.assign(new Error('PRD unavailable'), {
+        status: 502,
+        data: { message: 'Bad Gateway' }
+      });
+      mockReq.http.get.onFirstCall().resolves({
+        data: { organisations: [{ name: 'Unrelated Org', status: 'ACTIVE' }] },
+        headers: { total_records: '1' }
+      });
+      mockReq.http.get.onSecondCall().resolves({ data: { organisations: [] }, headers: { total_records: '1' } });
+      mockReq.http.get.onThirdCall().rejects(upstreamError);
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledWith({
+        apiError: 'Bad Gateway', apiStatusCode: 502,
+        message: 'handlePostOrganisationsRoute error'
       });
     });
 
