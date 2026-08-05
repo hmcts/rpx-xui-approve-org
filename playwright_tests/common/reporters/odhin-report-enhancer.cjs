@@ -809,6 +809,32 @@ function injectEnhancerStyles(root) {
     background: #ffdd00;
   }
 
+  .odhin-test-status-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+  }
+
+  .odhin-test-status-filter button {
+    background: #f3f2f1;
+    border: 1px solid #505a5f;
+    color: #0b0c0c;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 5px 8px;
+  }
+
+  .odhin-test-status-filter button:hover {
+    background: #ffdd00;
+  }
+
+  .odhin-test-status-filter button:focus-visible {
+    outline: 3px solid #0b0c0c;
+    outline-offset: 2px;
+  }
+
   #odhin-feature-summary .odhin-feature-overview-largest {
     width: 100%;
     border: 1px solid #d8e3ef;
@@ -1747,10 +1773,72 @@ function defaultTestListRowsPerPage(html) {
     );
 }
 
+const testStatusFilters = [
+  { label: 'All', pattern: '' },
+  { label: 'Failed', pattern: '^failed$' },
+  { label: 'Timed out', pattern: '^(timedout|timed out)$' },
+  { label: 'Flaky', pattern: '^flaky$' },
+  { label: 'Passed', pattern: '^passed$' },
+  { label: 'Skipped', pattern: '^skipped$' },
+  { label: 'Interrupted', pattern: '^interrupted$' }
+];
+
+function normalizeTestStatus(value) {
+  return normalizeText(value).toLowerCase().replace(/[\s-]/g, '');
+}
+
+function removeTestStatusFilters(root) {
+  root.querySelectorAll('#odhin-test-status-filter, #odhin-test-status-filter-script').forEach((node) => node.remove());
+}
+
+function injectTestStatusFilters(root) {
+  const table = root.querySelector('#test-list-table');
+  if (!table) {
+    return false;
+  }
+
+  const statusCounts = new Map();
+  table.querySelectorAll('tbody tr').forEach((row) => {
+    const status = normalizeTestStatus(row.querySelectorAll('td')[1]?.text);
+    if (status) {
+      statusCounts.set(status, (statusCounts.get(status) ?? 0) + 1);
+    }
+  });
+  const total = Array.from(statusCounts.values()).reduce((sum, count) => sum + count, 0);
+  const countFor = (pattern) => {
+    if (!pattern) {
+      return total;
+    }
+    const expression = new RegExp(pattern, 'i');
+    return Array.from(statusCounts.entries()).reduce((sum, [status, count]) => sum + (expression.test(status) ? count : 0), 0);
+  };
+  const buttons = testStatusFilters
+    .map(
+      ({ label, pattern }) =>
+        `<button type="button" data-odhin-test-status-filter="${escapeAttribute(pattern)}">${escapeHtml(label)} (${countFor(pattern)})</button>`
+    )
+    .join('');
+  table.insertAdjacentHTML(
+    'beforebegin',
+    `<div id="odhin-test-status-filter" class="odhin-test-status-filter"><strong>Test status:</strong>${buttons}</div>
+<script id="odhin-test-status-filter-script">
+  document.querySelectorAll('[data-odhin-test-status-filter]').forEach(function(button) {
+    button.addEventListener('click', function() {
+      if (!window.jQuery || !jQuery.fn || !jQuery.fn.DataTable || !jQuery.fn.dataTable.isDataTable('#test-list-table')) return;
+      var table = jQuery('#test-list-table').DataTable();
+      table.column(1).search(button.getAttribute('data-odhin-test-status-filter') || '', true, false).draw();
+    });
+  });
+</script>`
+  );
+  return true;
+}
+
 function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
+  const hasTestList = htmlWithDefaultTestRows.includes('id="test-list-table"');
   const hasDashboardAccessibilityEvidence = htmlWithDefaultTestRows.includes('id="odhin-accessibility-evidence"');
   const hasAccessibilityAssertionText =
     htmlWithDefaultTestRows.includes('[a11y]') &&
@@ -1760,7 +1848,8 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
     !normalizedStats.length &&
     !normalizedEvidenceEntries.length &&
     !hasDashboardAccessibilityEvidence &&
-    !hasAccessibilityAssertionText
+    !hasAccessibilityAssertionText &&
+    !hasTestList
   ) {
     return htmlWithDefaultTestRows;
   }
@@ -1774,6 +1863,7 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectEnhancerStyles(root);
   removeDashboardAccessibilityEvidence(root);
   removeAccessibilityTableEnhancements(root);
+  removeTestStatusFilters(root);
 
   if (normalizedStats.length) {
     replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
@@ -1786,6 +1876,7 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
+  injectTestStatusFilters(root);
 
   return root.toString();
 }
@@ -1829,10 +1920,6 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
 
   const normalizedStats = normalizeFeatureStats(featureStats);
   const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
-  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length) {
-    return;
-  }
-
   const reportFiles = fs.readdirSync(outputFolder).filter((fileName) => fileName.toLowerCase().endsWith('.html'));
 
   reportFiles.forEach((fileName) => {
@@ -1863,6 +1950,7 @@ module.exports = {
     readAccessibilityEvidenceEntries,
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
+    normalizeTestStatus,
     percentOf,
   },
 };

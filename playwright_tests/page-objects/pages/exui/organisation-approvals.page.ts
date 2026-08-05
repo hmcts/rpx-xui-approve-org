@@ -266,8 +266,36 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async searchForOrganisation(organisationName: string): Promise<void> {
+    await this.waitForOrganisationResultsToLoad();
     await this.searchInput.fill(organisationName);
     await this.searchButton.click();
+  }
+
+  private async waitForOrganisationResultsToLoad(): Promise<void> {
+    await this.waitForSpinnerToHide(60_000);
+
+    if (await this.activeOrganisationsPanel.isVisible()) {
+      await this.activeOrganisationsPanel.locator('table.active-organisations').waitFor({
+        state: 'visible',
+        timeout: 60_000
+      });
+      return;
+    }
+
+    if (await this.pendingPbasPanel.isVisible()) {
+      await this.pendingPbasPanel
+        .locator('table, .govuk-body')
+        .filter({ hasText: /There are no new PBA requests\.|Organisation/i })
+        .first()
+        .waitFor({ state: 'visible', timeout: 60_000 });
+      return;
+    }
+
+    await this.pendingOverviewPanel
+      .locator('table.pending-organisations, .govuk-body')
+      .filter({ hasText: /There are no new registrations\.|Organisation/i })
+      .first()
+      .waitFor({ state: 'visible', timeout: 60_000 });
   }
 
   async openPaginationPage(pageNumber: number): Promise<void> {

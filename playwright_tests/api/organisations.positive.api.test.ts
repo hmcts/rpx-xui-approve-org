@@ -21,7 +21,7 @@ const organisationSearchScenarios = [
       pageNumber: 1,
       pageSize: ORGANISATION_SEARCH_PAGE_SIZE
     })
-  },
+  }
 ];
 
 test.describe('Playwright API positive: organisations', { tag: ['@organisations', '@positive'] }, () => {
@@ -134,7 +134,9 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
     });
   }
 
-  test('POST /api/organisations search finds a provisioned active organisation by a non-empty term', async ({ apiRequest }) => {
+  test('POST /api/organisations search finds a provisioned active organisation by a non-empty term', {
+    tag: '@organisation-provider-search'
+  }, async ({ apiRequest }) => {
     let organisationId: string | undefined;
 
     try {

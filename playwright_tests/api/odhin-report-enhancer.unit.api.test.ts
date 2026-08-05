@@ -10,6 +10,29 @@ const enhancerTest = (enhancerModule as {
 }).__test__;
 
 test.describe('odhin report enhancer', () => {
+  test('adds status filters for failed, timed out, flaky and retried outcomes', () => {
+    const nextHtml = enhancerTest.enhanceDashboardHtml(
+      `<html><head></head><body>
+        <table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
+          <tr><td>failed test</td><td>failed</td></tr>
+          <tr><td>timeout test</td><td>timedOut</td></tr>
+          <tr><td>flaky test</td><td>flaky</td></tr>
+          <tr><td>retried pass</td><td>passed</td></tr>
+        </tbody></table>
+      </body></html>`,
+      []
+    );
+
+    const root = parse(nextHtml);
+    const filters = root.querySelector('#odhin-test-status-filter');
+
+    expect(filters?.text).toContain('Failed (1)');
+    expect(filters?.text).toContain('Timed out (1)');
+    expect(filters?.text).toContain('Flaky (1)');
+    expect(filters?.querySelector('[data-odhin-test-status-filter="^(timedout|timed out)$"]')).toBeTruthy();
+    expect(root.querySelector('#odhin-test-status-filter-script')?.text).toContain('table.column(1).search');
+  });
+
   test('repairs escaped Tests tab content and orphaned failed modal fragments', () => {
     const failedModalId = 'run-id-failed-0';
     const accessibilityAssertion = `[a11y] Failed page
