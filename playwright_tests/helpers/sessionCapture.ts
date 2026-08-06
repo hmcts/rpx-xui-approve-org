@@ -540,11 +540,16 @@ export async function applySessionCookies(page: Page, user: string = 'base', opt
   }
 }
 
-export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
+export async function ensureAuthenticatedPageAt(
+  page: Page,
+  destinationUrl: string,
+  user: string = 'base',
+  options: SessionCaptureOptions = {}
+): Promise<void> {
   const isLoginUrl = (): boolean => page.url().includes('idam') || page.url().includes('/login');
 
   const gotoAndVerify = async (): Promise<boolean> => {
-    await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+    await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
     if (isLoginUrl()) {
       return false;
     }
@@ -564,4 +569,8 @@ export async function ensureAuthenticatedPage(page: Page, user: string = 'base',
   }
 
   throw new Error(`Unable to ensure authenticated page for user "${user}".`);
+}
+
+export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
+  await ensureAuthenticatedPageAt(page, config.baseUrl, user, options);
 }

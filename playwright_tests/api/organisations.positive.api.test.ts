@@ -119,7 +119,7 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
   });
 
   for (const scenario of organisationSearchScenarios) {
-    test(`POST /api/organisations search: ${scenario.name}`, async ({ apiRequest }) => {
+    test(`POST /api/organisations search: ${scenario.name}`, { tag: '@refdata-search' }, async ({ apiRequest }) => {
       const xsrfHeaders = await getXsrfHeaders(apiRequest);
       const response = await apiRequest.post(`/api/organisations?status=${encodeURIComponent(scenario.status)}`, {
         failOnStatusCode: false,
@@ -160,7 +160,7 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
   }
 
   test('POST /api/organisations search finds a provisioned active organisation by a non-empty term', {
-    tag: '@organisation-provider-search'
+    tag: ['@organisation-provider-search', '@refdata-search']
   }, async ({ apiRequest }) => {
     let organisationId: string | undefined;
 

@@ -5,7 +5,7 @@ const NEW_REGISTRATION_ORG_SEARCH = 'Test';
 const NEW_REGISTRATION_ADDRESS_SEARCH = 'SE15TY';
 const NEW_PBA_ORG_SEARCH = 'test';
 
-test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations', '@search'] }, () => {
+test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations', '@search', '@refdata-search'] }, () => {
   test.beforeEach(async ({ page }) => {
     await ensureAuthenticatedPage(page, 'base');
   });

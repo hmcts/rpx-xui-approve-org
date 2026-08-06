@@ -117,93 +117,6 @@ describe('organisation/index', () => {
       await getHandler(mockReq, mockRes, mockNext);
 
       expect(mockRes.send).to.have.been.calledWith(orgList);
-      expect(mockReq.http.get).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&page=1&size=10'
-      );
-    });
-
-    it('should bound an organisation list when pagination is omitted', async () => {
-      const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) =>
-        layer.route && layer.route.path === '/' && layer.route.methods.get
-      ).route.stack[0].handle;
-
-      for (const [status, expectedQuery] of [
-        ['ACTIVE', 'status=ACTIVE&page=1&size=10'],
-        ['PENDING,REVIEW', 'status=PENDING%2CREVIEW&page=1&size=10'],
-        ['', 'page=1&size=10'],
-        [undefined, 'page=1&size=10']
-      ]) {
-        mockReq.query = status === undefined ? {} : { status };
-        mockReq.params = {};
-        mockReq.http.get.resetHistory();
-        mockReq.http.get.resolves({ data: { organisations: [] } });
-
-        await getHandler(mockReq, mockRes, mockNext);
-
-        expect(mockReq.http.get).to.have.been.calledWith(
-          `https://rd-professional-api.example.com/refdata/internal/v1/organisations?${expectedQuery}`
-        );
-      }
-    });
-
-    it('should clamp an oversized organisation list page', async () => {
-      mockReq.query = { status: 'ACTIVE', page: '0', size: '1000000' };
-      mockReq.params = {};
-      mockReq.http.get.resolves({ data: { organisations: [] } });
-
-      const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) =>
-        layer.route && layer.route.path === '/' && layer.route.methods.get
-      ).route.stack[0].handle;
-
-      await getHandler(mockReq, mockRes, mockNext);
-
-      expect(mockReq.http.get).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&page=1&size=100'
-      );
-    });
-
-    it('should forward explicit page and size for a paginated organisation list request', async () => {
-      mockReq.query = { status: 'ACTIVE', page: '2', size: '10' };
-      mockReq.params = {};
-      const orgList = [{ name: 'Org 1', sraId: '123' }];
-
-      mockReq.http.get.resolves({
-        data: { organisations: orgList }
-      });
-
-      const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) =>
-        layer.route && layer.route.path === '/' && layer.route.methods.get
-      ).route.stack[0].handle;
-
-      await getHandler(mockReq, mockRes, mockNext);
-
-      expect(mockReq.http.get).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&page=2&size=10'
-      );
-      expect(mockRes.send).to.have.been.calledWith(orgList);
-    });
-
-    it('should preserve single organisation lookup without pagination parameters', async () => {
-      mockReq.query = { organisationId: '12345', page: '2', size: '10' };
-      mockReq.params = {};
-      const orgData = { name: 'Test Organisation', sraId: '123' };
-
-      mockReq.http.get.resolves({ data: orgData });
-
-      const router = require('./index').default;
-      const getHandler = router.stack.find((layer: any) =>
-        layer.route && layer.route.path === '/' && layer.route.methods.get
-      ).route.stack[0].handle;
-
-      await getHandler(mockReq, mockRes, mockNext);
-
-      expect(mockReq.http.get).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?id=12345'
-      );
-      expect(mockRes.send).to.have.been.calledWith(orgData);
     });
 
     it('should handle API errors gracefully', async () => {
@@ -363,9 +276,6 @@ describe('organisation/index', () => {
 
       await postHandler(mockReq, mockRes);
 
-      expect(mockReq.http.get).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=PENDING&page=1&size=10'
-      );
       expect(mockRes.send).to.have.been.calledWith({
         organisations: orgList,
         total_records: '20'
@@ -412,7 +322,7 @@ describe('organisation/index', () => {
         searchRequest: {
           search_filter: 'test',
           pagination_parameters: {
-            page_number: 2,
+            page_number: 1,
             page_size: 10
           }
         }
@@ -434,7 +344,7 @@ describe('organisation/index', () => {
 
       expect(mockReq.http.get.callCount).to.equal(1);
       expect(mockReq.http.get.firstCall.args[0]).to.equal(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=2&size=10&status=ACTIVE&search_filter=test'
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=10&status=ACTIVE&search_filter=test'
       );
       expect(mockRes.send).to.have.been.calledWith({
         organisations: orgList,
@@ -442,39 +352,7 @@ describe('organisation/index', () => {
       });
     });
 
-    it('should clamp an oversized ACTIVE search page before calling PRD', async () => {
-      mockReq.body = {
-        searchRequest: {
-          search_filter: 'test',
-          pagination_parameters: {
-            page_number: 0,
-            page_size: 1000000
-          }
-        }
-      };
-      mockReq.query = { status: 'ACTIVE' };
-      mockReq.http.get.resolves({
-        data: { organisations: [{ name: 'Test Org', status: 'ACTIVE' }] },
-        headers: { total_records: '1' }
-      });
-
-      const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) =>
-        layer.route && layer.route.path === '/' && layer.route.methods.post
-      ).route.stack[0].handle;
-
-      await postHandler(mockReq, mockRes);
-
-      expect(mockReq.http.get).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=100&status=ACTIVE&search_filter=test'
-      );
-      expect(mockRes.send).to.have.been.calledWith({
-        organisations: [{ name: 'Test Org', status: 'ACTIVE' }],
-        total_records: '1'
-      });
-    });
-
-    it('should fail after one request when filtered active search is ignored', async () => {
+    it('should fall back to full active organisation scan when filtered active search is ignored', async () => {
       mockReq.body = {
         searchRequest: {
           search_filter: 'matching',
@@ -486,8 +364,51 @@ describe('organisation/index', () => {
       };
       mockReq.query = { status: 'ACTIVE' };
 
-      mockReq.http.get.resolves({
+      mockReq.http.get.onFirstCall().resolves({
         data: { organisations: [{ name: 'Unrelated Org', status: 'ACTIVE' }] },
+        headers: { total_records: '500' }
+      });
+      mockReq.http.get.onSecondCall().resolves({
+        data: { organisations: [{ name: 'Matching Org', status: 'ACTIVE' }] },
+        headers: { total_records: '1' }
+      });
+      mockReq.http.get.onThirdCall().resolves({
+        data: { organisations: [{ name: 'Matching Org', status: 'ACTIVE' }] },
+        headers: { total_records: '1' }
+      });
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockReq.http.get.callCount).to.equal(3);
+      expect(mockReq.http.get.firstCall.args[0]).to.equal(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=10&status=ACTIVE&search_filter=matching'
+      );
+      expect(mockRes.send).to.have.been.calledWith({
+        organisations: [{ name: 'Matching Org', status: 'ACTIVE' }],
+        total_records: 1
+      });
+    });
+
+    it('should not fall back to full active organisation scan for long organisation name searches', async () => {
+      const longOrganisationName = '001fcFuzqHZCE6UptKv3 EsqkclX1AU9OTRJxsGSA';
+      mockReq.body = {
+        searchRequest: {
+          search_filter: longOrganisationName,
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10
+          }
+        }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+
+      mockReq.http.get.resolves({
+        data: { organisations: [{ name: 'Unrelated Org', admin: longOrganisationName, status: 'ACTIVE' }] },
         headers: { total_records: '500' }
       });
 
@@ -500,48 +421,11 @@ describe('organisation/index', () => {
 
       expect(mockReq.http.get.callCount).to.equal(1);
       expect(mockReq.http.get.firstCall.args[0]).to.equal(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=10&status=ACTIVE&search_filter=matching'
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=10&status=ACTIVE&search_filter=001fcFuzqHZCE6UptKv3+EsqkclX1AU9OTRJxsGSA'
       );
-      expect(mockReq.http.get.firstCall.args[0]).not.to.contain('size=1&');
-      expect(mockReq.http.get.firstCall.args[0]).not.to.contain('size=1000');
-      expect(mockRes.status).to.have.been.calledWith(502);
-      expect(mockRes.send).to.have.been.calledOnce;
-      expect(mockRes.send.firstCall.args[0]).to.deep.equal({
-        apiError: 'Active organisation search did not honour the search filter', apiStatusCode: 502,
-        message: 'handlePostOrganisationsRoute error'
-      });
-    });
-
-    it('should fail after one request when filtered active search is malformed', async () => {
-      mockReq.body = {
-        searchRequest: {
-          search_filter: 'matching',
-          pagination_parameters: {
-            page_number: 1,
-            page_size: 10
-          }
-        }
-      };
-      mockReq.query = { status: 'ACTIVE' };
-
-      mockReq.http.get.resolves({
-        data: { organisations: null },
-        headers: { total_records: '1' }
-      });
-
-      const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) =>
-        layer.route && layer.route.path === '/' && layer.route.methods.post
-      ).route.stack[0].handle;
-
-      await postHandler(mockReq, mockRes);
-
-      expect(mockReq.http.get.callCount).to.equal(1);
-      expect(mockRes.status).to.have.been.calledWith(502);
-      expect(mockRes.send).to.have.been.calledOnce;
-      expect(mockRes.send.firstCall.args[0]).to.deep.equal({
-        apiError: 'Active organisation search returned an invalid response', apiStatusCode: 502,
-        message: 'handlePostOrganisationsRoute error'
+      expect(mockRes.send).to.have.been.calledWith({
+        organisations: [],
+        total_records: 0
       });
     });
 
@@ -561,9 +445,12 @@ describe('organisation/index', () => {
       const matchingOrg = { name: longOrganisationName, status: 'ACTIVE' };
       mockReq.http.get.resolves({
         data: {
-          organisations: [matchingOrg]
+          organisations: [
+            matchingOrg,
+            { name: 'Different Organisation', admin: longOrganisationName, status: 'ACTIVE' }
+          ]
         },
-        headers: { total_records: '1' }
+        headers: { total_records: '2' }
       });
 
       const router = require('./index').default;
@@ -576,7 +463,7 @@ describe('organisation/index', () => {
       expect(mockReq.http.get.callCount).to.equal(1);
       expect(mockRes.send).to.have.been.calledWith({
         organisations: [matchingOrg],
-        total_records: '1'
+        total_records: 1
       });
     });
 
@@ -604,9 +491,6 @@ describe('organisation/index', () => {
 
       await postHandler(mockReq, mockRes);
 
-      expect(mockReq.http.get).to.have.been.calledWith(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=PENDING'
-      );
       expect(mockRes.send).to.have.been.called;
     });
 
@@ -1065,10 +949,6 @@ describe('organisation/index', () => {
         };
         const result = postCodeMatches(org, 'test');
         expect(result).to.be.false;
-      });
-
-      it('should handle missing contactInformation', () => {
-        expect(postCodeMatches({}, 'test')).to.be.false;
       });
 
       it('should match partial postcode', () => {

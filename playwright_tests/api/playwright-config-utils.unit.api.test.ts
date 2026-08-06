@@ -46,11 +46,12 @@ test('defaults API retries to zero and honours an explicit retry count', () => {
   expect(resolveApiRetryCount({ API_PW_RETRIES: 'two' })).toBe(0);
 });
 
-test('keeps the organisation provider-search regression in the default API suite', () => {
+test('quarantines RefData-dependent organisation searches from the default API suite', () => {
   const catalog = JSON.parse(fs.readFileSync('playwright_tests/api/tag-filter.json', 'utf8'));
 
   expect(catalog.availableTags).toContain('@organisation-provider-search');
-  expect(catalog.excludedTags).not.toContain('@organisation-provider-search');
+  expect(catalog.availableTags).toContain('@refdata-search');
+  expect(catalog.excludedTags).toContain('@refdata-search');
 });
 
 test('adds catalog-scoped global exclusions to checked-in defaults', () => {

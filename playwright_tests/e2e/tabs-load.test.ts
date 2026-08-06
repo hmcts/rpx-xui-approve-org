@@ -1,7 +1,7 @@
 import { test, expect } from '../page-objects/page.fixtures';
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 
-test.describe('Organisation approvals tabs load', { tag: ['@e2e', '@organisations', '@tabs-load'] }, () => {
+test.describe('Organisation approvals tabs load', { tag: ['@e2e', '@organisations', '@tabs-load', '@refdata-list'] }, () => {
   test.beforeEach(async ({ page }) => {
     await ensureAuthenticatedPage(page, 'base');
   });

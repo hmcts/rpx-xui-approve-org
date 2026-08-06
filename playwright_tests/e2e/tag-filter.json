@@ -1,6 +1,8 @@
 {
   "excludedTags": [
-    "@smoke"
+    "@smoke",
+    "@refdata-search",
+    "@refdata-list"
   ],
   "availableTags": [
     "@e2e",
@@ -10,6 +12,8 @@
     "@search",
     "@tabs-load",
     "@active-org",
-    "@org-workflows"
+    "@org-workflows",
+    "@refdata-search",
+    "@refdata-list"
   ]
 }

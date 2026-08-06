@@ -7,7 +7,6 @@ const UNAUTHENTICATED_ORG_ID = 'UNAUTHENTICATED_REINVITE_ORG';
 const UNAUTHENTICATED_EMAIL = createMissingReinviteEmail();
 
 test.describe('Playwright API negative: reinvite user', { tag: ['@reinvite-user', '@negative'] }, () => {
-  test.describe.configure({ mode: 'serial' });
   test('POST /api/reinviteUser without auth is denied', async ({ apiAnonymousRequest }) => {
     const payload = {
       firstName: 'Test',
