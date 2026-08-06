@@ -67,6 +67,15 @@ test('declares shared @search in both E2E and integration catalogs', () => {
   expect(integrationCatalog.availableTags).toContain('@search');
 });
 
+test('excludes only RefData non-empty searches from the default E2E catalog', () => {
+  const e2eCatalog = JSON.parse(read('playwright_tests/e2e/tag-filter.json'));
+
+  expect(e2eCatalog.excludedTags).toContain('@refdata-search');
+  expect(e2eCatalog.excludedTags).not.toContain('@refdata-list');
+  expect(e2eCatalog.availableTags).toContain('@active-org');
+  expect(e2eCatalog.availableTags).toContain('@tabs-load');
+});
+
 test('local env population prefers the exact AO exclusion secret', () => {
   const result = runLocalEnvPopulation([
     'if [[ "$1 $2 $3" == "keyvault secret show" && "$*" == *"--name xui-approve-org-playwright-global-excluded-tags"* ]]; then echo "@ao-only"; exit 0; fi',

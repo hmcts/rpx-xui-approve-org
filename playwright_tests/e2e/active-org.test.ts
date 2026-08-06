@@ -3,7 +3,7 @@ import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 
 const userIdentifier = 'base';
 
-test.describe('Active organisation details', { tag: ['@e2e', '@organisations', '@active-org', '@refdata-list'] }, () => {
+test.describe('Active organisation details', { tag: ['@e2e', '@organisations', '@active-org'] }, () => {
   test.beforeEach(async ({ page }) => {
     await ensureAuthenticatedPage(page, userIdentifier);
   });
