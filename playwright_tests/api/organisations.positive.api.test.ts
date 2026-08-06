@@ -25,27 +25,41 @@ const organisationSearchScenarios = [
 ];
 
 test.describe('Playwright API positive: organisations', { tag: ['@organisations', '@positive'] }, () => {
-  test.describe.configure({ mode: 'serial' });
-
-  test('GET /api/organisations?status=ACTIVE returns a bounded JSON list', async ({ apiRequest }) => {
-    const response = await apiRequest.get('/api/organisations?status=ACTIVE', { failOnStatusCode: false });
+  test('POST /api/organisations search: active organisation search with empty search term returns a bounded envelope', async ({ apiRequest }) => {
+    const xsrfHeaders = await getXsrfHeaders(apiRequest);
+    const response = await apiRequest.post('/api/organisations?status=ACTIVE', {
+      failOnStatusCode: false,
+      headers: xsrfHeaders,
+      data: createOrganisationSearchPayload({
+        view: 'ACTIVE',
+        searchFilter: '',
+        pageNumber: 1,
+        pageSize: ORGANISATION_SEARCH_PAGE_SIZE
+      })
+    });
 
     expect(
       response.status(),
-      `Expected 200 from bounded GET /api/organisations?status=ACTIVE. Received status=${response.status()}`
+      `Expected 200 from bounded active empty-search POST. Received status=${response.status()}`
     ).toBe(200);
 
     const contentType = resolveHeader(response.headers(), 'content-type');
     expect(
       contentType,
-      `Expected JSON content-type for bounded GET /api/organisations?status=ACTIVE. Received content-type=${contentType}`
+      `Expected JSON content-type for bounded active empty-search POST. Received content-type=${contentType}`
     ).toContain('application/json');
 
-    const payload = await response.json();
-    expect(Array.isArray(payload), `Expected an array from bounded organisation list. payload=${JSON.stringify(payload)}`).toBe(true);
-    expect(payload.length, 'Expected the default organisation list to contain at most 10 rows').toBeLessThanOrEqual(ORGANISATION_SEARCH_PAGE_SIZE);
+    const payload = await response.json() as { organisations: Array<Record<string, unknown>>; total_records: unknown };
+    expect(searchEnvelopeShapeErrors(payload)).toEqual([]);
+    expect(payload.organisations.length, 'Expected the active empty-search response to contain no more than the requested page size').toBeLessThanOrEqual(
+      ORGANISATION_SEARCH_PAGE_SIZE
+    );
+    expect(
+      toTotalRecordsNumber(payload.total_records),
+      'Expected total_records to describe at least the returned active-organisation page'
+    ).toBeGreaterThanOrEqual(payload.organisations.length);
 
-    const firstOrganisation = payload[0] as Record<string, unknown> | undefined;
+    const firstOrganisation = payload.organisations[0];
     if (firstOrganisation && typeof firstOrganisation === 'object') {
       expect(firstOrganisation).toHaveProperty('organisationIdentifier');
     }
