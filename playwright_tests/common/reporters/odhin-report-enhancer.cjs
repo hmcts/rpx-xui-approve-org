@@ -1876,8 +1876,15 @@ function buildRuntimeTestStatusFilters() {
         button.setAttribute('data-odhin-test-status-filter', definition.pattern);
         button.textContent = definition.label + ' (' + countFor(definition.pattern) + ')';
         button.addEventListener('click', function() {
-          if (!window.jQuery || !jQuery.fn || !jQuery.fn.DataTable || !jQuery.fn.dataTable.isDataTable('#test-list-table')) return;
-          jQuery('#test-list-table').DataTable().column(1).search(definition.pattern, true, false).draw();
+          if (window.jQuery && jQuery.fn && jQuery.fn.DataTable && jQuery.fn.dataTable.isDataTable('#test-list-table')) {
+            jQuery('#test-list-table').DataTable().column(1).search(definition.pattern, true, false).draw();
+            return;
+          }
+          Array.prototype.forEach.call(tableElement.querySelectorAll('tbody tr'), function(row) {
+            var cells = row.querySelectorAll('td');
+            var status = normalise(cells[1] && cells[1].textContent);
+            row.style.display = !definition.pattern || new RegExp(definition.pattern, 'i').test(status) ? '' : 'none';
+          });
         });
         filter.appendChild(button);
       });
@@ -1890,6 +1897,29 @@ function buildRuntimeTestStatusFilters() {
     }
   }());
 </script>`;
+}
+
+function recoverUnparsedTestList(html) {
+  const source = String(html);
+  const tableStart = source.search(/<table\b[^>]*\bid=(['"])test-list-table\1[^>]*>/i);
+  if (tableStart < 0) {
+    return source;
+  }
+
+  const lowerCaseSource = source.toLowerCase();
+  const tableEnd = lowerCaseSource.indexOf('</table>', tableStart);
+  const fragmentEnd = tableEnd >= 0 ? tableEnd + '</table>'.length : lowerCaseSource.indexOf('</script>', tableStart);
+  if (fragmentEnd < 0) {
+    return source;
+  }
+
+  const table = tableEnd >= 0
+    ? source.slice(tableStart, fragmentEnd)
+    : `${source.slice(tableStart, fragmentEnd)}</table>`;
+  const recoveredMarkup = `\n<section id="odhin-recovered-tests"><h2>Tests</h2><div class="table-responsive">${table}</div></section>\n`;
+  return /<\/body\s*>/i.test(source)
+    ? source.replace(/<\/body\s*>/i, `${recoveredMarkup}</body>`)
+    : `${source}${recoveredMarkup}`;
 }
 
 function injectRuntimeTestStatusFilters(html) {
@@ -1927,7 +1957,7 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   // Keeping Odhín's original document is preferable to publishing a report whose
   // Tests tab is unusable.
   if (hasTestList && !root.querySelector('#test-list-table')) {
-    return injectRuntimeTestStatusFilters(htmlWithDefaultTestRows);
+    return injectRuntimeTestStatusFilters(recoverUnparsedTestList(htmlWithDefaultTestRows));
   }
 
   repairTestsTabContent(root);

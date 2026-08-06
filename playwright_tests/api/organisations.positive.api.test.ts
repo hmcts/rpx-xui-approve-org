@@ -25,45 +25,49 @@ const organisationSearchScenarios = [
 ];
 
 test.describe('Playwright API positive: organisations', { tag: ['@organisations', '@positive'] }, () => {
-  test('POST /api/organisations search: active organisation search with empty search term returns a bounded envelope', async ({ apiRequest }) => {
-    const xsrfHeaders = await getXsrfHeaders(apiRequest);
-    const response = await apiRequest.post('/api/organisations?status=ACTIVE', {
-      failOnStatusCode: false,
-      headers: xsrfHeaders,
-      data: createOrganisationSearchPayload({
-        view: 'ACTIVE',
-        searchFilter: '',
-        pageNumber: 1,
-        pageSize: ORGANISATION_SEARCH_PAGE_SIZE
-      })
-    });
+  test(
+    'POST /api/organisations search: active organisation search with empty search term returns a bounded envelope',
+    { tag: '@refdata-search' },
+    async ({ apiRequest }) => {
+      const xsrfHeaders = await getXsrfHeaders(apiRequest);
+      const response = await apiRequest.post('/api/organisations?status=ACTIVE', {
+        failOnStatusCode: false,
+        headers: xsrfHeaders,
+        data: createOrganisationSearchPayload({
+          view: 'ACTIVE',
+          searchFilter: '',
+          pageNumber: 1,
+          pageSize: ORGANISATION_SEARCH_PAGE_SIZE
+        })
+      });
 
-    expect(
-      response.status(),
-      `Expected 200 from bounded active empty-search POST. Received status=${response.status()}`
-    ).toBe(200);
+      expect(
+        response.status(),
+        `Expected 200 from bounded active empty-search POST. Received status=${response.status()}`
+      ).toBe(200);
 
-    const contentType = resolveHeader(response.headers(), 'content-type');
-    expect(
-      contentType,
-      `Expected JSON content-type for bounded active empty-search POST. Received content-type=${contentType}`
-    ).toContain('application/json');
+      const contentType = resolveHeader(response.headers(), 'content-type');
+      expect(
+        contentType,
+        `Expected JSON content-type for bounded active empty-search POST. Received content-type=${contentType}`
+      ).toContain('application/json');
 
-    const payload = await response.json() as { organisations: Array<Record<string, unknown>>; total_records: unknown };
-    expect(searchEnvelopeShapeErrors(payload)).toEqual([]);
-    expect(payload.organisations.length, 'Expected the active empty-search response to contain no more than the requested page size').toBeLessThanOrEqual(
-      ORGANISATION_SEARCH_PAGE_SIZE
-    );
-    expect(
-      toTotalRecordsNumber(payload.total_records),
-      'Expected total_records to describe at least the returned active-organisation page'
-    ).toBeGreaterThanOrEqual(payload.organisations.length);
+      const payload = await response.json() as { organisations: Array<Record<string, unknown>>; total_records: unknown };
+      expect(searchEnvelopeShapeErrors(payload)).toEqual([]);
+      expect(payload.organisations.length, 'Expected the active empty-search response to contain no more than the requested page size').toBeLessThanOrEqual(
+        ORGANISATION_SEARCH_PAGE_SIZE
+      );
+      expect(
+        toTotalRecordsNumber(payload.total_records),
+        'Expected total_records to describe at least the returned active-organisation page'
+      ).toBeGreaterThanOrEqual(payload.organisations.length);
 
-    const firstOrganisation = payload.organisations[0];
-    if (firstOrganisation && typeof firstOrganisation === 'object') {
-      expect(firstOrganisation).toHaveProperty('organisationIdentifier');
+      const firstOrganisation = payload.organisations[0];
+      if (firstOrganisation && typeof firstOrganisation === 'object') {
+        expect(firstOrganisation).toHaveProperty('organisationIdentifier');
+      }
     }
-  });
+  );
 
   test('GET /api/organisations?usersOrgId=<id>&page=0 returns current organisation users', async ({ apiRequest }) => {
     let organisationId: string | undefined;

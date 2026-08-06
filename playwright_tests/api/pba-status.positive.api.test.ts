@@ -173,5 +173,4 @@ test.describe('Playwright API positive: pba status', { tag: ['@pba-status', '@po
     ).toBeLessThanOrEqual(pageSize);
     expect(totalRecords as number).toBeGreaterThanOrEqual(responsePayload.organisations.length);
   });
-
 });

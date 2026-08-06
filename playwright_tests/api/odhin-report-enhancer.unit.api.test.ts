@@ -39,18 +39,28 @@ test.describe('odhin report enhancer', () => {
     const nextHtml = enhancerTest.injectRuntimeTestStatusFilters(source);
 
     expect(nextHtml).toContain('id="odhin-test-status-filter-runtime"');
-    expect(nextHtml).toContain("window.addEventListener('load'");
-    expect(nextHtml).toContain("DataTable().column(1).search");
+    expect(nextHtml).toContain('window.addEventListener(\'load\'');
+    expect(nextHtml).toContain('DataTable().column(1).search');
     expect(nextHtml).toContain('Timed out');
     expect(nextHtml).toContain('</body>');
   });
 
-  test('keeps the original report when its source table markup is not parsed', () => {
-    const malformedReport = '<html><body><script type="text/x-odhin-fragment"><table id="test-list-table"><tr><td>unclosed Odhín fragment</td></tr></script></body></html>';
+  test('recovers a usable test table when its source markup is not parsed', async ({ page }) => {
+    const malformedReport = `
+      <html><body><script type="text/x-odhin-fragment">
+        <table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
+          <tr><td>passing result</td><td>Passed</td></tr>
+          <tr><td>failing result</td><td>Failed</td></tr>
+        </tbody>
+      </script></body></html>`;
     const nextHtml = enhancerTest.enhanceDashboardHtml(malformedReport, []);
 
-    expect(nextHtml).toContain('unclosed Odhín fragment');
-    expect(nextHtml).toContain('id="odhin-test-status-filter-runtime"');
+    await page.setContent(nextHtml);
+
+    await expect(page.locator('#odhin-recovered-tests #test-list-table')).toBeVisible();
+    await page.getByRole('button', { name: /Failed \(1\)/ }).click();
+    await expect(page.locator('#odhin-recovered-tests tbody tr').filter({ hasText: 'passing result' })).toBeHidden();
+    await expect(page.locator('#odhin-recovered-tests tbody tr').filter({ hasText: 'failing result' })).toBeVisible();
   });
 
   test('repairs escaped Tests tab content and orphaned failed modal fragments', () => {

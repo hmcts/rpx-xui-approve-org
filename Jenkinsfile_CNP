@@ -82,10 +82,14 @@ String playwrightReportDir = 'functional-output/tests/playwright-e2e/odhin-repor
 String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-report'
 String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightRefDataApiReportDir = 'functional-output/tests/playwright-refdata/api-odhin-report'
+String playwrightRefDataE2eReportDir = 'functional-output/tests/playwright-refdata/e2e-odhin-report'
 String playwrightE2eReportFile = 'xui-ao-playwright-e2e.html'
 String playwrightApiReportFile = 'xui-ao-playwright-api.html'
 String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
 String playwrightAccessibilityReportFile = 'xui-ao-playwright-accessibility.html'
+String playwrightRefDataApiReportFile = 'xui-ao-playwright-api.html'
+String playwrightRefDataE2eReportFile = 'xui-ao-playwright-e2e.html'
 final String htmlIndexReportFile = 'index.html'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
@@ -105,6 +109,30 @@ def shouldRunAccessibilityTests = {
 
 def shouldRunRefDataSearchTests = {
     return isEnabledValue(params.RUN_REFDATA_SEARCH_TESTS) || isEnabledValue(env.RUN_REFDATA_SEARCH_TESTS)
+}
+
+def publishRefDataSearchReports = { String environmentLabel ->
+    if (!shouldRunRefDataSearchTests()) {
+        return
+    }
+
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : playwrightRefDataApiReportDir,
+        reportFiles          : playwrightRefDataApiReportFile,
+        reportName           : "${environmentLabel} RefData API Playwright Test"
+    ])
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : playwrightRefDataE2eReportDir,
+        reportFiles          : playwrightRefDataE2eReportFile,
+        reportName           : "${environmentLabel} RefData E2E Playwright Test"
+    ])
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-refdata/**/*'
 }
 
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
@@ -341,6 +369,8 @@ withPipeline(type, product, component) {
 
     afterAlways('functionalTest:preview') {
 
+        publishRefDataSearchReports('PREVIEW')
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -408,6 +438,8 @@ withPipeline(type, product, component) {
 
 
     afterAlways('functionalTest:aat') {
+
+        publishRefDataSearchReports('AAT')
 
         publishHTML([
             allowMissing         : true,

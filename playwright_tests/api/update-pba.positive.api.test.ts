@@ -10,7 +10,6 @@ import { resolvePbaUpdateTarget } from './helpers/pba-test-data.helpers';
 const UPDATE_PBA_ENDPOINT = '/api/updatePba';
 
 test.describe('Playwright API positive: update pba', { tag: ['@update-pba', '@positive'] }, () => {
-  test.describe.configure({ mode: 'serial' });
   test('PUT /api/updatePba accepts payment account updates', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 

@@ -104,9 +104,13 @@ String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-re
 String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
 String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly/odhin-report'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
+String playwrightRefDataApiReportDir = 'functional-output/tests/playwright-refdata/api-odhin-report'
+String playwrightRefDataE2eReportDir = 'functional-output/tests/playwright-refdata/e2e-odhin-report'
 String playwrightApiReportFile = 'xui-ao-playwright-api.html'
 String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
 String playwrightNightlyReportFile = 'xui-ao-playwright-nightly.html'
+String playwrightRefDataApiReportFile = 'xui-ao-playwright-api.html'
+String playwrightRefDataE2eReportFile = 'xui-ao-playwright-e2e.html'
 
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
@@ -121,6 +125,30 @@ Closure<Boolean> shouldRunAccessibilityTests = {
 
 Closure<Boolean> shouldRunRefDataSearchTests = {
     return isEnabledValue(params."${runRefDataSearchTestsParamName}") || isEnabledValue(env."${runRefDataSearchTestsParamName}")
+}
+
+Closure<Void> publishRefDataSearchReports = { String environmentLabel ->
+    if (!shouldRunRefDataSearchTests()) {
+        return
+    }
+
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : playwrightRefDataApiReportDir,
+        reportFiles          : playwrightRefDataApiReportFile,
+        reportName           : "${environmentLabel} RefData API Playwright Test"
+    ])
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : playwrightRefDataE2eReportDir,
+        reportFiles          : playwrightRefDataE2eReportFile,
+        reportName           : "${environmentLabel} RefData E2E Playwright Test"
+    ])
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-refdata/**/*'
 }
 
 Closure<Void> runPlaywrightFunctionalInParallel = {
@@ -298,6 +326,8 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('fullFunctionalTest') {
+        publishRefDataSearchReports('Nightly')
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

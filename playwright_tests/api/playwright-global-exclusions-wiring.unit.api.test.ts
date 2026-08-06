@@ -76,20 +76,50 @@ test('excludes only RefData non-empty searches from the default E2E catalog', ()
   expect(e2eCatalog.availableTags).toContain('@tabs-load');
 });
 
+test('routes every RefData-backed organisation search through the opt-in API lane', () => {
+  const source = read('playwright_tests/api/organisations.positive.api.test.ts');
+
+  expect(source).toMatch(
+    /test\(\s*'POST \/api\/organisations search: active organisation search with empty search term returns a bounded envelope',\s*\{ tag: '@refdata-search' \}/
+  );
+});
+
 test('provides an opt-in non-blocking Jenkins route for RefData search tests', () => {
   for (const jenkinsfile of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
     const source = read(jenkinsfile);
 
     expect(source).toContain('RUN_REFDATA_SEARCH_TESTS');
     expect(source).toContain('RefData Search Playwright Tests');
-    expect(source).toContain("'API_PW_INCLUDE_TAGS=@refdata-search'");
-    expect(source).toContain("'E2E_PW_INCLUDE_TAGS=@refdata-search'");
-    expect(source).toContain("'API_PW_EXCLUDED_TAGS_OVERRIDE=@none'");
-    expect(source).toContain("'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none'");
-    expect(source).toContain("catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE')");
-    expect(source).toContain("'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/api-odhin-report'");
-    expect(source).toContain("'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/e2e-odhin-report'");
+    expect(source).toContain('\'API_PW_INCLUDE_TAGS=@refdata-search\'');
+    expect(source).toContain('\'E2E_PW_INCLUDE_TAGS=@refdata-search\'');
+    expect(source).toContain('\'API_PW_EXCLUDED_TAGS_OVERRIDE=@none\'');
+    expect(source).toContain('\'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none\'');
+    expect(source).toContain('catchError(buildResult: \'SUCCESS\', stageResult: \'UNSTABLE\')');
+    expect(source).toContain('\'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/api-odhin-report\'');
+    expect(source).toContain('\'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/e2e-odhin-report\'');
+    expect(source).toContain('publishRefDataSearchReports');
+    expect(source).toContain('reportDir            : playwrightRefDataApiReportDir');
+    expect(source).toContain('reportFiles          : playwrightRefDataApiReportFile');
+    expect(source).toContain('reportDir            : playwrightRefDataE2eReportDir');
+    expect(source).toContain('reportFiles          : playwrightRefDataE2eReportFile');
+    expect(source).toContain('artifacts: \'functional-output/tests/playwright-refdata/**/*\'');
     expect(source.indexOf('parallel(playwrightBranches)')).toBeLessThan(source.indexOf('RefData Search Playwright Tests'));
+
+    if (jenkinsfile === 'Jenkinsfile_CNP') {
+      expect(source).toContain('publishRefDataSearchReports(\'PREVIEW\')');
+      expect(source).toContain('publishRefDataSearchReports(\'AAT\')');
+    } else {
+      expect(source).toContain('publishRefDataSearchReports(\'Nightly\')');
+    }
+  }
+});
+
+test('keeps independent update-PBA suites parallel so one failure cannot skip the remaining cases', () => {
+  for (const specPath of [
+    'playwright_tests/api/update-pba.positive.api.test.ts',
+    'playwright_tests/api/update-pba.negative.api.test.ts'
+  ]) {
+    expect(read(specPath)).not.toContain('test.describe.configure({ mode: \'serial\' })');
   }
 });
 
