@@ -63,7 +63,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.4")
+@Library("Infrastructure@2.4.9")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
@@ -101,6 +101,7 @@ def shouldRunAccessibilityTests = {
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        env.PLAYWRIGHT_ORGANISATION_CLEANUP_RUN_ID = env.BUILD_TAG ?: "${env.JOB_NAME}-${env.BUILD_NUMBER}"
         stage("${environmentLabel} Playwright Config Unit Tests") {
             yarnBuilder.yarn('test:playwright:unit')
         }
@@ -340,6 +341,11 @@ withPipeline(type, product, component) {
             echo '[playwright-a11y] PREVIEW Accessibility Playwright Test report publish skipped because accessibility tests were not run'
         }
 
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+            yarnBuilder.yarn('test:playwright:organisation-cleanup')
+        }
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/organisation-cleanup/**/*'
+
     }
 
 
@@ -402,6 +408,11 @@ withPipeline(type, product, component) {
         } else {
             echo '[playwright-a11y] AAT Accessibility Playwright Test report publish skipped because accessibility tests were not run'
         }
+
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+            yarnBuilder.yarn('test:playwright:organisation-cleanup')
+        }
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/organisation-cleanup/**/*'
 
     }
 }
