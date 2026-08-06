@@ -118,10 +118,8 @@ test.describe(
 
 test.describe(
   'Playwright integration: pending PBA details negative paths',
-  { tag: ['@pending-pbas', '@negative'] },
+  { tag: ['@pending-pbas', '@negative', '@known-product-defect'] },
   () => {
-    test.skip(true, 'EXUI-4809: details API errors from View links are not routed to error pages');
-
     for (const scenario of organisationDetailsStatusCodeScenarios) {
       test(`Pending PBA View link handles details API status ${scenario.statusCode}`, async ({
         page,

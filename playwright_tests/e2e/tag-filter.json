@@ -1,7 +1,8 @@
 {
   "excludedTags": [
     "@smoke",
-    "@refdata-search"
+    "@refdata-search",
+    "@known-product-defect"
   ],
   "availableTags": [
     "@e2e",
@@ -12,6 +13,7 @@
     "@tabs-load",
     "@active-org",
     "@org-workflows",
-    "@refdata-search"
+    "@refdata-search",
+    "@known-product-defect"
   ]
 }

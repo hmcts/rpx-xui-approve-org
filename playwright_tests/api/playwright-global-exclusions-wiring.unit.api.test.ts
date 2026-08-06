@@ -67,13 +67,50 @@ test('declares shared @search in both E2E and integration catalogs', () => {
   expect(integrationCatalog.availableTags).toContain('@search');
 });
 
-test('excludes only RefData non-empty searches from the default E2E catalog', () => {
+test('keeps RefData and known product defects out of the default E2E catalog', () => {
   const e2eCatalog = JSON.parse(read('playwright_tests/e2e/tag-filter.json'));
 
   expect(e2eCatalog.excludedTags).toContain('@refdata-search');
+  expect(e2eCatalog.excludedTags).toContain('@known-product-defect');
   expect(e2eCatalog.excludedTags).not.toContain('@refdata-list');
   expect(e2eCatalog.availableTags).toContain('@active-org');
   expect(e2eCatalog.availableTags).toContain('@tabs-load');
+});
+
+test('quarantines known product defects without reporting skipped integration tests', () => {
+  const integrationCatalog = JSON.parse(read('playwright_tests/integration/tag-filter.json'));
+
+  expect(integrationCatalog.excludedTags).toContain('@known-product-defect');
+  expect(integrationCatalog.availableTags).toContain('@known-product-defect');
+
+  for (const specPath of [
+    'playwright_tests/integration/active-organisations.integration.negative.test.ts',
+    'playwright_tests/integration/pending-organisations.integration.negative.test.ts',
+    'playwright_tests/integration/pending-pbas.integration.negative.test.ts'
+  ]) {
+    const source = read(specPath);
+    expect(source).toContain('@known-product-defect');
+    expect(source).not.toContain('test.skip');
+  }
+});
+
+test('keeps active organisation browser coverage in the opt-in RefData route', () => {
+  const searchSource = read('playwright_tests/e2e/organisation-search.test.ts');
+  const tabsSource = read('playwright_tests/e2e/tabs-load.test.ts');
+
+  expect(searchSource).toContain('Search by organisation in active organisations');
+  expect(tabsSource).toContain('test(\'Active organisations tab loads data\', { tag: \'@refdata-search\' }');
+  expect(tabsSource).toContain('RefData failed while loading the Active organisations tab');
+  expect(searchSource).toContain('RefData failed while opening Active organisations for search');
+});
+
+test('proves the reviewed workflow verifies its durable REVIEW state', () => {
+  const workflowSource = read('playwright_tests/e2e/org-workflows.test.ts');
+  const pageObjectSource = read('playwright_tests/page-objects/pages/exui/organisation-approvals.page.ts');
+
+  expect(workflowSource).toContain('organisationStatusBadge).toHaveText(\'UNDER REVIEW\')');
+  expect(workflowSource).toContain('chooseDecision(/Place registration under review/i)).toBeChecked()');
+  expect(pageObjectSource).toContain('app-identity-bar-component .hmcts-badge');
 });
 
 test('routes every RefData-backed organisation search through the opt-in API lane', () => {

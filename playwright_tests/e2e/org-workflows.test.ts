@@ -10,7 +10,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await test.step('Reject the pending organisation', async () => {
       await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
-      await organisationApprovalsPage.chooseDecision('Reject it');
+      await expect(await organisationApprovalsPage.chooseDecision('Reject it')).toBeChecked();
       await organisationApprovalsPage.submitDecision();
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
@@ -31,7 +31,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await test.step('Place the registration under review', async () => {
       await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
-      await organisationApprovalsPage.chooseDecision(/Place registration under review/i);
+      await expect(await organisationApprovalsPage.chooseDecision(/Place registration under review/i)).toBeChecked();
       await organisationApprovalsPage.submitDecision();
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
@@ -42,6 +42,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await test.step('Open the reviewed registration by identifier', async () => {
       await openProvisionedOrganisationDetails(page, organisationIdentifier);
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await expect(organisationApprovalsPage.organisationStatusBadge).toHaveText('UNDER REVIEW');
     });
   });
 
@@ -53,7 +54,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await test.step('Approve the pending organisation and open the resulting record by identifier', async () => {
       await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
-      await organisationApprovalsPage.chooseDecision('Approve it');
+      await expect(await organisationApprovalsPage.chooseDecision('Approve it')).toBeChecked();
       await organisationApprovalsPage.submitDecision();
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
@@ -66,8 +67,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
   });
 
-  // Skipping until EXUI-4610 and assoicated bug tickets have been resolved.
-  test.skip('i can delete an active org', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
+  test('i can delete an active org', { tag: '@known-product-defect' }, async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
     let organisationName = '';
 
     await test.step('Approve a pending organisation so it appears in active organisations', async () => {
@@ -78,7 +78,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       organisationName = await organisationApprovalsPage.getOrganisationNameFromDetails();
       await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
-      await organisationApprovalsPage.chooseDecision('Approve it');
+      await expect(await organisationApprovalsPage.chooseDecision('Approve it')).toBeChecked();
       await organisationApprovalsPage.submitDecision();
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
       await organisationApprovalsPage.confirmDecision();
