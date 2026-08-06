@@ -1836,6 +1836,71 @@ function injectTestStatusFilters(root) {
   return true;
 }
 
+function buildRuntimeTestStatusFilters() {
+  const definitions = JSON.stringify(testStatusFilters);
+  return `
+<style id="odhin-test-status-filter-runtime-style">
+  .odhin-test-status-filter { margin: 1rem 0; display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; }
+  .odhin-test-status-filter button { border: 1px solid #768692; background: #fff; color: #0b0c0c; padding: .35rem .55rem; cursor: pointer; }
+  .odhin-test-status-filter button:hover, .odhin-test-status-filter button:focus { background: #f3f2f1; outline: 3px solid #ffdd00; outline-offset: 0; }
+</style>
+<script id="odhin-test-status-filter-runtime">
+  (function() {
+    var definitions = ${definitions};
+    var normalise = function(value) { return String(value || '').replace(/\\s+/g, ' ').trim().toLowerCase().replace(/[\\s-]/g, ''); };
+    var attach = function() {
+      if (document.getElementById('odhin-test-status-filter')) return;
+      var tableElement = document.getElementById('test-list-table');
+      if (!tableElement) return;
+      var counts = {};
+      Array.prototype.forEach.call(tableElement.querySelectorAll('tbody tr'), function(row) {
+        var cells = row.querySelectorAll('td');
+        var status = normalise(cells[1] && cells[1].textContent);
+        if (status) counts[status] = (counts[status] || 0) + 1;
+      });
+      var total = Object.keys(counts).reduce(function(sum, status) { return sum + counts[status]; }, 0);
+      var countFor = function(pattern) {
+        if (!pattern) return total;
+        var expression = new RegExp(pattern, 'i');
+        return Object.keys(counts).reduce(function(sum, status) { return sum + (expression.test(status) ? counts[status] : 0); }, 0);
+      };
+      var filter = document.createElement('div');
+      filter.id = 'odhin-test-status-filter';
+      filter.className = 'odhin-test-status-filter';
+      var label = document.createElement('strong');
+      label.textContent = 'Test status:';
+      filter.appendChild(label);
+      definitions.forEach(function(definition) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('data-odhin-test-status-filter', definition.pattern);
+        button.textContent = definition.label + ' (' + countFor(definition.pattern) + ')';
+        button.addEventListener('click', function() {
+          if (!window.jQuery || !jQuery.fn || !jQuery.fn.DataTable || !jQuery.fn.dataTable.isDataTable('#test-list-table')) return;
+          jQuery('#test-list-table').DataTable().column(1).search(definition.pattern, true, false).draw();
+        });
+        filter.appendChild(button);
+      });
+      tableElement.parentNode.insertBefore(filter, tableElement);
+    };
+    if (document.readyState === 'complete') {
+      window.setTimeout(attach, 0);
+    } else {
+      window.addEventListener('load', function() { window.setTimeout(attach, 0); }, { once: true });
+    }
+  }());
+</script>`;
+}
+
+function injectRuntimeTestStatusFilters(html) {
+  const source = String(html);
+  if (source.includes('id="odhin-test-status-filter-runtime"')) {
+    return source;
+  }
+  const runtime = buildRuntimeTestStatusFilters();
+  return /<\/body\s*>/i.test(source) ? source.replace(/<\/body\s*>/i, `${runtime}</body>`) : `${source}${runtime}`;
+}
+
 function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
@@ -1857,6 +1922,14 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   }
 
   const root = parse(htmlWithDefaultTestRows);
+  // Odhín can emit malformed modal fragments when a high-parallel run has many
+  // API results. node-html-parser then drops the test table during serialisation.
+  // Keeping Odhín's original document is preferable to publishing a report whose
+  // Tests tab is unusable.
+  if (hasTestList && !root.querySelector('#test-list-table')) {
+    return injectRuntimeTestStatusFilters(htmlWithDefaultTestRows);
+  }
+
   repairTestsTabContent(root);
   repairOrphanedTestModals(root);
   normalizeModalBodyContent(root);
@@ -1953,6 +2026,7 @@ module.exports = {
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
     normalizeTestStatus,
+    injectRuntimeTestStatusFilters,
     percentOf,
   },
 };

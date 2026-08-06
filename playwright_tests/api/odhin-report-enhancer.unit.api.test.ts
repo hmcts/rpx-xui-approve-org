@@ -6,6 +6,7 @@ import enhancerModule from '../common/reporters/odhin-report-enhancer.cjs';
 const enhancerTest = (enhancerModule as {
   __test__: {
     enhanceDashboardHtml: (html: string, featureStats: unknown, evidenceEntries?: unknown) => string;
+    injectRuntimeTestStatusFilters: (html: string) => string;
   };
 }).__test__;
 
@@ -31,6 +32,17 @@ test.describe('odhin report enhancer', () => {
     expect(filters?.text).toContain('Flaky (1)');
     expect(filters?.querySelector('[data-odhin-test-status-filter="^(timedout|timed out)$"]')).toBeTruthy();
     expect(root.querySelector('#odhin-test-status-filter-script')?.text).toContain('table.column(1).search');
+  });
+
+  test('injects a non-destructive runtime status filter when parsing cannot safely serialise a report', () => {
+    const source = '<html><body><table id="test-list-table"></table></body></html>';
+    const nextHtml = enhancerTest.injectRuntimeTestStatusFilters(source);
+
+    expect(nextHtml).toContain('id="odhin-test-status-filter-runtime"');
+    expect(nextHtml).toContain("window.addEventListener('load'");
+    expect(nextHtml).toContain("DataTable().column(1).search");
+    expect(nextHtml).toContain('Timed out');
+    expect(nextHtml).toContain('</body>');
   });
 
   test('repairs escaped Tests tab content and orphaned failed modal fragments', () => {

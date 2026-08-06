@@ -3,19 +3,21 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const { enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
+const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
+const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
     this.options = options;
+    this.outputFolder = options.outputFolder;
     this.lightweight = resolveBoolean(process.env.PW_ODHIN_LIGHTWEIGHT, !process.env.CI);
     this.testOutputMode = normalizeTestOutputMode(options.testOutput ?? 'only-on-failure');
     this.runtimeHookTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS, process.env.CI ? 0 : 15000);
-    this.finalizationTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS, 30000);
     this.trimFailedArtifacts = resolveBoolean(process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS, false);
     this.pendingInnerCallbacks = Promise.resolve();
+    this.featureStats = new Map();
     this.statusCounts = {
       passed: 0,
       failed: 0,
@@ -56,6 +58,7 @@ class OdhinAdaptiveReporter {
     }
 
     this.recordStatus(result?.status);
+    this.recordFeatureStat(test, result);
     this.enqueueInnerCallback('onTestEnd', () => this.inner.onTestEnd(test, nextResult), { test });
   }
 
@@ -81,15 +84,11 @@ class OdhinAdaptiveReporter {
     process.stdout.write(`[odhin-profile] Finalizing Odhin report statusCounts=${JSON.stringify(this.statusCounts)}\n`);
 
     if (typeof this.inner.onEnd === 'function') {
-      try {
-        await withTimeout(this.inner.onEnd(result), this.finalizationTimeoutMs);
-      } catch (error) {
-        process.stderr.write(`[odhin-profile] onEnd failed: ${formatErrorMessage(error)}\n`);
-      }
+      await this.inner.onEnd(result);
     }
 
     try {
-      enhanceGeneratedReport(this.options.outputFolder, []);
+      enhanceGeneratedReport(this.outputFolder, this.featureStats);
     } catch (error) {
       process.stderr.write(`[odhin-profile] report enhancement failed: ${formatErrorMessage(error)}\n`);
     }
@@ -121,6 +120,43 @@ class OdhinAdaptiveReporter {
     return Object.values(this.statusCounts).some((count) => count > 0);
   }
 
+  recordFeatureStat(test, result) {
+    const finalStatus = normalizeFinalStatus(result?.status, result?.retry);
+    if (!isFinalResult(finalStatus, result?.retry, test?.retries)) {
+      return;
+    }
+
+    const featureName = deriveFeatureName(test?.location?.file);
+    const current = this.featureStats.get(featureName) ?? createEmptyFeatureStat(featureName);
+    current.totalTests += 1;
+    current.durationMs += Number(result?.duration ?? 0);
+
+    switch (finalStatus) {
+      case 'passed':
+        current.passed += 1;
+        break;
+      case 'failed':
+        current.failed += 1;
+        break;
+      case 'timedOut':
+        current.timedOut += 1;
+        break;
+      case 'skipped':
+        current.skipped += 1;
+        break;
+      case 'interrupted':
+        current.interrupted += 1;
+        break;
+      case 'flaky':
+        current.flaky += 1;
+        break;
+      default:
+        current.interrupted += 1;
+    }
+
+    this.featureStats.set(featureName, current);
+  }
+
   enqueueInnerCallback(hookName, invoke, context = {}) {
     const run = async () => {
       try {
@@ -146,6 +182,14 @@ function normalizeTestOutputMode(raw) {
     return false;
   }
   return 'only-on-failure';
+}
+
+function normalizeFinalStatus(status, retry) {
+  return status === 'passed' && Number(retry ?? 0) > 0 ? 'flaky' : status;
+}
+
+function isFinalResult(status, retry, retries) {
+  return terminalStatusesNoRetry.includes(status) || Number(retry ?? 0) === Number(retries ?? 0);
 }
 
 function normalizeTimeout(raw, fallbackMs) {
