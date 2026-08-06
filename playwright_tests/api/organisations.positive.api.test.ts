@@ -26,6 +26,31 @@ const organisationSearchScenarios = [
 
 test.describe('Playwright API positive: organisations', { tag: ['@organisations', '@positive'] }, () => {
   test.describe.configure({ mode: 'serial' });
+
+  test('GET /api/organisations?status=ACTIVE returns a bounded JSON list', async ({ apiRequest }) => {
+    const response = await apiRequest.get('/api/organisations?status=ACTIVE', { failOnStatusCode: false });
+
+    expect(
+      response.status(),
+      `Expected 200 from bounded GET /api/organisations?status=ACTIVE. Received status=${response.status()}`
+    ).toBe(200);
+
+    const contentType = resolveHeader(response.headers(), 'content-type');
+    expect(
+      contentType,
+      `Expected JSON content-type for bounded GET /api/organisations?status=ACTIVE. Received content-type=${contentType}`
+    ).toContain('application/json');
+
+    const payload = await response.json();
+    expect(Array.isArray(payload), `Expected an array from bounded organisation list. payload=${JSON.stringify(payload)}`).toBe(true);
+    expect(payload.length, 'Expected the default organisation list to contain at most 10 rows').toBeLessThanOrEqual(ORGANISATION_SEARCH_PAGE_SIZE);
+
+    const firstOrganisation = payload[0] as Record<string, unknown> | undefined;
+    if (firstOrganisation && typeof firstOrganisation === 'object') {
+      expect(firstOrganisation).toHaveProperty('organisationIdentifier');
+    }
+  });
+
   test('GET /api/organisations?usersOrgId=<id>&page=0 returns current organisation users', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 

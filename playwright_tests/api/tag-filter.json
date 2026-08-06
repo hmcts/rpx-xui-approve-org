@@ -1,7 +1,6 @@
 {
   "excludedTags": [
-    "@pba-status-auth-route",
-    "@organisation-provider-search"
+    "@pba-status-auth-route"
   ],
   "availableTags": [
     "@all-user-list-without-roles",
