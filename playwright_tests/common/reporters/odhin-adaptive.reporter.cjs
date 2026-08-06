@@ -7,6 +7,8 @@ const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = re
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
+const defaultRuntimeHookTimeoutMs = 15_000;
+const defaultFinalizationTimeoutMs = process.env.CI ? 60_000 : 30_000;
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
@@ -14,7 +16,8 @@ class OdhinAdaptiveReporter {
     this.outputFolder = options.outputFolder;
     this.lightweight = resolveBoolean(process.env.PW_ODHIN_LIGHTWEIGHT, !process.env.CI);
     this.testOutputMode = normalizeTestOutputMode(options.testOutput ?? 'only-on-failure');
-    this.runtimeHookTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS, process.env.CI ? 0 : 15000);
+    this.runtimeHookTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS, defaultRuntimeHookTimeoutMs);
+    this.finalizationTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS, defaultFinalizationTimeoutMs);
     this.trimFailedArtifacts = resolveBoolean(process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS, false);
     this.pendingInnerCallbacks = Promise.resolve();
     this.featureStats = new Map();
@@ -84,7 +87,11 @@ class OdhinAdaptiveReporter {
     process.stdout.write(`[odhin-profile] Finalizing Odhin report statusCounts=${JSON.stringify(this.statusCounts)}\n`);
 
     if (typeof this.inner.onEnd === 'function') {
-      await this.inner.onEnd(result);
+      try {
+        await withTimeout(this.inner.onEnd(result), this.finalizationTimeoutMs);
+      } catch (error) {
+        process.stderr.write(`[odhin-profile] onEnd failed: ${formatErrorMessage(error)}\n`);
+      }
     }
 
     try {

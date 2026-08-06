@@ -76,6 +76,23 @@ test('excludes only RefData non-empty searches from the default E2E catalog', ()
   expect(e2eCatalog.availableTags).toContain('@tabs-load');
 });
 
+test('provides an opt-in non-blocking Jenkins route for RefData search tests', () => {
+  for (const jenkinsfile of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
+    const source = read(jenkinsfile);
+
+    expect(source).toContain('RUN_REFDATA_SEARCH_TESTS');
+    expect(source).toContain('RefData Search Playwright Tests');
+    expect(source).toContain("'API_PW_INCLUDE_TAGS=@refdata-search'");
+    expect(source).toContain("'E2E_PW_INCLUDE_TAGS=@refdata-search'");
+    expect(source).toContain("'API_PW_EXCLUDED_TAGS_OVERRIDE=@none'");
+    expect(source).toContain("'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none'");
+    expect(source).toContain("catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE')");
+    expect(source).toContain("'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/api-odhin-report'");
+    expect(source).toContain("'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/e2e-odhin-report'");
+    expect(source.indexOf('parallel(playwrightBranches)')).toBeLessThan(source.indexOf('RefData Search Playwright Tests'));
+  }
+});
+
 test('local env population prefers the exact AO exclusion secret', () => {
   const result = runLocalEnvPopulation([
     'if [[ "$1 $2 $3" == "keyvault secret show" && "$*" == *"--name xui-approve-org-playwright-global-excluded-tags"* ]]; then echo "@ao-only"; exit 0; fi',

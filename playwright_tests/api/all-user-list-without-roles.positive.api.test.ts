@@ -7,7 +7,6 @@ import { cleanupProvisionedOrganisation, provisionActiveOrganisation } from './h
 import { resolveHeader } from './helpers/json-contracts';
 
 test.describe('Playwright API positive: all user list without roles', { tag: ['@all-user-list-without-roles', '@positive'] }, () => {
-  test.describe.configure({ mode: 'serial' });
   test('GET /api/allUserListWithoutRoles returns organisation user list', async ({ apiRequest }) => {
     let organisationId: string | undefined;
 

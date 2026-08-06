@@ -45,6 +45,14 @@ test.describe('odhin report enhancer', () => {
     expect(nextHtml).toContain('</body>');
   });
 
+  test('keeps the original report when its source table markup is not parsed', () => {
+    const malformedReport = '<html><body><script type="text/x-odhin-fragment"><table id="test-list-table"><tr><td>unclosed Odhín fragment</td></tr></script></body></html>';
+    const nextHtml = enhancerTest.enhanceDashboardHtml(malformedReport, []);
+
+    expect(nextHtml).toContain('unclosed Odhín fragment');
+    expect(nextHtml).toContain('id="odhin-test-status-filter-runtime"');
+  });
+
   test('repairs escaped Tests tab content and orphaned failed modal fragments', () => {
     const failedModalId = 'run-id-failed-0';
     const accessibilityAssertion = `[a11y] Failed page

@@ -59,6 +59,11 @@ properties([
             name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
             defaultValue: false,
             description: 'Optional: run the non-blocking Playwright accessibility pack (axe, WAVE-like and screen-reader checks) on this PR build.'
+        ),
+        booleanParam(
+            name: 'RUN_REFDATA_SEARCH_TESTS',
+            defaultValue: false,
+            description: 'Optional: run non-blocking API and E2E searches that depend on RefData availability.'
         )
     ])
 ])
@@ -96,6 +101,10 @@ def shouldRunAccessibilityTests = {
         env.RUN_PLAYWRIGHT_ACCESSIBILITY,
         env.RUN_ACCESSIBILITY_TESTS
     ].any { configured -> isEnabledValue(configured) }
+}
+
+def shouldRunRefDataSearchTests = {
+    return isEnabledValue(params.RUN_REFDATA_SEARCH_TESTS) || isEnabledValue(env.RUN_REFDATA_SEARCH_TESTS)
 }
 
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
@@ -137,6 +146,35 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
         }
 
         parallel(playwrightBranches)
+
+        if (shouldRunRefDataSearchTests()) {
+            stage("${environmentLabel} RefData Search Playwright Tests") {
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    withEnv([
+                        'API_PW_INCLUDE_TAGS=@refdata-search',
+                        'API_PW_EXCLUDED_TAGS_OVERRIDE=@none',
+                        'PLAYWRIGHT_HTML_OUTPUT=functional-output/tests/playwright-refdata/api-html-report',
+                        'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-refdata/api-junit.xml',
+                        'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/api-odhin-report'
+                    ]) {
+                        yarnBuilder.yarn('test:api:playwright:raw')
+                    }
+                }
+                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
+                    withEnv([
+                        'E2E_PW_INCLUDE_TAGS=@refdata-search',
+                        'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
+                        'PLAYWRIGHT_HTML_OUTPUT=functional-output/tests/playwright-refdata/e2e-html-report',
+                        'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-refdata/e2e-junit.xml',
+                        'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/e2e-odhin-report'
+                    ]) {
+                        yarnBuilder.yarn('test:functional:e2e:raw')
+                    }
+                }
+            }
+        } else {
+            echo "[playwright-refdata] ${environmentLabel} RefData search tests skipped; RUN_REFDATA_SEARCH_TESTS=false"
+        }
     }
 }
 
@@ -175,7 +213,9 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
             " bypass=${env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES}",
         "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "A11Y enabled=${shouldRunAccessibilityTests()}",
+        "RefData search enabled=${shouldRunRefDataSearchTests()}",
         "RUN_PLAYWRIGHT_ACCESSIBILITY=${displayValue(params.RUN_PLAYWRIGHT_ACCESSIBILITY)}",
+        "RUN_REFDATA_SEARCH_TESTS=${displayValue(params.RUN_REFDATA_SEARCH_TESTS)}",
         "RUN_ACCESSIBILITY_TESTS=${displayValue(params.RUN_ACCESSIBILITY_TESTS)}",
         "env.RUN_PLAYWRIGHT_ACCESSIBILITY=${displayValue(env.RUN_PLAYWRIGHT_ACCESSIBILITY)}",
         "env.RUN_ACCESSIBILITY_TESTS=${displayValue(env.RUN_ACCESSIBILITY_TESTS)}"
