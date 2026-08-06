@@ -441,7 +441,6 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
     const authCheckTimeout = Math.min(5_000, Math.max(0, retryUntil - Date.now()));
     if (
       authCheckTimeout > 0 &&
-      !(await isOnLoginOrCallbackSurface(page)) &&
       await waitForAuthenticatedByApi(page, authCheckTimeout)
     ) {
       return;

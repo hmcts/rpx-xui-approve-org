@@ -1,6 +1,6 @@
 import { expect, test, type APIRequestContext } from '@playwright/test';
 
-import { loadOrganisationById } from './helpers/organisations-write.helpers';
+import { loadOrganisationById, registeredOrganisationId } from './helpers/organisations-write.helpers';
 
 function fakeApiRequest(results: Array<number | Error>): APIRequestContext {
   let callCount = 0;
@@ -21,6 +21,14 @@ function fakeApiRequest(results: Array<number | Error>): APIRequestContext {
 }
 
 test.describe('organisation write helpers', () => {
+  test('uses the identifier returned by registration without a pending-list lookup', () => {
+    expect(registeredOrganisationId('  ORG-123  ')).toBe('ORG-123');
+  });
+
+  test('fails clearly when registration does not return an identifier', () => {
+    expect(() => registeredOrganisationId(undefined)).toThrow('Registration completed without an organisationIdentifier.');
+  });
+
   test('retries an aborted organisation read after provisioning', async () => {
     const organisation = await loadOrganisationById(
       fakeApiRequest([new Error('apiRequestContext.get: aborted'), 200]),

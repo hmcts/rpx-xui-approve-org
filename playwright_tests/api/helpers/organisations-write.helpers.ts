@@ -1,7 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import type { APIRequestContext } from '@playwright/test';
 import { registerOrganisationViaExternalApi } from '../../helpers/register-org';
-import { createOrganisationSearchPayload, getXsrfHeaders } from './search.helpers';
 import { recordProvisionedOrganisation } from './organisation-cleanup-ledger';
 export { cleanupProvisionedOrganisation, tryCleanupProvisionedOrganisation } from './organisation-cleanup';
 
@@ -11,23 +10,12 @@ export type OrganisationRecord = {
   [key: string]: unknown;
 };
 
-type OrganisationListItem = {
-  organisationIdentifier?: unknown;
-  [key: string]: unknown;
-};
-
-type OrganisationSearchEnvelope = {
-  organisations?: unknown;
-};
-
 type ProvisionPendingOrganisationOptions = {
   firstName?: string;
   lastName?: string;
   workEmailAddress?: string;
   hasPBA?: boolean;
   pbaNumbers?: string[];
-  timeoutMs?: number;
-  pollIntervalMs?: number;
 };
 
 export type ProvisionedOrganisation = {
@@ -61,40 +49,13 @@ function buildOrganisationSeed(): string {
   return `pw-api-org-${Date.now().toString(36)}-${randomBytes(3).toString('hex')}`;
 }
 
-function objectContainsSeed(value: unknown, seed: string): boolean {
-  try {
-    return JSON.stringify(value).toLowerCase().includes(seed.toLowerCase());
-  } catch {
-    return false;
-  }
-}
-
-function extractOrganisationId(candidate: OrganisationListItem | null | undefined): string | null {
-  if (!candidate) {
-    return null;
+export function registeredOrganisationId(organisationIdentifier: string | undefined): string {
+  const organisationId = organisationIdentifier?.trim();
+  if (!organisationId) {
+    throw new Error('Registration completed without an organisationIdentifier.');
   }
 
-  const orgId = candidate.organisationIdentifier;
-  if (typeof orgId !== 'string' || orgId.trim() === '') {
-    return null;
-  }
-
-  return orgId;
-}
-
-function extractOrganisationCandidates(payload: unknown): OrganisationListItem[] {
-  if (Array.isArray(payload)) {
-    return payload as OrganisationListItem[];
-  }
-
-  if (payload && typeof payload === 'object') {
-    const organisations = (payload as OrganisationSearchEnvelope).organisations;
-    if (Array.isArray(organisations)) {
-      return organisations as OrganisationListItem[];
-    }
-  }
-
-  return [];
+  return organisationId;
 }
 
 async function registerPendingOrganisation(
@@ -104,7 +65,7 @@ async function registerPendingOrganisation(
   workEmailAddress: string,
   hasPBA: boolean | undefined,
   pbaNumbers: string[] | undefined
-): Promise<string[]> {
+): Promise<{ organisationId: string; pbaNumbers: string[] }> {
   const registeredOrganisation = await registerOrganisationViaExternalApi({
     userName: seed,
     firstName,
@@ -114,47 +75,10 @@ async function registerPendingOrganisation(
     pbaNumbers
   });
 
-  return registeredOrganisation.pbaNumbers;
-}
-
-async function findPendingOrganisationBySeed(
-  apiRequest: APIRequestContext,
-  organisationSeed: string,
-  timeoutMs: number,
-  pollIntervalMs: number
-): Promise<string | null> {
-  const startTime = Date.now();
-  const xsrfHeaders = await getXsrfHeaders(apiRequest);
-  const searchPayload = createOrganisationSearchPayload({
-    view: 'NEW',
-    searchFilter: organisationSeed,
-    pageNumber: 1,
-    pageSize: 10
-  });
-
-  while (Date.now() - startTime < timeoutMs) {
-    const response = await apiRequest.post('/api/organisations', {
-      params: { status: 'PENDING,REVIEW' },
-      headers: xsrfHeaders,
-      data: searchPayload,
-      failOnStatusCode: false
-    });
-
-    if (response.status() === 200) {
-      const payload = await response.json();
-      const matchedOrganisation = extractOrganisationCandidates(payload)
-        .find((candidate) => objectContainsSeed(candidate, organisationSeed));
-      const organisationId = extractOrganisationId(matchedOrganisation);
-
-      if (organisationId) {
-        return organisationId;
-      }
-    }
-
-    await sleep(pollIntervalMs);
-  }
-
-  return null;
+  return {
+    organisationId: registeredOrganisationId(registeredOrganisation.organisationIdentifier),
+    pbaNumbers: registeredOrganisation.pbaNumbers
+  };
 }
 
 export async function provisionPendingOrganisation(
@@ -165,10 +89,7 @@ export async function provisionPendingOrganisation(
   const firstName = options.firstName ?? 'Api';
   const lastName = options.lastName ?? 'Test';
   const workEmailAddress = options.workEmailAddress ?? `${organisationSeed}@example.com`;
-  const timeoutMs = options.timeoutMs ?? 120000;
-  const pollIntervalMs = options.pollIntervalMs ?? 5000;
-
-  const pbaNumbers = await registerPendingOrganisation(
+  const registeredOrganisation = await registerPendingOrganisation(
     organisationSeed,
     firstName,
     lastName,
@@ -177,10 +98,7 @@ export async function provisionPendingOrganisation(
     options.pbaNumbers
   );
 
-  const organisationId = await findPendingOrganisationBySeed(apiRequest, organisationSeed, timeoutMs, pollIntervalMs);
-  if (!organisationId) {
-    throw new Error(`Unable to locate newly registered pending organisation with seed=${organisationSeed} within ${timeoutMs}ms.`);
-  }
+  const { organisationId, pbaNumbers } = registeredOrganisation;
 
   recordProvisionedOrganisation(organisationId, organisationSeed);
 

@@ -3,6 +3,7 @@ import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
+const PENDING_PBAS_ROUTE_PATTERN = /\/organisation\/pbas(?:\/?|\?.*)$/;
 const ORGANISATION_RESULTS_LOAD_TIMEOUT_MS = 60_000;
 
 export type OrganisationTableRow = {
@@ -424,7 +425,14 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openNewPbasTab(): Promise<void> {
-    await this.newPbasTab.click();
+    const routeWait = PENDING_PBAS_ROUTE_PATTERN.test(this.page.url())
+      ? Promise.resolve()
+      : this.page.waitForURL(PENDING_PBAS_ROUTE_PATTERN);
+
+    await Promise.all([
+      routeWait,
+      this.newPbasTab.click()
+    ]);
   }
 
   async openPendingOrganisationsTab(): Promise<void> {
