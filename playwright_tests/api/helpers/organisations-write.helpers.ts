@@ -39,8 +39,22 @@ export type ProvisionedOrganisation = {
   pbaNumbers: string[];
 };
 
+type OrganisationLoadOptions = {
+  attempts?: number;
+  retryDelayMs?: number;
+};
+
+const TRANSIENT_ORGANISATION_READ_STATUSES = new Set([502, 503, 504]);
+const DEFAULT_ORGANISATION_READ_ATTEMPTS = 4;
+const DEFAULT_ORGANISATION_READ_RETRY_DELAY_MS = 500;
+const TRANSIENT_ORGANISATION_READ_ERROR_PATTERN = /\b(aborted|econnreset|etimedout|socket hang up)\b/i;
+
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isTransientOrganisationReadError(error: unknown): boolean {
+  return error instanceof Error && TRANSIENT_ORGANISATION_READ_ERROR_PATTERN.test(error.message);
 }
 
 function buildOrganisationSeed(): string {
@@ -218,24 +232,44 @@ export async function provisionActiveOrganisation(
 
 export async function loadOrganisationById(
   apiRequest: APIRequestContext,
-  organisationId: string
+  organisationId: string,
+  options: OrganisationLoadOptions = {}
 ): Promise<OrganisationRecord | null> {
-  const response = await apiRequest.get('/api/organisations', {
-    params: {
-      organisationId,
-      version: 'v1'
-    },
-    failOnStatusCode: false
-  });
+  const attempts = options.attempts ?? DEFAULT_ORGANISATION_READ_ATTEMPTS;
+  const retryDelayMs = options.retryDelayMs ?? DEFAULT_ORGANISATION_READ_RETRY_DELAY_MS;
 
-  if (response.status() !== 200) {
-    return null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await apiRequest.get('/api/organisations', {
+        params: {
+          organisationId,
+          version: 'v1'
+        },
+        failOnStatusCode: false
+      });
+
+      if (response.status() === 200) {
+        const payload = await response.json();
+        if (!payload || Array.isArray(payload) || typeof payload !== 'object') {
+          return null;
+        }
+
+        return payload as OrganisationRecord;
+      }
+
+      if (!TRANSIENT_ORGANISATION_READ_STATUSES.has(response.status())) {
+        return null;
+      }
+    } catch (error) {
+      if (!isTransientOrganisationReadError(error)) {
+        throw error;
+      }
+    }
+
+    if (attempt < attempts) {
+      await sleep(retryDelayMs * attempt);
+    }
   }
 
-  const payload = await response.json();
-  if (!payload || Array.isArray(payload) || typeof payload !== 'object') {
-    return null;
-  }
-
-  return payload as OrganisationRecord;
+  return null;
 }

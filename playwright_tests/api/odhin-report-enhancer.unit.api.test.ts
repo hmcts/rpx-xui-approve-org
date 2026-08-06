@@ -186,4 +186,31 @@ A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable inste
       root.querySelectorAll('.modal-dialog').filter((dialog) => !dialog.closest('.modal'))
     ).toHaveLength(0);
   });
+
+  test('moves only the test-table wrapper into the Tests tab without inlining sibling modal content', () => {
+    const modalId = 'safe-modal-id';
+    const nextHtml = enhancerTest.enhanceDashboardHtml(
+      `<html><head></head><body>
+        <div id="TabTests" class="main-tabcontent"></div>
+        <div class="container-fluid">
+          <div class="table-responsive">
+            <table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
+              <tr data-bs-target="#${modalId}"><td>test title</td><td>passed</td></tr>
+            </tbody></table>
+          </div>
+          <div class="modal" id="${modalId}"><div class="modal-content">modal detail</div></div>
+        </div>
+      </body></html>`,
+      []
+    );
+
+    const root = parse(nextHtml);
+    const testsTab = root.querySelector('#TabTests');
+    const modal = root.querySelector(`#${modalId}`);
+
+    expect(testsTab?.querySelector('.table-responsive #test-list-table')).toBeTruthy();
+    expect(testsTab?.querySelector('.modal')).toBeNull();
+    expect(modal?.parentNode?.getAttribute('class')).toContain('container-fluid');
+    expect(modal?.text).toContain('modal detail');
+  });
 });

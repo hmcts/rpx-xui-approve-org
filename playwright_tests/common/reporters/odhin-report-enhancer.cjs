@@ -168,13 +168,15 @@ function isEmptyOrphanModalDialog(node) {
 }
 
 function findTestsContentContainer(table, testsTab) {
-  let current = table;
-  let candidate = table;
-  while (current?.parentNode && current.parentNode !== testsTab && !isDocumentContainer(current.parentNode)) {
-    candidate = current.parentNode;
+  let current = table?.parentNode;
+  while (current && current !== testsTab && !isDocumentContainer(current)) {
+    if (elementHasClass(current, 'table-responsive')) {
+      return current;
+    }
     current = current.parentNode;
   }
-  return current?.parentNode === testsTab ? null : candidate;
+
+  return null;
 }
 
 function repairTestsTabContent(root) {
