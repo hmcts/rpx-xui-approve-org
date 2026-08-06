@@ -17613,7 +17613,6 @@ __metadata:
     "@angular/platform-browser": "npm:^20.3.18"
     "@angular/platform-browser-dynamic": "npm:^20.3.18"
     "@angular/router": "npm:^20.3.18"
-    "@azure/monitor-opentelemetry": "npm:^1.19.0"
     "@babel/runtime": "npm:^8.0.0"
     "@faker-js/faker": "npm:^10.4.0"
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.78"
