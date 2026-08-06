@@ -3,6 +3,7 @@ import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
+const ORGANISATION_RESULTS_LOAD_TIMEOUT_MS = 60_000;
 
 export type OrganisationTableRow = {
   name: string;
@@ -272,12 +273,12 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   private async waitForOrganisationResultsToLoad(): Promise<void> {
-    await this.waitForSpinnerToHide(60_000);
+    await this.waitForSpinnerToHide(ORGANISATION_RESULTS_LOAD_TIMEOUT_MS);
 
     if (await this.activeOrganisationsPanel.isVisible()) {
       await this.activeOrganisationsPanel.locator('table.active-organisations').waitFor({
         state: 'visible',
-        timeout: 60_000
+        timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS
       });
       return;
     }
@@ -287,7 +288,7 @@ export class OrganisationApprovalsPage extends BasePage {
         .locator('table, .govuk-body')
         .filter({ hasText: /There are no new PBA requests\.|Organisation/i })
         .first()
-        .waitFor({ state: 'visible', timeout: 60_000 });
+        .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
       return;
     }
 
@@ -295,7 +296,7 @@ export class OrganisationApprovalsPage extends BasePage {
       .locator('table.pending-organisations, .govuk-body')
       .filter({ hasText: /There are no new registrations\.|Organisation/i })
       .first()
-      .waitFor({ state: 'visible', timeout: 60_000 });
+      .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
   }
 
   async openPaginationPage(pageNumber: number): Promise<void> {
