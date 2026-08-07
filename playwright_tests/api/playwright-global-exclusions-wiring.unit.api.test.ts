@@ -153,6 +153,12 @@ test('does not retry E2E, integration, or nightly tests unless a caller opts in 
   expect(read('playwright-nightly.config.ts')).toContain('retries: resolveFunctionalRetryCount(\'E2E_PW_RETRIES\')');
 });
 
+test('sets three retries for preview and nightly E2E pipeline runs', () => {
+  for (const jenkinsfile of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
+    expect(read(jenkinsfile)).toContain('env.E2E_PW_RETRIES = \'3\'');
+  }
+});
+
 test('keeps independent update-PBA suites parallel so one failure cannot skip the remaining cases', () => {
   for (const specPath of [
     'playwright_tests/api/update-pba.positive.api.test.ts',

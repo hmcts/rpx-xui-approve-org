@@ -463,11 +463,6 @@ async function persistSessionState(context: BrowserContext, storageStatePath: st
   await context.storageState({ path: storageStatePath });
 }
 
-async function hasAuthenticatedSessionCookie(page: Page, url: string): Promise<boolean> {
-  const cookies = await page.context().cookies(url);
-  return cookies.some((cookie) => ['__auth__', 'Idam.Session', 'ao-webapp'].includes(cookie.name));
-}
-
 export async function sessionCapture(user: string = 'base', options: SessionCaptureOptions = {}): Promise<string> {
   const partitionKey = resolveSessionPartitionKey(options.partitionKey);
   const storageStatePath = getSessionStatePath(user, partitionKey);
@@ -550,11 +545,10 @@ export async function ensureAuthenticatedPageAt(
   user: string = 'base',
   options: SessionCaptureOptions = {}
 ): Promise<void> {
-  const isLoginUrl = (): boolean => page.url().includes('idam') || page.url().includes('/login');
-
   const gotoAndVerify = async (): Promise<boolean> => {
     await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
-    return !isLoginUrl() && (await hasAuthenticatedSessionCookie(page, destinationUrl));
+    const onLoginOrCallbackSurface = await isOnLoginOrCallbackSurface(page);
+    return !onLoginOrCallbackSurface && await waitForAuthenticatedByApi(page);
   };
 
   await applySessionCookies(page, user, options);
