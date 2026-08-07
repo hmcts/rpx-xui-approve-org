@@ -11,9 +11,10 @@ const enhancerTest = (enhancerModule as {
 }).__test__;
 
 test.describe('odhin report enhancer', () => {
-  test('adds status filters for failed, timed out, flaky and retried outcomes', () => {
+  test('preserves the native Odhín status selector without adding a second filter', () => {
     const nextHtml = enhancerTest.enhanceDashboardHtml(
       `<html><head></head><body>
+        <div id="status-filter-row"><label for="status-filter">Status</label><select id="status-filter"><option value="">All</option></select></div>
         <table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
           <tr><td>failed test</td><td>failed</td></tr>
           <tr><td>timeout test</td><td>timedOut</td></tr>
@@ -25,42 +26,58 @@ test.describe('odhin report enhancer', () => {
     );
 
     const root = parse(nextHtml);
-    const filters = root.querySelector('#odhin-test-status-filter');
-
-    expect(filters?.text).toContain('Failed (1)');
-    expect(filters?.text).toContain('Timed out (1)');
-    expect(filters?.text).toContain('Flaky (1)');
-    expect(filters?.querySelector('[data-odhin-test-status-filter="^(timedout|timed out)$"]')).toBeTruthy();
-    expect(root.querySelector('#odhin-test-status-filter-script')?.text).toContain('table.column(1).search');
+    expect(root.querySelector('#status-filter')?.text).toContain('All');
+    expect(root.querySelector('#odhin-test-status-filter')).toBeNull();
   });
 
-  test('injects a non-destructive runtime status filter when parsing cannot safely serialise a report', () => {
+  test('adds a Webapp-style status selector when an AO report does not provide one', async ({ page }) => {
+    const nextHtml = enhancerTest.enhanceDashboardHtml(
+      `<html><body><div id="TabTests" class="main-tabcontent"><table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
+        <tr><td>passing result</td><td>Passed</td></tr>
+        <tr><td>failing result</td><td>Failed</td></tr>
+      </tbody></table></div></body></html>`,
+      []
+    );
+
+    await page.setContent(nextHtml);
+
+    await expect(page.getByLabel('Status')).toHaveValue('');
+    await page.getByLabel('Status').selectOption('failed');
+    await expect(page.locator('#test-list-table tbody tr').filter({ hasText: 'passing result' })).toBeHidden();
+    await expect(page.locator('#test-list-table tbody tr').filter({ hasText: 'failing result' })).toBeVisible();
+  });
+
+  test('injects a non-destructive native status selector when parsing cannot safely serialise a report', () => {
     const source = '<html><body><table id="test-list-table"></table></body></html>';
     const nextHtml = enhancerTest.injectRuntimeTestStatusFilters(source);
 
     expect(nextHtml).toContain('id="odhin-test-status-filter-runtime"');
     expect(nextHtml).toContain('window.addEventListener(\'load\'');
-    expect(nextHtml).toContain('DataTable().column(1).search');
-    expect(nextHtml).toContain('Timed out');
+    expect(nextHtml).toContain('filter.id = \'status-filter\'');
+    expect(nextHtml).toContain('label.textContent = \'Status\'');
+    expect(nextHtml).not.toContain('odhin-test-status-filter-runtime-style');
     expect(nextHtml).toContain('</body>');
   });
 
   test('recovers a usable test table when its source markup is not parsed', async ({ page }) => {
     const malformedReport = `
-      <html><body><script type="text/x-odhin-fragment">
+      <html><body><div id="TabTests" class="main-tabcontent"></div><script type="text/x-odhin-fragment">
         <table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
           <tr><td>passing result</td><td>Passed</td></tr>
           <tr><td>failing result</td><td>Failed</td></tr>
         </tbody>
-      </script></body></html>`;
+    </script></body></html>`;
     const nextHtml = enhancerTest.enhanceDashboardHtml(malformedReport, []);
 
+    page.on('pageerror', (error) => {
+      throw error;
+    });
     await page.setContent(nextHtml);
 
-    await expect(page.locator('#odhin-recovered-tests #test-list-table')).toBeVisible();
-    await page.getByRole('button', { name: /Failed \(1\)/ }).click();
-    await expect(page.locator('#odhin-recovered-tests tbody tr').filter({ hasText: 'passing result' })).toBeHidden();
-    await expect(page.locator('#odhin-recovered-tests tbody tr').filter({ hasText: 'failing result' })).toBeVisible();
+    await expect(page.locator('#TabTests #odhin-recovered-tests #test-list-table')).toBeVisible();
+    await page.getByLabel('Status').selectOption('failed');
+    await expect(page.locator('#TabTests #odhin-recovered-tests tbody tr').filter({ hasText: 'passing result' })).toBeHidden();
+    await expect(page.locator('#TabTests #odhin-recovered-tests tbody tr').filter({ hasText: 'failing result' })).toBeVisible();
   });
 
   test('repairs escaped Tests tab content and orphaned failed modal fragments', () => {
@@ -292,5 +309,20 @@ A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable inste
     await expect(page.locator('#TabTests #test-list-table')).toBeVisible();
     await expect(page.locator('#TabDashboard #test-list-table')).toHaveCount(0);
     await expect(page.locator('#TabDashboard').getByRole('heading', { name: 'Tests' })).toHaveCount(0);
+  });
+
+  test('removes an orphaned recovered list when the Tests tab already has its table', async ({ page }) => {
+    const nextHtml = enhancerTest.injectRuntimeTestStatusFilters(
+      `<html><body>
+        <div id="TabTests" class="main-tabcontent"><div class="table-responsive"><table id="test-list-table"><tbody><tr><td>real result</td><td>Passed</td></tr></tbody></table></div></div>
+        <section id="odhin-recovered-tests"><h2>Tests</h2><div class="table-responsive"><table id="test-list-table"><tbody><tr><td>duplicate result</td><td>Passed</td></tr></tbody></table></div></section>
+      </body></html>`
+    );
+
+    await page.setContent(nextHtml);
+
+    await expect(page.locator('#TabTests #test-list-table')).toHaveCount(1);
+    await expect(page.locator('#TabTests tbody tr').filter({ hasText: 'real result' })).toBeVisible();
+    await expect(page.locator('#odhin-recovered-tests')).toHaveCount(0);
   });
 });

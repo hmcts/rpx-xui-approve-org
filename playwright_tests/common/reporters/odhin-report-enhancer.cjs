@@ -1795,60 +1795,38 @@ function defaultTestListRowsPerPage(html) {
     );
 }
 
-const testStatusFilters = [
-  { label: 'All', pattern: '' },
-  { label: 'Failed', pattern: '^failed$' },
-  { label: 'Timed out', pattern: '^(timedout|timed out)$' },
-  { label: 'Flaky', pattern: '^flaky$' },
-  { label: 'Passed', pattern: '^passed$' },
-  { label: 'Skipped', pattern: '^skipped$' },
-  { label: 'Interrupted', pattern: '^interrupted$' }
-];
-
-function normalizeTestStatus(value) {
-  return normalizeText(value).toLowerCase().replace(/[\s-]/g, '');
-}
-
-function removeTestStatusFilters(root) {
-  root.querySelectorAll('#odhin-test-status-filter, #odhin-test-status-filter-script').forEach((node) => node.remove());
-}
-
-function injectTestStatusFilters(root) {
+function injectNativeTestStatusFilter(root) {
   const table = root.querySelector('#test-list-table');
-  if (!table) {
+  if (!table || root.querySelector('#status-filter')) {
     return false;
   }
 
-  const statusCounts = new Map();
-  table.querySelectorAll('tbody tr').forEach((row) => {
-    const status = normalizeTestStatus(row.querySelectorAll('td')[1]?.text);
-    if (status) {
-      statusCounts.set(status, (statusCounts.get(status) ?? 0) + 1);
-    }
-  });
-  const total = Array.from(statusCounts.values()).reduce((sum, count) => sum + count, 0);
-  const countFor = (pattern) => {
-    if (!pattern) {
-      return total;
-    }
-    const expression = new RegExp(pattern, 'i');
-    return Array.from(statusCounts.entries()).reduce((sum, [status, count]) => sum + (expression.test(status) ? count : 0), 0);
-  };
-  const buttons = testStatusFilters
-    .map(
-      ({ label, pattern }) =>
-        `<button type="button" data-odhin-test-status-filter="${escapeAttribute(pattern)}">${escapeHtml(label)} (${countFor(pattern)})</button>`
-    )
-    .join('');
   table.insertAdjacentHTML(
     'beforebegin',
-    `<div id="odhin-test-status-filter" class="odhin-test-status-filter"><strong>Test status:</strong>${buttons}</div>
-<script id="odhin-test-status-filter-script">
-  document.querySelectorAll('[data-odhin-test-status-filter]').forEach(function(button) {
-    button.addEventListener('click', function() {
-      if (!window.jQuery || !jQuery.fn || !jQuery.fn.DataTable || !jQuery.fn.dataTable.isDataTable('#test-list-table')) return;
-      var table = jQuery('#test-list-table').DataTable();
-      table.column(1).search(button.getAttribute('data-odhin-test-status-filter') || '', true, false).draw();
+    `<div class="d-flex align-items-center mb-2" id="status-filter-row">
+  <label for="status-filter" class="me-2 mb-0">Status</label>
+  <select id="status-filter" class="form-select form-select-sm" style="width: 180px;">
+    <option value="">All</option>
+    <option value="failed">Failed</option>
+    <option value="timedout">Timed Out</option>
+    <option value="skipped">Skipped</option>
+    <option value="passed">Passed</option>
+    <option value="flaky">Flaky</option>
+    <option value="interrupted">Interrupted</option>
+  </select>
+</div>
+<script id="odhin-native-status-filter-script">
+  document.addEventListener('change', function(event) {
+    if (!event.target || event.target.id !== 'status-filter') return;
+    var selectedStatus = event.target.value;
+    if (window.jQuery && jQuery.fn && jQuery.fn.DataTable && jQuery.fn.dataTable.isDataTable('#test-list-table')) {
+      jQuery('#test-list-table').DataTable().column(1).search(selectedStatus ? '^' + selectedStatus.replace('timedout', 'timed[ -]?out') + '$' : '', true, false).draw();
+      return;
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#test-list-table tbody tr'), function(row) {
+      var cells = row.querySelectorAll('td');
+      var status = String(cells[1] && cells[1].textContent || '').replace(/\\s+/g, ' ').trim().toLowerCase().replace(/[\\s-]/g, '');
+      row.style.display = !selectedStatus || status === selectedStatus ? '' : 'none';
     });
   });
 </script>`
@@ -1857,22 +1835,16 @@ function injectTestStatusFilters(root) {
 }
 
 function buildRuntimeTestStatusFilters() {
-  const definitions = JSON.stringify(testStatusFilters);
   return `
-<style id="odhin-test-status-filter-runtime-style">
-  .odhin-test-status-filter { margin: 1rem 0; display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; }
-  .odhin-test-status-filter button { border: 1px solid #768692; background: #fff; color: #0b0c0c; padding: .35rem .55rem; cursor: pointer; }
-  .odhin-test-status-filter button:hover, .odhin-test-status-filter button:focus { background: #f3f2f1; outline: 3px solid #ffdd00; outline-offset: 0; }
-</style>
 <script id="odhin-test-status-filter-runtime">
   (function() {
-    var definitions = ${definitions};
     var normalise = function(value) { return String(value || '').replace(/\\s+/g, ' ').trim().toLowerCase().replace(/[\\s-]/g, ''); };
     var attach = function() {
-      var tableElement = document.getElementById('test-list-table');
-      if (!tableElement) return;
       var testsTab = document.getElementById('TabTests');
-      if (testsTab && !testsTab.contains(tableElement)) {
+      var tableElement = document.getElementById('test-list-table');
+      var recoveredTests = document.getElementById('odhin-recovered-tests');
+      var recoveredTable = recoveredTests && recoveredTests.querySelector('#test-list-table');
+      if (testsTab && tableElement && tableElement !== recoveredTable && !testsTab.contains(tableElement)) {
         var tableContainer = tableElement.closest('.table-responsive') || tableElement;
         var dashboard = document.getElementById('TabDashboard');
         var heading = tableContainer.previousElementSibling;
@@ -1881,44 +1853,48 @@ function buildRuntimeTestStatusFilters() {
         }
         testsTab.appendChild(tableContainer);
       }
-      if (document.getElementById('odhin-test-status-filter')) return;
-      var counts = {};
-      Array.prototype.forEach.call(tableElement.querySelectorAll('tbody tr'), function(row) {
-        var cells = row.querySelectorAll('td');
-        var status = normalise(cells[1] && cells[1].textContent);
-        if (status) counts[status] = (counts[status] || 0) + 1;
+      if (testsTab && recoveredTests && !testsTab.contains(recoveredTests)) {
+        var testsTabTable = testsTab.querySelector('#test-list-table');
+        if (testsTabTable && testsTabTable !== recoveredTable) {
+          recoveredTests.remove();
+        } else {
+          testsTab.appendChild(recoveredTests);
+        }
+      }
+      tableElement = (testsTab && testsTab.querySelector('#test-list-table')) || document.getElementById('test-list-table');
+      if (!tableElement) return;
+      if (document.getElementById('status-filter')) return;
+      var filterRow = document.createElement('div');
+      filterRow.id = 'status-filter-row';
+      filterRow.className = 'd-flex align-items-center mb-2';
+      var label = document.createElement('label');
+      label.htmlFor = 'status-filter';
+      label.className = 'me-2 mb-0';
+      label.textContent = 'Status';
+      var filter = document.createElement('select');
+      filter.id = 'status-filter';
+      filter.className = 'form-select form-select-sm';
+      filter.style.width = '180px';
+      [['', 'All'], ['failed', 'Failed'], ['timedout', 'Timed Out'], ['skipped', 'Skipped'], ['passed', 'Passed'], ['flaky', 'Flaky'], ['interrupted', 'Interrupted']].forEach(function(option) {
+        var element = document.createElement('option');
+        element.value = option[0];
+        element.textContent = option[1];
+        filter.appendChild(element);
       });
-      var total = Object.keys(counts).reduce(function(sum, status) { return sum + counts[status]; }, 0);
-      var countFor = function(pattern) {
-        if (!pattern) return total;
-        var expression = new RegExp(pattern, 'i');
-        return Object.keys(counts).reduce(function(sum, status) { return sum + (expression.test(status) ? counts[status] : 0); }, 0);
-      };
-      var filter = document.createElement('div');
-      filter.id = 'odhin-test-status-filter';
-      filter.className = 'odhin-test-status-filter';
-      var label = document.createElement('strong');
-      label.textContent = 'Test status:';
-      filter.appendChild(label);
-      definitions.forEach(function(definition) {
-        var button = document.createElement('button');
-        button.type = 'button';
-        button.setAttribute('data-odhin-test-status-filter', definition.pattern);
-        button.textContent = definition.label + ' (' + countFor(definition.pattern) + ')';
-        button.addEventListener('click', function() {
-          if (window.jQuery && jQuery.fn && jQuery.fn.DataTable && jQuery.fn.dataTable.isDataTable('#test-list-table')) {
-            jQuery('#test-list-table').DataTable().column(1).search(definition.pattern, true, false).draw();
-            return;
-          }
-          Array.prototype.forEach.call(tableElement.querySelectorAll('tbody tr'), function(row) {
-            var cells = row.querySelectorAll('td');
-            var status = normalise(cells[1] && cells[1].textContent);
-            row.style.display = !definition.pattern || new RegExp(definition.pattern, 'i').test(status) ? '' : 'none';
-          });
+      filter.addEventListener('change', function() {
+        var selectedStatus = filter.value;
+        if (window.jQuery && jQuery.fn && jQuery.fn.DataTable && jQuery.fn.dataTable.isDataTable('#test-list-table')) {
+          jQuery('#test-list-table').DataTable().column(1).search(selectedStatus ? '^' + selectedStatus.replace('timedout', 'timed[ -]?out') + '$' : '', true, false).draw();
+          return;
+        }
+        Array.prototype.forEach.call(tableElement.querySelectorAll('tbody tr'), function(row) {
+          var cells = row.querySelectorAll('td');
+          row.style.display = !selectedStatus || normalise(cells[1] && cells[1].textContent) === selectedStatus ? '' : 'none';
         });
-        filter.appendChild(button);
       });
-      tableElement.parentNode.insertBefore(filter, tableElement);
+      filterRow.appendChild(label);
+      filterRow.appendChild(filter);
+      tableElement.parentNode.insertBefore(filterRow, tableElement);
     };
     if (document.readyState === 'complete') {
       window.setTimeout(attach, 0);
@@ -1958,7 +1934,7 @@ function injectRuntimeTestStatusFilters(html) {
     return source;
   }
   const runtime = buildRuntimeTestStatusFilters();
-  return /<\/body\s*>/i.test(source) ? source.replace(/<\/body\s*>/i, `${runtime}</body>`) : `${source}${runtime}`;
+  return /<\/body\s*>/i.test(source) ? source.replace(/<\/body\s*>/i, () => `${runtime}</body>`) : `${source}${runtime}`;
 }
 
 function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
@@ -1998,7 +1974,6 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectEnhancerStyles(root);
   removeDashboardAccessibilityEvidence(root);
   removeAccessibilityTableEnhancements(root);
-  removeTestStatusFilters(root);
 
   if (normalizedStats.length) {
     replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
@@ -2011,7 +1986,7 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
-  injectTestStatusFilters(root);
+  injectNativeTestStatusFilter(root);
 
   return root.toString();
 }
@@ -2085,7 +2060,7 @@ module.exports = {
     readAccessibilityEvidenceEntries,
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
-    normalizeTestStatus,
+    injectNativeTestStatusFilter,
     injectRuntimeTestStatusFilters,
     percentOf,
   },
