@@ -243,4 +243,54 @@ A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable inste
     expect(modal?.parentNode?.getAttribute('class')).toContain('container-fluid');
     expect(modal?.text).toContain('modal detail');
   });
+
+  test('removes the Tests heading and table from Dashboard when the report is well formed', () => {
+    const nextHtml = enhancerTest.enhanceDashboardHtml(
+      `<html><head></head><body>
+        <div id="TabDashboard"><h2>Tests</h2><div class="table-responsive"><table id="test-list-table"><tbody><tr><td>title</td><td>Passed</td></tr></tbody></table></div></div>
+        <div id="TabTests" class="main-tabcontent"></div>
+      </body></html>`,
+      []
+    );
+
+    const root = parse(nextHtml);
+    const dashboard = root.querySelector('#TabDashboard');
+    const testsTab = root.querySelector('#TabTests');
+
+    expect(dashboard?.text).not.toContain('Tests');
+    expect(dashboard?.querySelector('#test-list-table')).toBeNull();
+    expect(testsTab?.querySelector('h2')?.text).toBe('Tests');
+    expect(testsTab?.querySelector('#test-list-table')).toBeTruthy();
+  });
+
+  test('moves browser-parsed fallback test content from Dashboard into Tests', async ({ page }) => {
+    const nextHtml = enhancerTest.injectRuntimeTestStatusFilters(
+      `<html><body>
+        <div id="TabDashboard"><h2>Tests</h2><div class="table-responsive"><table id="test-list-table"><tbody><tr><td>title</td><td>Passed</td></tr></tbody></table></div></div>
+        <div id="TabTests" class="main-tabcontent"></div>
+      </body></html>`
+    );
+
+    await page.setContent(nextHtml);
+    await expect(page.locator('#TabTests #test-list-table')).toBeVisible();
+    await expect(page.locator('#TabTests').getByRole('heading', { name: 'Tests' })).toBeVisible();
+    await expect(page.locator('#TabDashboard #test-list-table')).toHaveCount(0);
+    await expect(page.locator('#TabDashboard').getByRole('heading', { name: 'Tests' })).toHaveCount(0);
+  });
+
+  test('moves fallback test content even when the original report already has filters', async ({ page }) => {
+    const nextHtml = enhancerTest.injectRuntimeTestStatusFilters(
+      `<html><body>
+        <div id="TabDashboard"><h2>Tests</h2><div class="table-responsive"><table id="test-list-table"><tbody><tr><td>title</td><td>Passed</td></tr></tbody></table></div></div>
+        <div id="TabTests" class="main-tabcontent"></div>
+        <div id="odhin-test-status-filter"></div>
+      </body></html>`
+    );
+
+    await page.setContent(nextHtml);
+
+    await expect(page.locator('#TabTests #test-list-table')).toBeVisible();
+    await expect(page.locator('#TabDashboard #test-list-table')).toHaveCount(0);
+    await expect(page.locator('#TabDashboard').getByRole('heading', { name: 'Tests' })).toHaveCount(0);
+  });
 });

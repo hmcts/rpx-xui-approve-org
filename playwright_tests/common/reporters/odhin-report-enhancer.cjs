@@ -179,6 +179,23 @@ function findTestsContentContainer(table, testsTab) {
   return null;
 }
 
+function findTestsHeading(contentContainer) {
+  const siblings = Array.from(contentContainer?.parentNode?.childNodes ?? []);
+  const contentIndex = siblings.indexOf(contentContainer);
+
+  for (let index = contentIndex - 1; index >= 0; index -= 1) {
+    const sibling = siblings[index];
+    if (isBlankNode(sibling)) {
+      continue;
+    }
+
+    const tagName = String(sibling?.rawTagName ?? '').toLowerCase();
+    return /^h[1-6]$/.test(tagName) && normalizeText(sibling.text) === 'Tests' ? sibling : null;
+  }
+
+  return null;
+}
+
 function repairTestsTabContent(root) {
   const testsTab = root.querySelector('#TabTests');
   const table = root.querySelector('#test-list-table');
@@ -191,9 +208,12 @@ function repairTestsTabContent(root) {
     return false;
   }
 
+  const testsHeading = findTestsHeading(contentContainer);
   const contentHtml = contentContainer.toString();
+  const headingHtml = testsHeading?.toString() ?? '';
+  testsHeading?.remove();
   contentContainer.remove();
-  testsTab.insertAdjacentHTML('beforeend', contentHtml);
+  testsTab.insertAdjacentHTML('beforeend', `${headingHtml}${contentHtml}`);
   return true;
 }
 
@@ -1849,9 +1869,19 @@ function buildRuntimeTestStatusFilters() {
     var definitions = ${definitions};
     var normalise = function(value) { return String(value || '').replace(/\\s+/g, ' ').trim().toLowerCase().replace(/[\\s-]/g, ''); };
     var attach = function() {
-      if (document.getElementById('odhin-test-status-filter')) return;
       var tableElement = document.getElementById('test-list-table');
       if (!tableElement) return;
+      var testsTab = document.getElementById('TabTests');
+      if (testsTab && !testsTab.contains(tableElement)) {
+        var tableContainer = tableElement.closest('.table-responsive') || tableElement;
+        var dashboard = document.getElementById('TabDashboard');
+        var heading = tableContainer.previousElementSibling;
+        if (dashboard && dashboard.contains(tableContainer) && heading && /^H[1-6]$/.test(heading.tagName) && heading.textContent.trim() === 'Tests') {
+          testsTab.appendChild(heading);
+        }
+        testsTab.appendChild(tableContainer);
+      }
+      if (document.getElementById('odhin-test-status-filter')) return;
       var counts = {};
       Array.prototype.forEach.call(tableElement.querySelectorAll('tbody tr'), function(row) {
         var cells = row.querySelectorAll('td');
