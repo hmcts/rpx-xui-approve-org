@@ -30,9 +30,9 @@ test.describe('odhin report enhancer', () => {
     expect(root.querySelector('#odhin-test-status-filter')).toBeNull();
   });
 
-  test('adds a Webapp-style status selector when an AO report does not provide one', async ({ page }) => {
+  test('places an injected status selector below the DataTables entries control', async ({ page }) => {
     const nextHtml = enhancerTest.enhanceDashboardHtml(
-      `<html><head></head><body><div id="TabTests" class="main-tabcontent"><table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
+      `<html><head><style>.dataTables_length { float: left; }</style></head><body><div id="TabTests" class="main-tabcontent"><div class="dataTables_length">Show 100 entries</div><table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
         <tr><td>passing result</td><td>Passed</td></tr>
         <tr><td>failing result</td><td>Failed</td></tr>
       </tbody></table></div></body></html>`,
@@ -42,10 +42,31 @@ test.describe('odhin report enhancer', () => {
     await page.setContent(nextHtml);
 
     await expect(page.getByLabel('Status')).toHaveValue('');
-    await expect(page.locator('#status-filter-row')).toHaveCSS('margin-left', '24px');
+    await expect(page.locator('#status-filter-row')).toHaveCSS('clear', 'both');
+    await expect(page.locator('#status-filter-row')).toHaveCSS('margin-top', '16px');
+    expect((await page.locator('#status-filter-row').boundingBox())?.y).toBeGreaterThan(
+      (await page.locator('.dataTables_length').boundingBox())?.y ?? 0
+    );
     await page.getByLabel('Status').selectOption('failed');
     await expect(page.locator('#test-list-table tbody tr').filter({ hasText: 'passing result' })).toBeHidden();
     await expect(page.locator('#test-list-table tbody tr').filter({ hasText: 'failing result' })).toBeVisible();
+  });
+
+  test('keeps the fallback status selector below a floating entries control', async ({ page }) => {
+    const nextHtml = enhancerTest.injectRuntimeTestStatusFilters(
+      `<html><head><style>.dataTables_length { float: left; }</style></head><body>
+        <div class="dataTables_length">Show 100 entries</div>
+        <table id="test-list-table"><tbody><tr><td>result</td><td>Passed</td></tr></tbody></table>
+      </body></html>`
+    );
+
+    await page.setContent(nextHtml);
+
+    await expect(page.getByLabel('Status')).toHaveValue('');
+    await expect(page.locator('#status-filter-row')).toHaveCSS('clear', 'both');
+    expect((await page.locator('#status-filter-row').boundingBox())?.y).toBeGreaterThan(
+      (await page.locator('.dataTables_length').boundingBox())?.y ?? 0
+    );
   });
 
   test('injects a non-destructive native status selector when parsing cannot safely serialise a report', () => {

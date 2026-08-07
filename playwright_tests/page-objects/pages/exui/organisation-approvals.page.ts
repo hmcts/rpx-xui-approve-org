@@ -276,7 +276,9 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   private async waitForOrganisationResultsToLoad(): Promise<void> {
+    await this.throwIfServiceUnavailable();
     await this.waitForSpinnerToHide(ORGANISATION_RESULTS_LOAD_TIMEOUT_MS);
+    await this.throwIfServiceUnavailable();
 
     if (await this.activeOrganisationsPanel.isVisible()) {
       await this.activeOrganisationsPanel.locator('table.active-organisations').waitFor({
@@ -300,6 +302,15 @@ export class OrganisationApprovalsPage extends BasePage {
       .filter({ hasText: /There are no new registrations\.|Organisation/i })
       .first()
       .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
+  }
+
+  private async throwIfServiceUnavailable(): Promise<void> {
+    if (!await this.serviceErrorHeading.isVisible()) {
+      return;
+    }
+
+    const heading = (await this.serviceErrorHeading.textContent())?.trim() || 'Unknown service error';
+    throw new Error(`Organisation results are unavailable: ${heading}`);
   }
 
   async openPaginationPage(pageNumber: number): Promise<void> {

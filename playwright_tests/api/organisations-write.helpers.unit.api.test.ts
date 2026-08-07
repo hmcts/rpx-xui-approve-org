@@ -1,22 +1,25 @@
 import { expect, test, type APIRequestContext } from '@playwright/test';
 
-import { loadOrganisationById, registeredOrganisationId } from './helpers/organisations-write.helpers';
+import { approveOrganisation, loadOrganisationById, registeredOrganisationId } from './helpers/organisations-write.helpers';
 
-function fakeApiRequest(results: Array<number | Error>): APIRequestContext {
-  let callCount = 0;
+function fakeApiRequest(results: Array<number | Error>, writeResults = results): APIRequestContext {
+  let getCallCount = 0;
+  let putCallCount = 0;
+
+  const responseFor = (result: number | Error) => {
+    if (result instanceof Error) {
+      throw result;
+    }
+
+    return {
+      status: () => result,
+      json: async () => ({ organisationIdentifier: 'ORG-123', status: 'PENDING' })
+    };
+  };
 
   return {
-    get: async () => {
-      const result = results[Math.min(callCount++, results.length - 1)];
-      if (result instanceof Error) {
-        throw result;
-      }
-
-      return {
-        status: () => result,
-        json: async () => ({ organisationIdentifier: 'ORG-123', status: 'PENDING' })
-      };
-    }
+    get: async () => responseFor(results[Math.min(getCallCount++, results.length - 1)]),
+    put: async () => responseFor(writeResults[Math.min(putCallCount++, writeResults.length - 1)])
   } as unknown as APIRequestContext;
 }
 
@@ -63,5 +66,49 @@ test.describe('organisation write helpers', () => {
         { attempts: 2, retryDelayMs: 0 }
       )
     ).rejects.toThrow('request configuration is invalid');
+  });
+
+  test('retries a transient approval gateway response and still requires a final 200', async () => {
+    const response = await approveOrganisation(
+      fakeApiRequest([200], [502, 200]),
+      'ORG-123',
+      { organisationIdentifier: 'ORG-123', status: 'PENDING' },
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(response.status()).toBe(200);
+  });
+
+  test('retries a transient approval transport error and still requires a final 200', async () => {
+    const response = await approveOrganisation(
+      fakeApiRequest([200], [new Error('apiRequestContext.put: socket hang up'), 200]),
+      'ORG-123',
+      { organisationIdentifier: 'ORG-123', status: 'PENDING' },
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(response.status()).toBe(200);
+  });
+
+  test('does not retry a non-transient approval response', async () => {
+    const response = await approveOrganisation(
+      fakeApiRequest([200], [400, 200]),
+      'ORG-123',
+      { organisationIdentifier: 'ORG-123', status: 'PENDING' },
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(response.status()).toBe(400);
+  });
+
+  test('returns the final transient approval response when retries are exhausted', async () => {
+    const response = await approveOrganisation(
+      fakeApiRequest([200], [502, 502]),
+      'ORG-123',
+      { organisationIdentifier: 'ORG-123', status: 'PENDING' },
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(response.status()).toBe(502);
   });
 });

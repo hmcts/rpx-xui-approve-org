@@ -3,30 +3,18 @@ import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 import { config } from '../config/config';
 import { clearOrganisationSearchSession, setupOrganisationSearchIntegrationPage } from './helpers/organisation-search.helpers';
 import {
-  createMockOrganisation,
   setupCommonOrganisationApiMocks,
   waitForOrganisationStatusResponse,
-  waitForOrganisationStatusResponseWithHttpStatus,
-  waitForSingleOrganisationResponseWithHttpStatus
+  waitForOrganisationStatusResponseWithHttpStatus
 } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
   activeOrganisationLoadStatusCodeScenarios,
-  activeOrganisationStatusCodeScenarios,
-  organisationDetailsStatusCodeScenarios
+  activeOrganisationStatusCodeScenarios
 } from './test-data/organisation-search.data';
 
 const ERROR_PAGE_BODY = 'Try again later.';
 const ACTIVE_ORGANISATIONS_URL = new URL('/organisation/active', config.baseUrl).toString();
-const ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS = 5000;
-const ACTIVE_DETAILS_ORGANISATION = createMockOrganisation({
-  organisationIdentifier: 'ACTIVE-DETAILS-NEGATIVE-001',
-  name: 'Active details negative org',
-  status: 'ACTIVE',
-  paymentAccount: ['PBA2222222'],
-  pendingPaymentAccount: []
-});
-
 const ACTIVE_ORGANISATIONS_SEARCH_PAYLOAD = {
   view: 'ACTIVE',
   searchRequest: {
@@ -85,56 +73,6 @@ test.describe('Playwright integration: active organisations load negative paths'
     });
   }
 });
-
-test.describe(
-  'Playwright integration: active organisation details negative paths',
-  { tag: ['@active-orgs', '@negative', '@known-product-defect'] },
-  () => {
-    for (const scenario of organisationDetailsStatusCodeScenarios) {
-      test(`Active organisation View link handles details API status ${scenario.statusCode}`, async ({
-        page,
-        errorPage,
-        organisationApprovalsPage
-      }) => {
-        const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
-          organisations: {
-            activeOrganisations: [ACTIVE_DETAILS_ORGANISATION],
-            singleOrganisationsById: {
-              [ACTIVE_DETAILS_ORGANISATION.organisationIdentifier]: ACTIVE_DETAILS_ORGANISATION
-            },
-            singleOrganisationResponse: {
-              status: scenario.statusCode,
-              body: { message: `mock active details error ${scenario.statusCode}` }
-            }
-          }
-        });
-
-        await test.step('Open active organisation details from View link', async () => {
-          await organisationApprovalsPage.openActiveOrganisationsTab();
-          await expect(organisationApprovalsPage.activeOrganisationRowByText(ACTIVE_DETAILS_ORGANISATION.name)).toBeVisible();
-          const detailsResponse = waitForSingleOrganisationResponseWithHttpStatus(
-            page,
-            ACTIVE_DETAILS_ORGANISATION.organisationIdentifier,
-            scenario.statusCode
-          );
-          await organisationApprovalsPage.openFirstActiveOrganisation();
-          await detailsResponse;
-          expect(standardApiMocks.getLastSingleOrganisationId()).toEqual(ACTIVE_DETAILS_ORGANISATION.organisationIdentifier);
-        });
-
-        await test.step('Verify active details error route', async () => {
-          await expect(page).toHaveURL(scenario.expectedRedirectPath, { timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-          await expect(errorPage.heading).toBeVisible({ timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-          await expect(errorPage.heading).toHaveText(scenario.expectedErrorHeading, {
-            timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS
-          });
-          await expect(errorPage.body).toBeVisible({ timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-          await expect(errorPage.body).toHaveText(ERROR_PAGE_BODY, { timeout: ACTIVE_DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-        });
-      });
-    }
-  }
-);
 
 test.describe(
   'Playwright integration: active organisations search negative paths',

@@ -67,7 +67,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
   });
 
-  test('i can delete an active org', { tag: '@known-product-defect' }, async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
+  test('i can delete an active org', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
     let organisationName = '';
 
     await test.step('Approve a pending organisation so it appears in active organisations', async () => {

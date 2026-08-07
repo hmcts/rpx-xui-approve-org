@@ -1,11 +1,8 @@
 {
-  "excludedTags": [
-    "@refdata-search"
-  ],
+  "excludedTags": [],
   "availableTags": [
     "@all-user-list-without-roles",
     "@pba-status-auth-route",
-    "@organisation-provider-search",
     "@refdata-search",
     "@reinvite-user",
     "@organisations",

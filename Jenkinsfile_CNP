@@ -60,11 +60,6 @@ properties([
             defaultValue: false,
             description: 'Optional: run the non-blocking Playwright accessibility pack (axe, WAVE-like and screen-reader checks) on this PR build.'
         ),
-        booleanParam(
-            name: 'RUN_REFDATA_SEARCH_TESTS',
-            defaultValue: false,
-            description: 'Optional: run non-blocking API and E2E searches that depend on RefData availability.'
-        )
     ])
 ])
 
@@ -82,14 +77,10 @@ String playwrightReportDir = 'functional-output/tests/playwright-e2e/odhin-repor
 String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-report'
 String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
-String playwrightRefDataApiReportDir = 'functional-output/tests/playwright-refdata/api-odhin-report'
-String playwrightRefDataE2eReportDir = 'functional-output/tests/playwright-refdata/e2e-odhin-report'
 String playwrightE2eReportFile = 'xui-ao-playwright-e2e.html'
 String playwrightApiReportFile = 'xui-ao-playwright-api.html'
 String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
 String playwrightAccessibilityReportFile = 'xui-ao-playwright-accessibility.html'
-String playwrightRefDataApiReportFile = 'xui-ao-playwright-api.html'
-String playwrightRefDataE2eReportFile = 'xui-ao-playwright-e2e.html'
 final String htmlIndexReportFile = 'index.html'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
@@ -105,34 +96,6 @@ def shouldRunAccessibilityTests = {
         env.RUN_PLAYWRIGHT_ACCESSIBILITY,
         env.RUN_ACCESSIBILITY_TESTS
     ].any { configured -> isEnabledValue(configured) }
-}
-
-def shouldRunRefDataSearchTests = {
-    return isEnabledValue(params.RUN_REFDATA_SEARCH_TESTS) || isEnabledValue(env.RUN_REFDATA_SEARCH_TESTS)
-}
-
-def publishRefDataSearchReports = { String environmentLabel ->
-    if (!shouldRunRefDataSearchTests()) {
-        return
-    }
-
-    publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : playwrightRefDataApiReportDir,
-        reportFiles          : playwrightRefDataApiReportFile,
-        reportName           : "${environmentLabel} RefData API Playwright Test"
-    ])
-    publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : playwrightRefDataE2eReportDir,
-        reportFiles          : playwrightRefDataE2eReportFile,
-        reportName           : "${environmentLabel} RefData E2E Playwright Test"
-    ])
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-refdata/**/*'
 }
 
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
@@ -174,35 +137,6 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
         }
 
         parallel(playwrightBranches)
-
-        if (shouldRunRefDataSearchTests()) {
-            stage("${environmentLabel} RefData Search Playwright Tests") {
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    withEnv([
-                        'API_PW_INCLUDE_TAGS=@refdata-search',
-                        'API_PW_EXCLUDED_TAGS_OVERRIDE=@none',
-                        'PLAYWRIGHT_HTML_OUTPUT=functional-output/tests/playwright-refdata/api-html-report',
-                        'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-refdata/api-junit.xml',
-                        'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/api-odhin-report'
-                    ]) {
-                        yarnBuilder.yarn('test:api:playwright:raw')
-                    }
-                }
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    withEnv([
-                        'E2E_PW_INCLUDE_TAGS=@refdata-search',
-                        'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
-                        'PLAYWRIGHT_HTML_OUTPUT=functional-output/tests/playwright-refdata/e2e-html-report',
-                        'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-refdata/e2e-junit.xml',
-                        'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/e2e-odhin-report'
-                    ]) {
-                        yarnBuilder.yarn('test:functional:e2e:raw')
-                    }
-                }
-            }
-        } else {
-            echo "[playwright-refdata] ${environmentLabel} RefData search tests skipped; RUN_REFDATA_SEARCH_TESTS=false"
-        }
     }
 }
 
@@ -241,9 +175,7 @@ def logPlaywrightTagFilterEnv = { String contextLabel ->
             " bypass=${env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES}",
         "A11Y include=${env.A11Y_PW_INCLUDE_TAGS ?: '<none>'} exclude=${env.A11Y_PW_EXCLUDED_TAGS_OVERRIDE ?: '<none>'}",
         "A11Y enabled=${shouldRunAccessibilityTests()}",
-        "RefData search enabled=${shouldRunRefDataSearchTests()}",
         "RUN_PLAYWRIGHT_ACCESSIBILITY=${displayValue(params.RUN_PLAYWRIGHT_ACCESSIBILITY)}",
-        "RUN_REFDATA_SEARCH_TESTS=${displayValue(params.RUN_REFDATA_SEARCH_TESTS)}",
         "RUN_ACCESSIBILITY_TESTS=${displayValue(params.RUN_ACCESSIBILITY_TESTS)}",
         "env.RUN_PLAYWRIGHT_ACCESSIBILITY=${displayValue(env.RUN_PLAYWRIGHT_ACCESSIBILITY)}",
         "env.RUN_ACCESSIBILITY_TESTS=${displayValue(env.RUN_ACCESSIBILITY_TESTS)}"
@@ -369,8 +301,6 @@ withPipeline(type, product, component) {
 
     afterAlways('functionalTest:preview') {
 
-        publishRefDataSearchReports('PREVIEW')
-
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -438,8 +368,6 @@ withPipeline(type, product, component) {
 
 
     afterAlways('functionalTest:aat') {
-
-        publishRefDataSearchReports('AAT')
 
         publishHTML([
             allowMissing         : true,

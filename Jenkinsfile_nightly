@@ -10,7 +10,6 @@ final String a11yPwIncludeTagsEnvName = 'A11Y_PW_INCLUDE_TAGS'
 final String a11yPwExcludedTagsOverrideEnvName = 'A11Y_PW_EXCLUDED_TAGS_OVERRIDE'
 final String ignoreGlobalExcludesEnvName = 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES'
 final String runAccessibilityTestsParamName = 'RUN_ACCESSIBILITY_TESTS'
-final String runRefDataSearchTestsParamName = 'RUN_REFDATA_SEARCH_TESTS'
 final String noneTagFallback = '<none>'
 final String htmlIndexReportFile = 'index.html'
 final String playwrightAccessibilityReportFile = 'xui-ao-playwright-accessibility.html'
@@ -85,11 +84,6 @@ properties([
             defaultValue: true,
             description: 'Run the unified accessibility Playwright pack (axe, WAVE-like and screen-reader checks)'
         ),
-        booleanParam(
-            name: runRefDataSearchTestsParamName,
-            defaultValue: false,
-            description: 'Optional: run non-blocking API and E2E searches that depend on RefData availability.'
-        )
     ])
 ])
 
@@ -104,51 +98,15 @@ String playwrightApiReportDir = 'functional-output/tests/playwright-api/odhin-re
 String playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
 String playwrightNightlyReportDir = 'functional-output/tests/playwright-nightly/odhin-report'
 String playwrightAccessibilityReportDir = 'functional-output/tests/playwright-accessibility/odhin-report'
-String playwrightRefDataApiReportDir = 'functional-output/tests/playwright-refdata/api-odhin-report'
-String playwrightRefDataE2eReportDir = 'functional-output/tests/playwright-refdata/e2e-odhin-report'
 String playwrightApiReportFile = 'xui-ao-playwright-api.html'
 String playwrightIntegrationReportFile = 'xui-ao-playwright-integration.html'
 String playwrightNightlyReportFile = 'xui-ao-playwright-nightly.html'
-String playwrightRefDataApiReportFile = 'xui-ao-playwright-api.html'
-String playwrightRefDataE2eReportFile = 'xui-ao-playwright-e2e.html'
 
 uk.gov.hmcts.contino.YarnBuilder yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
-
-Closure<Boolean> isEnabledValue = { Object value ->
-    return value != null && ['1', 'true', 'yes', 'y', 'on'].contains(value.toString().trim().toLowerCase())
-}
 
 Closure<Boolean> shouldRunAccessibilityTests = {
     Object configured = params."${runAccessibilityTestsParamName}"
     return configured == null ? true : configured.toString().toBoolean()
-}
-
-Closure<Boolean> shouldRunRefDataSearchTests = {
-    return isEnabledValue(params."${runRefDataSearchTestsParamName}") || isEnabledValue(env."${runRefDataSearchTestsParamName}")
-}
-
-Closure<Void> publishRefDataSearchReports = { String environmentLabel ->
-    if (!shouldRunRefDataSearchTests()) {
-        return
-    }
-
-    publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : playwrightRefDataApiReportDir,
-        reportFiles          : playwrightRefDataApiReportFile,
-        reportName           : "${environmentLabel} RefData API Playwright Test"
-    ])
-    publishHTML([
-        allowMissing         : true,
-        alwaysLinkToLastBuild: true,
-        keepAll              : true,
-        reportDir            : playwrightRefDataE2eReportDir,
-        reportFiles          : playwrightRefDataE2eReportFile,
-        reportName           : "${environmentLabel} RefData E2E Playwright Test"
-    ])
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-refdata/**/*'
 }
 
 Closure<Void> runPlaywrightFunctionalInParallel = {
@@ -190,35 +148,6 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
         }
 
         parallel(playwrightBranches)
-
-        if (shouldRunRefDataSearchTests()) {
-            stage('Nightly RefData Search Playwright Tests') {
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    withEnv([
-                        'API_PW_INCLUDE_TAGS=@refdata-search',
-                        'API_PW_EXCLUDED_TAGS_OVERRIDE=@none',
-                        'PLAYWRIGHT_HTML_OUTPUT=functional-output/tests/playwright-refdata/api-html-report',
-                        'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-refdata/api-junit.xml',
-                        'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/api-odhin-report'
-                    ]) {
-                        yarnBuilder.yarn('test:api:playwright:raw')
-                    }
-                }
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    withEnv([
-                        'E2E_PW_INCLUDE_TAGS=@refdata-search',
-                        'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
-                        'PLAYWRIGHT_HTML_OUTPUT=functional-output/tests/playwright-refdata/e2e-html-report',
-                        'PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-refdata/e2e-junit.xml',
-                        'PLAYWRIGHT_REPORT_FOLDER=functional-output/tests/playwright-refdata/e2e-odhin-report'
-                    ]) {
-                        yarnBuilder.yarn('test:functional:e2e:raw')
-                    }
-                }
-            }
-        } else {
-            echo "[playwright-refdata] Nightly RefData search tests skipped; ${runRefDataSearchTestsParamName}=false"
-        }
     }
 }
 
@@ -252,8 +181,7 @@ Closure<Void> logPlaywrightTagFilterEnv = { String contextLabel ->
         "API include=${apiInclude} exclude=${apiExclude}",
         "Global exclude=${globalExclude} bypass=${env.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES}",
         "A11Y include=${a11yInclude} exclude=${a11yExclude}",
-        "A11Y enabled=${shouldRunAccessibilityTests()}",
-        "RefData search enabled=${shouldRunRefDataSearchTests()}"
+        "A11Y enabled=${shouldRunAccessibilityTests()}"
     ].join(' | '))
 }
 
@@ -326,8 +254,6 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('fullFunctionalTest') {
-        publishRefDataSearchReports('Nightly')
-
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

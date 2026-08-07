@@ -858,7 +858,10 @@ function injectEnhancerStyles(root) {
   }
 
   #status-filter-row {
-    margin-left: 24px;
+    clear: both;
+    display: flex;
+    margin: 16px 0;
+    width: fit-content;
   }
 
   #odhin-feature-summary .odhin-feature-overview-largest {
@@ -1871,6 +1874,10 @@ function buildRuntimeTestStatusFilters() {
       var filterRow = document.createElement('div');
       filterRow.id = 'status-filter-row';
       filterRow.className = 'd-flex align-items-center mb-2';
+      filterRow.style.clear = 'both';
+      filterRow.style.display = 'flex';
+      filterRow.style.margin = '16px 0';
+      filterRow.style.width = 'fit-content';
       var label = document.createElement('label');
       label.htmlFor = 'status-filter';
       label.className = 'me-2 mb-0';

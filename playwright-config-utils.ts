@@ -65,7 +65,11 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
 }
 
 export function resolveApiRetryCount(env: EnvMap = process.env): number {
-  const configured = env.API_PW_RETRIES?.trim();
+  return resolveFunctionalRetryCount('API_PW_RETRIES', env);
+}
+
+export function resolveFunctionalRetryCount(retryEnvVar: string, env: EnvMap = process.env): number {
+  const configured = env[retryEnvVar]?.trim();
   if (!configured || !/^\d+$/.test(configured)) {
     return 0;
   }

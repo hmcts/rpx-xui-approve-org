@@ -1,9 +1,5 @@
 {
-  "excludedTags": [
-    "@smoke",
-    "@refdata-search",
-    "@known-product-defect"
-  ],
+  "excludedTags": [],
   "availableTags": [
     "@e2e",
     "@auth",
@@ -13,7 +9,6 @@
     "@tabs-load",
     "@active-org",
     "@org-workflows",
-    "@refdata-search",
-    "@known-product-defect"
+    "@refdata-search"
   ]
 }

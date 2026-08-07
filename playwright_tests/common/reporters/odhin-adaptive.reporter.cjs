@@ -19,7 +19,6 @@ class OdhinAdaptiveReporter {
     this.runtimeHookTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS, defaultRuntimeHookTimeoutMs);
     this.finalizationTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS, defaultFinalizationTimeoutMs);
     this.trimFailedArtifacts = resolveBoolean(process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS, false);
-    this.pendingInnerCallbacks = Promise.resolve();
     this.featureStats = new Map();
     this.statusCounts = {
       passed: 0,
@@ -62,24 +61,22 @@ class OdhinAdaptiveReporter {
 
     this.recordStatus(result?.status);
     this.recordFeatureStat(test, result);
-    this.enqueueInnerCallback('onTestEnd', () => this.inner.onTestEnd(test, nextResult), { test });
+    await this.runInnerCallback('onTestEnd', () => this.inner.onTestEnd(test, nextResult), { test });
   }
 
   async onStdOut(chunk, test, result) {
-    if (typeof this.inner.onStdOut === 'function') {
-      this.enqueueInnerCallback('onStdOut', () => this.inner.onStdOut(chunk, test, result), { test });
+    if (this.options.consoleTestOutput && typeof this.inner.onStdOut === 'function') {
+      await this.runInnerCallback('onStdOut', () => this.inner.onStdOut(chunk, test, result), { test });
     }
   }
 
   async onStdErr(chunk, test, result) {
-    if (typeof this.inner.onStdErr === 'function') {
-      this.enqueueInnerCallback('onStdErr', () => this.inner.onStdErr(chunk, test, result), { test });
+    if (this.options.consoleTestOutput && typeof this.inner.onStdErr === 'function') {
+      await this.runInnerCallback('onStdErr', () => this.inner.onStdErr(chunk, test, result), { test });
     }
   }
 
   async onEnd(result) {
-    await this.pendingInnerCallbacks;
-
     if (!this.hasRecordedTests()) {
       return;
     }
@@ -164,16 +161,12 @@ class OdhinAdaptiveReporter {
     this.featureStats.set(featureName, current);
   }
 
-  enqueueInnerCallback(hookName, invoke, context = {}) {
-    const run = async () => {
-      try {
-        await withTimeout(Promise.resolve().then(invoke), this.runtimeHookTimeoutMs);
-      } catch (error) {
-        process.stderr.write(`[odhin-profile] ${hookName} failed${formatHookContext(context)}: ${formatErrorMessage(error)}\n`);
-      }
-    };
-    this.pendingInnerCallbacks = this.pendingInnerCallbacks.then(run, run);
-    return this.pendingInnerCallbacks;
+  async runInnerCallback(hookName, invoke, context = {}) {
+    try {
+      await withTimeout(Promise.resolve().then(invoke), this.runtimeHookTimeoutMs);
+    } catch (error) {
+      process.stderr.write(`[odhin-profile] ${hookName} failed${formatHookContext(context)}: ${formatErrorMessage(error)}\n`);
+    }
   }
 }
 

@@ -1,7 +1,5 @@
 {
-  "excludedTags": [
-    "@known-product-defect"
-  ],
+  "excludedTags": [],
   "availableTags": [
     "@update-pba",
     "@active-orgs",
@@ -11,7 +9,6 @@
     "@nav-links",
     "@search",
     "@positive",
-    "@negative",
-    "@known-product-defect"
+    "@negative"
   ]
 }

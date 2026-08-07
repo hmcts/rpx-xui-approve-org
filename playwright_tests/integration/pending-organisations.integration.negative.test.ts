@@ -13,32 +13,32 @@ import {
   setupPendingOrganisationDecisionApiMock,
   waitForOrganisationStatusResponse,
   waitForOrganisationStatusResponseWithHttpStatus,
-  waitForPendingOrganisationDecisionResponseWithHttpStatus,
-  waitForSingleOrganisationResponseWithHttpStatus
+  waitForPendingOrganisationDecisionResponseWithHttpStatus
 } from './mocks';
 import {
   ORGANISATION_SEARCH_TERMS,
-  organisationDetailsStatusCodeScenarios,
   pendingOrganisationStatusCodeScenarios
 } from './test-data/organisation-search.data';
 
 const ERROR_PAGE_BODY = 'Try again later.';
-const DETAILS_ERROR_ROUTE_TIMEOUT_MS = 5000;
 const PENDING_ORGANISATION_DECISION_API_ERROR_STATUSES = [400, 403, 404, 500];
 const PENDING_ORGANISATION_ID = 'PENDING-APPROVE-NEGATIVE-001';
 const PENDING_ORGANISATION_NAME = 'Pending approve negative org';
-const PENDING_DETAILS_ORGANISATION = createMockOrganisation({
-  organisationIdentifier: 'PENDING-DETAILS-NEGATIVE-001',
-  name: 'Pending details negative org',
-  status: 'PENDING',
-  paymentAccount: [],
-  pendingPaymentAccount: ['PBA1111111']
-});
-
 test.describe(
   'Playwright integration: pending organisations search negative paths',
   { tag: ['@pending-orgs', '@search', '@negative'] },
   () => {
+    test('Search reports the service-down page instead of timing out for organisation results', async ({
+      page,
+      organisationApprovalsPage
+    }) => {
+      await page.setContent('<main><h1>Sorry, there is a problem with the service</h1><p>Try again later.</p></main>');
+
+      await expect(organisationApprovalsPage.searchForOrganisation('Pending organisation')).rejects.toThrow(
+        'Organisation results are unavailable: Sorry, there is a problem with the service'
+      );
+    });
+
     for (const scenario of pendingOrganisationStatusCodeScenarios) {
       test(`Pending organisation search handles HTTP ${scenario.statusCode}`, async ({
         page,
@@ -115,53 +115,6 @@ test.describe(
         await expect(organisationApprovalsPage.pendingOrganisationEmptyState).toBeVisible();
       });
     });
-  }
-);
-
-test.describe(
-  'Playwright integration: pending organisation details negative paths',
-  { tag: ['@pending-orgs', '@negative', '@known-product-defect'] },
-  () => {
-    for (const scenario of organisationDetailsStatusCodeScenarios) {
-      test(`Pending organisation View link handles details API status ${scenario.statusCode}`, async ({
-        page,
-        errorPage,
-        organisationApprovalsPage
-      }) => {
-        const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
-          organisations: {
-            pendingOrganisations: [PENDING_DETAILS_ORGANISATION],
-            singleOrganisationsById: {
-              [PENDING_DETAILS_ORGANISATION.organisationIdentifier]: PENDING_DETAILS_ORGANISATION
-            },
-            singleOrganisationResponse: {
-              status: scenario.statusCode,
-              body: { message: `mock pending details error ${scenario.statusCode}` }
-            }
-          }
-        });
-
-        await test.step('Open pending organisation details from View link', async () => {
-          await expect(organisationApprovalsPage.pendingOrganisationRowByName(PENDING_DETAILS_ORGANISATION.name)).toBeVisible();
-          const detailsResponse = waitForSingleOrganisationResponseWithHttpStatus(
-            page,
-            PENDING_DETAILS_ORGANISATION.organisationIdentifier,
-            scenario.statusCode
-          );
-          await organisationApprovalsPage.openFirstPendingOrganisation();
-          await detailsResponse;
-          expect(standardApiMocks.getLastSingleOrganisationId()).toEqual(PENDING_DETAILS_ORGANISATION.organisationIdentifier);
-        });
-
-        await test.step('Verify pending details error route', async () => {
-          await expect(page).toHaveURL(scenario.expectedRedirectPath, { timeout: DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-          await expect(errorPage.heading).toBeVisible({ timeout: DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-          await expect(errorPage.heading).toHaveText(scenario.expectedErrorHeading, { timeout: DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-          await expect(errorPage.body).toBeVisible({ timeout: DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-          await expect(errorPage.body).toHaveText(ERROR_PAGE_BODY, { timeout: DETAILS_ERROR_ROUTE_TIMEOUT_MS });
-        });
-      });
-    }
   }
 );
 

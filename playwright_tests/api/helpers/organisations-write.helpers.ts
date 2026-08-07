@@ -1,5 +1,5 @@
 import { randomBytes } from 'node:crypto';
-import type { APIRequestContext } from '@playwright/test';
+import type { APIRequestContext, APIResponse } from '@playwright/test';
 import { registerOrganisationViaExternalApi } from '../../helpers/register-org';
 import { recordProvisionedOrganisation } from './organisation-cleanup-ledger';
 export { cleanupProvisionedOrganisation, tryCleanupProvisionedOrganisation } from './organisation-cleanup';
@@ -32,17 +32,24 @@ type OrganisationLoadOptions = {
   retryDelayMs?: number;
 };
 
-const TRANSIENT_ORGANISATION_READ_STATUSES = new Set([502, 503, 504]);
+type OrganisationWriteOptions = {
+  attempts?: number;
+  retryDelayMs?: number;
+};
+
+const TRANSIENT_ORGANISATION_STATUSES = new Set([502, 503, 504]);
 const DEFAULT_ORGANISATION_READ_ATTEMPTS = 4;
 const DEFAULT_ORGANISATION_READ_RETRY_DELAY_MS = 500;
-const TRANSIENT_ORGANISATION_READ_ERROR_PATTERN = /\b(aborted|econnreset|etimedout|socket hang up)\b/i;
+const DEFAULT_ORGANISATION_WRITE_ATTEMPTS = 3;
+const DEFAULT_ORGANISATION_WRITE_RETRY_DELAY_MS = 500;
+const TRANSIENT_ORGANISATION_ERROR_PATTERN = /\b(aborted|econnreset|etimedout|socket hang up|fetch failed)\b/i;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function isTransientOrganisationReadError(error: unknown): boolean {
-  return error instanceof Error && TRANSIENT_ORGANISATION_READ_ERROR_PATTERN.test(error.message);
+function isTransientOrganisationError(error: unknown): boolean {
+  return error instanceof Error && TRANSIENT_ORGANISATION_ERROR_PATTERN.test(error.message);
 }
 
 function buildOrganisationSeed(): string {
@@ -121,13 +128,7 @@ export async function activateProvisionedOrganisation(
     throw new Error(`Unable to load provisioned organisation before activation id=${provisioned.organisationId}.`);
   }
 
-  const response = await apiRequest.put(`/api/organisations/${provisioned.organisationId}`, {
-    data: {
-      ...sourceOrganisation,
-      status: 'ACTIVE'
-    },
-    failOnStatusCode: false
-  });
+  const response = await approveOrganisation(apiRequest, provisioned.organisationId, sourceOrganisation);
 
   if (response.status() !== 200) {
     const rawBody = await response.text();
@@ -138,6 +139,52 @@ export async function activateProvisionedOrganisation(
   }
 
   return provisioned;
+}
+
+export async function approveOrganisation(
+  apiRequest: APIRequestContext,
+  organisationId: string,
+  sourceOrganisation: OrganisationRecord,
+  options: OrganisationWriteOptions = {}
+): Promise<APIResponse> {
+  const attempts = options.attempts ?? DEFAULT_ORGANISATION_WRITE_ATTEMPTS;
+  const retryDelayMs = options.retryDelayMs ?? DEFAULT_ORGANISATION_WRITE_RETRY_DELAY_MS;
+  let lastResponse: APIResponse | undefined;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await apiRequest.put(`/api/organisations/${organisationId}`, {
+        data: {
+          ...sourceOrganisation,
+          status: 'ACTIVE'
+        },
+        failOnStatusCode: false
+      });
+      lastResponse = response;
+
+      if (!TRANSIENT_ORGANISATION_STATUSES.has(response.status()) || attempt === attempts) {
+        return response;
+      }
+
+      console.warn(
+        `[organisation-write] transient approval failure id=${organisationId} status=${response.status()} attempt=${attempt}`
+      );
+    } catch (error) {
+      if (!isTransientOrganisationError(error) || attempt === attempts) {
+        throw error;
+      }
+
+      console.warn(`[organisation-write] transient approval error id=${organisationId} attempt=${attempt}: ${error}`);
+    }
+
+    await sleep(retryDelayMs * attempt);
+  }
+
+  if (!lastResponse) {
+    throw new Error(`Approval request did not produce a response for organisation id=${organisationId}.`);
+  }
+
+  return lastResponse;
 }
 
 export async function provisionActiveOrganisation(
@@ -175,11 +222,11 @@ export async function loadOrganisationById(
         return payload as OrganisationRecord;
       }
 
-      if (!TRANSIENT_ORGANISATION_READ_STATUSES.has(response.status())) {
+      if (!TRANSIENT_ORGANISATION_STATUSES.has(response.status())) {
         return null;
       }
     } catch (error) {
-      if (!isTransientOrganisationReadError(error)) {
+      if (!isTransientOrganisationError(error)) {
         throw error;
       }
     }

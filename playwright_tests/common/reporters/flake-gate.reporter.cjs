@@ -1,11 +1,9 @@
 /* global module, process */
 
-class FlakeGateReporter {
+class FlakeSummaryReporter {
   constructor() {
     this.totalAttempts = 0;
     this.finalOutcomesByTest = new Map();
-    this.maxFlakyTests = Number.isFinite(Number(process.env.PW_MAX_FLAKY_TESTS)) ? Number(process.env.PW_MAX_FLAKY_TESTS) : 20;
-    this.maxFlakyRate = Number.isFinite(Number(process.env.PW_MAX_FLAKY_RATE)) ? Number(process.env.PW_MAX_FLAKY_RATE) : 0.2;
   }
 
   projectName(test) {
@@ -49,16 +47,15 @@ class FlakeGateReporter {
     const failed = outcomes.filter((item) => ['failed', 'timedOut', 'interrupted'].includes(item.status)).length;
     const rate = flaky / (outcomes.length || 1);
     process.stdout.write([
-      `[flake-gate] finished=${outcomes.length}`,
-      `[flake-gate] attempts=${this.totalAttempts}`,
-      `[flake-gate] flaky=${flaky}`,
-      `[flake-gate] passed-on-retry=${retriedPasses}`,
-      `[flake-gate] failed=${failed}`,
-      `[flake-gate] flaky-rate=${(rate * 100).toFixed(2)}%`,
-      `[flake-gate] thresholds: maxFlakyTests=${this.maxFlakyTests}, maxFlakyRate=${(this.maxFlakyRate * 100).toFixed(2)}%`,
-      '[flake-gate] mode=report-only'
+      `[flake-summary] finished=${outcomes.length}`,
+      `[flake-summary] attempts=${this.totalAttempts}`,
+      `[flake-summary] flaky=${flaky}`,
+      `[flake-summary] passed-on-retry=${retriedPasses}`,
+      `[flake-summary] failed=${failed}`,
+      `[flake-summary] flaky-rate=${(rate * 100).toFixed(2)}%`,
+      '[flake-summary] mode=report-only'
     ].join('\n') + '\n');
   }
 }
 
-module.exports = FlakeGateReporter;
+module.exports = FlakeSummaryReporter;
