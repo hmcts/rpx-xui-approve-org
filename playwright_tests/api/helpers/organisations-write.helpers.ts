@@ -2,6 +2,8 @@ import { randomBytes } from 'node:crypto';
 import type { APIRequestContext } from '@playwright/test';
 import { registerOrganisationViaExternalApi } from '../../helpers/register-org';
 import { createOrganisationSearchPayload, getXsrfHeaders } from './search.helpers';
+import { recordProvisionedOrganisation } from './organisation-cleanup-ledger';
+export { cleanupProvisionedOrganisation, tryCleanupProvisionedOrganisation } from './organisation-cleanup';
 
 export type OrganisationRecord = {
   organisationIdentifier?: string;
@@ -36,8 +38,6 @@ export type ProvisionedOrganisation = {
   workEmailAddress: string;
   pbaNumbers: string[];
 };
-
-const CLEANUP_DELETE_ACCEPTED_STATUSES = [200, 404] as const;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -168,6 +168,8 @@ export async function provisionPendingOrganisation(
     throw new Error(`Unable to locate newly registered pending organisation with seed=${organisationSeed} within ${timeoutMs}ms.`);
   }
 
+  recordProvisionedOrganisation(organisationId, organisationSeed);
+
   return {
     organisationId,
     organisationSeed,
@@ -236,28 +238,4 @@ export async function loadOrganisationById(
   }
 
   return payload as OrganisationRecord;
-}
-
-export async function cleanupProvisionedOrganisation(
-  apiRequest: APIRequestContext,
-  organisationId: string | null | undefined
-): Promise<void> {
-  if (!organisationId) {
-    return;
-  }
-
-  const response = await apiRequest.delete(`/api/organisations/${organisationId}`, {
-    data: {},
-    failOnStatusCode: false
-  });
-  const httpStatus = response.status();
-
-  if (!CLEANUP_DELETE_ACCEPTED_STATUSES.includes(httpStatus as typeof CLEANUP_DELETE_ACCEPTED_STATUSES[number])) {
-    const rawBody = await response.text().catch(() => 'Unable to read response body');
-    throw new Error(
-      `Unable to cleanup provisioned organisation id=${organisationId}. ` +
-      `Expected 200 from DELETE /api/organisations/${organisationId} or 404 for already-cleaned data, ` +
-      `received ${httpStatus} body=${rawBody}`
-    );
-  }
 }
