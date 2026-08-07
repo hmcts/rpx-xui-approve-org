@@ -1,6 +1,5 @@
 {
   "excludedTags": [
-    "@pba-status-auth-route",
     "@refdata-search"
   ],
   "availableTags": [

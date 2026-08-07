@@ -54,6 +54,13 @@ test('quarantines RefData-dependent organisation searches from the default API s
   expect(catalog.excludedTags).toContain('@refdata-search');
 });
 
+test('keeps PBA authentication-route probes in the default API suite', () => {
+  const catalog = JSON.parse(fs.readFileSync('playwright_tests/api/tag-filter.json', 'utf8'));
+
+  expect(catalog.availableTags).toContain('@pba-status-auth-route');
+  expect(catalog.excludedTags).not.toContain('@pba-status-auth-route');
+});
+
 test('adds catalog-scoped global exclusions to checked-in defaults', () => {
   const filters = resolveForCatalog(
     ['@search', '@organisations'],

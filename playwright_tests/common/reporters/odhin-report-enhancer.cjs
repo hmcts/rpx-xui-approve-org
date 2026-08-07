@@ -857,6 +857,10 @@ function injectEnhancerStyles(root) {
     outline-offset: 2px;
   }
 
+  #status-filter-row {
+    margin-left: 24px;
+  }
+
   #odhin-feature-summary .odhin-feature-overview-largest {
     width: 100%;
     border: 1px solid #d8e3ef;

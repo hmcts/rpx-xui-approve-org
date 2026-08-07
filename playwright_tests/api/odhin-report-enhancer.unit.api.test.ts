@@ -32,7 +32,7 @@ test.describe('odhin report enhancer', () => {
 
   test('adds a Webapp-style status selector when an AO report does not provide one', async ({ page }) => {
     const nextHtml = enhancerTest.enhanceDashboardHtml(
-      `<html><body><div id="TabTests" class="main-tabcontent"><table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
+      `<html><head></head><body><div id="TabTests" class="main-tabcontent"><table id="test-list-table"><thead><tr><th>Title</th><th>Status</th></tr></thead><tbody>
         <tr><td>passing result</td><td>Passed</td></tr>
         <tr><td>failing result</td><td>Failed</td></tr>
       </tbody></table></div></body></html>`,
@@ -42,6 +42,7 @@ test.describe('odhin report enhancer', () => {
     await page.setContent(nextHtml);
 
     await expect(page.getByLabel('Status')).toHaveValue('');
+    await expect(page.locator('#status-filter-row')).toHaveCSS('margin-left', '24px');
     await page.getByLabel('Status').selectOption('failed');
     await expect(page.locator('#test-list-table tbody tr').filter({ hasText: 'passing result' })).toBeHidden();
     await expect(page.locator('#test-list-table tbody tr').filter({ hasText: 'failing result' })).toBeVisible();
