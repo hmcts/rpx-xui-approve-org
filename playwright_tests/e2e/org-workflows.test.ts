@@ -1,5 +1,6 @@
 import { test, expect } from '../helpers/fixtures';
 import { openProvisionedOrganisationDetails } from '../helpers/organisation-workflow-navigation';
+import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 
 test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', '@organisations', '@org-workflows'] }, () => {
   test('I can reject a pending org', async ({ page, organisationApprovalsPage, organisationIdentifier }) => {
@@ -67,10 +68,11 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
   });
 
-  test('i can delete an active org', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
+  test('i can delete an active org', async ({ page, organisationApprovalsPage, userName, organisationIdentifier }) => {
     let organisationName = '';
 
     await test.step('Approve a pending organisation so it appears in active organisations', async () => {
+      await ensureAuthenticatedPage(page);
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForOrganisation(userName);
       await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
