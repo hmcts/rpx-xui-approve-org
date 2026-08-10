@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import {
   logResolvedTagFilters,
+  resolveFunctionalRetryCount,
   resolveFunctionalTagFilters,
   resolveWorkerCount
 } from './playwright-config-utils';
@@ -24,8 +25,7 @@ module.exports = defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: 3, // Set the number of retries for all projects
+  retries: resolveFunctionalRetryCount('E2E_PW_RETRIES'),
 
   timeout: 180_000,
   expect: {

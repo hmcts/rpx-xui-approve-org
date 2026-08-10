@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import {
   logResolvedTagFilters,
+  resolveFunctionalRetryCount,
   resolveFunctionalTagFilters,
   resolveWorkerCount
 } from './playwright-config-utils';
@@ -20,7 +21,7 @@ module.exports = defineConfig({
   testMatch: /.*\.integration\.(positive|negative)\.test\.ts/,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  retries: 3,
+  retries: resolveFunctionalRetryCount('INTEGRATION_PW_RETRIES'),
   timeout: 180_000,
   expect: {
     timeout: 60_000

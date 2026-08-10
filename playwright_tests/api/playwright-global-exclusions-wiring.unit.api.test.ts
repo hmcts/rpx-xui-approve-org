@@ -67,6 +67,107 @@ test('declares shared @search in both E2E and integration catalogs', () => {
   expect(integrationCatalog.availableTags).toContain('@search');
 });
 
+test('keeps every E2E category selected by default', () => {
+  const e2eCatalog = JSON.parse(read('playwright_tests/e2e/tag-filter.json'));
+
+  expect(e2eCatalog.excludedTags).toEqual([]);
+  expect(e2eCatalog.availableTags).toContain('@refdata-search');
+  expect(e2eCatalog.availableTags).toContain('@active-org');
+  expect(e2eCatalog.availableTags).toContain('@tabs-load');
+});
+
+test('does not retain unimplemented details-error expectations or skipped integration tests', () => {
+  const integrationCatalog = JSON.parse(read('playwright_tests/integration/tag-filter.json'));
+
+  expect(integrationCatalog.excludedTags).toEqual([]);
+  expect(integrationCatalog.availableTags).not.toContain('@known-product-defect');
+
+  for (const specPath of [
+    'playwright_tests/integration/active-organisations.integration.negative.test.ts',
+    'playwright_tests/integration/pending-organisations.integration.negative.test.ts',
+    'playwright_tests/integration/pending-pbas.integration.negative.test.ts'
+  ]) {
+    const source = read(specPath);
+    expect(source).not.toContain('@known-product-defect');
+    expect(source).not.toContain('details API status');
+    expect(source).not.toContain('test.skip');
+  }
+});
+
+test('labels RefData-backed browser coverage while leaving it in the default E2E selection', () => {
+  const searchSource = read('playwright_tests/e2e/organisation-search.test.ts');
+  const tabsSource = read('playwright_tests/e2e/tabs-load.test.ts');
+
+  expect(searchSource).toContain('Search by organisation in active organisations');
+  expect(searchSource).toContain('test(\'Search by organisation in new registrations\', { tag: \'@refdata-search\' }');
+  expect(searchSource).toContain('test(\'Search by address in new registrations\', { tag: \'@refdata-search\' }');
+  expect(searchSource).toContain('test(\'Search by organisation in active organisations\', { tag: \'@refdata-search\' }');
+  expect(searchSource).toContain('test(\'Search by organisation in new PBAs\', async');
+  expect(searchSource).not.toContain('[\'@e2e\', \'@organisations\', \'@search\', \'@refdata-search\']');
+  expect(tabsSource).toContain('test(\'Active organisations tab loads data\', { tag: \'@refdata-search\' }');
+  expect(tabsSource).toContain('RefData failed while loading the Active organisations tab');
+  expect(searchSource).toContain('RefData failed while opening Active organisations for search');
+});
+
+test('proves the reviewed workflow verifies its durable REVIEW state', () => {
+  const workflowSource = read('playwright_tests/e2e/org-workflows.test.ts');
+  const pageObjectSource = read('playwright_tests/page-objects/pages/exui/organisation-approvals.page.ts');
+
+  expect(workflowSource).toContain('organisationStatusBadge).toHaveText(\'UNDER REVIEW\')');
+  expect(workflowSource).toContain('chooseDecision(/Place registration under review/i)).toBeChecked()');
+  expect(pageObjectSource).toContain('app-identity-bar-component .hmcts-badge');
+});
+
+test('labels every RefData-backed organisation search without excluding it from API coverage', () => {
+  const source = read('playwright_tests/api/organisations.positive.api.test.ts');
+
+  expect(source).toMatch(
+    /test\(\s*'POST \/api\/organisations search: active organisation search with empty search term returns a bounded envelope',\s*\{ tag: '@refdata-search' \}/
+  );
+});
+
+test('runs all functional tests once through the normal preview and nightly Jenkins lanes', () => {
+  for (const jenkinsfile of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
+    const source = read(jenkinsfile);
+
+    expect(source).not.toContain('RUN_REFDATA_SEARCH_TESTS');
+    expect(source).not.toContain('RefData Search Playwright Tests');
+    expect(source).not.toContain('playwright-refdata');
+    expect(source).toContain('yarnBuilder.yarn(\'test:api:playwright:raw\')');
+    expect(source).toContain('yarnBuilder.yarn(\'test:integration:playwright:raw\')');
+
+    if (jenkinsfile === 'Jenkinsfile_CNP') {
+      expect(source).toContain('yarnBuilder.yarn(\'test:functional:e2e:raw\')');
+    } else {
+      expect(source).toContain('yarnBuilder.yarn(\'test:crossbrowser\')');
+      expect(source).toContain('pipelineTriggers(env.BRANCH_NAME == \'master\' ? [cron(\'15 17 * * 1-5\')] : [])');
+    }
+  }
+});
+
+test('does not retry E2E, integration, or nightly tests unless a caller opts in explicitly', () => {
+  expect(read('playwright.config.ts')).toContain('retries: resolveFunctionalRetryCount(\'E2E_PW_RETRIES\')');
+  expect(read('playwright-integration.config.ts')).toContain(
+    'retries: resolveFunctionalRetryCount(\'INTEGRATION_PW_RETRIES\')'
+  );
+  expect(read('playwright-nightly.config.ts')).toContain('retries: resolveFunctionalRetryCount(\'E2E_PW_RETRIES\')');
+});
+
+test('sets three retries for preview and nightly E2E pipeline runs', () => {
+  for (const jenkinsfile of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
+    expect(read(jenkinsfile)).toContain('env.E2E_PW_RETRIES = \'3\'');
+  }
+});
+
+test('keeps independent update-PBA suites parallel so one failure cannot skip the remaining cases', () => {
+  for (const specPath of [
+    'playwright_tests/api/update-pba.positive.api.test.ts',
+    'playwright_tests/api/update-pba.negative.api.test.ts'
+  ]) {
+    expect(read(specPath)).not.toContain('test.describe.configure({ mode: \'serial\' })');
+  }
+});
+
 test('local env population prefers the exact AO exclusion secret', () => {
   const result = runLocalEnvPopulation([
     'if [[ "$1 $2 $3" == "keyvault secret show" && "$*" == *"--name xui-approve-org-playwright-global-excluded-tags"* ]]; then echo "@ao-only"; exit 0; fi',

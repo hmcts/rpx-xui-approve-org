@@ -59,7 +59,7 @@ properties([
             name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
             defaultValue: false,
             description: 'Optional: run the non-blocking Playwright accessibility pack (axe, WAVE-like and screen-reader checks) on this PR build.'
-        )
+        ),
     ])
 ])
 
@@ -216,6 +216,7 @@ withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '5'
+    env.E2E_PW_RETRIES = '3'
     applyPlaywrightTagFilterEnv()
     logPlaywrightTagFilterEnv('pipeline env')
     enableAksStagingDeployment()
