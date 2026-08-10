@@ -3,7 +3,7 @@ import { Organisation } from '../../../pactFixtures';
 import { getOperation } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
+const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'referenceData_organisationalInternal', port: 8000 });
 
@@ -21,7 +21,9 @@ describe('Get a list of organisations based on status', () => {
         withRequest: {
           method: 'GET',
           path: '/refdata/internal/v1/organisations',
-          query: 'status=Active',
+          query: {
+            status: 'Active'
+          },
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer some-access-token',
@@ -51,14 +53,13 @@ describe('Get a list of organisations based on status', () => {
     it('Returns a list of organisations based on status', async () => {
       const path: string = `${pactSetUp.provider.mockService.baseUrl}/refdata/internal/v1/organisations?status=Active`;
       const response = await getOperation(path);
-      const responseDto = (response.data as { organisations: Organisation[] }).organisations;
+      const responseDto: Organisation[] = response.data.organisations as Organisation[];
       assertResponse(responseDto);
     });
   });
 });
 
 function assertResponse(dto: Organisation[]): void {
-  // eslint-disable-next-line no-unused-expressions
   expect(dto).to.be.not.null;
   for (const element of dto) {
     expect(element.companyNumber).to.equal('A1000');

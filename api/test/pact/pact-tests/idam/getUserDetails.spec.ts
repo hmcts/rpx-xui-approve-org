@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { idamGetUserDetails } from '../../../pactUtil';
 import { PactTestSetup } from '../settings/provider.mock';
 
-const { Matchers } = require('@pact-foundation/pact');
+const { MatchersV2: Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactTestSetup({ provider: 'idamApi_users', port: 8000 });
 
