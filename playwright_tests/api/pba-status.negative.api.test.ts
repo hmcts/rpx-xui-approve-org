@@ -49,7 +49,7 @@ test.describe('Playwright API negative: pba status', { tag: ['@pba-status', '@ne
     }
   });
 
-  test('POST /api/pba/status/PENDING without auth is denied', async ({ apiAnonymousRequest }) => {
+  test('POST /api/pba/status/PENDING without auth is denied', { tag: ['@pba-status-auth-route'] }, async ({ apiAnonymousRequest }) => {
     const response = await apiAnonymousRequest.post('/api/pba/status/PENDING', {
       failOnStatusCode: false,
       data: createPbaSearchPayload({
