@@ -35,9 +35,19 @@ module.exports = {
     filename: 'server.bundle.js'
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
+    fallback: {
+      "@azure/functions-core": false
+    }
   },
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals({
+      allowlist: ['otp']
+    }),
+    {
+      '@azure/functions-core': 'commonjs @azure/functions-core'
+    }
+  ],
   module: {
     rules: [
       {

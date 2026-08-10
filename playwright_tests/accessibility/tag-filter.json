@@ -3,6 +3,7 @@
   "availableTags": [
     "@accessibility",
     "@tabs-states",
+    "@interaction-states",
     "@staff-details",
     "@wave-a11y",
     "@lighthouse-a11y"

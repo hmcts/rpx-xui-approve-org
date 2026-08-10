@@ -20,12 +20,12 @@ export const getUser = createSelector(
 
 export const getUserIdleTime = createSelector(
   getUser,
-  (user) => (user && user.idleTime) ? user.idleTime : NaN
+  (user) => user?.idleTime ?? Number.NaN
 );
 
 export const getUserTimeOut = createSelector(
   getUser,
-  (user) => (user && user.timeout) ? user.timeout : NaN
+  (user) => user?.timeout ?? Number.NaN
 );
 
 export const getModalSessionData = createSelector(

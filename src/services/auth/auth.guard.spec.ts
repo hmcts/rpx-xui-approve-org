@@ -25,7 +25,6 @@ const config = {
 };
 
 const router = {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   navigate: () => {}
 };
 
@@ -36,7 +35,6 @@ const cookieService = {
   set: (key, value) => {
     cookieService[key] = value;
   },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   removeAll: () => {}
 };
 
@@ -53,7 +51,6 @@ class MockAuthService {
     return of(this.authenticated);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   public loginRedirect() {}
 }
 

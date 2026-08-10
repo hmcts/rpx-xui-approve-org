@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -13,7 +13,7 @@ export class AuthService {
     private readonly httpService: HttpClient
   ) {}
 
-  // TODO remove/toggle this for oidc
+  // remove/toggle this for oidc
   public generateLoginUrl(): Observable<string> {
     return this.envService.getEnv$().pipe(map((config) => {
       const port = window.location.port ? `:${window.location.port}` : '';

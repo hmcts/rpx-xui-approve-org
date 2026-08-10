@@ -14,7 +14,7 @@ describe('idamCheck', () => {
 
   beforeEach(() => {
     configStub = sinon.stub();
-    configStub.withArgs('services.idamApi').returns('http://idam-api.example.com');
+    configStub.withArgs('services.idamWeb').returns('http://idam-web.example.com');
 
     axiosGetStub = sinon.stub();
     httpStub = sinon.stub().returns({ get: axiosGetStub });
@@ -58,11 +58,11 @@ describe('idamCheck', () => {
       await idamCheck();
 
       expect(configStub).to.have.been.calledOnce;
-      expect(configStub).to.have.been.calledWith('services.idamApi');
+      expect(configStub).to.have.been.calledWith('services.idamWeb');
       expect(httpStub).to.have.been.calledOnce;
       expect(httpStub).to.have.been.calledWith({});
       expect(axiosGetStub).to.have.been.calledOnce;
-      expect(axiosGetStub).to.have.been.calledWith('http://idam-api.example.com/o/.well-known/openid-configuration');
+      expect(axiosGetStub).to.have.been.calledWith('http://idam-web.example.com/o/.well-known/openid-configuration');
       expect(loggerStub.warn).not.to.have.been.called;
       expect(loggerStub.error).not.to.have.been.called;
       expect(processExitStub).not.to.have.been.called;
@@ -79,22 +79,22 @@ describe('idamCheck', () => {
       await idamCheckPromise;
 
       expect(configStub).to.have.been.calledOnce;
-      expect(configStub).to.have.been.calledWith('services.idamApi');
+      expect(configStub).to.have.been.calledWith('services.idamWeb');
       expect(httpStub).to.have.been.called;
       expect(axiosGetStub).to.have.been.calledTwice;
       expect(loggerStub.warn).to.have.been.calledWithMatch('attempt 1');
       expect(processExitStub).not.to.have.been.called;
     });
 
-    it('should handle different IDAM API URLs from configuration', async () => {
-      configStub.withArgs('services.idamApi').returns('http://different-idam.example.com');
+    it('should handle different IDAM Web URLs from configuration', async () => {
+      configStub.withArgs('services.idamWeb').returns('http://different-idam.example.com');
       const mockResponse = { data: { issuer: 'http://different-idam.example.com/o' } };
       axiosGetStub.resolves(mockResponse);
 
       await idamCheck();
 
       expect(configStub).to.have.been.calledOnce;
-      expect(configStub).to.have.been.calledWith('services.idamApi');
+      expect(configStub).to.have.been.calledWith('services.idamWeb');
       expect(httpStub).to.have.been.calledOnce;
       expect(httpStub).to.have.been.calledWith({});
       expect(axiosGetStub).to.have.been.calledOnce;
