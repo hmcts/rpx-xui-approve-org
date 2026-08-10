@@ -136,6 +136,7 @@ test.describe(
       });
 
       await test.step('Verify active organisation search results', async () => {
+        await expect(organisationApprovalsPage.activeOrganisationDataRows).toHaveCount(activeSearchOrganisations.length);
         const activeOrganisationRows = await organisationApprovalsPage.activeOrganisationTableRows();
         expect(activeOrganisationRows).toEqual(organisationTableRowsFromMockData(activeSearchOrganisations));
         expect(standardApiMocks.getLastActiveOrganisationSearchTerm()).toEqual(
@@ -210,6 +211,7 @@ test.describe(
             page_size: 10
           }
         });
+        await expect(organisationApprovalsPage.activeOrganisationDataRows).toHaveCount(10);
         expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual(
           organisationTableRowsFromMockData(activePaginationOrganisations.slice(0, 10))
         );
@@ -231,6 +233,7 @@ test.describe(
           }
         });
         await expect(organisationApprovalsPage.searchInput).toHaveValue(ORGANISATION_SEARCH_TERMS.activePagination);
+        await expect(organisationApprovalsPage.activeOrganisationDataRows).toHaveCount(1);
         expect(await organisationApprovalsPage.activeOrganisationTableRows()).toEqual(
           organisationTableRowsFromMockData([expectedSecondPageOrganisation])
         );

@@ -168,13 +168,32 @@ function isEmptyOrphanModalDialog(node) {
 }
 
 function findTestsContentContainer(table, testsTab) {
-  let current = table;
-  let candidate = table;
-  while (current?.parentNode && current.parentNode !== testsTab && !isDocumentContainer(current.parentNode)) {
-    candidate = current.parentNode;
+  let current = table?.parentNode;
+  while (current && current !== testsTab && !isDocumentContainer(current)) {
+    if (elementHasClass(current, 'table-responsive')) {
+      return current;
+    }
     current = current.parentNode;
   }
-  return current?.parentNode === testsTab ? null : candidate;
+
+  return null;
+}
+
+function findTestsHeading(contentContainer) {
+  const siblings = Array.from(contentContainer?.parentNode?.childNodes ?? []);
+  const contentIndex = siblings.indexOf(contentContainer);
+
+  for (let index = contentIndex - 1; index >= 0; index -= 1) {
+    const sibling = siblings[index];
+    if (isBlankNode(sibling)) {
+      continue;
+    }
+
+    const tagName = String(sibling?.rawTagName ?? '').toLowerCase();
+    return /^h[1-6]$/.test(tagName) && normalizeText(sibling.text) === 'Tests' ? sibling : null;
+  }
+
+  return null;
 }
 
 function repairTestsTabContent(root) {
@@ -189,9 +208,12 @@ function repairTestsTabContent(root) {
     return false;
   }
 
+  const testsHeading = findTestsHeading(contentContainer);
   const contentHtml = contentContainer.toString();
+  const headingHtml = testsHeading?.toString() ?? '';
+  testsHeading?.remove();
   contentContainer.remove();
-  testsTab.insertAdjacentHTML('beforeend', contentHtml);
+  testsTab.insertAdjacentHTML('beforeend', `${headingHtml}${contentHtml}`);
   return true;
 }
 
@@ -807,6 +829,39 @@ function injectEnhancerStyles(root) {
 
   .odhin-a11y-filter-bar button:hover {
     background: #ffdd00;
+  }
+
+  .odhin-test-status-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+  }
+
+  .odhin-test-status-filter button {
+    background: #f3f2f1;
+    border: 1px solid #505a5f;
+    color: #0b0c0c;
+    cursor: pointer;
+    font-weight: 700;
+    padding: 5px 8px;
+  }
+
+  .odhin-test-status-filter button:hover {
+    background: #ffdd00;
+  }
+
+  .odhin-test-status-filter button:focus-visible {
+    outline: 3px solid #0b0c0c;
+    outline-offset: 2px;
+  }
+
+  #status-filter-row {
+    clear: both;
+    display: flex;
+    margin: 16px 0;
+    width: fit-content;
   }
 
   #odhin-feature-summary .odhin-feature-overview-largest {
@@ -1747,10 +1802,157 @@ function defaultTestListRowsPerPage(html) {
     );
 }
 
+function injectNativeTestStatusFilter(root) {
+  const table = root.querySelector('#test-list-table');
+  if (!table || root.querySelector('#status-filter')) {
+    return false;
+  }
+
+  table.insertAdjacentHTML(
+    'beforebegin',
+    `<div class="d-flex align-items-center mb-2" id="status-filter-row">
+  <label for="status-filter" class="me-2 mb-0">Status</label>
+  <select id="status-filter" class="form-select form-select-sm" style="width: 180px;">
+    <option value="">All</option>
+    <option value="failed">Failed</option>
+    <option value="timedout">Timed Out</option>
+    <option value="skipped">Skipped</option>
+    <option value="passed">Passed</option>
+    <option value="flaky">Flaky</option>
+    <option value="interrupted">Interrupted</option>
+  </select>
+</div>
+<script id="odhin-native-status-filter-script">
+  document.addEventListener('change', function(event) {
+    if (!event.target || event.target.id !== 'status-filter') return;
+    var selectedStatus = event.target.value;
+    if (window.jQuery && jQuery.fn && jQuery.fn.DataTable && jQuery.fn.dataTable.isDataTable('#test-list-table')) {
+      jQuery('#test-list-table').DataTable().column(1).search(selectedStatus ? '^' + selectedStatus.replace('timedout', 'timed[ -]?out') + '$' : '', true, false).draw();
+      return;
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('#test-list-table tbody tr'), function(row) {
+      var cells = row.querySelectorAll('td');
+      var status = String(cells[1] && cells[1].textContent || '').replace(/\\s+/g, ' ').trim().toLowerCase().replace(/[\\s-]/g, '');
+      row.style.display = !selectedStatus || status === selectedStatus ? '' : 'none';
+    });
+  });
+</script>`
+  );
+  return true;
+}
+
+function buildRuntimeTestStatusFilters() {
+  return `
+<script id="odhin-test-status-filter-runtime">
+  (function() {
+    var normalise = function(value) { return String(value || '').replace(/\\s+/g, ' ').trim().toLowerCase().replace(/[\\s-]/g, ''); };
+    var attach = function() {
+      var testsTab = document.getElementById('TabTests');
+      var tableElement = document.getElementById('test-list-table');
+      var recoveredTests = document.getElementById('odhin-recovered-tests');
+      var recoveredTable = recoveredTests && recoveredTests.querySelector('#test-list-table');
+      if (testsTab && tableElement && tableElement !== recoveredTable && !testsTab.contains(tableElement)) {
+        var tableContainer = tableElement.closest('.table-responsive') || tableElement;
+        var dashboard = document.getElementById('TabDashboard');
+        var heading = tableContainer.previousElementSibling;
+        if (dashboard && dashboard.contains(tableContainer) && heading && /^H[1-6]$/.test(heading.tagName) && heading.textContent.trim() === 'Tests') {
+          testsTab.appendChild(heading);
+        }
+        testsTab.appendChild(tableContainer);
+      }
+      if (testsTab && recoveredTests && !testsTab.contains(recoveredTests)) {
+        var testsTabTable = testsTab.querySelector('#test-list-table');
+        if (testsTabTable && testsTabTable !== recoveredTable) {
+          recoveredTests.remove();
+        } else {
+          testsTab.appendChild(recoveredTests);
+        }
+      }
+      tableElement = (testsTab && testsTab.querySelector('#test-list-table')) || document.getElementById('test-list-table');
+      if (!tableElement) return;
+      if (document.getElementById('status-filter')) return;
+      var filterRow = document.createElement('div');
+      filterRow.id = 'status-filter-row';
+      filterRow.className = 'd-flex align-items-center mb-2';
+      filterRow.style.clear = 'both';
+      filterRow.style.display = 'flex';
+      filterRow.style.margin = '16px 0';
+      filterRow.style.width = 'fit-content';
+      var label = document.createElement('label');
+      label.htmlFor = 'status-filter';
+      label.className = 'me-2 mb-0';
+      label.textContent = 'Status';
+      var filter = document.createElement('select');
+      filter.id = 'status-filter';
+      filter.className = 'form-select form-select-sm';
+      filter.style.width = '180px';
+      [['', 'All'], ['failed', 'Failed'], ['timedout', 'Timed Out'], ['skipped', 'Skipped'], ['passed', 'Passed'], ['flaky', 'Flaky'], ['interrupted', 'Interrupted']].forEach(function(option) {
+        var element = document.createElement('option');
+        element.value = option[0];
+        element.textContent = option[1];
+        filter.appendChild(element);
+      });
+      filter.addEventListener('change', function() {
+        var selectedStatus = filter.value;
+        if (window.jQuery && jQuery.fn && jQuery.fn.DataTable && jQuery.fn.dataTable.isDataTable('#test-list-table')) {
+          jQuery('#test-list-table').DataTable().column(1).search(selectedStatus ? '^' + selectedStatus.replace('timedout', 'timed[ -]?out') + '$' : '', true, false).draw();
+          return;
+        }
+        Array.prototype.forEach.call(tableElement.querySelectorAll('tbody tr'), function(row) {
+          var cells = row.querySelectorAll('td');
+          row.style.display = !selectedStatus || normalise(cells[1] && cells[1].textContent) === selectedStatus ? '' : 'none';
+        });
+      });
+      filterRow.appendChild(label);
+      filterRow.appendChild(filter);
+      tableElement.parentNode.insertBefore(filterRow, tableElement);
+    };
+    if (document.readyState === 'complete') {
+      window.setTimeout(attach, 0);
+    } else {
+      window.addEventListener('load', function() { window.setTimeout(attach, 0); }, { once: true });
+    }
+  }());
+</script>`;
+}
+
+function recoverUnparsedTestList(html) {
+  const source = String(html);
+  const tableStart = source.search(/<table\b[^>]*\bid=(['"])test-list-table\1[^>]*>/i);
+  if (tableStart < 0) {
+    return source;
+  }
+
+  const lowerCaseSource = source.toLowerCase();
+  const tableEnd = lowerCaseSource.indexOf('</table>', tableStart);
+  const fragmentEnd = tableEnd >= 0 ? tableEnd + '</table>'.length : lowerCaseSource.indexOf('</script>', tableStart);
+  if (fragmentEnd < 0) {
+    return source;
+  }
+
+  const table = tableEnd >= 0
+    ? source.slice(tableStart, fragmentEnd)
+    : `${source.slice(tableStart, fragmentEnd)}</table>`;
+  const recoveredMarkup = `\n<section id="odhin-recovered-tests"><h2>Tests</h2><div class="table-responsive">${table}</div></section>\n`;
+  return /<\/body\s*>/i.test(source)
+    ? source.replace(/<\/body\s*>/i, `${recoveredMarkup}</body>`)
+    : `${source}${recoveredMarkup}`;
+}
+
+function injectRuntimeTestStatusFilters(html) {
+  const source = String(html);
+  if (source.includes('id="odhin-test-status-filter-runtime"')) {
+    return source;
+  }
+  const runtime = buildRuntimeTestStatusFilters();
+  return /<\/body\s*>/i.test(source) ? source.replace(/<\/body\s*>/i, () => `${runtime}</body>`) : `${source}${runtime}`;
+}
+
 function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
+  const hasTestList = htmlWithDefaultTestRows.includes('id="test-list-table"');
   const hasDashboardAccessibilityEvidence = htmlWithDefaultTestRows.includes('id="odhin-accessibility-evidence"');
   const hasAccessibilityAssertionText =
     htmlWithDefaultTestRows.includes('[a11y]') &&
@@ -1760,12 +1962,21 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
     !normalizedStats.length &&
     !normalizedEvidenceEntries.length &&
     !hasDashboardAccessibilityEvidence &&
-    !hasAccessibilityAssertionText
+    !hasAccessibilityAssertionText &&
+    !hasTestList
   ) {
     return htmlWithDefaultTestRows;
   }
 
   const root = parse(htmlWithDefaultTestRows);
+  // Odhín can emit malformed modal fragments when a high-parallel run has many
+  // API results. node-html-parser then drops the test table during serialisation.
+  // Keeping Odhín's original document is preferable to publishing a report whose
+  // Tests tab is unusable.
+  if (hasTestList && !root.querySelector('#test-list-table')) {
+    return injectRuntimeTestStatusFilters(recoverUnparsedTestList(htmlWithDefaultTestRows));
+  }
+
   repairTestsTabContent(root);
   repairOrphanedTestModals(root);
   normalizeModalBodyContent(root);
@@ -1786,6 +1997,7 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectAccessibilityIssueSummary(root, normalizedEvidenceEntries);
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
+  injectNativeTestStatusFilter(root);
 
   return root.toString();
 }
@@ -1829,10 +2041,6 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
 
   const normalizedStats = normalizeFeatureStats(featureStats);
   const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
-  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length) {
-    return;
-  }
-
   const reportFiles = fs.readdirSync(outputFolder).filter((fileName) => fileName.toLowerCase().endsWith('.html'));
 
   reportFiles.forEach((fileName) => {
@@ -1863,6 +2071,8 @@ module.exports = {
     readAccessibilityEvidenceEntries,
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
+    injectNativeTestStatusFilter,
+    injectRuntimeTestStatusFilters,
     percentOf,
   },
 };
