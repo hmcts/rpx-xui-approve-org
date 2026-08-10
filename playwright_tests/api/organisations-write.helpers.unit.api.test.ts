@@ -1,0 +1,114 @@
+import { expect, test, type APIRequestContext } from '@playwright/test';
+
+import { approveOrganisation, loadOrganisationById, registeredOrganisationId } from './helpers/organisations-write.helpers';
+
+function fakeApiRequest(results: Array<number | Error>, writeResults = results): APIRequestContext {
+  let getCallCount = 0;
+  let putCallCount = 0;
+
+  const responseFor = (result: number | Error) => {
+    if (result instanceof Error) {
+      throw result;
+    }
+
+    return {
+      status: () => result,
+      json: async () => ({ organisationIdentifier: 'ORG-123', status: 'PENDING' })
+    };
+  };
+
+  return {
+    get: async () => responseFor(results[Math.min(getCallCount++, results.length - 1)]),
+    put: async () => responseFor(writeResults[Math.min(putCallCount++, writeResults.length - 1)])
+  } as unknown as APIRequestContext;
+}
+
+test.describe('organisation write helpers', () => {
+  test('uses the identifier returned by registration without a pending-list lookup', () => {
+    expect(registeredOrganisationId('  ORG-123  ')).toBe('ORG-123');
+  });
+
+  test('fails clearly when registration does not return an identifier', () => {
+    expect(() => registeredOrganisationId(undefined)).toThrow('Registration completed without an organisationIdentifier.');
+  });
+
+  test('retries an aborted organisation read after provisioning', async () => {
+    const organisation = await loadOrganisationById(
+      fakeApiRequest([new Error('apiRequestContext.get: aborted'), 200]),
+      'ORG-123',
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(organisation).toMatchObject({ organisationIdentifier: 'ORG-123', status: 'PENDING' });
+  });
+
+  test('retries a transient gateway response but not a real missing organisation', async () => {
+    const recoveredOrganisation = await loadOrganisationById(
+      fakeApiRequest([502, 200]),
+      'ORG-123',
+      { attempts: 2, retryDelayMs: 0 }
+    );
+    const missingOrganisation = await loadOrganisationById(
+      fakeApiRequest([404, 200]),
+      'ORG-404',
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(recoveredOrganisation).toMatchObject({ organisationIdentifier: 'ORG-123' });
+    expect(missingOrganisation).toBeNull();
+  });
+
+  test('does not hide an unexpected request error', async () => {
+    await expect(
+      loadOrganisationById(
+        fakeApiRequest([new Error('request configuration is invalid')]),
+        'ORG-ERROR',
+        { attempts: 2, retryDelayMs: 0 }
+      )
+    ).rejects.toThrow('request configuration is invalid');
+  });
+
+  test('retries a transient approval gateway response and still requires a final 200', async () => {
+    const response = await approveOrganisation(
+      fakeApiRequest([200], [502, 200]),
+      'ORG-123',
+      { organisationIdentifier: 'ORG-123', status: 'PENDING' },
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(response.status()).toBe(200);
+  });
+
+  test('retries a transient approval transport error and still requires a final 200', async () => {
+    const response = await approveOrganisation(
+      fakeApiRequest([200], [new Error('apiRequestContext.put: socket hang up'), 200]),
+      'ORG-123',
+      { organisationIdentifier: 'ORG-123', status: 'PENDING' },
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(response.status()).toBe(200);
+  });
+
+  test('does not retry a non-transient approval response', async () => {
+    const response = await approveOrganisation(
+      fakeApiRequest([200], [400, 200]),
+      'ORG-123',
+      { organisationIdentifier: 'ORG-123', status: 'PENDING' },
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(response.status()).toBe(400);
+  });
+
+  test('returns the final transient approval response when retries are exhausted', async () => {
+    const response = await approveOrganisation(
+      fakeApiRequest([200], [502, 502]),
+      'ORG-123',
+      { organisationIdentifier: 'ORG-123', status: 'PENDING' },
+      { attempts: 2, retryDelayMs: 0 }
+    );
+
+    expect(response.status()).toBe(502);
+  });
+});
