@@ -1,5 +1,5 @@
 ARG REGISTRY_NAME=hmctsprod
-FROM ${REGISTRY_NAME}.azurecr.io/base/node:20-alpine AS base
+FROM ${REGISTRY_NAME}.azurecr.io/base/node:24-alpine AS base
 LABEL maintainer = "HMCTS Expert UI <https://github.com/hmcts>"
 
 USER root
