@@ -5,6 +5,8 @@ import * as path from 'node:path';
 
 import {
   logResolvedTagFilters,
+  resolveApiRetryCount,
+  resolveFunctionalRetryCount,
   resolveFunctionalTagFilters,
   resolveTagFilters,
   splitTagInput,
@@ -33,6 +35,38 @@ test('deduplicates space and comma separated tags', () => {
     '@search',
     '@organisations'
   ]);
+});
+
+test('defaults API retries to zero and honours an explicit retry count', () => {
+  expect(resolveApiRetryCount({})).toBe(0);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: '0' })).toBe(0);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: '2' })).toBe(2);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: ' 3 ' })).toBe(3);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: '-1' })).toBe(0);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: '1.5' })).toBe(0);
+  expect(resolveApiRetryCount({ API_PW_RETRIES: 'two' })).toBe(0);
+});
+
+test('defaults E2E and integration retries to zero and permits an explicit opt-in', () => {
+  expect(resolveFunctionalRetryCount('E2E_PW_RETRIES', {})).toBe(0);
+  expect(resolveFunctionalRetryCount('INTEGRATION_PW_RETRIES', {})).toBe(0);
+  expect(resolveFunctionalRetryCount('E2E_PW_RETRIES', { E2E_PW_RETRIES: '1' })).toBe(1);
+  expect(resolveFunctionalRetryCount('INTEGRATION_PW_RETRIES', { INTEGRATION_PW_RETRIES: '2' })).toBe(2);
+  expect(resolveFunctionalRetryCount('E2E_PW_RETRIES', { E2E_PW_RETRIES: 'invalid' })).toBe(0);
+});
+
+test('keeps supported organisation searches in the default API suite', () => {
+  const catalog = JSON.parse(fs.readFileSync('playwright_tests/api/tag-filter.json', 'utf8'));
+
+  expect(catalog.availableTags).toContain('@refdata-search');
+  expect(catalog.excludedTags).toEqual([]);
+});
+
+test('keeps PBA authentication-route probes in the default API suite', () => {
+  const catalog = JSON.parse(fs.readFileSync('playwright_tests/api/tag-filter.json', 'utf8'));
+
+  expect(catalog.availableTags).toContain('@pba-status-auth-route');
+  expect(catalog.excludedTags).not.toContain('@pba-status-auth-route');
 });
 
 test('adds catalog-scoped global exclusions to checked-in defaults', () => {
