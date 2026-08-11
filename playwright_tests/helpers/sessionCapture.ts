@@ -191,6 +191,25 @@ function hasUnexpiredAuthCookie(storageStatePath: string, targetUrl = config.bas
   }
 }
 
+function isUnexpiredCookie(cookie: StorageCookie): boolean {
+  return cookie.expires === undefined || cookie.expires === -1 || cookie.expires > Date.now() / 1000 + 30;
+}
+
+function hasPersistableSessionCookies(cookies: StorageCookie[], targetUrl = config.baseUrl): boolean {
+  const targetHost = new URL(targetUrl).hostname;
+  const hasIdamSession = cookies.some((cookie) =>
+    cookie.name === 'Idam.Session' &&
+    isUnexpiredCookie(cookie) &&
+    cookie.domain?.toLowerCase().includes('idam')
+  );
+  const hasAoSession = cookies.some((cookie) =>
+    cookie.name === 'ao-webapp' &&
+    isUnexpiredCookie(cookie) &&
+    isCookieCompatibleWithHost(cookie.domain, targetHost)
+  );
+  return hasIdamSession && hasAoSession;
+}
+
 function isSessionFresh(storageStatePath: string, targetUrl = config.baseUrl): boolean {
   if (!fs.existsSync(storageStatePath)) {
     return false;
@@ -323,7 +342,7 @@ async function getAuthenticationState(page: Page): Promise<AuthenticationState> 
 async function waitForAuthenticatedByApi(page: Page, timeoutMs = AUTHENTICATION_TIMEOUT_MS): Promise<boolean> {
   const deadline = Date.now() + timeoutMs;
 
-  while (Date.now() < deadline) {
+  do {
     if ((await getAuthenticationState(page)).authenticated) {
       return true;
     }
@@ -334,7 +353,34 @@ async function waitForAuthenticatedByApi(page: Page, timeoutMs = AUTHENTICATION_
     }
 
     await sleep(Math.min(AUTHENTICATION_POLL_INTERVAL_MS, remainingMs));
-  }
+  } while (Date.now() < deadline);
+
+  return false;
+}
+
+async function hasCapturedAuthenticatedSession(
+  page: Page,
+  context: Pick<BrowserContext, 'cookies'>,
+  authTimeoutMs = AUTHENTICATION_TIMEOUT_MS
+): Promise<boolean> {
+  const deadline = Date.now() + authTimeoutMs;
+
+  do {
+    if ((await getAuthenticationState(page)).authenticated) {
+      return true;
+    }
+
+    if (!(await isOnLoginOrCallbackSurface(page)) && hasPersistableSessionCookies(await context.cookies().catch(() => []))) {
+      return true;
+    }
+
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) {
+      break;
+    }
+
+    await sleep(Math.min(AUTHENTICATION_POLL_INTERVAL_MS, remainingMs));
+  } while (Date.now() < deadline);
 
   return false;
 }
@@ -649,7 +695,7 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
         const page = await context.newPage();
 
         await completeLoginOnPage(page, identity.email, identity.password);
-        const authenticated = await waitForAuthenticatedByApi(page);
+        const authenticated = await hasCapturedAuthenticatedSession(page, context);
         if (!authenticated) {
           throw new Error(
             `Session capture did not create an authenticated session for "${identity.userIdentifier}". ${await loginFailureContext(page)}`
@@ -737,6 +783,8 @@ export const __test__ = {
   redactSensitiveText,
   loginFailureContext,
   hasUnexpiredAuthCookie,
+  hasPersistableSessionCookies,
+  hasCapturedAuthenticatedSession,
   isSessionFresh,
   isExpectedAuthenticatedSurface,
   waitForExpectedAuthenticatedSurface,

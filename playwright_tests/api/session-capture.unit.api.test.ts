@@ -58,6 +58,59 @@ test.describe('AO Playwright session management', () => {
     expect(sessionCapture.isSessionFresh(statePath)).toBe(false);
   });
 
+  test('accepts fresh-capture cookies only when both AO and IDAM sessions are valid for their hosts', () => {
+    const validCookies = [
+      { name: 'Idam.Session', value: 'redacted', domain: 'idam-web-public.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 },
+      { name: 'ao-webapp', value: 'redacted', domain: 'administer-orgs.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 }
+    ];
+
+    expect(sessionCapture.hasPersistableSessionCookies(validCookies, 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(true);
+    expect(sessionCapture.hasPersistableSessionCookies(validCookies.slice(1), 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(false);
+    expect(sessionCapture.hasPersistableSessionCookies([
+      validCookies[0],
+      { ...validCookies[1], domain: 'other.example.test' }
+    ], 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(false);
+  });
+
+  test('uses AO cookies only as a non-login fallback when the legacy auth probe is false', async () => {
+    const validCookies = [
+      { name: 'Idam.Session', value: 'redacted', domain: 'idam-web-public.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 },
+      { name: 'ao-webapp', value: 'redacted', domain: 'administer-orgs.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 }
+    ];
+    const hiddenLocator = {
+      isVisible: async () => false,
+      first: () => hiddenLocator
+    };
+    const page = (url: string, authenticated: boolean) => ({
+      url: () => url,
+      locator: () => hiddenLocator,
+      getByRole: () => hiddenLocator,
+      request: { get: async () => ({ status: () => 200, text: async () => String(authenticated) }) }
+    });
+    const context = (cookies: unknown[]) => ({ cookies: async () => cookies });
+
+    await expect(sessionCapture.hasCapturedAuthenticatedSession(
+      page('https://example.test/organisation', true) as never,
+      context([]) as never,
+      0
+    )).resolves.toBe(true);
+    await expect(sessionCapture.hasCapturedAuthenticatedSession(
+      page('https://example.test/organisation', false) as never,
+      context(validCookies) as never,
+      0
+    )).resolves.toBe(true);
+    await expect(sessionCapture.hasCapturedAuthenticatedSession(
+      page('https://example.test/organisation', false) as never,
+      context([]) as never,
+      0
+    )).resolves.toBe(false);
+    await expect(sessionCapture.hasCapturedAuthenticatedSession(
+      page('https://idam.example.test/login', false) as never,
+      context(validCookies) as never,
+      0
+    )).resolves.toBe(false);
+  });
+
   test('persists state atomically and leaves no temporary file after success', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const statePath = path.join(directory, 'state.json');
