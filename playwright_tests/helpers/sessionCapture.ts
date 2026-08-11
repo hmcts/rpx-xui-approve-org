@@ -1,4 +1,5 @@
 import { chromium, type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
@@ -34,6 +35,8 @@ type UserConfig = {
 export type SessionCaptureOptions = {
   force?: boolean;
   partitionKey?: string;
+  // Set only after a rejected navigation to let lock waiters reuse its replacement.
+  expectedStaleSession?: RejectedSession;
 };
 
 export type SessionIdentity = {
@@ -44,6 +47,11 @@ export type SessionIdentity = {
 };
 
 export type SessionIdentityInput = string | SessionIdentity;
+
+type RejectedSession = {
+  storageStatePath: string;
+  storageStateFingerprint: string;
+};
 
 type AuthenticationState = {
   authenticated: boolean;
@@ -224,6 +232,38 @@ function isSessionFresh(storageStatePath: string, targetUrl = config.baseUrl): b
   return hasUnexpiredAuthCookie(storageStatePath, targetUrl);
 }
 
+function storageStateFingerprint(serializedState: string): string {
+  return createHash('sha256').update(serializedState).digest('hex');
+}
+
+function readStorageStateFingerprint(storageStatePath: string): string | undefined {
+  try {
+    return storageStateFingerprint(fs.readFileSync(storageStatePath, 'utf8'));
+  } catch {
+    return undefined;
+  }
+}
+
+function isReusableSessionForCapture(
+  storageStatePath: string,
+  options: SessionCaptureOptions
+): boolean {
+  if (!isSessionFresh(storageStatePath)) {
+    return false;
+  }
+
+  if (!options.force) {
+    return true;
+  }
+
+  const expectedStaleSession = options.expectedStaleSession;
+  const currentFingerprint = readStorageStateFingerprint(storageStatePath);
+  return !!expectedStaleSession &&
+    path.resolve(expectedStaleSession.storageStatePath) === path.resolve(storageStatePath) &&
+    !!currentFingerprint &&
+    currentFingerprint !== expectedStaleSession.storageStateFingerprint;
+}
+
 function redactSensitiveText(value: string): string {
   return value
     .replace(/([?&](?:token|access_token|id_token|password|secret)=)[^&#\s]*/gi, '$1[REDACTED]')
@@ -248,7 +288,6 @@ type SessionLockRequest = {
   lockPath: string;
   userIdentifier: string;
   isSessionReusable: () => boolean;
-  force: boolean;
 };
 
 function ensureLockTarget(lockPath: string): void {
@@ -264,14 +303,13 @@ function isLockAlreadyHeldError(error: unknown): boolean {
 async function acquireSessionCaptureLock({
   lockPath,
   userIdentifier,
-  isSessionReusable,
-  force
+  isSessionReusable
 }: SessionLockRequest): Promise<SessionLockRelease | null> {
   ensureLockTarget(lockPath);
   const startTime = Date.now();
 
   while (Date.now() - startTime < SESSION_CAPTURE_LOCK_TIMEOUT_MS) {
-    if (!force && isSessionReusable()) {
+    if (isSessionReusable()) {
       console.log(`[playwright-session] Fresh session appeared while waiting for ${userIdentifier} lock`);
       return null;
     }
@@ -644,7 +682,14 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
   const failurePath = `${storageStatePath}.capture-failed.json`;
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
 
-  if (!options.force && isSessionFresh(storageStatePath)) {
+  if (
+    options.expectedStaleSession &&
+    path.resolve(options.expectedStaleSession.storageStatePath) !== path.resolve(storageStatePath)
+  ) {
+    throw new Error(`Rejected session path does not match resolved session path for user "${resolveSessionIdentity(user).userIdentifier}".`);
+  }
+
+  if (isReusableSessionForCapture(storageStatePath, options)) {
     clearSessionCaptureFailure(failurePath);
     console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
     return storageStatePath;
@@ -660,8 +705,7 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
   const lock = await acquireSessionCaptureLock({
     lockPath,
     userIdentifier: resolveSessionIdentity(user).userIdentifier,
-    isSessionReusable: () => isSessionFresh(storageStatePath),
-    force: options.force ?? false
+    isSessionReusable: () => isReusableSessionForCapture(storageStatePath, options)
   });
   if (!lock) {
     clearSessionCaptureFailure(failurePath);
@@ -669,7 +713,7 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
   }
 
   try {
-    if (!options.force && isSessionFresh(storageStatePath)) {
+    if (isReusableSessionForCapture(storageStatePath, options)) {
       clearSessionCaptureFailure(failurePath);
       console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
       return storageStatePath;
@@ -728,17 +772,27 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
   }
 }
 
-export async function applySessionCookies(page: Page, user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}): Promise<void> {
-  const loadCookies = (storageStatePath: string): StorageCookie[] => {
-    const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as { cookies?: StorageCookie[] };
-    return state.cookies ?? [];
+export async function applySessionCookies(
+  page: Page,
+  user: SessionIdentityInput = 'base',
+  options: SessionCaptureOptions = {}
+): Promise<RejectedSession> {
+  const loadSessionState = (storageStatePath: string): RejectedSession & { cookies: StorageCookie[] } => {
+    const serializedState = fs.readFileSync(storageStatePath, 'utf8');
+    const state = JSON.parse(serializedState) as { cookies?: StorageCookie[] };
+    return {
+      storageStatePath,
+      storageStateFingerprint: storageStateFingerprint(serializedState),
+      cookies: state.cookies ?? []
+    };
   };
 
   const storageStatePath = await sessionCapture(user, options);
-  const cookies = loadCookies(storageStatePath);
-  if (cookies.length > 0) {
-    await page.context().addCookies(cookies);
+  const state = loadSessionState(storageStatePath);
+  if (state.cookies.length > 0) {
+    await page.context().addCookies(state.cookies);
   }
+  return state;
 }
 
 export async function ensureAuthenticatedPageAt(
@@ -754,12 +808,16 @@ export async function ensureAuthenticatedPageAt(
     return waitForExpectedAuthenticatedSurface(page, destinationUrl);
   };
 
-  await applySessionCookies(page, user, options);
+  const rejectedSession = await applySessionCookies(page, user, options);
   if (await gotoAndVerify()) {
     return;
   }
 
-  await sessionCapture(user, { ...options, force: true });
+  await sessionCapture(user, {
+    ...options,
+    force: true,
+    expectedStaleSession: rejectedSession
+  });
   await applySessionCookies(page, user, options);
   if (await gotoAndVerify()) {
     return;
@@ -786,6 +844,8 @@ export const __test__ = {
   hasPersistableSessionCookies,
   hasCapturedAuthenticatedSession,
   isSessionFresh,
+  readStorageStateFingerprint,
+  isReusableSessionForCapture,
   isExpectedAuthenticatedSurface,
   waitForExpectedAuthenticatedSurface,
   hasExpectedAuthenticatedShell,

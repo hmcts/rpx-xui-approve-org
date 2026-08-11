@@ -275,8 +275,7 @@ test.describe('AO Playwright session management', () => {
     const request = {
       lockPath,
       userIdentifier: 'base',
-      isSessionReusable: () => false,
-      force: false
+      isSessionReusable: () => false
     };
     const release = await sessionCapture.acquireSessionCaptureLock(request);
     const waiting = sessionCapture.acquireSessionCaptureLock(request);
@@ -298,20 +297,59 @@ test.describe('AO Playwright session management', () => {
     const owner = await sessionCapture.acquireSessionCaptureLock({
       lockPath,
       userIdentifier: 'base',
-      isSessionReusable: () => false,
-      force: false
+      isSessionReusable: () => false
     });
     let reusable = false;
     const waiting = sessionCapture.acquireSessionCaptureLock({
       lockPath,
       userIdentifier: 'base',
-      isSessionReusable: () => reusable,
-      force: false
+      isSessionReusable: () => reusable
     });
 
     reusable = true;
     await expect(waiting).resolves.toBeNull();
     await owner?.();
+  });
+
+  test('reuses a replacement session when concurrent rejected-session recovery is forced', async () => {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
+    const statePath = writeStorageState(directory, [
+      { name: 'ao-webapp', value: 'rejected', domain: new URL(config.baseUrl).hostname, expires: Math.floor(Date.now() / 1000) + 300 }
+    ]);
+    const lockPath = `${statePath}.lock`;
+    const rejectedFingerprint = sessionCapture.readStorageStateFingerprint(statePath);
+    if (!rejectedFingerprint) {
+      throw new Error('Expected a fingerprint for the seeded rejected session.');
+    }
+    const recoveryOptions = {
+      force: true,
+      expectedStaleSession: {
+        storageStatePath: statePath,
+        storageStateFingerprint: rejectedFingerprint
+      }
+    };
+
+    expect(sessionCapture.isReusableSessionForCapture(statePath, recoveryOptions)).toBe(false);
+    const owner = await sessionCapture.acquireSessionCaptureLock({
+      lockPath,
+      userIdentifier: 'base',
+      isSessionReusable: () => sessionCapture.isReusableSessionForCapture(statePath, recoveryOptions)
+    });
+    const waiting = sessionCapture.acquireSessionCaptureLock({
+      lockPath,
+      userIdentifier: 'base',
+      isSessionReusable: () => sessionCapture.isReusableSessionForCapture(statePath, recoveryOptions)
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    writeStorageState(directory, [
+      { name: 'ao-webapp', value: 'replacement', domain: new URL(config.baseUrl).hostname, expires: Math.floor(Date.now() / 1000) + 300 }
+    ]);
+    expect(sessionCapture.isReusableSessionForCapture(statePath, recoveryOptions)).toBe(true);
+    await owner?.();
+
+    await expect(waiting).resolves.toBeNull();
+    expect(sessionCapture.isReusableSessionForCapture(statePath, { force: true })).toBe(false);
   });
 
   test('uses a bounded retry policy only for classified transient capture failures', () => {
@@ -329,7 +367,7 @@ test.describe('AO Playwright session management', () => {
       "const { __test__ } = require(process.argv[1]);",
       '(async () => {',
       '  const release = await __test__.acquireSessionCaptureLock({',
-      '    lockPath: process.argv[2], userIdentifier: process.argv[3], isSessionReusable: () => false, force: false',
+      '    lockPath: process.argv[2], userIdentifier: process.argv[3], isSessionReusable: () => false',
       '  });',
       "  process.stdout.write(`acquired:${Date.now()}\\n`);",
       '  setTimeout(async () => {',
