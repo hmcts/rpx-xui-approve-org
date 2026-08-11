@@ -441,7 +441,6 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
     const authCheckTimeout = Math.min(5_000, Math.max(0, retryUntil - Date.now()));
     if (
       authCheckTimeout > 0 &&
-      !(await isOnLoginOrCallbackSurface(page)) &&
       await waitForAuthenticatedByApi(page, authCheckTimeout)
     ) {
       return;
@@ -540,16 +539,16 @@ export async function applySessionCookies(page: Page, user: string = 'base', opt
   }
 }
 
-export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
-  const isLoginUrl = (): boolean => page.url().includes('idam') || page.url().includes('/login');
-
+export async function ensureAuthenticatedPageAt(
+  page: Page,
+  destinationUrl: string,
+  user: string = 'base',
+  options: SessionCaptureOptions = {}
+): Promise<void> {
   const gotoAndVerify = async (): Promise<boolean> => {
-    await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
-    if (isLoginUrl()) {
-      return false;
-    }
-
-    return isAuthenticatedByApi(page);
+    await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
+    const onLoginOrCallbackSurface = await isOnLoginOrCallbackSurface(page);
+    return !onLoginOrCallbackSurface && await waitForAuthenticatedByApi(page);
   };
 
   await applySessionCookies(page, user, options);
@@ -564,4 +563,8 @@ export async function ensureAuthenticatedPage(page: Page, user: string = 'base',
   }
 
   throw new Error(`Unable to ensure authenticated page for user "${user}".`);
+}
+
+export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
+  await ensureAuthenticatedPageAt(page, config.baseUrl, user, options);
 }
