@@ -39,7 +39,7 @@ describe('serviceAuth', () => {
 
     const otpModulePath = require.resolve('otp');
     require(otpModulePath);
-    sinon.stub(require.cache[otpModulePath] as any, 'exports').value({ OTP: otpStub });
+    sinon.stub(require.cache[otpModulePath] as any, 'exports').value(otpStub);
 
     postS2SLease = require('./serviceAuth').postS2SLease;
   });
