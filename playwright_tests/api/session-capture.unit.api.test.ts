@@ -71,6 +71,10 @@ test.describe('AO Playwright session management', () => {
       validCookies[0],
       { ...validCookies[1], domain: 'other.example.test' }
     ], 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(false);
+    expect(sessionCapture.hasPersistableSessionCookies([
+      { ...validCookies[0], domain: 'untrusted-idam.example.test' },
+      validCookies[1]
+    ], 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(false);
   });
 
   test('uses AO cookies only as a non-login fallback when the legacy auth probe is false', async () => {

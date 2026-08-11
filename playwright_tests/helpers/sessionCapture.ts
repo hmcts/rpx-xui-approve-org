@@ -205,10 +205,11 @@ function isUnexpiredCookie(cookie: StorageCookie): boolean {
 
 function hasPersistableSessionCookies(cookies: StorageCookie[], targetUrl = config.baseUrl): boolean {
   const targetHost = new URL(targetUrl).hostname;
+  const idamHost = new URL(config.idamWebUrl).hostname;
   const hasIdamSession = cookies.some((cookie) =>
     cookie.name === 'Idam.Session' &&
     isUnexpiredCookie(cookie) &&
-    cookie.domain?.toLowerCase().includes('idam')
+    isCookieCompatibleWithHost(cookie.domain, idamHost)
   );
   const hasAoSession = cookies.some((cookie) =>
     cookie.name === 'ao-webapp' &&
