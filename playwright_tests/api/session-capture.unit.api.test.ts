@@ -133,6 +133,36 @@ test.describe('AO Playwright session management', () => {
     expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/caseworker-details', 'Upload staff details') as never, 'https://example.test/')).toBe(true);
   });
 
+  test('waits for AO bootstrap navigation before accepting the authenticated shell', async () => {
+    let route = 'https://example.test/';
+    let bodyText = '';
+    const locator = {
+      first: () => locator,
+      isVisible: async () => false,
+      innerText: async () => bodyText
+    };
+    const page = {
+      url: () => route,
+      locator: () => locator,
+      getByRole: (_role: string, options?: { name?: string | RegExp }) => ({
+        ...locator,
+        isVisible: async () => options?.name === 'Organisation approvals'
+      }),
+      request: {
+        get: async () => ({
+          status: () => 200,
+          text: async () => 'true'
+        })
+      },
+      waitForTimeout: async () => {
+        route = 'https://example.test/organisation';
+        bodyText = 'Organisation approvals';
+      }
+    };
+
+    await expect(sessionCapture.waitForExpectedAuthenticatedSurface(page as never, 'https://example.test/', 10)).resolves.toBe(true);
+  });
+
   test('waiters reuse the lock owner result and the stale budget exceeds login and auth polling', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const lockPath = path.join(directory, 'state.lock');

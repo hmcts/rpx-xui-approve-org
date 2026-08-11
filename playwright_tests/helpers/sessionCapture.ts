@@ -23,6 +23,7 @@ const OAUTH_CALLBACK_ROUTE_PATTERN = /\/oauth2\/callback(?:[/?#]|$)/;
 const DEFAULT_AUTHENTICATED_ROUTE_PATTERN = /^\/(?:organisation|caseworker-details)(?:\/|$)/;
 const UNAVAILABLE_ROUTE_PATTERN = /\/(?:access-denied|service-down|not-authorised|signed-out|error)(?:\/|$)/i;
 const AUTHENTICATED_SURFACE_TIMEOUT_MS = 5_000;
+const AUTHENTICATED_SURFACE_POLL_INTERVAL_MS = 250;
 
 type UserConfig = {
   username: string;
@@ -462,6 +463,29 @@ async function isExpectedAuthenticatedSurface(page: Page, destinationUrl: string
     await waitForAuthenticatedByApi(page);
 }
 
+async function waitForExpectedAuthenticatedSurface(
+  page: Page,
+  destinationUrl: string,
+  timeoutMs = AUTHENTICATED_SURFACE_TIMEOUT_MS
+): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+
+  do {
+    if (await isExpectedAuthenticatedSurface(page, destinationUrl)) {
+      return true;
+    }
+
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) {
+      return false;
+    }
+
+    await page.waitForTimeout(Math.min(AUTHENTICATED_SURFACE_POLL_INTERVAL_MS, remainingMs));
+  } while (Date.now() < deadline);
+
+  return false;
+}
+
 async function waitForLoginRedirectToSettle(page: Page, timeoutMs = LOGIN_REDIRECT_TIMEOUT_MS): Promise<void> {
   const deadline = Date.now() + timeoutMs;
 
@@ -686,7 +710,7 @@ export async function ensureAuthenticatedPageAt(
   const gotoAndVerify = async (): Promise<boolean> => {
     const response = await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
     lastNavigationStatus = response?.status();
-    return isExpectedAuthenticatedSurface(page, destinationUrl);
+    return waitForExpectedAuthenticatedSurface(page, destinationUrl);
   };
 
   await applySessionCookies(page, user, options);
@@ -720,6 +744,7 @@ export const __test__ = {
   hasUnexpiredAuthCookie,
   isSessionFresh,
   isExpectedAuthenticatedSurface,
+  waitForExpectedAuthenticatedSurface,
   hasExpectedAuthenticatedShell,
   acquireSessionCaptureLock,
   persistSessionState,
