@@ -3,6 +3,7 @@ import { spawn } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { config } from '../config/config';
 import { __test__ as sessionCapture } from '../helpers/sessionCapture';
 
 const validIdentity = {
@@ -73,9 +74,10 @@ test.describe('AO Playwright session management', () => {
   });
 
   test('uses AO cookies only as a non-login fallback when the legacy auth probe is false', async () => {
+    const aoSessionHost = new URL(config.baseUrl).hostname;
     const validCookies = [
       { name: 'Idam.Session', value: 'redacted', domain: 'idam-web-public.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 },
-      { name: 'ao-webapp', value: 'redacted', domain: 'administer-orgs.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 }
+      { name: 'ao-webapp', value: 'redacted', domain: aoSessionHost, expires: Math.floor(Date.now() / 1000) + 300 }
     ];
     const hiddenLocator = {
       isVisible: async () => false,
