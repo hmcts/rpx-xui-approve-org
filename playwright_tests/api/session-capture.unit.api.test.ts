@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { spawn } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -23,6 +24,10 @@ test.describe('AO Playwright session management', () => {
     expect(sessionCapture.resolveSessionPartitionKey()).toBeUndefined();
     expect(sessionCapture.resolveSessionPartitionKey(' api ')).toBe('api');
     expect(sessionCapture.normaliseSessionStorageKey('a user@example.test/api')).toBe('a-user-example.test-api');
+    expect(sessionCapture.getSessionStatePath(validIdentity)).toBe(
+      sessionCapture.getSessionStatePath({ ...validIdentity, userIdentifier: 'another-alias' })
+    );
+    expect(sessionCapture.getSessionStatePath(validIdentity, 'api')).not.toBe(sessionCapture.getSessionStatePath(validIdentity));
   });
 
   test('rejects an auth cookie for another host and accepts a compatible unexpired cookie', () => {
@@ -70,16 +75,43 @@ test.describe('AO Playwright session management', () => {
     );
   });
 
+  test('redacts OAuth and authentication details from session-capture diagnostics', async () => {
+    const locator = {
+      first: () => locator,
+      isVisible: async () => false,
+      innerText: async () => ''
+    };
+    const page = {
+      url: () => 'https://example.test/oauth2/callback?access_token=abc123',
+      title: async () => 'Login failed',
+      locator: () => locator,
+      request: {
+        get: async () => ({
+          status: () => 500,
+          text: async () => 'password=secret'
+        })
+      }
+    };
+
+    await expect(sessionCapture.loginFailureContext(page as never)).resolves.toContain('access_token=[REDACTED]');
+    await expect(sessionCapture.loginFailureContext(page as never)).resolves.toContain('password=[REDACTED]');
+  });
+
   test('rejects wrong and unavailable routes before accepting an authenticated page', async () => {
     const locator = {
       isVisible: async () => false,
       first: () => locator,
       innerText: async () => 'Unexpected page'
     };
-    const page = (url: string) => ({
+    const page = (url: string, visibleShell?: string) => ({
       url: () => url,
       locator: () => locator,
-      getByRole: () => locator,
+      getByRole: (_role: string, options?: { name?: string | RegExp }) => ({
+        ...locator,
+        isVisible: async () => typeof options?.name === 'string'
+          ? options.name === visibleShell
+          : options?.name?.test(visibleShell ?? '') ?? false
+      }),
       request: {
         get: async () => ({
           status: () => 200,
@@ -92,36 +124,114 @@ test.describe('AO Playwright session management', () => {
     expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/service-down') as never, 'https://example.test/service-down')).toBe(false);
     expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/access-denied') as never, 'https://example.test/')).toBe(false);
     expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://other.example.test/organisation') as never, 'https://example.test/organisation')).toBe(false);
-    expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/organisation') as never, 'https://example.test/')).toBe(true);
+    expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/organisation') as never, 'https://example.test/')).toBe(false);
+    expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/organisation', 'Organisation approvals') as never, 'https://example.test/')).toBe(true);
+    expect(await sessionCapture.isExpectedAuthenticatedSurface(
+      page('https://example.test/organisation-details/ORG-123', 'Approve organisation') as never,
+      'https://example.test/organisation-details/ORG-123'
+    )).toBe(true);
+    expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/caseworker-details', 'Upload staff details') as never, 'https://example.test/')).toBe(true);
   });
 
   test('waiters reuse the lock owner result and the stale budget exceeds login and auth polling', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const lockPath = path.join(directory, 'state.lock');
-    const release = await sessionCapture.acquireSessionCaptureLock(lockPath);
-    const waiting = sessionCapture.acquireSessionCaptureLock(lockPath);
+    const request = {
+      lockPath,
+      userIdentifier: 'base',
+      isSessionReusable: () => false,
+      force: false
+    };
+    const release = await sessionCapture.acquireSessionCaptureLock(request);
+    const waiting = sessionCapture.acquireSessionCaptureLock(request);
     await new Promise((resolve) => setTimeout(resolve, 20));
-    release();
+    await release?.();
     const waitingRelease = await waiting;
-    waitingRelease();
+    await waitingRelease?.();
 
-    expect(sessionCapture.SESSION_CAPTURE_LOCK_TIMEOUT_MS).toBeGreaterThan(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS);
-    expect(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS).toBeGreaterThan(45_000 + 30_000);
+    expect(sessionCapture.SESSION_CAPTURE_LOCK_TIMEOUT_MS).toBeGreaterThanOrEqual(
+      sessionCapture.SESSION_CAPTURE_ATTEMPT_BUDGET_MS * sessionCapture.SESSION_CAPTURE_ATTEMPTS
+    );
+    expect(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS).toBeGreaterThan(sessionCapture.SESSION_CAPTURE_ATTEMPT_BUDGET_MS);
+    expect(sessionCapture.SESSION_CAPTURE_LOCK_UPDATE_MS).toBeLessThan(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS);
   });
 
-  test('does not remove a lock replaced after the original owner became stale', async () => {
+  test('stops waiting when another process creates a fresh reusable session', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const lockPath = path.join(directory, 'state.lock');
-    const originalRelease = await sessionCapture.acquireSessionCaptureLock(lockPath);
+    const owner = await sessionCapture.acquireSessionCaptureLock({
+      lockPath,
+      userIdentifier: 'base',
+      isSessionReusable: () => false,
+      force: false
+    });
+    let reusable = false;
+    const waiting = sessionCapture.acquireSessionCaptureLock({
+      lockPath,
+      userIdentifier: 'base',
+      isSessionReusable: () => reusable,
+      force: false
+    });
 
-    const staleTimestamp = new Date(Date.now() - sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS - 1);
-    fs.utimesSync(lockPath, staleTimestamp, staleTimestamp);
-    const replacementRelease = await sessionCapture.acquireSessionCaptureLock(lockPath);
+    reusable = true;
+    await expect(waiting).resolves.toBeNull();
+    await owner?.();
+  });
 
-    originalRelease();
-    expect(fs.existsSync(lockPath)).toBe(true);
+  test('uses a bounded retry policy only for classified transient capture failures', () => {
+    expect(sessionCapture.SESSION_CAPTURE_ATTEMPTS).toBe(2);
+    expect(sessionCapture.isRetryableSessionCaptureFailure('net::ERR_CONNECTION_RESET')).toBe(true);
+    expect(sessionCapture.isRetryableSessionCaptureFailure('Invalid credentials')).toBe(false);
+  });
 
-    replacementRelease();
-    expect(fs.existsSync(lockPath)).toBe(false);
+  test('allows exactly one owner across competing Node processes', async () => {
+    test.setTimeout(15_000);
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-process-'));
+    const lockPath = path.join(directory, 'state.lock');
+    const modulePath = path.resolve(__dirname, '../helpers/sessionCapture.ts');
+    const childProgram = [
+      "const { __test__ } = require(process.argv[1]);",
+      '(async () => {',
+      '  const release = await __test__.acquireSessionCaptureLock({',
+      '    lockPath: process.argv[2], userIdentifier: process.argv[3], isSessionReusable: () => false, force: false',
+      '  });',
+      "  process.stdout.write(`acquired:${Date.now()}\\n`);",
+      '  setTimeout(async () => {',
+      '    await release();',
+      "    process.stdout.write(`released:${Date.now()}\\n`);",
+      '  }, Number(process.argv[4]));',
+      '})().catch((error) => { console.error(error); process.exitCode = 1; });'
+    ].join('\n');
+    const startOwner = (holdMs: number) => spawn(
+      process.execPath,
+      ['-r', 'ts-node/register/transpile-only', '-e', childProgram, modulePath, lockPath, 'base', String(holdMs)],
+      { cwd: path.resolve(__dirname, '../..'), env: process.env }
+    );
+    const readOutput = (child: ReturnType<typeof spawn>) => new Promise<string>((resolve, reject) => {
+      let output = '';
+      let errorOutput = '';
+      child.stdout.on('data', (chunk) => { output += chunk.toString(); });
+      child.stderr.on('data', (chunk) => { errorOutput += chunk.toString(); });
+      child.once('error', reject);
+      child.once('close', (code) => {
+        if (code === 0) {
+          resolve(output);
+          return;
+        }
+        reject(new Error(`Session lease child exited with ${code}: ${errorOutput}`));
+      });
+    });
+
+    const first = startOwner(250);
+    const firstAcquired = new Promise<void>((resolve) => first.stdout.once('data', () => resolve()));
+    const firstOutput = readOutput(first);
+    await firstAcquired;
+    const secondOutput = readOutput(startOwner(0));
+    const [owner, waiter] = await Promise.all([firstOutput, secondOutput]);
+    const ownerReleasedAt = Number(owner.match(/released:(\d+)/)?.[1]);
+    const waiterAcquiredAt = Number(waiter.match(/acquired:(\d+)/)?.[1]);
+
+    expect(ownerReleasedAt).toBeGreaterThan(0);
+    expect(waiterAcquiredAt).toBeGreaterThanOrEqual(ownerReleasedAt);
   });
 });

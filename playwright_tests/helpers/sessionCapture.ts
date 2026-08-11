@@ -1,39 +1,35 @@
 import { chromium, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import * as lockfile from 'proper-lockfile';
 import { config } from '../config/config';
+import { isRetryableSessionCaptureFailure, SESSION_CAPTURE_ATTEMPTS } from './sessionCaptureRetry';
 
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
-const SESSION_CAPTURE_LOCK_TIMEOUT_MS = 180_000;
-const SESSION_CAPTURE_LOCK_RETRY_MS = 500;
 const AUTHENTICATION_TIMEOUT_MS = 30_000;
 const AUTHENTICATION_POLL_INTERVAL_MS = 500;
 const LOGIN_REDIRECT_TIMEOUT_MS = 45_000;
-const SESSION_CAPTURE_LOCK_STALE_MS = LOGIN_REDIRECT_TIMEOUT_MS + AUTHENTICATION_TIMEOUT_MS + 60_000;
+const BROWSER_LAUNCH_TIMEOUT_MS = 30_000;
+const SESSION_CAPTURE_ATTEMPT_BUDGET_MS = LOGIN_REDIRECT_TIMEOUT_MS + AUTHENTICATION_TIMEOUT_MS + BROWSER_LAUNCH_TIMEOUT_MS;
+const SESSION_CAPTURE_LOCK_STALE_MS = SESSION_CAPTURE_ATTEMPT_BUDGET_MS + 30_000;
+const SESSION_CAPTURE_LOCK_UPDATE_MS = Math.floor(SESSION_CAPTURE_LOCK_STALE_MS / 3);
+const SESSION_CAPTURE_LOCK_TIMEOUT_MS = SESSION_CAPTURE_ATTEMPT_BUDGET_MS * SESSION_CAPTURE_ATTEMPTS + 30_000;
+const SESSION_CAPTURE_LOCK_RETRY_MS = 1_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
-const SESSION_CAPTURE_RETRYABLE_FAILURE_PATTERNS = [
-  /Session capture did not create an authenticated session/i,
-  /authStatus=5\d\d/i,
-  /authBody=no available server/i,
-  /no available server/i,
-  /net::/i,
-  /browserType\.launch/i,
-  /Target page, context or browser has been closed/i
-];
 const SESSION_DIR = process.env.PW_SESSION_DIR
   ? path.resolve(process.env.PW_SESSION_DIR)
   : path.resolve(__dirname, '../../.sessions');
 const OAUTH_CALLBACK_ROUTE_PATTERN = /\/oauth2\/callback(?:[/?#]|$)/;
 const DEFAULT_AUTHENTICATED_ROUTE_PATTERN = /^\/(?:organisation|caseworker-details)(?:\/|$)/;
 const UNAVAILABLE_ROUTE_PATTERN = /\/(?:access-denied|service-down|not-authorised|signed-out|error)(?:\/|$)/i;
+const AUTHENTICATED_SURFACE_TIMEOUT_MS = 5_000;
 
 type UserConfig = {
   username: string;
   password: string;
 };
 
-type SessionCaptureOptions = {
+export type SessionCaptureOptions = {
   force?: boolean;
   partitionKey?: string;
 };
@@ -66,10 +62,6 @@ function resolveSessionMaxAgeMs(): number {
 function resolveSessionCaptureFailureTtlMs(): number {
   const configured = Number(process.env.PW_SESSION_CAPTURE_FAILURE_TTL_MS);
   return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
-}
-
-function isRetryableSessionCaptureFailure(message: string): boolean {
-  return SESSION_CAPTURE_RETRYABLE_FAILURE_PATTERNS.some((pattern) => pattern.test(message));
 }
 
 function recentSessionCaptureFailureMessage(failurePath: string, now = Date.now()): string | undefined {
@@ -219,9 +211,9 @@ function redactSensitiveText(value: string): string {
 
 async function launchBrowserForSessionCapture(): Promise<Browser> {
   try {
-    return await chromium.launch({ headless: true, channel: 'chrome' });
+    return await chromium.launch({ headless: true, channel: 'chrome', timeout: BROWSER_LAUNCH_TIMEOUT_MS });
   } catch {
-    return chromium.launch({ headless: true });
+    return chromium.launch({ headless: true, timeout: BROWSER_LAUNCH_TIMEOUT_MS });
   }
 }
 
@@ -229,64 +221,72 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function isLockStale(lockPath: string): boolean {
-  try {
-    const stats = fs.statSync(lockPath);
-    return Date.now() - stats.mtimeMs > SESSION_CAPTURE_LOCK_STALE_MS;
-  } catch {
-    return false;
+type SessionLockRelease = (() => Promise<void>) & { assertOwned: () => void };
+
+type SessionLockRequest = {
+  lockPath: string;
+  userIdentifier: string;
+  isSessionReusable: () => boolean;
+  force: boolean;
+};
+
+function ensureLockTarget(lockPath: string): void {
+  if (!fs.existsSync(lockPath)) {
+    fs.writeFileSync(lockPath, '', 'utf8');
   }
 }
 
-function hasLockOwnerToken(lockPath: string, ownerToken: string): boolean {
-  try {
-    const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8')) as { ownerToken?: string };
-    return lock.ownerToken === ownerToken;
-  } catch {
-    return false;
-  }
+function isLockAlreadyHeldError(error: unknown): boolean {
+  return (error as NodeJS.ErrnoException | undefined)?.code === 'ELOCKED';
 }
 
-async function acquireSessionCaptureLock(lockPath: string): Promise<() => void> {
+async function acquireSessionCaptureLock({
+  lockPath,
+  userIdentifier,
+  isSessionReusable,
+  force
+}: SessionLockRequest): Promise<SessionLockRelease | null> {
+  ensureLockTarget(lockPath);
   const startTime = Date.now();
 
   while (Date.now() - startTime < SESSION_CAPTURE_LOCK_TIMEOUT_MS) {
-    try {
-      const fd = fs.openSync(lockPath, 'wx');
-      const ownerToken = randomUUID();
-      fs.writeFileSync(fd, JSON.stringify({ pid: process.pid, createdAt: new Date().toISOString(), ownerToken }));
+    if (!force && isSessionReusable()) {
+      console.log(`[playwright-session] Fresh session appeared while waiting for ${userIdentifier} lock`);
+      return null;
+    }
 
-      return () => {
-        fs.closeSync(fd);
-        // A stale owner can finish after a replacement lock is acquired.
-        if (hasLockOwnerToken(lockPath, ownerToken)) {
-          fs.rmSync(lockPath, { force: true });
+    try {
+      let compromisedError: Error | undefined;
+      const releaseLock = await lockfile.lock(lockPath, {
+        retries: 0,
+        stale: SESSION_CAPTURE_LOCK_STALE_MS,
+        update: SESSION_CAPTURE_LOCK_UPDATE_MS,
+        onCompromised: (error) => {
+          compromisedError = error;
+        }
+      });
+
+      const assertOwned = (): void => {
+        if (compromisedError) {
+          throw new Error(`Session capture lock was compromised for ${userIdentifier}: ${compromisedError.message}`);
         }
       };
+      const release = async (): Promise<void> => {
+        assertOwned();
+        await releaseLock();
+        assertOwned();
+      };
+      return Object.assign(release, { assertOwned });
     } catch (error) {
-      const errorCode = (error as NodeJS.ErrnoException).code;
-      if (errorCode !== 'EEXIST') {
+      if (!isLockAlreadyHeldError(error)) {
         throw error;
       }
 
-      if (isLockStale(lockPath)) {
-        fs.rmSync(lockPath, { force: true });
-      } else {
-        await sleep(SESSION_CAPTURE_LOCK_RETRY_MS);
-      }
+      await sleep(SESSION_CAPTURE_LOCK_RETRY_MS);
     }
   }
 
-  throw new Error(`Timed out waiting for Playwright session capture lock: ${lockPath}`);
-}
-
-async function withSessionCaptureLock<T>(lockPath: string, callback: () => Promise<T>): Promise<T> {
-  const releaseLock = await acquireSessionCaptureLock(lockPath);
-  try {
-    return await callback();
-  } finally {
-    releaseLock();
-  }
+  throw new Error(`Timed out waiting for Playwright session capture lock for ${userIdentifier}: ${lockPath}`);
 }
 
 async function getAuthenticationState(page: Page): Promise<AuthenticationState> {
@@ -354,14 +354,14 @@ async function loginFailureContext(page: Page): Promise<string> {
     '.govuk-error-summary, .error-summary, .error-message, .validation-error, [role="alert"]'
   );
   const context = [
-    `currentUrl=${page.url()}`,
+    `currentUrl=${redactSensitiveText(page.url())}`,
     `title=${pageTitle}`,
     `authStatus=${authState.status ?? 'unavailable'}`,
-    `authBody=${authState.body ?? authState.error ?? '<empty>'}`
+    `authBody=${redactSensitiveText(authState.body ?? authState.error ?? '<empty>')}`
   ];
 
   if (visibleErrorText) {
-    context.push(`visibleError=${visibleErrorText}`);
+    context.push(`visibleError=${redactSensitiveText(visibleErrorText)}`);
   }
 
   return context.join(' | ');
@@ -405,6 +405,38 @@ function normaliseUrlPath(url: string): string {
   return new URL(url, config.baseUrl).pathname.replace(/\/$/, '') || '/';
 }
 
+async function hasExpectedAuthenticatedShell(page: Page, currentPath: string): Promise<boolean> {
+  if (currentPath.startsWith('/organisation-details/')) {
+    return page
+      .getByRole('heading', { name: /^(?:Approve organisation|Organisation details)$/ })
+      .isVisible({ timeout: AUTHENTICATED_SURFACE_TIMEOUT_MS })
+      .catch(() => false);
+  }
+
+  if (currentPath.startsWith('/organisation')) {
+    return page
+      .getByRole('heading', { name: 'Organisation approvals' })
+      .isVisible({ timeout: AUTHENTICATED_SURFACE_TIMEOUT_MS })
+      .catch(() => false);
+  }
+
+  if (currentPath.startsWith('/caseworker-details')) {
+    return page
+      .getByRole('heading', { name: 'Upload staff details' })
+      .isVisible({ timeout: AUTHENTICATED_SURFACE_TIMEOUT_MS })
+      .catch(() => false);
+  }
+
+  return false;
+}
+
+async function authenticatedPageContext(page: Page, navigationStatus?: number): Promise<string> {
+  const route = normaliseUrlPath(page.url());
+  const title = await page.title().catch(() => 'unavailable');
+  const bodyLength = await page.locator('body').innerText().then((text) => text.trim().length).catch(() => 0);
+  return `route=${route}, navigationStatus=${navigationStatus ?? 'unavailable'}, title=${JSON.stringify(title)}, bodyLength=${bodyLength}`;
+}
+
 async function isExpectedAuthenticatedSurface(page: Page, destinationUrl: string): Promise<boolean> {
   const currentUrl = page.url();
   if (await isOnLoginOrCallbackSurface(page)) {
@@ -425,7 +457,9 @@ async function isExpectedAuthenticatedSurface(page: Page, destinationUrl: string
   }
 
   const bodyText = await page.locator('body').innerText().catch(() => '');
-  return bodyText.trim().length > 0 && await waitForAuthenticatedByApi(page);
+  return bodyText.trim().length > 0 &&
+    await hasExpectedAuthenticatedShell(page, currentPath) &&
+    await waitForAuthenticatedByApi(page);
 }
 
 async function waitForLoginRedirectToSettle(page: Page, timeoutMs = LOGIN_REDIRECT_TIMEOUT_MS): Promise<void> {
@@ -558,7 +592,18 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
     );
   }
 
-  return withSessionCaptureLock(lockPath, async () => {
+  const lock = await acquireSessionCaptureLock({
+    lockPath,
+    userIdentifier: resolveSessionIdentity(user).userIdentifier,
+    isSessionReusable: () => isSessionFresh(storageStatePath),
+    force: options.force ?? false
+  });
+  if (!lock) {
+    clearSessionCaptureFailure(failurePath);
+    return storageStatePath;
+  }
+
+  try {
     if (!options.force && isSessionFresh(storageStatePath)) {
       clearSessionCaptureFailure(failurePath);
       console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
@@ -575,30 +620,47 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
     const identity = resolveSessionIdentity(user);
     const partitionSuffix = partitionKey ? ` [${partitionKey}]` : '';
     console.log(`[playwright-session] Capturing session for ${identity.userIdentifier}${partitionSuffix} -> ${storageStatePath}`);
-    let browser: Browser | undefined;
+    let lastError: unknown;
 
-    try {
-      browser = await launchBrowserForSessionCapture();
-      const context = await browser.newContext();
-      const page = await context.newPage();
+    for (let attempt = 1; attempt <= SESSION_CAPTURE_ATTEMPTS; attempt += 1) {
+      let browser: Browser | undefined;
+      try {
+        browser = await launchBrowserForSessionCapture();
+        const context = await browser.newContext();
+        const page = await context.newPage();
 
-      await completeLoginOnPage(page, identity.email, identity.password);
-      const authenticated = await waitForAuthenticatedByApi(page);
-      if (!authenticated) {
-        throw new Error(
-          `Session capture did not create an authenticated session for "${identity.userIdentifier}". ${await loginFailureContext(page)}`
+        await completeLoginOnPage(page, identity.email, identity.password);
+        const authenticated = await waitForAuthenticatedByApi(page);
+        if (!authenticated) {
+          throw new Error(
+            `Session capture did not create an authenticated session for "${identity.userIdentifier}". ${await loginFailureContext(page)}`
+          );
+        }
+        lock.assertOwned();
+        await persistSessionState(context, storageStatePath);
+        lock.assertOwned();
+        clearSessionCaptureFailure(failurePath);
+        return storageStatePath;
+      } catch (error) {
+        lastError = error;
+        const message = error instanceof Error ? error.message : String(error);
+        if (!isRetryableSessionCaptureFailure(message) || attempt === SESSION_CAPTURE_ATTEMPTS) {
+          writeSessionCaptureFailure(failurePath, error);
+          throw error;
+        }
+        console.warn(
+          `[playwright-session] Transient capture failure for ${identity.userIdentifier}; retrying once (${attempt}/${SESSION_CAPTURE_ATTEMPTS}): ${redactSensitiveText(message)}`
         );
+      } finally {
+        await browser?.close();
       }
-      await persistSessionState(context, storageStatePath);
-      clearSessionCaptureFailure(failurePath);
-      return storageStatePath;
-    } catch (error) {
-      writeSessionCaptureFailure(failurePath, error);
-      throw error;
-    } finally {
-      await browser?.close();
     }
-  });
+
+    writeSessionCaptureFailure(failurePath, lastError);
+    throw lastError;
+  } finally {
+    await lock();
+  }
 }
 
 export async function applySessionCookies(page: Page, user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}): Promise<void> {
@@ -620,8 +682,10 @@ export async function ensureAuthenticatedPageAt(
   user: SessionIdentityInput = 'base',
   options: SessionCaptureOptions = {}
 ): Promise<void> {
+  let lastNavigationStatus: number | undefined;
   const gotoAndVerify = async (): Promise<boolean> => {
-    await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
+    const response = await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
+    lastNavigationStatus = response?.status();
     return isExpectedAuthenticatedSurface(page, destinationUrl);
   };
 
@@ -637,7 +701,9 @@ export async function ensureAuthenticatedPageAt(
   }
 
   const identity = resolveSessionIdentity(user);
-  throw new Error(`Unable to ensure authenticated page for user "${identity.userIdentifier}".`);
+  throw new Error(
+    `Unable to ensure authenticated page for user "${identity.userIdentifier}". ${await authenticatedPageContext(page, lastNavigationStatus)}`
+  );
 }
 
 export async function ensureAuthenticatedPage(page: Page, user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}): Promise<void> {
@@ -646,15 +712,22 @@ export async function ensureAuthenticatedPage(page: Page, user: SessionIdentityI
 
 export const __test__ = {
   normaliseSessionStorageKey,
+  getSessionStatePath,
   resolveSessionIdentity,
   resolveSessionPartitionKey,
   redactSensitiveText,
+  loginFailureContext,
   hasUnexpiredAuthCookie,
   isSessionFresh,
   isExpectedAuthenticatedSurface,
+  hasExpectedAuthenticatedShell,
   acquireSessionCaptureLock,
   persistSessionState,
   sessionCapture,
   SESSION_CAPTURE_LOCK_STALE_MS,
-  SESSION_CAPTURE_LOCK_TIMEOUT_MS
+  SESSION_CAPTURE_LOCK_TIMEOUT_MS,
+  SESSION_CAPTURE_LOCK_UPDATE_MS,
+  SESSION_CAPTURE_ATTEMPT_BUDGET_MS,
+  SESSION_CAPTURE_ATTEMPTS,
+  isRetryableSessionCaptureFailure
 };

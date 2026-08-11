@@ -23,6 +23,14 @@ test('wires global exclusions to API, E2E, integration and nightly but not acces
   expect(accessibilitySource).not.toContain('resolveFunctionalTagFilters');
 });
 
+test('warms the required session in every authenticated runner but leaves accessibility sessionless', () => {
+  expect(read('playwright.config.ts')).toContain("playwright.global.setup.ts");
+  expect(read('playwright-api.config.ts')).toContain("playwright.api.global.setup.ts");
+  expect(read('playwright-integration.config.ts')).toContain("playwright.integration.global.setup.ts");
+  expect(read('playwright-nightly.config.ts')).toContain("playwright.nightly.global.setup.ts");
+  expect(read('scripts/run-playwright-accessibility.cjs')).toContain("PW_SKIP_SESSION_CAPTURE: process.env.PW_SKIP_SESSION_CAPTURE || 'true'");
+});
+
 test('maps the approve-org Key Vault secret in CNP and nightly Jenkins only', () => {
   for (const jenkinsfile of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
     const source = read(jenkinsfile);
