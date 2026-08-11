@@ -70,7 +70,7 @@ test.describe('AO Playwright session management', () => {
     );
   });
 
-  test('rejects wrong and service-down routes before accepting an authenticated page', async () => {
+  test('rejects wrong and unavailable routes before accepting an authenticated page', async () => {
     const locator = {
       isVisible: async () => false,
       first: () => locator,
@@ -79,11 +79,20 @@ test.describe('AO Playwright session management', () => {
     const page = (url: string) => ({
       url: () => url,
       locator: () => locator,
-      getByRole: () => locator
+      getByRole: () => locator,
+      request: {
+        get: async () => ({
+          status: () => 200,
+          text: async () => 'true'
+        })
+      }
     });
 
     expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/other') as never, 'https://example.test/target')).toBe(false);
     expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/service-down') as never, 'https://example.test/service-down')).toBe(false);
+    expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/access-denied') as never, 'https://example.test/')).toBe(false);
+    expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://other.example.test/organisation') as never, 'https://example.test/organisation')).toBe(false);
+    expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/organisation') as never, 'https://example.test/')).toBe(true);
   });
 
   test('waiters reuse the lock owner result and the stale budget exceeds login and auth polling', async () => {
@@ -98,5 +107,21 @@ test.describe('AO Playwright session management', () => {
 
     expect(sessionCapture.SESSION_CAPTURE_LOCK_TIMEOUT_MS).toBeGreaterThan(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS);
     expect(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS).toBeGreaterThan(45_000 + 30_000);
+  });
+
+  test('does not remove a lock replaced after the original owner became stale', async () => {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
+    const lockPath = path.join(directory, 'state.lock');
+    const originalRelease = await sessionCapture.acquireSessionCaptureLock(lockPath);
+
+    const staleTimestamp = new Date(Date.now() - sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS - 1);
+    fs.utimesSync(lockPath, staleTimestamp, staleTimestamp);
+    const replacementRelease = await sessionCapture.acquireSessionCaptureLock(lockPath);
+
+    originalRelease();
+    expect(fs.existsSync(lockPath)).toBe(true);
+
+    replacementRelease();
+    expect(fs.existsSync(lockPath)).toBe(false);
   });
 });

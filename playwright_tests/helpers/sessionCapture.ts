@@ -1,4 +1,5 @@
 import { chromium, type Browser, type BrowserContext, type Page } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { config } from '../config/config';
@@ -24,6 +25,8 @@ const SESSION_DIR = process.env.PW_SESSION_DIR
   ? path.resolve(process.env.PW_SESSION_DIR)
   : path.resolve(__dirname, '../../.sessions');
 const OAUTH_CALLBACK_ROUTE_PATTERN = /\/oauth2\/callback(?:[/?#]|$)/;
+const DEFAULT_AUTHENTICATED_ROUTE_PATTERN = /^\/(?:organisation|caseworker-details)(?:\/|$)/;
+const UNAVAILABLE_ROUTE_PATTERN = /\/(?:access-denied|service-down|not-authorised|signed-out|error)(?:\/|$)/i;
 
 type UserConfig = {
   username: string;
@@ -235,17 +238,30 @@ function isLockStale(lockPath: string): boolean {
   }
 }
 
+function hasLockOwnerToken(lockPath: string, ownerToken: string): boolean {
+  try {
+    const lock = JSON.parse(fs.readFileSync(lockPath, 'utf8')) as { ownerToken?: string };
+    return lock.ownerToken === ownerToken;
+  } catch {
+    return false;
+  }
+}
+
 async function acquireSessionCaptureLock(lockPath: string): Promise<() => void> {
   const startTime = Date.now();
 
   while (Date.now() - startTime < SESSION_CAPTURE_LOCK_TIMEOUT_MS) {
     try {
       const fd = fs.openSync(lockPath, 'wx');
-      fs.writeFileSync(fd, JSON.stringify({ pid: process.pid, createdAt: new Date().toISOString() }));
+      const ownerToken = randomUUID();
+      fs.writeFileSync(fd, JSON.stringify({ pid: process.pid, createdAt: new Date().toISOString(), ownerToken }));
 
       return () => {
         fs.closeSync(fd);
-        fs.rmSync(lockPath, { force: true });
+        // A stale owner can finish after a replacement lock is acquired.
+        if (hasLockOwnerToken(lockPath, ownerToken)) {
+          fs.rmSync(lockPath, { force: true });
+        }
       };
     } catch (error) {
       const errorCode = (error as NodeJS.ErrnoException).code;
@@ -395,9 +411,16 @@ async function isExpectedAuthenticatedSurface(page: Page, destinationUrl: string
     return false;
   }
 
+  const current = new URL(currentUrl, config.baseUrl);
+  const destination = new URL(destinationUrl, config.baseUrl);
   const currentPath = normaliseUrlPath(currentUrl);
   const destinationPath = normaliseUrlPath(destinationUrl);
-  if ((destinationPath !== '/' && currentPath !== destinationPath) || /\/(?:service-down|not-authorised|error)(?:\/|$)/i.test(currentPath)) {
+  const isExpectedDefaultRoute = DEFAULT_AUTHENTICATED_ROUTE_PATTERN.test(currentPath);
+  if (
+    current.origin !== destination.origin ||
+    UNAVAILABLE_ROUTE_PATTERN.test(currentPath) ||
+    (destinationPath === '/' ? !isExpectedDefaultRoute : currentPath !== destinationPath)
+  ) {
     return false;
   }
 
