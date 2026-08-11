@@ -103,19 +103,21 @@ test.describe('AO Playwright session management', () => {
       first: () => locator,
       innerText: async () => 'Unexpected page'
     };
-    const page = (url: string, visibleShell?: string) => ({
+    const page = (url: string, visibleShell?: string, authenticated = true, signedInNavigation = authenticated) => ({
       url: () => url,
       locator: () => locator,
-      getByRole: (_role: string, options?: { name?: string | RegExp }) => ({
+      getByRole: (role: string, options?: { name?: string | RegExp }) => ({
         ...locator,
-        isVisible: async () => typeof options?.name === 'string'
+        isVisible: async () => role === 'link' && options?.name === 'Sign out'
+          ? signedInNavigation
+          : typeof options?.name === 'string'
           ? options.name === visibleShell
           : options?.name?.test(visibleShell ?? '') ?? false
       }),
       request: {
         get: async () => ({
           status: () => 200,
-          text: async () => 'true'
+          text: async () => String(authenticated)
         })
       }
     });
@@ -131,6 +133,55 @@ test.describe('AO Playwright session management', () => {
       'https://example.test/organisation-details/ORG-123'
     )).toBe(true);
     expect(await sessionCapture.isExpectedAuthenticatedSurface(page('https://example.test/caseworker-details', 'Upload staff details') as never, 'https://example.test/')).toBe(true);
+  });
+
+  test('accepts the signed-in AO shell when the legacy auth probe returns false', async () => {
+    const locator = {
+      first: () => locator,
+      isVisible: async () => false,
+      innerText: async () => 'Organisation details'
+    };
+    const page = (signedInNavigation: boolean) => ({
+      url: () => 'https://example.test/organisation-details/ORG-123',
+      locator: () => locator,
+      getByRole: (role: string, options?: { name?: string | RegExp }) => ({
+        ...locator,
+        isVisible: async () => role === 'link' && options?.name === 'Sign out'
+          ? signedInNavigation
+          : options?.name === 'Organisation details'
+      }),
+      request: {
+        get: async () => ({ status: () => 200, text: async () => 'false' })
+      }
+    });
+
+    await expect(sessionCapture.isExpectedAuthenticatedSurface(
+      page(true) as never,
+      'https://example.test/organisation-details/ORG-123'
+    )).resolves.toBe(true);
+    await expect(sessionCapture.isExpectedAuthenticatedSurface(
+      page(false) as never,
+      'https://example.test/organisation-details/ORG-123'
+    )).resolves.toBe(false);
+  });
+
+  test('uses the level-one organisation-details title instead of an ambiguous heading locator', async () => {
+    const locator = {
+      first: () => locator,
+      isVisible: async () => true,
+      innerText: async () => 'Organisation details'
+    };
+    const page = {
+      getByRole: (_role: string, options?: { name?: string | RegExp }) => ({
+        ...locator,
+        isVisible: async () => options?.name === 'Organisation details'
+      })
+    };
+
+    await expect(sessionCapture.hasExpectedAuthenticatedShell(
+      page as never,
+      '/organisation-details/ORG-123'
+    )).resolves.toBe(true);
   });
 
   test('waits for AO bootstrap navigation before accepting the authenticated shell', async () => {

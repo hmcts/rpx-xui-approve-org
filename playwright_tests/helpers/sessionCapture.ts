@@ -3,6 +3,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
 import { config } from '../config/config';
+import { completeIdamLogin } from './idamLogin';
 import { isRetryableSessionCaptureFailure, SESSION_CAPTURE_ATTEMPTS } from './sessionCaptureRetry';
 
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
@@ -408,8 +409,12 @@ function normaliseUrlPath(url: string): string {
 
 async function hasExpectedAuthenticatedShell(page: Page, currentPath: string): Promise<boolean> {
   if (currentPath.startsWith('/organisation-details/')) {
-    return page
-      .getByRole('heading', { name: /^(?:Approve organisation|Organisation details)$/ })
+    const hasApprovalHeading = await page
+      .getByRole('heading', { name: 'Approve organisation', exact: true })
+      .isVisible({ timeout: AUTHENTICATED_SURFACE_TIMEOUT_MS })
+      .catch(() => false);
+    return hasApprovalHeading || await page
+      .getByRole('heading', { name: 'Organisation details', exact: true, level: 1 })
       .isVisible({ timeout: AUTHENTICATED_SURFACE_TIMEOUT_MS })
       .catch(() => false);
   }
@@ -431,11 +436,19 @@ async function hasExpectedAuthenticatedShell(page: Page, currentPath: string): P
   return false;
 }
 
+async function hasAuthenticatedAccountNavigation(page: Page): Promise<boolean> {
+  return page.getByRole('link', { name: 'Sign out' }).isVisible().catch(() => false);
+}
+
 async function authenticatedPageContext(page: Page, navigationStatus?: number): Promise<string> {
   const route = normaliseUrlPath(page.url());
   const title = await page.title().catch(() => 'unavailable');
   const bodyLength = await page.locator('body').innerText().then((text) => text.trim().length).catch(() => 0);
-  return `route=${route}, navigationStatus=${navigationStatus ?? 'unavailable'}, title=${JSON.stringify(title)}, bodyLength=${bodyLength}`;
+  const authState = await getAuthenticationState(page);
+  const onLoginSurface = await isOnLoginOrCallbackSurface(page);
+  const hasExpectedShell = await hasExpectedAuthenticatedShell(page, route);
+  const hasAccountNavigation = await hasAuthenticatedAccountNavigation(page);
+  return `route=${route}, navigationStatus=${navigationStatus ?? 'unavailable'}, title=${JSON.stringify(title)}, bodyLength=${bodyLength}, auth=${authState.authenticated}, onLoginSurface=${onLoginSurface}, hasExpectedShell=${hasExpectedShell}, hasAccountNavigation=${hasAccountNavigation}`;
 }
 
 async function isExpectedAuthenticatedSurface(page: Page, destinationUrl: string): Promise<boolean> {
@@ -458,9 +471,11 @@ async function isExpectedAuthenticatedSurface(page: Page, destinationUrl: string
   }
 
   const bodyText = await page.locator('body').innerText().catch(() => '');
-  return bodyText.trim().length > 0 &&
-    await hasExpectedAuthenticatedShell(page, currentPath) &&
-    await waitForAuthenticatedByApi(page);
+  if (bodyText.trim().length === 0 || !(await hasExpectedAuthenticatedShell(page, currentPath))) {
+    return false;
+  }
+
+  return (await getAuthenticationState(page)).authenticated || await hasAuthenticatedAccountNavigation(page);
 }
 
 async function waitForExpectedAuthenticatedSurface(
@@ -527,35 +542,15 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
       await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
     }
 
-    const namedUsernameInput = page.locator('input[name="username"]');
-    const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
-    const fallbackEmailInput = page.locator('input[type="email"]').first();
-    const hasNamedUsernameInput = await namedUsernameInput.isVisible().catch(() => false);
-    const hasRoleEmailInput = await roleEmailInput.isVisible().catch(() => false);
-    const hasFallbackEmailInput = await fallbackEmailInput.isVisible().catch(() => false);
-    const isOnLoginSurface =
-      page.url().includes('idam') ||
-      page.url().includes('/login') ||
-      hasNamedUsernameInput ||
-      hasRoleEmailInput ||
-      hasFallbackEmailInput;
+    const isOnLoginSurface = await isOnLoginOrCallbackSurface(page);
 
     if (!isOnLoginSurface && (await isAuthenticatedByApi(page))) {
       return;
     }
 
     if (isOnLoginSurface) {
-      if (hasNamedUsernameInput) {
-        await namedUsernameInput.fill(username);
-        await page.locator('input[name="password"]').fill(password);
-        await page.locator('#login-submit-btn').click();
-        await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
-        await waitForLoginRedirectToSettle(page, Math.max(AUTHENTICATION_POLL_INTERVAL_MS, retryUntil - Date.now()));
-      } else if (hasRoleEmailInput || hasFallbackEmailInput) {
-        const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
-        await emailInput.fill(username);
-        await page.locator('input[type="password"], input[name="password"]').first().fill(password);
-        await page.getByRole('button', { name: 'Sign in' }).click();
+      if (await isLoginInputVisible(page)) {
+        await completeIdamLogin(page, username, password);
         await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
         await waitForLoginRedirectToSettle(page, Math.max(AUTHENTICATION_POLL_INTERVAL_MS, retryUntil - Date.now()));
       } else {
@@ -746,6 +741,7 @@ export const __test__ = {
   isExpectedAuthenticatedSurface,
   waitForExpectedAuthenticatedSurface,
   hasExpectedAuthenticatedShell,
+  hasAuthenticatedAccountNavigation,
   acquireSessionCaptureLock,
   persistSessionState,
   sessionCapture,
