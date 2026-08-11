@@ -4,12 +4,12 @@ import * as path from 'node:path';
 import { config } from '../config/config';
 
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
-const SESSION_CAPTURE_LOCK_TIMEOUT_MS = 120_000;
-const SESSION_CAPTURE_LOCK_STALE_MS = 120_000;
+const SESSION_CAPTURE_LOCK_TIMEOUT_MS = 180_000;
 const SESSION_CAPTURE_LOCK_RETRY_MS = 500;
 const AUTHENTICATION_TIMEOUT_MS = 30_000;
 const AUTHENTICATION_POLL_INTERVAL_MS = 500;
 const LOGIN_REDIRECT_TIMEOUT_MS = 45_000;
+const SESSION_CAPTURE_LOCK_STALE_MS = LOGIN_REDIRECT_TIMEOUT_MS + AUTHENTICATION_TIMEOUT_MS + 60_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
 const SESSION_CAPTURE_RETRYABLE_FAILURE_PATTERNS = [
   /Session capture did not create an authenticated session/i,
@@ -34,6 +34,15 @@ type SessionCaptureOptions = {
   force?: boolean;
   partitionKey?: string;
 };
+
+export type SessionIdentity = {
+  userIdentifier: string;
+  email: string;
+  password: string;
+  sessionKey?: string;
+};
+
+export type SessionIdentityInput = string | SessionIdentity;
 
 type AuthenticationState = {
   authenticated: boolean;
@@ -86,7 +95,7 @@ function recentSessionCaptureFailureMessage(failurePath: string, now = Date.now(
 }
 
 function writeSessionCaptureFailure(failurePath: string, error: unknown): void {
-  const message = error instanceof Error ? error.message : String(error);
+  const message = redactSensitiveText(error instanceof Error ? error.message : String(error));
 
   try {
     fs.writeFileSync(
@@ -128,40 +137,51 @@ function getUserConfig(user: string): UserConfig {
   return account;
 }
 
-function resolveSessionPartitionKey(explicitPartitionKey?: string): string | undefined {
-  const configured = explicitPartitionKey?.trim();
-  if (configured) {
-    return configured;
+function resolveSessionIdentity(input: SessionIdentityInput): SessionIdentity {
+  if (typeof input !== 'string') {
+    return input;
   }
 
-  const fromParallelIndex = process.env.TEST_PARALLEL_INDEX?.trim();
-  if (fromParallelIndex) {
-    return `parallel-${fromParallelIndex}`;
-  }
-
-  const fromWorkerIndex = process.env.TEST_WORKER_INDEX?.trim();
-  if (fromWorkerIndex) {
-    return `worker-${fromWorkerIndex}`;
-  }
-
-  return undefined;
+  const credentials = getUserConfig(input);
+  return {
+    userIdentifier: input,
+    email: credentials.username,
+    password: credentials.password
+  };
 }
 
-export function getSessionStatePath(user: string = 'base', partitionKey?: string): string {
-  const { username } = getUserConfig(user);
-  const compositeKey = partitionKey ? `${username}.${partitionKey}` : username;
+function resolveSessionPartitionKey(explicitPartitionKey?: string): string | undefined {
+  const configured = explicitPartitionKey?.trim();
+  return configured ? configured : undefined;
+}
+
+export function getSessionStatePath(user: SessionIdentityInput = 'base', partitionKey?: string): string {
+  const identity = resolveSessionIdentity(user);
+  const compositeKey = partitionKey ? `${identity.sessionKey ?? identity.email}.${partitionKey}` : identity.sessionKey ?? identity.email;
   const key = normaliseSessionStorageKey(compositeKey);
   return path.join(SESSION_DIR, `${key}.storage.json`);
 }
 
-function hasUnexpiredAuthCookie(storageStatePath: string): boolean {
+type StorageCookie = { name: string; value: string; expires?: number; domain?: string };
+
+function isCookieCompatibleWithHost(cookieDomain: string | undefined, hostName: string): boolean {
+  const normalizedDomain = cookieDomain?.replace(/^\./, '').toLowerCase();
+  const normalizedHost = hostName.toLowerCase();
+  return !!normalizedDomain && (normalizedHost === normalizedDomain || normalizedHost.endsWith(`.${normalizedDomain}`));
+}
+
+function hasUnexpiredAuthCookie(storageStatePath: string, targetUrl = config.baseUrl): boolean {
   try {
-    const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as { cookies?: Array<{ name?: string; expires?: number }> };
+    const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as { cookies?: StorageCookie[] };
     const cookies = state.cookies ?? [];
     const nowSeconds = Date.now() / 1000;
+    const targetHost = new URL(targetUrl).hostname;
     return cookies.some((cookie) => {
       const name = cookie.name ?? '';
       if (name !== '__auth__' && name !== 'Idam.Session' && name !== 'ao-webapp') {
+        return false;
+      }
+      if (cookie.domain && !isCookieCompatibleWithHost(cookie.domain, targetHost)) {
         return false;
       }
       if (cookie.expires === undefined || cookie.expires === -1) {
@@ -174,7 +194,7 @@ function hasUnexpiredAuthCookie(storageStatePath: string): boolean {
   }
 }
 
-function isSessionFresh(storageStatePath: string): boolean {
+function isSessionFresh(storageStatePath: string, targetUrl = config.baseUrl): boolean {
   if (!fs.existsSync(storageStatePath)) {
     return false;
   }
@@ -185,7 +205,13 @@ function isSessionFresh(storageStatePath: string): boolean {
     return false;
   }
 
-  return hasUnexpiredAuthCookie(storageStatePath);
+  return hasUnexpiredAuthCookie(storageStatePath, targetUrl);
+}
+
+function redactSensitiveText(value: string): string {
+  return value
+    .replace(/([?&](?:token|access_token|id_token|password|secret)=)[^&#\s]*/gi, '$1[REDACTED]')
+    .replace(/((?:password|token|secret)["'=:\s]+)[^,\s&}]+/gi, '$1[REDACTED]');
 }
 
 async function launchBrowserForSessionCapture(): Promise<Browser> {
@@ -359,6 +385,26 @@ async function isOnLoginOrCallbackSurface(page: Page): Promise<boolean> {
     await isLoginInputVisible(page);
 }
 
+function normaliseUrlPath(url: string): string {
+  return new URL(url, config.baseUrl).pathname.replace(/\/$/, '') || '/';
+}
+
+async function isExpectedAuthenticatedSurface(page: Page, destinationUrl: string): Promise<boolean> {
+  const currentUrl = page.url();
+  if (await isOnLoginOrCallbackSurface(page)) {
+    return false;
+  }
+
+  const currentPath = normaliseUrlPath(currentUrl);
+  const destinationPath = normaliseUrlPath(destinationUrl);
+  if ((destinationPath !== '/' && currentPath !== destinationPath) || /\/(?:service-down|not-authorised|error)(?:\/|$)/i.test(currentPath)) {
+    return false;
+  }
+
+  const bodyText = await page.locator('body').innerText().catch(() => '');
+  return bodyText.trim().length > 0 && await waitForAuthenticatedByApi(page);
+}
+
 async function waitForLoginRedirectToSettle(page: Page, timeoutMs = LOGIN_REDIRECT_TIMEOUT_MS): Promise<void> {
   const deadline = Date.now() + timeoutMs;
 
@@ -460,10 +506,16 @@ async function isAuthenticatedByApi(page: Page): Promise<boolean> {
 
 async function persistSessionState(context: BrowserContext, storageStatePath: string): Promise<void> {
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
-  await context.storageState({ path: storageStatePath });
+  const temporaryPath = `${storageStatePath}.${process.pid}.${Date.now()}.tmp`;
+  try {
+    await context.storageState({ path: temporaryPath });
+    fs.renameSync(temporaryPath, storageStatePath);
+  } finally {
+    fs.rmSync(temporaryPath, { force: true });
+  }
 }
 
-export async function sessionCapture(user: string = 'base', options: SessionCaptureOptions = {}): Promise<string> {
+export async function sessionCapture(user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}): Promise<string> {
   const partitionKey = resolveSessionPartitionKey(options.partitionKey);
   const storageStatePath = getSessionStatePath(user, partitionKey);
   const lockPath = `${storageStatePath}.lock`;
@@ -497,9 +549,9 @@ export async function sessionCapture(user: string = 'base', options: SessionCapt
       );
     }
 
-    const { username, password } = getUserConfig(user);
+    const identity = resolveSessionIdentity(user);
     const partitionSuffix = partitionKey ? ` [${partitionKey}]` : '';
-    console.log(`[playwright-session] Capturing session for ${username}${partitionSuffix} -> ${storageStatePath}`);
+    console.log(`[playwright-session] Capturing session for ${identity.userIdentifier}${partitionSuffix} -> ${storageStatePath}`);
     let browser: Browser | undefined;
 
     try {
@@ -507,11 +559,11 @@ export async function sessionCapture(user: string = 'base', options: SessionCapt
       const context = await browser.newContext();
       const page = await context.newPage();
 
-      await completeLoginOnPage(page, username, password);
+      await completeLoginOnPage(page, identity.email, identity.password);
       const authenticated = await waitForAuthenticatedByApi(page);
       if (!authenticated) {
         throw new Error(
-          `Session capture did not create an authenticated session for "${username}". ${await loginFailureContext(page)}`
+          `Session capture did not create an authenticated session for "${identity.userIdentifier}". ${await loginFailureContext(page)}`
         );
       }
       await persistSessionState(context, storageStatePath);
@@ -526,9 +578,9 @@ export async function sessionCapture(user: string = 'base', options: SessionCapt
   });
 }
 
-export async function applySessionCookies(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
-  const loadCookies = (storageStatePath: string): any[] => {
-    const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as { cookies?: any[] };
+export async function applySessionCookies(page: Page, user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}): Promise<void> {
+  const loadCookies = (storageStatePath: string): StorageCookie[] => {
+    const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as { cookies?: StorageCookie[] };
     return state.cookies ?? [];
   };
 
@@ -542,13 +594,12 @@ export async function applySessionCookies(page: Page, user: string = 'base', opt
 export async function ensureAuthenticatedPageAt(
   page: Page,
   destinationUrl: string,
-  user: string = 'base',
+  user: SessionIdentityInput = 'base',
   options: SessionCaptureOptions = {}
 ): Promise<void> {
   const gotoAndVerify = async (): Promise<boolean> => {
     await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
-    const onLoginOrCallbackSurface = await isOnLoginOrCallbackSurface(page);
-    return !onLoginOrCallbackSurface && await waitForAuthenticatedByApi(page);
+    return isExpectedAuthenticatedSurface(page, destinationUrl);
   };
 
   await applySessionCookies(page, user, options);
@@ -562,9 +613,25 @@ export async function ensureAuthenticatedPageAt(
     return;
   }
 
-  throw new Error(`Unable to ensure authenticated page for user "${user}".`);
+  const identity = resolveSessionIdentity(user);
+  throw new Error(`Unable to ensure authenticated page for user "${identity.userIdentifier}".`);
 }
 
-export async function ensureAuthenticatedPage(page: Page, user: string = 'base', options: SessionCaptureOptions = {}): Promise<void> {
+export async function ensureAuthenticatedPage(page: Page, user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}): Promise<void> {
   await ensureAuthenticatedPageAt(page, config.baseUrl, user, options);
 }
+
+export const __test__ = {
+  normaliseSessionStorageKey,
+  resolveSessionIdentity,
+  resolveSessionPartitionKey,
+  redactSensitiveText,
+  hasUnexpiredAuthCookie,
+  isSessionFresh,
+  isExpectedAuthenticatedSurface,
+  acquireSessionCaptureLock,
+  persistSessionState,
+  sessionCapture,
+  SESSION_CAPTURE_LOCK_STALE_MS,
+  SESSION_CAPTURE_LOCK_TIMEOUT_MS
+};
