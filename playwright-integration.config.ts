@@ -19,6 +19,7 @@ logResolvedTagFilters('Integration', integrationTagFilters);
 module.exports = defineConfig({
   testDir: './playwright_tests/integration',
   testMatch: /.*\.integration\.(positive|negative)\.test\.ts/,
+  globalSetup: require.resolve('./playwright_tests/helpers/playwright.integration.global.setup.ts'),
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: resolveFunctionalRetryCount('INTEGRATION_PW_RETRIES'),
