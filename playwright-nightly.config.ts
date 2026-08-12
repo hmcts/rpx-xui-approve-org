@@ -21,6 +21,7 @@ logResolvedTagFilters('Nightly cross-browser E2E', e2eTagFilters);
 module.exports = defineConfig({
   testDir: './playwright_tests/e2e',
   testMatch: /.*\.test\.ts/,
+  globalSetup: require.resolve('./playwright_tests/helpers/playwright.nightly.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -34,7 +35,7 @@ module.exports = defineConfig({
   reportSlowTests: null,
 
   /* Opt out of parallel tests on CI. */
-  workers: resolveWorkerCount(),
+  workers: resolveWorkerCount(process.env, 'E2E_PW_WORKERS'),
 
   reporter: buildPlaywrightReporters('nightly'),
 
