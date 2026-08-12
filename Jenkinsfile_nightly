@@ -216,6 +216,7 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '5'
     env.E2E_PW_RETRIES = '3'
+    env.API_PW_RETRIES = '3'
     applyPlaywrightTagFilterEnv()
     logPlaywrightTagFilterEnv('pipeline env')
     env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
