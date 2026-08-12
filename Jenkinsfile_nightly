@@ -87,7 +87,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.9")
+@Library("Infrastructure@2.5.1")
 
 String type      = 'nodejs'
 String product   = 'xui'
@@ -214,6 +214,7 @@ static Map<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline(type, product, component) {
+    enableBuildCache()
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     // API and integration retain five workers; the cross-browser branch applies its own E2E_PW_WORKERS override.
