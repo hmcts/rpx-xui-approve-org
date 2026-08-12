@@ -131,7 +131,9 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
             },
             crossBrowser: {
                 stage('Nightly Cross Browser Playwright Tests') {
-                    yarnBuilder.yarn('test:crossbrowser')
+                    withEnv(['E2E_PW_WORKERS=1']) {
+                        yarnBuilder.yarn('test:crossbrowser')
+                    }
                 }
             }
         ]
@@ -214,9 +216,8 @@ static Map<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
-    // AAT RefData-backed journeys share the base account and are sensitive to concurrent active-organisation scans.
-    // Keep nightly functional execution serial until those upstream calls are independently rate-safe.
-    env.FUNCTIONAL_TESTS_WORKERS = '1'
+    // API and integration retain five workers; the cross-browser branch applies its own E2E_PW_WORKERS override.
+    env.FUNCTIONAL_TESTS_WORKERS = '5'
     env.E2E_PW_RETRIES = '3'
     env.API_PW_RETRIES = '3'
     env.INTEGRATION_PW_RETRIES = '3'

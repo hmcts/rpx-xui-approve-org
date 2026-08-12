@@ -35,7 +35,7 @@ module.exports = defineConfig({
   reportSlowTests: null,
 
   /* Opt out of parallel tests on CI. */
-  workers: resolveWorkerCount(),
+  workers: resolveWorkerCount(process.env, 'E2E_PW_WORKERS'),
 
   reporter: buildPlaywrightReporters('nightly'),
 
