@@ -117,6 +117,46 @@ test.describe('AO Playwright session management', () => {
     )).resolves.toBe(false);
   });
 
+  test('keeps an authenticated progressive IDAM login when the legacy auth probe is false', async () => {
+    const aoSessionHost = new URL(config.baseUrl).hostname;
+    const validCookies = [
+      { name: 'Idam.Session', value: 'redacted', domain: 'idam-web-public.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 },
+      { name: 'ao-webapp', value: 'redacted', domain: aoSessionHost, expires: Math.floor(Date.now() / 1000) + 300 }
+    ];
+    let completedLogin = false;
+    let clearedCookies = 0;
+    const locator = {
+      first: () => locator,
+      isVisible: async () => !completedLogin
+    };
+    const page = {
+      goto: async () => undefined,
+      url: () => completedLogin ? `${config.baseUrl}organisation` : 'https://idam-web-public.aat.platform.hmcts.net/login',
+      locator: () => locator,
+      getByRole: () => locator,
+      waitForLoadState: async () => undefined,
+      title: async () => '',
+      request: { get: async () => ({ status: () => 200, text: async () => 'false' }) },
+      context: () => ({
+        cookies: async () => validCookies,
+        clearCookies: async () => {
+          clearedCookies += 1;
+          throw new Error('A valid AO session must not be cleared after IDAM login.');
+        }
+      })
+    };
+
+    await expect(sessionCapture.completeLoginOnPage(
+      page as never,
+      'user@example.test',
+      'not-a-real-password',
+      async () => { completedLogin = true; }
+    )).resolves.toBeUndefined();
+
+    expect(completedLogin).toBe(true);
+    expect(clearedCookies).toBe(0);
+  });
+
   test('persists state atomically and leaves no temporary file after success', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const statePath = path.join(directory, 'state.json');

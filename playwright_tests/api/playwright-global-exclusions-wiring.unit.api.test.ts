@@ -153,7 +153,7 @@ test('runs all functional tests once through the normal preview and nightly Jenk
   }
 });
 
-test('does not retry E2E, integration, or nightly tests unless a caller opts in explicitly', () => {
+test('defaults E2E, integration, and nightly retries to zero unless a caller opts in explicitly', () => {
   expect(read('playwright.config.ts')).toContain('retries: resolveFunctionalRetryCount(\'E2E_PW_RETRIES\')');
   expect(read('playwright-integration.config.ts')).toContain(
     'retries: resolveFunctionalRetryCount(\'INTEGRATION_PW_RETRIES\')'
@@ -161,9 +161,17 @@ test('does not retry E2E, integration, or nightly tests unless a caller opts in 
   expect(read('playwright-nightly.config.ts')).toContain('retries: resolveFunctionalRetryCount(\'E2E_PW_RETRIES\')');
 });
 
-test('sets three retries for preview and nightly E2E pipeline runs', () => {
+test('sets three retries for API, E2E and integration preview and nightly pipeline runs', () => {
+  expect(read('playwright-api.config.ts')).toContain('retries: resolveApiRetryCount()');
+  expect(read('playwright.config.ts')).toContain('retries: resolveFunctionalRetryCount(\'E2E_PW_RETRIES\')');
+  expect(read('playwright-integration.config.ts')).toContain(
+    'retries: resolveFunctionalRetryCount(\'INTEGRATION_PW_RETRIES\')'
+  );
+
   for (const jenkinsfile of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
     expect(read(jenkinsfile)).toContain('env.E2E_PW_RETRIES = \'3\'');
+    expect(read(jenkinsfile)).toContain('env.API_PW_RETRIES = \'3\'');
+    expect(read(jenkinsfile)).toContain('env.INTEGRATION_PW_RETRIES = \'3\'');
   }
 });
 

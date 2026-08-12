@@ -378,25 +378,6 @@ async function getAuthenticationState(page: Page): Promise<AuthenticationState> 
   }
 }
 
-async function waitForAuthenticatedByApi(page: Page, timeoutMs = AUTHENTICATION_TIMEOUT_MS): Promise<boolean> {
-  const deadline = Date.now() + timeoutMs;
-
-  do {
-    if ((await getAuthenticationState(page)).authenticated) {
-      return true;
-    }
-
-    const remainingMs = deadline - Date.now();
-    if (remainingMs <= 0) {
-      break;
-    }
-
-    await sleep(Math.min(AUTHENTICATION_POLL_INTERVAL_MS, remainingMs));
-  } while (Date.now() < deadline);
-
-  return false;
-}
-
 async function hasCapturedAuthenticatedSession(
   page: Page,
   context: Pick<BrowserContext, 'cookies'>,
@@ -611,10 +592,15 @@ async function waitForLoginRedirectToSettle(page: Page, timeoutMs = LOGIN_REDIRE
   }
 }
 
-async function completeLoginOnPage(page: Page, username: string, password: string): Promise<void> {
+async function completeLoginOnPage(
+  page: Page,
+  username: string,
+  password: string,
+  login: typeof completeIdamLogin = completeIdamLogin
+): Promise<void> {
   await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
 
-  if (!(await isOnLoginOrCallbackSurface(page)) && await waitForAuthenticatedByApi(page, 5_000)) {
+  if (!(await isOnLoginOrCallbackSurface(page)) && await hasCapturedAuthenticatedSession(page, page.context(), 5_000)) {
     return;
   }
 
@@ -629,13 +615,13 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
 
     const isOnLoginSurface = await isOnLoginOrCallbackSurface(page);
 
-    if (!isOnLoginSurface && (await isAuthenticatedByApi(page))) {
+    if (!isOnLoginSurface && await hasCapturedAuthenticatedSession(page, page.context(), 0)) {
       return;
     }
 
     if (isOnLoginSurface) {
       if (await isLoginInputVisible(page)) {
-        await completeIdamLogin(page, username, password);
+        await login(page, username, password);
         await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
         await waitForLoginRedirectToSettle(page, Math.max(AUTHENTICATION_POLL_INTERVAL_MS, retryUntil - Date.now()));
       } else {
@@ -648,7 +634,7 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
     const authCheckTimeout = Math.min(5_000, Math.max(0, retryUntil - Date.now()));
     if (
       authCheckTimeout > 0 &&
-      await waitForAuthenticatedByApi(page, authCheckTimeout)
+      await hasCapturedAuthenticatedSession(page, page.context(), authCheckTimeout)
     ) {
       return;
     }
@@ -659,10 +645,6 @@ async function completeLoginOnPage(page: Page, username: string, password: strin
   throw new Error(
     `Unable to authenticate "${username}" and capture Playwright session state. ${await loginFailureContext(page)}`
   );
-}
-
-async function isAuthenticatedByApi(page: Page): Promise<boolean> {
-  return (await getAuthenticationState(page)).authenticated;
 }
 
 async function persistSessionState(context: BrowserContext, storageStatePath: string): Promise<void> {
@@ -844,6 +826,7 @@ export const __test__ = {
   hasUnexpiredAuthCookie,
   hasPersistableSessionCookies,
   hasCapturedAuthenticatedSession,
+  completeLoginOnPage,
   isSessionFresh,
   readStorageStateFingerprint,
   isReusableSessionForCapture,
