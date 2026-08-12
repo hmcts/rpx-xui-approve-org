@@ -6,14 +6,14 @@ const storageState = {
     {
       name: 'XSRF-TOKEN',
       value: 'redacted-token',
-      domain: 'xui-ao-webapp-pr-1131.preview.platform.hmcts.net'
+      domain: 'approve-org.test'
     }
   ],
   origins: []
 };
 
 const environmentResponse = {
-  url: () => 'https://xui-ao-webapp-pr-1131.preview.platform.hmcts.net/api/environment'
+  url: () => 'https://approve-org.test/api/environment'
 };
 
 test.describe('authenticated API request bootstrap', () => {
