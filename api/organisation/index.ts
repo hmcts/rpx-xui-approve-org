@@ -106,8 +106,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
 
 export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
-  const promise = req.http.get(url).catch((err) => err);
-  return promise;
+  return req.http.get(url);
 }
 
 async function getFilteredActiveOrganisations(
@@ -163,21 +162,14 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
   const chunkSize = 1000;
   const total_records = response.headers.total_records;
   const counts = Math.floor(total_records / chunkSize) + 1;
-  const organisationPromises = [];
-  for (let i = 1; i <= counts; i++) {
-    organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
-  }
   const allActiveOrgs = [];
   try {
-    await Promise.all(organisationPromises).catch((err) => err).then((organisations) => {
-      organisations.forEach((organisation) => {
-        if (organisation.data.organisations) {
-          organisation.data.organisations.forEach((org) => {
-            allActiveOrgs.push(org);
-          });
-        }
-      });
-    });
+    for (let pageNumber = 1; pageNumber <= counts; pageNumber++) {
+      const organisation = await getActiveOrganisation(pageNumber, chunkSize, req);
+      if (organisation.data?.organisations) {
+        allActiveOrgs.push(...organisation.data.organisations);
+      }
+    }
   } catch (error) {
     logger.error(error);
     if (error.message) {
