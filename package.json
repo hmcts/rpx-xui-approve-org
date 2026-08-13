@@ -217,7 +217,7 @@
     "@angular/platform-server": "^20.0.0",
     "@angular/ssr": "^20.0.0",
     "shelljs": "^0.8.5",
-    "qs": "^6.15.3"
+    "qs": "^6.15.3",
     "@opentelemetry/core": "^2.8.0",
     "@azure/monitor-opentelemetry": "^1.19.0"
   },
