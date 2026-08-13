@@ -1,7 +1,7 @@
 import * as chai from 'chai';
-import type {} from 'sinon-chai';
+import * as sinonChaiModule from 'sinon-chai';
 
-const sinonChai = require('sinon-chai') as Chai.ChaiPlugin;
+const sinonChai = sinonChaiModule as Chai.ChaiPlugin;
 
 chai.use(sinonChai);
 
