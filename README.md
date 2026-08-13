@@ -26,7 +26,8 @@ Run `yarn start:ng` to start up the UI.
 
 ## Running unit tests
 
-Run `yarn test` to execute Angular unit tests.
+Run `yarn test` to execute Angular and Node unit tests with coverage.
+Run `yarn test:ng` to execute Angular unit tests.
 Run `yarn test:node` to execute Node unit tests.
 Both are run on the build pipelines.
 
