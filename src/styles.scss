@@ -1,11 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
 
-$jui-assets-path : "";
-
+// Path to assets for use with the file-url function
+// in the govuk frontend toolkit"s url-helpers partial
+$path: "";
 @use "govuk-frontend" as *;
-@import "./assets/sass/hmcts-frontend/all";
-@import "./assets/sass/application";
+@use "./assets/sass/hmcts-frontend/all" as *;
+@use "./assets/sass/application" as *;
 
 .stay-signed-in-button {
   margin-right: 15px;
