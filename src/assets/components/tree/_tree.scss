@@ -1,3 +1,5 @@
+@use "../../sass/jui/settings/settings.general" as *;
+
 @use "govuk-frontend" as *;
 
 
@@ -14,7 +16,7 @@
 
 
 .jui-tree__item {
-  border-top: 1px solid govuk-colour("black", $variant: "tint-95");
+  border-top: 1px solid govuk-colour("light-grey");
   outline: 0;
 
   &:first-child {
@@ -86,7 +88,7 @@
 
 .jui-tree__doc-meta {
   @include govuk-font(16);
-  color: govuk-functional-colour(secondary-text);
+  color: $govuk-secondary-text-colour;
   display: block;
   margin-top: govuk-spacing(1);
 }
@@ -101,20 +103,20 @@
   .jui-tree__item:focus {
 
     .jui-tree__folder {
-      background-color: govuk-functional-colour(focus);
+      background-color: $govuk-focus-colour;
       color: govuk-colour("black");
-      outline: 3px solid govuk-functional-colour(focus);
+      outline: 3px solid $govuk-focus-colour;
     }
 
   }
 
 
   .jui-tree__folder {
-    color: govuk-functional-colour(link);
+    color: $govuk-link-colour;
     cursor: pointer;
 
     &:hover {
-      color: govuk-functional-colour(link-hover);
+      color: $govuk-link-hover-colour;
     }
 
   }
@@ -144,7 +146,7 @@
 
 
   .jui-tree__doc-link[aria-current=true] {
-    background-color: rgba(govuk-colour("black", $variant: "tint-95"), .5);
+    background-color: rgba(govuk-colour("light-grey"), .5);
     color: black;
     cursor: default;
   }
