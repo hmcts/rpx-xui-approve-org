@@ -18792,7 +18792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.14.1":
+"qs@npm:^6.15.3":
   version: 6.15.3
   resolution: "qs@npm:6.15.3"
   dependencies:
