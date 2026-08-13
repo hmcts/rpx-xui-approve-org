@@ -1,3 +1,5 @@
+@use "../objects/width-container" as *;
+
 .hmcts-width-container {
   @include hmcts-width-container;
 }

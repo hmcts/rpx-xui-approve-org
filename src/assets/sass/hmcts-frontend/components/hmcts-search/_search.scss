@@ -1,3 +1,9 @@
+@use "../../settings/all" as *;
+@use "../../objects/width-container" as *;
+
+@use "govuk-frontend" as *;
+
+
 
 
 .hmcts-search {
@@ -49,7 +55,7 @@
 }
 
 .hmcts-search--ondark .hmcts-search__hint {
-  color: govuk-colour("mid-grey", $legacy: "grey-2");
+  color: govuk-colour("mid-grey");
 }
 
 .hmcts-search--ondark .hmcts-search__input {

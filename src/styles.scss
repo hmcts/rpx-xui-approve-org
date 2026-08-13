@@ -4,12 +4,9 @@
 // Path to assets for use with the file-url function
 // in the govuk frontend toolkit"s url-helpers partial
 $path: "";
-$jui-assets-path : "";
-
-$govuk-global-styles: true;
-@import "govuk-frontend/govuk/all";
-@import "./assets/sass/hmcts-frontend/all";
-@import "./assets/sass/application";
+@use "govuk-frontend" as *;
+@use "./assets/sass/hmcts-frontend/all" as *;
+@use "./assets/sass/application" as *;
 
 .stay-signed-in-button {
   margin-right: 15px;
