@@ -8560,6 +8560,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chai@npm:*":
+  version: 5.2.3
+  resolution: "@types/chai@npm:5.2.3"
+  dependencies:
+    "@types/deep-eql": "npm:*"
+    assertion-error: "npm:^2.0.1"
+  checksum: 10/e79947307dc235953622e65f83d2683835212357ca261389116ab90bed369ac862ba28b146b4fed08b503ae1e1a12cb93ce783f24bb8d562950469f4320e1c7c
+  languageName: node
+  linkType: hard
+
 "@types/chai@npm:^4.3.6":
   version: 4.3.20
   resolution: "@types/chai@npm:4.3.20"
@@ -8608,6 +8618,13 @@ __metadata:
   version: 3.1.47
   resolution: "@types/crypto-js@npm:3.1.47"
   checksum: 10/0947713ca7d70c509530bd960d5afa1e06b98af734975a976529b0a0c0dcced12598abe086e3b0c0b1b81b0d785e7d3059f75009fc839f861d787a9a69f74cf1
+  languageName: node
+  linkType: hard
+
+"@types/deep-eql@npm:*":
+  version: 4.0.2
+  resolution: "@types/deep-eql@npm:4.0.2"
+  checksum: 10/249a27b0bb22f6aa28461db56afa21ec044fa0e303221a62dff81831b20c8530502175f1a49060f7099e7be06181078548ac47c668de79ff9880241968d43d0c
   languageName: node
   linkType: hard
 
@@ -9003,10 +9020,36 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/sinon-chai@npm:3.2.12":
+  version: 3.2.12
+  resolution: "@types/sinon-chai@npm:3.2.12"
+  dependencies:
+    "@types/chai": "npm:*"
+    "@types/sinon": "npm:*"
+  checksum: 10/d906f2f766613534c5e9fe1437ec740fb6a9a550f02d1a0abe180c5f18fe73a99f0c12935195404d42f079f5f72a371e16b81e2aef963a6ef0ee0ed9d5d7f391
+  languageName: node
+  linkType: hard
+
+"@types/sinon@npm:*":
+  version: 22.0.0
+  resolution: "@types/sinon@npm:22.0.0"
+  dependencies:
+    "@types/sinonjs__fake-timers": "npm:*"
+  checksum: 10/19f27c42ad9960934d7a32b3a37ad545eb41f048733fb6b9b79a00083156b4f9a9180b664f40b8688b233ce6d1aa51de445ba8d35f98dbfded152b876692641b
+  languageName: node
+  linkType: hard
+
 "@types/sinon@npm:^7.0.13":
   version: 7.5.2
   resolution: "@types/sinon@npm:7.5.2"
   checksum: 10/66163c371dd84f1c485ae4c60401e4cfdb376974c85d91123dcc8c38334ecc4909c4ae9ffc5008bf0f5212593c7d91f70f460963c01510d2dfe93a689fc8e9ea
+  languageName: node
+  linkType: hard
+
+"@types/sinonjs__fake-timers@npm:*":
+  version: 15.0.1
+  resolution: "@types/sinonjs__fake-timers@npm:15.0.1"
+  checksum: 10/9fa7a129742262ef4ea9c3253683453c42c2e210cdff1456e233bc9b59f6d60ef8121b32a00209a1c8c7759f88511862dab1ce340081e432515418fc44d8ec35
   languageName: node
   linkType: hard
 
@@ -10201,6 +10244,13 @@ __metadata:
   version: 1.1.0
   resolution: "assertion-error@npm:1.1.0"
   checksum: 10/fd9429d3a3d4fd61782eb3962ae76b6d08aa7383123fca0596020013b3ebd6647891a85b05ce821c47d1471ed1271f00b0545cf6a4326cf2fc91efcc3b0fbecf
+  languageName: node
+  linkType: hard
+
+"assertion-error@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "assertion-error@npm:2.0.1"
+  checksum: 10/a0789dd882211b87116e81e2648ccb7f60340b34f19877dd020b39ebb4714e475eb943e14ba3e22201c221ef6645b7bfe10297e76b6ac95b48a9898c1211ce66
   languageName: node
   linkType: hard
 
@@ -17982,6 +18032,7 @@ __metadata:
     "@types/proper-lockfile": "npm:^4"
     "@types/shortid": "npm:0.0.29"
     "@types/sinon": "npm:^7.0.13"
+    "@types/sinon-chai": "npm:3.2.12"
     "@typescript-eslint/eslint-plugin": "npm:^5.57.0"
     "@typescript-eslint/parser": "npm:^5.57.0"
     applicationinsights: "npm:^3.15.1"
