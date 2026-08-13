@@ -182,6 +182,7 @@
     "node-fetch": "^3.3.2",
     "node-html-parser": "^7.0.0",
     "nodemon": "^2.0.19",
+    "nyc": "^17.1.0",
     "odhin-reports-playwright": "^1.1.8",
     "playwright": "1.61.1",
     "playwright-core": "1.61.1",
