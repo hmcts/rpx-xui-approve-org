@@ -1,4 +1,3 @@
-@use "govuk-frontend" as *;
 @use "../settings/measurements" as *;
 
 
@@ -10,13 +9,13 @@
   margin: 0 $hmcts-gutter-half;
 
   // On tablet, add full width gutters
-  @include govuk-media-query($from: tablet) {
+  @media (min-width: 40.0625em) {
     margin: 0 $hmcts-gutter;
   }
 
   // As soon as the viewport is greater than the width of the page plus the
   // gutters, just centre the content instead of adding gutters.
-  @include govuk-media-query($and: "(min-width: #{($width + $hmcts-gutter * 2)})") {
+  @media (min-width: #{$width + $hmcts-gutter * 2}) {
     margin: 0 auto;
   }
 }

@@ -8,7 +8,7 @@
 .hmcts-filter-layout__filter {
   box-shadow: inset 0 0 0 1px govuk-colour("light-grey"); // Extends the inset border left full height of the filters on mobile
 
-  @include govuk-media-query(desktop) {
+  @media (min-width: 40.0625em) {
     float: left;
     margin-right: govuk-spacing(7);
     max-width: 385px;
@@ -18,7 +18,7 @@
 }
 
 // Filters with javascript enabled
-@include govuk-media-query($until: desktop) {
+@media (max-width: 40.0525em) {
 
   .js-enabled .hmcts-filter-layout__filter {
     background-color: govuk-colour("white");
