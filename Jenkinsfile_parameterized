@@ -49,10 +49,6 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
 
     after('checkout') { sh 'yarn cache clean' }
 
-    before('test') {
-        sh 'rm -rf api/node_modules'
-    }
-
     after('build') {
         sh 'yarn build'
 

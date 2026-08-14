@@ -234,10 +234,6 @@ withPipeline(type, product, component) {
         yarnBuilder.yarn('build')
     }
 
-    before('test') {
-        sh 'rm -rf api/node_modules'
-    }
-
     afterSuccess('test') {
 
         publishHTML ( [
