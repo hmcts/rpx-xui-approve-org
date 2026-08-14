@@ -143,7 +143,7 @@ describe('AppRoutes', () => {
       await router.navigateByUrl('caseworker-details');
       fixture.detectChanges();
 
-      expect(router.url).toEqual('/caseworker-details-4606test');
+      expect(router.url).toEqual('/caseworker-details');
     });
   });
 
