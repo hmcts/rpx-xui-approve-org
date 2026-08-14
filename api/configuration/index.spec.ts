@@ -181,7 +181,7 @@ describe('configuration/index', () => {
 
       const expectedMessage = 'NODE_CONFIG_ENV is set as undefined therefore we are using the default config.';
       expect(result).to.equal(expectedMessage);
-      expect(configStub.get).to.have.been.calledWith('environment-4606-test');
+      expect(configStub.get).to.have.been.calledWith('environment');
     });
 
     it('should handle string "undefined" NODE_CONFIG_ENV', () => {
