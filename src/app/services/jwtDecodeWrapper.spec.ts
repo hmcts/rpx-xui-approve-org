@@ -25,7 +25,7 @@ describe('JwtDecodeWrapper service', () => {
   it('should wrap call to JwtDecode - decode()', () => {
     const token = createSyntheticJwt({
       sub: 'sub',
-      name: 'Name',
+      name: 'Name'
     });
 
     const libResult = jwtDecode(token);
