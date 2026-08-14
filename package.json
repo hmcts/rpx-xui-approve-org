@@ -52,7 +52,7 @@
     "test:can-i-deploy:consumer": "export VERSION=$(git rev-parse --short HEAD) && SSL_CERT_FILE=api/test/pact/cer/ca-bundle.crt pact-broker can-i-deploy --pacticipant 'xui_approveorg' --version ${VERSION} --broker-base-url https://pact-broker.platform.hmcts.net",
     "test:coverage": "yarn test:coverage:ng",
     "test:coverage:ng": "ng test organisation-manager --code-coverage --watch=false",
-    "test:coverage:node": "yarn workspace api coverage",
+    "test:coverage:node": "cd api && yarn coverage",
     "test:crossbrowser": "yarn playwright install --with-deps && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:fullfunctional": "yarn test:functional && echo 'Protractor tests removed - using Playwright instead'",
     "test:functional": "sh -c 'if [ \"${PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN}\" = \"true\" ]; then echo \"Skipping test:functional because Jenkins ran Playwright API + integration + E2E in parallel\"; exit 0; fi; yarn test:functional:e2e'",
