@@ -59,11 +59,11 @@ properties([
             name: 'RUN_PLAYWRIGHT_ACCESSIBILITY',
             defaultValue: false,
             description: 'Optional: run the non-blocking Playwright accessibility pack (axe, WAVE-like and screen-reader checks) on this PR build.'
-        )
+        ),
     ])
 ])
 
-@Library("Infrastructure@2.4.5")
+@Library("Infrastructure@2.4.9")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 import uk.gov.hmcts.contino.azure.KeyVault
@@ -101,6 +101,7 @@ def shouldRunAccessibilityTests = {
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
+        env.PLAYWRIGHT_ORGANISATION_CLEANUP_RUN_ID = env.BUILD_TAG ?: "${env.JOB_NAME}-${env.BUILD_NUMBER}"
         stage("${environmentLabel} Playwright Config Unit Tests") {
             yarnBuilder.yarn('test:playwright:unit')
         }
@@ -215,6 +216,9 @@ withPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '5'
+    env.E2E_PW_RETRIES = '3'
+    env.API_PW_RETRIES = '3'
+    env.INTEGRATION_PW_RETRIES = '3'
     applyPlaywrightTagFilterEnv()
     logPlaywrightTagFilterEnv('pipeline env')
     enableAksStagingDeployment()
@@ -340,6 +344,11 @@ withPipeline(type, product, component) {
             echo '[playwright-a11y] PREVIEW Accessibility Playwright Test report publish skipped because accessibility tests were not run'
         }
 
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+            yarnBuilder.yarn('test:playwright:organisation-cleanup')
+        }
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/organisation-cleanup/**/*'
+
     }
 
 
@@ -402,6 +411,11 @@ withPipeline(type, product, component) {
         } else {
             echo '[playwright-a11y] AAT Accessibility Playwright Test report publish skipped because accessibility tests were not run'
         }
+
+        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+            yarnBuilder.yarn('test:playwright:organisation-cleanup')
+        }
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/organisation-cleanup/**/*'
 
     }
 }

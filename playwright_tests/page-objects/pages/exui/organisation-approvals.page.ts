@@ -3,6 +3,8 @@ import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
+const PENDING_PBAS_ROUTE_PATTERN = /\/organisation\/pbas(?:\/?|\?.*)$/;
+const ORGANISATION_RESULTS_LOAD_TIMEOUT_MS = 60_000;
 
 export type OrganisationTableRow = {
   name: string;
@@ -42,6 +44,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
+  readonly organisationStatusBadge = this.page.locator('app-identity-bar-component .hmcts-badge');
+  readonly serviceErrorHeading = this.page.getByRole('heading', { name: /Sorry, there is a problem with the service/i });
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
   readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
   readonly confirmDecisionErrorSummary = this.contentMain.locator('.govuk-error-summary').first();
@@ -203,8 +207,47 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async searchForOrganisation(organisationName: string): Promise<void> {
+    await this.waitForOrganisationResultsToLoad();
     await this.searchInput.fill(organisationName);
     await this.searchButton.click();
+  }
+
+  private async waitForOrganisationResultsToLoad(): Promise<void> {
+    await this.throwIfServiceUnavailable();
+    await this.waitForSpinnerToHide(ORGANISATION_RESULTS_LOAD_TIMEOUT_MS);
+    await this.throwIfServiceUnavailable();
+
+    if (await this.activeOrganisationsPanel.isVisible()) {
+      await this.activeOrganisationsPanel.locator('table.active-organisations').waitFor({
+        state: 'visible',
+        timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS
+      });
+      return;
+    }
+
+    if (await this.pendingPbasPanel.isVisible()) {
+      await this.pendingPbasPanel
+        .locator('table, .govuk-body')
+        .filter({ hasText: /There are no new PBA requests\.|Organisation/i })
+        .first()
+        .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
+      return;
+    }
+
+    await this.pendingOverviewPanel
+      .locator('table.pending-organisations, .govuk-body')
+      .filter({ hasText: /There are no new registrations\.|Organisation/i })
+      .first()
+      .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
+  }
+
+  private async throwIfServiceUnavailable(): Promise<void> {
+    if (!await this.serviceErrorHeading.isVisible()) {
+      return;
+    }
+
+    const heading = (await this.serviceErrorHeading.textContent())?.trim() || 'Unknown service error';
+    throw new Error(`Organisation results are unavailable: ${heading}`);
   }
 
   async openPaginationPage(pageNumber: number): Promise<void> {
@@ -283,31 +326,26 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.staffDetailsHeaderTab().click();
   }
 
-  private async checkDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
-    await decisionRadio.check({ trial: true });
-    await decisionRadio.check();
-
-    if (!(await decisionRadio.isChecked())) {
-      throw new Error(`Unable to select decision radio: ${decisionName}`);
-    }
+  private async checkDecisionRadio(decisionRadio: Locator): Promise<void> {
+    await decisionRadio.click();
   }
 
-  async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
+  async chooseDecision(decisionLabel: string | RegExp): Promise<Locator> {
     const normalizedDecision = (typeof decisionLabel === 'string' ? decisionLabel : decisionLabel.source).toLowerCase();
 
     if (normalizedDecision.includes('approve')) {
-      await this.checkDecisionRadio(this.approveDecisionRadio, 'approve');
-      return;
+      await this.checkDecisionRadio(this.approveDecisionRadio);
+      return this.approveDecisionRadio;
     }
 
     if (normalizedDecision.includes('reject')) {
-      await this.checkDecisionRadio(this.rejectDecisionRadio, 'reject');
-      return;
+      await this.checkDecisionRadio(this.rejectDecisionRadio);
+      return this.rejectDecisionRadio;
     }
 
     if (normalizedDecision.includes('review') || normalizedDecision.includes('hold')) {
-      await this.checkDecisionRadio(this.reviewDecisionRadio, 'review');
-      return;
+      await this.checkDecisionRadio(this.reviewDecisionRadio);
+      return this.reviewDecisionRadio;
     }
 
     throw new Error(`Unsupported decision label: ${String(decisionLabel)}`);
@@ -345,7 +383,14 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openNewPbasTab(): Promise<void> {
-    await this.newPbasTab.click();
+    const routeWait = PENDING_PBAS_ROUTE_PATTERN.test(this.page.url())
+      ? Promise.resolve()
+      : this.page.waitForURL(PENDING_PBAS_ROUTE_PATTERN);
+
+    await Promise.all([
+      routeWait,
+      this.newPbasTab.click()
+    ]);
   }
 
   async openPendingOrganisationsTab(): Promise<void> {
