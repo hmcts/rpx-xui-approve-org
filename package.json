@@ -206,7 +206,7 @@
     "loader-utils": "~2.0.3",
     "async": "~3.2.2",
     "nanoid": "^3.3.8",
-    "cross-spawn": "^6.0.6",
+    "cross-spawn": "^7.0.6",
     "semver": "~7.5.2",
     "selenium-webdriver": "^4.33.0",
     "xml2js": "^0.6.2",
@@ -217,7 +217,7 @@
     "@angular/platform-server": "^20.0.0",
     "@angular/ssr": "^20.0.0",
     "shelljs": "^0.8.5",
-    "qs": "^6.14.1",
+    "qs": "^6.15.3",
     "@opentelemetry/core": "^2.8.0",
     "@azure/monitor-opentelemetry": "^1.19.0"
   },
