@@ -136,7 +136,8 @@ test.describe(
       });
 
       await test.step('Verify active organisation search results', async () => {
-        const activeOrganisationRows = await organisationApprovalsPage.activeOrganisationTableRows(10);
+        await expect(organisationApprovalsPage.activeOrganisationDataRows).toHaveCount(activeSearchOrganisations.length);
+        const activeOrganisationRows = await organisationApprovalsPage.activeOrganisationTableRows(activeSearchOrganisations.length);
         expect(activeOrganisationRows).toEqual(organisationTableRowsFromMockData(activeSearchOrganisations));
         expect(standardApiMocks.getLastActiveOrganisationSearchTerm()).toEqual(
           ORGANISATION_SEARCH_TERMS.activeByName.toLowerCase()

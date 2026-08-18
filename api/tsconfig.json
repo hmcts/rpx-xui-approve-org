@@ -9,6 +9,11 @@
             "mocha"
         ],
         "baseUrl": ".",
+        "paths": {
+            "otp": [
+                "../node_modules/otp/dist/otp.d.ts"
+            ]
+        },
         "lib": [
             "es2017",
             "dom"

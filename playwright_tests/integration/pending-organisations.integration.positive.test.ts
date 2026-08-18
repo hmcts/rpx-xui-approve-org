@@ -99,6 +99,79 @@ test.describe('Playwright integration: pending organisations', { tag: ['@pending
 });
 
 test.describe('Playwright integration: pending organisations search', { tag: ['@pending-orgs', '@search', '@positive'] }, () => {
+  test('Search waits for the initial pending results before entering a new term', async ({ page, organisationApprovalsPage }) => {
+    let releaseInitialPendingResponse: (() => void) | undefined;
+    const initialPendingResponse = new Promise<void>((resolve) => {
+      releaseInitialPendingResponse = resolve;
+    });
+    let initialPendingRequestSeen: (() => void) | undefined;
+    const initialPendingRequest = new Promise<void>((resolve) => {
+      initialPendingRequestSeen = resolve;
+    });
+
+    await setupOrganisationSearchIntegrationPage(page, {}, {
+      beforeNavigate: async () => {
+        await page.route('**/api/organisations?**', async (route, request) => {
+          const requestUrl = new URL(request.url());
+          const isInitialPendingRequest = request.method() === 'POST'
+            && requestUrl.searchParams.get('status') === 'PENDING,REVIEW'
+            && !request.postDataJSON()?.searchRequest?.search_filter;
+
+          if (isInitialPendingRequest) {
+            initialPendingRequestSeen?.();
+            await initialPendingResponse;
+          }
+
+          await route.fallback();
+        });
+      }
+    });
+
+    await initialPendingRequest;
+    await expect(page.locator('xuilib-loading-spinner .spinner-container')).toBeVisible();
+    await page.locator('#search').evaluate((input) => {
+      const pageWindow = window as unknown as { searchInputEvents: string[] };
+      pageWindow.searchInputEvents = [];
+      input.addEventListener('input', () => pageWindow.searchInputEvents.push('input'));
+    });
+
+    const searchPromise = organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
+    await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => resolve())));
+    expect(await page.evaluate(() => (window as unknown as { searchInputEvents: string[] }).searchInputEvents)).toEqual([]);
+
+    releaseInitialPendingResponse?.();
+    await searchPromise;
+    expect(await page.evaluate(() => (window as unknown as { searchInputEvents: string[] }).searchInputEvents)).toEqual(['input']);
+  });
+
+  test('Search does not enter a term while a visible spinner overlays already-rendered results', async ({ page, organisationApprovalsPage }) => {
+    await setupOrganisationSearchIntegrationPage(page);
+    await expect(organisationApprovalsPage.pendingOrganisationDataRows.first()).toBeVisible();
+
+    await page.locator('#search').evaluate((input) => {
+      const pageWindow = window as unknown as { searchInputEvents: string[] };
+      pageWindow.searchInputEvents = [];
+      input.addEventListener('input', () => pageWindow.searchInputEvents.push('input'));
+
+      const spinner = document.createElement('xuilib-loading-spinner');
+      spinner.setAttribute('data-testid', 'delayed-search-spinner');
+      spinner.style.cssText = 'display:block;position:fixed;width:1px;height:1px;z-index:9999';
+      spinner.innerHTML = '<div class="spinner-container" style="display:block;width:1px;height:1px"></div>';
+      document.body.appendChild(spinner);
+    });
+
+    const searchPromise = organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.pendingByName);
+    await expect.poll(
+      () => page.evaluate(() => (window as unknown as { searchInputEvents: string[] }).searchInputEvents),
+      { timeout: 1_000 }
+    ).toEqual([]);
+
+    await page.getByTestId('delayed-search-spinner').evaluate((spinner) => spinner.remove());
+    await searchPromise;
+
+    expect(await page.evaluate(() => (window as unknown as { searchInputEvents: string[] }).searchInputEvents)).toEqual(['input']);
+  });
+
   test('Search by organisation in new registrations uses mocked search API', async ({ page, organisationApprovalsPage }) => {
     const pendingSearchOrganisations = buildPendingSearchOrganisations(10);
     const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
@@ -117,7 +190,8 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
     });
 
     await test.step('Verify pending organisation search results', async () => {
-      const pendingOrganisationRows = await organisationApprovalsPage.pendingOrganisationTableRows(10);
+      await expect(organisationApprovalsPage.pendingOrganisationDataRows).toHaveCount(pendingSearchOrganisations.length);
+      const pendingOrganisationRows = await organisationApprovalsPage.pendingOrganisationTableRows(pendingSearchOrganisations.length);
       expect(pendingOrganisationRows).toEqual(organisationTableRowsFromMockData(pendingSearchOrganisations));
       expect(standardApiMocks.getLastPendingOrganisationSearchTerm()).toEqual(
         ORGANISATION_SEARCH_TERMS.pendingByName.toLowerCase()
@@ -149,6 +223,7 @@ test.describe('Playwright integration: pending organisations search', { tag: ['@
 
     await test.step('Verify pending organisation address search results', async () => {
       const pendingOrganisationRows = await organisationApprovalsPage.pendingOrganisationTableRows(10);
+      await expect(organisationApprovalsPage.pendingOrganisationDataRows).toHaveCount(pendingAddressSearchOrganisations.length);
       expect(pendingOrganisationRows).toEqual(organisationTableRowsFromMockData(pendingAddressSearchOrganisations));
       expect(standardApiMocks.getLastPendingOrganisationSearchTerm()).toEqual(
         ORGANISATION_SEARCH_TERMS.pendingByAddress.toLowerCase()

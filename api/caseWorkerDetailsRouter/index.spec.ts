@@ -1,0 +1,437 @@
+import { expect } from '../test/shared/testSetup';
+import 'mocha';
+import * as multer from 'multer';
+import * as sinon from 'sinon';
+import { createMockEnhancedRequest, createMockResponse } from '../test/shared/authMocks';
+
+describe('caseWorkerDetailsRouter/index', () => {
+  const validXlsxBuffer = Buffer.from([0x50, 0x4b, 0x03, 0x04]);
+  const validXlsBuffer = Buffer.from([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1]);
+  let mockRequest: any;
+  let mockResponse: any;
+  let configStub: any;
+  let utilStub: any;
+
+  beforeEach(() => {
+    mockRequest = createMockEnhancedRequest();
+    mockResponse = createMockResponse();
+    configStub = sinon.stub().returns('https://case-worker-api.example.com');
+
+    utilStub = {
+      getFormData: sinon.stub(),
+      getHeaders: sinon.stub(),
+      getUploadFileUrl: sinon.stub()
+    };
+
+    sinon.stub(require('../configuration'), 'getConfigValue').callsFake(configStub);
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  describe('caseWorkerDetailsRoute', () => {
+    let router: any;
+
+    beforeEach(() => {
+      sinon.stub(require('./util'), 'getFormData').callsFake(utilStub.getFormData);
+      sinon.stub(require('./util'), 'getHeaders').callsFake(utilStub.getHeaders);
+      sinon.stub(require('./util'), 'getUploadFileUrl').callsFake(utilStub.getUploadFileUrl);
+
+      delete require.cache[require.resolve('./index')];
+      const module = require('./index');
+      router = module.router;
+    });
+
+    it('should upload file successfully', async () => {
+      const mockFile = {
+        fieldname: 'file',
+        originalname: 'caseworkers.xlsx',
+        encoding: '7bit',
+        mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        size: 1024,
+        buffer: validXlsxBuffer
+      };
+      mockRequest.file = mockFile;
+
+      const mockFormData = { append: sinon.stub() };
+      const mockHeaders = { headers: { 'Content-Type': 'multipart/form-data; boundary=test' } };
+      const uploadUrl = 'https://case-worker-api.example.com/refdata/case-worker/upload-file';
+
+      utilStub.getFormData.returns(mockFormData);
+      utilStub.getHeaders.returns(mockHeaders);
+      utilStub.getUploadFileUrl.returns(uploadUrl);
+
+      const responseData = { message: 'File uploaded successfully', count: 5 };
+      mockRequest.http.post.resolves({ status: 201, data: responseData });
+
+      // The route stack includes multer middleware, so we need to get the actual handler
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      expect(configStub).to.have.been.calledWith('services.caseworkerApi');
+      expect(utilStub.getFormData).to.have.been.calledWith(mockFile);
+      expect(utilStub.getHeaders).to.have.been.calledWith(mockFormData);
+      expect(utilStub.getUploadFileUrl).to.have.been.calledWith('https://case-worker-api.example.com');
+      expect(mockRequest.http.post).to.have.been.calledWith(uploadUrl, mockFormData, mockHeaders);
+      expect(mockResponse.status).to.have.been.calledWith(201);
+      expect(mockResponse.send).to.have.been.calledWith(responseData);
+    });
+
+    it('should handle missing file', async () => {
+      mockRequest.file = null;
+
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      expect(mockResponse.status).to.have.been.calledWith(400);
+      expect(mockResponse.send).to.have.been.calledWith({
+        errorDescription: 'You need to select a file to upload. Please try again.'
+      });
+      expect(mockRequest.http.post).not.to.have.been.called;
+    });
+
+    it('should handle undefined file', async () => {
+      mockRequest.file = undefined;
+
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      expect(mockResponse.status).to.have.been.calledWith(400);
+      expect(mockResponse.send).to.have.been.calledWith({
+        errorDescription: 'You need to select a file to upload. Please try again.'
+      });
+    });
+
+    it('should handle upload errors with status and data', async () => {
+      const mockFile = {
+        fieldname: 'file',
+        originalname: 'invalid.xlsx',
+        buffer: validXlsxBuffer
+      };
+      mockRequest.file = mockFile;
+
+      const mockFormData = { append: sinon.stub() };
+      const mockHeaders = { headers: { 'Content-Type': 'multipart/form-data' } };
+      const uploadUrl = 'https://case-worker-api.example.com/refdata/case-worker/upload-file';
+
+      utilStub.getFormData.returns(mockFormData);
+      utilStub.getHeaders.returns(mockHeaders);
+      utilStub.getUploadFileUrl.returns(uploadUrl);
+
+      const error = {
+        status: 400,
+        data: { message: 'Invalid file format' }
+      };
+      mockRequest.http.post.rejects(error);
+
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      expect(mockResponse.status).to.have.been.calledWith(400);
+      expect(mockResponse.send).to.have.been.calledWith({ message: 'Invalid file format' });
+    });
+
+    it('should handle upload errors with only status', async () => {
+      const mockFile = {
+        fieldname: 'file',
+        originalname: 'test.xlsx',
+        buffer: validXlsxBuffer
+      };
+      mockRequest.file = mockFile;
+
+      const mockFormData = { append: sinon.stub() };
+      const mockHeaders = { headers: { 'Content-Type': 'multipart/form-data' } };
+      utilStub.getFormData.returns(mockFormData);
+      utilStub.getHeaders.returns(mockHeaders);
+      utilStub.getUploadFileUrl.returns('https://case-worker-api.example.com/refdata/case-worker/upload-file');
+
+      const error = {
+        status: 500
+        // No data property
+      };
+      mockRequest.http.post.rejects(error);
+
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      expect(mockResponse.status).to.have.been.calledOnce;
+      expect(mockResponse.status).to.have.been.calledWith(500);
+      // When there's no error data, no response body is sent (per implementation)
+      expect(mockResponse.send).not.to.have.been.called;
+    });
+
+    it('should handle upload errors with only data', async () => {
+      const mockFile = {
+        fieldname: 'file',
+        originalname: 'test.xlsx',
+        buffer: validXlsxBuffer
+      };
+      mockRequest.file = mockFile;
+
+      const mockFormData = { append: sinon.stub() };
+      const mockHeaders = { headers: { 'Content-Type': 'multipart/form-data' } };
+      utilStub.getFormData.returns(mockFormData);
+      utilStub.getHeaders.returns(mockHeaders);
+      utilStub.getUploadFileUrl.returns('https://case-worker-api.example.com/refdata/case-worker/upload-file');
+
+      const error = {
+        data: { message: 'Server error' }
+        // No status property
+      };
+      mockRequest.http.post.rejects(error);
+
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      expect(mockResponse.status).not.to.have.been.called;
+      expect(mockResponse.send).to.have.been.calledWith({ message: 'Server error' });
+    });
+
+    it('should handle errors with neither status nor data', async () => {
+      const mockFile = {
+        fieldname: 'file',
+        originalname: 'test.xlsx',
+        buffer: validXlsxBuffer
+      };
+      mockRequest.file = mockFile;
+
+      const mockFormData = { append: sinon.stub() };
+      const mockHeaders = { headers: { 'Content-Type': 'multipart/form-data' } };
+      utilStub.getFormData.returns(mockFormData);
+      utilStub.getHeaders.returns(mockHeaders);
+      utilStub.getUploadFileUrl.returns('https://case-worker-api.example.com/refdata/case-worker/upload-file');
+
+      const error = new Error('Generic error');
+      mockRequest.http.post.rejects(error);
+
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      // Per implementation: when error has no status or data properties,
+      // no response is sent (this matches the actual code behavior)
+      expect(mockResponse.status).not.to.have.been.called;
+      expect(mockResponse.send).not.to.have.been.called;
+
+      expect(mockRequest.http.post).to.have.been.calledOnce;
+    });
+
+    it('should use different case worker API URL', async () => {
+      configStub.returns('https://different-api.gov.uk');
+      const mockFile = {
+        fieldname: 'file',
+        originalname: 'test.xlsx',
+        buffer: validXlsxBuffer
+      };
+      mockRequest.file = mockFile;
+
+      const mockFormData = { append: sinon.stub() };
+      const mockHeaders = { headers: { 'Content-Type': 'multipart/form-data' } };
+      const expectedUploadUrl = 'https://different-api.gov.uk/refdata/case-worker/upload-file';
+
+      utilStub.getFormData.returns(mockFormData);
+      utilStub.getHeaders.returns(mockHeaders);
+      utilStub.getUploadFileUrl.returns(expectedUploadUrl);
+
+      const responseData = { message: 'Success' };
+      mockRequest.http.post.resolves({ status: 200, data: responseData });
+
+      delete require.cache[require.resolve('./index')];
+      const module = require('./index');
+      router = module.router;
+
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      expect(configStub).to.have.been.calledWith('services.caseworkerApi');
+
+      expect(utilStub.getUploadFileUrl).to.have.been.calledOnce;
+      expect(utilStub.getUploadFileUrl).to.have.been.calledWith('https://different-api.gov.uk');
+
+      expect(mockRequest.http.post).to.have.been.calledOnce;
+      expect(mockRequest.http.post).to.have.been.calledWith(expectedUploadUrl, mockFormData, mockHeaders);
+
+      expect(mockResponse.status).to.have.been.calledWith(200);
+      expect(mockResponse.send).to.have.been.calledWith(responseData);
+    });
+
+    it('should reject files without Excel magic bytes', async () => {
+      const mockFile = {
+        fieldname: 'file',
+        originalname: 'spoofed.xlsx',
+        mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        buffer: Buffer.from('not an excel spreadsheet')
+      };
+      mockRequest.file = mockFile;
+
+      const handler = router.stack[0].route.stack[1].handle; // Skip multer middleware
+      await handler(mockRequest, mockResponse);
+
+      expect(mockResponse.status).to.have.been.calledWith(400);
+      expect(mockResponse.send).to.have.been.calledWith({
+        errorDescription: 'The selected file must be a valid Excel spreadsheet.'
+      });
+      expect(mockRequest.http.post).not.to.have.been.called;
+    });
+  });
+
+  describe('module exports', () => {
+    it('should export router', () => {
+      const module = require('./index');
+
+      expect(module.router).to.exist;
+      expect(module.router).to.be.a('function');
+      expect(module.router.stack).to.be.an('array');
+
+      expect(module.default).to.exist;
+      expect(module.default).to.equal(module.router);
+    });
+
+    it('should configure multer upload limits', () => {
+      const module = require('./index');
+
+      expect(module.uploadLimits).to.deep.equal({
+        fileSize: 1024 * 1024 * 1024,
+        files: 1,
+        parts: 6,
+        fields: 5,
+        fieldNameSize: 100,
+        fieldSize: 1024 * 1024
+      });
+    });
+
+    it('should return a validation error when multer file size limit is reached', () => {
+      const module = require('./index');
+      const next = sinon.stub();
+      const error = new multer.MulterError('LIMIT_FILE_SIZE');
+
+      module.handleUploadError(error, mockResponse, next);
+
+      expect(mockResponse.status).to.have.been.calledWith(400);
+      expect(mockResponse.send).to.have.been.calledWith({
+        errorDescription: 'The selected file must be smaller than 1024MB.'
+      });
+      expect(next).not.to.have.been.called;
+    });
+
+    it('should return a validation error when multer part count limit is reached', () => {
+      const module = require('./index');
+      const next = sinon.stub();
+      const error = new multer.MulterError('LIMIT_PART_COUNT');
+
+      module.handleUploadError(error, mockResponse, next);
+
+      expect(mockResponse.status).to.have.been.calledWith(400);
+      expect(mockResponse.send).to.have.been.calledWith({
+        errorDescription: 'Too many form parts were submitted.'
+      });
+      expect(next).not.to.have.been.called;
+    });
+
+    it('should allow Excel spreadsheet files in the document management whitelist', () => {
+      const module = require('./index');
+      const allowedFiles = [
+        {
+          originalname: 'staff-details.xls',
+          mimetype: 'application/vnd.ms-excel'
+        },
+        {
+          originalname: 'staff-details.xlt',
+          mimetype: 'application/vnd.ms-excel'
+        },
+        {
+          originalname: 'staff-details.xla',
+          mimetype: 'application/vnd.ms-excel'
+        },
+        {
+          originalname: 'staff-details.xlsx',
+          mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        },
+        {
+          originalname: 'staff-details.xltx',
+          mimetype: 'application/vnd.openxmlformats-officedocument.spreadsheetml.template'
+        },
+        {
+          originalname: 'staff-details.xlsb',
+          mimetype: 'application/vnd.ms-excel'
+        }
+      ];
+
+      allowedFiles.forEach((file) => expect(module.isAllowedExcelFile(file)).to.be.true);
+    });
+
+    it('should reject non-Excel upload files', () => {
+      const module = require('./index');
+
+      expect(module.isAllowedExcelFile({
+        originalname: 'staff-details.csv',
+        mimetype: 'text/csv'
+      })).to.be.false;
+      expect(module.isAllowedExcelFile({
+        originalname: 'staff-details.xlsx',
+        mimetype: 'text/plain'
+      })).to.be.false;
+    });
+
+    it('should validate xls and xlsx magic bytes', () => {
+      const module = require('./index');
+
+      expect(module.hasExcelMagicBytes({ buffer: validXlsxBuffer })).to.be.true;
+      expect(module.hasExcelMagicBytes({ buffer: validXlsBuffer })).to.be.true;
+      expect(module.hasExcelMagicBytes({ buffer: Buffer.from('not excel') })).to.be.false;
+    });
+
+    it('should return a validation error when file type validation fails', () => {
+      const module = require('./index');
+      const next = sinon.stub();
+      const error = new Error('INVALID_UPLOAD_FILE_TYPE');
+
+      module.handleUploadError(error, mockResponse, next);
+
+      expect(mockResponse.status).to.have.been.calledWith(400);
+      expect(mockResponse.send).to.have.been.calledWith({
+        errorDescription: 'The selected file must be an Excel spreadsheet with one of these extensions: .xls, .xlt, .xla, .xlsx, .xltx, .xlsb.'
+      });
+      expect(next).not.to.have.been.called;
+    });
+
+    it('should pass unexpected upload errors to the next error handler', () => {
+      const module = require('./index');
+      const next = sinon.stub();
+      const error = new Error('Unexpected upload failure');
+
+      module.handleUploadError(error, mockResponse, next);
+
+      expect(mockResponse.status).not.to.have.been.called;
+      expect(mockResponse.send).not.to.have.been.called;
+      expect(next).to.have.been.calledWith(error);
+    });
+
+    it('should have POST route configured for / with file upload middleware', () => {
+      const module = require('./index');
+      const router = module.router;
+
+      // Verify router has exactly one route
+      expect(router.stack).to.have.length(1);
+
+      const route = router.stack[0];
+      expect(route.route).to.exist;
+      expect(route.route.path).to.equal('/');
+      expect(route.route.methods.post).to.be.true;
+      expect(route.route.methods.get).to.be.undefined;
+
+      // Verify the route has middleware stack with multer and handler
+      expect(route.route.stack).to.have.length(2);
+
+      // First middleware should be multer (upload.single('file'))
+      const multerMiddleware = route.route.stack[0];
+      expect(multerMiddleware.handle).to.be.a('function');
+      expect(multerMiddleware.name).to.equal('uploadSingleFile');
+
+      // Second should be the actual route handler
+      const routeHandler = route.route.stack[1];
+      expect(routeHandler.handle).to.be.a('function');
+      expect(routeHandler.handle.name).to.equal('caseWorkerDetailsRoute');
+    });
+  });
+});

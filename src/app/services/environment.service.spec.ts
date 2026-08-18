@@ -23,7 +23,6 @@ const environmentConfig: EnvironmentConfig = {
 };
 
 describe('EnvironmentService', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockedHttpClient;
 
   beforeEach(() => {

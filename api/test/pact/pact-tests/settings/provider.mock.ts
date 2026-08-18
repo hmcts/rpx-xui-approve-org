@@ -1,4 +1,4 @@
-import { Pact } from '@pact-foundation/pact';
+import { PactV2 as Pact } from '@pact-foundation/pact';
 import * as path from 'path';
 
 export interface PactTestSetupConfig {
@@ -12,6 +12,7 @@ export class PactTestSetup {
   port: number;
 
   constructor(config: PactTestSetupConfig) {
+    this.port = config.port;
     this.provider = new Pact({
       consumer: 'xui_approveorg',
       dir: path.resolve(process.cwd(), 'api/test/pact/pacts'),
@@ -21,5 +22,13 @@ export class PactTestSetup {
       provider: config.provider,
       spec: 2
     });
+  }
+
+  async verifyAndFinalize(): Promise<void> {
+    try {
+      await this.provider.verify();
+    } finally {
+      await this.provider.finalize();
+    }
   }
 }
