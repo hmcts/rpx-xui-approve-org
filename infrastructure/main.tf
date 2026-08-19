@@ -22,6 +22,17 @@ resource "azurerm_key_vault_secret" "redis6_connection_string" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+# Keep the existing Redis cache available while Managed Redis is validated in
+# lower environments. The application can be switched independently by
+# changing the Key Vault secret referenced by Flux.
+resource "azurerm_key_vault_secret" "managed_redis_connection_string" {
+  for_each = toset(contains(["sandbox", "demo"], var.env) ? [var.env] : [])
+
+  name         = "${var.component}-managed-redis-connection-string"
+  value        = "rediss://:${urlencode(module.managed_redis[each.key].primary_access_key)}@${module.managed_redis[each.key].hostname}:${module.managed_redis[each.key].port}"
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
 module "redis6-cache" {
   source                        = "git@github.com:hmcts/cnp-module-redis?ref=4.x"
   product                       = "${var.shared_product_name}-ao-redis6"
@@ -37,6 +48,32 @@ module "redis6-cache" {
   family                        = var.redis_family
   capacity                      = var.redis_capacity
   sku_name                      = var.redis_sku_name
+}
+
+module "managed_redis" {
+  for_each = toset(contains(["sandbox", "demo"], var.env) ? [var.env] : [])
+  source   = "git@github.com:hmcts/terraform-module-azure-managed-redis?ref=main"
+
+  product     = var.product
+  component   = var.component
+  env         = var.env
+  location    = var.location
+  common_tags = var.common_tags
+
+  sku_name = var.managed_redis_sku_name
+
+  public_network_access   = "Disabled"
+  create_private_endpoint = true
+  subnet_id               = data.azurerm_subnet.core_infra_redis_subnet.id
+  private_dns_zone_ids = [
+    "/subscriptions/${var.private_dns_subscription_id}/resourceGroups/core-infra-intsvc-rg/providers/Microsoft.Network/privateDnsZones/privatelink.redis.azure.net"
+  ]
+
+  access_keys_authentication_enabled = true
+  persistence_rdb_backup_frequency   = "6h"
+
+  # rpx-xui-node-lib currently uses node-redis 3, which is not cluster-aware.
+  clustering_policy = "NoCluster"
 }
 
 module "application_insights" {
