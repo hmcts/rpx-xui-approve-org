@@ -119,7 +119,9 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
             },
             e2e: {
                 stage("${environmentLabel} E2E Playwright Tests") {
-                    yarnBuilder.yarn('test:functional:e2e:raw')
+                    withEnv(['FUNCTIONAL_TESTS_WORKERS=1']) {
+                        yarnBuilder.yarn('test:functional:e2e:raw')
+                    }
                 }
             }
         ]
