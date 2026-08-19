@@ -48,6 +48,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info:visible, app-org-details-info-old:visible').first();
   readonly organisationStatusBadge = this.page.locator('app-identity-bar-component .hmcts-badge');
+  readonly serviceErrorHeading = this.page.getByRole('heading', { name: 'Sorry, there is a problem with the service' }).first();
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
   readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
   readonly confirmDecisionErrorSummary = this.contentMain.locator('.govuk-error-summary').first();
@@ -114,6 +115,15 @@ export class OrganisationApprovalsPage extends BasePage {
     .first();
 
   readonly validationSummary = this.page.locator('#errorSummary');
+  readonly loadingSpinnerOverlay = this.page.locator('xuilib-loading-spinner .spinner-container');
+
+  private async serviceErrorMessage(): Promise<string | undefined> {
+    if (!(await this.serviceErrorHeading.isVisible().catch(() => false))) {
+      return undefined;
+    }
+
+    return (await this.serviceErrorHeading.innerText().catch(() => '')).trim() || 'Sorry, there is a problem with the service';
+  }
 
   private normaliseCellText(value: string): string {
     return value.replace(/\s+/g, ' ').trim();
@@ -286,6 +296,10 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async searchForOrganisation(organisationName: string): Promise<void> {
     await this.waitForSpinnerToHide(60_000);
+    const serviceErrorMessage = await this.serviceErrorMessage();
+    if (serviceErrorMessage) {
+      throw new Error(`Organisation results are unavailable: ${serviceErrorMessage}`);
+    }
     await this.searchInput.fill(organisationName);
     await expect(this.searchInput).toHaveValue(organisationName);
     await this.searchButton.click();
@@ -427,7 +441,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async waitForSpinnerToHide(timeoutMs = 15_000): Promise<void> {
-    await this.waitUtils.waitForLocatorVisibility(this.exuiSpinner.spinner, {
+    await this.waitUtils.waitForLocatorVisibility(this.loadingSpinnerOverlay, {
       visibility: false,
       timeout: timeoutMs
     });
