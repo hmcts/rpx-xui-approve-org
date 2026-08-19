@@ -410,10 +410,11 @@ export class OrganisationApprovalsPage extends BasePage {
     await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeChecked();
   }
 
-  async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
+  async chooseDecision(decisionLabel: string | RegExp): Promise<Locator> {
     const decisionRadio = this.decisionOptionsGroup.getByRole('radio', { name: decisionLabel }).first();
     await this.selectDecisionRadio(decisionRadio, String(decisionLabel));
     this.selectedDecisionRadio = decisionRadio;
+    return decisionRadio;
   }
 
   async submitDecision(): Promise<void> {
