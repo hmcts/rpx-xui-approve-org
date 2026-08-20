@@ -1,8 +1,10 @@
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
+const PENDING_PBAS_ROUTE_PATTERN = /\/organisation\/pbas(?:\/?|\?.*)$/;
+const ORGANISATION_RESULTS_LOAD_TIMEOUT_MS = 60_000;
 
 export type OrganisationTableRow = {
   name: string;
@@ -37,10 +39,15 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly tabPanel = this.page.locator('.govuk-tabs > .govuk-tabs__panel[role="tabpanel"]');
   readonly pendingOverviewPanel = this.page.locator('app-pending-overview-component');
   readonly pendingOrganisationRows = this.pendingOverviewPanel.locator('table.pending-organisations tr');
-  readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator('table.pending-organisations tr.govuk-radios');
+  readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator(
+    'table.pending-organisations tr.govuk-table__row:has(td.govuk-table__cell)'
+  );
+
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
+  readonly organisationStatusBadge = this.page.locator('app-identity-bar-component .hmcts-badge');
+  readonly serviceErrorHeading = this.page.getByRole('heading', { name: /Sorry, there is a problem with the service/i });
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
   readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
   readonly confirmDecisionErrorSummary = this.contentMain.locator('.govuk-error-summary').first();
@@ -71,7 +78,10 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
   readonly staffDetailsPageHeading = this.page.locator('app-prd-caseworker-details .govuk-heading-l');
   readonly activeOrganisationRows = this.activeOrganisationsPanel.locator('table.active-organisations tr');
-  readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator('table.active-organisations tr.govuk-radios');
+  readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator(
+    'table.active-organisations tr.govuk-table__row:has(td.govuk-table__cell)'
+  );
+
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
@@ -111,7 +121,11 @@ export class OrganisationApprovalsPage extends BasePage {
       .filter(Boolean);
   }
 
-  private async readTableCells(rows: Locator): Promise<string[][]> {
+  private async readTableCells(rows: Locator, expectedRowCount?: number): Promise<string[][]> {
+    if (expectedRowCount !== undefined) {
+      await expect(rows).toHaveCount(expectedRowCount);
+    }
+
     const rowCount = await rows.count();
     const tableRows: string[][] = [];
 
@@ -138,14 +152,14 @@ export class OrganisationApprovalsPage extends BasePage {
     };
   }
 
-  async pendingOrganisationTableRows(): Promise<OrganisationTableRow[]> {
-    const rows = await this.readTableCells(this.pendingOrganisationDataRows);
+  async pendingOrganisationTableRows(expectedRowCount?: number): Promise<OrganisationTableRow[]> {
+    const rows = await this.readTableCells(this.pendingOrganisationDataRows, expectedRowCount);
 
     return rows.map((cells) => this.mapOrganisationTableRow(cells));
   }
 
-  async activeOrganisationTableRows(): Promise<OrganisationTableRow[]> {
-    const rows = await this.readTableCells(this.activeOrganisationDataRows);
+  async activeOrganisationTableRows(expectedRowCount?: number): Promise<OrganisationTableRow[]> {
+    const rows = await this.readTableCells(this.activeOrganisationDataRows, expectedRowCount);
 
     return rows.map((cells) => this.mapOrganisationTableRow(cells));
   }
@@ -266,8 +280,47 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async searchForOrganisation(organisationName: string): Promise<void> {
+    await this.waitForOrganisationResultsToLoad();
     await this.searchInput.fill(organisationName);
     await this.searchButton.click();
+  }
+
+  private async waitForOrganisationResultsToLoad(): Promise<void> {
+    await this.throwIfServiceUnavailable();
+    await this.waitForSpinnerToHide(ORGANISATION_RESULTS_LOAD_TIMEOUT_MS);
+    await this.throwIfServiceUnavailable();
+
+    if (await this.activeOrganisationsPanel.isVisible()) {
+      await this.activeOrganisationsPanel.locator('table.active-organisations').waitFor({
+        state: 'visible',
+        timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS
+      });
+      return;
+    }
+
+    if (await this.pendingPbasPanel.isVisible()) {
+      await this.pendingPbasPanel
+        .locator('table, .govuk-body')
+        .filter({ hasText: /There are no new PBA requests\.|Organisation/i })
+        .first()
+        .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
+      return;
+    }
+
+    await this.pendingOverviewPanel
+      .locator('table.pending-organisations, .govuk-body')
+      .filter({ hasText: /There are no new registrations\.|Organisation/i })
+      .first()
+      .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
+  }
+
+  private async throwIfServiceUnavailable(): Promise<void> {
+    if (!await this.serviceErrorHeading.isVisible()) {
+      return;
+    }
+
+    const heading = (await this.serviceErrorHeading.textContent())?.trim() || 'Unknown service error';
+    throw new Error(`Organisation results are unavailable: ${heading}`);
   }
 
   async openPaginationPage(pageNumber: number): Promise<void> {
@@ -339,28 +392,25 @@ export class OrganisationApprovalsPage extends BasePage {
   private async checkDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
     await decisionRadio.check({ trial: true });
     await decisionRadio.check();
-
-    if (!(await decisionRadio.isChecked())) {
-      throw new Error(`Unable to select decision radio: ${decisionName}`);
-    }
+    await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeChecked();
   }
 
-  async chooseDecision(decisionLabel: string | RegExp): Promise<void> {
+  async chooseDecision(decisionLabel: string | RegExp): Promise<Locator> {
     const normalizedDecision = (typeof decisionLabel === 'string' ? decisionLabel : decisionLabel.source).toLowerCase();
 
     if (normalizedDecision.includes('approve')) {
       await this.checkDecisionRadio(this.approveDecisionRadio, 'approve');
-      return;
+      return this.approveDecisionRadio;
     }
 
     if (normalizedDecision.includes('reject')) {
       await this.checkDecisionRadio(this.rejectDecisionRadio, 'reject');
-      return;
+      return this.rejectDecisionRadio;
     }
 
     if (normalizedDecision.includes('review') || normalizedDecision.includes('hold')) {
       await this.checkDecisionRadio(this.reviewDecisionRadio, 'review');
-      return;
+      return this.reviewDecisionRadio;
     }
 
     throw new Error(`Unsupported decision label: ${String(decisionLabel)}`);
@@ -398,7 +448,14 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openNewPbasTab(): Promise<void> {
-    await this.newPbasTab.click();
+    const routeWait = PENDING_PBAS_ROUTE_PATTERN.test(this.page.url())
+      ? Promise.resolve()
+      : this.page.waitForURL(PENDING_PBAS_ROUTE_PATTERN);
+
+    await Promise.all([
+      routeWait,
+      this.newPbasTab.click()
+    ]);
   }
 
   async openPendingOrganisationsTab(): Promise<void> {
