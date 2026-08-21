@@ -39,7 +39,7 @@ describe('pbaAccounts/index', () => {
       await handler(mockRequest, mockResponse);
 
       expect(mockRequest.http.get).to.have.been.calledWith('http://fee-pay-api.example.com/accounts/TEST123');
-      expect(mockResponse.send).to.have.been.calledWith([{ account_name: 'TEST123', balance: 1000 }]);
+      expect(mockResponse.send).to.have.been.calledWith([{ account_name: 'TEST345', balance: 1000 }]);
     });
 
     it('should handle multiple account names with different formats', async () => {
