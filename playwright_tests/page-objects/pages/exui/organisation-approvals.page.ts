@@ -1,4 +1,4 @@
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
@@ -39,7 +39,10 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly tabPanel = this.page.locator('.govuk-tabs > .govuk-tabs__panel[role="tabpanel"]');
   readonly pendingOverviewPanel = this.page.locator('app-pending-overview-component');
   readonly pendingOrganisationRows = this.pendingOverviewPanel.locator('table.pending-organisations tr');
-  readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator('table.pending-organisations tr.govuk-radios');
+  readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator(
+    'table.pending-organisations tr.govuk-table__row:has(td.govuk-table__cell)'
+  );
+
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
   readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
@@ -75,7 +78,10 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
   readonly staffDetailsPageHeading = this.page.locator('app-prd-caseworker-details .govuk-heading-l');
   readonly activeOrganisationRows = this.activeOrganisationsPanel.locator('table.active-organisations tr');
-  readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator('table.active-organisations tr.govuk-radios');
+  readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator(
+    'table.active-organisations tr.govuk-table__row:has(td.govuk-table__cell)'
+  );
+
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
@@ -115,7 +121,11 @@ export class OrganisationApprovalsPage extends BasePage {
       .filter(Boolean);
   }
 
-  private async readTableCells(rows: Locator): Promise<string[][]> {
+  private async readTableCells(rows: Locator, expectedRowCount?: number): Promise<string[][]> {
+    if (expectedRowCount !== undefined) {
+      await expect(rows).toHaveCount(expectedRowCount);
+    }
+
     const rowCount = await rows.count();
     const tableRows: string[][] = [];
 
@@ -142,14 +152,14 @@ export class OrganisationApprovalsPage extends BasePage {
     };
   }
 
-  async pendingOrganisationTableRows(): Promise<OrganisationTableRow[]> {
-    const rows = await this.readTableCells(this.pendingOrganisationDataRows);
+  async pendingOrganisationTableRows(expectedRowCount?: number): Promise<OrganisationTableRow[]> {
+    const rows = await this.readTableCells(this.pendingOrganisationDataRows, expectedRowCount);
 
     return rows.map((cells) => this.mapOrganisationTableRow(cells));
   }
 
-  async activeOrganisationTableRows(): Promise<OrganisationTableRow[]> {
-    const rows = await this.readTableCells(this.activeOrganisationDataRows);
+  async activeOrganisationTableRows(expectedRowCount?: number): Promise<OrganisationTableRow[]> {
+    const rows = await this.readTableCells(this.activeOrganisationDataRows, expectedRowCount);
 
     return rows.map((cells) => this.mapOrganisationTableRow(cells));
   }
@@ -379,25 +389,27 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.staffDetailsHeaderTab().click();
   }
 
-  private async checkDecisionRadio(decisionRadio: Locator): Promise<void> {
-    await decisionRadio.click();
+  private async checkDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
+    await decisionRadio.check({ trial: true });
+    await decisionRadio.check();
+    await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeChecked();
   }
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<Locator> {
     const normalizedDecision = (typeof decisionLabel === 'string' ? decisionLabel : decisionLabel.source).toLowerCase();
 
     if (normalizedDecision.includes('approve')) {
-      await this.checkDecisionRadio(this.approveDecisionRadio);
+      await this.checkDecisionRadio(this.approveDecisionRadio, 'approve');
       return this.approveDecisionRadio;
     }
 
     if (normalizedDecision.includes('reject')) {
-      await this.checkDecisionRadio(this.rejectDecisionRadio);
+      await this.checkDecisionRadio(this.rejectDecisionRadio, 'reject');
       return this.rejectDecisionRadio;
     }
 
     if (normalizedDecision.includes('review') || normalizedDecision.includes('hold')) {
-      await this.checkDecisionRadio(this.reviewDecisionRadio);
+      await this.checkDecisionRadio(this.reviewDecisionRadio, 'review');
       return this.reviewDecisionRadio;
     }
 
