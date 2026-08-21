@@ -45,7 +45,7 @@ describe('AppUtils', () => {
     expect(organisationVM[0].dateApproved).toEqual(organisations[0].dateApproved);
     expect(organisationVM[0].organisationId).toEqual(organisations[0].organisationIdentifier);
     expect(organisationVM[0].name).toEqual(organisations[0].name);
-    expect(organisationVM[0].orgAttributes).toEqual([{ key: 'BBB7', value: 'Damages' }]);
+    expect(organisationVM[0].orgAttributes).toEqual([{ key: 'AAA7', value: 'Damages' }]);
     expect(organisationVM[0].addressLine2).toEqual(organisations[0].contactInformation[0].addressLine2);
     expect(organisationVM[0].addressLine3).toEqual(organisations[0].contactInformation[0].addressLine3);
   });
