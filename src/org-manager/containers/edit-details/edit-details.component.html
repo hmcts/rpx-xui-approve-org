@@ -6,7 +6,7 @@
     {{org?.status}}
   </span>
 </app-identity-bar-component>
-<div class="hmcts-width-container">
+<div class="govuk-width-container">
   <xuilib-hmcts-main-wrapper
     [summaryErrors]="pbaErrorsHeader$ | async"
     title="Organisation payment by account (PBA) number"
@@ -47,7 +47,7 @@
 </div>
 </ng-container>
 <ng-container *ngIf="!(orgDetails$ | async)">
-  <div class="hmcts-width-container">
+  <div class="govuk-width-container">
     <xuilib-hmcts-main-wrapper title="Organisation payment by account (PBA) number" *ngIf="!loaded">
       <h3 class="govuk-heading-s">Loading...</h3>
     </xuilib-hmcts-main-wrapper>
