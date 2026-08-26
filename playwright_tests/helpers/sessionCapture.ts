@@ -26,6 +26,8 @@ const DEFAULT_AUTHENTICATED_ROUTE_PATTERN = /^\/(?:organisation|caseworker-detai
 const UNAVAILABLE_ROUTE_PATTERN = /\/(?:access-denied|service-down|not-authorised|signed-out|error)(?:\/|$)/i;
 const AUTHENTICATED_SURFACE_TIMEOUT_MS = 5_000;
 const AUTHENTICATED_SURFACE_POLL_INTERVAL_MS = 250;
+const AUTHENTICATED_GOTO_ATTEMPTS = 3;
+const AUTHENTICATED_GOTO_RETRY_DELAY_MS = 500;
 
 type UserConfig = {
   username: string;
@@ -122,6 +124,13 @@ function clearSessionCaptureFailure(failurePath: string): void {
   } catch {
     // Best effort only.
   }
+}
+
+function isRetryableAuthenticatedGotoFailure(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /ERR_CONNECTION_CLOSED|ERR_ABORTED|page has been closed|browser has been closed|target page, context or browser has been closed/i.test(
+    message
+  );
 }
 
 function resolveCredentialHint(user: string): string {
@@ -786,9 +795,21 @@ export async function ensureAuthenticatedPageAt(
 ): Promise<void> {
   let lastNavigationStatus: number | undefined;
   const gotoAndVerify = async (): Promise<boolean> => {
-    const response = await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
-    lastNavigationStatus = response?.status();
-    return waitForExpectedAuthenticatedSurface(page, destinationUrl);
+    for (let attempt = 1; attempt <= AUTHENTICATED_GOTO_ATTEMPTS; attempt++) {
+      try {
+        const response = await page.goto(destinationUrl, { waitUntil: 'domcontentloaded' });
+        lastNavigationStatus = response?.status();
+        return await waitForExpectedAuthenticatedSurface(page, destinationUrl);
+      } catch (error) {
+        if (attempt >= AUTHENTICATED_GOTO_ATTEMPTS || !isRetryableAuthenticatedGotoFailure(error)) {
+          throw error;
+        }
+
+        await page.waitForTimeout(AUTHENTICATED_GOTO_RETRY_DELAY_MS * attempt);
+      }
+    }
+
+    return false;
   };
 
   const rejectedSession = await applySessionCookies(page, user, options);
@@ -801,6 +822,12 @@ export async function ensureAuthenticatedPageAt(
     force: true,
     expectedStaleSession: rejectedSession
   });
+  await applySessionCookies(page, user, options);
+  if (await gotoAndVerify()) {
+    return;
+  }
+
+  await sessionCapture(user, { ...options, force: true });
   await applySessionCookies(page, user, options);
   if (await gotoAndVerify()) {
     return;
