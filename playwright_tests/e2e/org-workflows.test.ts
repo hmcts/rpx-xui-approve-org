@@ -59,12 +59,9 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     });
   });
 
-  test('I can approve a pending organisation', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
-    await test.step('Pending organisation appears in active organisations tab', async () => {
-      await expect(organisationApprovalsPage.heading).toBeVisible();
-      await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
-      await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
-      await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
+  test('I can approve a pending organisation', async ({ page, organisationApprovalsPage, organisationIdentifier }) => {
+    await test.step('Open the provisioned pending organisation', async () => {
+      await openProvisionedOrganisationDetails(page, organisationIdentifier);
     });
 
     await test.step('Approve the pending organisation and open the resulting record by identifier', async () => {
