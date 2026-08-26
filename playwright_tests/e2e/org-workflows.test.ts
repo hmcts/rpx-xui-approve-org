@@ -29,6 +29,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
 
   test('I can place registration under review for a pending org', async ({
     page,
+    userName,
     organisationApprovalsPage,
     organisationIdentifier
   }) => {
