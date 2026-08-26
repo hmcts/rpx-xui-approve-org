@@ -425,7 +425,7 @@ export class OrganisationApprovalsPage extends BasePage {
     }
 
     const validationErrorVisible = await this.noDecisionSelectedError
-      .waitFor({ state: 'visible', timeout: 10_000 })
+      .waitFor({ state: 'visible', timeout: 1_000 })
       .then(() => true)
       .catch(() => false);
 
