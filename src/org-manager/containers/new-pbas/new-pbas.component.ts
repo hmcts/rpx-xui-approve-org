@@ -22,6 +22,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
   public newPBAs = new Map<string, string>();
   public orgs$: Observable<OrganisationVM>;
   public organisationId: string;
+  public pbaErrorsHeader$: Observable<any> = of(null);
 
   constructor(
     private readonly organisationService: OrganisationService,
@@ -68,16 +69,22 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     if (!this.confirmDecision) {
       this.store.dispatch(new fromRoot.Go({ path: ['/organisation/pbas'] }));
     } else {
+      this.setPbaStatusError(null);
       this.confirmDecision = false;
     }
   }
 
   public onContinue(): void {
+    this.setPbaStatusError(null);
     this.confirmDecision = true;
   }
 
   public setNewPBA(event): void {
     this.newPBAs.set(event.name, event.value);
+  }
+
+  public setPbaStatusError(errorHeader: any): void {
+    this.pbaErrorsHeader$ = of(errorHeader);
   }
 
   public ngOnDestroy(): void {
