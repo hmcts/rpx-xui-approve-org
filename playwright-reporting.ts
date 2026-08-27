@@ -116,6 +116,13 @@ function resolveReportRoot(reportType: 'e2e' | 'api' | 'nightly' | 'integration'
   }
 }
 
+function resolveHtmlOutputFolder(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'accessibility'): string {
+  if (process.env.PLAYWRIGHT_HTML_OUTPUT?.trim()) {
+    return process.env.PLAYWRIGHT_HTML_OUTPUT.trim();
+  }
+  return `functional-output/tests/playwright-${reportType}/html-report`;
+}
+
 function resolveIndexFilename(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'accessibility'): string {
   if (process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim()) {
     return process.env.PLAYWRIGHT_REPORT_INDEX_FILENAME.trim();
@@ -175,7 +182,12 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
 
   const reporters: ReporterDescription[] = [
     [defaultReporter],
-    [
+    ['./playwright_tests/common/reporters/flake-gate.reporter.cjs'],
+    ['html', { outputFolder: resolveHtmlOutputFolder(reportType), open: 'never' }]
+  ];
+
+  if (!disableOhdin) {
+    reporters.push([
       './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs',
       {
         outputFolder: odhinOutputFolder,
@@ -191,11 +203,7 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
         simpleConsoleLog: !!process.env.CI,
         testOutput: 'only-on-failure'
       }
-    ]
-  ];
-
-  if (disableOhdin) {
-    return [[defaultReporter]];
+    ]);
   }
 
   if (process.env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {

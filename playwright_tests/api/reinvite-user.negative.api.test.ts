@@ -70,28 +70,16 @@ test.describe('Playwright API negative: reinvite user', { tag: ['@reinvite-user'
   });
 
   test('POST /api/reinviteUser with empty payload returns error', async ({ apiRequest }) => {
-    let organisationId: string | undefined;
-
-    try {
-      const provisioned = await provisionActiveOrganisation(apiRequest, {
-        firstName: 'Reinvite',
-        lastName: 'EmptyPayload'
-      });
-      organisationId = provisioned.organisationId;
-
-      const response = await apiRequest.post('/api/reinviteUser', {
-        params: { organisationId: provisioned.organisationId },
-        data: {},
-        failOnStatusCode: false
-      });
-      const httpStatus = response.status();
-      expect(
-        httpStatus,
-        `Expected error status for empty payload. Received status=${httpStatus}`
-      ).toBeGreaterThanOrEqual(400);
-    } finally {
-      await cleanupProvisionedOrganisation(apiRequest, organisationId);
-    }
+    const response = await apiRequest.post('/api/reinviteUser', {
+      params: { organisationId: UNAUTHENTICATED_ORG_ID },
+      data: {},
+      failOnStatusCode: false
+    });
+    const httpStatus = response.status();
+    expect(
+      httpStatus,
+      `Expected error status for empty payload. Received status=${httpStatus}`
+    ).toBeGreaterThanOrEqual(400);
   });
 
   test('POST /api/reinviteUser without organisationId parameter returns error', async ({ apiRequest }) => {
