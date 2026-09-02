@@ -1,6 +1,20 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": [
-        "local>hmcts/.github:renovate-config"
-    ]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>hmcts/.github:renovate-config"
+  ],
+  "timezone": "Europe/London",
+  "schedule": [
+    "* 7-9 * * 1-4"
+  ],
+  "updateNotScheduled": false,
+  "packageRules": [
+    {
+      "description": "Disable major version updates",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    }
+  ]
 }
