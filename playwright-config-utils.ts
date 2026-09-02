@@ -50,8 +50,11 @@ export type ResolvedTagFilters = {
   configPath: string;
 };
 
-export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number | undefined {
-  const configured = env.FUNCTIONAL_TESTS_WORKERS?.trim();
+export function resolveConfiguredWorkerCount(
+  env: EnvMap = process.env,
+  workerEnvVar = 'FUNCTIONAL_TESTS_WORKERS'
+): number | undefined {
+  const configured = env[workerEnvVar]?.trim();
   if (!configured) {
     return undefined;
   }
@@ -103,8 +106,11 @@ function resolveWorkerTargetEnvironment(env: EnvMap = process.env): string | und
   }
 }
 
-export function resolveWorkerCount(env: EnvMap = process.env): number {
-  const configured = resolveConfiguredWorkerCount(env);
+export function resolveWorkerCount(
+  env: EnvMap = process.env,
+  workerEnvVar = 'FUNCTIONAL_TESTS_WORKERS'
+): number {
+  const configured = resolveConfiguredWorkerCount(env, workerEnvVar);
   if (configured !== undefined) {
     return configured;
   }
