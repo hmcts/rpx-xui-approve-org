@@ -1,10 +1,9 @@
-import type { Locator, Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
 import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
-const PENDING_PBAS_ROUTE_PATTERN = /\/organisation\/pbas(?:\/?|\?.*)$/;
-const ORGANISATION_RESULTS_LOAD_TIMEOUT_MS = 60_000;
+const ORGANISATION_DETAILS_ROUTE_PATTERN = /\/organisation-details\/[^/?#]+(?:\/?|\?.*)$/;
 
 export type OrganisationTableRow = {
   name: string;
@@ -25,8 +24,10 @@ export type PendingPbaTableRow = {
 };
 
 export class OrganisationApprovalsPage extends BasePage {
+  private static readonly invalidPbaMessage = 'PBA numbers must start with PBA/pba and be followed by 7 alphanumeric characters';
   private readonly exuiSpinner: ExuiSpinnerComponent;
   private readonly waitUtils: WaitUtils;
+  private selectedDecisionRadio?: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -39,21 +40,26 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly tabPanel = this.page.locator('.govuk-tabs > .govuk-tabs__panel[role="tabpanel"]');
   readonly pendingOverviewPanel = this.page.locator('app-pending-overview-component');
   readonly pendingOrganisationRows = this.pendingOverviewPanel.locator('table.pending-organisations tr');
-  readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator('table.pending-organisations tr.govuk-radios');
+  readonly pendingOrganisationDataRows = this.pendingOverviewPanel.locator(
+    'table.pending-organisations tr.govuk-table__row:has(td.govuk-table__cell)'
+  );
+
   readonly searchInput = this.page.locator('#search');
   readonly searchButton = this.page.locator('.search-organisations-form form button.hmcts-search__button:not(.govuk-button--secondary)');
-  readonly detailsPanel = this.page.locator('app-org-details-info, app-org-details-info-old');
+  readonly detailsPanel = this.page.locator('app-org-details-info:visible, app-org-details-info-old:visible').first();
   readonly organisationStatusBadge = this.page.locator('app-identity-bar-component .hmcts-badge');
-  readonly serviceErrorHeading = this.page.getByRole('heading', { name: /Sorry, there is a problem with the service/i });
+  readonly serviceErrorHeading = this.page.getByRole('heading', { name: 'Sorry, there is a problem with the service' }).first();
   readonly approveOrganisationHeading = this.detailsPanel.locator('h1.govuk-heading-xl');
   readonly confirmDecisionHeading = this.contentMain.getByRole('heading', { level: 1, name: /Confirm your decision/i });
   readonly confirmDecisionErrorSummary = this.contentMain.locator('.govuk-error-summary').first();
   readonly confirmDecisionErrorSummaryTitle = this.confirmDecisionErrorSummary.locator('.govuk-error-summary__title').first();
   readonly confirmButton = this.contentMain.getByRole('button', { name: /Confirm/i }).first();
   readonly submitButton = this.detailsPanel.locator('button[type="submit"].govuk-button').first();
-  readonly approveDecisionRadio = this.page.locator('#reason-0');
-  readonly rejectDecisionRadio = this.page.locator('#reason-1');
-  readonly reviewDecisionRadio = this.page.locator('#reason-2');
+  readonly decisionOptionsGroup = this.detailsPanel.getByRole('group', {
+    name: /What would you like to do with this registration/i
+  });
+
+  readonly noDecisionSelectedError = this.detailsPanel.locator('#error-message');
   readonly deleteOrganisationDetailsButton = this.detailsPanel.locator('button.govuk-button--secondary').first();
   readonly deleteOrganisationConfirmButton = this.contentMain.locator('button.govuk-button--warning').first();
   readonly goBackToActiveLink = this.contentMain.locator('a[href*="/active-organisation"]');
@@ -65,6 +71,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pending"]');
   readonly newPbasTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/pbas"]');
   readonly pendingPbasPanel = this.page.locator('app-pending-pbas');
+  readonly pendingPbasRows = this.pendingPbasPanel.locator('table.govuk-table tbody tr');
   readonly pendingPbaViewLinkLocator = this.pendingPbasPanel.locator('table.govuk-table a.govuk-link[href*="/new/"]').first();
   readonly pendingPbaDecisionRows = this.page.locator('app-pba-account-approval');
   readonly pendingPbaContinueButton = this.page.locator('app-new-pbas-info button[type="submit"].govuk-button').first();
@@ -75,7 +82,10 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
   readonly staffDetailsPageHeading = this.page.locator('app-prd-caseworker-details .govuk-heading-l');
   readonly activeOrganisationRows = this.activeOrganisationsPanel.locator('table.active-organisations tr');
-  readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator('table.active-organisations tr.govuk-radios');
+  readonly activeOrganisationDataRows = this.activeOrganisationsPanel.locator(
+    'table.active-organisations tr.govuk-table__row:has(td.govuk-table__cell)'
+  );
+
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
   readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
   readonly usersList = this.page.locator('xuilib-user-list');
@@ -104,6 +114,17 @@ export class OrganisationApprovalsPage extends BasePage {
     .locator('.govuk-summary-list__row .govuk-summary-list__value')
     .first();
 
+  readonly validationSummary = this.page.locator('#errorSummary');
+  readonly loadingSpinnerOverlay = this.page.locator('xuilib-loading-spinner .spinner-container');
+
+  private async serviceErrorMessage(): Promise<string | undefined> {
+    if (!(await this.serviceErrorHeading.isVisible().catch(() => false))) {
+      return undefined;
+    }
+
+    return (await this.serviceErrorHeading.innerText().catch(() => '')).trim() || 'Sorry, there is a problem with the service';
+  }
+
   private normaliseCellText(value: string): string {
     return value.replace(/\s+/g, ' ').trim();
   }
@@ -115,7 +136,11 @@ export class OrganisationApprovalsPage extends BasePage {
       .filter(Boolean);
   }
 
-  private async readTableCells(rows: Locator): Promise<string[][]> {
+  private async readTableCells(rows: Locator, expectedRowCount?: number): Promise<string[][]> {
+    if (expectedRowCount !== undefined) {
+      await expect(rows).toHaveCount(expectedRowCount);
+    }
+
     const rowCount = await rows.count();
     const tableRows: string[][] = [];
 
@@ -142,14 +167,14 @@ export class OrganisationApprovalsPage extends BasePage {
     };
   }
 
-  async pendingOrganisationTableRows(): Promise<OrganisationTableRow[]> {
-    const rows = await this.readTableCells(this.pendingOrganisationDataRows);
+  async pendingOrganisationTableRows(expectedRowCount?: number): Promise<OrganisationTableRow[]> {
+    const rows = await this.readTableCells(this.pendingOrganisationDataRows, expectedRowCount);
 
     return rows.map((cells) => this.mapOrganisationTableRow(cells));
   }
 
-  async activeOrganisationTableRows(): Promise<OrganisationTableRow[]> {
-    const rows = await this.readTableCells(this.activeOrganisationDataRows);
+  async activeOrganisationTableRows(expectedRowCount?: number): Promise<OrganisationTableRow[]> {
+    const rows = await this.readTableCells(this.activeOrganisationDataRows, expectedRowCount);
 
     return rows.map((cells) => this.mapOrganisationTableRow(cells));
   }
@@ -270,47 +295,27 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async searchForOrganisation(organisationName: string): Promise<void> {
-    await this.waitForOrganisationResultsToLoad();
+    await this.waitForSpinnerToHide(60_000);
+    const serviceErrorMessage = await this.serviceErrorMessage();
+    if (serviceErrorMessage) {
+      throw new Error(`Organisation results are unavailable: ${serviceErrorMessage}`);
+    }
     await this.searchInput.fill(organisationName);
+    await expect(this.searchInput).toHaveValue(organisationName);
     await this.searchButton.click();
   }
 
-  private async waitForOrganisationResultsToLoad(): Promise<void> {
-    await this.throwIfServiceUnavailable();
-    await this.waitForSpinnerToHide(ORGANISATION_RESULTS_LOAD_TIMEOUT_MS);
-    await this.throwIfServiceUnavailable();
+  async searchForPendingOrganisation(organisationName: string, organisationId: string): Promise<void> {
+    await expect.poll(async () => {
+      await this.searchForOrganisation(organisationName);
+      await this.waitForSpinnerToHide(60_000);
 
-    if (await this.activeOrganisationsPanel.isVisible()) {
-      await this.activeOrganisationsPanel.locator('table.active-organisations').waitFor({
-        state: 'visible',
-        timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS
-      });
-      return;
-    }
-
-    if (await this.pendingPbasPanel.isVisible()) {
-      await this.pendingPbasPanel
-        .locator('table, .govuk-body')
-        .filter({ hasText: /There are no new PBA requests\.|Organisation/i })
-        .first()
-        .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
-      return;
-    }
-
-    await this.pendingOverviewPanel
-      .locator('table.pending-organisations, .govuk-body')
-      .filter({ hasText: /There are no new registrations\.|Organisation/i })
-      .first()
-      .waitFor({ state: 'visible', timeout: ORGANISATION_RESULTS_LOAD_TIMEOUT_MS });
-  }
-
-  private async throwIfServiceUnavailable(): Promise<void> {
-    if (!await this.serviceErrorHeading.isVisible()) {
-      return;
-    }
-
-    const heading = (await this.serviceErrorHeading.textContent())?.trim() || 'Unknown service error';
-    throw new Error(`Organisation results are unavailable: ${heading}`);
+      return this.pendingOrganisationRowById(organisationId).count();
+    }, {
+      message: `Pending organisation ${organisationId} was not returned by search`,
+      timeout: 60_000,
+      intervals: [1_000, 2_000, 5_000]
+    }).toBeGreaterThan(0);
   }
 
   async openPaginationPage(pageNumber: number): Promise<void> {
@@ -333,11 +338,11 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openFirstPendingOrganisation(): Promise<void> {
-    await this.pendingOrganisationViewLink().click();
+    await this.openOrganisationDetails(this.pendingOrganisationViewLink());
   }
 
   async openPendingOrganisationById(organisationId: string): Promise<void> {
-    await this.pendingOrganisationViewLinkById(organisationId).click();
+    await this.openOrganisationDetails(this.pendingOrganisationViewLinkById(organisationId));
   }
 
   async clickBackLink(): Promise<void> {
@@ -351,11 +356,21 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openFirstActiveOrganisation(): Promise<void> {
-    await this.activeOrganisationViewLink().click();
+    await this.openOrganisationDetails(this.activeOrganisationViewLink());
   }
 
   async openFirstPendingPba(): Promise<void> {
     await this.pendingPbaViewLink().click();
+  }
+
+  async approveFirstInvalidPbaAndExpectValidationError(): Promise<void> {
+    await this.openNewPbasTab();
+    await this.pendingPbaViewLink().waitFor({ state: 'visible', timeout: 30_000 });
+    await this.openFirstPendingPba();
+    await this.approveAllPendingPbas();
+    await this.continuePendingPbaDecision();
+    await this.confirmDecisionHeading.waitFor({ state: 'visible' });
+    await this.confirmButton.click();
   }
 
   async approveAllPendingPbas(): Promise<void> {
@@ -379,33 +394,47 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.staffDetailsHeaderTab().click();
   }
 
-  private async checkDecisionRadio(decisionRadio: Locator): Promise<void> {
+  private async openOrganisationDetails(viewLink: Locator): Promise<void> {
+    await Promise.all([
+      this.page.waitForURL(ORGANISATION_DETAILS_ROUTE_PATTERN),
+      viewLink.click()
+    ]);
+    await this.waitForSpinnerToHide(60_000);
+    await expect(this.detailsPanel).toBeVisible();
+  }
+
+  private async selectDecisionRadio(decisionRadio: Locator, decisionName: string): Promise<void> {
+    await expect(this.decisionOptionsGroup).toBeVisible();
+    await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeVisible();
     await decisionRadio.click();
+    await expect(decisionRadio, `Unable to select decision radio: ${decisionName}`).toBeChecked();
   }
 
   async chooseDecision(decisionLabel: string | RegExp): Promise<Locator> {
-    const normalizedDecision = (typeof decisionLabel === 'string' ? decisionLabel : decisionLabel.source).toLowerCase();
-
-    if (normalizedDecision.includes('approve')) {
-      await this.checkDecisionRadio(this.approveDecisionRadio);
-      return this.approveDecisionRadio;
-    }
-
-    if (normalizedDecision.includes('reject')) {
-      await this.checkDecisionRadio(this.rejectDecisionRadio);
-      return this.rejectDecisionRadio;
-    }
-
-    if (normalizedDecision.includes('review') || normalizedDecision.includes('hold')) {
-      await this.checkDecisionRadio(this.reviewDecisionRadio);
-      return this.reviewDecisionRadio;
-    }
-
-    throw new Error(`Unsupported decision label: ${String(decisionLabel)}`);
+    const decisionRadio = this.decisionOptionsGroup.getByRole('radio', { name: decisionLabel }).first();
+    await this.selectDecisionRadio(decisionRadio, String(decisionLabel));
+    this.selectedDecisionRadio = decisionRadio;
+    return decisionRadio;
   }
 
   async submitDecision(): Promise<void> {
     await this.submitButton.click();
+
+    if (!this.selectedDecisionRadio) {
+      return;
+    }
+
+    const validationErrorVisible = await this.noDecisionSelectedError
+      .waitFor({ state: 'visible', timeout: 1_000 })
+      .then(() => true)
+      .catch(() => false);
+
+    if (validationErrorVisible) {
+      await this.selectedDecisionRadio.click();
+      await this.submitButton.click();
+    }
+
+    await expect(this.confirmDecisionHeading).toBeVisible();
   }
 
   async confirmDecision(): Promise<void> {
@@ -413,7 +442,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async waitForSpinnerToHide(timeoutMs = 15_000): Promise<void> {
-    await this.waitUtils.waitForLocatorVisibility(this.exuiSpinner.spinner, {
+    await this.waitUtils.waitForLocatorVisibility(this.loadingSpinnerOverlay, {
       visibility: false,
       timeout: timeoutMs
     });
@@ -436,18 +465,15 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openNewPbasTab(): Promise<void> {
-    const routeWait = PENDING_PBAS_ROUTE_PATTERN.test(this.page.url())
-      ? Promise.resolve()
-      : this.page.waitForURL(PENDING_PBAS_ROUTE_PATTERN);
-
-    await Promise.all([
-      routeWait,
-      this.newPbasTab.click()
-    ]);
+    await this.newPbasTab.click();
+    await expect(this.pendingPbasPanel).toBeVisible();
+    await this.waitForSpinnerToHide(60_000);
   }
 
   async openPendingOrganisationsTab(): Promise<void> {
     await this.pendingOrganisationsTab.click();
+    await expect(this.pendingOverviewPanel).toBeVisible();
+    await this.waitForSpinnerToHide(60_000);
   }
 
   async openActiveOrganisationsTab(): Promise<void> {
@@ -459,6 +485,8 @@ export class OrganisationApprovalsPage extends BasePage {
       routeWait,
       this.activeOrganisationsTab.click()
     ]);
+    await expect(this.activeOrganisationsPanel).toBeVisible();
+    await this.waitForSpinnerToHide(60_000);
   }
 
   async openUsersTab(): Promise<void> {

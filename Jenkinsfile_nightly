@@ -87,7 +87,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.9")
+@Library("Infrastructure@2.5.1")
 
 String type      = 'nodejs'
 String product   = 'xui'
@@ -114,6 +114,7 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
         env.PLAYWRIGHT_ORGANISATION_CLEANUP_RUN_ID = env.BUILD_TAG ?: "${env.JOB_NAME}-${env.BUILD_NUMBER}"
         stage('Nightly Playwright Config Unit Tests') {
+            yarnBuilder.yarn('playwright install chromium')
             yarnBuilder.yarn('test:playwright:unit')
         }
         Map<String, Object> playwrightBranches = [
@@ -215,6 +216,8 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '5'
     env.E2E_PW_RETRIES = '3'
+    env.API_PW_RETRIES = '3'
+    env.INTEGRATION_PW_RETRIES = '3'
     applyPlaywrightTagFilterEnv()
     logPlaywrightTagFilterEnv('pipeline env')
     env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
