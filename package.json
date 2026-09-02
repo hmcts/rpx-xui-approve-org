@@ -156,7 +156,7 @@
     "@types/node": "^24.13.3",
     "@types/passport": "^1.0.17",
     "@types/proper-lockfile": "^4",
-    "@types/shortid": "0.0.29",
+    "@types/shortid": "0.0.32",
     "@types/sinon": "^7.0.13",
     "@types/sinon-chai": "3.2.12",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
