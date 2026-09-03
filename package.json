@@ -43,6 +43,7 @@
     "test:integration:playwright": "yarn playwright install chromium && yarn test:integration:playwright:raw",
     "test:integration:playwright:raw": "PLAYWRIGHT_HTML_OUTPUT=${PLAYWRIGHT_HTML_OUTPUT:-functional-output/tests/playwright-integration/html-report} PLAYWRIGHT_JUNIT_OUTPUT=${PLAYWRIGHT_JUNIT_OUTPUT:-functional-output/tests/playwright-integration/playwright-integration-junit.xml} PLAYWRIGHT_REPORT_FOLDER=${PLAYWRIGHT_REPORT_FOLDER:-functional-output/tests/playwright-integration/odhin-report} npx playwright test -c playwright-integration.config.ts",
     "test:playwright:unit": "npx playwright test -c playwright-reporting-unit.config.ts",
+    "test:redis:managed": "node scripts/test-managed-redis.cjs",
     "test:playwright:organisation-cleanup": "PW_AUTH_SESSION_USER=api ts-node scripts/mop-up-playwright-organisations.ts",
     "test:accessibility:playwright": "yarn playwright install chromium && node scripts/run-playwright-accessibility.cjs",
     "test:accessibility:playwright:raw": "PLAYWRIGHT_HTML_OUTPUT=${PLAYWRIGHT_HTML_OUTPUT:-functional-output/tests/playwright-accessibility/html-report} PLAYWRIGHT_JUNIT_OUTPUT=${PLAYWRIGHT_JUNIT_OUTPUT:-functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml} PLAYWRIGHT_REPORT_FOLDER=${PLAYWRIGHT_REPORT_FOLDER:-functional-output/tests/playwright-accessibility/odhin-report} npx playwright test -c playwright-accessibility.config.ts",
