@@ -1,0 +1,7 @@
+// Override the GOV.UK Frontend font stack.
+@use "govuk-frontend" as * with (
+  $govuk-font-family: ("HelveticaNeue", "Helvetica Neue", "Arial", "Helvetica", sans-serif)
+);
+
+// If you need to create a page as part of your journey, but without GOV.UK branding
+// See localhost:3000/docs/examples/blank-unbranded

@@ -8,7 +8,7 @@ function layerMatchesPath(layer: any, path: string): boolean {
   }
 
   if (typeof layer.match === 'function') {
-    return layer.match(path);
+    return Boolean(layer.match(path));
   }
 
   return Boolean(layer.regexp?.test(path));

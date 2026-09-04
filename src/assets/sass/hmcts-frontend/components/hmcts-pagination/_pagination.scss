@@ -120,7 +120,7 @@
   }
 
   &:hover {
-    color: $govuk-link-hover-colour;
+    color: govuk-colour("blue", $variant: "tint-25");
    }
 
   &:focus {

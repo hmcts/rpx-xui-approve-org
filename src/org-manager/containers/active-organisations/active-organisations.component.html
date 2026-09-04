@@ -44,6 +44,11 @@
       </tr>
     </tbody>
   </table>
+  <p class="hmcts-pagination__results hmcts-result-count"
+    *ngIf="organisationCount > 0 && organisationCount <= pagination.page_size">
+    Showing <b>1</b> to <b>{{organisationCount}}</b> of <b>{{organisationCount}}</b> results
+  </p>
   <xuilib-hmcts-pagination *ngIf="organisationsLoaded && organisationCount > pagination.page_size"
-    (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
+    (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"
+    [showResultCount]="true"></xuilib-hmcts-pagination>
 </ng-container>
