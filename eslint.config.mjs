@@ -63,6 +63,18 @@ export default defineConfig(
       "no-multi-spaces": "error",
       "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 1 }],
       "no-prototype-builtins": "off",
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector:
+            "CallExpression[callee.property.name=/^bypassSecurityTrust/], CallExpression[callee.name=/^bypassSecurityTrust/]",
+          message: "Avoid DomSanitizer bypassSecurityTrust* calls. Sanitize untrusted HTML before rendering it."
+        },
+        {
+          selector: "AssignmentExpression[left.property.name=\"innerHTML\"]",
+          message: "Avoid direct innerHTML usage. Prefer Angular interpolation or sanitized rendering."
+        }
+      ],
       "no-tabs": "error",
       "no-trailing-spaces": "error",
       "no-whitespace-before-property": "error",
