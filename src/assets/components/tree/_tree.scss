@@ -11,7 +11,7 @@
 
 
 .jui-tree__item {
-  border-top: 1px solid govuk-colour("light-grey");
+  border-top: 1px solid govuk-colour("black", $variant: "tint-95");
   outline: 0;
 
   &:first-child {
@@ -82,8 +82,8 @@
 
 
 .jui-tree__doc-meta {
-  @include govuk-font(14);
-  color: $govuk-secondary-text-colour;
+  @include govuk-font(16);
+  color: govuk-functional-colour(secondary-text);
   display: block;
   margin-top: govuk-spacing(1);
 }
@@ -98,20 +98,20 @@
   .jui-tree__item:focus {
 
     .jui-tree__folder {
-      background-color: $govuk-focus-colour;
+      background-color: govuk-functional-colour(focus);
       color: govuk-colour("black");
-      outline: 3px solid $govuk-focus-colour;
+      outline: 3px solid govuk-functional-colour(focus);
     }
 
   }
 
 
   .jui-tree__folder {
-    color: $govuk-link-colour;
+    color: govuk-functional-colour(link);
     cursor: pointer;
 
     &:hover {
-      color: $govuk-link-hover-colour;
+      color: govuk-functional-colour(link-hover);
     }
 
   }
@@ -141,7 +141,7 @@
 
 
   .jui-tree__doc-link[aria-current=true] {
-    background-color: rgba(govuk-colour("light-grey"), .5);
+    background-color: rgba(govuk-colour("black", $variant: "tint-95"), .5);
     color: black;
     cursor: default;
   }

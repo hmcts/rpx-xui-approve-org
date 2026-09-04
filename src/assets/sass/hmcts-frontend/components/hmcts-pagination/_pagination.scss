@@ -113,7 +113,7 @@
   }
 
   &:hover {
-    color: govuk-colour("light-blue");
+    color: govuk-colour("blue", $variant: "tint-25");
    }
 
   &:focus {
