@@ -160,6 +160,7 @@ const s2sSecret = getConfigValue(S2S_SECRET);
 const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_PATH)}/oauth2/token`;
 const authorizationUrl = `${idamWebUrl}/login`;
 console.log('tokenUrl', tokenUrl);
+console.log('@@@@@@ REDISCLOUD_URL @@@@@@:-', getConfigValue(REDISCLOUD_URL));
 
 const options: AuthOptions = {
   // we only want to allow prd-admin roles
