@@ -22,6 +22,10 @@ export type OrganisationSearchIntegrationPageSetup = {
   standardApiMocks: StandardOrganisationApprovalsApiMockResult;
 };
 
+export type OrganisationSearchIntegrationPageOptions = {
+  beforeNavigate?: () => Promise<void>;
+};
+
 export type PendingOrganisationDecisionRequestPayload = {
   organisationIdentifier: string;
   sraId: string;
@@ -89,12 +93,14 @@ function resolveStandardSearchMockState(state: StandardOrganisationApprovalsApiM
 
 export async function setupOrganisationSearchIntegrationPage(
   page: Page,
-  state: StandardOrganisationApprovalsApiMockState = {}
+  state: StandardOrganisationApprovalsApiMockState = {},
+  options: OrganisationSearchIntegrationPageOptions = {}
 ): Promise<OrganisationSearchIntegrationPageSetup> {
   await clearOrganisationSearchSession(page);
 
   const resolvedState = resolveStandardSearchMockState(state);
   const standardApiMocks = await setupStandardOrganisationApprovalsApiMocks(page, resolvedState);
+  await options.beforeNavigate?.();
 
   await ensureAuthenticatedPage(page, 'base');
 

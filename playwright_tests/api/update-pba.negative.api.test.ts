@@ -36,29 +36,43 @@ test.describe('Playwright API negative: update pba', { tag: ['@update-pba', '@ne
 
   for (const testCase of UPDATE_PBA_MALFORMED_CASES) {
     test(`PUT /api/updatePba with ${testCase.name} returns an error`, async ({ apiRequest }) => {
-      let organisationId: string | undefined;
+      const payload = testCase.buildPayload();
 
-      try {
-        const provisioned = await provisionPendingOrganisation(apiRequest, {
-          firstName: 'Pba',
-          lastName: 'Negative'
-        });
-        organisationId = provisioned.organisationId;
-
-        const response = await apiRequest.put('/api/updatePba', {
-          data: testCase.buildPayload(provisioned.organisationId),
-          failOnStatusCode: false
-        });
-        const httpStatus = response.status();
-        expect(
-          testCase.expectedStatuses,
-          `Expected bounded error status for ${testCase.name}. Received status=${httpStatus}`
-        ).toContain(httpStatus);
-      } finally {
-        await cleanupProvisionedOrganisation(apiRequest, organisationId);
-      }
+      const response = await apiRequest.put('/api/updatePba', {
+        data: payload,
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        testCase.expectedStatuses,
+        `Expected bounded error status for ${testCase.name}. Received status=${httpStatus}`
+      ).toContain(httpStatus);
     });
   }
+
+  test('PUT /api/updatePba with invalid paymentAccounts type returns an error', async ({ apiRequest }) => {
+    let organisationId: string | undefined;
+
+    try {
+      const provisioned = await provisionPendingOrganisation(apiRequest, {
+        firstName: 'Pba',
+        lastName: 'Invalid type'
+      });
+      organisationId = provisioned.organisationId;
+
+      const response = await apiRequest.put('/api/updatePba', {
+        data: { paymentAccounts: 'PBA33L6BNO', orgId: organisationId },
+        failOnStatusCode: false
+      });
+      const httpStatus = response.status();
+      expect(
+        httpStatus,
+        `Expected 400 for invalid paymentAccounts type. Received status=${httpStatus}`
+      ).toBe(400);
+    } finally {
+      await cleanupProvisionedOrganisation(apiRequest, organisationId);
+    }
+  });
 
   test('PUT /api/updatePba with empty paymentAccounts array passes validation', async ({ apiRequest }) => {
     let organisationId: string | undefined;

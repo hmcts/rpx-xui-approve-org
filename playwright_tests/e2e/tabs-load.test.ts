@@ -6,7 +6,7 @@ test.describe('Organisation approvals tabs load', { tag: ['@e2e', '@organisation
     await ensureAuthenticatedPage(page, 'base');
   });
 
-  test('all tabs on login load data', async ({ organisationApprovalsPage }) => {
+  test('pending registrations and new PBAs load data on login', async ({ organisationApprovalsPage }) => {
     await test.step('Validate landing tab content', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await expect(organisationApprovalsPage.tabPanel).toBeVisible();
@@ -41,9 +41,16 @@ test.describe('Organisation approvals tabs load', { tag: ['@e2e', '@organisation
         dateReceived: expect.stringMatching(/\S/)
       }));
     });
+  });
 
+  test('Active organisations tab loads data', { tag: '@refdata-search' }, async ({ organisationApprovalsPage, page }) => {
     await test.step('Open Active organisations tab and verify content', async () => {
       await organisationApprovalsPage.openActiveOrganisationsTab();
+      expect(page.url(), 'Expected the active organisations route after selecting the Active organisations tab').toContain(
+        '/organisation/active'
+      );
+      await expect(organisationApprovalsPage.activeOrganisationsPanel.or(organisationApprovalsPage.serviceErrorHeading)).toBeVisible();
+      await expect(organisationApprovalsPage.serviceErrorHeading, 'RefData failed while loading the Active organisations tab').toHaveCount(0);
       await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
       await expect(organisationApprovalsPage.activeOrganisationDataRows.first()).toBeVisible();
 

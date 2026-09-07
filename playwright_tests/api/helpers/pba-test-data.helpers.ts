@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { chromium, type APIRequestContext, type Browser, type Page } from '@playwright/test';
 import { config } from '../../config/config';
+import { completeIdamLogin } from '../../helpers/idamLogin';
 import {
   loadOrganisationById,
   provisionPendingOrganisation
@@ -129,27 +130,9 @@ async function signInToManageOrg(page: Page, credentials: ManageOrgCredentials):
   }
 
   for (let attempt = 1; attempt <= 4; attempt += 1) {
-    const namedUsernameInput = page.locator('input[name="username"]').first();
-    const emailInput = await namedUsernameInput.isVisible().catch(() => false)
-      ? namedUsernameInput
-      : page.locator('input[type="email"]').first();
-    const passwordInput = page.locator('input[name="password"], input[type="password"]').first();
-
-    if (await emailInput.isVisible().catch(() => false) && await passwordInput.isVisible().catch(() => false)) {
-      await emailInput.fill(credentials.username);
-      await passwordInput.fill(credentials.password);
-
-      const submitButton = page.locator('#login-submit-btn').first();
-      if (await submitButton.isVisible().catch(() => false)) {
-        await submitButton.click();
-      } else {
-        await page.getByRole('button', { name: /sign in/i }).click();
-      }
-
-      await page.waitForLoadState('domcontentloaded').catch(() => undefined);
-    } else {
+    await completeIdamLogin(page, credentials.username, credentials.password).catch(async () => {
       await page.goto(MANAGE_ORG_URL, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
-    }
+    });
 
     if (await hasManageOrgApiSession(page)) {
       return;

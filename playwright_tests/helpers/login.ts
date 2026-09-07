@@ -1,4 +1,5 @@
 import { config } from '../config/config';
+import { completeIdamLogin } from './idamLogin';
 
 export async function isAuthenticatedByApi(page: any): Promise<boolean> {
   try {
@@ -13,10 +14,22 @@ export async function isAuthenticatedByApi(page: any): Promise<boolean> {
   }
 }
 
+async function waitForAuthenticatedByApi(page: any, timeoutMs = 10_000): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (await isAuthenticatedByApi(page)) {
+      return true;
+    }
+    await page.waitForTimeout(Math.min(250, deadline - Date.now()));
+  }
+  return false;
+}
+
 export async function signIn(page: any, user: string = 'base') {
   const { username, password } = config[user];
   console.log('signing in to: ' + config.baseUrl);
-  const maxAttempts = 2;
+  const maxAttempts = 3;
+  const authLoginUrl = new URL('auth/login', config.baseUrl).toString();
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
@@ -26,21 +39,23 @@ export async function signIn(page: any, user: string = 'base') {
       return;
     }
 
-    await page.waitForSelector('input[name="username"]', { timeout: 60000 });
-    await page.fill('input[name="username"]', username);
-    await page.fill('input[name="password"]', password);
-    await page.click('#login-submit-btn');
+    try {
+      await page.goto(authLoginUrl, { waitUntil: 'domcontentloaded' });
+      await completeIdamLogin(page, username, password);
 
-    // Allow AO callback/auth checks to settle after IDAM submit.
-    await page.waitForTimeout(1500 * attempt);
-
-    if (await isAuthenticatedByApi(page)) {
-      console.log('Signed in as ' + username);
-      return;
+      if (await waitForAuthenticatedByApi(page)) {
+        console.log('Signed in as ' + username);
+        return;
+      }
+    } catch (error) {
+      if (attempt >= maxAttempts) {
+        throw error;
+      }
     }
 
     if (attempt < maxAttempts) {
       console.log('First login attempt failed, retrying...');
+      await page.context().clearCookies();
     }
   }
 
@@ -50,6 +65,10 @@ export async function signIn(page: any, user: string = 'base') {
 export async function signOut(page: any) {
   const logoutUrl = new URL('auth/logout?noredirect=true', config.baseUrl).toString();
   await page.request.get(logoutUrl, { failOnStatusCode: false });
-  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
+  await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' }).catch((error) => {
+    if (!String(error).includes('ERR_ABORTED')) {
+      throw error;
+    }
+  });
   console.log('Signed out');
 }

@@ -1,6 +1,8 @@
 nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  ingressAnnotations:
+    external-dns.alpha.kubernetes.io/exclude: 'true'
   environment:
     PUI_ENV: preview
     IDAM_API_SERVICE: https://idam-api.aat.platform.hmcts.net
