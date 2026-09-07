@@ -17,6 +17,8 @@ functional-output
 reports
 coverage
 .stryker-tmp
+payload.json
+payload.json.gz
 
 Jenkinsfile*
 README.md

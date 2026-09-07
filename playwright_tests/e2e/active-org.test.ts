@@ -1,24 +1,28 @@
-import { test, expect } from '../page-objects/page.fixtures';
-import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
-
-const userIdentifier = 'base';
+import { test, expect } from '../helpers/fixtures';
+import { openProvisionedOrganisationDetails } from '../helpers/organisation-workflow-navigation';
 
 test.describe('Active organisation details', { tag: ['@e2e', '@organisations', '@active-org'] }, () => {
-  test.beforeEach(async ({ page }) => {
-    await ensureAuthenticatedPage(page, userIdentifier);
-  });
-
-  test('i can see organisation details for an active org', async ({ organisationApprovalsPage }) => {
-    await test.step('Open the first active organisation', async () => {
-      await expect(organisationApprovalsPage.heading).toBeVisible();
-      await organisationApprovalsPage.openActiveOrganisationsTab();
+  test('i can see organisation details for an active org', async ({
+    page,
+    organisationApprovalsPage,
+    organisationIdentifier
+  }) => {
+    await test.step('Approve the provisioned pending organisation', async () => {
+      await openProvisionedOrganisationDetails(page, organisationIdentifier);
+      await expect(organisationApprovalsPage.approveOrganisationHeading).toBeVisible();
+      await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await expect(await organisationApprovalsPage.chooseDecision('Approve it')).toBeChecked();
+      await organisationApprovalsPage.submitDecision();
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+      await organisationApprovalsPage.confirmDecision();
       await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible({ timeout: 30_000 });
-      await organisationApprovalsPage.openFirstActiveOrganisation();
+      await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
     });
 
-    await test.step('Validate organisation details panel', async () => {
+    await test.step('Open the exact active organisation and validate its details', async () => {
+      await openProvisionedOrganisationDetails(page, organisationIdentifier);
       await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+      await expect(organisationApprovalsPage.organisationStatusBadge).toHaveText('ACTIVE');
       await expect(organisationApprovalsPage.subNavigation).toBeVisible();
       await expect(organisationApprovalsPage.usersTabLink).toBeVisible();
       await expect(organisationApprovalsPage.adminDetailsHeading).toBeVisible();

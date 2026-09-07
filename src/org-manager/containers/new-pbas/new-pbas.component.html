@@ -6,7 +6,7 @@
     </span>
   </app-identity-bar-component>
   <div class="hmcts-width-container">
-    <xuilib-hmcts-main-wrapper (backEvent)="onGoBack()">
+    <xuilib-hmcts-main-wrapper [summaryErrors]="pbaErrorsHeader$ | async" (backEvent)="onGoBack()">
       <ng-container *ngIf="!data.org">
         <h1 class="govuk-heading-xl">Approve new PBA number</h1>
         <h3 class="govuk-heading-s">Loading...</h3>
@@ -15,7 +15,8 @@
       <app-new-pbas-info *ngIf="data.org && !confirmDecision" [org]="data.org" [newPBAs]="newPBAs"
         (submitForm)="onContinue()" (newPBA)="setNewPBA($event)">
       </app-new-pbas-info>
-      <app-new-pbas-confirm *ngIf="data.org && confirmDecision" [org]="data.org" [newPBAs]="newPBAs">
+      <app-new-pbas-confirm *ngIf="data.org && confirmDecision" [org]="data.org" [newPBAs]="newPBAs"
+        (pbaStatusError)="setPbaStatusError($event)">
       </app-new-pbas-confirm>
     </xuilib-hmcts-main-wrapper>
   </div>

@@ -1,5 +1,6 @@
 import { test, expect } from './helpers/api.fixtures';
 import {
+  approveOrganisation,
   cleanupProvisionedOrganisation,
   loadOrganisationById,
   provisionActiveOrganisation,
@@ -17,15 +18,7 @@ test.describe('Playwright API positive: organisations write', { tag: ['@organisa
       const sourceOrganisation = await loadOrganisationById(apiRequest, organisationId);
       expect(sourceOrganisation, `Unable to load organisation payload for id=${organisationId}.`).toBeTruthy();
 
-      const updatePayload = {
-        ...sourceOrganisation,
-        status: 'ACTIVE'
-      };
-
-      const response = await apiRequest.put(`/api/organisations/${organisationId}`, {
-        data: updatePayload,
-        failOnStatusCode: false
-      });
+      const response = await approveOrganisation(apiRequest, organisationId, sourceOrganisation);
 
       expect(
         response.status(),
@@ -69,13 +62,7 @@ test.describe('Playwright API positive: organisations write', { tag: ['@organisa
       const sourceOrganisation = await loadOrganisationById(apiRequest, provisioned.organisationId);
       expect(sourceOrganisation, `Unable to load organisation payload for id=${provisioned.organisationId}.`).toBeTruthy();
 
-      const activateResponse = await apiRequest.put(`/api/organisations/${provisioned.organisationId}`, {
-        data: {
-          ...sourceOrganisation,
-          status: 'ACTIVE'
-        },
-        failOnStatusCode: false
-      });
+      const activateResponse = await approveOrganisation(apiRequest, provisioned.organisationId, sourceOrganisation);
       expect(
         activateResponse.status(),
         `Expected 200 from PUT /api/organisations/${provisioned.organisationId} during active-delete setup. Received status=${activateResponse.status()}`

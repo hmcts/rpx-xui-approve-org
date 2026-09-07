@@ -67,12 +67,25 @@ type PbaStatusUpdatePayload = {
   orgId?: string;
 };
 
+type PbaStatusUpdateApiMockControl = {
+  getLastPayload: () => PbaStatusUpdatePayload | undefined;
+};
+
 type UpdatePbaApiMockControl = {
   getLastPayload: () => UpdatePbaApiPayload | undefined;
 };
 
-type PbaStatusUpdateApiMockControl = {
-  getLastPayload: () => PbaStatusUpdatePayload | undefined;
+type SetPbaStatusApiPayload = {
+  pbaNumbers: Array<{
+    pbaNumber: string;
+    status: string;
+    statusMessage: string;
+  }>;
+  orgId: string;
+};
+
+type SetPbaStatusApiMockControl = {
+  getLastPayload: () => SetPbaStatusApiPayload | undefined;
 };
 
 function normaliseSearchTerm(value: string | undefined): string {
@@ -114,6 +127,36 @@ function filterPendingPbaOrganisations(
   }
 
   return pendingPbaOrganisations.filter((organisation) => collectPendingPbaSearchText(organisation).includes(searchTerm));
+}
+
+async function setupPbaStatusApiMock(
+  page: Page,
+  state: PbaStatusUpdateApiMockState = {}
+): Promise<PbaStatusUpdateApiMockControl> {
+  let lastPayload: PbaStatusUpdatePayload | undefined;
+
+  await page.route('**/api/pba/status', async (route, request) => {
+    if (request.method().toUpperCase() !== 'PUT') {
+      await route.fallback();
+      return;
+    }
+
+    try {
+      lastPayload = request.postDataJSON() as PbaStatusUpdatePayload;
+    } catch {
+      lastPayload = undefined;
+    }
+
+    await route.fulfill({
+      status: state.status ?? 200,
+      contentType: 'application/json',
+      body: JSON.stringify(state.responseBody ?? { ok: true })
+    });
+  });
+
+  return {
+    getLastPayload: () => lastPayload
+  };
 }
 
 export function createMockPendingPbaOrganisation(overrides: Partial<MockPendingPbaOrganisation>): MockPendingPbaOrganisation {
@@ -169,6 +212,13 @@ export async function setupUpdatePbaApiMock(
   };
 }
 
+export async function setupSetPbaStatusApiMock(
+  page: Page,
+  state: UpdatePbaApiMockState = {}
+): Promise<PbaStatusUpdateApiMockControl> {
+  return setupPbaStatusApiMock(page, state);
+}
+
 export async function setupPbaAccountsApiMock(page: Page, accountNames: string[] = ['Mock Liberata Account']): Promise<void> {
   await page.route('**/api/pbaAccounts/**', async (route) => {
     await route.fulfill({
@@ -183,30 +233,7 @@ export async function setupPbaStatusUpdateApiMock(
   page: Page,
   state: PbaStatusUpdateApiMockState = {}
 ): Promise<PbaStatusUpdateApiMockControl> {
-  let lastPayload: PbaStatusUpdatePayload | undefined;
-
-  await page.route('**/api/pba/status', async (route, request) => {
-    if (request.method().toUpperCase() !== 'PUT') {
-      await route.fallback();
-      return;
-    }
-
-    try {
-      lastPayload = request.postDataJSON() as PbaStatusUpdatePayload;
-    } catch {
-      lastPayload = undefined;
-    }
-
-    await route.fulfill({
-      status: state.status ?? 200,
-      contentType: 'application/json',
-      body: JSON.stringify(state.responseBody ?? { ok: true })
-    });
-  });
-
-  return {
-    getLastPayload: () => lastPayload
-  };
+  return setupPbaStatusApiMock(page, state);
 }
 
 export async function setupPendingPbaStatusApiMock(
@@ -244,15 +271,19 @@ export async function setupPendingPbaStatusApiMock(
       : true;
 
     const resolvedStatusCode = shouldApplyOverride ? (state.status ?? 200) : 200;
-    const body = shouldApplyOverride
-      ? (state.responseBody ?? (resolvedStatusCode === 200 ? {
+    let body: unknown;
+
+    if (shouldApplyOverride) {
+      body = state.responseBody ?? (resolvedStatusCode === 200 ? {
         organisations: paginatedPendingPbaOrganisations,
         total_records: filteredPendingPbaOrganisations.length
-      } : {}))
-      : {
+      } : {});
+    } else {
+      body = {
         organisations: paginatedPendingPbaOrganisations,
         total_records: filteredPendingPbaOrganisations.length
       };
+    }
 
     await route.fulfill({
       status: resolvedStatusCode,
@@ -301,5 +332,15 @@ export function waitForUpdatePbaResponseWithHttpStatus(page: Page, expectedHttpS
     return request.method().toUpperCase() === 'PUT'
       && request.url().includes('/api/updatePba')
       && response.status() === expectedHttpStatus;
+  });
+}
+
+export function waitForSetPbaStatusResponse(page: Page): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method().toUpperCase() === 'PUT'
+      && request.url().includes('/api/pba/status')
+      && !request.url().includes('/api/pba/status/pending')
+      && response.status() < 500;
   });
 }
