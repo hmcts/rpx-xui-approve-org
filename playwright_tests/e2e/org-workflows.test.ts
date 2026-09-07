@@ -3,9 +3,16 @@ import { openProvisionedOrganisationDetails } from '../helpers/organisation-work
 import { ensureAuthenticatedPage } from '../helpers/sessionCapture';
 
 test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', '@organisations', '@org-workflows'] }, () => {
-  test('I can reject a pending org', async ({ page, organisationApprovalsPage, organisationIdentifier }) => {
-    await test.step('Open the provisioned pending organisation', async () => {
-      await openProvisionedOrganisationDetails(page, organisationIdentifier);
+  test.beforeEach(async ({ page }) => {
+    await ensureAuthenticatedPage(page, 'base');
+  });
+
+  test('I can reject a pending org', async ({ organisationApprovalsPage, userName, organisationIdentifier }) => {
+    await test.step('Search for and open the pending organisation', async () => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
+      await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
+      await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
 
     await test.step('Reject the pending organisation', async () => {
@@ -22,11 +29,17 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
 
   test('I can place registration under review for a pending org', async ({
     page,
+    userName,
     organisationApprovalsPage,
     organisationIdentifier
   }) => {
-    await test.step('Open the provisioned pending organisation', async () => {
-      await openProvisionedOrganisationDetails(page, organisationIdentifier);
+    let organisationName = '';
+
+    await test.step('Search for and open the pending organisation', async () => {
+      await expect(organisationApprovalsPage.heading).toBeVisible();
+      await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
+      await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
+      await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
     });
 
     await test.step('Place the registration under review', async () => {
@@ -74,7 +87,7 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     await test.step('Approve a pending organisation so it appears in active organisations', async () => {
       await ensureAuthenticatedPage(page);
       await expect(organisationApprovalsPage.heading).toBeVisible();
-      await organisationApprovalsPage.searchForOrganisation(userName);
+      await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
       await expect(organisationApprovalsPage.pendingOrganisationRowById(organisationIdentifier)).toBeVisible();
       await organisationApprovalsPage.openPendingOrganisationById(organisationIdentifier);
       organisationName = await organisationApprovalsPage.getOrganisationNameFromDetails();
