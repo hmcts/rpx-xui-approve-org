@@ -69,8 +69,7 @@ module "managed_redis" {
   access_keys_authentication_enabled = true
   persistence_rdb_backup_frequency   = "6h"
 
-  # rpx-xui-node-lib currently uses node-redis 3, which is not cluster-aware.
-  clustering_policy = "NoCluster"
+  clustering_policy = "EnterpriseCluster"
 }
 
 module "application_insights" {
