@@ -394,6 +394,58 @@ describe('organisation/index', () => {
       });
     });
 
+    it('should fetch full active organisation scan pages serially', async () => {
+      mockReq.body = {
+        searchRequest: {
+          search_filter: 'matching',
+          pagination_parameters: {
+            page_number: 1,
+            page_size: 10
+          }
+        }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+
+      let resolveFirstPage: (value: any) => void;
+      const firstPage = new Promise((resolve) => {
+        resolveFirstPage = resolve;
+      });
+      let secondPageStarted = false;
+
+      mockReq.http.get.onCall(0).resolves({
+        data: { organisations: [{ name: 'Unrelated Org', status: 'ACTIVE' }] },
+        headers: { total_records: '2001' }
+      });
+      mockReq.http.get.onCall(1).resolves({
+        data: { organisations: [{ name: 'Unrelated Org', status: 'ACTIVE' }] },
+        headers: { total_records: '2001' }
+      });
+      mockReq.http.get.onCall(2).returns(firstPage);
+      mockReq.http.get.onCall(3).callsFake(() => {
+        secondPageStarted = true;
+        return Promise.resolve({ data: { organisations: [] }, headers: { total_records: '2001' } });
+      });
+      mockReq.http.get.onCall(4).resolves({
+        data: { organisations: [{ name: 'Matching Org', status: 'ACTIVE' }] },
+        headers: { total_records: '2001' }
+      });
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      const responsePromise = postHandler(mockReq, mockRes);
+      await new Promise((resolve) => setImmediate(resolve));
+
+      expect(secondPageStarted).to.equal(false);
+      resolveFirstPage!({ data: { organisations: [] }, headers: { total_records: '2001' } });
+      await responsePromise;
+
+      expect(secondPageStarted).to.equal(true);
+      expect(mockReq.http.get.callCount).to.equal(5);
+    });
+
     it('should not fall back to full active organisation scan for long organisation name searches', async () => {
       const longOrganisationName = '001fcFuzqHZCE6UptKv3 EsqkclX1AU9OTRJxsGSA';
       mockReq.body = {
