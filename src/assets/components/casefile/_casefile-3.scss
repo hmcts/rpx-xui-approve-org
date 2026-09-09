@@ -57,8 +57,8 @@
 
 .jui-cf__toolbar-container {
   @include jui-width-container;
-  border-left:1px solid govuk-colour("light-grey");
-  border-right: 1px solid govuk-colour("light-grey");
+  border-left:1px solid govuk-colour("black", $variant: "tint-95");
+  border-right: 1px solid govuk-colour("black", $variant: "tint-95");
   height: 100%;
   position: relative;
   left: 0; top: 0;
@@ -97,7 +97,7 @@
   }
 
   &:focus {
-    outline: 3px solid $govuk-focus-colour;
+    outline: 3px solid govuk-functional-colour(focus);
     outline-offset: -1px;
     position: relative;
     z-index: 2;
@@ -110,12 +110,12 @@
 
 
   &:hover {
-    background-color: govuk-colour("light-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
   }
 
 
   &[aria-pressed=true] {
-    background-color: govuk-colour("light-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
     cursor: default;
   }
 
@@ -149,7 +149,7 @@
 
 
 .jui-cf__window {
-  background-color: govuk-colour("light-grey");
+  background-color: govuk-colour("black", $variant: "tint-95");
   padding-bottom: 25px;
   padding-top: 25px;
   position: relative;
@@ -199,7 +199,7 @@
 
   &[data-page]::after {
     @include govuk-font(16);
-    color: $govuk-secondary-text-colour;
+    color: govuk-functional-colour(secondary-text);
     content: attr(data-page);
     line-height: 1;
     position: absolute; right: govuk-spacing(4);
@@ -273,7 +273,7 @@
 
 .jui-comment__meta {
   @include govuk-font($size: 16);
-  color: $govuk-secondary-text-colour;
+    color: govuk-functional-colour(secondary-text);
 }
 
 

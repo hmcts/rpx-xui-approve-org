@@ -1,13 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
 
-// Path to assets for use with the file-url function
-// in the govuk frontend toolkit"s url-helpers partial
-$path: "";
 $jui-assets-path : "";
 
-$govuk-global-styles: true;
-@import "govuk-frontend/govuk/all";
+@use "govuk-frontend" as *;
 @import "./assets/sass/hmcts-frontend/all";
 @import "./assets/sass/application";
 

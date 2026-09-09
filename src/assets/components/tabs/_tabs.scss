@@ -39,7 +39,7 @@
 
     .govuk-tabs__list {
       @include govuk-clearfix;
-      border-bottom: 1px solid $govuk-border-colour;
+      border-bottom: 1px solid govuk-functional-colour(border);
     }
 
     .govuk-tabs__list-item {
@@ -55,7 +55,7 @@
     }
 
     .govuk-tabs__tab {
-      background-color: govuk-colour("light-grey");
+      background-color: govuk-colour("black", $variant: "tint-95");
       float: left;
       margin-right: govuk-spacing(1);
       padding-left: govuk-spacing(4);
@@ -65,14 +65,14 @@
       color: govuk-colour("black");
 
       &:focus {
-        background-color: $govuk-focus-colour;
-        box-shadow: inset 0 0 0 3px $govuk-focus-colour;
+        background-color: govuk-functional-colour(focus);
+        box-shadow: inset 0 0 0 3px govuk-functional-colour(focus);
         outline: none;
       }
 
       &[aria-selected=true] {
         background-color: govuk-colour("white");
-        border: 1px solid $govuk-border-colour;
+        border: 1px solid govuk-functional-colour(border);
         border-bottom: 0;
         color: govuk-colour("black");
         margin-bottom: -1px;
@@ -92,7 +92,7 @@
     }
 
     .govuk-tabs__panel {
-      border: 1px solid $govuk-border-colour;
+      border: 1px solid govuk-functional-colour(border);
       border-top: 0;
       padding-left: govuk-spacing(4);
       padding-right: govuk-spacing(4);
