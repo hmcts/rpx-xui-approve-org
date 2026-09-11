@@ -56,22 +56,18 @@ test('keeps flake and HTML diagnostics when Odhín is explicitly disabled', () =
   }
 });
 
-test('adds canonical CI evidence for Jenkins and permits an explicit local run', () => {
+test('adds a native JSON reporter for non-accessibility CI lanes only', () => {
   const original = {
     CI: process.env.CI,
-    PLAYWRIGHT_CI_EVIDENCE: process.env.PLAYWRIGHT_CI_EVIDENCE
   };
 
   try {
     process.env.CI = 'true';
-    expect(buildPlaywrightReporters('e2e').map(([name]) => name)).toContain(
-      './playwright_tests/common/reporters/ci-evidence.reporter.cjs'
-    );
-    delete process.env.CI;
-    process.env.PLAYWRIGHT_CI_EVIDENCE = 'true';
-    expect(buildPlaywrightReporters('api').map(([name]) => name)).toContain(
-      './playwright_tests/common/reporters/ci-evidence.reporter.cjs'
-    );
+    expect(buildPlaywrightReporters('e2e')).toContainEqual([
+      'json',
+      { outputFile: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json' }
+    ]);
+    expect(buildPlaywrightReporters('accessibility').map(([name]) => name)).not.toContain('json');
   } finally {
     for (const [key, value] of Object.entries(original)) {
       if (value === undefined) delete process.env[key];
