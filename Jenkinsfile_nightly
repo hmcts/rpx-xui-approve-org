@@ -258,6 +258,8 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('fullFunctionalTest') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/xui-ci-evidence.json'
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
