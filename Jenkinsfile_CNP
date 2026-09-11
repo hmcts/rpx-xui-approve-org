@@ -285,7 +285,13 @@ withPipeline(type, product, component) {
         ])
     }
 
+    afterAlways('smoketest:demo') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+    }
+
     afterAlways('smoketest:preview') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -303,6 +309,8 @@ withPipeline(type, product, component) {
     }
 
     afterAlways('functionalTest:preview') {
+
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
 
         publishHTML([
             allowMissing         : true,
@@ -363,6 +371,10 @@ withPipeline(type, product, component) {
         ])
     }
 
+    afterAlways('smoketest:aat') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+    }
+
     before('functionalTest:aat') {
         runWithFunctionalFailureCapture {
             runPlaywrightFunctionalInParallel('AAT')
@@ -371,6 +383,8 @@ withPipeline(type, product, component) {
 
 
     afterAlways('functionalTest:aat') {
+
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
 
         publishHTML([
             allowMissing         : true,
