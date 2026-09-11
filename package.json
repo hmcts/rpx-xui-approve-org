@@ -20,6 +20,7 @@
     "e2e": "ng e2e",
     "fortifyScan": "./test/java/gradlew -p test/java fortifyScan",
     "lint": "yarn lint:ng && yarn lint:node",
+    "test:ci-evidence": "node --test test/ci-evidence.reporter.test.cjs",
     "lint:ng": "yarn exec eslint src",
     "lint:node": "yarn exec eslint api",
     "lint:reporting:scripts": "node --check scripts/run-playwright-accessibility.cjs && node --check scripts/run-playwright-a11y.cjs && node --check scripts/run-playwright-wave-a11y.cjs && node --check scripts/run-playwright-lighthouse-a11y.cjs && node --check playwright_tests/common/reporters/flake-gate.reporter.cjs && node --check playwright_tests/common/reporters/odhin-adaptive.reporter.cjs && node --check playwright_tests/common/reporters/odhin-report-enhancer.cjs",

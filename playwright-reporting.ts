@@ -65,6 +65,11 @@ function resolveDefaultReporter(): string {
   return process.env.CI ? 'dot' : 'list';
 }
 
+function shouldEmitCiEvidence(): boolean {
+  const configured = process.env.PLAYWRIGHT_CI_EVIDENCE?.trim().toLowerCase();
+  return configured ? configured === 'true' : Boolean(process.env.CI || process.env.JENKINS_URL || process.env.BUILD_NUMBER);
+}
+
 function resolveBranchName(): string {
   const envBranch =
     process.env.PLAYWRIGHT_REPORT_BRANCH ||
@@ -203,6 +208,13 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
         simpleConsoleLog: !!process.env.CI,
         testOutput: 'only-on-failure'
       }
+    ]);
+  }
+
+  if (shouldEmitCiEvidence()) {
+    reporters.push([
+      './playwright_tests/common/reporters/ci-evidence.reporter.cjs',
+      { outputFolder: odhinOutputFolder, repository: 'rpx-xui-approve-org', suite: reportType }
     ]);
   }
 

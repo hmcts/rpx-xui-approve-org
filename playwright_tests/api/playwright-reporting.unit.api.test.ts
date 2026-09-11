@@ -56,6 +56,30 @@ test('keeps flake and HTML diagnostics when Odhín is explicitly disabled', () =
   }
 });
 
+test('adds canonical CI evidence for Jenkins and permits an explicit local run', () => {
+  const original = {
+    CI: process.env.CI,
+    PLAYWRIGHT_CI_EVIDENCE: process.env.PLAYWRIGHT_CI_EVIDENCE
+  };
+
+  try {
+    process.env.CI = 'true';
+    expect(buildPlaywrightReporters('e2e').map(([name]) => name)).toContain(
+      './playwright_tests/common/reporters/ci-evidence.reporter.cjs'
+    );
+    delete process.env.CI;
+    process.env.PLAYWRIGHT_CI_EVIDENCE = 'true';
+    expect(buildPlaywrightReporters('api').map(([name]) => name)).toContain(
+      './playwright_tests/common/reporters/ci-evidence.reporter.cjs'
+    );
+  } finally {
+    for (const [key, value] of Object.entries(original)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  }
+});
+
 test('uses distinct default HTML folders for every report lane', () => {
   const original = process.env.PLAYWRIGHT_HTML_OUTPUT;
   delete process.env.PLAYWRIGHT_HTML_OUTPUT;
