@@ -1,11 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>hmcts/.github:renovate-config"
+    "local>hmcts/.github:renovate-config",
+    "local>hmcts/.github//renovate/automerge-all"
   ],
+  "automerge": true,
+  "automergeSchedule": [
+    "* 8-9 * * 1-4"
+  ],
+  "platformAutomerge": false,
   "timezone": "Europe/London",
   "schedule": [
-    "* 7-9 * * 1-4"
+    "* 7 * * 1-4"
   ],
   "updateNotScheduled": false,
   "packageRules": [
