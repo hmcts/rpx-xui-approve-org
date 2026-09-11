@@ -17,6 +17,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "aot": true,
+            "preserveSymlinks": true,
             "outputPath": "dist/organisation-manager",
             "index": "src/index.html",
             "main": "src/main.ts",
