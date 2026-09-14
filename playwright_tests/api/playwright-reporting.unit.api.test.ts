@@ -56,6 +56,26 @@ test('keeps flake and HTML diagnostics when Odhín is explicitly disabled', () =
   }
 });
 
+test('adds a native JSON reporter for non-accessibility CI lanes only', () => {
+  const original = {
+    CI: process.env.CI,
+  };
+
+  try {
+    process.env.CI = 'true';
+    expect(buildPlaywrightReporters('e2e')).toContainEqual([
+      'json',
+      { outputFile: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json' }
+    ]);
+    expect(buildPlaywrightReporters('accessibility').map(([name]) => name)).not.toContain('json');
+  } finally {
+    for (const [key, value] of Object.entries(original)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  }
+});
+
 test('uses distinct default HTML folders for every report lane', () => {
   const original = process.env.PLAYWRIGHT_HTML_OUTPUT;
   delete process.env.PLAYWRIGHT_HTML_OUTPUT;

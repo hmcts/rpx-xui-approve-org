@@ -206,6 +206,13 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
     ]);
   }
 
+  if (process.env.CI && reportType !== 'accessibility') {
+    reporters.push([
+      'json',
+      { outputFile: `${odhinOutputFolder}/ci-evidence/playwright.json` }
+    ]);
+  }
+
   if (process.env.PLAYWRIGHT_JUNIT_OUTPUT?.trim()) {
     reporters.push(['junit', { outputFile: process.env.PLAYWRIGHT_JUNIT_OUTPUT.trim() }]);
   }
