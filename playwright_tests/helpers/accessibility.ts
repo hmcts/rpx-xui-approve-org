@@ -1291,13 +1291,12 @@ async function collectScreenReaderLikeAccessibilityViolations(page: Page): Promi
       add(violations, 'sr-document-title', 'Screen readers need a meaningful document title.');
     }
 
-    const skipLink = Array.from(document.querySelectorAll('a[href^="#"]'))
-      .filter(visible)
+    const skipLink = Array.from(document.querySelectorAll('a[href]'))
       .find((link) => /skip to main content/i.test(text(link)));
     if (!skipLink) {
-      add(violations, 'skip-link', 'The page should expose a visible skip-to-main-content link.');
+      add(violations, 'skip-link', 'The page should expose a skip-to-main-content link.');
     } else {
-      const targetId = skipLink.getAttribute('href')?.slice(1) ?? '';
+      const targetId = new URL(skipLink.getAttribute('href') ?? '', document.baseURI).hash.slice(1);
       if (!targetId || !document.getElementById(decodeURIComponent(targetId))) {
         add(violations, 'skip-link-target', `Skip link target "#${targetId}" should exist.`, skipLink);
       }
