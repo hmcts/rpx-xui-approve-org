@@ -185,6 +185,7 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
     ['./playwright_tests/common/reporters/flake-gate.reporter.cjs'],
     ['html', { outputFolder: resolveHtmlOutputFolder(reportType), open: 'never' }]
   ];
+  if (process.env.PW_ENABLE_PERFETTO !== 'false') reporters.push(['perfetto']);
 
   if (!disableOhdin) {
     reporters.push([
