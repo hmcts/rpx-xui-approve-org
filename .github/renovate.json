@@ -6,12 +6,12 @@
   ],
   "automerge": true,
   "automergeSchedule": [
-    "* 8-9 * * 1-4"
+    "* 12-17 * * 1-5"
   ],
-  "platformAutomerge": false,
+  "platformAutomerge": true,
   "timezone": "Europe/London",
   "schedule": [
-    "* 7 * * 1-4"
+    "* 12-17 * * 1-5"
   ],
   "updateNotScheduled": false,
   "packageRules": [
