@@ -23,6 +23,10 @@ nodejs:
           alias: launch-darkly-client-id
   autoscaling:
     enabled: false
+  devmemoryRequests: 512Mi
+  devcpuRequests: 25m
+  devmemoryLimits: 1Gi
+  devcpuLimits: 50m
 redis:
   enabled: true
 idam-pr:
