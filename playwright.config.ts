@@ -54,7 +54,7 @@ module.exports = defineConfig({
         headless: headlessMode,
         storageState: sharedStorageState,
         screenshot: 'only-on-failure',
-        trace: 'on-first-retry'
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true } }
       }
     }
   ]
