@@ -45,7 +45,7 @@ module.exports = defineConfig({
         channel: 'chrome',
         headless: headlessMode,
         screenshot: 'only-on-failure',
-        trace: 'off',
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true } },
         ...(lighthouseEnabled
           ? {
             launchOptions: {

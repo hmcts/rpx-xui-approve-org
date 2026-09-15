@@ -48,7 +48,7 @@ module.exports = defineConfig({
         actionTimeout: 15_000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
-        trace: 'off'
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true } }
       }
     },
     {
@@ -59,7 +59,7 @@ module.exports = defineConfig({
         actionTimeout: 15_000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
-        trace: 'off'
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true } }
       }
     }
   ]
