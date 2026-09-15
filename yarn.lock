@@ -2251,9 +2251,9 @@ __metadata:
   linkType: hard
 
 "@babel/runtime@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@babel/runtime@npm:8.0.0"
-  checksum: 10/1aa5079d7d22d0b7eab30596e85b8c7d4a1003166ff4bb5fffadbc779b24c1acf8a08007e7afadd73191ed67b8249da66c5a2b5df29396f975e58c7df952d1a7
+  version: 8.0.5
+  resolution: "@babel/runtime@npm:8.0.5"
+  checksum: 10/f54e8051ff2c2b7b21b0c3a6b668799a6d033fb3f4edffdcb78928985b15def38b515ecabac477abb04485346328331b2cd0effd892503737773164203604d76
   languageName: node
   linkType: hard
 
