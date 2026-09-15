@@ -43,7 +43,7 @@
   }
 
   &:focus {
-    background-color: $govuk-focus-colour;
+    background-color: govuk-functional-colour(focus);
     color: govuk-colour("black");
   }
 
