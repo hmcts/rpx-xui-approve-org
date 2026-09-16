@@ -26,6 +26,7 @@ logResolvedTagFilters('E2E', e2eTagFilters);
 module.exports = defineConfig({
   testDir: './playwright_tests/e2e',
   testMatch: /.*\.test\.ts/,
+  outputDir: 'functional-output/tests/playwright-e2e/test-results',
   globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
