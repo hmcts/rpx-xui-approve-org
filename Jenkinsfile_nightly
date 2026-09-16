@@ -121,17 +121,17 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
             failFast: false,
             api: {
                 stage('Nightly API Playwright Tests') {
-                    yarnBuilder.yarn('test:api:playwright:raw')
+                    withEnv(['PLAYWRIGHT_TEST_OUTPUT_DIR=functional-output/tests/playwright-api/test-results']) { yarnBuilder.yarn('test:api:playwright:raw') }
                 }
             },
             integration: {
                 stage('Nightly Integration Playwright Tests') {
-                    yarnBuilder.yarn('test:integration:playwright:raw')
+                    withEnv(['PLAYWRIGHT_TEST_OUTPUT_DIR=functional-output/tests/playwright-integration/test-results']) { yarnBuilder.yarn('test:integration:playwright:raw') }
                 }
             },
             crossBrowser: {
                 stage('Nightly Cross Browser Playwright Tests') {
-                    yarnBuilder.yarn('test:crossbrowser')
+                    withEnv(['PLAYWRIGHT_TEST_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results']) { yarnBuilder.yarn('test:crossbrowser') }
                 }
             }
         ]
@@ -259,6 +259,7 @@ withNightlyPipeline(type, product, component) {
 
     afterAlways('fullFunctionalTest') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/test-results/perfetto.json'
 
         publishHTML([
             allowMissing         : true,
