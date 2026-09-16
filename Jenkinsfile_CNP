@@ -109,17 +109,17 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
             failFast: false,
             api: {
                 stage("${environmentLabel} API Playwright Tests") {
-                    withEnv(['PLAYWRIGHT_TEST_OUTPUT_DIR=functional-output/tests/playwright-api/test-results']) { yarnBuilder.yarn('test:api:playwright:raw') }
+                    yarnBuilder.yarn('test:api:playwright:raw')
                 }
             },
             integration: {
                 stage("${environmentLabel} Integration Playwright Tests") {
-                    withEnv(['PLAYWRIGHT_TEST_OUTPUT_DIR=functional-output/tests/playwright-integration/test-results']) { yarnBuilder.yarn('test:integration:playwright:raw') }
+                    yarnBuilder.yarn('test:integration:playwright:raw')
                 }
             },
             e2e: {
                 stage("${environmentLabel} E2E Playwright Tests") {
-                    withEnv(['PLAYWRIGHT_TEST_OUTPUT_DIR=functional-output/tests/playwright-e2e/test-results']) { yarnBuilder.yarn('test:functional:e2e:raw') }
+                    yarnBuilder.yarn('test:functional:e2e:raw')
                 }
             }
         ]
@@ -287,10 +287,12 @@ withPipeline(type, product, component) {
 
     afterAlways('smoketest:demo') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
     }
 
     afterAlways('smoketest:preview') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
 
         publishHTML([
             allowMissing         : true,
@@ -311,6 +313,7 @@ withPipeline(type, product, component) {
     afterAlways('functionalTest:preview') {
 
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
 
         publishHTML([
             allowMissing         : true,
@@ -373,6 +376,7 @@ withPipeline(type, product, component) {
 
     afterAlways('smoketest:aat') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
     }
 
     before('functionalTest:aat') {
@@ -385,7 +389,7 @@ withPipeline(type, product, component) {
     afterAlways('functionalTest:aat') {
 
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/test-results/perfetto.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
 
         publishHTML([
             allowMissing         : true,
