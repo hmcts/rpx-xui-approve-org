@@ -1,3 +1,5 @@
+import { Title } from '@angular/platform-browser';
+import { pageTitle } from '../../../app/utils/page-title';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { select, Store } from '@ngrx/store';
@@ -28,7 +30,8 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     private readonly organisationService: OrganisationService,
     private readonly store: Store<fromStore.OrganisationRootState>,
     private readonly route: ActivatedRoute,
-    public readonly pbaAccountDetails: PbaAccountDetails
+    public readonly pbaAccountDetails: PbaAccountDetails,
+    private readonly titleService: Title
   ) {
     this.route.params.subscribe((params) => {
       this.organisationId = params.orgId ? params.orgId : '';
@@ -71,12 +74,14 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     } else {
       this.setPbaStatusError(null);
       this.confirmDecision = false;
+      this.titleService.setTitle(pageTitle('Approve New PBA Number'));
     }
   }
 
   public onContinue(): void {
     this.setPbaStatusError(null);
     this.confirmDecision = true;
+    this.titleService.setTitle(pageTitle('Confirm PBA Decision'));
   }
 
   public setNewPBA(event): void {
