@@ -4,6 +4,7 @@ import * as ejs from 'ejs';
 import * as express from 'express';
 import * as path from 'path';
 import { idamCheck } from './idamCheck';
+import errorHandler from './lib/error.handler';
 import * as log4jui from './lib/log4jui';
 
 console.log('WE ARE USING server.ts on the box.');
@@ -37,6 +38,7 @@ idamCheck()
       });
       console.timeEnd(`GET: ${req.originalUrl}`);
     });
+    app.use(errorHandler);
 
     app.listen(port, (error?: Error) => {
       if (error) {
