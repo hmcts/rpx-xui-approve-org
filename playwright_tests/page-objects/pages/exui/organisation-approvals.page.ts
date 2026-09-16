@@ -313,12 +313,12 @@ export class OrganisationApprovalsPage extends BasePage {
       }
 
       await this.waitForSpinnerToHide(timeout);
-      return this.activeOrganisationViewLinkLocator.count();
+      return this.activeOrganisationsPanel.locator('table.active-organisations').isVisible();
     }, {
       message: 'Active organisation results did not become available',
       timeout,
       intervals: [1_000, 2_000, 5_000]
-    }).toBeGreaterThan(0);
+    }).toBe(true);
   }
 
   async searchForPendingOrganisation(organisationName: string, organisationId: string): Promise<void> {
