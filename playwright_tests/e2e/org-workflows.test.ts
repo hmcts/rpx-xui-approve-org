@@ -33,8 +33,6 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     organisationApprovalsPage,
     organisationIdentifier
   }) => {
-    let organisationName = '';
-
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);

@@ -6,15 +6,25 @@
   ],
   "automerge": true,
   "automergeSchedule": [
-    "* 12-17 * * 1-5"
+    "* 7-12 * * 1-5"
   ],
   "platformAutomerge": true,
   "timezone": "Europe/London",
   "schedule": [
-    "* 12-17 * * 1-5"
+    "* 7-9 * * 1-5"
   ],
   "updateNotScheduled": false,
   "packageRules": [
+    {
+      "description": "Exclude pinned HMCTS dependencies from Renovate updates",
+      "matchPackageNames": [
+        "@hmcts/ccd-case-ui-toolkit",
+        "@hmcts/rpx-xui-common-lib",
+        "@hmcts/rpx-xui-node-lib",
+        "rpx-xui-translation"
+      ],
+      "enabled": false
+    },
     {
       "description": "Disable major version updates",
       "matchUpdateTypes": [

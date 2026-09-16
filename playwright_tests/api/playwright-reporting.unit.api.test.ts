@@ -58,7 +58,7 @@ test('keeps flake and HTML diagnostics when Odhín is explicitly disabled', () =
 
 test('adds a native JSON reporter for non-accessibility CI lanes only', () => {
   const original = {
-    CI: process.env.CI,
+    CI: process.env.CI
   };
 
   try {
@@ -70,8 +70,11 @@ test('adds a native JSON reporter for non-accessibility CI lanes only', () => {
     expect(buildPlaywrightReporters('accessibility').map(([name]) => name)).not.toContain('json');
   } finally {
     for (const [key, value] of Object.entries(original)) {
-      if (value === undefined) delete process.env[key];
-      else process.env[key] = value;
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
     }
   }
 });
