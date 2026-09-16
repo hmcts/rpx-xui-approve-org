@@ -6,7 +6,7 @@
   ],
   "automerge": true,
   "automergeSchedule": [
-    "* 7-9 * * 1-5"
+    "* 7-12 * * 1-5"
   ],
   "platformAutomerge": true,
   "timezone": "Europe/London",
