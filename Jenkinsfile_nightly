@@ -259,6 +259,7 @@ withNightlyPipeline(type, product, component) {
 
     afterAlways('fullFunctionalTest') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/perfetto*.json'
 
         publishHTML([
             allowMissing         : true,
