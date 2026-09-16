@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import {
   logResolvedTagFilters,
+  resolveFunctionalRetryCount,
   resolveFunctionalTagFilters,
   resolveWorkerCount
 } from './playwright-config-utils';
@@ -20,12 +21,13 @@ logResolvedTagFilters('Nightly cross-browser E2E', e2eTagFilters);
 module.exports = defineConfig({
   testDir: './playwright_tests/e2e',
   testMatch: /.*\.test\.ts/,
+  outputDir: 'functional-output/tests/playwright-nightly/test-results',
+  globalSetup: require.resolve('./playwright_tests/helpers/playwright.nightly.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: 3, // Set the number of retries for all projects
+  retries: resolveFunctionalRetryCount('E2E_PW_RETRIES'),
 
   timeout: 180_000,
   expect: {
@@ -47,7 +49,7 @@ module.exports = defineConfig({
         actionTimeout: 15_000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
-        trace: 'off'
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
       }
     },
     {
@@ -58,7 +60,7 @@ module.exports = defineConfig({
         actionTimeout: 15_000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
-        trace: 'off'
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
       }
     }
   ]

@@ -80,6 +80,8 @@ nodejs:
         - ao-session-secret
         - name: ao-webapp-redis6-connection-string
           alias: ao-webapp-redis-connection-string
+        - name: ao-webapp-managed-redis-connection-string
+          alias: ao-webapp-managed-redis-connection-string
         - launch-darkly-client-id
   # Don't modify below here
   image: ${IMAGE_NAME}
