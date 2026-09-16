@@ -40,7 +40,7 @@ module.exports = defineConfig({
         channel: 'chrome',
         headless: headlessMode,
         screenshot: 'only-on-failure',
-        trace: { mode: 'retain-on-failure', snapshots: true, screenshots: true, sources: true }
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
       }
     }
   ]

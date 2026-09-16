@@ -150,7 +150,9 @@ test.describe('AO Playwright session management', () => {
       page as never,
       'user@example.test',
       'not-a-real-password',
-      async () => { completedLogin = true; }
+      async () => {
+        completedLogin = true;
+      }
     )).resolves.toBeUndefined();
 
     expect(completedLogin).toBe(true);
@@ -210,8 +212,8 @@ test.describe('AO Playwright session management', () => {
         isVisible: async () => role === 'link' && options?.name === 'Sign out'
           ? signedInNavigation
           : typeof options?.name === 'string'
-          ? options.name === visibleShell
-          : options?.name?.test(visibleShell ?? '') ?? false
+            ? options.name === visibleShell
+            : options?.name?.test(visibleShell ?? '') ?? false
       }),
       request: {
         get: async () => ({
@@ -408,15 +410,15 @@ test.describe('AO Playwright session management', () => {
     const lockPath = path.join(directory, 'state.lock');
     const modulePath = path.resolve(__dirname, '../helpers/sessionCapture.ts');
     const childProgram = [
-      "const { __test__ } = require(process.argv[1]);",
+      'const { __test__ } = require(process.argv[1]);',
       '(async () => {',
       '  const release = await __test__.acquireSessionCaptureLock({',
       '    lockPath: process.argv[2], userIdentifier: process.argv[3], isSessionReusable: () => false',
       '  });',
-      "  process.stdout.write(`acquired:${Date.now()}\\n`);",
+      '  process.stdout.write(`acquired:${Date.now()}\\n`);',
       '  setTimeout(async () => {',
       '    await release();',
-      "    process.stdout.write(`released:${Date.now()}\\n`);",
+      '    process.stdout.write(`released:${Date.now()}\\n`);',
       '  }, Number(process.argv[4]));',
       '})().catch((error) => { console.error(error); process.exitCode = 1; });'
     ].join('\n');
@@ -428,8 +430,12 @@ test.describe('AO Playwright session management', () => {
     const readOutput = (child: ReturnType<typeof spawn>) => new Promise<string>((resolve, reject) => {
       let output = '';
       let errorOutput = '';
-      child.stdout.on('data', (chunk) => { output += chunk.toString(); });
-      child.stderr.on('data', (chunk) => { errorOutput += chunk.toString(); });
+      child.stdout.on('data', (chunk) => {
+        output += chunk.toString();
+      });
+      child.stderr.on('data', (chunk) => {
+        errorOutput += chunk.toString();
+      });
       child.once('error', reject);
       child.once('close', (code) => {
         if (code === 0) {
