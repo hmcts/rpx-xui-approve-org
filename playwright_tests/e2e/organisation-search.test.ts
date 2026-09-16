@@ -57,7 +57,7 @@ test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations',
     await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
 
     await organisationApprovalsPage.searchForOrganisation(ACTIVE_ORG_SEARCH);
-    await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+    await organisationApprovalsPage.waitForActiveOrganisationResults();
 
     await expect(organisationApprovalsPage.activeOrganisationRowsByText(ACTIVE_ORG_SEARCH).first()).toBeVisible();
   });

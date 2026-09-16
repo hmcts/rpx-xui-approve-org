@@ -305,6 +305,22 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.searchButton.click();
   }
 
+  async waitForActiveOrganisationResults(timeout = 60_000): Promise<void> {
+    await expect.poll(async () => {
+      const serviceErrorMessage = await this.serviceErrorMessage();
+      if (serviceErrorMessage) {
+        throw new Error(`Organisation results are unavailable: ${serviceErrorMessage}`);
+      }
+
+      await this.waitForSpinnerToHide(timeout);
+      return this.activeOrganisationViewLinkLocator.count();
+    }, {
+      message: 'Active organisation results did not become available',
+      timeout,
+      intervals: [1_000, 2_000, 5_000]
+    }).toBeGreaterThan(0);
+  }
+
   async searchForPendingOrganisation(organisationName: string, organisationId: string): Promise<void> {
     await expect.poll(async () => {
       await this.searchForOrganisation(organisationName);
@@ -486,7 +502,7 @@ export class OrganisationApprovalsPage extends BasePage {
       this.activeOrganisationsTab.click()
     ]);
     await expect(this.activeOrganisationsPanel).toBeVisible();
-    await this.waitForSpinnerToHide(60_000);
+    await this.waitForActiveOrganisationResults();
   }
 
   async openUsersTab(): Promise<void> {
