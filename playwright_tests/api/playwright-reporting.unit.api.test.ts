@@ -7,11 +7,13 @@ test('includes flake, HTML, Odhín and JUnit reporters for an API lane', () => {
     PLAYWRIGHT_DEFAULT_REPORTER: process.env.PLAYWRIGHT_DEFAULT_REPORTER,
     PLAYWRIGHT_JUNIT_OUTPUT: process.env.PLAYWRIGHT_JUNIT_OUTPUT,
     PLAYWRIGHT_HTML_OUTPUT: process.env.PLAYWRIGHT_HTML_OUTPUT,
+    PLAYWRIGHT_PERFETTO_OUTPUT_FILE: process.env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE,
     DISABLE_ODHIN_REPORTER: process.env.DISABLE_ODHIN_REPORTER
   };
   process.env.PLAYWRIGHT_DEFAULT_REPORTER = 'list';
   process.env.PLAYWRIGHT_JUNIT_OUTPUT = 'reports/api-junit.xml';
   process.env.PLAYWRIGHT_HTML_OUTPUT = 'reports/api-html';
+  process.env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE = 'reports/api-perfetto.json';
   delete process.env.DISABLE_ODHIN_REPORTER;
 
   try {
@@ -20,6 +22,7 @@ test('includes flake, HTML, Odhín and JUnit reporters for an API lane', () => {
         ['list'],
         ['./playwright_tests/common/reporters/flake-gate.reporter.cjs'],
         ['html', { outputFolder: 'reports/api-html', open: 'never' }],
+        ['perfetto', { outputFile: 'reports/api-perfetto.json' }],
         [
           './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs',
           expect.objectContaining({ outputFolder: 'functional-output/tests/playwright-api/odhin-report' })
