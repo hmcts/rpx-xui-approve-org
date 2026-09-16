@@ -287,12 +287,12 @@ withPipeline(type, product, component) {
 
     afterAlways('smoketest:demo') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/perfetto*.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
     }
 
     afterAlways('smoketest:preview') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/perfetto*.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
 
         publishHTML([
             allowMissing         : true,
@@ -313,7 +313,7 @@ withPipeline(type, product, component) {
     afterAlways('functionalTest:preview') {
 
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/perfetto*.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
 
         publishHTML([
             allowMissing         : true,
@@ -376,7 +376,7 @@ withPipeline(type, product, component) {
 
     afterAlways('smoketest:aat') {
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/perfetto*.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
     }
 
     before('functionalTest:aat') {
@@ -389,7 +389,7 @@ withPipeline(type, product, component) {
     afterAlways('functionalTest:aat') {
 
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/perfetto*.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
 
         publishHTML([
             allowMissing         : true,
