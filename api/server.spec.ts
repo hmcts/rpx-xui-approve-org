@@ -10,6 +10,7 @@ describe('server', () => {
   let expressMock: any;
   let pathMock: any;
   let idamCheckStub: sinon.SinonStub;
+  let registerTopLevelExceptionHandlersStub: sinon.SinonStub;
   let processEnvStub: any;
   let processExitStub: sinon.SinonStub;
   let consoleTimeStub: any;
@@ -69,6 +70,7 @@ describe('server', () => {
     idamCheckStub = sinon.stub().resolves();
     sinon.stub(require('./idamCheck'), 'idamCheck').callsFake(idamCheckStub);
     sinon.stub(require('./lib/log4jui'), 'getLogger').returns(loggerMock);
+    sinon.stub(require('./lib/error.handler'), 'default').value(sinon.stub());
     sinon.stub(require('ejs'), 'renderFile').value(ejsMock.renderFile);
     sinon.stub(require('express'), 'static').callsFake(expressMock.static);
     sinon.stub(require('path'), 'join').callsFake(pathMock.join);
@@ -105,6 +107,19 @@ describe('server', () => {
 
       expect(appMock.use).to.have.been.calledWith('/{*splat}');
       expect(appMock.use.args.find((call) => call[0] === '/{*splat}')).to.exist;
+    });
+
+    it('should configure error handling after the server catch-all route handler', async () => {
+      const errorHandler = require('./lib/error.handler').default;
+
+      require('./server');
+      await flushPromises();
+
+      const catchAllCallIndex = appMock.use.args.findIndex((call) => call[0] === '/{*splat}');
+      const errorHandlerCallIndex = appMock.use.args.findIndex((call) => call[0] === errorHandler);
+
+      expect(catchAllCallIndex).to.be.greaterThan(-1);
+      expect(errorHandlerCallIndex).to.be.greaterThan(catchAllCallIndex);
     });
 
     it('should start server on default port 3000', async () => {
