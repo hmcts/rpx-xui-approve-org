@@ -46,16 +46,70 @@ if (isContentEditableSupported === true) {
     }
   };
 
-  Editor.prototype.getEnhancedHtml = function() {
-    return `<div class="jui-editor__toolbar" role="toolbar">
-              <button class="jui-editor__toolbar-button jui-editor__toolbar-button--bold" type="button" data-command="bold"><span class="govuk-visually-hidden">Bold</span></button>
-              <button class="jui-editor__toolbar-button jui-editor__toolbar-button--italic" type="button" data-command="italic"><span class="govuk-visually-hidden">Italic</span></button>
-              <button class="jui-editor__toolbar-button jui-editor__toolbar-button--underline" type="button" data-command="underline"><span class="govuk-visually-hidden">Underline</span></button>
-              <button class="jui-editor__toolbar-button jui-editor__toolbar-button--unordered-list" type="button" data-command="insertUnorderedList"><span class="govuk-visually-hidden">Unordered list</span></button>
-              <button class="jui-editor__toolbar-button jui-editor__toolbar-button--ordered-list" type="button" data-command="insertOrderedList"><span class="govuk-visually-hidden">Ordered list</span></button>
-            </div>
+  Editor.prototype.createToolbarButton = function(modifier, command, label) {
+    const button = document.createElement('button');
+    const hiddenLabel = document.createElement('span');
 
-            <div class="jui-editor__content" contenteditable="true" spellcheck="false"></div>`;
+    button.className = `jui-editor__toolbar-button jui-editor__toolbar-button--${modifier}`;
+    button.type = 'button';
+    button.dataset.command = command;
+    hiddenLabel.className = 'govuk-visually-hidden';
+    hiddenLabel.textContent = label;
+    button.appendChild(hiddenLabel);
+
+    return button;
+  };
+
+  Editor.prototype.createEnhancedContent = function() {
+    const wrapper = document.createElement('div');
+    const toolbar = document.createElement('div');
+    const content = document.createElement('div');
+
+    wrapper.className = 'jui-editor';
+    toolbar.className = 'jui-editor__toolbar';
+    toolbar.setAttribute('role', 'toolbar');
+    toolbar.appendChild(this.createToolbarButton('bold', 'bold', 'Bold'));
+    toolbar.appendChild(this.createToolbarButton('italic', 'italic', 'Italic'));
+    toolbar.appendChild(this.createToolbarButton('underline', 'underline', 'Underline'));
+    toolbar.appendChild(this.createToolbarButton('unordered-list', 'insertUnorderedList', 'Unordered list'));
+    toolbar.appendChild(this.createToolbarButton('ordered-list', 'insertOrderedList', 'Ordered list'));
+    content.className = 'jui-editor__content';
+    content.contentEditable = 'true';
+    content.spellcheck = false;
+    wrapper.appendChild(toolbar);
+    wrapper.appendChild(content);
+
+    return wrapper;
+  };
+
+  Editor.prototype.sanitiseContent = function(html) {
+    const allowedTags = ['BR', 'EM', 'LI', 'OL', 'STRONG', 'U', 'UL'];
+    const documentFragment = document.createDocumentFragment();
+    const parsedDocument = new DOMParser().parseFromString(html || '', 'text/html');
+
+    const sanitiseNode = function(node) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        return document.createTextNode(node.textContent);
+      }
+
+      if (node.nodeType !== Node.ELEMENT_NODE) {
+        return document.createTextNode('');
+      }
+
+      if (!allowedTags.includes(node.tagName)) {
+        const fragment = document.createDocumentFragment();
+        node.childNodes.forEach((childNode) => fragment.appendChild(sanitiseNode(childNode)));
+        return fragment;
+      }
+
+      const element = document.createElement(node.tagName.toLowerCase());
+      node.childNodes.forEach((childNode) => element.appendChild(sanitiseNode(childNode)));
+      return element;
+    };
+
+    parsedDocument.body.childNodes.forEach((node) => documentFragment.appendChild(sanitiseNode(node)));
+
+    return documentFragment;
   };
 
   Editor.prototype.hideDefault = function() {
@@ -69,12 +123,9 @@ if (isContentEditableSupported === true) {
   };
 
   Editor.prototype.createToolbar = function() {
-    this.toolbar = document.createElement('div');
-    this.toolbar.className = 'jui-editor';
-    this.toolbar.innerHTML = this.getEnhancedHtml();
-    this.container.append(this.toolbar);
+    this.container.append(this.createEnhancedContent());
     this.toolbar = this.container.find('.jui-editor__toolbar');
-    this.container.find('.jui-editor__content').html(this.textarea.val());
+    this.container.find('.jui-editor__content')[0].replaceChildren(this.sanitiseContent(this.textarea.val()));
   };
 
   Editor.prototype.configureToolbar = function() {
