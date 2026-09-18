@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports, comma-dangle, indent, quotes */
-/* global require, module */
+/* global require, module, process */
 
 const fs = require('fs');
 const path = require('path');
@@ -1948,7 +1948,27 @@ function injectRuntimeTestStatusFilters(html) {
   return /<\/body\s*>/i.test(source) ? source.replace(/<\/body\s*>/i, () => `${runtime}</body>`) : `${source}${runtime}`;
 }
 
-function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
+function injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix = '../test-results') {
+  root.querySelector('#odhin-perfetto-link')?.remove();
+  root.querySelector('#TabPerfetto')?.remove();
+  root.querySelector('.main-tablinks[onclick*="TabPerfetto"]')?.remove();
+
+  const links = perfettoFiles.map((fileName) => `<a href="${perfettoHrefPrefix}/${fileName}">${fileName}</a>`).join(' · ');
+  root
+    .querySelector('.tab')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<button class="main-tablinks" onclick="openMainTab(event, 'TabPerfetto')">Perfetto Results</button>`
+    );
+  root
+    .querySelector('body')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><p id="odhin-perfetto-link">${links}</p></div></div></div></div></div>`
+    );
+}
+
+function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfettoFiles = [], perfettoHrefPrefix = '../test-results') {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
@@ -1963,7 +1983,8 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
     !normalizedEvidenceEntries.length &&
     !hasDashboardAccessibilityEvidence &&
     !hasAccessibilityAssertionText &&
-    !hasTestList
+    !hasTestList &&
+    !perfettoFiles.length
   ) {
     return htmlWithDefaultTestRows;
   }
@@ -1998,6 +2019,9 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
   injectNativeTestStatusFilter(root);
+  if (perfettoFiles.length) {
+    injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
+  }
 
   return root.toString();
 }
@@ -2046,16 +2070,26 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const testResultsFolder = path.join(outputFolder, '..', 'test-results');
-    const perfettoFiles = fs.existsSync(testResultsFolder)
+    const testResultsFolder = [path.join(outputFolder, 'test-results'), path.join(outputFolder, '..', 'test-results')]
+      .find((folder) => fs.existsSync(folder));
+    const perfettoFiles = testResultsFolder
       ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
       : [];
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries);
-    const perfettoLinks = perfettoFiles.length
-      ? `<p id="odhin-perfetto-link">Perfetto timelines (test names and statuses are embedded): ${perfettoFiles.map((name) => `<a href="../test-results/${name}">${name}</a>`).join(' · ')}</p>`
-      : '';
-    fs.writeFileSync(filePath, perfettoLinks ? nextHtml.replace('<body>', `<body>${perfettoLinks}`) : nextHtml, 'utf8');
+    const nextHtml = enhanceDashboardHtml(
+      currentHtml, normalizedStats, evidenceEntries, perfettoFiles,
+      resolvePerfettoHrefPrefix(outputFolder, testResultsFolder)
+    );
+    fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
+}
+
+function resolvePerfettoHrefPrefix(outputFolder, testResultsFolder, env = process.env) {
+  const artifactBaseUrl = (env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL || env.BUILD_URL)?.trim().replace(/\/$/, '');
+  if (artifactBaseUrl && testResultsFolder) {
+    const relativeResultsPath = path.relative(process.cwd(), testResultsFolder).split(path.sep).join('/');
+    return `${artifactBaseUrl}/artifact/${relativeResultsPath}`;
+  }
+  return testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
 }
 
 module.exports = {
