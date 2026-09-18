@@ -25,7 +25,7 @@
 
 
   .jui-casefile-page {
-    background-color: govuk-colour("light-grey");
+    background-color: govuk-colour("black", $variant: "tint-95");
     box-sizing: border-box;
     padding: govuk-spacing(4);
     //width: 938px;
@@ -53,7 +53,7 @@
 
     &[data-page]::after {
       @include govuk-font(16);
-      color: $govuk-secondary-text-colour;
+      color: govuk-functional-colour(secondary-text);
       content: attr(data-page);
       line-height: 1;
       position: absolute; right: govuk-spacing(4);
@@ -141,5 +141,3 @@
 }
 
 // END CASE FILE ACTIONS
-
-

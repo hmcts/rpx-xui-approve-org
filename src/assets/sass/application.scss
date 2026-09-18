@@ -1,18 +1,5 @@
-// Path to assets for use with the file-url function
-// in the govuk frontend toolkit"s url-helpers partial
-$path: "/public/images/";
-
-// global styles for <a> and <p> tags
-$govuk-global-styles: true;
-
-
 // Width of main container
 $hmcts-page-width: 1220px;
-
-
-// Import GOV.UK Frontend
-@import "govuk-frontend/govuk/all";
-@import "./hmcts-frontend/all";
 
 // Patterns that aren’t in Frontend
 @import "patterns/task-list";
@@ -27,7 +14,7 @@ $hmcts-page-width: 1220px;
 @import "jui/all";
 
 html {
-  background-color: govuk-colour("light-grey");
+  background-color: govuk-colour("black", $variant: "tint-95");
 }
 
 .js-enabled .js-hidden {
