@@ -1,3 +1,8 @@
+@use "../../sass/jui/settings/settings.general" as *;
+
+@use "govuk-frontend" as *;
+
+
 /* ==========================================================================
    #DOCUMENT TREE
    ========================================================================== */
@@ -82,7 +87,7 @@
 
 
 .jui-tree__doc-meta {
-  @include govuk-font(14);
+  @include govuk-font(16);
   color: $govuk-secondary-text-colour;
   display: block;
   margin-top: govuk-spacing(1);
