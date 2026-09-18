@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { Observable, of, Subscription } from 'rxjs';
-import { map, take, takeWhile } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Observable, of, Subject } from 'rxjs';
+import { map, take, takeUntil } from 'rxjs/operators';
 
 import * as fromRoot from '../../../app/store';
 import { AppUtils } from '../../../app/utils/app-utils';
@@ -18,7 +18,7 @@ import * as fromStore from '../../store';
 })
 export class NewPBAsComponent implements OnInit, OnDestroy {
   public confirmDecision: boolean = false;
-  private getAllLoadedSubscription: Subscription;
+  private readonly destroy$ = new Subject<void>();
   public newPBAs = new Map<string, string>();
   public orgs$: Observable<OrganisationVM>;
   public organisationId: string;
@@ -30,21 +30,14 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
     private readonly route: ActivatedRoute,
     public readonly pbaAccountDetails: PbaAccountDetails
   ) {
-    this.route.params.subscribe((params) => {
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.organisationId = params.orgId ? params.orgId : '';
     });
   }
 
   public ngOnInit(): void {
-    this.getAllLoadedSubscription = this.store.pipe(select(fromStore.getAllLoaded)).pipe(takeWhile((loaded) => !loaded)).subscribe((loaded) => {
-      if (!loaded) {
-        this.store.dispatch(new fromStore.LoadActiveOrganisation());
-        this.store.dispatch(new fromStore.LoadPendingOrganisations());
-      }
-    });
-
     this.organisationService.getSingleOrganisation({ id: this.organisationId })
-      .pipe(take(1), map((apiOrg) => AppUtils.mapOrganisation(apiOrg)))
+      .pipe(take(1), map((apiOrg) => AppUtils.mapOrganisation(apiOrg)), takeUntil(this.destroy$))
       .subscribe((value) => {
         this.organisationId = value.organisationId;
 
@@ -54,7 +47,7 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
             value.pendingPaymentAccount.forEach((pbaNumber) => {
               ids = !ids ? pbaNumber : `${ids},${pbaNumber}`;
             });
-            this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1)).subscribe((accountResponse) => {
+            this.pbaAccountDetails.getAccountDetails(ids).pipe(take(1), takeUntil(this.destroy$)).subscribe((accountResponse) => {
               value.accountDetails = accountResponse;
               this.orgs$ = of(value);
             });
@@ -88,9 +81,8 @@ export class NewPBAsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    if (this.getAllLoadedSubscription) {
-      this.getAllLoadedSubscription.unsubscribe();
-    }
+    this.destroy$.next();
+    this.destroy$.complete();
     this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: false }));
   }
 }
