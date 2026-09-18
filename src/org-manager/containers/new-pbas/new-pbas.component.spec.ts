@@ -1,3 +1,4 @@
+import { Title } from '@angular/platform-browser';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -87,6 +88,14 @@ describe('NewPBAsComponent', () => {
     fixture = TestBed.createComponent(NewPBAsComponent);
     component = fixture.componentInstance;
   }));
+
+  it('should update the document title for confirmation and restore it on Back', () => {
+    const title = TestBed.inject(Title);
+    component.onContinue();
+    expect(title.getTitle()).toBe('Confirm PBA Decision - Approve Organisation - HM Courts & Tribunals Service - GOV.UK');
+    component.onGoBack();
+    expect(title.getTitle()).toBe('Approve New PBA Number - Approve Organisation - HM Courts & Tribunals Service - GOV.UK');
+  });
 
   it('should have a component', () => {
     expect(component).toBeTruthy();

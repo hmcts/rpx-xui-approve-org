@@ -9,17 +9,20 @@ export const ROUTES: Routes = [
   {
     path: '',
     component: CaseWorkerRefDataHomeComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { title: 'Upload Staff Details' }
   },
   {
     path: 'upload-success',
     component: UploadInfoDetailsComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { title: 'Staff Details Uploaded' }
   },
   {
     path: 'partial-success',
     component: UploadInfoPartialSuccessComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { title: 'Some Staff Records Were Not Updated' }
   }
 ];
 

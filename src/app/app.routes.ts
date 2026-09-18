@@ -48,21 +48,21 @@ export const ROUTES: Routes = [
     path: 'cookies',
     component: CookiePolicyComponent,
     data: {
-      title: 'cookies'
+      title: 'Cookies'
     }
   },
   {
     path: 'privacy-policy',
     component: PrivacyPolicyComponent,
     data: {
-      title: 'Privacy policy'
+      title: 'Privacy Policy'
     }
   },
   {
     path: 'terms-and-conditions',
     component: TermsAndConditionsComponent,
     data: {
-      title: 'Terms and conditions'
+      title: 'Terms and Conditions'
     }
   },
   {
@@ -76,28 +76,28 @@ export const ROUTES: Routes = [
     path: 'access-denied',
     component: AccessDeniedComponent,
     data: {
-      title: 'Access denied'
+      title: 'Access Denied'
     }
   },
   {
     path: 'service-down',
     component: ServiceDownComponent,
     data: {
-      title: 'Service down'
+      title: 'Service Unavailable'
     }
   },
   {
     path: 'not-authorised',
     component: NotAuthorisedComponent,
     data: {
-      title: 'Not authorised'
+      title: 'Not Authorised'
     }
   },
   {
     path: 'signed-out',
     component: SignedOutComponent,
     data: {
-      title: 'Signed out'
+      title: 'Signed Out'
     }
   },
   {
