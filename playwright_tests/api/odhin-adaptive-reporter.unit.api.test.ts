@@ -4,8 +4,18 @@ import OdhinAdaptiveReporter from '../common/reporters/odhin-adaptive.reporter.c
 
 test.describe('Odhín adaptive reporter', () => {
   test('always keeps attachments external, even when embedding is requested', () => {
-    expect(new OdhinAdaptiveReporter({}).inner.generate.execOptions.embedAttachments).toBe(false);
-    expect(new OdhinAdaptiveReporter({ embedAttachments: true }).inner.generate.execOptions.embedAttachments).toBe(false);
+    const receivedOptions: Record<string, unknown>[] = [];
+    const createInnerReporter = (options: Record<string, unknown>) => {
+      receivedOptions.push(options);
+      return {};
+    };
+
+    new OdhinAdaptiveReporter({ createInnerReporter });
+    new OdhinAdaptiveReporter({ embedAttachments: true, createInnerReporter });
+
+    expect(receivedOptions).toHaveLength(2);
+    expect(receivedOptions[0].embedAttachments).toBe(false);
+    expect(receivedOptions[1].embedAttachments).toBe(false);
   });
 
   test('bounds a stalled runtime callback when the test completes', async () => {

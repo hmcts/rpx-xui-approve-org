@@ -31,7 +31,10 @@ class OdhinAdaptiveReporter {
       interrupted: 0,
       other: 0
     };
-    this.inner = new OdhinReporter(reporterOptions);
+    this.inner =
+      typeof reporterOptions.createInnerReporter === 'function'
+        ? reporterOptions.createInnerReporter(reporterOptions)
+        : new OdhinReporter(reporterOptions);
   }
 
   async onBegin(config, suite) {
