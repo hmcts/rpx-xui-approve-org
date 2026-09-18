@@ -12,10 +12,13 @@ const defaultFinalizationTimeoutMs = process.env.CI ? 60_000 : 30_000;
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
-    this.options = options;
-    this.outputFolder = options.outputFolder;
+    // Keep trace files beside the report so Jenkins can archive one copy without
+    // inflating the Odhín HTML with embedded zip payloads.
+    const reporterOptions = { ...options, embedAttachments: false };
+    this.options = reporterOptions;
+    this.outputFolder = reporterOptions.outputFolder;
     this.lightweight = resolveBoolean(process.env.PW_ODHIN_LIGHTWEIGHT, !process.env.CI);
-    this.testOutputMode = normalizeTestOutputMode(options.testOutput ?? 'only-on-failure');
+    this.testOutputMode = normalizeTestOutputMode(reporterOptions.testOutput ?? 'only-on-failure');
     this.runtimeHookTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS, defaultRuntimeHookTimeoutMs);
     this.finalizationTimeoutMs = normalizeTimeout(process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS, defaultFinalizationTimeoutMs);
     this.trimFailedArtifacts = resolveBoolean(process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS, false);
@@ -28,7 +31,7 @@ class OdhinAdaptiveReporter {
       interrupted: 0,
       other: 0
     };
-    this.inner = new OdhinReporter(options);
+    this.inner = new OdhinReporter(reporterOptions);
   }
 
   async onBegin(config, suite) {
