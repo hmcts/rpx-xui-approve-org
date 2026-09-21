@@ -1,9 +1,15 @@
+@use "../../settings/all" as *;
+@use "../../objects/width-container" as *;
+
+@use "govuk-frontend" as *;
+
+
 /* ==========================================================================
    #FOOTER
    ========================================================================== */
 
 .hmcts-footer {
-  background-color: govuk-colour("light-grey", $legacy: "grey-3");
+  background-color: govuk-colour("light-grey");
   border-top: 1px solid $hmcts-border-color;
   padding-top: govuk-spacing(7);
   padding-bottom: govuk-spacing(7);
