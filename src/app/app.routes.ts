@@ -4,6 +4,7 @@ import {
   AccessDeniedComponent,
   CookiePolicyComponent,
   PrivacyPolicyComponent,
+  SitemapComponent,
   TermsAndConditionsComponent
 } from './components';
 
@@ -63,6 +64,13 @@ export const ROUTES: Routes = [
     component: TermsAndConditionsComponent,
     data: {
       title: 'Terms and conditions'
+    }
+  },
+  {
+    path: 'sitemap',
+    component: SitemapComponent,
+    data: {
+      title: 'Site map'
     }
   },
   {
