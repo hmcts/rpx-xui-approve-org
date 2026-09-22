@@ -75,19 +75,6 @@ type UpdatePbaApiMockControl = {
   getLastPayload: () => UpdatePbaApiPayload | undefined;
 };
 
-type SetPbaStatusApiPayload = {
-  pbaNumbers: Array<{
-    pbaNumber: string;
-    status: string;
-    statusMessage: string;
-  }>;
-  orgId: string;
-};
-
-type SetPbaStatusApiMockControl = {
-  getLastPayload: () => SetPbaStatusApiPayload | undefined;
-};
-
 function normaliseSearchTerm(value: string | undefined): string {
   return (value ?? '').trim().toLowerCase();
 }

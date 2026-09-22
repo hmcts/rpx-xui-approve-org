@@ -185,6 +185,12 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
     ['./playwright_tests/common/reporters/flake-gate.reporter.cjs'],
     ['html', { outputFolder: resolveHtmlOutputFolder(reportType), open: 'never' }]
   ];
+  if (process.env.PW_ENABLE_PERFETTO !== 'false') {
+    reporters.push([
+      'perfetto',
+      { outputFile: process.env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE || `functional-output/tests/playwright-${reportType}/test-results/perfetto.json` }
+    ]);
+  }
 
   if (!disableOhdin) {
     reporters.push([
@@ -203,6 +209,13 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
         simpleConsoleLog: !!process.env.CI,
         testOutput: 'only-on-failure'
       }
+    ]);
+  }
+
+  if (process.env.CI && reportType !== 'accessibility') {
+    reporters.push([
+      'json',
+      { outputFile: `${odhinOutputFolder}/ci-evidence/playwright.json` }
     ]);
   }
 
