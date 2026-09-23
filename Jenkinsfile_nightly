@@ -122,16 +122,19 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
             api: {
                 stage('Nightly API Playwright Tests') {
                     yarnBuilder.yarn('test:api:playwright:raw')
+                    assertPerfettoArtifacts(['playwright-api'])
                 }
             },
             integration: {
                 stage('Nightly Integration Playwright Tests') {
                     yarnBuilder.yarn('test:integration:playwright:raw')
+                    assertPerfettoArtifacts(['playwright-integration'])
                 }
             },
             crossBrowser: {
                 stage('Nightly Cross Browser Playwright Tests') {
                     yarnBuilder.yarn('test:crossbrowser')
+                    assertPerfettoArtifacts(['playwright-nightly'])
                 }
             }
         ]
@@ -316,7 +319,6 @@ withNightlyPipeline(type, product, component) {
             yarnBuilder.yarn('test:playwright:organisation-cleanup')
         }
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/organisation-cleanup/**/*'
-        assertPerfettoArtifacts(['playwright-api', 'playwright-integration', 'playwright-nightly'])
     }
 
     /* afterSuccess('mutationTest') {
