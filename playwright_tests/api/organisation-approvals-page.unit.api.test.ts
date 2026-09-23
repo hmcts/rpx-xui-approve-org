@@ -80,8 +80,9 @@ test.describe('organisation approvals page', () => {
       });
     });
 
-    await expect(new OrganisationApprovalsPage(page).searchForActiveOrganisation('Test organisation', 'TARGET', 2_000)).rejects.toThrow(
-      /Organisation results are unavailable/
-    );
+    const organisationApprovalsPage = new OrganisationApprovalsPage(page);
+    await organisationApprovalsPage.searchForActiveOrganisation('Test organisation', 'TARGET', 2_000);
+    await expect(organisationApprovalsPage.serviceErrorHeading).toBeVisible();
+    await expect(organisationApprovalsPage.serviceErrorHeading).toHaveText(/Sorry, there is a problem with the service/);
   });
 });
