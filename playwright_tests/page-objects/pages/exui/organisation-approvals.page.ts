@@ -217,9 +217,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   pendingOrganisationRowById(organisationId: string): Locator {
-    return this.pendingOrganisationRows
-      .filter({ has: this.page.locator(`a.govuk-link[href*="/organisation-details/${organisationId}"]`) })
-      .first();
+    return this.pendingOrganisationRows.filter({ has: this.organisationDetailsLinkById(organisationId) }).first();
   }
 
   pendingOrganisationViewLinkById(organisationId: string): Locator {
@@ -237,9 +235,12 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   activeOrganisationRowById(organisationId: string): Locator {
-    return this.activeOrganisationRows
-      .filter({ has: this.page.locator(`a.govuk-link[href*="/organisation-details/${organisationId}"]`) })
-      .first();
+    return this.activeOrganisationRows.filter({ has: this.organisationDetailsLinkById(organisationId) }).first();
+  }
+
+  private organisationDetailsLinkById(organisationId: string): Locator {
+    const path = `/organisation-details/${encodeURIComponent(organisationId)}`;
+    return this.page.locator(`a.govuk-link[href="${path}"], a.govuk-link[href="${path}/"], a.govuk-link[href^="${path}?"]`);
   }
 
   activeOrganisationCellByIndex(organisationId: string, cellIndex: number): Locator {
@@ -334,6 +335,19 @@ export class OrganisationApprovalsPage extends BasePage {
     }).toBeGreaterThan(0);
   }
 
+  async searchForActiveOrganisation(organisationName: string, organisationId: string, timeout = 60_000): Promise<void> {
+    await expect.poll(async () => {
+      await this.searchForOrganisation(organisationName);
+      await this.waitForSpinnerToHide(timeout);
+
+      return this.activeOrganisationRowById(organisationId).count();
+    }, {
+      message: `Active organisation ${organisationId} was not returned by search`,
+      timeout,
+      intervals: [1_000, 2_000, 5_000]
+    }).toBeGreaterThan(0);
+  }
+
   async openPaginationPage(pageNumber: number): Promise<void> {
     await this.pagination.waitFor({ state: 'visible' });
 
@@ -373,6 +387,10 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstActiveOrganisation(): Promise<void> {
     await this.openOrganisationDetails(this.activeOrganisationViewLink());
+  }
+
+  async openActiveOrganisationById(organisationId: string): Promise<void> {
+    await this.openOrganisationDetails(this.activeOrganisationRowById(organisationId).locator('a.govuk-link').first());
   }
 
   async openFirstPendingPba(): Promise<void> {
@@ -507,5 +525,9 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openUsersTab(): Promise<void> {
     await this.usersTabLink.click();
+  }
+
+  async waitForUserRows(): Promise<void> {
+    await expect(this.usersTableRows.first()).toBeVisible();
   }
 }
