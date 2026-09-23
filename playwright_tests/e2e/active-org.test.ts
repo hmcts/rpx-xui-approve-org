@@ -32,8 +32,7 @@ test.describe('Active organisation details', { tag: ['@e2e', '@organisations', '
     await test.step('Open users tab and verify there are user rows', async () => {
       await organisationApprovalsPage.openUsersTab();
       await expect(organisationApprovalsPage.usersList).toBeVisible();
-      const usersRowCount = await organisationApprovalsPage.usersTableRows.count();
-      expect(usersRowCount).toBeGreaterThan(0);
+      await organisationApprovalsPage.waitForUserRows();
     });
   });
 });
