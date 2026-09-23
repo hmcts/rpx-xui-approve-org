@@ -122,13 +122,13 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
             api: {
                 stage('Nightly API Playwright Tests') {
                     yarnBuilder.yarn('test:api:playwright:raw')
-                    assertPerfettoArtifacts(['playwright-api'])
+                    assertPerfettoArtifacts.call(['playwright-api'])
                 }
             },
             integration: {
                 stage('Nightly Integration Playwright Tests') {
                     yarnBuilder.yarn('test:integration:playwright:raw')
-                    assertPerfettoArtifacts(['playwright-integration'])
+                    assertPerfettoArtifacts.call(['playwright-integration'])
                 }
             },
             crossBrowser: {
