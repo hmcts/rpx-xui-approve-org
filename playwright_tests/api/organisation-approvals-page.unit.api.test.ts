@@ -85,4 +85,69 @@ test.describe('organisation approvals page', () => {
     await expect(organisationApprovalsPage.serviceErrorHeading).toBeVisible();
     await expect(organisationApprovalsPage.serviceErrorHeading).toHaveText(/Sorry, there is a problem with the service/);
   });
+
+  for (const scenario of [
+    { name: 'normal recovery', serviceFailures: 1 },
+    { name: 'repeated service-down recovery', serviceFailures: 2 }
+  ]) {
+    test(`recovers after ${scenario.name}`, async ({ page }) => {
+      let navigationCount = 0;
+      await page.route('http://example.test/organisation/pending', async (route) => {
+        navigationCount += 1;
+        const serviceDown = navigationCount <= scenario.serviceFailures;
+        await route.fulfill({
+          contentType: 'text/html',
+          body: serviceDown
+            ? '<main><h1>Sorry, there is a problem with the service</h1></main>'
+            : '<app-pending-overview-component style="display:block;height:1px"></app-pending-overview-component><div class="search-organisations-form"><form><input id="search"><button class="hmcts-search__button" type="button">Search</button></form></div>'
+        });
+      });
+
+      await page.goto('http://example.test/organisation/pending');
+      const organisationApprovalsPage = new OrganisationApprovalsPage(page);
+      await organisationApprovalsPage.searchForOrganisationWithTransientRecovery('Test organisation');
+
+      expect(navigationCount).toBe(scenario.serviceFailures + 1);
+      await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
+      await expect(organisationApprovalsPage.serviceErrorHeading).toHaveCount(0);
+    });
+  }
+
+  test('detects a service-down page that appears after recovery navigation', async ({ page }) => {
+    let navigationCount = 0;
+    await page.route('http://example.test/organisation/pending', async (route) => {
+      navigationCount += 1;
+      const body = navigationCount === 1
+        ? '<h1>Sorry, there is a problem with the service</h1>'
+        : navigationCount === 2
+          ? '<script>setTimeout(() => document.body.innerHTML = "<h1>Sorry, there is a problem with the service</h1>", 1_100)</script>'
+          : '<app-pending-overview-component style="display:block;height:1px"></app-pending-overview-component><div class="search-organisations-form"><form><input id="search"><button class="hmcts-search__button" type="button">Search</button></form></div>';
+      await route.fulfill({ contentType: 'text/html', body });
+    });
+
+    await page.goto('http://example.test/organisation/pending');
+    const organisationApprovalsPage = new OrganisationApprovalsPage(page);
+    await organisationApprovalsPage.searchForOrganisationWithTransientRecovery('Test organisation');
+
+    expect(navigationCount).toBe(3);
+    await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
+  });
+
+  test('fails explicitly after bounded recovery attempts are exhausted', async ({ page }) => {
+    let navigationCount = 0;
+    await page.route('http://example.test/organisation/pending', async (route) => {
+      navigationCount += 1;
+      await route.fulfill({
+        contentType: 'text/html',
+        body: '<h1>Sorry, there is a problem with the service</h1>'
+      });
+    });
+
+    await page.goto('http://example.test/organisation/pending');
+    const organisationApprovalsPage = new OrganisationApprovalsPage(page);
+    await expect(
+      organisationApprovalsPage.searchForOrganisationWithTransientRecovery('Test organisation')
+    ).rejects.toThrow('Organisation search remained unavailable after 3 attempts.');
+    expect(navigationCount).toBe(3);
+  });
 });

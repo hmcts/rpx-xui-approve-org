@@ -308,6 +308,20 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.searchButton.click();
   }
 
+  private async waitForOrganisationRecoveryState(timeoutMs = 60_000): Promise<'pending' | 'service-error'> {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      if (await this.serviceErrorHeading.isVisible().catch(() => false)) {
+        return 'service-error';
+      }
+      if (await this.pendingOverviewPanel.isVisible().catch(() => false)) {
+        return 'pending';
+      }
+      await this.page.waitForTimeout(250);
+    }
+    throw new Error(`Organisation recovery did not reach a pending or service-error state within ${timeoutMs}ms.`);
+  }
+
   async searchForOrganisationWithTransientRecovery(organisationName: string): Promise<void> {
     const searchPageUrl = this.page.url();
 
@@ -321,7 +335,8 @@ export class OrganisationApprovalsPage extends BasePage {
         }
       }
 
-      if (!(await this.serviceErrorHeading.isVisible().catch(() => false))) {
+      const recoveryState = await this.waitForOrganisationRecoveryState();
+      if (recoveryState === 'pending') {
         return;
       }
 
@@ -330,7 +345,10 @@ export class OrganisationApprovalsPage extends BasePage {
       }
 
       await this.page.goto(searchPageUrl, { waitUntil: 'domcontentloaded' });
-      await this.pendingOverviewPanel.waitFor({ state: 'visible', timeout: 60_000 });
+      const postReloadState = await this.waitForOrganisationRecoveryState();
+      if (postReloadState === 'service-error' && attempt === TRANSIENT_SEARCH_ATTEMPTS - 1) {
+        throw new Error(`Organisation search remained unavailable after ${TRANSIENT_SEARCH_ATTEMPTS} attempts.`);
+      }
       await new Promise((resolve) => setTimeout(resolve, TRANSIENT_SEARCH_RETRY_DELAY_MS * attempt));
     }
   }
