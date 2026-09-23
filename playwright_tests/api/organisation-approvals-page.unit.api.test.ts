@@ -60,7 +60,11 @@ test.describe('organisation approvals page', () => {
       });
     });
 
-    await new OrganisationApprovalsPage(page).searchForActiveOrganisation('Test organisation', 'TARGET', 2_000);
+    const organisationApprovalsPage = new OrganisationApprovalsPage(page);
+    await expect.poll(async () => {
+      await organisationApprovalsPage.searchForActiveOrganisation('Test organisation', 'TARGET', 2_000);
+      return organisationApprovalsPage.activeOrganisationRowById('TARGET').count();
+    }).toBeGreaterThan(0);
 
     await expect(page.locator('a[href="/organisation-details/TARGET"]')).toBeVisible();
   });

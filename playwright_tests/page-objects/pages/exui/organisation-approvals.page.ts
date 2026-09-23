@@ -336,16 +336,8 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async searchForActiveOrganisation(organisationName: string, organisationId: string, timeout = 60_000): Promise<void> {
-    await expect.poll(async () => {
-      await this.searchForOrganisation(organisationName);
-      await this.waitForSpinnerToHide(timeout);
-
-      return this.activeOrganisationRowById(organisationId).count();
-    }, {
-      message: `Active organisation ${organisationId} was not returned by search`,
-      timeout,
-      intervals: [1_000, 2_000, 5_000]
-    }).toBeGreaterThan(0);
+    await this.searchForOrganisation(organisationName);
+    await this.waitForSpinnerToHide(timeout);
   }
 
   async openPaginationPage(pageNumber: number): Promise<void> {
@@ -528,6 +520,6 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async waitForUserRows(): Promise<void> {
-    await expect(this.usersTableRows.first()).toBeVisible();
+    await this.usersTableRows.first().waitFor({ state: 'visible' });
   }
 }
