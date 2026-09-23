@@ -4,6 +4,8 @@ import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
 const ORGANISATION_DETAILS_ROUTE_PATTERN = /\/organisation-details\/[^/?#]+(?:\/?|\?.*)$/;
+const TRANSIENT_SEARCH_ATTEMPTS = 3;
+const TRANSIENT_SEARCH_RETRY_DELAY_MS = 1_000;
 
 export type OrganisationTableRow = {
   name: string;
@@ -304,6 +306,33 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.searchInput.fill(organisationName);
     await expect(this.searchInput).toHaveValue(organisationName);
     await this.searchButton.click();
+  }
+
+  async searchForOrganisationWithTransientRecovery(organisationName: string): Promise<void> {
+    const searchPageUrl = this.page.url();
+
+    for (let attempt = 1; attempt <= TRANSIENT_SEARCH_ATTEMPTS; attempt += 1) {
+      try {
+        await this.searchForOrganisation(organisationName);
+        await this.waitForSpinnerToHide(60_000);
+      } catch (error) {
+        if (!(await this.serviceErrorHeading.isVisible().catch(() => false))) {
+          throw error;
+        }
+      }
+
+      if (!(await this.serviceErrorHeading.isVisible().catch(() => false))) {
+        return;
+      }
+
+      if (attempt === TRANSIENT_SEARCH_ATTEMPTS) {
+        throw new Error(`Organisation search remained unavailable after ${TRANSIENT_SEARCH_ATTEMPTS} attempts.`);
+      }
+
+      await this.page.goto(searchPageUrl, { waitUntil: 'domcontentloaded' });
+      await this.pendingOverviewPanel.waitFor({ state: 'visible', timeout: 60_000 });
+      await new Promise((resolve) => setTimeout(resolve, TRANSIENT_SEARCH_RETRY_DELAY_MS * attempt));
+    }
   }
 
   async waitForActiveOrganisationResults(timeout = 60_000): Promise<void> {
