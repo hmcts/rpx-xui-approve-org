@@ -33,6 +33,8 @@ test.describe('Active organisation details', { tag: ['@e2e', '@organisations', '
       await organisationApprovalsPage.openUsersTab();
       await expect(organisationApprovalsPage.usersList).toBeVisible();
       await organisationApprovalsPage.waitForUserRows();
+      const usersRowCount = await organisationApprovalsPage.usersTableRows.count();
+      expect(usersRowCount).toBeGreaterThan(0);
     });
   });
 });
