@@ -103,11 +103,8 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await organisationApprovalsPage.openActiveOrganisationsTab();
       await organisationApprovalsPage.waitForSpinnerToHide(60_000);
 
-      await organisationApprovalsPage.searchForOrganisation(organisationName);
-      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-
-      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
-      await organisationApprovalsPage.openFirstActiveOrganisation();
+      await organisationApprovalsPage.searchForActiveOrganisation(organisationName, organisationIdentifier);
+      await organisationApprovalsPage.openActiveOrganisationById(organisationIdentifier);
     });
 
     await test.step('Delete the active organisation and verify confirmation guidance', async () => {
