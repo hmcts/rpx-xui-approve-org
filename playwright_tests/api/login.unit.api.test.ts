@@ -52,6 +52,6 @@ test('signs out through browser navigation', async ({ page }) => {
 
   expect(navigations).toEqual([
     new URL('auth/logout?noredirect=true', config.baseUrl).toString(),
-    config.baseUrl
+    new URL(config.baseUrl).toString()
   ]);
 });
