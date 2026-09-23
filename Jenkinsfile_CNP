@@ -98,6 +98,15 @@ def shouldRunAccessibilityTests = {
     ].any { configured -> isEnabledValue(configured) }
 }
 
+Closure<Void> assertPerfettoArtifacts = { List<String> suites ->
+    def missing = suites.findAll { suite ->
+        !fileExists("functional-output/tests/${suite}/test-results/perfetto.json")
+    }
+    if (!missing.isEmpty()) {
+        error("Missing Playwright Perfetto evidence for enabled suites: ${missing.join(', ')}")
+    }
+}
+
 def runPlaywrightFunctionalInParallel = { String environmentLabel ->
     stage("${environmentLabel} Functional Tests (Parallel)") {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
@@ -140,15 +149,6 @@ def runPlaywrightFunctionalInParallel = { String environmentLabel ->
         }
 
         parallel(playwrightBranches)
-    }
-}
-
-Closure<Void> assertPerfettoArtifacts = { List<String> suites ->
-    def missing = suites.findAll { suite ->
-        !fileExists("functional-output/tests/${suite}/test-results/perfetto.json")
-    }
-    if (!missing.isEmpty()) {
-        error("Missing Playwright Perfetto evidence for enabled suites: ${missing.join(', ')}")
     }
 }
 
