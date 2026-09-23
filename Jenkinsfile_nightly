@@ -267,8 +267,6 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('fullFunctionalTest') {
-        assertPerfettoArtifacts(['playwright-api', 'playwright-integration', 'playwright-nightly'])
-
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/traces/**/*'
@@ -318,6 +316,7 @@ withNightlyPipeline(type, product, component) {
             yarnBuilder.yarn('test:playwright:organisation-cleanup')
         }
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'test-results/organisation-cleanup/**/*'
+        assertPerfettoArtifacts(['playwright-api', 'playwright-integration', 'playwright-nightly'])
     }
 
     /* afterSuccess('mutationTest') {
