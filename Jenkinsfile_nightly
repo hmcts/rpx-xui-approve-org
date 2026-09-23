@@ -134,7 +134,7 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
             crossBrowser: {
                 stage('Nightly Cross Browser Playwright Tests') {
                     yarnBuilder.yarn('test:crossbrowser')
-                    assertPerfettoArtifacts(['playwright-nightly'])
+                    assertPerfettoArtifacts.call(['playwright-nightly'])
                 }
             }
         ]
