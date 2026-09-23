@@ -152,6 +152,15 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
     }
 }
 
+Closure<Void> assertPerfettoArtifacts = { List<String> suites ->
+    def missing = suites.findAll { suite ->
+        !fileExists("functional-output/tests/${suite}/test-results/perfetto.json")
+    }
+    if (!missing.isEmpty()) {
+        error("Missing Playwright Perfetto evidence for enabled suites: ${missing.join(', ')}")
+    }
+}
+
 Closure<String> resolveParamOrEnv = { String envName ->
     String paramValue = params."${envName}"?.trim()
     return paramValue ?: (env."${envName}"?.trim() ?: '')
@@ -258,6 +267,8 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('fullFunctionalTest') {
+        assertPerfettoArtifacts(['playwright-api', 'playwright-integration', 'playwright-nightly'])
+
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/traces/**/*'
