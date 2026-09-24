@@ -106,14 +106,10 @@
   text-align: center;
   text-decoration: none;
   min-width: 25px;
-
-  &:link,
-  &:visited {
-    color: govuk-colour("blue");
-  }
+  color: govuk-colour("blue");
 
   &:hover {
-    color: govuk-colour("light-blue");
+    color: $govuk-link-hover-colour;
    }
 
   &:focus {
