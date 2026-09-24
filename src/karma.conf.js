@@ -20,9 +20,11 @@ module.exports = function (config) {
     },
     reporters: ['spec', 'progress', 'kjhtml', 'coverage'],
     coverageReporter: {
-      type: 'lcov',
       dir: require('path').join(__dirname, '../reports/tests/coverage/ng'),
-      subdir: '.'
+      reporters: [
+        { type: 'lcov', subdir: '.' },
+        { type: 'html', subdir: '.' }
+      ]
     },
     specReporter: {
       maxLogLines: 5, // limit number of lines logged per test

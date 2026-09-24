@@ -7,19 +7,27 @@ test('includes flake, HTML, Odhín and JUnit reporters for an API lane', () => {
     PLAYWRIGHT_DEFAULT_REPORTER: process.env.PLAYWRIGHT_DEFAULT_REPORTER,
     PLAYWRIGHT_JUNIT_OUTPUT: process.env.PLAYWRIGHT_JUNIT_OUTPUT,
     PLAYWRIGHT_HTML_OUTPUT: process.env.PLAYWRIGHT_HTML_OUTPUT,
+    PLAYWRIGHT_PERFETTO_OUTPUT_FILE: process.env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE,
+    PW_ENABLE_PERFETTO: process.env.PW_ENABLE_PERFETTO,
     DISABLE_ODHIN_REPORTER: process.env.DISABLE_ODHIN_REPORTER
   };
   process.env.PLAYWRIGHT_DEFAULT_REPORTER = 'list';
   process.env.PLAYWRIGHT_JUNIT_OUTPUT = 'reports/api-junit.xml';
   process.env.PLAYWRIGHT_HTML_OUTPUT = 'reports/api-html';
+  process.env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE = 'reports/api-perfetto.json';
   delete process.env.DISABLE_ODHIN_REPORTER;
+  delete process.env.PW_ENABLE_PERFETTO;
 
   try {
-    expect(buildPlaywrightReporters('api')).toEqual(
+    const reporters = buildPlaywrightReporters('api');
+    const names = reporters.map(([name]) => name);
+    expect(names.indexOf('perfetto')).toBeLessThan(names.indexOf('./playwright_tests/common/reporters/odhin-adaptive.reporter.cjs'));
+    expect(reporters).toEqual(
       expect.arrayContaining([
         ['list'],
         ['./playwright_tests/common/reporters/flake-gate.reporter.cjs'],
         ['html', { outputFolder: 'reports/api-html', open: 'never' }],
+        ['perfetto', { outputFile: 'reports/api-perfetto.json' }],
         [
           './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs',
           expect.objectContaining({ outputFolder: 'functional-output/tests/playwright-api/odhin-report' })
@@ -52,6 +60,29 @@ test('keeps flake and HTML diagnostics when Odhín is explicitly disabled', () =
       delete process.env.DISABLE_ODHIN_REPORTER;
     } else {
       process.env.DISABLE_ODHIN_REPORTER = original;
+    }
+  }
+});
+
+test('adds a native JSON reporter for non-accessibility CI lanes only', () => {
+  const original = {
+    CI: process.env.CI
+  };
+
+  try {
+    process.env.CI = 'true';
+    expect(buildPlaywrightReporters('e2e')).toContainEqual([
+      'json',
+      { outputFile: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json' }
+    ]);
+    expect(buildPlaywrightReporters('accessibility').map(([name]) => name)).not.toContain('json');
+  } finally {
+    for (const [key, value] of Object.entries(original)) {
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
     }
   }
 });

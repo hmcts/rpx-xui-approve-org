@@ -33,6 +33,9 @@ describe('NewPBAsConfirmComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
     pbaServiceSpy.setPBAStatus.and.returnValue(of([]));
+    pbaServiceSpy.setPBAStatus.calls.reset();
+    routerMock.navigate.calls.reset();
+    routerMock.navigateByUrl.calls.reset();
   });
 
   it('should create', () => {
@@ -127,6 +130,76 @@ describe('NewPBAsConfirmComponent', () => {
     expect(component.isInactiveOrgError).toBeTruthy();
   });
 
+  it('should emit backend PBA status errors without navigating to service down', () => {
+    const errorMessage = 'PBA numbers must start with PBA/pba and be followed by 7 alphanumeric characters';
+    component.newPBAs = new Map<string, string>();
+    component.newPBAs.set('dsdsdsdsdsd213', 'rejected');
+    component.org = { organisationId: 'HBOW4Q2' } as any;
+    spyOn(component.pbaStatusError, 'emit');
+    pbaServiceSpy.setPBAStatus.and.returnValue(throwError({
+      status: 422,
+      error: {
+        pbaUpdateStatusResponses: [
+          {
+            pbaNumber: 'dsdsdsdsdsd213',
+            errorMessage
+          }
+        ]
+      }
+    }));
+
+    component.confirmPBAs();
+
+    expect(component.pbaStatusError.emit).toHaveBeenCalledWith(null);
+    expect(component.pbaStatusError.emit).toHaveBeenCalledWith({
+      header: 'There is a problem.',
+      items: [{
+        id: 'confirm-pba-heading',
+        message: errorMessage
+      }],
+      isFromValid: false
+    });
+    expect(routerMock.navigate).not.toHaveBeenCalledWith(['/service-down']);
+  });
+
+  it('should prioritise the inactive organisation error over PBA status errors', () => {
+    component.newPBAs = new Map<string, string>();
+    component.newPBAs.set('dsdsdsdsdsd213', 'rejected');
+    component.org = { organisationId: 'HBOW4Q2' } as any;
+    spyOn(component.pbaStatusError, 'emit');
+    pbaServiceSpy.setPBAStatus.and.returnValue(throwError({
+      status: 400,
+      error: {
+        errorDescription: 'The requested Organisation is not \'Active\'',
+        pbaUpdateStatusResponses: [
+          {
+            pbaNumber: 'dsdsdsdsdsd213',
+            errorMessage: 'PBA numbers must start with PBA/pba and be followed by 7 alphanumeric characters'
+          }
+        ]
+      }
+    }));
+
+    component.confirmPBAs();
+
+    expect(component.isInactiveOrgError).toBeTruthy();
+    expect(component.pbaStatusError.emit).toHaveBeenCalledWith(null);
+    expect(component.pbaStatusError.emit).not.toHaveBeenCalledWith(jasmine.objectContaining({
+      header: 'There is a problem.'
+    }));
+  });
+
+  it('should clear previous PBA status errors when confirm is retried', () => {
+    component.newPBAs = new Map<string, string>();
+    component.newPBAs.set('PBA1234567', 'accepted');
+    component.org = { organisationId: 'HBOW4Q2' } as any;
+    spyOn(component.pbaStatusError, 'emit');
+
+    component.confirmPBAs();
+
+    expect(component.pbaStatusError.emit).toHaveBeenCalledWith(null);
+  });
+
   it('should confirm the new PBAs with error code 404', () => {
     component.newPBAs = new Map<string, string>();
     component.newPBAs.set('test1', 'test 1 value');
@@ -170,5 +243,6 @@ describe('NewPBAsConfirmComponent', () => {
     component.confirmPBAs();
     expect(pbaServiceSpy.setPBAStatus).toHaveBeenCalled();
     expect(component.isInactiveOrgError).toBeFalsy();
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/service-down']);
   });
 });
