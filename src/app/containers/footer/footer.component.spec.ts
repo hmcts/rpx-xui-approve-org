@@ -35,6 +35,7 @@ describe('FooterComponent', () => {
 
   const footerDataNavigation = {
     items: [
+      { text: 'Site map', href: 'sitemap', target: '_blank' },
       { text: 'Accessibility', href: 'accessibility', target: '_blank' },
       { text: 'Terms and conditions', href: 'terms-and-conditions', target: '_blank' },
       { text: 'Cookies', href: 'cookies', target: '_blank' },
