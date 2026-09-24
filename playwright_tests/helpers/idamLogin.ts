@@ -22,8 +22,8 @@ function passwordCandidates(page: Page): Locator[] {
 
 function submitCandidates(page: Page): Locator[] {
   return [
-    page.getByRole('button', { name: /^(Continue|Sign in)$/i }).first(),
     page.locator('#login-submit-btn').first(),
+    page.getByRole('button', { name: /^(Continue|Sign in)$/i }).first(),
     page.locator('button:has-text("Continue"), button:has-text("Sign in"), input[type="submit"]').first()
   ];
 }

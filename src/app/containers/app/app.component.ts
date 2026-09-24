@@ -148,7 +148,7 @@ export class AppComponent implements OnInit {
   // the fragment attribute in Angular is good however it only scrolls to the anchor tag
   // focussing is not currently supported by the Angular RouterModule and fragment hence this workaround
   public onFocusMainContent() {
-    const element = document.getElementById(this.mainContentId);
+    const element = document.querySelector('main#content, main#main-content') as HTMLElement | null;
     if (element) {
       element.focus();
     }

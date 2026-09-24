@@ -42,6 +42,29 @@ test.describe('IDAM login helper', { tag: '@svc-internal' }, () => {
     await expect(page).toHaveURL(appUrl);
   });
 
+  test('prefers the IDAM form submit button over another sign in button', async ({ page }) => {
+    await routeLoginPage(
+      page,
+      `
+        <html>
+          <body>
+            <button onclick="window.location.href='https://example.test/wrong-sign-in'">Sign in</button>
+            <label for="username">Email address</label>
+            <input id="username" name="username" type="email" />
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" />
+            <button id="login-submit-btn" onclick="window.location.href='${appUrl}'">Sign in</button>
+          </body>
+        </html>
+      `
+    );
+
+    await page.goto(idamUrl);
+    await completeIdamLogin(page, 'user@example.test', 'Password12!');
+
+    await expect(page).toHaveURL(appUrl);
+  });
+
   test('submits the progressive email then password pages from visible controls', async ({ page }) => {
     await routeLoginPage(
       page,
