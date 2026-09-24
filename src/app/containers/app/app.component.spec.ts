@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
-import { RoutesRecognized } from '@angular/router';
+import { NavigationEnd, RoutesRecognized } from '@angular/router';
 import {
   FeatureToggleService,
   GoogleAnalyticsService,
@@ -30,15 +30,13 @@ describe('AppComponent', () => {
     launchDarklyClientId: 'launch-darkly-client-id'
   } as EnvironmentConfig;
 
-  function createRoutesRecognized(title?: string): RoutesRecognized {
-    return new RoutesRecognized(1, '/test', '/test', {
-      root: {
-        firstChild: {
-          firstChild: null,
-          data: title ? { title } : {}
-        }
-      }
-    } as any);
+  const routerState = { snapshot: { root: {} as any } };
+
+  function completedNavigation(title?: string): NavigationEnd {
+    routerState.snapshot.root = {
+      firstChild: { firstChild: null, data: title ? { title } : {} }
+    };
+    return new NavigationEnd(1, '/test', '/test');
   }
 
   function createComponent(): void {
@@ -65,7 +63,7 @@ describe('AppComponent', () => {
       featureService,
       roleService,
       cookieService,
-      { events: routerEvents$.asObservable() } as any,
+      { events: routerEvents$.asObservable(), routerState } as any,
       titleService
     );
   }
@@ -222,26 +220,34 @@ describe('AppComponent', () => {
   });
 
   it('should call the title service with route title', () => {
-    component.setTitleIfPresent(createRoutesRecognized('Test'));
+    component.setTitleIfPresent(completedNavigation('Test'));
 
-    expect(titleService.setTitle).toHaveBeenCalledWith('Test - HM Courts & Tribunals Service - GOV.UK');
+    expect(titleService.setTitle).toHaveBeenCalledWith('Test - Approve Organisation - HM Courts & Tribunals Service - GOV.UK');
   });
 
-  it('should not call the title service when route title is missing', () => {
-    component.setTitleIfPresent(createRoutesRecognized());
+  it('should replace a stale title with the fallback when route title is missing', () => {
+    component.setTitleIfPresent(completedNavigation('Cookies'));
+    component.setTitleIfPresent(completedNavigation());
+
+    expect(titleService.setTitle).toHaveBeenCalledWith('Approve Organisation - HM Courts & Tribunals Service - GOV.UK');
+  });
+
+  it('should set title after successful navigation', () => {
+    routerEvents$.next(completedNavigation('Cookies'));
+
+    expect(titleService.setTitle).toHaveBeenCalledWith('Cookies - Approve Organisation - HM Courts & Tribunals Service - GOV.UK');
+  });
+
+  it('should ignore events other than successful navigation', () => {
+    component.setTitleIfPresent(new HttpErrorResponse({}) as any);
 
     expect(titleService.setTitle).not.toHaveBeenCalled();
   });
 
-  it('should set title when router emits a recognised route', () => {
-    routerEvents$.next(createRoutesRecognized('Cookies'));
-
-    expect(titleService.setTitle).toHaveBeenCalledWith('Cookies - HM Courts & Tribunals Service - GOV.UK');
-  });
-
-  it('should ignore router events that are not recognised routes', () => {
-    component.setTitleIfPresent(new HttpErrorResponse({}) as any);
-
+  it('should not change the title before guards allow navigation', () => {
+    routerEvents$.next(new RoutesRecognized(1, '/cookies', '/cookies', {
+      root: { firstChild: null, data: { title: 'Cookies' } }
+    } as any));
     expect(titleService.setTitle).not.toHaveBeenCalled();
   });
 
