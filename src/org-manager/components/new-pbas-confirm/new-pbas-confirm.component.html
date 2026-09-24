@@ -14,7 +14,7 @@
       </div>
     </div>
   </div>
-  <h1 class="govuk-heading-xl">Confirm your decision</h1>
+  <h1 id="confirm-pba-heading" class="govuk-heading-xl">Confirm your decision</h1>
   <app-pba-account-decision *ngFor="let pba of org.pendingPaymentAccount; let i = index" [pbaNumber]="pba"
     [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
     [decision]="newPBAs.get(pba) === 'accepted' ? 'Approve the account' : 'Reject the account'">

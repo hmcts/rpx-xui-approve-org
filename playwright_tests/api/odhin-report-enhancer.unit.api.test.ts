@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { expect, test } from '@playwright/test';
 import { parse } from 'node-html-parser';
 
@@ -348,3 +351,51 @@ A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable inste
     await expect(page.locator('#odhin-recovered-tests')).toHaveCount(0);
   });
 });
+
+for (const suite of ['api', 'integration', 'e2e', 'smoke']) {
+  test(`Perfetto Results links to the archived ${suite} timeline in Jenkins`, () => {
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-perfetto-'));
+    const outputFolder = path.join(temporaryRoot, 'functional-output', 'tests', `playwright-${suite}`, 'odhin-report');
+    const resultsFolder = path.join(outputFolder, '..', 'test-results');
+    const reportPath = path.join(outputFolder, 'index.html');
+    const originalBuildUrl = process.env.BUILD_URL;
+    const originalOverride = process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+    try {
+      fs.mkdirSync(outputFolder, { recursive: true });
+      fs.mkdirSync(resultsFolder, { recursive: true });
+      fs.writeFileSync(path.join(resultsFolder, 'perfetto.json'), '{}');
+      fs.writeFileSync(reportPath, '<html><body class="report"><div class="tab"></div></body></html>');
+      process.env.BUILD_URL = 'https://jenkins.example/job/test/42/';
+      delete process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+      enhancerModule.enhanceGeneratedReport(outputFolder, []);
+      enhancerModule.enhanceGeneratedReport(outputFolder, []);
+      const root = parse(fs.readFileSync(reportPath, 'utf8'));
+      expect(root.querySelectorAll('#TabPerfetto')).toHaveLength(1);
+      expect(root.querySelectorAll('.main-tablinks')).toHaveLength(1);
+      expect(root.querySelector('.main-tablinks')?.text).toBe('Perfetto Results');
+      expect(root.querySelector('.main-tablinks')?.getAttribute('onclick')).toBe('openMainTab(event, \'TabPerfetto\')');
+      expect(root.querySelector('body')?.getAttribute('class')).toBe('report');
+      expect(root.querySelector('#TabPerfetto a')?.getAttribute('href')).toBe(
+        `https://jenkins.example/job/test/42/artifact/${path.relative(process.cwd(), resultsFolder).split(path.sep).join('/')}/perfetto.json`
+      );
+      delete process.env.BUILD_URL;
+      enhancerModule.enhanceGeneratedReport(outputFolder, []);
+      expect(parse(fs.readFileSync(reportPath, 'utf8')).querySelector('#TabPerfetto a')?.getAttribute('href')).toBe('../test-results/perfetto.json');
+      process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL = 'https://jenkins.example/job/override/7/';
+      enhancerModule.enhanceGeneratedReport(outputFolder, []);
+      expect(parse(fs.readFileSync(reportPath, 'utf8')).querySelector('#TabPerfetto a')?.getAttribute('href')).toContain('https://jenkins.example/job/override/7/artifact/');
+    } finally {
+      if (originalBuildUrl === undefined) {
+        delete process.env.BUILD_URL;
+      } else {
+        process.env.BUILD_URL = originalBuildUrl;
+      }
+      if (originalOverride === undefined) {
+        delete process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+      } else {
+        process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL = originalOverride;
+      }
+      fs.rmSync(temporaryRoot, { recursive: true, force: true });
+    }
+  });
+}

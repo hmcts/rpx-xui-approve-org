@@ -29,6 +29,8 @@ logResolvedTagFilters('API', apiTagFilters);
 module.exports = defineConfig({
   testDir: './playwright_tests/api',
   testMatch: /.*\.(positive|negative)\.api\.test\.ts/,
+  outputDir: 'functional-output/tests/playwright-api/test-results',
+  globalSetup: require.resolve('./playwright_tests/helpers/playwright.api.global.setup.ts'),
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: resolveApiRetryCount(),

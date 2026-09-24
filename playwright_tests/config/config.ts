@@ -8,11 +8,13 @@ dotenvExtended.load({
 
 const DEFAULT_TEST_URL = 'https://administer-orgs.aat.platform.hmcts.net/';
 const DEFAULT_REGISTER_URL = 'https://manage-org.aat.platform.hmcts.net';
+const DEFAULT_IDAM_WEB_URL = 'https://idam-web-public.aat.platform.hmcts.net';
 const REGISTER_URL_BY_ENVIRONMENT = {
   aat: DEFAULT_REGISTER_URL,
-  demo: 'https://manage-org.demo.platform.hmcts.net'
+  demo: 'https://manage-org.demo.platform.hmcts.net',
+  ithc: 'https://manage-org.ithc.platform.hmcts.net'
 };
-const HMCTS_APPROVE_ORG_HOST_PATTERN = /^(?:administer-orgs|xui-ao-webapp)(?:-(?:staging|pr-\d+))?\.(aat|demo|preview)\.platform\.hmcts\.net$/;
+const HMCTS_APPROVE_ORG_HOST_PATTERN = /^(?:administer-orgs|xui-ao-webapp)(?:-(?:staging|pr-\d+))?\.(aat|demo|ithc|preview)\.platform\.hmcts\.net$/;
 
 function resolveUrl(rawValue: string | undefined, fallback: string, envName: string): string {
   const value = (rawValue ?? '').trim();
@@ -38,8 +40,19 @@ function resolveRegisterUrl(rawValue: string | undefined, baseUrl: string): stri
   if (environment === 'demo') {
     return REGISTER_URL_BY_ENVIRONMENT.demo;
   }
+  if (environment === 'ithc') {
+    return REGISTER_URL_BY_ENVIRONMENT.ithc;
+  }
 
   return REGISTER_URL_BY_ENVIRONMENT.aat;
+}
+
+function resolveIdamWebUrl(rawValue: string | undefined): string {
+  const value = (rawValue ?? '').trim();
+  if (value.length > 0) {
+    return resolveUrl(value, DEFAULT_IDAM_WEB_URL, 'IDAM_WEB_SERVICE');
+  }
+  return DEFAULT_IDAM_WEB_URL;
 }
 
 function resolveCredential(envName: string): string {
@@ -67,6 +80,7 @@ const baseUrl = resolveUrl(process.env.TEST_URL, DEFAULT_TEST_URL, 'TEST_URL');
 export const config = {
   baseUrl,
   registerUrl: resolveRegisterUrl(process.env.TEST_REGISTER_URL, baseUrl),
+  idamWebUrl: resolveIdamWebUrl(process.env.IDAM_WEB_SERVICE),
   base: {
     username: resolveCredentialWithFallback('APPROVE_ORG_ADMIN_USERNAME', ['TEST_EMAIL', 'TEST_API_EMAIL_ADMIN']),
     password: resolveCredentialWithFallback('APPROVE_ORG_ADMIN_PASSWORD', ['TEST_PASSWORD', 'TEST_API_PASSWORD_ADMIN'])

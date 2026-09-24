@@ -87,7 +87,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@2.4.9")
+@Library("Infrastructure@2.8.0")
 
 String type      = 'nodejs'
 String product   = 'xui'
@@ -109,6 +109,15 @@ Closure<Boolean> shouldRunAccessibilityTests = {
     return configured == null ? true : configured.toString().toBoolean()
 }
 
+Closure<Void> assertPerfettoArtifacts = { List<String> suites ->
+    def missing = suites.findAll { suite ->
+        !fileExists("functional-output/tests/${suite}/test-results/perfetto.json")
+    }
+    if (!missing.isEmpty()) {
+        error("Missing Playwright Perfetto evidence for enabled suites: ${missing.join(', ')}")
+    }
+}
+
 Closure<Void> runPlaywrightFunctionalInParallel = {
     stage('Nightly Functional Tests (Parallel)') {
         env.PLAYWRIGHT_FUNCTIONAL_PARALLEL_ALREADY_RUN = 'true'
@@ -122,16 +131,19 @@ Closure<Void> runPlaywrightFunctionalInParallel = {
             api: {
                 stage('Nightly API Playwright Tests') {
                     yarnBuilder.yarn('test:api:playwright:raw')
+                    assertPerfettoArtifacts.call(['playwright-api'])
                 }
             },
             integration: {
                 stage('Nightly Integration Playwright Tests') {
                     yarnBuilder.yarn('test:integration:playwright:raw')
+                    assertPerfettoArtifacts.call(['playwright-integration'])
                 }
             },
             crossBrowser: {
                 stage('Nightly Cross Browser Playwright Tests') {
                     yarnBuilder.yarn('test:crossbrowser')
+                    assertPerfettoArtifacts.call(['playwright-nightly'])
                 }
             }
         ]
@@ -216,6 +228,8 @@ withNightlyPipeline(type, product, component) {
     loadVaultSecrets(secrets)
     env.FUNCTIONAL_TESTS_WORKERS = '5'
     env.E2E_PW_RETRIES = '3'
+    env.API_PW_RETRIES = '3'
+    env.INTEGRATION_PW_RETRIES = '3'
     applyPlaywrightTagFilterEnv()
     logPlaywrightTagFilterEnv('pipeline env')
     env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
@@ -256,6 +270,11 @@ withNightlyPipeline(type, product, component) {
     }
 
     afterAlways('fullFunctionalTest') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-*/odhin-report/ci-evidence/playwright.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/test-results/perfetto*.json'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/traces/**/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/screenshots/**/*'
+
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

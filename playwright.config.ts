@@ -11,8 +11,9 @@ import { buildPlaywrightReporters } from './playwright-reporting';
 
 const headlessMode = process.env.HEAD !== 'true';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
-const sharedStorageStatePath = getSessionStatePath('base');
-const sharedStorageState = fs.existsSync(sharedStorageStatePath) ? sharedStorageStatePath : undefined;
+const skipSessionCapture = (process.env.PW_SKIP_SESSION_CAPTURE ?? '').toLowerCase() === 'true';
+const sharedStorageStatePath = skipSessionCapture ? undefined : getSessionStatePath('base');
+const sharedStorageState = sharedStorageStatePath && fs.existsSync(sharedStorageStatePath) ? sharedStorageStatePath : undefined;
 const e2eTagFilters = resolveFunctionalTagFilters({
   includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
   excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
@@ -25,6 +26,7 @@ logResolvedTagFilters('E2E', e2eTagFilters);
 module.exports = defineConfig({
   testDir: './playwright_tests/e2e',
   testMatch: /.*\.test\.ts/,
+  outputDir: 'functional-output/tests/playwright-e2e/test-results',
   globalSetup: require.resolve('./playwright_tests/helpers/playwright.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -53,7 +55,7 @@ module.exports = defineConfig({
         headless: headlessMode,
         storageState: sharedStorageState,
         screenshot: 'only-on-failure',
-        trace: 'on-first-retry'
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
       }
     }
   ]
