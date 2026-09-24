@@ -3,13 +3,13 @@
    ========================================================================== */
 
 .jui-questions__item {
-  border-bottom: 1px solid $govuk-border-colour;
+  border-bottom: 1px solid govuk-functional-colour(border);
   padding-top: govuk-spacing(4);
   padding-bottom: govuk-spacing(4);
   position: relative;
 
   &:first-child {
-    border-top: 1px solid $govuk-border-colour;
+    border-top: 1px solid govuk-functional-colour(border);
   }
 
 }
@@ -33,7 +33,7 @@
 
 .jui-questions__meta {
   @include govuk-font($size: 16);
-  color: $govuk-secondary-text-colour;
+  color: govuk-functional-colour(secondary-text);
   margin-bottom: 0;
 
   @include govuk-media-query($from: tablet) {
@@ -48,7 +48,7 @@
   background-repeat: no-repeat;
   background-size: 25px;
   background-position: 0 50%;
-  color: $govuk-secondary-text-colour;
+  color: govuk-functional-colour(secondary-text);
   display: block;
   margin-bottom: 0;
   padding-left: 30px;
@@ -70,7 +70,7 @@
 
 .jui-question__meta {
   @include govuk-font($size: 16);
-  color: $govuk-secondary-text-colour;
+  color: govuk-functional-colour(secondary-text);
   margin-top: 0;
 
   @include govuk-media-query($from: tablet) {
