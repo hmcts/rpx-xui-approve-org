@@ -9,8 +9,10 @@ router.get('/details', handleUserRoute);
 
 function handleUserRoute(req, res) {
   console.log('getConfigValue(USER_TIMEOUT_IN_SECONDS)', getConfigValue(USER_TIMEOUT_IN_SECONDS));
+  const sessionUser = req.session.user || req.session.passport?.user?.userinfo || {};
   const UserDetails = {
-    ...req.session.user,
+    ...sessionUser,
+    email: sessionUser.email || sessionUser.emailId || sessionUser.uid,
     idleTime: +getConfigValue(USER_TIMEOUT_IN_SECONDS) * 1000,
     timeout: 600
   };
