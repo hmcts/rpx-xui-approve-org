@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
+/* global process, require, module */
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { spawnSync } = require('node:child_process');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const path = require('node:path');
 
 const splitTagInput = (raw) =>
@@ -36,9 +40,17 @@ const buildSmokePlaywrightArgs = (env = process.env, extraArgs = process.argv.sl
   return args;
 };
 
+const buildSmokePlaywrightEnv = (env = process.env) => ({
+  ...env,
+  PW_SKIP_SESSION_CAPTURE: env.PW_SKIP_SESSION_CAPTURE || 'true'
+});
+
 const run = () => {
   const playwrightCli = path.join(path.dirname(require.resolve('playwright/package.json')), 'cli.js');
-  const result = spawnSync(process.execPath, [playwrightCli, ...buildSmokePlaywrightArgs()], { stdio: 'inherit' });
+  const result = spawnSync(process.execPath, [playwrightCli, ...buildSmokePlaywrightArgs()], {
+    env: buildSmokePlaywrightEnv(),
+    stdio: 'inherit'
+  });
   if (result.error) {
     throw result.error;
   }
@@ -49,4 +61,4 @@ if (require.main === module) {
   run();
 }
 
-module.exports = { buildSmokePlaywrightArgs, splitTagInput };
+module.exports = { buildSmokePlaywrightArgs, buildSmokePlaywrightEnv, splitTagInput };

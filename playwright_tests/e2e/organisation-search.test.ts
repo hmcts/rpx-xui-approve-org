@@ -16,8 +16,7 @@ test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations',
     await organisationApprovalsPage.waitForSpinnerToHide(60_000);
     await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
 
-    await organisationApprovalsPage.searchForOrganisation(NEW_REGISTRATION_ORG_SEARCH);
-    await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+    await organisationApprovalsPage.searchForOrganisationWithTransientRecovery(NEW_REGISTRATION_ORG_SEARCH);
 
     await expect(organisationApprovalsPage.pendingOrganisationRowsByName(NEW_REGISTRATION_ORG_SEARCH).first()).toBeVisible();
   });
@@ -27,8 +26,7 @@ test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations',
     await organisationApprovalsPage.waitForSpinnerToHide(60_000);
     await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
 
-    await organisationApprovalsPage.searchForOrganisation(NEW_REGISTRATION_ADDRESS_SEARCH);
-    await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+    await organisationApprovalsPage.searchForOrganisationWithTransientRecovery(NEW_REGISTRATION_ADDRESS_SEARCH);
 
     await expect(organisationApprovalsPage.pendingOrganisationRowsByName(NEW_REGISTRATION_ADDRESS_SEARCH).first()).toBeVisible();
   });

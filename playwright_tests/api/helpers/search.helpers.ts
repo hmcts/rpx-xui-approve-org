@@ -1,4 +1,4 @@
-import type { APIRequestContext } from '@playwright/test';
+import type { APIRequestContext, APIResponse } from '@playwright/test';
 
 type SortDirection = 'ASC' | 'DESC' | 'asc' | 'desc';
 
@@ -43,6 +43,9 @@ const DEFAULT_PBA_SORT: SearchSortParameter = {
 };
 
 const DEFAULT_PAGE_SIZE = 10;
+const TRANSIENT_SEARCH_STATUSES = new Set([500, 502, 503, 504]);
+const DEFAULT_SEARCH_ATTEMPTS = 3;
+const DEFAULT_SEARCH_RETRY_DELAY_MS = 1_000;
 
 export const DENIED_HTTP_STATUSES = [302, 401, 403] as const;
 
@@ -101,6 +104,34 @@ export function toTotalRecordsNumber(value: unknown): number | null {
 
 export function isSearchPostAllowedStatus(httpStatus: number): boolean {
   return httpStatus === 200;
+}
+
+export async function postOrganisationSearch(
+  apiRequest: APIRequestContext,
+  status: 'ACTIVE' | 'PENDING,REVIEW',
+  headers: Record<string, string>,
+  payload: Record<string, unknown>,
+  options: { attempts?: number; retryDelayMs?: number } = {}
+): Promise<APIResponse> {
+  const attempts = options.attempts ?? DEFAULT_SEARCH_ATTEMPTS;
+  const retryDelayMs = options.retryDelayMs ?? DEFAULT_SEARCH_RETRY_DELAY_MS;
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const response = await apiRequest.post(`/api/organisations?status=${status}`, {
+      failOnStatusCode: false,
+      headers,
+      data: payload
+    });
+
+    if (!TRANSIENT_SEARCH_STATUSES.has(response.status()) || attempt === attempts) {
+      return response;
+    }
+
+    console.warn(`[organisation-search] transient response status=${response.status()} attempt=${attempt}`);
+    await new Promise((resolve) => setTimeout(resolve, retryDelayMs * attempt));
+  }
+
+  throw new Error('Organisation search did not produce a response.');
 }
 
 function cookieMatchesHost(cookieDomain: string | undefined, hostName: string): boolean {
