@@ -1,4 +1,4 @@
-<div class="hmcts-width-container" *ngIf="{user: user$ | async} as data">
+<div class="govuk-width-container" *ngIf="{user: user$ | async} as data">
   <xuilib-hmcts-main-wrapper [summaryErrors]="errorsArray$ | async"
   (backEvent)="onGoBack()"
   [title]="getTitle(data?.user)"

@@ -7,7 +7,7 @@
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <li>
-          <a routerLink="." [fragment]="errorMessage.fieldId">{{errorMessage.description}}</a>
+          <a [href]="'#' + errorMessage.fieldId">{{errorMessage.description}}</a>
         </li>
       </ul>
     </div>
@@ -22,7 +22,7 @@
       <h1 class="govuk-heading-xl">Organisation details </h1>
     </ng-template>
     <div>
-      <h3 class="govuk-heading-m">Organisation details</h3>
+      <h2 class="govuk-heading-m">Organisation details</h2>
       <dl class="govuk-summary-list" *ngIf="org">
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
@@ -177,9 +177,11 @@
         <div class="govuk-summary-list__row">
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <br>
-          <br>
-          <h3 class="govuk-heading-m">Administrator details </h3>
+          <dt class="govuk-summary-list__key">
+            <span class="govuk-heading-m" role="heading" aria-level="2">Administrator details</span>
+          </dt>
+          <dd class="govuk-summary-list__value"></dd>
+          <dd class="govuk-summary-list__actions"></dd>
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
