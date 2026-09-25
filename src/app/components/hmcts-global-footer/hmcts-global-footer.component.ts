@@ -9,4 +9,5 @@ import { Helper, Navigation } from '../../containers/footer/footer.model';
 export class HmctsGlobalFooterComponent {
   @Input() public help: Helper;
   @Input() public navigation: Navigation;
+  @Input() public loggedInUserEmail: string;
 }
