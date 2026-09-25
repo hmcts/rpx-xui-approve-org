@@ -3,7 +3,9 @@
 
 <app-header (navigate)="onNavigate($event)"></app-header>
 
-<router-outlet></router-outlet>
+<div id="main-content-start" tabindex="-1">
+  <router-outlet></router-outlet>
+</div>
 
 <app-footer></app-footer>
 

@@ -5,7 +5,11 @@
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <li>
+<<<<<<< HEAD
           <a href="#heading"> {{org.pbaNumber && org.pbaNumber.length>1 ? 'Select the decision for the PBA accounts' : 'Select the decision for the PBA account'}}</a>
+=======
+          <a [attr.href]="'#' + org.pendingPaymentAccount[0] + '_approve'">{{org.pbaNumber && org.pbaNumber.length>1 ? 'Select the decision for the PBA accounts' : 'Select the decision for the PBA account'}}</a>
+>>>>>>> 6d2c588c (fix assessibility issue)
         </li>
       </ul>
     </div>
