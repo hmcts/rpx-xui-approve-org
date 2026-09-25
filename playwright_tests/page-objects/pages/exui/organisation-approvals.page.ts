@@ -96,10 +96,10 @@ export class OrganisationApprovalsPage extends BasePage {
     .first();
 
   readonly usersTableRows = this.usersList.locator('table tbody tr');
-  readonly adminDetailsHeading = this.detailsPanel.getByRole('heading', {
-    name: 'Administrator details',
-    level: 2
-  });
+  readonly detailsSectionHeading = this.detailsPanel.getByRole('heading', {
+    level: 2,
+    name: /^(Administrator details|PBAs)$/
+  }).last();
 
   readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
     .locator('table.pending-organisations a.govuk-link[href*="/organisation-details/"]')

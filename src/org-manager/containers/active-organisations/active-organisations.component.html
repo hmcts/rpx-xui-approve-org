@@ -13,8 +13,12 @@
         <th class="govuk-table__header" scope="col">Administrator</th>
         <th class="govuk-table__header" scope="col">Date approved</th>
         <th class="govuk-table__header" scope="col">Status</th>
-        <th class="govuk-table__header" scope="col"></th>
+        <th class="govuk-table__header" scope="col">
+          <span class="govuk-visually-hidden">Actions</span>
+        </th>
       </tr>
+    </thead>
+    <tbody class="govuk-table__body">
       <tr class="govuk-table__row govuk-radios"
         *ngFor="let org of organisations | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
         <td class="govuk-table__cell">
@@ -38,7 +42,7 @@
           <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
         </td>
       </tr>
-    </thead>
+    </tbody>
   </table>
   <xuilib-hmcts-pagination *ngIf="organisationsLoaded && organisationCount > pagination.page_size"
     (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>

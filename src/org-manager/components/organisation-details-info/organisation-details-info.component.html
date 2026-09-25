@@ -7,7 +7,11 @@
     <div class="govuk-error-summary__body">
       <ul class="govuk-list govuk-error-summary__list">
         <li>
+<<<<<<< HEAD
           <a [href]="'#' + errorMessage.fieldId">{{errorMessage.description}}</a>
+=======
+          <a [attr.href]="'#' + errorMessage.fieldId">{{errorMessage.description}}</a>
+>>>>>>> 6d2c588c (fix assessibility issue)
         </li>
       </ul>
     </div>
@@ -108,8 +112,6 @@
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
-        <div class="govuk-summary-list__row">
-        </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
             Company registration number
@@ -174,6 +176,7 @@
             </div>
           </dd>
         </div>
+<<<<<<< HEAD
         <div class="govuk-summary-list__row">
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
@@ -183,6 +186,11 @@
           <dd class="govuk-summary-list__value"></dd>
           <dd class="govuk-summary-list__actions"></dd>
         </div>
+=======
+      </dl>
+      <h2 class="govuk-heading-m">Administrator details</h2>
+      <dl class="govuk-summary-list">
+>>>>>>> 6d2c588c (fix assessibility issue)
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
             First name(s)
@@ -213,8 +221,6 @@
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
-        <div class="govuk-summary-list__row">
-        </div>
       </dl>
       <div *ngIf="org.status !== 'ACTIVE'" class="govuk-form-group"
         [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">
@@ -226,10 +232,11 @@
             *ngIf="formGroup.get('radioSelected').invalid && submitted">
             {{ errorMessage.description }}
           </div>
-          <div class="govuk-radios__item" id="options">
+          <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="reason-0" name="radioSelected" type="radio"
               [value]="registrationRequest[0].request" formControlName="radioSelected"
-              [checked]="registrationRequest[0].checked" (change)="onChange()" />
+              [checked]="registrationRequest[0].checked" (change)="onChange()"
+              [attr.aria-describedby]="submitted ? 'error-message' : null" />
             <label class="govuk-label govuk-radios__label" for="reason-0">
               {{ registrationRequest[0].request }}
             </label>

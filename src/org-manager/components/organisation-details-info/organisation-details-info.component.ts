@@ -101,10 +101,11 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
       this.errorMessage = {
         title: this.genericError,
         description: RequestErrors.NO_SELECTION,
-        fieldId: 'options'
+        fieldId: 'reason-0'
       };
     }
     if (this.formGroup.invalid) {
+      this.setErrorTitle();
       return;
     }
     const radioSelectedValue = this.formGroup.get(
@@ -138,6 +139,17 @@ export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {
 
   public onChange(): void {
     this.submitted = false;
+    this.clearErrorTitle();
+  }
+
+  private setErrorTitle(): void {
+    if (!this.titleService.getTitle().startsWith('Error:')) {
+      this.titleService.setTitle(`Error: ${this.titleService.getTitle()}`);
+    }
+  }
+
+  private clearErrorTitle(): void {
+    this.titleService.setTitle(this.titleService.getTitle().replace(/^Error:\s*/, ''));
   }
 
   /**

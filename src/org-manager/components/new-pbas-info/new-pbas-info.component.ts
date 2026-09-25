@@ -28,6 +28,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.org.pendingPaymentAccount.forEach((p) => this.formGroup.addControl(p, this.fb.control('', Validators.required)));
     this.formSub = this.formGroup.valueChanges.subscribe(() => {
       this.submitted = false;
+      this.clearErrorTitle();
 
       const opt = { onlySelf: false };
       this.formGroup.markAsDirty(opt);
@@ -47,6 +48,16 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.titleService.setTitle('Error: New PBAs - HM Courts & Tribunals Service - GOV.UK');
     }
+  }
+
+  private setErrorTitle(): void {
+    if (!this.titleService.getTitle().startsWith('Error:')) {
+      this.titleService.setTitle(`Error: ${this.titleService.getTitle()}`);
+    }
+  }
+
+  private clearErrorTitle(): void {
+    this.titleService.setTitle(this.titleService.getTitle().replace(/^Error:\s*/, ''));
   }
 
   public setNewPBA($event): void {
