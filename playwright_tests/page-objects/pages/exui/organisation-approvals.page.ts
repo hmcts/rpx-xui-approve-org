@@ -4,6 +4,8 @@ import { BasePage } from '../../base';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
 const ORGANISATION_DETAILS_ROUTE_PATTERN = /\/organisation-details\/[^/?#]+(?:\/?|\?.*)$/;
+const TRANSIENT_SEARCH_ATTEMPTS = 3;
+const TRANSIENT_SEARCH_RETRY_DELAY_MS = 1_000;
 
 export type OrganisationTableRow = {
   name: string;
@@ -217,9 +219,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   pendingOrganisationRowById(organisationId: string): Locator {
-    return this.pendingOrganisationRows
-      .filter({ has: this.page.locator(`a.govuk-link[href*="/organisation-details/${organisationId}"]`) })
-      .first();
+    return this.pendingOrganisationRows.filter({ has: this.organisationDetailsLinkById(organisationId) }).first();
   }
 
   pendingOrganisationViewLinkById(organisationId: string): Locator {
@@ -237,9 +237,12 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   activeOrganisationRowById(organisationId: string): Locator {
-    return this.activeOrganisationRows
-      .filter({ has: this.page.locator(`a.govuk-link[href*="/organisation-details/${organisationId}"]`) })
-      .first();
+    return this.activeOrganisationRows.filter({ has: this.organisationDetailsLinkById(organisationId) }).first();
+  }
+
+  private organisationDetailsLinkById(organisationId: string): Locator {
+    const path = `/organisation-details/${encodeURIComponent(organisationId)}`;
+    return this.page.locator(`a.govuk-link[href="${path}"], a.govuk-link[href="${path}/"], a.govuk-link[href^="${path}?"]`);
   }
 
   activeOrganisationCellByIndex(organisationId: string, cellIndex: number): Locator {
@@ -305,6 +308,67 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.searchButton.click();
   }
 
+  private async waitForOrganisationRecoveryState(timeoutMs = 60_000): Promise<'pending' | 'service-error'> {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      if (await this.serviceErrorHeading.isVisible().catch(() => false)) {
+        return 'service-error';
+      }
+      if (await this.pendingOverviewPanel.isVisible().catch(() => false)) {
+        return 'pending';
+      }
+      await this.page.waitForTimeout(250);
+    }
+    throw new Error(`Organisation recovery did not reach a pending or service-error state within ${timeoutMs}ms.`);
+  }
+
+  async searchForOrganisationWithTransientRecovery(organisationName: string): Promise<void> {
+    const searchPageUrl = this.page.url();
+
+    for (let attempt = 1; attempt <= TRANSIENT_SEARCH_ATTEMPTS; attempt += 1) {
+      try {
+        await this.searchForOrganisation(organisationName);
+        await this.waitForSpinnerToHide(60_000);
+      } catch (error) {
+        if (!(await this.serviceErrorHeading.isVisible().catch(() => false))) {
+          throw error;
+        }
+      }
+
+      const recoveryState = await this.waitForOrganisationRecoveryState();
+      if (recoveryState === 'pending') {
+        return;
+      }
+
+      if (attempt === TRANSIENT_SEARCH_ATTEMPTS) {
+        throw new Error(`Organisation search remained unavailable after ${TRANSIENT_SEARCH_ATTEMPTS} attempts.`);
+      }
+
+      await this.page.goto(searchPageUrl, { waitUntil: 'domcontentloaded' });
+      const postReloadState = await this.waitForOrganisationRecoveryState();
+      if (postReloadState === 'service-error' && attempt === TRANSIENT_SEARCH_ATTEMPTS - 1) {
+        throw new Error(`Organisation search remained unavailable after ${TRANSIENT_SEARCH_ATTEMPTS} attempts.`);
+      }
+      await new Promise((resolve) => setTimeout(resolve, TRANSIENT_SEARCH_RETRY_DELAY_MS * attempt));
+    }
+  }
+
+  async waitForActiveOrganisationResults(timeout = 60_000): Promise<void> {
+    await expect.poll(async () => {
+      const serviceErrorMessage = await this.serviceErrorMessage();
+      if (serviceErrorMessage) {
+        throw new Error(`Organisation results are unavailable: ${serviceErrorMessage}`);
+      }
+
+      await this.waitForSpinnerToHide(timeout);
+      return this.activeOrganisationsPanel.locator('table.active-organisations').isVisible();
+    }, {
+      message: 'Active organisation results did not become available',
+      timeout,
+      intervals: [1_000, 2_000, 5_000]
+    }).toBe(true);
+  }
+
   async searchForPendingOrganisation(organisationName: string, organisationId: string): Promise<void> {
     await expect.poll(async () => {
       await this.searchForOrganisation(organisationName);
@@ -316,6 +380,11 @@ export class OrganisationApprovalsPage extends BasePage {
       timeout: 60_000,
       intervals: [1_000, 2_000, 5_000]
     }).toBeGreaterThan(0);
+  }
+
+  async searchForActiveOrganisation(organisationName: string, organisationId: string, timeout = 60_000): Promise<void> {
+    await this.searchForOrganisation(organisationName);
+    await this.waitForSpinnerToHide(timeout);
   }
 
   async openPaginationPage(pageNumber: number): Promise<void> {
@@ -357,6 +426,10 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openFirstActiveOrganisation(): Promise<void> {
     await this.openOrganisationDetails(this.activeOrganisationViewLink());
+  }
+
+  async openActiveOrganisationById(organisationId: string): Promise<void> {
+    await this.openOrganisationDetails(this.activeOrganisationRowById(organisationId).locator('a.govuk-link').first());
   }
 
   async openFirstPendingPba(): Promise<void> {
@@ -486,10 +559,14 @@ export class OrganisationApprovalsPage extends BasePage {
       this.activeOrganisationsTab.click()
     ]);
     await expect(this.activeOrganisationsPanel).toBeVisible();
-    await this.waitForSpinnerToHide(60_000);
+    await this.waitForActiveOrganisationResults();
   }
 
   async openUsersTab(): Promise<void> {
     await this.usersTabLink.click();
+  }
+
+  async waitForUserRows(): Promise<void> {
+    await this.usersTableRows.first().waitFor({ state: 'visible' });
   }
 }

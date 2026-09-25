@@ -33,8 +33,6 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     organisationApprovalsPage,
     organisationIdentifier
   }) => {
-    let organisationName = '';
-
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
@@ -105,11 +103,15 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await organisationApprovalsPage.openActiveOrganisationsTab();
       await organisationApprovalsPage.waitForSpinnerToHide(60_000);
 
-      await organisationApprovalsPage.searchForOrganisation(organisationName);
-      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-
-      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
-      await organisationApprovalsPage.openFirstActiveOrganisation();
+      await expect.poll(async () => {
+        await organisationApprovalsPage.searchForActiveOrganisation(organisationName, organisationIdentifier);
+        return organisationApprovalsPage.activeOrganisationRowById(organisationIdentifier).count();
+      }, {
+        message: `Active organisation ${organisationIdentifier} was not returned by search`,
+        timeout: 60_000,
+        intervals: [1_000, 2_000, 5_000]
+      }).toBeGreaterThan(0);
+      await organisationApprovalsPage.openActiveOrganisationById(organisationIdentifier);
     });
 
     await test.step('Delete the active organisation and verify confirmation guidance', async () => {
