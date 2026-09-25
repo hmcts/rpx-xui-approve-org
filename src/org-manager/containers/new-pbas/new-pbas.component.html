@@ -5,8 +5,8 @@
       Approved
     </span>
   </app-identity-bar-component>
-  <div class="hmcts-width-container">
-    <xuilib-hmcts-main-wrapper [summaryErrors]="pbaErrorsHeader$ | async" (backEvent)="onGoBack()">
+  <div class="govuk-width-container">
+    <xuilib-hmcts-main-wrapper (backEvent)="onGoBack()">
       <ng-container *ngIf="!data.org">
         <h1 class="govuk-heading-xl">Approve new PBA number</h1>
         <h3 class="govuk-heading-s">Loading...</h3>

@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { QuickLinksComponent } from '..';
@@ -41,7 +42,8 @@ describe('OrganisationDetailsInfoComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [RouterModule, RouterTestingModule.withRoutes([]), ReactiveFormsModule],
-      declarations: [OrganisationDetailsInfoComponent, OrganisationAddressComponent, QuickLinksComponent]
+      declarations: [OrganisationDetailsInfoComponent, OrganisationAddressComponent, QuickLinksComponent],
+      providers: [Title]
     })
       .compileComponents();
   }));
@@ -61,11 +63,11 @@ describe('OrganisationDetailsInfoComponent', () => {
     it('should show heading and titles', () => {
       const headingContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
       expect(headingContent).toContain('Approve organisation');
-      let titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[0].nativeElement.textContent;
+      let titleContent = fixture.debugElement.queryAll(By.css('.govuk-heading-m'))[0].nativeElement.textContent;
       expect(titleContent).toContain('Quick links');
-      titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[1].nativeElement.textContent;
+      titleContent = fixture.debugElement.queryAll(By.css('.govuk-heading-m'))[1].nativeElement.textContent;
       expect(titleContent).toContain('Organisation details');
-      titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[2].nativeElement.textContent;
+      titleContent = fixture.debugElement.queryAll(By.css('.govuk-heading-m'))[2].nativeElement.textContent;
       expect(titleContent).toContain('Administrator details');
     });
 
@@ -74,12 +76,11 @@ describe('OrganisationDetailsInfoComponent', () => {
       expect(nameContent).toContain('Corp Plc');
       const adressContent = fixture.debugElement.nativeElement.querySelector('app-org-address').textContent;
       expect(adressContent).toContain('13 Berryfield drive, Finglas');
-      const elements = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value');
-      const firstName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[7].textContent;
+      const firstName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[8].textContent;
       expect(firstName).toContain('Glen Jason');
-      const lastName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[8].textContent;
+      const lastName = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[9].textContent;
       expect(lastName).toContain('Byrne');
-      const mailContent = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[9].textContent;
+      const mailContent = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[10].textContent;
       expect(mailContent).toContain('glen@byrne.com');
       const pbaNumber = fixture.debugElement.nativeElement.querySelectorAll('dd.govuk-summary-list__value')[3].textContent;
       expect(pbaNumber).toContain('101010');
