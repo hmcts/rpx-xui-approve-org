@@ -3,7 +3,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { LoggerService } from 'src/app/services/logger.service';
 import { IdentityBarComponent } from './components/identity-bar/identity-bar.component';
-import { PhaseBannerComponent } from './components/phase-banner/phase-banner.component';
 import { DefaultErrorHandler } from './errorHandler/defaultErrorHandler';
 import { HealthCheckGuard } from './guards/health-check.guard';
 import { HealthCheckService } from './services/health-check.service';
@@ -15,12 +14,10 @@ import { HealthCheckService } from './services/health-check.service';
   ],
   exports: [
     ReactiveFormsModule,
-    IdentityBarComponent,
-    PhaseBannerComponent
+    IdentityBarComponent
   ],
   declarations: [
-    IdentityBarComponent,
-    PhaseBannerComponent
+    IdentityBarComponent
   ],
   providers: [
     HealthCheckGuard,
@@ -29,4 +26,4 @@ import { HealthCheckService } from './services/health-check.service';
     DefaultErrorHandler
   ]
 })
-export class SharedModule {}
+export class SharedModule { }
