@@ -3,6 +3,21 @@ import { expect, test } from '@playwright/test';
 import OdhinAdaptiveReporter from '../common/reporters/odhin-adaptive.reporter.cjs';
 
 test.describe('Odhín adaptive reporter', () => {
+  test('always keeps attachments external, even when embedding is requested', () => {
+    const receivedOptions: Record<string, unknown>[] = [];
+    const createInnerReporter = (options: Record<string, unknown>) => {
+      receivedOptions.push(options);
+      return {};
+    };
+
+    new OdhinAdaptiveReporter({ createInnerReporter });
+    new OdhinAdaptiveReporter({ embedAttachments: true, createInnerReporter });
+
+    expect(receivedOptions).toHaveLength(2);
+    expect(receivedOptions[0].embedAttachments).toBe(false);
+    expect(receivedOptions[1].embedAttachments).toBe(false);
+  });
+
   test('bounds a stalled runtime callback when the test completes', async () => {
     const reporter = new OdhinAdaptiveReporter({ outputFolder: 'missing-odhin-output' });
     reporter.runtimeHookTimeoutMs = 10;

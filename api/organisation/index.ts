@@ -60,6 +60,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
     const pageSize = req.body.searchRequest.pagination_parameters.page_size;
     let response = null;
     let organisationsUri;
+    // Note: search_filter is not a parameter for the API, we handle filtering ourselves
     if (!req.body.searchRequest.search_filter || req.body.searchRequest.search_filter === '') {
       organisationsUri = getOrganisationPagingUri(status, pageNumber, pageSize);
       response = await req.http.get(organisationsUri);
@@ -69,16 +70,8 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         { organisations: [], total_records: 0 };
     } else {
       if (status && status === 'ACTIVE') {
-        const nameOnlySearch = isOrganisationNameOnlySearch(req.body.searchRequest.search_filter);
-        responseData = await getFilteredActiveOrganisations(req, req.body.searchRequest.search_filter, pageNumber, pageSize, nameOnlySearch);
-        if (responseData) {
-          res.send(responseData);
-          return;
-        }
-        if (nameOnlySearch) {
-          res.send({ organisations: [], total_records: 0 });
-          return;
-        }
+        // Note: Unsure whether or why getActiveOrganisations is needed as the below else will work for active
+        // May help improve performance so left as is
         response = await getActiveOrganisations(req);
       } else {
         organisationsUri = getOrganisationUri(status, null, null, null);
@@ -108,53 +101,6 @@ export function getActiveOrganisation(pageNumber: number, size: number, req: Enh
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
   const promise = req.http.get(url).catch((err) => err);
   return promise;
-}
-
-async function getFilteredActiveOrganisations(
-  req: EnhancedRequest,
-  searchFilter: string,
-  pageNumber: number,
-  pageSize: number,
-  nameOnlySearch = false
-): Promise<any> {
-  const url = getFilteredActiveOrganisationUri(searchFilter, pageNumber, pageSize);
-  try {
-    const response = await req.http.get(url);
-    const organisations = response?.data?.organisations;
-    if (!Array.isArray(organisations)) {
-      return null;
-    }
-
-    const filteredOrganisations = nameOnlySearch ?
-      filterOrganisationsByName(organisations, searchFilter) :
-      filterOrganisations(organisations, searchFilter);
-    const totalRecords = Number(response?.headers?.total_records ?? filteredOrganisations.length);
-    if (organisations.length === 0 && totalRecords === 0) {
-      return { organisations: [], total_records: 0 };
-    }
-
-    if (nameOnlySearch) {
-      return {
-        organisations: filteredOrganisations,
-        total_records: filteredOrganisations.length === organisations.length ?
-          response?.headers?.total_records ?? filteredOrganisations.length :
-          filteredOrganisations.length
-      };
-    }
-
-    // If PRD ignored the query parameter it will return unfiltered rows; fall back to the legacy full scan.
-    if (filteredOrganisations.length !== organisations.length) {
-      return null;
-    }
-
-    return {
-      organisations: filteredOrganisations,
-      total_records: response?.headers?.total_records ?? filteredOrganisations.length
-    };
-  } catch (error) {
-    logger.warn(`Filtered active organisations search failed; falling back to full active organisation scan. ${error}`);
-    return null;
-  }
 }
 
 async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
@@ -211,16 +157,6 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, vers
 
 function getOrganisationPagingUri(status, pageNumber, size): string {
   return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=${status}`;
-}
-
-function getFilteredActiveOrganisationUri(searchFilter: string, pageNumber: number, size: number): string {
-  const params = new URLSearchParams({
-    page: String(pageNumber),
-    size: String(size),
-    status: 'ACTIVE',
-    search_filter: searchFilter
-  });
-  return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?${params.toString()}`;
 }
 
 async function handlePutOrganisationRoute(req: EnhancedRequest, res: Response) {

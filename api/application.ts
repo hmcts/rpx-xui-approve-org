@@ -36,6 +36,7 @@ import * as log4jui from './lib/log4jui';
 import * as tunnel from './lib/tunnel';
 import routes from './routes';
 import { AO_CSP } from './interfaces/csp-config';
+import errorHandler from './lib/error.handler';
 
 function loadIndexHtml(): string {
   // production build output
@@ -300,3 +301,5 @@ app.use('/{*splat}', (req, res) => {
   const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
   res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
 });
+
+app.use(errorHandler);

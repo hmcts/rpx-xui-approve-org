@@ -95,9 +95,8 @@ test.describe(
         });
 
         await test.step('Open active organisations tab', async () => {
-          await clearOrganisationSearchSession(page);
           const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
-          await page.goto(ACTIVE_ORGANISATIONS_URL);
+          await organisationApprovalsPage.openActiveOrganisationsTab();
           await activeOrganisationsResponse;
           await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
         });
@@ -150,9 +149,8 @@ test.describe(
       });
 
       await test.step('Open active organisations tab', async () => {
-        await clearOrganisationSearchSession(page);
         const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
-        await page.goto(ACTIVE_ORGANISATIONS_URL);
+        await organisationApprovalsPage.openActiveOrganisationsTab();
         await activeOrganisationsResponse;
         await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
       });

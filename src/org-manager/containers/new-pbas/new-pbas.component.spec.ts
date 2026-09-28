@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import * as fromRoot from '../../../app/store';
 import { OrganisationService } from '../../services/organisation.service';
 import { PbaAccountDetails } from '../../services/pba-account-details.services';
@@ -87,6 +87,44 @@ describe('NewPBAsComponent', () => {
     fixture = TestBed.createComponent(NewPBAsComponent);
     component = fixture.componentInstance;
   }));
+
+  it('should not load complete organisation lists on repeated visits', () => {
+    spyOn(store, 'dispatch');
+    mockedOrganisationService.getSingleOrganisation.and.returnValue(of({
+      ...MOCKED_ORGANISATION, pendingPaymentAccount: ['PBA1234567']
+    }));
+    const accounts = spyOn(TestBed.inject(PbaAccountDetails), 'getAccountDetails').and.returnValue(of([]));
+
+    for (let visit = 0; visit < 20; visit++) {
+      const page = TestBed.createComponent(NewPBAsComponent);
+      page.componentInstance.ngOnInit();
+      page.destroy();
+    }
+
+    expect(mockedOrganisationService.getSingleOrganisation).toHaveBeenCalledTimes(20);
+    expect(accounts).toHaveBeenCalledTimes(20);
+    expect(store.dispatch).not.toHaveBeenCalledWith(new fromOrganisationPendingStore.LoadActiveOrganisation());
+    expect(store.dispatch).not.toHaveBeenCalledWith(new fromOrganisationPendingStore.LoadPendingOrganisations());
+  });
+
+  it('should cancel an outstanding organisation request on leaving the page', () => {
+    const cancel = jasmine.createSpy('cancel organisation request');
+    mockedOrganisationService.getSingleOrganisation.and.returnValue(new Observable(() => cancel));
+    component.ngOnInit();
+    fixture.destroy();
+    expect(cancel).toHaveBeenCalledTimes(1);
+  });
+
+  it('should cancel an outstanding account request on leaving the page', () => {
+    const cancel = jasmine.createSpy('cancel account request');
+    mockedOrganisationService.getSingleOrganisation.and.returnValue(of({
+      ...MOCKED_ORGANISATION, pendingPaymentAccount: ['PBA1234567']
+    }));
+    spyOn(TestBed.inject(PbaAccountDetails), 'getAccountDetails').and.returnValue(new Observable(() => cancel));
+    component.ngOnInit();
+    fixture.destroy();
+    expect(cancel).toHaveBeenCalledTimes(1);
+  });
 
   it('should have a component', () => {
     expect(component).toBeTruthy();
