@@ -1,4 +1,4 @@
-@use "govuk-frontend/helpers/colour" as govuk-colour;
+@use "govuk-frontend" as *;
 
 $outline-color: #bfc1c3;
 
@@ -16,8 +16,8 @@ $outline-color: #bfc1c3;
   height: 42px !important;
   margin: 0 4px 7px;
   border-top: 3px solid #fff;
-  background-color: govuk-colour.govuk-colour("light-grey");
-  color: govuk-colour.govuk-colour("black");
+  background-color: govuk-colour("light-grey");
+  color: govuk-colour("black");
   opacity: 1 !important;
 
   &.cdk-focused {
@@ -38,7 +38,7 @@ $outline-color: #bfc1c3;
   }
 
   .mdc-tab__text-label {
-    color: govuk-colour.govuk-colour("black") !important;
+    color: govuk-colour("black") !important;
     font-family: "GDS Transport", Arial, sans-serif;
     font-size: 16px;
     font-weight: 400;
@@ -80,8 +80,8 @@ $outline-color: #bfc1c3;
   height: 42px !important;
   margin: 0 4px 7px;
   border-top: 3px solid #fff;
-  background-color: govuk-colour.govuk-colour("light-grey");
-  color: govuk-colour.govuk-colour("black");
+  background-color: govuk-colour("light-grey");
+  color: govuk-colour("black");
   opacity: 1 !important;
 }
 
