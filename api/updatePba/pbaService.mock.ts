@@ -76,7 +76,7 @@ const MOCK_ORGS = {
 };
 
 export const init = () => {
-  const mock = new MockAdapter(httpMock);
+  const mock = new MockAdapter(httpMock as unknown as ConstructorParameters<typeof MockAdapter>[0]);
 
   const GET_BY_STATUS_URL = '/refdata/internal/v1/organisations/pba';
   const ALL_ORGS = [toOrg('13NGXCM'), toOrg('MW6LH3X'), toOrg('FSHKY34')];

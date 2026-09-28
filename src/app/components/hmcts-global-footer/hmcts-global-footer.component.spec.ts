@@ -41,7 +41,7 @@ describe('HmctsGlobalFooterComponent', () => {
     component.loggedInUserEmail = 'logged-in-user@example.com';
     fixture.detectChanges();
 
-    const loggedInUser = fixture.nativeElement.querySelector('footer > .hmcts-width-container > p');
+    const loggedInUser = fixture.nativeElement.querySelector('footer p');
     expect(loggedInUser.textContent).toContain('Logged in as: logged-in-user@example.com');
   });
 

@@ -106,10 +106,11 @@
   text-align: center;
   text-decoration: none;
   min-width: 25px;
+  color: #1d70b8 !important;
 
   &:link,
   &:visited {
-    color: govuk-colour("blue");
+    color: #1d70b8 !important;
   }
 
   &:hover {
