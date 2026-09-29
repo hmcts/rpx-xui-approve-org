@@ -5,9 +5,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 // ngrx
-import { MetaReducer, StoreModule } from '@ngrx/store';
+import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { storeFreeze } from 'ngrx-store-freeze';
 import { CookieModule } from 'ngx-cookie';
 import { environment } from '../environments/environment';
 import { SharedModule } from '../shared/shared.module';
@@ -26,7 +25,6 @@ import { ROUTES } from './app.routes';
 import { OrgManagerModule } from 'src/org-manager/org-manager.module';
 
 import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
-import config from 'config';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
 import { AuthService } from '../services/auth/auth.service';
@@ -42,15 +40,14 @@ import { EnvironmentService } from './services/environment.service';
 import { LogOutKeepAliveService } from './services/keep-alive/keep-alive.service';
 import { RpxTranslationModule } from 'rpx-xui-translation';
 
-const isDevelopment = !config.production;
-
-export const metaReducers: MetaReducer<any>[] = isDevelopment
-  ? [storeFreeze]
-  : [];
-
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';
 }
+
+export const STORE_RUNTIME_CHECKS = {
+  strictStateImmutability: true,
+  strictActionImmutability: true
+};
 
 @NgModule({
   declarations: [
@@ -65,7 +62,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
       anchorScrolling: 'enabled', scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'
       //relativeLinkResolution: 'legacy'
     }),
-    StoreModule.forRoot(reducers, { metaReducers }),
+    StoreModule.forRoot(reducers, { runtimeChecks: STORE_RUNTIME_CHECKS }),
     EffectsModule.forRoot(effects),
     SharedModule,
     StoreRouterConnectingModule.forRoot(),
