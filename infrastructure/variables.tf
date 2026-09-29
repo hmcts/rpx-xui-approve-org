@@ -39,7 +39,7 @@ variable "redis_capacity" {
 }
 
 variable "managed_redis_sku_name" {
-  default     = "Balanced_B0"
+  default     = "Balanced_B1"
   description = "The SKU to use for Azure Managed Redis."
 }
 
