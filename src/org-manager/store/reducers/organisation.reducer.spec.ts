@@ -7,6 +7,29 @@ import { initialState, reducer } from './organisation.reducer';
 describe('Organisation Reducer', () => {
   const pendingOrganisationsMock: OrganisationVM[] = fromMock.pendingOrganisationsMockCollection1;
 
+  [
+    { key: 'activeOrganisations', action: fromActions.LoadActiveOrganisationSuccess },
+    { key: 'pendingOrganisations', action: fromActions.LoadPendingOrganisationsSuccess }
+  ].forEach(({ key, action }) => {
+    it(`should merge large ${key} lists without changing existing state`, () => {
+      const existing = { ...pendingOrganisationsMock[0], organisationId: 'existing' };
+      const entities = Object.freeze({ existing });
+      const previous = { ...initialState, [key]: { ...initialState[key], orgEntities: entities } };
+      const organisations = Array.from({ length: 12645 }, (_, index) => ({
+        ...pendingOrganisationsMock[0], organisationId: `org-${index}`
+      }));
+      const state = reducer(previous, new action(organisations));
+
+      expect(Object.keys(state[key].orgEntities).length).toBe(12646);
+      expect(state[key].orgEntities.existing).toBe(existing);
+      expect(state[key].orgEntities['org-12644']).toBe(organisations[12644]);
+      expect(previous[key].orgEntities).toBe(entities);
+      expect(Object.keys(entities)).toEqual(['existing']);
+      expect(state[key].loaded).toBeTrue();
+      expect(state[key].loading).toBeFalse();
+    });
+  });
+
   describe('undefined action', () => {
     it('should return the default state', () => {
       const action = {} as any;

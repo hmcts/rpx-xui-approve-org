@@ -1,5 +1,8 @@
 <footer class="govuk-footer" role="contentinfo">
   <div class="hmcts-width-container">
+    <p *ngIf="loggedInUserEmail" class="govuk-body-s govuk-!-margin-bottom-6">
+      Logged in as: {{ loggedInUserEmail }}
+    </p>
     <div class="govuk-footer__meta">
       <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
           <h2 class="hmcts-footer__heading">

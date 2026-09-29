@@ -77,6 +77,26 @@ describe('user/index', () => {
       });
     });
 
+    it('should return the OIDC user email from passport userinfo', () => {
+      mockRequest.session = {
+        passport: {
+          user: {
+            userinfo: {
+              uid: 'oidc-user@example.com',
+              roles: ['prd-admin']
+            }
+          }
+        }
+      };
+
+      const handler = router.stack[0].route.stack[0].handle;
+      handler(mockRequest, mockResponse);
+
+      const sentData = JSON.parse(mockResponse.send.getCall(0).args[0]);
+      expect(sentData.email).to.equal('oidc-user@example.com');
+      expect(sentData.roles).to.deep.equal(['prd-admin']);
+    });
+
     it('should handle JSON stringify error', () => {
       // Create a circular reference to cause JSON.stringify to fail
       mockRequest.session.user.circular = mockRequest.session.user;
