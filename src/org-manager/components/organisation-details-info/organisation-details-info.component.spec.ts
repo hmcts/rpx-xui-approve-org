@@ -63,12 +63,9 @@ describe('OrganisationDetailsInfoComponent', () => {
     it('should show heading and titles', () => {
       const headingContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
       expect(headingContent).toContain('Approve organisation');
-      let titleContent = fixture.debugElement.queryAll(By.css('h2.govuk-heading-m'))[0].nativeElement.textContent;
-      expect(titleContent).toContain('Quick links');
-      titleContent = fixture.debugElement.queryAll(By.css('h2.govuk-heading-m'))[1].nativeElement.textContent;
-      expect(titleContent).toContain('Organisation details');
-      titleContent = fixture.debugElement.queryAll(By.css('h2.govuk-heading-m'))[2].nativeElement.textContent;
-      expect(titleContent).toContain('Administrator details');
+      const titles = fixture.debugElement.queryAll(By.css('h2.govuk-heading-m, [role="heading"][aria-level="2"].govuk-heading-m'))
+        .map((heading) => heading.nativeElement.textContent.trim());
+      expect(titles).toEqual(['Quick links', 'Organisation details', 'Administrator details']);
     });
 
     it('should show organisation details', () => {
