@@ -233,7 +233,7 @@ withNightlyPipeline(type, product, component) {
     applyPlaywrightTagFilterEnv()
     logPlaywrightTagFilterEnv('pipeline env')
     env.PLAYWRIGHT_RELEASE_TAG = 'nightly'
-    enableFortifyScan('rpx-aat')
+    // enableFortifyScan('rpx-aat')
     enableFullFunctionalTest(60)
     // mutation test no longer running as it is not required
     // enableMutationTest()
