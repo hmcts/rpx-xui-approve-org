@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, Inject, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 
 import { Title } from '@angular/platform-browser';
@@ -19,7 +19,7 @@ import { AppUtils } from '../../utils/app-utils';
   templateUrl: './app.component.html',
   standalone: false
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewChecked {
   public identityBar$: Observable<string[]>;
   public modalData$: Observable<{ isVisible?: boolean; countdown?: string }>;
   public mainContentId = 'content';
@@ -62,6 +62,18 @@ export class AppComponent implements OnInit {
     this.idleService.appStateChanges().subscribe((value) => {
       this.dispatchSessionAction(value);
     });
+  }
+
+  public ngAfterViewChecked(): void {
+    const errorPrefix = 'Error: ';
+    const title = this.titleService.getTitle();
+    const hasErrorSummary = Boolean(document.querySelector('.govuk-error-summary'));
+
+    if (hasErrorSummary && !title.startsWith(errorPrefix)) {
+      this.titleService.setTitle(`${errorPrefix}${title}`);
+    } else if (!hasErrorSummary && title.startsWith(errorPrefix)) {
+      this.titleService.setTitle(title.slice(errorPrefix.length));
+    }
   }
 
   public dispatchSessionAction(value) {

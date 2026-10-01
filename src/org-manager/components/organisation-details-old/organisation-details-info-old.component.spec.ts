@@ -59,11 +59,11 @@ describe('OrganisationDetailsInfoComponent', () => {
     it('should show heading and titles', () => {
       const headingContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
       expect(headingContent).toContain('Approve organisation');
-      let titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[0].nativeElement.textContent;
+      let titleContent = fixture.debugElement.queryAll(By.css('.govuk-heading-m'))[0].nativeElement.textContent;
       expect(titleContent).toContain('Quick links');
-      titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[1].nativeElement.textContent;
+      titleContent = fixture.debugElement.queryAll(By.css('.govuk-heading-m'))[1].nativeElement.textContent;
       expect(titleContent).toContain('Organisation details');
-      titleContent = fixture.debugElement.queryAll(By.css('h3.govuk-heading-m'))[2].nativeElement.textContent;
+      titleContent = fixture.debugElement.queryAll(By.css('.govuk-heading-m'))[2].nativeElement.textContent;
       expect(titleContent).toContain('PBAs');
     });
 
