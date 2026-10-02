@@ -4,17 +4,22 @@
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Site map</h1>
 
-        <h2 class="govuk-heading-l">Organisations</h2>
-        <ul class="govuk-list">
-          <li><a class="govuk-link" routerLink="/organisation/pending">New registrations</a></li>
-          <li><a class="govuk-link" routerLink="/organisation/pbas">New PBAs</a></li>
-          <li><a class="govuk-link" routerLink="/organisation/active">Active organisations</a></li>
-        </ul>
-
-        <h2 class="govuk-heading-l">Staff</h2>
-        <ul class="govuk-list">
-          <li><a class="govuk-link" routerLink="/caseworker-details">Staff details</a></li>
-        </ul>
+        <ng-container *ngIf="roles$ | async as roles">
+          <ng-container *ngIf="roles.includes('prd-admin')">
+            <h2 class="govuk-heading-l">Organisations</h2>
+            <ul class="govuk-list">
+              <li><a class="govuk-link" routerLink="/organisation/pending">New registrations</a></li>
+              <li><a class="govuk-link" routerLink="/organisation/pbas">New PBAs</a></li>
+              <li><a class="govuk-link" routerLink="/organisation/active">Active organisations</a></li>
+            </ul>
+          </ng-container>
+          <ng-container *ngIf="roles.includes('cwd-admin')">
+            <h2 class="govuk-heading-l">Staff</h2>
+            <ul class="govuk-list">
+              <li><a class="govuk-link" routerLink="/caseworker-details">Staff details</a></li>
+            </ul>
+          </ng-container>
+        </ng-container>
 
         <h2 class="govuk-heading-l">Help and information</h2>
         <ul class="govuk-list">
