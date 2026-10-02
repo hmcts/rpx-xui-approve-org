@@ -93,16 +93,16 @@ export function getTrackRequestObj(error: any) {
 }
 
 // check for the presence of dangerous code in an array of strings
-export function arrayContainOnlySafeCharacters(values: string[]): boolean {
+export function arrayContainOnlySafeCharacters(values: unknown[]): boolean {
   return values.every((value) =>
     (value !== null && typeof value === 'object')
-      ? objectContainsOnlySafeCharacters(value)
-      : !containsDangerousCode(value)
+      ? objectContainsOnlySafeCharacters(value as Record<string, unknown>)
+      : typeof value !== 'string' || !containsDangerousCode(value)
   );
 }
 
 // check for the presence of dangerous code in an object
-export function objectContainsOnlySafeCharacters(values: object): boolean {
+export function objectContainsOnlySafeCharacters(values: Record<string, unknown>): boolean {
   for (const key in values) {
     const inputValue = values[key];
     if (Array.isArray(inputValue)) {
@@ -110,7 +110,7 @@ export function objectContainsOnlySafeCharacters(values: object): boolean {
         return false;
       }
     } else if (inputValue !== null && typeof inputValue === 'object') {
-      if (!objectContainsOnlySafeCharacters(inputValue)) {
+      if (!objectContainsOnlySafeCharacters(inputValue as Record<string, unknown>)) {
         return false;
       }
     } else if (typeof inputValue === 'string' && containsDangerousCode(inputValue)) {
