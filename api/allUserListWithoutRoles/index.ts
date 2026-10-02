@@ -3,6 +3,7 @@ import { EnhancedRequest } from 'models/enhanced-request.interface';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
+import { objectContainsOnlySafeCharacters } from '../lib/util';
 
 const logger = log4jui.getLogger('return');
 
@@ -10,6 +11,9 @@ async function handleOrganisationUserListRoute(req: EnhancedRequest, res: Respon
   try {
     const organisationsUri = getOrganisationUsersUri(req.query.usersOrgId);
     const response = await req.http.get(organisationsUri);
+    if (!objectContainsOnlySafeCharacters(response.data)) {
+      return res.status(400).send('Invalid organisation received');
+    }
     logger.info('Organisations users response' + response.data);
     res.send(response.data);
   } catch (error) {
