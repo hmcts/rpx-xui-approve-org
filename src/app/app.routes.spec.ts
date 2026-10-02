@@ -117,6 +117,13 @@ describe('AppRoutes', () => {
     expect(router.url).toEqual('/cookies');
   });
 
+  it('should navigate to sitemap path', async () => {
+    await router.navigateByUrl('sitemap');
+    fixture.detectChanges();
+
+    expect(router.url).toEqual('/sitemap');
+  });
+
   describe('caseworker-details', () => {
     it('should navigate to root when correct auth (but not role) present', async () => {
       authServiceMock.authenticated = true;
