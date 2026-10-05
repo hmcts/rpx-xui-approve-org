@@ -1,4 +1,5 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { OrganisationVM } from '../../models/organisation';
@@ -16,7 +17,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() public formGroup: any;
   public submitted = false;
   public formSub: Subscription;
-  constructor(private readonly fb: FormBuilder) {}
+  constructor(private readonly fb: FormBuilder, private readonly titleService: Title) {}
 
   public ngAfterViewInit(): void {
     this.submitted = false;
@@ -27,6 +28,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.org.pendingPaymentAccount.forEach((p) => this.formGroup.addControl(p, this.fb.control('', Validators.required)));
     this.formSub = this.formGroup.valueChanges.subscribe(() => {
       this.submitted = false;
+      this.clearErrorTitle();
 
       const opt = { onlySelf: false };
       this.formGroup.markAsDirty(opt);
@@ -43,7 +45,19 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
     this.submitted = true;
     if (this.formGroup.valid) {
       this.submitForm.emit();
+    } else {
+      this.titleService.setTitle('Error: New PBAs - HM Courts & Tribunals Service - GOV.UK');
     }
+  }
+
+  private setErrorTitle(): void {
+    if (!this.titleService.getTitle().startsWith('Error:')) {
+      this.titleService.setTitle(`Error: ${this.titleService.getTitle()}`);
+    }
+  }
+
+  private clearErrorTitle(): void {
+    this.titleService.setTitle(this.titleService.getTitle().replace(/^Error:\s*/, ''));
   }
 
   public setNewPBA($event): void {
