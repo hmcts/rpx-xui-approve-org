@@ -30,7 +30,6 @@ import config from 'config';
 import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
 import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
 import { AuthService } from '../services/auth/auth.service';
-import { CryptoWrapper } from './services/cryptoWrapper';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { LoggerService } from './services/logger.service';
 import { MonitoringService } from './services/monitoring.service';
@@ -89,7 +88,7 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     LogOutKeepAliveService,
     { provide: RouterStateSerializer, useClass: CustomSerializer },
     AuthService,
-    CryptoWrapper, JwtDecodeWrapper, MonitoringService, LoggerService,
+    JwtDecodeWrapper, MonitoringService, LoggerService,
     { provide: ErrorHandler, useClass: DefaultErrorHandler },
     {
       provide: APP_INITIALIZER,
