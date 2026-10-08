@@ -4,7 +4,7 @@
     "local>hmcts/.github:renovate-config",
     "local>hmcts/.github//renovate/automerge-all"
   ],
-  "automerge": false,
+  "automerge": true,
   "platformAutomerge": false,
   "prConcurrentLimit": 3,
   "prHourlyLimit": 1,
@@ -12,6 +12,7 @@
   "schedule": [
     "* 7-16 * * 1-5"
   ],
+  "automergeSchedule": ["* 7-16 * * 1-5"],
   "updateNotScheduled": false,
   "packageRules": [
     {
@@ -21,6 +22,7 @@
         "@hmcts/ccpay-web-component",
         "@hmcts/rpx-xui-common-lib",
         "@hmcts/rpx-xui-node-lib",
+        "@hmcts/media-viewer",
         "rpx-xui-translation",
         "@microsoft/applicationinsights-web",
         "applicationinsights",
