@@ -7,20 +7,20 @@
 
         <ng-container *ngIf="roles$ | async as roles">
           <ng-container *ngIf="roles.includes('prd-admin')">
-            <h2 class="govuk-heading-l">Organisation approvals</h2>
+            <h2 class="govuk-heading-m">Organisation approvals</h2>
             <ul class="govuk-list">
               <li><a class="govuk-link" routerLink="/pending-organisations">Organisations</a></li>
             </ul>
           </ng-container>
           <ng-container *ngIf="roles.includes('cwd-admin')">
-            <h2 class="govuk-heading-l">Staff</h2>
+            <h2 class="govuk-heading-m">Staff</h2>
             <ul class="govuk-list">
               <li><a class="govuk-link" routerLink="/caseworker-details">Staff details</a></li>
             </ul>
           </ng-container>
         </ng-container>
 
-        <h2 class="govuk-heading-l">Help and information</h2>
+        <h2 class="govuk-heading-m">Help and information</h2>
         <ul class="govuk-list">
           <li><a class="govuk-link" routerLink="/accessibility">Accessibility statement</a></li>
           <li><a class="govuk-link" routerLink="/cookies">Cookies</a></li>
