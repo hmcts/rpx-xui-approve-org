@@ -63,6 +63,9 @@ describe('AppRoutes', () => {
   const roleGuardMock = new RoleGuardMock();
 
   beforeEach(waitForAsync(() => {
+    authServiceMock.authenticated = true;
+    roleGuardMock.activate = false;
+
     TestBed.configureTestingModule({
       declarations: [
         AppMockComponent
@@ -113,6 +116,13 @@ describe('AppRoutes', () => {
     fixture.detectChanges();
 
     expect(router.url).toEqual('/cookies');
+  });
+
+  it('should navigate to sitemap path', async () => {
+    await router.navigateByUrl('sitemap');
+    fixture.detectChanges();
+
+    expect(router.url).toEqual('/sitemap');
   });
 
   describe('caseworker-details', () => {
