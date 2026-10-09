@@ -11,7 +11,7 @@ describe('SitemapComponent', () => {
   let fixture: ComponentFixture<SitemapComponent>;
   let authentication: Subject<boolean>;
   let cookieService: jasmine.SpyObj<CookieService>;
-  const helpLinks = ['/accessibility', '/cookies', '/privacy-policy', '/terms-and-conditions'];
+  const helpLinks = ['/accessibility', '/cookies', '/privacy-policy', '/terms-and-conditions', '/sitemap'];
   const organisationLinks = ['/organisation/pending', '/organisation/pbas', '/organisation/active'];
 
   beforeEach(waitForAsync(() => {
