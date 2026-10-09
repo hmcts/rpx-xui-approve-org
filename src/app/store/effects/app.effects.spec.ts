@@ -5,6 +5,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { StoreModule } from '@ngrx/store';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
+import { SessionStorageService } from '../../../shared/services/session-storage.service';
 import { LogOutKeepAliveService } from '../../services/keep-alive/keep-alive.service';
 import { UserService } from '../../services/user-service/user.service';
 import { AddGlobalError, GetUserDetails, GetUserDetailsFailure, GetUserDetailsSuccess, Go, KeepAlive, Logout, SignedOut, SignedOutSuccess } from '../actions';
@@ -15,8 +16,10 @@ describe('App Effects', () => {
   let effects: fromAppEffects.AppEffects;
   const mockKeepAliveService = jasmine.createSpyObj('mockKeepAliveService', ['heartBeat', 'logOut']);
   const mockUserService = jasmine.createSpyObj('mockUserService', ['getUserDetails']);
+  const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['setItem']);
 
   beforeEach(() => {
+    mockSessionStorageService.setItem.calls.reset();
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
       providers: [
@@ -24,6 +27,7 @@ describe('App Effects', () => {
         provideMockActions(() => actions$),
         { provide: LogOutKeepAliveService, useValue: mockKeepAliveService },
         { provide: UserService, useValue: mockUserService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
@@ -108,6 +112,7 @@ describe('App Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.getUser$).toBeObservable(expected);
+      expect(mockSessionStorageService.setItem).toHaveBeenCalledOnceWith('userDetails', JSON.stringify(payload));
     });
 
     it('should give error', () => {
