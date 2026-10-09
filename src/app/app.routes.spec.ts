@@ -63,6 +63,9 @@ describe('AppRoutes', () => {
   const roleGuardMock = new RoleGuardMock();
 
   beforeEach(waitForAsync(() => {
+    authServiceMock.authenticated = true;
+    roleGuardMock.activate = false;
+
     TestBed.configureTestingModule({
       declarations: [
         AppMockComponent
