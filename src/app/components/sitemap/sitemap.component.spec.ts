@@ -12,7 +12,7 @@ describe('SitemapComponent', () => {
   let authentication: Subject<boolean>;
   let cookieService: jasmine.SpyObj<CookieService>;
   const helpLinks = ['/accessibility', '/cookies', '/privacy-policy', '/terms-and-conditions', '/sitemap'];
-  const organisationLinks = ['/pending-organisations'];
+  const organisationLinks = ['/organisation/pending', '/organisation/pbas', '/organisation/active'];
 
   beforeEach(waitForAsync(() => {
     authentication = new Subject<boolean>();

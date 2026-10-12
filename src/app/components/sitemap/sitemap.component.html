@@ -7,9 +7,11 @@
 
         <ng-container *ngIf="roles$ | async as roles">
           <ng-container *ngIf="roles.includes('prd-admin')">
-            <h2 class="govuk-heading-m">Organisation approvals</h2>
+            <h2 class="govuk-heading-m">Organisations</h2>
             <ul class="govuk-list">
-              <li><a class="govuk-link" routerLink="/pending-organisations">Organisations</a></li>
+              <li><a class="govuk-link" routerLink="/organisation/pending">New registrations</a></li>
+              <li><a class="govuk-link" routerLink="/organisation/pbas">New PBAs</a></li>
+              <li><a class="govuk-link" routerLink="/organisation/active">Active organisations</a></li>
             </ul>
           </ng-container>
           <ng-container *ngIf="roles.includes('cwd-admin')">
