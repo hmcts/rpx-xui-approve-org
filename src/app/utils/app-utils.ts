@@ -103,6 +103,10 @@ export class AppUtils {
         newUser.firstName = user.firstName;
         newUser.lastName = user.lastName;
         newUser.fullName = `${user.firstName} ${user.lastName}`;
+        // UserListComponent renders the name as an anchor. Give it a real
+        // destination so it remains a native, keyboard-operable link.
+        newUser.routerLink = '/user-details';
+        newUser.routerLinkTitle = newUser.fullName;
         newUser.email = user.email;
         AppConstants.USER_ROLES.forEach((userRoles) => {
           if (user.roles) {

@@ -13,17 +13,20 @@
       <h2 class="govuk-tabs__title">Contents</h2>
 
       <ul class="govuk-tabs__list" role="tablist">
-        <ng-container *ngFor="let tab of tabs">
+        <ng-container *ngFor="let tab of tabs; let i = index">
           <li class="govuk-tabs__list-item" [ngClass]="{'govuk-tabs__list-item--selected': activeRoute === tab.url}" role="presentation">
             <a class="govuk-tabs__tab" routerLinkActive="router-link-active" role="tab"
-              [routerLink]="tab.url" [attr.aria-selected]="activeRoute === tab.url" (click)="refreshBanner()">
+              [id]="'organisation-tab-' + i" [attr.aria-controls]="'organisation-tab-panel'"
+              [routerLink]="tab.url" [attr.aria-selected]="activeRoute === tab.url"
+              (click)="refreshBanner()" (keydown)="onTabKeydown($event, i)">
               {{tab.label}}
             </a>
           </li>
         </ng-container>
       </ul>
 
-      <div class="govuk-tabs__panel" role="tabpanel">
+      <div id="organisation-tab-panel" class="govuk-tabs__panel" role="tabpanel"
+        [attr.aria-labelledby]="activeTabId">
         <router-outlet></router-outlet>
       </div>
 

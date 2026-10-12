@@ -1,3 +1,3 @@
-<a [routerLink]="" (click)="onGoBack()" class="govuk-back-link">
+<button type="button" (click)="onGoBack()" class="govuk-back-link app-back-link-button">
   {{currentUrl === 'active-organisation' ? 'Back to pending organisations' : 'Back to previous page'}}
-</a>
+</button>
