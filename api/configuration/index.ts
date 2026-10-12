@@ -33,6 +33,18 @@ export const getEnvironment = () => process.env.NODE_CONFIG_ENV;
 export const getConfigValue = <T = string>(reference: string): T => config.get<T>(reference);
 
 /**
+ * Check if Configuration Value exists
+ *
+ * Returns a boolean indicating whether the configuration value exists, using a config reference. It uses the reference to check
+ * the presence of the value in the .yaml file
+ *
+ * @see /config .yaml
+ * @see references.ts
+ * @param reference - ie. 'services.ccdDefApi'
+ */
+export const hasConfigValue = (reference: string): boolean => config.has(reference);
+
+/**
   * Show Feature
   *
   * Helper method for config feature toggling
