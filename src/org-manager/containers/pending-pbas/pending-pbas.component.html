@@ -33,7 +33,9 @@
         </td>
         <td class="govuk-table__cell">
           <a class="govuk-link" [routerLink]="['new', org.organisationId]"
-            routerLinkActive="router-link-active">View</a>
+            routerLinkActive="router-link-active">
+            View<span class="govuk-visually-hidden"> {{org.name}} ({{org.organisationId}})</span>
+          </a>
         </td>
       </tr>
     </tbody>

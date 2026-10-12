@@ -40,7 +40,9 @@
           <span *ngIf="org.status=='REVIEW'" class="govuk-tag govuk-tag--grey organisation-status-tag">UNDER REVIEW</span>
         </td>
         <td class="govuk-table__cell no-wrap">
-          <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
+          <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">
+            View<span class="govuk-visually-hidden"> {{org.name}} ({{org.organisationId}})</span>
+          </a>
         </td>
       </tr>
     </tbody>
