@@ -78,7 +78,7 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingPbaDecisionRows = this.page.locator('app-pba-account-approval');
   readonly pendingPbaContinueButton = this.page.locator('app-new-pbas-info button[type="submit"].govuk-button').first();
   readonly newPbaDetailsPageHeading = this.page.locator('app-new-pbas-info h1.govuk-heading-xl').first();
-  readonly newPbaAccountsHeading = this.page.locator('app-new-pbas-info h3.govuk-heading-m#heading').first();
+  readonly newPbaAccountsHeading = this.page.locator('app-new-pbas-info h2.govuk-heading-m#heading').first();
   readonly activeOrganisationsTab = this.tabCollection.locator('a.govuk-tabs__tab[href*="/organisation/active"]');
   readonly activeOrganisationsPanel = this.page.locator('app-prd-org-overview-component');
   readonly staffDetailsHeaderTabLocator = this.page.locator('a[href*="/caseworker-details"]').first();
@@ -96,7 +96,11 @@ export class OrganisationApprovalsPage extends BasePage {
     .first();
 
   readonly usersTableRows = this.usersList.locator('table tbody tr');
-  readonly adminDetailsHeading = this.detailsPanel.locator('h3.govuk-heading-m').nth(1);
+  readonly detailsSectionHeading = this.detailsPanel.getByRole('heading', {
+    level: 2,
+    name: /^(Administrator details|PBAs)$/
+  }).last();
+
   readonly pendingOrganisationViewLinkLocator = this.pendingOverviewPanel
     .locator('table.pending-organisations a.govuk-link[href*="/organisation-details/"]')
     .first();

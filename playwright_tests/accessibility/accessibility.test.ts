@@ -149,6 +149,7 @@ test.describe(
           await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
           await organisationApprovalsPage.openFirstActiveOrganisation();
           await expect(organisationApprovalsPage.detailsPanel).toBeVisible();
+          await expect(organisationApprovalsPage.detailsSectionHeading).toBeVisible();
           await accessibilityCheck(page, 'Active organisation details view', testInfo);
         }
       );

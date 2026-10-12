@@ -31,7 +31,17 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/hmcts-assets"
+              "src/hmcts-assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/govuk-frontend/dist/govuk/assets/fonts",
+                "output": "/assets/fonts"
+              },
+              {
+                "glob": "govuk-crest.svg",
+                "input": "node_modules/govuk-frontend/dist/govuk/assets/images",
+                "output": "/assets/images"
+              }
             ],
             "styles": [
               "src/styles.scss"
@@ -114,7 +124,17 @@
             "scripts": [],
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/govuk-frontend/dist/govuk/assets/fonts",
+                "output": "/assets/fonts"
+              },
+              {
+                "glob": "govuk-crest.svg",
+                "input": "node_modules/govuk-frontend/dist/govuk/assets/images",
+                "output": "/assets/images"
+              }
             ],
             "codeCoverage": true,
             "codeCoverageExclude": [
