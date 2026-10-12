@@ -99,19 +99,8 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
     });
 
-    await test.step('Find the organisation in the active tab and open details', async () => {
-      await organisationApprovalsPage.openActiveOrganisationsTab();
-      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-
-      await expect.poll(async () => {
-        await organisationApprovalsPage.searchForActiveOrganisation(organisationName, organisationIdentifier);
-        return organisationApprovalsPage.activeOrganisationRowById(organisationIdentifier).count();
-      }, {
-        message: `Active organisation ${organisationIdentifier} was not returned by search`,
-        timeout: 60_000,
-        intervals: [1_000, 2_000, 5_000]
-      }).toBeGreaterThan(0);
-      await organisationApprovalsPage.openActiveOrganisationById(organisationIdentifier);
+    await test.step('Open the approved organisation by its identifier', async () => {
+      await openProvisionedOrganisationDetails(page, organisationIdentifier);
     });
 
     await test.step('Delete the active organisation and verify confirmation guidance', async () => {
