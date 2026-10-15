@@ -110,7 +110,7 @@
     "jwt-decode": "^4.0.0",
     "launchdarkly-js-client-sdk": "3.9.1",
     "log4js": "^6.9.1",
-    "multer": "^2.3.0",
+    "multer": "^2.4.0",
     "ngx-cookie": "6.0.1",
     "ngx-editor": "19.0.0-beta.1",
     "ngx-logger": "^5.0.12",
