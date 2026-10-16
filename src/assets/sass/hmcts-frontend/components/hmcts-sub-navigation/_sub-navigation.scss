@@ -48,6 +48,16 @@
   padding-left: govuk-spacing(3);
   text-decoration: underline;
 
+  &[type="button"] {
+    background: transparent;
+    border: 0;
+    color: govuk-colour("blue");
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+    width: 100%;
+  }
+
   @include govuk-media-query($from: tablet) {
     padding-left: 0;
   }

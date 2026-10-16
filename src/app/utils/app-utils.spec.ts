@@ -118,6 +118,8 @@ describe('AppUtils', () => {
       fullName: 'hello world',
       firstName: 'hello',
       lastName: 'world',
+      routerLink: '/user-details',
+      routerLinkTitle: 'hello world',
       email: 'test@test.com',
       status: 'Pending',
       resendInvite: true,
