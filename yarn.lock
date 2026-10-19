@@ -15116,13 +15116,13 @@ __metadata:
   linkType: hard
 
 "karma-jasmine-html-reporter@npm:^2.1.0":
-  version: 2.2.0
-  resolution: "karma-jasmine-html-reporter@npm:2.2.0"
+  version: 2.3.0
+  resolution: "karma-jasmine-html-reporter@npm:2.3.0"
   peerDependencies:
-    jasmine-core: ^4.0.0 || ^5.0.0 || ^6.0.0
+    jasmine-core: ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
     karma: ^6.0.0
     karma-jasmine: ^5.0.0
-  checksum: 10/c473a4071990f48aafd93bdc8a93ed875609a29ae2e86e7f73f2d1d85ef6e3d34a11b18e4bda17e7a47bbc477fdc8613832e0696669ef120bacbd4b21828c150
+  checksum: 10/efdd14334666041251c078e4c5f06b78e12c5757e9979f1079928213a616b878181d5018abe82b0cabd060cbde823264383e53274976857f7666fa2b7a016d30
   languageName: node
   linkType: hard
 
