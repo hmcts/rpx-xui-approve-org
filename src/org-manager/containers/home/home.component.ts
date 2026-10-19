@@ -22,6 +22,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   public activeRoute: string;
   public notificationBanners: [];
   private routeSubscription: Subscription;
+
+  public get activeTabId(): string {
+    const activeTabIndex = this.tabs.findIndex((tab) => this.activeRoute === tab.url);
+    return `organisation-tab-${activeTabIndex >= 0 ? activeTabIndex : 0}`;
+  }
+
   constructor(
     private readonly router: Router,
     protected organisationService: OrganisationService,
@@ -69,5 +75,23 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (window.history.state && window.history.state.notificationBanners) {
       this.notificationBanners = null;
     }
+  }
+
+  public onTabKeydown(event: KeyboardEvent, currentIndex: number): void {
+    const key = event.key;
+    const isPrevious = key === 'ArrowLeft';
+    const isNext = key === 'ArrowRight';
+    const isFirst = key === 'Home';
+    const isLast = key === 'End';
+
+    if (!isPrevious && !isNext && !isFirst && !isLast) {
+      return;
+    }
+
+    event.preventDefault();
+    const nextIndex = isFirst ? 0 : isLast ? this.tabs.length - 1 :
+      (currentIndex + (isNext ? 1 : -1) + this.tabs.length) % this.tabs.length;
+    const tabs = document.querySelectorAll<HTMLAnchorElement>('.govuk-tabs__tab');
+    tabs[nextIndex]?.focus();
   }
 }

@@ -18,20 +18,20 @@
           <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="showUserNavigation">
             <ul class="hmcts-sub-navigation__list">
               <li class="hmcts-sub-navigation__item">
-                <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" aria-current="page">
+                <span *ngIf="!showUsers" class="hmcts-sub-navigation__link" aria-current="page">
                   Organisation details
-                </a>
-                <a  *ngIf="showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(false)" [routerLink]="">
+                </span>
+                <button type="button" *ngIf="showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(false)">
                   Organisation details
-                </a>
+                </button>
               </li>
               <li class="hmcts-sub-navigation__item">
-                <a *ngIf="showUsers" class="hmcts-sub-navigation__link" aria-current="page">
+                <span *ngIf="showUsers" class="hmcts-sub-navigation__link" aria-current="page">
                   Users
-                </a>
-                <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(true)" [routerLink]="">
+                </span>
+                <button type="button" *ngIf="!showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(true)">
                   Users
-                </a>
+                </button>
               </li>
             </ul>
           </nav>

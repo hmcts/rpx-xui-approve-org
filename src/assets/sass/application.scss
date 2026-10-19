@@ -44,6 +44,24 @@ html {
   outline: 0;
 }
 
+// Keep action-only controls native buttons while preserving link styling.
+.app-link-button,
+.app-back-link-button {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.app-link-button {
+  padding: 0;
+}
+
+.app-back-link-button {
+  padding: 0 0 govuk-spacing(1) govuk-spacing(7);
+}
+
 .jui-measure {
   max-width: 833px;
 }

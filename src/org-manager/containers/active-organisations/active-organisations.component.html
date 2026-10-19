@@ -39,7 +39,9 @@
           <span *ngIf="org.status=='ACTIVE'" class="govuk-tag govuk-tag--blue organisation-status-tag">ACTIVE</span>
         </td>
         <td class="govuk-table__cell no-wrap">
-          <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
+          <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">
+            View<span class="govuk-visually-hidden"> {{org.name}} ({{org.organisationId}})</span>
+          </a>
         </td>
       </tr>
     </tbody>

@@ -10,7 +10,7 @@
     </dd>
     <dd class="govuk-summary-list__actions">
       <a [routerLink]="['/change', 'pba', organisationId, pbaNumber]">
-        Change
+        Change<span class="govuk-visually-hidden"> PBA {{pbaNumber}} for {{accountName}}</span>
       </a>
     </dd>
   </div>

@@ -89,7 +89,11 @@ export class OrganisationApprovalsPage extends BasePage {
   );
 
   readonly subNavigation = this.page.locator('nav.hmcts-sub-navigation');
-  readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1).locator('a.hmcts-sub-navigation__link');
+  // The inactive Users control is a native button; the active state is plain text.
+  // Target interactive elements instead of assuming the old anchor markup.
+  readonly usersTabLink = this.subNavigation.locator('li.hmcts-sub-navigation__item').nth(1)
+    .locator('a.hmcts-sub-navigation__link, button.hmcts-sub-navigation__link');
+
   readonly usersList = this.page.locator('xuilib-user-list');
   readonly userUploadSurfaceLocator = this.page
     .locator('input[type="file"], xuilib-user-list, app-org-details-info, app-org-details-info-old')
@@ -419,13 +423,19 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async clickBackLink(): Promise<void> {
-    const roleBackLink = this.page.getByRole('link', { name: /^Back$/ }).first();
+    const roleBackLink = this.page.getByRole('link', { name: /^Back/ }).first();
     if (await roleBackLink.count()) {
       await roleBackLink.click();
       return;
     }
 
-    await this.page.locator('a', { hasText: /^Back$/ }).first().click();
+    const roleBackButton = this.page.getByRole('button', { name: /^Back/ }).first();
+    if (await roleBackButton.count()) {
+      await roleBackButton.click();
+      return;
+    }
+
+    await this.page.locator('a, button').filter({ hasText: /^Back/ }).first().click();
   }
 
   async openFirstActiveOrganisation(): Promise<void> {
