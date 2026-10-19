@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Actions, createEffect, ofType } from '@ngrx/effects';
-
 import { HttpErrorResponse } from '@angular/common/http';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { UserInterface } from '../../../models/user.model';
+import { SessionStorageService } from '../../../shared/services/session-storage.service';
 import { LogOutKeepAliveService } from '../../services/keep-alive/keep-alive.service';
 import { UserService } from '../../services/user-service/user.service';
 import * as routerAction from '../../store/actions/router.action';
@@ -15,7 +15,8 @@ export class AppEffects {
   constructor(
         private readonly actions$: Actions,
         private readonly logOutService: LogOutKeepAliveService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly sessionStorageService: SessionStorageService
   ) {}
 
   public logout$ = createEffect(() => this.actions$.pipe(
@@ -51,7 +52,11 @@ export class AppEffects {
     switchMap(() => {
       return this.userService.getUserDetails()
         .pipe(
-          map((userDetails: UserInterface) => new appActions.GetUserDetailsSuccess(userDetails)),
+          map((userDetails: UserInterface) => {
+            // EXUI-5080 - Store user details in session storage for log use
+            this.sessionStorageService.setItem('userDetails', JSON.stringify(userDetails));
+            return new appActions.GetUserDetailsSuccess(userDetails);
+          }),
           catchError((error: HttpErrorResponse) => of(new appActions.GetUserDetailsFailure(error)))
         );
     })

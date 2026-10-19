@@ -3,6 +3,7 @@ import { Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
+import { objectContainsOnlySafeCharacters } from '../lib/util';
 import { EnhancedRequest } from '../models/enhanced-request.interface';
 
 const logger = log4jui.getLogger('return');
@@ -30,8 +31,14 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response) 
       console.log(organisationsUri, 'organisationUrl');
       const response = await req.http.get(organisationsUri);
       if (response.data.organisations) {
+        if (!objectContainsOnlySafeCharacters(response.data.organisations)) {
+          return res.status(400).send('Invalid organisation received');
+        }
         res.send(response.data.organisations);
       } else {
+        if (!objectContainsOnlySafeCharacters(response.data)) {
+          return res.status(400).send('Invalid organisation received');
+        }
         res.send(response.data);
       }
     } catch (error) {
@@ -90,6 +97,9 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
       } else {
         responseData = { organisations: [], total_records: 0 };
       }
+    }
+    if (!objectContainsOnlySafeCharacters(responseData)) {
+      return res.status(400).send('Invalid organisation list received');
     }
     res.send(responseData);
   } catch (error) {
