@@ -1,7 +1,7 @@
 import { test, expect } from '../../page-objects/page.fixtures';
 import { setupNavigationLinksIntegrationPage } from '../helpers/navigation-links.helpers';
 
-test.describe('EXUI-5437 Approve Organisations visual comparison', () => {
+test.describe('EXUI-5433 Approve Organisations visual comparison', () => {
   test('pending navigation, table and approval form states', async ({ page, organisationApprovalsPage }) => {
     const { pendingOrganisationId, pendingOrganisationName } = await setupNavigationLinksIntegrationPage(page);
 
