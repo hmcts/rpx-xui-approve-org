@@ -63,6 +63,10 @@ export type NavigationLinksIntegrationSetup = {
   activeOrganisationName: string;
 };
 
+type NavigationLinksIntegrationOptions = {
+  authenticate?: boolean;
+};
+
 async function setupOrganisationUsersApiMocks(page: Page): Promise<void> {
   await page.route('**/api/allUserListWithoutRoles?usersOrgId=**', async (route) => {
     await route.fulfill({
@@ -81,7 +85,10 @@ async function setupOrganisationUsersApiMocks(page: Page): Promise<void> {
   });
 }
 
-export async function setupNavigationLinksIntegrationPage(page: Page): Promise<NavigationLinksIntegrationSetup> {
+export async function setupNavigationLinksIntegrationPage(
+  page: Page,
+  { authenticate = true }: NavigationLinksIntegrationOptions = {}
+): Promise<NavigationLinksIntegrationSetup> {
   await setupStandardOrganisationApprovalsApiMocks(page, {
     organisations: {
       pendingOrganisations: [pendingBacklinkOrganisation],
@@ -100,7 +107,9 @@ export async function setupNavigationLinksIntegrationPage(page: Page): Promise<N
 
   await setupOrganisationUsersApiMocks(page);
 
-  await ensureAuthenticatedPage(page, 'base');
+  if (authenticate) {
+    await ensureAuthenticatedPage(page, 'base');
+  }
 
   return {
     pendingOrganisationId: pendingBacklinkOrganisation.organisationIdentifier,
