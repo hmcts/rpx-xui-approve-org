@@ -14,6 +14,11 @@ test.describe('EXUI-5437 Approve Organisations visual comparison', () => {
     await organisationApprovalsPage.openFirstPendingOrganisation();
     await expect(page).toHaveURL(new RegExp(`/organisation-details/${pendingOrganisationId}`));
     await expect(organisationApprovalsPage.decisionOptionsGroup).toBeVisible();
+    const organisationSummaryRows = page.locator('.govuk-summary-list__row');
+    await expect(organisationSummaryRows.filter({ hasText: 'Service to access' }).locator('.govuk-summary-list__value'))
+      .toHaveText('Civil');
+    await expect(organisationSummaryRows.filter({ hasText: 'Organisation type' }).locator('.govuk-summary-list__value'))
+      .toHaveText('Solicitor');
     await expect(organisationApprovalsPage.detailsPanel).toHaveScreenshot('approval-form-unselected.png', {
       animations: 'disabled'
     });
