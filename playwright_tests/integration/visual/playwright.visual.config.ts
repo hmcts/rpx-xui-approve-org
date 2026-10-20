@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { defineConfig, devices } from '@playwright/test';
 
 const candidateUrl = process.env.TEST_URL?.trim();
@@ -7,6 +8,10 @@ if (!candidateUrl || !/^http:\/\/(?:127\.0\.0\.1|localhost):\d+\/?$/.test(candid
 const candidateSha = process.env.VISUAL_CANDIDATE_SHA?.trim();
 if (!candidateSha) {
   throw new Error('Visual comparison requires VISUAL_CANDIDATE_SHA for candidate provenance');
+}
+const currentSha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+if (candidateSha !== currentSha) {
+  throw new Error('Visual comparison candidate SHA does not match the checked-out build');
 }
 if (process.platform !== 'darwin') {
   throw new Error('Visual comparison is currently approved only on macOS until Linux baselines are supplied');
