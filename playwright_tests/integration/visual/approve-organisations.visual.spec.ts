@@ -1,5 +1,5 @@
-import { test, expect } from '../../playwright_tests/page-objects/page.fixtures';
-import { setupNavigationLinksIntegrationPage } from '../../playwright_tests/integration/helpers/navigation-links.helpers';
+import { test, expect } from '../../page-objects/page.fixtures';
+import { setupNavigationLinksIntegrationPage } from '../helpers/navigation-links.helpers';
 
 test.describe('EXUI-5437 Approve Organisations visual comparison', () => {
   test('pending navigation, table and approval form states', async ({ page, organisationApprovalsPage }) => {
