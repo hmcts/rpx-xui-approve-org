@@ -244,6 +244,28 @@ TEST_REGISTER_URL=http://localhost:3000 \
 yarn test:functional:e2e:raw
 ```
 
+### Running the opt-in visual baseline comparison
+
+The visual suite is not part of the standard functional CI discovery. Run it explicitly against an identified local candidate build on macOS:
+
+```bash
+TEST_URL=http://127.0.0.1:<port> \
+VISUAL_CANDIDATE_SHA=$(git rev-parse HEAD) \
+npx playwright test -c playwright_tests/integration/visual/playwright.visual.config.ts
+```
+
+`TEST_URL` must point to the local candidate application, and `VISUAL_CANDIDATE_SHA` must be the exact commit SHA checked out and served by that candidate build. The comparison is currently approved for macOS only; Linux baselines are not supplied. The command must be run from the candidate checkout, with the application running on the matching local port.
+
+Use `--update-snapshots` deliberately and only after an approved UI change:
+
+```bash
+TEST_URL=http://127.0.0.1:<port> \
+VISUAL_CANDIDATE_SHA=$(git rev-parse HEAD) \
+npx playwright test -c playwright_tests/integration/visual/playwright.visual.config.ts --update-snapshots
+```
+
+Review every changed PNG before accepting the new baseline, then rerun the comparison without `--update-snapshots`. The HTML report is written to `functional-output/tests/playwright-visual/html-report/`; failure traces are retained under `functional-output/tests/playwright-visual/test-results/`. Standard CI does not discover `*.visual.spec.ts`, so this explicit comparison and its reviewed image changes are required for visual acceptance.
+
 ### Local selector-check runs
 
 Use these when validating against a specific deployment target.
