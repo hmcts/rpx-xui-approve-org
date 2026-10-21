@@ -1,6 +1,8 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, DebugElement, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { provideMockStore } from '@ngrx/store/testing';
+import { first } from 'rxjs/operators';
 import { FooterComponent } from './footer.component';
 
 describe('FooterComponent', () => {
@@ -48,6 +50,13 @@ describe('FooterComponent', () => {
         RouterTestingModule
       ],
       declarations: [FooterComponent, TestDummyHostComponent],
+      providers: [provideMockStore({
+        initialState: {
+          appState: {
+            userDetails: { emailId: 'logged-in-user@example.com' }
+          }
+        }
+      })],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     })
       .compileComponents();
@@ -75,5 +84,25 @@ describe('FooterComponent', () => {
   it('should be created by angular', () => {
     expect(component.helpData).toEqual(footerData);
     expect(component.navigationData).toEqual(footerDataNavigation);
+  });
+
+  it('should provide the logged-in user email from the store', (done) => {
+    component.loggedInUserEmail$.pipe(first()).subscribe((email) => {
+      expect(email).toBe('logged-in-user@example.com');
+      done();
+    });
+  });
+
+  it('should identify lower environments', () => {
+    expect(component.isLowerEnvironment('administer-orgs.aat.platform.hmcts.net')).toBeTrue();
+    expect(component.isLowerEnvironment('administer-orgs.demo.platform.hmcts.net')).toBeTrue();
+    expect(component.isLowerEnvironment('administer-orgs.ithc.platform.hmcts.net')).toBeTrue();
+    expect(component.isLowerEnvironment('xui-ao-webapp-pr-123.preview.platform.hmcts.net')).toBeTrue();
+    expect(component.isLowerEnvironment('localhost')).toBeTrue();
+  });
+
+  it('should not identify production as a lower environment', () => {
+    expect(component.isLowerEnvironment('administer-orgs.platform.hmcts.net')).toBeFalse();
+    expect(component.isLowerEnvironment('administer-orgs.prod.platform.hmcts.net')).toBeFalse();
   });
 });

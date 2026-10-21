@@ -22,7 +22,7 @@ import { AppUtils } from '../../utils/app-utils';
 export class AppComponent implements OnInit {
   public identityBar$: Observable<string[]>;
   public modalData$: Observable<{ isVisible?: boolean; countdown?: string }>;
-  public mainContentId = 'content';
+  public mainContentId = 'main-content-start';
 
   constructor(
     private readonly store: Store<fromRoot.State>,

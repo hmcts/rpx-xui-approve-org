@@ -4,10 +4,13 @@ import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '..
 
 export let client;
 
+const appInsightsConnectionString = getConfigValue<string>(APP_INSIGHTS_CONNECTION_STRING);
+const hasValidAppInsightsConnectionString = /(?:^|;)InstrumentationKey=[^;]+/i.test(appInsightsConnectionString || '');
+
 function initialiseAppInsights() {
-  if (getConfigValue(APP_INSIGHTS_CONNECTION_STRING)) {
+  if (hasValidAppInsightsConnectionString) {
     applicationInsights
-      .setup(getConfigValue(APP_INSIGHTS_CONNECTION_STRING))
+      .setup(appInsightsConnectionString)
       .setAutoDependencyCorrelation(true)
       .setAutoCollectRequests(true)
       .setAutoCollectPerformance(true, true)
@@ -22,6 +25,7 @@ function initialiseAppInsights() {
     client.context.tags[client.context.keys.cloudRole] = 'xui-ao';
     client.trackTrace({ message: 'App Insight Activated' });
   } else {
+    client = null;
     console.error('AppInsights enabled but no connection string provided.');
   }
 }

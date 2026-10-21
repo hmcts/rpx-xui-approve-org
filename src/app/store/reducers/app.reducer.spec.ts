@@ -95,6 +95,7 @@ describe('App Reducer', () => {
         loading: false
       };
       expect(state).toEqual(expectedState);
+      expect(state.userDetails.emailId).toBe(user.email);
     });
   });
 

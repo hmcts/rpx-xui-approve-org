@@ -24,12 +24,6 @@
     "paths": {
       "otp": [
         "node_modules/otp/dist/otp.d.ts"
-      ],
-      "gov-ui": [
-        "dist/gov-ui"
-      ],
-      "gov-ui/*": [
-        "dist/gov-ui/*"
       ]
     }
   },

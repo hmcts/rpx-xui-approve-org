@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PBAAccountApprovalComponent } from '..';
@@ -41,6 +42,7 @@ describe('NewPBAsInfoComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterModule, ReactiveFormsModule, FormsModule, RouterTestingModule.withRoutes([])],
       declarations: [NewPBAsInfoComponent, OrganisationAddressComponent, PBAAccountApprovalComponent],
+      providers: [Title],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
       ]

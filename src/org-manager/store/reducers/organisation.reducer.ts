@@ -52,10 +52,8 @@ export function reducer(
     }
     case fromActions.OrgActionTypes.LOAD_ACTIVE_ORGANISATIONS_SUCCESS: {
       const orgEntities = action.payload.reduce((entities: {[id: string]: OrganisationVM}, org: OrganisationVM) => {
-        return {
-          ...entities,
-          [org.organisationId]: org
-        };
+        entities[org.organisationId] = org;
+        return entities;
       }, { ...state.activeOrganisations.orgEntities });
       const activeOrganisations = {
         orgEntities,
@@ -112,10 +110,8 @@ export function reducer(
 
     case fromActions.OrgActionTypes.LOAD_PENDING_ORGANISATIONS_SUCCESS: {
       const orgEntities = action.payload.reduce((entities: {[id: string]: OrganisationVM}, org: OrganisationVM) => {
-        return {
-          ...entities,
-          [org.organisationId]: org
-        };
+        entities[org.organisationId] = org;
+        return entities;
       }, { ...state.pendingOrganisations.orgEntities });
 
       const pendingOrganisations = {
