@@ -13,11 +13,15 @@ if (extraArgs[0] === '--') {
 }
 
 const defaultEngines = 'axe,wave-like,screen-reader';
+const isListOnlyRun = extraArgs.includes('--list');
 
 const env = {
   ...process.env,
   A11Y_ENGINES: process.env.A11Y_ENGINES || process.env.PLAYWRIGHT_A11Y_ENGINES || defaultEngines,
   PLAYWRIGHT_A11Y_ENGINES: process.env.PLAYWRIGHT_A11Y_ENGINES || process.env.A11Y_ENGINES || defaultEngines,
+  PLAYWRIGHT_INCLUDE_A11Y: 'true',
+  PLAYWRIGHT_INCLUDE_WAVE_A11Y: 'true',
+  PLAYWRIGHT_TAGS: process.env.PLAYWRIGHT_TAGS || '@accessibility',
   A11Y_PW_INCLUDE_TAGS: process.env.A11Y_PW_INCLUDE_TAGS || '@accessibility',
   PLAYWRIGHT_JUNIT_OUTPUT:
     process.env.PLAYWRIGHT_JUNIT_OUTPUT || 'functional-output/tests/playwright-accessibility/playwright-accessibility-junit.xml',
@@ -31,6 +35,9 @@ const env = {
   PW_SKIP_SESSION_CAPTURE: process.env.PW_SKIP_SESSION_CAPTURE || 'true',
   PW_ODHIN_TRIM_FAILED_ARTIFACTS: process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS || 'true',
   PW_ODHIN_FINALIZATION_TIMEOUT_MS: process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS || '30000',
+  PW_ODHIN_STRICT_REPORT: process.env.PW_ODHIN_STRICT_REPORT || 'true',
+  PW_A11Y_PREWARM_SESSION: isListOnlyRun ? 'false' : process.env.PW_A11Y_PREWARM_SESSION || 'false',
+  PLAYWRIGHT_DISABLE_GENERIC_FAILURE_ARTIFACTS: 'true',
   PLAYWRIGHT_DEFAULT_REPORTER: process.env.PLAYWRIGHT_DEFAULT_REPORTER || 'line'
 };
 
@@ -40,14 +47,17 @@ const result = spawnSync(
   { env, stdio: 'inherit' }
 );
 
+let status = result.status ?? 1;
 try {
   enhanceGeneratedReport(env.PLAYWRIGHT_REPORT_FOLDER, []);
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
   process.stderr.write(`[accessibility-report] Unable to enhance generated Odhín report: ${message}\n`);
+  if (env.PW_ODHIN_STRICT_REPORT === 'true' && status === 0) {
+    status = 1;
+  }
 }
 
-const status = result.status ?? 1;
 if (status !== 0) {
   process.stderr.write(
     `[accessibility-report] Accessibility pack completed with status ${status}; returning failure so Jenkins can mark the accessibility stage unstable.\n`
