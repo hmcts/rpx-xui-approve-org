@@ -132,10 +132,6 @@ if (showFeature(FEATURE_HELMET_ENABLED)) {
     res.type('text/plain');
     res.send('User-agent: *\nDisallow: /');
   });
-  app.get('/sitemap.xml', (req, res) => {
-    res.type('text/xml');
-    res.send('User-agent: *\nDisallow: /');
-  });
   app.disable('x-powered-by');
   app.disable('X-Powered-By');
 }
