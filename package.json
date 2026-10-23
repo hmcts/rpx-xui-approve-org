@@ -5,7 +5,7 @@
     "api"
   ],
   "engines": {
-    "node": ">=24.18.0 <25"
+    "node": ">=24.22.1 <25"
   },
   "scripts": {
     "build": "NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
