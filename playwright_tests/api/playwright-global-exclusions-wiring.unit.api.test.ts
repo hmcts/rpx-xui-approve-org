@@ -31,6 +31,42 @@ test('warms the required session in every authenticated runner but leaves access
   expect(read('scripts/run-playwright-accessibility.cjs')).toContain('PW_SKIP_SESSION_CAPTURE: process.env.PW_SKIP_SESSION_CAPTURE || \'true\'');
 });
 
+test('makes accessibility report enhancement failure strictness explicit', () => {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'accessibility-report-contract-'));
+  const fakeBin = path.join(tempDir, 'bin');
+  const fakeNpx = path.join(fakeBin, 'npx');
+  const invalidReportFolder = path.join(tempDir, 'report-file');
+  fs.mkdirSync(fakeBin);
+  fs.writeFileSync(fakeNpx, '#!/bin/sh\nexit 0\n');
+  fs.chmodSync(fakeNpx, 0o755);
+  fs.writeFileSync(invalidReportFolder, 'not a directory');
+
+  const runAccessibilityWrapper = (strictReport?: boolean): number => {
+    try {
+      execFileSync(process.execPath, [path.join(repoRoot, 'scripts/run-playwright-accessibility.cjs')], {
+        env: {
+          ...process.env,
+          PATH: `${fakeBin}${path.delimiter}${process.env.PATH ?? ''}`,
+          PLAYWRIGHT_REPORT_FOLDER: invalidReportFolder,
+          ...(strictReport === undefined ? {} : { PW_ODHIN_STRICT_REPORT: String(strictReport) })
+        },
+        stdio: 'pipe'
+      });
+      return 0;
+    } catch (error) {
+      return (error as { status?: number }).status ?? -1;
+    }
+  };
+
+  try {
+    expect(runAccessibilityWrapper()).toBe(1);
+    expect(runAccessibilityWrapper(false)).toBe(0);
+    expect(runAccessibilityWrapper(true)).toBe(1);
+  } finally {
+    fs.rmSync(tempDir, { recursive: true, force: true });
+  }
+});
+
 test('maps the approve-org Key Vault secret in CNP and nightly Jenkins only', () => {
   for (const jenkinsfile of ['Jenkinsfile_CNP', 'Jenkinsfile_nightly']) {
     const source = read(jenkinsfile);
