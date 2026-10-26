@@ -2244,16 +2244,16 @@ __metadata:
   linkType: hard
 
 "@babel/runtime@npm:^7.29.7":
-  version: 7.29.7
-  resolution: "@babel/runtime@npm:7.29.7"
-  checksum: 10/9883b4951787779fd382b121f22f92966d85f19434841f65fb00b2dfec232107e139683f47c6f252891826ad8ee18317b46c3a0e4819116a9885f47b46d7126a
+  version: 7.29.10
+  resolution: "@babel/runtime@npm:7.29.10"
+  checksum: 10/883bb39a09f4773cf46cdd7ba0080ef6b30ff996a4ed21f8d34511ec0836122e697716533da5efc9b5016f763110b19aa07e81cec6e2036fe72cb26aad556af2
   languageName: node
   linkType: hard
 
 "@babel/runtime@npm:^8.0.0":
-  version: 8.0.5
-  resolution: "@babel/runtime@npm:8.0.5"
-  checksum: 10/f54e8051ff2c2b7b21b0c3a6b668799a6d033fb3f4edffdcb78928985b15def38b515ecabac477abb04485346328331b2cd0effd892503737773164203604d76
+  version: 8.0.8
+  resolution: "@babel/runtime@npm:8.0.8"
+  checksum: 10/11aef038d43291323bdcb6bb30e37c27b475b53d465008b93dd73e7d1e12b00db49ca2f21467be703f17749ad4361ee8d6f7f14c592a15ad9fee68715e7e0536
   languageName: node
   linkType: hard
 
