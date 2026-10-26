@@ -5,7 +5,7 @@
     "api"
   ],
   "engines": {
-    "node": ">=24.18.0 <25"
+    "node": ">=24.22.1 <25"
   },
   "scripts": {
     "build": "NODE_OPTIONS=--openssl-legacy-provider; yarn build:prod && yarn build:node",
@@ -80,11 +80,11 @@
     "@angular/platform-browser-dynamic": "^20.3.31",
     "@angular/router": "20.3.31",
     "@babel/runtime": "^8.0.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.4.14",
+    "@hmcts/ccd-case-ui-toolkit": "7.4.15",
     "@hmcts/nodejs-healthcheck": "^1.8.6",
     "@hmcts/properties-volume": "^1.4.1",
     "@hmcts/rpx-xui-common-lib": "3.2.24-ts-node-update",
-    "@hmcts/rpx-xui-node-lib": "2.30.33",
+    "@hmcts/rpx-xui-node-lib": "2.30.34",
     "@microsoft/applicationinsights-web": "^3.4.3",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",
