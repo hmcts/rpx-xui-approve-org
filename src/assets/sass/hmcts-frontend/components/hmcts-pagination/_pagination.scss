@@ -1,3 +1,9 @@
+@use "../../settings/all" as *;
+@use "../../objects/width-container" as *;
+
+@use "govuk-frontend" as *;
+
+
 .hmcts-pagination {
   // text-align: center;
 
