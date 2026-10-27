@@ -63,8 +63,6 @@
   "pact": {
     "branchName": "Dev",
     "brokerUrl": "http://localhost:80",
-    "consumerVersion": "",
-    "brokerUsername": "",
-    "brokerPassword": ""
+    "consumerVersion": ""
   }
 }
