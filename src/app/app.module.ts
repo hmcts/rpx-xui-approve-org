@@ -2,12 +2,16 @@ import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
+import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
+// ngrx
 import { EffectsModule } from '@ngrx/effects';
 import { RouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
-// ngrx
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { CookieModule } from 'ngx-cookie';
+import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import { environment } from '../environments/environment';
 import { SharedModule } from '../shared/shared.module';
 import { AppComponent } from './containers/app/app.component';
@@ -22,22 +26,18 @@ import * as fromComponents from './components';
 
 import { ROUTES } from './app.routes';
 
-import { OrgManagerModule } from 'src/org-manager/org-manager.module';
+import { OrgManagerModule } from '../org-manager/org-manager.module';
 
-import { ExuiCommonLibModule, FeatureToggleService, LaunchDarklyService } from '@hmcts/rpx-xui-common-lib';
-import { LoggerModule, NgxLoggerLevel } from 'ngx-logger';
-import { DefaultErrorHandler } from 'src/shared/errorHandler/defaultErrorHandler';
+import { DefaultErrorHandler } from '../shared/errorHandler/defaultErrorHandler';
 import { AuthService } from '../services/auth/auth.service';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { LoggerService } from './services/logger.service';
 import { MonitoringService } from './services/monitoring.service';
 
-import { NgIdleKeepaliveModule } from '@ng-idle/keepalive';
 import { EnvironmentConfig } from '../models/environmentConfig.model';
 import { initApplication } from './app-initilizer';
 import { EnvironmentService } from './services/environment.service';
 import { LogOutKeepAliveService } from './services/keep-alive/keep-alive.service';
-import { RpxTranslationModule } from 'rpx-xui-translation';
 
 export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): string {
   return envConfig.launchDarklyClientId || '';

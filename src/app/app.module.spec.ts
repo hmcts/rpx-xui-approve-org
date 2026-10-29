@@ -1,4 +1,4 @@
-import { EnvironmentConfig } from 'src/models/environmentConfig.model';
+import { EnvironmentConfig } from '../models/environmentConfig.model';
 import { launchDarklyClientIdFactory, STORE_RUNTIME_CHECKS } from './app.module';
 
 const environmentConfig: EnvironmentConfig = {
