@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { StoreModule } from '@ngrx/store';
-import { metaReducers } from 'src/app/app.module';
+import { STORE_RUNTIME_CHECKS } from 'src/app/app.module';
 import { reducers } from 'src/app/store';
 import { HmctsGlobalHeaderComponent } from './hmcts-global-header.component';
 
@@ -15,7 +15,7 @@ describe('HmctsGlobalHeaderComponent', () => {
       declarations: [HmctsGlobalHeaderComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
-        StoreModule.forRoot(reducers, { metaReducers }),
+        StoreModule.forRoot(reducers, { runtimeChecks: STORE_RUNTIME_CHECKS }),
         RouterTestingModule
       ]
     })

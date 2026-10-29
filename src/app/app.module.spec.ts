@@ -1,5 +1,5 @@
 import { EnvironmentConfig } from 'src/models/environmentConfig.model';
-import { launchDarklyClientIdFactory } from './app.module';
+import { launchDarklyClientIdFactory, STORE_RUNTIME_CHECKS } from './app.module';
 
 const environmentConfig: EnvironmentConfig = {
   launchDarklyClientId: undefined,
@@ -19,6 +19,15 @@ const environmentConfig: EnvironmentConfig = {
 };
 
 describe('AppModule', () => {
+  describe('STORE_RUNTIME_CHECKS', () => {
+    it('should enable runtime immutability checks for AppModule store configuration', () => {
+      expect(STORE_RUNTIME_CHECKS).toEqual({
+        strictStateImmutability: true,
+        strictActionImmutability: true
+      });
+    });
+  });
+
   describe('launchDarklyClientIdFactory()', () => {
     it('should return empty if launchDarklyClientId is missing', () => {
       const env = { ...environmentConfig, launchDarklyClientId: undefined };
