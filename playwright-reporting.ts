@@ -160,6 +160,14 @@ function resolveTestEnvironmentLabel(workerCount = process.env.FUNCTIONAL_TESTS_
   return `${environment} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
 }
 
+function resolveNonNegativeInteger(raw: string | undefined, fallback: number): number {
+  if (raw === undefined) {
+    return fallback;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
 /**
  * Builds Playwright reporters array with Ohdin configured
  * @param reportType - Type of report (e2e, api, nightly, integration, or accessibility)
@@ -194,6 +202,17 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
 
   if (!disableOhdin) {
     reporters.push([
+      './playwright_tests/common/reporters/odhin-progress.reporter.cjs',
+      {
+        graceMs: resolveNonNegativeInteger(process.env.PW_ODHIN_PROGRESS_GRACE_MS, 1500),
+        intervalMs: resolveNonNegativeInteger(process.env.PW_ODHIN_PROGRESS_INTERVAL_MS, 5000),
+        hardTimeoutMs: resolveNonNegativeInteger(process.env.PW_ODHIN_PROGRESS_HARD_TIMEOUT_MS, 0),
+        timeoutExitCode: 1,
+        completionExitDelayMs: resolveNonNegativeInteger(process.env.PW_ODHIN_COMPLETION_EXIT_DELAY_MS, 0),
+        forceExitOnCompletion: process.env.PW_ODHIN_FORCE_EXIT_ON_COMPLETION === 'true'
+      }
+    ]);
+    reporters.push([
       './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs',
       {
         outputFolder: odhinOutputFolder,
@@ -207,7 +226,19 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
         consoleLog: true,
         consoleError: true,
         simpleConsoleLog: !!process.env.CI,
-        testOutput: 'only-on-failure'
+        testOutput: 'only-on-failure',
+        ...(process.env.PW_ODHIN_LIGHTWEIGHT === undefined ? {} : { lightweight: process.env.PW_ODHIN_LIGHTWEIGHT === 'true' }),
+        ...(process.env.PW_ODHIN_PROFILE === undefined ? {} : { profile: process.env.PW_ODHIN_PROFILE === 'true' }),
+        ...(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS === undefined
+          ? {}
+          : { runtimeHookTimeoutMs: resolveNonNegativeInteger(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS, 15_000) }),
+        ...(process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS === undefined
+          ? {}
+          : { finalizationTimeoutMs: resolveNonNegativeInteger(process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS, 30_000) }),
+        ...(process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS === undefined
+          ? {}
+          : { trimFailedArtifacts: process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS === 'true' }),
+        strictReportValidity: process.env.PW_ODHIN_STRICT_REPORT !== 'false'
       }
     ]);
   }

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { buildPlaywrightReporters } from '../../playwright-reporting';
 
-test('includes flake, HTML, Odhín and JUnit reporters for an API lane', () => {
+test('includes flake, HTML, progress Odhín, adaptive Odhín and JUnit reporters for an API lane', () => {
   const original = {
     PLAYWRIGHT_DEFAULT_REPORTER: process.env.PLAYWRIGHT_DEFAULT_REPORTER,
     PLAYWRIGHT_JUNIT_OUTPUT: process.env.PLAYWRIGHT_JUNIT_OUTPUT,
@@ -29,6 +29,10 @@ test('includes flake, HTML, Odhín and JUnit reporters for an API lane', () => {
         ['html', { outputFolder: 'reports/api-html', open: 'never' }],
         ['perfetto', { outputFile: 'reports/api-perfetto.json' }],
         [
+          './playwright_tests/common/reporters/odhin-progress.reporter.cjs',
+          expect.objectContaining({ hardTimeoutMs: 0, forceExitOnCompletion: false })
+        ],
+        [
           './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs',
           expect.objectContaining({ outputFolder: 'functional-output/tests/playwright-api/odhin-report' })
         ],
@@ -42,6 +46,36 @@ test('includes flake, HTML, Odhín and JUnit reporters for an API lane', () => {
       } else {
         process.env[key] = value;
       }
+    }
+  }
+});
+
+test('enables strict Odhín report validity by default with an explicit false opt-out', () => {
+  const original = process.env.PW_ODHIN_STRICT_REPORT;
+
+  try {
+    delete process.env.PW_ODHIN_STRICT_REPORT;
+    const defaultReporter = buildPlaywrightReporters('api').find(
+      ([name]) => name === './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+    expect(defaultReporter?.[1]).toEqual(expect.objectContaining({ strictReportValidity: true }));
+
+    process.env.PW_ODHIN_STRICT_REPORT = 'false';
+    const nonStrictReporter = buildPlaywrightReporters('api').find(
+      ([name]) => name === './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+    expect(nonStrictReporter?.[1]).toEqual(expect.objectContaining({ strictReportValidity: false }));
+
+    process.env.PW_ODHIN_STRICT_REPORT = 'true';
+    const strictReporter = buildPlaywrightReporters('api').find(
+      ([name]) => name === './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+    expect(strictReporter?.[1]).toEqual(expect.objectContaining({ strictReportValidity: true }));
+  } finally {
+    if (original === undefined) {
+      delete process.env.PW_ODHIN_STRICT_REPORT;
+    } else {
+      process.env.PW_ODHIN_STRICT_REPORT = original;
     }
   }
 });
