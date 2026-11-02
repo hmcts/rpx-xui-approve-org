@@ -15975,7 +15975,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multer@npm:^2.3.0":
+"multer@npm:^2.4.0":
   version: 2.5.0
   resolution: "multer@npm:2.5.0"
   dependencies:
@@ -17047,7 +17047,7 @@ __metadata:
     launchdarkly-js-client-sdk: "npm:3.9.1"
     log4js: "npm:^6.9.1"
     mocha: "npm:^11.8.0"
-    multer: "npm:^2.3.0"
+    multer: "npm:^2.4.0"
     ng-packagr: "npm:^20.0.0"
     ngx-cookie: "npm:6.0.1"
     ngx-editor: "npm:19.1.1"

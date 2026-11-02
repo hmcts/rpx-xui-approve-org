@@ -6,6 +6,7 @@ import { HmctsGlobalHeaderComponent } from './hmcts-global-header/hmcts-global-h
 import { NotAuthorisedComponent } from './not-authorised/not-authorised.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
+import { SitemapComponent } from './sitemap/sitemap.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
 import { TermsAndConditionsComponent } from './terms-and-conditions/terms-and-conditions.component';
 
@@ -19,6 +20,7 @@ export const components: any[] = [
   TermsAndConditionsComponent,
   PrivacyPolicyComponent,
   AccessibilityComponent,
+  SitemapComponent,
   SignedOutComponent
 ];
 
@@ -31,4 +33,5 @@ export * from './cookie-policy/cookie-policy.component';
 export * from './terms-and-conditions/terms-and-conditions.component';
 export * from './privacy-policy/privacy-policy.component';
 export * from './accessibility/accessibility.component';
+export * from './sitemap/sitemap.component';
 export * from './signed-out/signed-out.component';
