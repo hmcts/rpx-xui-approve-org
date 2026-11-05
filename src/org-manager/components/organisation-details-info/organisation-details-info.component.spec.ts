@@ -59,6 +59,28 @@ describe('OrganisationDetailsInfoComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  [null, undefined, ''].forEach((admin) => {
+    it(`should display organisation details when the administrator name is ${JSON.stringify(admin)}`, () => {
+      component.org = { ...mockOrgData, admin, firstName: undefined, lastName: undefined, adminEmail: undefined };
+
+      expect(() => component.ngOnChanges()).not.toThrow();
+      fixture.detectChanges();
+
+      expect(component.org.firstName).toBe('');
+      expect(component.org.lastName).toBe('');
+      expect(fixture.nativeElement.textContent).toContain('Corp Plc');
+    });
+  });
+
+  it('should fall back to the administrator name when separate names are missing', () => {
+    component.org = { ...mockOrgData, firstName: undefined, lastName: undefined };
+
+    component.ngOnChanges();
+
+    expect(component.org.firstName).toBe('Glen');
+    expect(component.org.lastName).toBe('Byrne');
+  });
+
   describe('approveOrganisation', () => {
     it('should show heading and titles', () => {
       const headingContent = fixture.debugElement.nativeElement.querySelector('h1.govuk-heading-xl').textContent;
