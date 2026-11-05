@@ -1,6 +1,7 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ExuiCommonLibModule, FeatureToggleService, User } from '@hmcts/rpx-xui-common-lib';
@@ -179,11 +180,15 @@ describe('OrganisationDetailsComponent', () => {
   });
 
   it('should set showUsersTab to true or false', () => {
+    const title = TestBed.inject(Title);
+
     component.showUsersTab(false);
     expect(component.showUsers).toBeFalsy();
+    expect(title.getTitle()).toBe('Organisation Details - Approve Organisation - HM Courts & Tribunals Service - GOV.UK');
 
     component.showUsersTab(true);
     expect(component.showUsers).toBeTruthy();
+    expect(title.getTitle()).toBe('Users - Approve Organisation - HM Courts & Tribunals Service - GOV.UK');
   });
 
   it('should return approve organisation link', () => {

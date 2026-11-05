@@ -35,18 +35,18 @@ export const ROUTES: Routes = [
         path: 'pending',
         component: PendingOrganisationsComponent,
         canActivate: [AuthGuard, RoleGuard],
-        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Pending organisations' }
+        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'New Registrations' }
       },
       {
         path: 'pbas',
         component: PendingPBAsComponent,
         canActivate: [AuthGuard, RoleGuard],
-        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Pending PBAs' }
+        data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'New PBAs' }
       },
       {
         path: 'active',
         component: ActiveOrganisationsComponent,
-        canActivate: [AuthGuard], data: { title: 'Active organisations' }
+        canActivate: [AuthGuard], data: { title: 'Active Organisations' }
       }
     ]
   },
@@ -54,7 +54,7 @@ export const ROUTES: Routes = [
     path: 'pbas/new/:orgId',
     component: NewPBAsComponent,
     canActivate: [AuthGuard, RoleGuard],
-    data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'New PBAs' }
+    data: { needsRole: ['prd-admin'], roleMatching: RoleMatching.ALL, title: 'Approve New PBA Number' }
   },
   { path: 'pending-organisations', pathMatch: 'full', redirectTo: 'organisation/pending' },
   { path: 'active-organisation', pathMatch: 'full', redirectTo: 'organisation/active' },
@@ -63,7 +63,7 @@ export const ROUTES: Routes = [
     component: ApproveOrganisationComponent,
     canActivate: [AuthGuard],
     data: {
-      title: 'Check details'
+      title: 'Confirm Organisation Approval'
     }
   },
   {
@@ -71,7 +71,7 @@ export const ROUTES: Routes = [
     component: ApproveOrganisationSuccessComponent,
     canActivate: [AuthGuard],
     data: {
-      title: 'Confirmation'
+      title: 'Organisation Approved'
     }
   },
   {
@@ -79,7 +79,7 @@ export const ROUTES: Routes = [
     component: DeleteOrganisationComponent,
     canActivate: [AuthGuard],
     data: {
-      title: 'Delete organisation'
+      title: 'Delete Organisation'
     }
   },
   {
@@ -87,7 +87,7 @@ export const ROUTES: Routes = [
     component: DeleteOrganisationSuccessComponent,
     canActivate: [AuthGuard],
     data: {
-      title: 'Delete organisation success'
+      title: 'Organisation Deleted'
     }
   },
   {
@@ -95,7 +95,7 @@ export const ROUTES: Routes = [
     component: ReviewOrganisationComponent,
     canActivate: [AuthGuard],
     data: {
-      title: 'Review organisation'
+      title: 'Confirm Organisation Review'
     }
   },
   {
@@ -103,33 +103,38 @@ export const ROUTES: Routes = [
     component: OrganisationDetailsComponent,
     canActivate: [AuthGuard],
     data: {
-      title: 'Organisation details'
+      title: 'Organisation Details'
     }
   },
   {
     path: 'change/:fields/:orgId',
     component: EditDetailsComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { title: 'Change Organisation PBA Numbers' }
   },
   {
     path: 'change/:fields/:orgId/:id',
     component: EditDetailsComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    data: { title: 'Change Organisation PBA Number' }
   },
   {
     path: 'user-details',
     component: UserDetailsComponent,
-    canActivate: [AuthGuard, UserApprovalGuard]
+    canActivate: [AuthGuard, UserApprovalGuard],
+    data: { title: 'User Details' }
   },
   {
     path: 'reinvite-user',
     component: ReinviteUserComponent,
-    canActivate: [AuthGuard, UserApprovalGuard]
+    canActivate: [AuthGuard, UserApprovalGuard],
+    data: { title: 'Invite User' }
   },
   {
     path: 'reinvite-user-success',
     component: ReinviteUserSuccessComponent,
-    canActivate: [AuthGuard, UserApprovalGuard]
+    canActivate: [AuthGuard, UserApprovalGuard],
+    data: { title: 'User Invitation Sent' }
   }
 ];
 
