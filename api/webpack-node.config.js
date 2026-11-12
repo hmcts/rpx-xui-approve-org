@@ -42,7 +42,10 @@ module.exports = {
   },
   externals: [
     nodeExternals({
-      allowlist: ['otp']
+      // Yarn hoists API dependencies to the repository root. Keep the telemetry
+      // SDK outside the bundle so Node resolves its nested dependency versions.
+      modulesDir: path.resolve(__dirname, '../node_modules'),
+      whitelist: ['otp']
     }),
     {
       '@azure/functions-core': 'commonjs @azure/functions-core'
