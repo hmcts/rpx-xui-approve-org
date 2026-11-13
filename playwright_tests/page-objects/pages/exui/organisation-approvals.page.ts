@@ -76,6 +76,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingPbasRows = this.pendingPbasPanel.locator('table.govuk-table tbody tr');
   readonly pendingPbaViewLinkLocator = this.pendingPbasPanel.locator('table.govuk-table a.govuk-link[href*="/new/"]').first();
   readonly pendingPbaDecisionRows = this.page.locator('app-pba-account-approval');
+  readonly pendingPbaValidationSummary = this.page.locator('app-new-pbas-info').getByRole('alert');
+  readonly pendingPbaSubmissionErrors = this.page.locator('app-new-pbas').getByRole('alert');
   readonly pendingPbaContinueButton = this.page.locator('app-new-pbas-info button[type="submit"].govuk-button').first();
   readonly newPbaDetailsPageHeading = this.page.locator('app-new-pbas-info h1.govuk-heading-xl').first();
   readonly newPbaAccountsHeading = this.page.locator('app-new-pbas-info h2.govuk-heading-m#heading').first();
@@ -434,6 +436,22 @@ export class OrganisationApprovalsPage extends BasePage {
 
   async openActiveOrganisationById(organisationId: string): Promise<void> {
     await this.openOrganisationDetails(this.activeOrganisationRowById(organisationId).locator('a.govuk-link').first());
+  }
+
+  pendingPbaDecisionRow(pbaNumber: string): Locator {
+    return this.pendingPbaDecisionRows.filter({ hasText: pbaNumber });
+  }
+
+  pendingPbaConfirmationRow(pbaNumber: string): Locator {
+    return this.page.locator('app-pba-account-decision').filter({ has: this.page.getByText(pbaNumber, { exact: true }) });
+  }
+
+  async choosePendingPbaDecision(pbaNumber: string, decision: 'accepted' | 'rejected'): Promise<void> {
+    await this.pendingPbaDecisionRow(pbaNumber).locator(`input[value="${decision}"]`).check();
+  }
+
+  async changePendingPba(pbaNumber: string): Promise<void> {
+    await this.pendingPbaDecisionRow(pbaNumber).getByRole('link', { name: 'Change', exact: true }).click();
   }
 
   async openFirstPendingPba(): Promise<void> {
