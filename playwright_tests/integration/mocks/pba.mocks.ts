@@ -341,3 +341,12 @@ export function waitForSetPbaStatusResponse(page: Page): Promise<Response> {
       && response.status() < 500;
   });
 }
+
+export function waitForSetPbaStatusResponseWithHttpStatus(page: Page, expectedHttpStatus: number): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method().toUpperCase() === 'PUT'
+      && new URL(request.url()).pathname === '/api/pba/status'
+      && response.status() === expectedHttpStatus;
+  });
+}

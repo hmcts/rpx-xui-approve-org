@@ -1,11 +1,22 @@
-import { test, expect, type Page, type Request, type Route } from '@playwright/test';
-import { setupSetPbaStatusApiMock } from '../integration/mocks';
-import { buildPendingPbaDecisionState, mixedPbaDecisionPayload } from '../integration/test-data/pending-pba-decisions.data';
+import { test, expect, type Page, type Request, type Response, type Route } from '@playwright/test';
+import { setupSetPbaStatusApiMock, waitForSetPbaStatusResponseWithHttpStatus } from '../integration/mocks';
+import {
+  buildPendingPbaDecisionState, mixedPbaDecisionPayload, PBA_DECISION_ORG_ID, UNRELATED_PENDING_ORG_ID
+} from '../integration/test-data/pending-pba-decisions.data';
 
 for (const scenario of [
-  { name: 'removes the submitted organisation after success', status: 200, orgId: mixedPbaDecisionPayload.orgId, remaining: 0 },
-  { name: 'preserves pending requests after rejection', status: 400, orgId: mixedPbaDecisionPayload.orgId, remaining: 1 },
-  { name: 'preserves other organisations after success', status: 200, orgId: 'OTHER-ORG', remaining: 1 }
+  {
+    name: 'removes only the submitted organisation after success', status: 200, orgId: PBA_DECISION_ORG_ID,
+    remainingIds: [UNRELATED_PENDING_ORG_ID]
+  },
+  {
+    name: 'preserves pending requests after rejection', status: 400, orgId: PBA_DECISION_ORG_ID,
+    remainingIds: [PBA_DECISION_ORG_ID, UNRELATED_PENDING_ORG_ID]
+  },
+  {
+    name: 'preserves other organisations after success', status: 200, orgId: 'OTHER-ORG',
+    remainingIds: [PBA_DECISION_ORG_ID, UNRELATED_PENDING_ORG_ID]
+  }
 ]) {
   test(`pending PBA status mock ${scenario.name}`, async () => {
     let handler!: (route: Route, request: Request) => Promise<void>;
@@ -35,7 +46,7 @@ for (const scenario of [
 
     expect(fulfilledStatus).toBe(scenario.status);
     expect(control.getLastPayload()).toEqual(payload);
-    expect(state.pendingPbaOrganisations).toHaveLength(scenario.remaining);
+    expect(state.pendingPbaOrganisations.map((organisation) => organisation.organisationIdentifier)).toEqual(scenario.remainingIds);
   });
 }
 
@@ -58,5 +69,32 @@ test('pending PBA status mock falls through for other methods without changing p
 
   expect(fellThrough).toBe(true);
   expect(control.getLastPayload()).toBeUndefined();
-  expect(state.pendingPbaOrganisations).toHaveLength(1);
+  expect(state.pendingPbaOrganisations.map((organisation) => organisation.organisationIdentifier)).toEqual([
+    PBA_DECISION_ORG_ID, UNRELATED_PENDING_ORG_ID
+  ]);
 });
+
+for (const scenario of [
+  { name: 'matches the requested server error', method: 'PUT', path: '/api/pba/status', status: 500, matches: true },
+  { name: 'ignores other statuses', method: 'PUT', path: '/api/pba/status', status: 200, matches: false },
+  { name: 'ignores pending-list responses', method: 'PUT', path: '/api/pba/status/pending', status: 500, matches: false },
+  { name: 'ignores other methods', method: 'GET', path: '/api/pba/status', status: 500, matches: false }
+]) {
+  test(`pending PBA response waiter ${scenario.name}`, async () => {
+    const response = {
+      request: () => ({ method: () => scenario.method, url: () => `http://localhost${scenario.path}` }),
+      status: () => scenario.status
+    } as unknown as Response;
+    let matches: boolean | undefined;
+    const page = {
+      waitForResponse: async (predicate: (candidate: Response) => boolean) => {
+        matches = predicate(response);
+        return response;
+      }
+    } as unknown as Page;
+
+    await waitForSetPbaStatusResponseWithHttpStatus(page, 500);
+
+    expect(matches).toBe(scenario.matches);
+  });
+}

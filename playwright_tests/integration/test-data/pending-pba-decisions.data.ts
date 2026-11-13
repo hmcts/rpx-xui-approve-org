@@ -1,6 +1,8 @@
 import { createMockOrganisation, createMockPendingPbaOrganisation } from '../mocks';
 
 export const PBA_DECISION_ORG_ID = 'PBADECISIONS01';
+export const UNRELATED_PENDING_ORG_ID = 'PBADECISIONS02';
+export const UNRELATED_PENDING_ORG_NAME = 'Unrelated Pending PBA Org';
 export const APPROVED_PBA = 'PBA7100000';
 export const FIRST_PENDING_PBA = 'PBA7100001';
 export const SECOND_PENDING_PBA = 'PBA7100002';
@@ -17,11 +19,18 @@ export const invalidPbaStatusResponse = {
 export function buildPendingPbaDecisionState(pbas = [FIRST_PENDING_PBA, SECOND_PENDING_PBA]) {
   return {
     accountNames: PBA_ACCOUNT_NAMES,
-    pendingPbaOrganisations: [createMockPendingPbaOrganisation({
-      organisationIdentifier: PBA_DECISION_ORG_ID,
-      organisationName: 'Pending PBA Decisions Org',
-      pbaNumbers: pbas.map((pbaNumber) => ({ pbaNumber, dateCreated: '2024-01-15T00:00:00.000Z' }))
-    })],
+    pendingPbaOrganisations: [
+      createMockPendingPbaOrganisation({
+        organisationIdentifier: PBA_DECISION_ORG_ID,
+        organisationName: 'Pending PBA Decisions Org',
+        pbaNumbers: pbas.map((pbaNumber) => ({ pbaNumber, dateCreated: '2024-01-15T00:00:00.000Z' }))
+      }),
+      createMockPendingPbaOrganisation({
+        organisationIdentifier: UNRELATED_PENDING_ORG_ID,
+        organisationName: UNRELATED_PENDING_ORG_NAME,
+        pbaNumbers: [{ pbaNumber: 'PBA7200000', dateCreated: '2024-01-16T00:00:00.000Z' }]
+      })
+    ],
     organisations: {
       singleOrganisationsById: {
         [PBA_DECISION_ORG_ID]: createMockOrganisation({

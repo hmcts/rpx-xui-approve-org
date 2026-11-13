@@ -1,6 +1,6 @@
 import { test, expect } from '../page-objects/page.fixtures';
 import { openPendingPbaDecisions } from './helpers/pending-pba-decisions.helpers';
-import { setupSetPbaStatusApiMock, waitForSetPbaStatusResponse } from './mocks';
+import { setupSetPbaStatusApiMock, waitForSetPbaStatusResponse, waitForSetPbaStatusResponseWithHttpStatus } from './mocks';
 import {
   FIRST_PENDING_PBA, SECOND_PENDING_PBA, INVALID_PENDING_PBA, PBA_DECISION_ORG_ID,
   PBA_VALIDATION_MESSAGE, buildPendingPbaDecisionState, mixedPbaDecisionPayload,
@@ -41,6 +41,25 @@ test.describe('New PBAs decision failures', { tag: ['@pending-pbas', '@pending-d
     await expect(organisationApprovalsPage.successBanner('PBA numbers updated')).toBeHidden();
   });
 
+  test('shows the service-down view when submitting decisions fails unexpectedly', async ({
+    page, organisationApprovalsPage, errorPage
+  }) => {
+    await openPendingPbaDecisions(page, organisationApprovalsPage);
+    const statusMock = await setupSetPbaStatusApiMock(page, { status: 500 });
+    await organisationApprovalsPage.choosePendingPbaDecision(FIRST_PENDING_PBA, 'accepted');
+    await organisationApprovalsPage.choosePendingPbaDecision(SECOND_PENDING_PBA, 'rejected');
+    await organisationApprovalsPage.continuePendingPbaDecision();
+    const responsePromise = waitForSetPbaStatusResponseWithHttpStatus(page, 500);
+    await organisationApprovalsPage.confirmDecision();
+    expect((await responsePromise).status()).toBe(500);
+    expect(statusMock.getLastPayload()).toEqual(mixedPbaDecisionPayload);
+    await expect(page).toHaveURL(/\/service-down$/);
+    await expect(errorPage.heading).toHaveText('Sorry, there is a problem with the service');
+    await expect(errorPage.body).toHaveText('Try again later.');
+    await expect(organisationApprovalsPage.confirmDecisionHeading).toBeHidden();
+    await expect(organisationApprovalsPage.successBanner('PBA numbers updated')).toBeHidden();
+  });
+
   test('shows invalid PBA errors without a success confirmation', async ({ page, organisationApprovalsPage }) => {
     await openPendingPbaDecisions(page, organisationApprovalsPage, buildPendingPbaDecisionState([INVALID_PENDING_PBA]));
     const statusMock = await setupSetPbaStatusApiMock(page, {
@@ -58,7 +77,17 @@ test.describe('New PBAs decision failures', { tag: ['@pending-pbas', '@pending-d
     });
     await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
     await expect(organisationApprovalsPage.successBanner('PBA numbers updated')).toBeHidden();
+    let submissionError: unknown;
+    try {
+      await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toBeVisible();
+      await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toContainText(PBA_VALIDATION_MESSAGE);
+    } catch (error) {
+      await expect(page).toHaveURL(new RegExp(`/organisation/pbas/new/${PBA_DECISION_ORG_ID}$`));
+      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+      await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toHaveCount(0);
+      submissionError = error;
+    }
     test.fail(true, 'EXUI-1435: new-pbas template does not bind the emitted PBA submission errors');
-    await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toContainText(PBA_VALIDATION_MESSAGE);
+    expect(submissionError).toBeUndefined();
   });
 });

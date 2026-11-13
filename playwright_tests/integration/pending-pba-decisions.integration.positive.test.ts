@@ -6,7 +6,7 @@ import {
 } from './mocks';
 import {
   FIRST_PENDING_PBA, SECOND_PENDING_PBA, PBA_ACCOUNT_NAMES,
-  PBA_DECISION_ORG_ID, UPDATED_PENDING_PBA, buildPendingPbaDecisionState, mixedPbaDecisionPayload
+  PBA_DECISION_ORG_ID, UPDATED_PENDING_PBA, UNRELATED_PENDING_ORG_NAME, buildPendingPbaDecisionState, mixedPbaDecisionPayload
 } from './test-data/pending-pba-decisions.data';
 
 test.describe('New PBAs decisions', { tag: ['@pending-pbas', '@pending-decisions', '@positive'] }, () => {
@@ -58,7 +58,8 @@ test.describe('New PBAs decisions', { tag: ['@pending-pbas', '@pending-decisions
     await expect(page).toHaveURL(/\/organisation\/pbas$/);
     await expect(organisationApprovalsPage.successBanner('PBA numbers updated')).toBeVisible();
     await expect(organisationApprovalsPage.pendingPbasPanel).toBeVisible();
-    await expect(organisationApprovalsPage.pendingPbaEmptyState).toBeVisible();
-    await expect(organisationApprovalsPage.pendingPbaRows).toHaveCount(0);
+    await expect(organisationApprovalsPage.pendingPbaRows).toHaveCount(1);
+    await expect(organisationApprovalsPage.pendingPbaRowByText(UNRELATED_PENDING_ORG_NAME)).toBeVisible();
+    await expect(organisationApprovalsPage.pendingPbaRowsByText('Pending PBA Decisions Org')).toHaveCount(0);
   });
 });
