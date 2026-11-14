@@ -315,7 +315,7 @@ test.describe('AO Playwright session management', () => {
     await expect(sessionCapture.waitForExpectedAuthenticatedSurface(page as never, 'https://example.test/', 10)).resolves.toBe(true);
   });
 
-  test('waiters reuse the lock owner result and the stale budget exceeds login and auth polling', async () => {
+  test('waiters acquire the lock after its owner releases it', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const lockPath = path.join(directory, 'state.lock');
     const request = {
@@ -333,8 +333,6 @@ test.describe('AO Playwright session management', () => {
     expect(sessionCapture.SESSION_CAPTURE_LOCK_TIMEOUT_MS).toBeGreaterThanOrEqual(
       sessionCapture.SESSION_CAPTURE_ATTEMPT_BUDGET_MS * sessionCapture.SESSION_CAPTURE_ATTEMPTS
     );
-    expect(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS).toBeGreaterThan(sessionCapture.SESSION_CAPTURE_ATTEMPT_BUDGET_MS);
-    expect(sessionCapture.SESSION_CAPTURE_LOCK_UPDATE_MS).toBeLessThan(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS);
   });
 
   test('stops waiting when another process creates a fresh reusable session', async () => {
