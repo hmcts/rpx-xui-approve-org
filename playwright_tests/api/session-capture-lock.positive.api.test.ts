@@ -5,6 +5,193 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { __test__ as sessionCapture, sessionCaptureInProcess, getSessionStatePath } from '../helpers/sessionCapture';
 import { config } from '../config/config';
+import { fork, spawnSync } from 'node:child_process';
+import { EventEmitter } from 'node:events';
+
+test('initial request-send failure disconnects the child and returns a safe error', async () => {
+  const child = Object.assign(new EventEmitter(), {
+    connected: true,
+    disconnect: sinon.spy(function (this: { connected: boolean }) {
+      this.connected = false;
+    }),
+    send: (_request: unknown, callback: (error: Error) => void) => callback(new Error('synthetic-secret-send'))
+  });
+  // Stub the CommonJS binding shared with the capture module.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const stub = sinon.stub(require('node:child_process'), 'fork').returns(child);
+  try {
+    const { sessionCapture: capture } = await import('../helpers/sessionCapture');
+    await expect(capture({ userIdentifier: 'send-failure', email: 'send-failure@example.invalid', password: 'synthetic' }, { force: true })).rejects.toThrow('Unable to communicate with the session capture process.');
+    expect(child.disconnect.calledOnce).toBe(true);
+  } finally {
+    stub.restore();
+  }
+});
+
+for (const phase of ['queued', 'launch', 'login', 'snapshot', 'teardown', 'result']) {
+  test(`actual IPC loss during ${phase} leaves no abandoned active owner`, async () => {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-ipc-phase-'));
+    const preload = path.join(directory, 'preload.cjs');
+    const eventsFile = path.join(directory, 'events');
+    const statePath = path.join(directory, 'phase-example.invalid.api.storage.json');
+    const lockDirectory = `${statePath}.lock.lock`;
+    if (phase === 'queued') {
+      fs.mkdirSync(lockDirectory);
+      fs.writeFileSync(path.join(lockDirectory, 'owner'), 'successor');
+    }
+    fs.writeFileSync(preload, `
+const fs = require('node:fs');
+const { chromium } = require(${JSON.stringify(require.resolve('@playwright/test'))});
+const phase = ${JSON.stringify(phase)};
+const event = value => fs.appendFileSync(${JSON.stringify(eventsFile)}, value + '\\n');
+const gate = async value => {
+  if (phase !== value) return;
+  process.send({ testPhase: value }, () => {});
+  await new Promise(resolve => process.once('disconnect', resolve));
+};
+if (phase === 'queued') process.once('message', () => setTimeout(() => { void gate('queued'); }, 100));
+const hidden = { first() { return this; }, isVisible: async () => false };
+const page = { goto: async () => { await gate('login'); if (!process.connected) throw new Error('closed'); },
+  title: async () => 'Ready', url: () => 'http://127.0.0.1:1/organisation', locator: () => hidden, getByRole: () => hidden,
+  request: { get: async () => { event('auth'); return { status: () => 200, text: async () => 'true' }; } }, context: () => context };
+const context = { newPage: async () => page, cookies: async () => [], storageState: async ({path}) => { await gate('snapshot'); event('snapshot'); fs.writeFileSync(path, '{}'); } };
+chromium.launch = async () => { await gate('launch'); return { newContext: async () => { event('context'); return context; },
+  close: async () => { event('close-start'); await gate('teardown'); event('close-complete'); } }; };
+if (phase === 'result') {
+  const send = process.send.bind(process);
+  process.send = (message, ...args) => {
+    if (message.path) { send({ testPhase: 'result' }, () => {}); process.once('disconnect', () => send(message, ...args)); return true; }
+    return send(message, ...args);
+  };
+}`);
+    const child = fork(require.resolve('../helpers/session-capture-child.cjs'), [], {
+      env: { ...process.env, PW_SESSION_DIR: directory, NODE_OPTIONS: `--require=${preload}` }, stdio: ['ignore', 'ignore', 'pipe', 'ipc']
+    });
+    let observed = false;
+    let stderr = '';
+    child.stderr!.on('data', (chunk) => {
+      stderr += chunk.toString();
+    });
+    child.on('message', (message: { testPhase?: string }) => {
+      if (message.testPhase === phase) {
+        observed = true; child.disconnect();
+      }
+    });
+    child.send({ identity: { userIdentifier: 'phase', email: 'phase@example.invalid', password: 'synthetic' }, options: { force: true, partitionKey: 'api' }, baseUrl: 'http://127.0.0.1:1/', idamWebUrl: 'http://127.0.0.1:1/' });
+    const watchdog = setTimeout(() => child.kill('SIGKILL'), 10_000);
+    try {
+      const code = await new Promise((resolve) => child.once('exit', resolve));
+      expect(observed).toBe(true);
+      expect(code, stderr).toBe(0);
+      expect(stderr).not.toContain('EPIPE');
+      expect(fs.existsSync(`${statePath}.capture-failed.json`)).toBe(false);
+      expect(fs.existsSync(lockDirectory)).toBe(phase === 'queued');
+      expect(fs.existsSync(statePath)).toBe(['teardown', 'result'].includes(phase));
+      const events = fs.existsSync(eventsFile) ? fs.readFileSync(eventsFile, 'utf8') : '';
+      if (phase === 'queued') {
+        expect(events).toBe('');
+      } else {
+        expect(events).toContain('close-complete');
+      }
+      if (phase === 'launch') {
+        expect(events).not.toContain('context');
+      }
+    } finally {
+      clearTimeout(watchdog);
+      if (child.exitCode === null && child.signalCode === null) {
+        child.kill('SIGKILL');
+      }
+      child.stderr!.destroy();
+      fs.rmSync(directory, { recursive: true, force: true });
+    }
+  });
+}
+
+test('a disconnected log channel cancels capture and closes the browser before releasing its lock', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-disconnected-log-'));
+  const closed = path.join(directory, 'closed');
+  const preload = path.join(directory, 'preload.cjs');
+  fs.writeFileSync(preload, `
+const fs = require('node:fs');
+const { chromium } = require(${JSON.stringify(require.resolve('@playwright/test'))});
+let rejectContext;
+chromium.launch = async () => ({
+  newContext: async () => {
+    const pending = new Promise((resolve, reject) => { rejectContext = reject; });
+    for (let i = 0; i < 10000; i++) console.log('Capturing session');
+    return pending;
+  },
+  close: async () => { fs.writeFileSync(${JSON.stringify(closed)}, 'closed'); rejectContext(new Error('closed')); }
+});`);
+  const child = fork(require.resolve('../helpers/session-capture-child.cjs'), [], {
+    env: { ...process.env, PW_SESSION_DIR: directory, NODE_OPTIONS: `--require=${preload}` },
+    stdio: ['ignore', 'ignore', 'pipe', 'ipc']
+  });
+  let stderr = '';
+  child.stderr!.on('data', (chunk) => {
+    stderr += chunk.toString();
+  });
+  child.once('message', () => setImmediate(() => {
+    if (child.connected) {
+      child.disconnect();
+    }
+  }));
+  child.send({ identity: { userIdentifier: 'ipc-test', email: 'ipc@example.invalid', password: 'synthetic' },
+    options: { force: true, partitionKey: 'api' }, baseUrl: 'http://127.0.0.1:1/', idamWebUrl: 'http://127.0.0.1:1/' });
+  const watchdog = setTimeout(() => child.kill('SIGKILL'), 10_000);
+  try {
+    const code = await new Promise((resolve) => child.once('exit', resolve));
+    expect(code).toBe(0);
+    expect(stderr).not.toContain('EPIPE');
+    expect(fs.existsSync(closed)).toBe(true);
+    expect(fs.readdirSync(directory).some((name) => name.endsWith('.lock.lock'))).toBe(false);
+  } finally {
+    clearTimeout(watchdog);
+    if (child.exitCode === null && child.signalCode === null) {
+      child.kill('SIGKILL');
+    }
+    child.stderr!.destroy();
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test('cached session readers preserve a concurrent owner failure marker', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-cache-interleave-'));
+  const script = `
+require('ts-node').register({ transpileOnly: true, compilerOptions: { module: 'CommonJS' } });
+const fs = require('node:fs');
+const sessions = require('./playwright_tests/helpers/sessionCapture.ts');
+const { config } = require('./playwright_tests/config/config.ts');
+const identity = { userIdentifier: 'marker-reader', email: 'marker@example.invalid', password: 'synthetic' };
+const state = sessions.getSessionStatePath(identity, 'api');
+const failure = state + '.capture-failed.json';
+fs.writeFileSync(state, JSON.stringify({ cookies: [{ name: 'ao-webapp', value: 'synthetic', domain: new URL(config.baseUrl).hostname, expires: -1 }], origins: [] }));
+const read = fs.readFileSync;
+let interleaved = false;
+fs.readFileSync = function(file, ...args) {
+  const result = read.call(this, file, ...args);
+  if (file === state && !interleaved) {
+    interleaved = true;
+    fs.mkdirSync(state + '.lock.lock');
+    fs.writeFileSync(state + '.lock.lock/owner', 'successor');
+    fs.writeFileSync(failure, 'successor-failure-sentinel');
+  }
+  return result;
+};
+sessions.sessionCapture(identity, { partitionKey: 'api' }).then(() => {
+  require('node:assert/strict').equal(interleaved, true);
+  require('node:assert/strict').equal(fs.readFileSync(failure, 'utf8'), 'successor-failure-sentinel');
+}).catch(error => { console.error(error); process.exitCode = 1; });`;
+  try {
+    const result = spawnSync(process.execPath, ['-e', script], {
+      cwd: path.resolve(__dirname, '../..'), env: { ...process.env, PW_SESSION_DIR: directory }, timeout: 10_000, encoding: 'utf8'
+    });
+    expect(result.stderr).not.toContain('ENOENT');
+    expect(result.status, result.stderr).toBe(0);
+  } finally {
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});
 
 test('an aged live owner cannot be replaced before releasing the lock', async () => {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-lock-fence-'));
@@ -164,7 +351,7 @@ test('fresh sessions reuse locally while force and rejected fingerprints still r
     await expect(capture(identity, { partitionKey: 'api' })).resolves.toBe(statePath);
     expect(log.args.flat().join(' ')).not.toContain(statePath);
     expect(log.args.flat().join(' ')).not.toContain(identity.email);
-    expect(fs.existsSync(failurePath)).toBe(false);
+    expect(fs.existsSync(failurePath)).toBe(true);
     await expect(capture(identity, { partitionKey: 'api', force: true })).rejects.toThrow(/process exited/i);
     const fingerprint = sessionCapture.readStorageStateFingerprint(statePath)!;
     await expect(capture(identity, { partitionKey: 'api', force: true, expectedStaleSession: { storageStatePath: statePath, storageStateFingerprint: fingerprint } })).rejects.toThrow(/process exited/i);

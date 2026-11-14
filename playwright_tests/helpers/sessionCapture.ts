@@ -694,7 +694,6 @@ export async function sessionCaptureInProcess(user: SessionIdentityInput = 'base
   }
 
   if (isReusableSessionForCapture(storageStatePath, options)) {
-    clearSessionCaptureFailure(failurePath);
     console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
     return storageStatePath;
   }
@@ -713,7 +712,6 @@ export async function sessionCaptureInProcess(user: SessionIdentityInput = 'base
     signal
   });
   if (!lock) {
-    clearSessionCaptureFailure(failurePath);
     return storageStatePath;
   }
 
@@ -849,7 +847,6 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
     throw new Error(`Rejected session path does not match resolved session path for user "${identity.userIdentifier}".`);
   }
   if (isReusableSessionForCapture(storageStatePath, options)) {
-    clearSessionCaptureFailure(`${storageStatePath}.capture-failed.json`);
     console.log('[playwright-session] Reusing session.');
     return storageStatePath;
   }
@@ -860,11 +857,16 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
       env: { ...process.env, TS_NODE_COMPILER_OPTIONS: '{"module":"CommonJS"}' }
     });
     let settled = false;
-    child.once('error', (error) => {
+    const failStart = () => {
       if (!settled) {
-        settled = true; reject(error);
+        settled = true;
+        if (child.connected) {
+          child.disconnect();
+        }
+        reject(new Error('Unable to communicate with the session capture process.'));
       }
-    });
+    };
+    child.once('error', failStart);
     child.on('message', (message: { path?: string; error?: string; log?: string; warning?: boolean }) => {
       if (message.log) {
         if (message.warning) {
@@ -889,11 +891,15 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
         settled = true; reject(new Error(`Session capture process exited before reporting a result (${signal || code}).`));
       }
     });
-    child.send({ identity, options, baseUrl: config.baseUrl, idamWebUrl: config.idamWebUrl }, (error) => {
-      if (error && !settled) {
-        settled = true; reject(error);
-      }
-    });
+    try {
+      child.send({ identity, options, baseUrl: config.baseUrl, idamWebUrl: config.idamWebUrl }, (error) => {
+        if (error) {
+          failStart();
+        }
+      });
+    } catch {
+      failStart();
+    }
   });
 }
 

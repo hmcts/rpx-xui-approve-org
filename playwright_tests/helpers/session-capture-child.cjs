@@ -74,35 +74,51 @@ if (require.main === module) {
   require('ts-node').register({ transpileOnly: true, compilerOptions: { module: 'CommonJS' } });
   const { config } = require('../config/config.ts');
   const { sessionCaptureInProcess } = require('./sessionCapture.ts');
+  const controller = new AbortController();
+  let finished = false;
+  const cancel = () => {
+    if (!finished) {
+      controller.abort();
+    }
+  };
+  const send = (message) => new Promise((resolve) => {
+    if (!process.connected) {
+      cancel();
+      resolve(false);
+      return;
+    }
+    try {
+      process.send(message, (error) => {
+        if (error) {
+          cancel();
+        }
+        resolve(!error);
+      });
+    } catch {
+      cancel();
+      resolve(false);
+    }
+  });
+  process.on('error', cancel);
+  process.on('disconnect', cancel);
   const sendLog = (warning, args) => {
     const log = safeLog(args);
-    if (process.connected && log) {
-      process.send({ log, warning });
+    if (log && !controller.signal.aborted) {
+      void send({ log, warning });
     }
   };
   console.log = (...args) => sendLog(false, args);
   console.warn = (...args) => sendLog(true, args);
-  const controller = new AbortController();
-  let finished = false;
-  process.on('disconnect', () => {
-    if (!finished) {
-      controller.abort();
-    }
-  });
   process.once('message', async ({ identity, options, baseUrl, idamWebUrl }) => {
     config.baseUrl = baseUrl;
     config.idamWebUrl = idamWebUrl;
     try {
       const path = await sessionCaptureInProcess(identity, options, controller.signal);
       finished = true;
-      if (process.connected) {
-        process.send({ path });
-      }
+      await send({ path });
     } catch (error) {
       finished = true;
-      if (process.connected) {
-        process.send({ error: safeError(error) });
-      }
+      await send({ error: safeError(error) });
     } finally {
       if (process.connected) {
         process.disconnect();
