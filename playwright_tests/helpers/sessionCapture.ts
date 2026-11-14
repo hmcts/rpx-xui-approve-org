@@ -1,11 +1,15 @@
 import { chromium, type Browser, type BrowserContext, type Page } from '@playwright/test';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
+import { fork } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import * as lockfile from 'proper-lockfile';
 import { config } from '../config/config';
 import { completeIdamLogin } from './idamLogin';
 import { isRetryableSessionCaptureFailure, SESSION_CAPTURE_ATTEMPTS } from './sessionCaptureRetry';
+
+// The child entrypoint exports its allowlisted diagnostic classifier.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { safeError: safeCaptureError } = require('./session-capture-child.cjs') as { safeError: (error: unknown) => string };
 
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
 const AUTHENTICATION_TIMEOUT_MS = 30_000;
@@ -13,8 +17,6 @@ const AUTHENTICATION_POLL_INTERVAL_MS = 500;
 const LOGIN_REDIRECT_TIMEOUT_MS = 45_000;
 const BROWSER_LAUNCH_TIMEOUT_MS = 30_000;
 const SESSION_CAPTURE_ATTEMPT_BUDGET_MS = LOGIN_REDIRECT_TIMEOUT_MS + AUTHENTICATION_TIMEOUT_MS + BROWSER_LAUNCH_TIMEOUT_MS;
-const SESSION_CAPTURE_LOCK_STALE_MS = SESSION_CAPTURE_ATTEMPT_BUDGET_MS + 30_000;
-const SESSION_CAPTURE_LOCK_UPDATE_MS = Math.floor(SESSION_CAPTURE_LOCK_STALE_MS / 3);
 const SESSION_CAPTURE_LOCK_TIMEOUT_MS = SESSION_CAPTURE_ATTEMPT_BUDGET_MS * SESSION_CAPTURE_ATTEMPTS + 30_000;
 const SESSION_CAPTURE_LOCK_RETRY_MS = 1_000;
 const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
@@ -280,10 +282,11 @@ function redactSensitiveText(value: string): string {
     .replace(/((?:password|token|secret)["'=:\s]+)[^,\s&}]+/gi, '$1[REDACTED]');
 }
 
-async function launchBrowserForSessionCapture(): Promise<Browser> {
+async function launchBrowserForSessionCapture(signal?: AbortSignal): Promise<Browser> {
   try {
     return await chromium.launch({ headless: true, channel: 'chrome', timeout: BROWSER_LAUNCH_TIMEOUT_MS });
   } catch {
+    signal?.throwIfAborted();
     return chromium.launch({ headless: true, timeout: BROWSER_LAUNCH_TIMEOUT_MS });
   }
 }
@@ -292,70 +295,72 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-type SessionLockRelease = (() => Promise<void>) & { assertOwned: () => void };
+type SessionLockRelease = (() => Promise<void>) & { assertOwned: () => void; abandon: () => void };
 
 type SessionLockRequest = {
   lockPath: string;
   userIdentifier: string;
   isSessionReusable: () => boolean;
+  signal?: AbortSignal;
 };
 
-function ensureLockTarget(lockPath: string): void {
-  if (!fs.existsSync(lockPath)) {
-    fs.writeFileSync(lockPath, '', 'utf8');
-  }
-}
-
-function isLockAlreadyHeldError(error: unknown): boolean {
-  return (error as NodeJS.ErrnoException | undefined)?.code === 'ELOCKED';
-}
-
 async function acquireSessionCaptureLock({
-  lockPath,
-  userIdentifier,
-  isSessionReusable
+  lockPath, userIdentifier, isSessionReusable, signal
 }: SessionLockRequest): Promise<SessionLockRelease | null> {
-  ensureLockTarget(lockPath);
-  const startTime = Date.now();
-
-  while (Date.now() - startTime < SESSION_CAPTURE_LOCK_TIMEOUT_MS) {
+  const directory = `${lockPath}.lock`;
+  const ownerFile = path.join(directory, 'owner');
+  const deadline = Date.now() + SESSION_CAPTURE_LOCK_TIMEOUT_MS;
+  while (Date.now() < deadline) {
+    signal?.throwIfAborted();
     if (isSessionReusable()) {
-      console.log(`[playwright-session] Fresh session appeared while waiting for ${userIdentifier} lock`);
       return null;
     }
-
     try {
-      let compromisedError: Error | undefined;
-      const releaseLock = await lockfile.lock(lockPath, {
-        retries: 0,
-        stale: SESSION_CAPTURE_LOCK_STALE_MS,
-        update: SESSION_CAPTURE_LOCK_UPDATE_MS,
-        onCompromised: (error) => {
-          compromisedError = error;
-        }
-      });
-
-      const assertOwned = (): void => {
-        if (compromisedError) {
-          throw new Error(`Session capture lock was compromised for ${userIdentifier}: ${compromisedError.message}`);
-        }
-      };
-      const release = async (): Promise<void> => {
-        assertOwned();
-        await releaseLock();
-        assertOwned();
-      };
-      return Object.assign(release, { assertOwned });
+      fs.mkdirSync(directory, { mode: 0o700 });
     } catch (error) {
-      if (!isLockAlreadyHeldError(error)) {
+      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') {
         throw error;
       }
-
-      await sleep(SESSION_CAPTURE_LOCK_RETRY_MS);
+      // An aged owner can be paused; recover orphan locks only with all writers stopped.
+      await sleep(Math.min(SESSION_CAPTURE_LOCK_RETRY_MS, Math.max(0, deadline - Date.now())));
+      continue;
     }
+    const identity = fs.statSync(directory);
+    const token = randomUUID();
+    let released = false;
+    const ownsPath = (): boolean => {
+      if (released) {
+        return false;
+      }
+      try {
+        const current = fs.statSync(directory);
+        return current.dev === identity.dev && current.ino === identity.ino && fs.readFileSync(ownerFile, 'utf8') === token;
+      } catch {
+        return false;
+      }
+    };
+    // An incomplete lock stays in place if its owner marker cannot be written.
+    fs.writeFileSync(ownerFile, token, { flag: 'wx', mode: 0o600 });
+    const release = (async () => {
+      if (released) {
+        return;
+      }
+      if (ownsPath()) {
+        fs.unlinkSync(ownerFile); fs.rmdirSync(directory);
+      }
+      released = true;
+    }) as SessionLockRelease;
+    release.assertOwned = () => {
+      if (!ownsPath()) {
+        throw new Error(`Session capture lock ownership was lost for ${userIdentifier}.`);
+      }
+    };
+    release.abandon = () => {
+      released = true;
+    };
+    return release;
   }
-
-  throw new Error(`Timed out waiting for Playwright session capture lock for ${userIdentifier}: ${lockPath}`);
+  throw new Error(`Timed out waiting for Playwright session capture lock for ${userIdentifier}: ${lockPath}. Remove orphan locks only after all writers stop.`);
 }
 
 async function getAuthenticationState(page: Page): Promise<AuthenticationState> {
@@ -605,8 +610,10 @@ async function completeLoginOnPage(
   page: Page,
   username: string,
   password: string,
-  login: typeof completeIdamLogin = completeIdamLogin
+  login: typeof completeIdamLogin = completeIdamLogin,
+  signal?: AbortSignal
 ): Promise<void> {
+  signal?.throwIfAborted();
   await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
 
   if (!(await isOnLoginOrCallbackSurface(page)) && await hasCapturedAuthenticatedSession(page, page.context(), 5_000)) {
@@ -617,8 +624,10 @@ async function completeLoginOnPage(
   let attempt = 1;
 
   while (Date.now() < retryUntil) {
+    signal?.throwIfAborted();
     if (attempt > 1) {
       await page.context().clearCookies();
+      signal?.throwIfAborted();
       await page.goto(authLoginUrl(), { waitUntil: 'domcontentloaded' });
     }
 
@@ -630,7 +639,8 @@ async function completeLoginOnPage(
 
     if (isOnLoginSurface) {
       if (await isLoginInputVisible(page)) {
-        await login(page, username, password);
+        signal?.throwIfAborted();
+        await login(page, username, password, signal);
         await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
         await waitForLoginRedirectToSettle(page, Math.max(AUTHENTICATION_POLL_INTERVAL_MS, retryUntil - Date.now()));
       } else {
@@ -656,18 +666,20 @@ async function completeLoginOnPage(
   );
 }
 
-async function persistSessionState(context: BrowserContext, storageStatePath: string): Promise<void> {
+async function persistSessionState(context: BrowserContext, storageStatePath: string, assertOwned: () => void = () => undefined): Promise<void> {
   fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
   const temporaryPath = `${storageStatePath}.${process.pid}.${Date.now()}.tmp`;
   try {
     await context.storageState({ path: temporaryPath });
+    assertOwned();
     fs.renameSync(temporaryPath, storageStatePath);
   } finally {
     fs.rmSync(temporaryPath, { force: true });
   }
 }
 
-export async function sessionCapture(user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}): Promise<string> {
+export async function sessionCaptureInProcess(user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}, signal?: AbortSignal): Promise<string> {
+  signal?.throwIfAborted();
   const partitionKey = resolveSessionPartitionKey(options.partitionKey);
   const storageStatePath = getSessionStatePath(user, partitionKey);
   const lockPath = `${storageStatePath}.lock`;
@@ -697,14 +709,25 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
   const lock = await acquireSessionCaptureLock({
     lockPath,
     userIdentifier: resolveSessionIdentity(user).userIdentifier,
-    isSessionReusable: () => isReusableSessionForCapture(storageStatePath, options)
+    isSessionReusable: () => isReusableSessionForCapture(storageStatePath, options),
+    signal
   });
   if (!lock) {
     clearSessionCaptureFailure(failurePath);
     return storageStatePath;
   }
 
+  let browser: Browser | undefined;
+  let browserClosing: Promise<{ closed: boolean }> | undefined;
+  let retainLock = false;
+  const closeOnAbort = () => {
+    if (browser && !browserClosing) {
+      browserClosing = browser.close().then(() => ({ closed: true }), () => ({ closed: false }));
+    }
+  };
+  signal?.addEventListener('abort', closeOnAbort, { once: true });
   try {
+    signal?.throwIfAborted();
     if (isReusableSessionForCapture(storageStatePath, options)) {
       clearSessionCaptureFailure(failurePath);
       console.log(`[playwright-session] Reusing session: ${storageStatePath}`);
@@ -724,44 +747,154 @@ export async function sessionCapture(user: SessionIdentityInput = 'base', option
     let lastError: unknown;
 
     for (let attempt = 1; attempt <= SESSION_CAPTURE_ATTEMPTS; attempt += 1) {
-      let browser: Browser | undefined;
+      signal?.throwIfAborted();
+      browser = undefined;
+      browserClosing = undefined;
+      let completed = false;
+      let fatalError: unknown;
+      let fatal = false;
+      let closeFailed = false;
       try {
-        browser = await launchBrowserForSessionCapture();
+        browser = await launchBrowserForSessionCapture(signal);
+        if (signal?.aborted) {
+          closeOnAbort();
+        }
+        signal?.throwIfAborted();
         const context = await browser.newContext();
         const page = await context.newPage();
 
-        await completeLoginOnPage(page, identity.email, identity.password);
+        await completeLoginOnPage(page, identity.email, identity.password, completeIdamLogin, signal);
+        signal?.throwIfAborted();
         const authenticated = await hasCapturedAuthenticatedSession(page, context);
         if (!authenticated) {
           throw new Error(
             `Session capture did not create an authenticated session for "${identity.userIdentifier}". ${await loginFailureContext(page)}`
           );
         }
+        signal?.throwIfAborted();
         lock.assertOwned();
-        await persistSessionState(context, storageStatePath);
+        await persistSessionState(context, storageStatePath, () => {
+          signal?.throwIfAborted(); lock.assertOwned();
+        });
         lock.assertOwned();
         clearSessionCaptureFailure(failurePath);
-        return storageStatePath;
+        completed = true;
       } catch (error) {
         lastError = error;
         const message = error instanceof Error ? error.message : String(error);
-        if (!isRetryableSessionCaptureFailure(message) || attempt === SESSION_CAPTURE_ATTEMPTS) {
-          writeSessionCaptureFailure(failurePath, error);
-          throw error;
+        if (signal?.aborted || !isRetryableSessionCaptureFailure(message) || attempt === SESSION_CAPTURE_ATTEMPTS) {
+          fatal = true;
+          fatalError = error;
+          if (!signal?.aborted) {
+            try {
+              lock.assertOwned();
+              writeSessionCaptureFailure(failurePath, error);
+            } catch (metadataError) {
+              fatalError = metadataError;
+            }
+          }
         }
-        console.warn(
-          `[playwright-session] Transient capture failure for ${identity.userIdentifier}; retrying once (${attempt}/${SESSION_CAPTURE_ATTEMPTS}): ${redactSensitiveText(message)}`
-        );
       } finally {
-        await browser?.close();
+        try {
+          if (browserClosing) {
+            const result = await browserClosing;
+            if (!result.closed) {
+              closeFailed = true;
+              retainLock = true;
+            }
+          } else {
+            await browser?.close();
+          }
+        } catch {
+          retainLock = true;
+          closeFailed = true;
+        }
       }
+      if (closeFailed) {
+        const reason = safeCaptureError(fatal ? fatalError : lastError);
+        const closeMessage = 'Browser close failed; session capture lock retained.';
+        throw new Error(reason === 'Session capture failed; details unavailable.' ? closeMessage : `${reason} ${closeMessage}`);
+      }
+      if (fatal) {
+        throw fatalError;
+      }
+      if (completed) {
+        return storageStatePath;
+      }
+      signal?.throwIfAborted();
+      const retryMessage = lastError instanceof Error ? lastError.message : String(lastError);
+      console.warn(
+        `[playwright-session] Transient capture failure for ${identity.userIdentifier}; retrying once (${attempt}/${SESSION_CAPTURE_ATTEMPTS}): ${redactSensitiveText(retryMessage)}`
+      );
     }
 
+    lock.assertOwned();
     writeSessionCaptureFailure(failurePath, lastError);
     throw lastError;
   } finally {
-    await lock();
+    signal?.removeEventListener('abort', closeOnAbort);
+    if (retainLock) {
+      lock.abandon();
+    } else {
+      await lock();
+    }
   }
+}
+
+export async function sessionCapture(user: SessionIdentityInput = 'base', options: SessionCaptureOptions = {}): Promise<string> {
+  const identity = resolveSessionIdentity(user);
+  const partitionKey = resolveSessionPartitionKey(options.partitionKey);
+  const storageStatePath = getSessionStatePath(identity, partitionKey);
+  if (options.expectedStaleSession && path.resolve(options.expectedStaleSession.storageStatePath) !== path.resolve(storageStatePath)) {
+    throw new Error(`Rejected session path does not match resolved session path for user "${identity.userIdentifier}".`);
+  }
+  if (isReusableSessionForCapture(storageStatePath, options)) {
+    clearSessionCaptureFailure(`${storageStatePath}.capture-failed.json`);
+    console.log('[playwright-session] Reusing session.');
+    return storageStatePath;
+  }
+  return new Promise((resolve, reject) => {
+    const child = fork(require.resolve('./session-capture-child.cjs'), [], {
+      detached: true,
+      stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
+      env: { ...process.env, TS_NODE_COMPILER_OPTIONS: '{"module":"CommonJS"}' }
+    });
+    let settled = false;
+    child.once('error', (error) => {
+      if (!settled) {
+        settled = true; reject(error);
+      }
+    });
+    child.on('message', (message: { path?: string; error?: string; log?: string; warning?: boolean }) => {
+      if (message.log) {
+        if (message.warning) {
+          console.warn(message.log);
+        } else {
+          console.log(message.log);
+        }
+        return;
+      }
+      if (settled) {
+        return;
+      }
+      settled = true;
+      if (message.path) {
+        resolve(message.path);
+      } else {
+        reject(new Error(message.error || 'Session capture process failed.'));
+      }
+    });
+    child.once('close', (code, signal) => {
+      if (!settled) {
+        settled = true; reject(new Error(`Session capture process exited before reporting a result (${signal || code}).`));
+      }
+    });
+    child.send({ identity, options, baseUrl: config.baseUrl, idamWebUrl: config.idamWebUrl }, (error) => {
+      if (error && !settled) {
+        settled = true; reject(error);
+      }
+    });
+  });
 }
 
 export async function applySessionCookies(
@@ -864,9 +997,7 @@ export const __test__ = {
   acquireSessionCaptureLock,
   persistSessionState,
   sessionCapture,
-  SESSION_CAPTURE_LOCK_STALE_MS,
   SESSION_CAPTURE_LOCK_TIMEOUT_MS,
-  SESSION_CAPTURE_LOCK_UPDATE_MS,
   SESSION_CAPTURE_ATTEMPT_BUDGET_MS,
   SESSION_CAPTURE_ATTEMPTS,
   isRetryableSessionCaptureFailure

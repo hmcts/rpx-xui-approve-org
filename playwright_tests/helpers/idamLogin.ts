@@ -43,23 +43,28 @@ async function firstVisible(candidates: Locator[], timeoutMs: number): Promise<L
   return undefined;
 }
 
-async function submitStep(page: Page, submitButton: Locator | undefined, activeField: Locator): Promise<void> {
+async function submitStep(page: Page, submitButton: Locator | undefined, activeField: Locator, signal?: AbortSignal): Promise<void> {
+  signal?.throwIfAborted();
   if (submitButton && await submitButton.isVisible().catch(() => false)) {
+    signal?.throwIfAborted();
     await submitButton.click();
   } else {
+    signal?.throwIfAborted();
     await activeField.press('Enter');
   }
   await page.waitForLoadState('domcontentloaded', { timeout: 15_000 }).catch(() => undefined);
 }
 
-async function waitForEmailInput(page: Page): Promise<Locator | undefined> {
+async function waitForEmailInput(page: Page, signal?: AbortSignal): Promise<Locator | undefined> {
   for (let attempt = 1; attempt <= LOGIN_SURFACE_REFRESH_ATTEMPTS; attempt++) {
+    signal?.throwIfAborted();
     const emailInput = await firstVisible(emailCandidates(page), LOGIN_SURFACE_EMAIL_STEP_TIMEOUT_MS);
     if (emailInput) {
       return emailInput;
     }
 
     if (attempt < LOGIN_SURFACE_REFRESH_ATTEMPTS) {
+      signal?.throwIfAborted();
       await page.reload({ waitUntil: 'domcontentloaded' }).catch(() => undefined);
     }
   }
@@ -67,19 +72,20 @@ async function waitForEmailInput(page: Page): Promise<Locator | undefined> {
   return undefined;
 }
 
-export async function completeIdamLogin(page: Page, username: string, password: string): Promise<void> {
-  const emailInput = await waitForEmailInput(page);
+export async function completeIdamLogin(page: Page, username: string, password: string, signal?: AbortSignal): Promise<void> {
+  const emailInput = await waitForEmailInput(page, signal);
   if (!emailInput) {
     throw new Error(`IDAM email input was not visible. Current URL: ${page.url()}`);
   }
 
+  signal?.throwIfAborted();
   await emailInput.fill(username);
 
   let passwordInput = await firstVisible(passwordCandidates(page), 1_000);
   let submitButton = await firstVisible(submitCandidates(page), 1_000);
 
   if (!passwordInput) {
-    await submitStep(page, submitButton, emailInput);
+    await submitStep(page, submitButton, emailInput, signal);
     passwordInput = await firstVisible(passwordCandidates(page), LOGIN_SURFACE_TIMEOUT_MS);
     submitButton = await firstVisible(submitCandidates(page), 1_000);
   }
@@ -88,6 +94,7 @@ export async function completeIdamLogin(page: Page, username: string, password: 
     throw new Error(`IDAM password input was not visible after submitting email. Current URL: ${page.url()}`);
   }
 
+  signal?.throwIfAborted();
   await passwordInput.fill(password);
-  await submitStep(page, submitButton, passwordInput);
+  await submitStep(page, submitButton, passwordInput, signal);
 }
