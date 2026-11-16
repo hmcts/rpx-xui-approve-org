@@ -6,7 +6,7 @@ import * as http from 'node:http';
 import * as os from 'node:os';
 import * as path from 'node:path';
 
-test('lifecycle fixture cleanup tracks a hanging launch and escalates ignored termination @e2e @auth', async () => {
+test('lifecycle fixture cleanup tracks a hanging launch and escalates ignored termination', async () => {
   test.skip(process.platform === 'win32', 'Synthetic lifecycle cleanup uses POSIX process identity checks.');
   test.setTimeout(15_000);
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-hanging-launch-'));
@@ -49,7 +49,7 @@ chromium.launch = async () => {
   }
 });
 
-test('a timed-out worker closes its browser before the next session capture @e2e @auth', async () => {
+test('a timed-out worker closes its browser before the next session capture', async () => {
   test.skip(process.platform === 'win32', 'Synthetic lifecycle cleanup uses POSIX process identity checks.');
   test.setTimeout(45_000);
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-lifecycle-'));
