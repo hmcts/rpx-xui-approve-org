@@ -1,4 +1,5 @@
 import { test, expect, chromium } from '@playwright/test';
+import { randomBytes } from 'node:crypto';
 import * as sinon from 'sinon';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
@@ -7,6 +8,8 @@ import { __test__ as sessionCapture, sessionCaptureInProcess, getSessionStatePat
 import { config } from '../config/config';
 import { fork, spawnSync } from 'node:child_process';
 import { EventEmitter } from 'node:events';
+
+const testPassword = randomBytes(32).toString('hex');
 
 test('initial request-send failure disconnects the child and returns a safe error', async () => {
   const child = Object.assign(new EventEmitter(), {
@@ -21,7 +24,7 @@ test('initial request-send failure disconnects the child and returns a safe erro
   const stub = sinon.stub(require('node:child_process'), 'fork').returns(child);
   try {
     const { sessionCapture: capture } = await import('../helpers/sessionCapture');
-    await expect(capture({ userIdentifier: 'send-failure', email: 'send-failure@example.invalid', password: 'synthetic' }, { force: true })).rejects.toThrow('Unable to communicate with the session capture process.');
+    await expect(capture({ userIdentifier: 'send-failure', email: 'send-failure@example.invalid', password: testPassword }, { force: true })).rejects.toThrow('Unable to communicate with the session capture process.');
     expect(child.disconnect.calledOnce).toBe(true);
   } finally {
     stub.restore();
@@ -77,7 +80,7 @@ if (phase === 'result') {
         observed = true; child.disconnect();
       }
     });
-    child.send({ identity: { userIdentifier: 'phase', email: 'phase@example.invalid', password: 'synthetic' }, options: { force: true, partitionKey: 'api' }, baseUrl: 'http://127.0.0.1:1/', idamWebUrl: 'http://127.0.0.1:1/' });
+    child.send({ identity: { userIdentifier: 'phase', email: 'phase@example.invalid', password: testPassword }, options: { force: true, partitionKey: 'api' }, baseUrl: 'http://127.0.0.1:1/', idamWebUrl: 'http://127.0.0.1:1/' });
     const watchdog = setTimeout(() => child.kill('SIGKILL'), 10_000);
     try {
       const code = await new Promise((resolve) => child.once('exit', resolve));
@@ -136,7 +139,7 @@ chromium.launch = async () => ({
       child.disconnect();
     }
   }));
-  child.send({ identity: { userIdentifier: 'ipc-test', email: 'ipc@example.invalid', password: 'synthetic' },
+  child.send({ identity: { userIdentifier: 'ipc-test', email: 'ipc@example.invalid', password: testPassword },
     options: { force: true, partitionKey: 'api' }, baseUrl: 'http://127.0.0.1:1/', idamWebUrl: 'http://127.0.0.1:1/' });
   const watchdog = setTimeout(() => child.kill('SIGKILL'), 10_000);
   try {
@@ -162,7 +165,7 @@ require('ts-node').register({ transpileOnly: true, compilerOptions: { module: 'C
 const fs = require('node:fs');
 const sessions = require('./playwright_tests/helpers/sessionCapture.ts');
 const { config } = require('./playwright_tests/config/config.ts');
-const identity = { userIdentifier: 'marker-reader', email: 'marker@example.invalid', password: 'synthetic' };
+const identity = { userIdentifier: 'marker-reader', email: 'marker@example.invalid', password: ${JSON.stringify(testPassword)} };
 const state = sessions.getSessionStatePath(identity, 'api');
 const failure = state + '.capture-failed.json';
 fs.writeFileSync(state, JSON.stringify({ cookies: [{ name: 'ao-webapp', value: 'synthetic', domain: new URL(config.baseUrl).hostname, expires: -1 }], origins: [] }));
@@ -248,7 +251,7 @@ test('ownership loss while writing a temporary state cannot overwrite a successo
 
 for (const failure of [new Error('synthetic close failed'), undefined]) {
   test(`unconfirmed browser shutdown retains the session lock (${String(failure)})`, async () => {
-    const identity = { userIdentifier: 'fake-close-failure', email: `fake-close-${Date.now()}@example.invalid`, password: 'synthetic' };
+    const identity = { userIdentifier: 'fake-close-failure', email: `fake-close-${Date.now()}@example.invalid`, password: testPassword };
     const lockDirectory = `${getSessionStatePath(identity, 'api')}.lock.lock`;
     const controller = new AbortController();
     let finishContext: ((value: unknown) => void) | undefined;
@@ -297,7 +300,7 @@ test('child diagnostics never forward arbitrary credential text', () => {
 });
 
 test('actual capture process reports cooldown without exposing its stored detail', async () => {
-  const identity = { userIdentifier: 'fake-cooldown', email: `fake-cooldown-${Date.now()}@example.invalid`, password: 'synthetic-password-secret' };
+  const identity = { userIdentifier: 'fake-cooldown', email: `fake-cooldown-${Date.now()}@example.invalid`, password: testPassword };
   const failurePath = `${getSessionStatePath(identity, 'api')}.capture-failed.json`;
   fs.mkdirSync(path.dirname(failurePath), { recursive: true });
   fs.writeFileSync(failurePath, JSON.stringify({ timestamp: Date.now(), message: 'synthetic-secret-detail', retryable: false }));
@@ -311,7 +314,7 @@ test('actual capture process reports cooldown without exposing its stored detail
 });
 
 test('actual capture process reports unconfirmed browser shutdown without its raw error', async () => {
-  const identity = { userIdentifier: 'fake-close-child', email: `fake-close-child-${Date.now()}@example.invalid`, password: 'synthetic-password-secret' };
+  const identity = { userIdentifier: 'fake-close-child', email: `fake-close-child-${Date.now()}@example.invalid`, password: testPassword };
   const lockDirectory = `${getSessionStatePath(identity, 'api')}.lock.lock`;
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-child-close-'));
   const preload = path.join(directory, 'preload.cjs');
@@ -337,7 +340,7 @@ test('actual capture process reports unconfirmed browser shutdown without its ra
 });
 
 test('fresh sessions reuse locally while force and rejected fingerprints still require capture', async () => {
-  const identity = { userIdentifier: 'fake-fast-path', email: `fake-fast-${Date.now()}@example.invalid`, password: 'synthetic' };
+  const identity = { userIdentifier: 'fake-fast-path', email: `fake-fast-${Date.now()}@example.invalid`, password: testPassword };
   const statePath = getSessionStatePath(identity, 'api');
   const failurePath = `${statePath}.capture-failed.json`;
   const previousOptions = process.env.NODE_OPTIONS;
@@ -370,7 +373,7 @@ test('fresh sessions reuse locally while force and rejected fingerprints still r
 });
 
 test('an old capture owner cannot overwrite successor failure metadata', async () => {
-  const identity = { userIdentifier: 'fake-owner-replaced', email: `fake-owner-${Date.now()}@example.invalid`, password: 'synthetic' };
+  const identity = { userIdentifier: 'fake-owner-replaced', email: `fake-owner-${Date.now()}@example.invalid`, password: testPassword };
   const statePath = getSessionStatePath(identity, 'api');
   const lockDirectory = `${statePath}.lock.lock`;
   const failurePath = `${statePath}.capture-failed.json`;
@@ -420,7 +423,7 @@ test('an old capture owner cannot overwrite successor failure metadata', async (
 });
 
 test('a rejected pending launch after cancellation releases without starting authentication', async () => {
-  const identity = { userIdentifier: 'fake-launch-reject', email: `fake-launch-reject-${Date.now()}@example.invalid`, password: 'synthetic' };
+  const identity = { userIdentifier: 'fake-launch-reject', email: `fake-launch-reject-${Date.now()}@example.invalid`, password: testPassword };
   const statePath = getSessionStatePath(identity, 'api');
   const lockDirectory = `${statePath}.lock.lock`;
   const controller = new AbortController();
@@ -455,7 +458,7 @@ test('a rejected pending launch after cancellation releases without starting aut
 });
 
 test('a browser returned after cancellation must close before releasing the lock', async () => {
-  const identity = { userIdentifier: 'fake-late-launch', email: `fake-late-launch-${Date.now()}@example.invalid`, password: 'synthetic' };
+  const identity = { userIdentifier: 'fake-late-launch', email: `fake-late-launch-${Date.now()}@example.invalid`, password: testPassword };
   const statePath = getSessionStatePath(identity, 'api');
   const lockDirectory = `${statePath}.lock.lock`;
   const controller = new AbortController();
@@ -505,7 +508,7 @@ test('a browser returned after cancellation must close before releasing the lock
 });
 
 test('child IPC preserves both ownership loss and browser closure failure without secrets', async () => {
-  const identity = { userIdentifier: 'fake-both', email: `fake-both-${Date.now()}@example.invalid`, password: 'synthetic-password-secret' };
+  const identity = { userIdentifier: 'fake-both', email: `fake-both-${Date.now()}@example.invalid`, password: testPassword };
   const statePath = getSessionStatePath(identity, 'api');
   const lockDirectory = `${statePath}.lock.lock`;
   const failurePath = `${statePath}.capture-failed.json`;
@@ -556,7 +559,7 @@ for (const [label, cause, expected] of [
   ['timeout', 'synthetic-secret-timeout', 'Session capture timed out.']
 ] as const) {
   test(`child IPC preserves safe ${label} cause when browser closure fails`, async () => {
-    const identity = { userIdentifier: 'fake-combined', email: `fake-combined-${Date.now()}@example.invalid`, password: 'synthetic-password-secret' };
+    const identity = { userIdentifier: 'fake-combined', email: `fake-combined-${Date.now()}@example.invalid`, password: testPassword };
     const statePath = getSessionStatePath(identity, 'api');
     const lockDirectory = `${statePath}.lock.lock`;
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-child-combined-'));
@@ -594,7 +597,7 @@ for (const [label, cause, expected] of [
 }
 
 test('retry warning is emitted only after closure and before an actual next attempt', async () => {
-  const identity = { userIdentifier: 'fake-retry-warning', email: `fake-retry-${Date.now()}@example.invalid`, password: 'synthetic' };
+  const identity = { userIdentifier: 'fake-retry-warning', email: `fake-retry-${Date.now()}@example.invalid`, password: testPassword };
   const statePath = getSessionStatePath(identity, 'api');
   const events: string[] = [];
   const first = { newContext: async () => {

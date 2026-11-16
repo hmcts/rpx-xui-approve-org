@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
@@ -6,10 +7,12 @@ import * as path from 'node:path';
 import { config } from '../config/config';
 import { __test__ as sessionCapture } from '../helpers/sessionCapture';
 
+const testPassword = randomBytes(32).toString('hex');
+
 const validIdentity = {
   userIdentifier: 'base-alias',
   email: 'ao@example.test',
-  password: 'do-not-log-this',
+  password: testPassword,
   sessionKey: 'shared-ao-account'
 };
 
