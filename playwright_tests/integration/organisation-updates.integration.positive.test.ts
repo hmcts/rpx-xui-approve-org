@@ -63,7 +63,7 @@ test.describe(
       await expect(page.getByRole('heading', { level: 1, name: 'Organisation update accepted' })).toBeVisible();
       await expect(page.getByRole('main')).toContainText('The requested organisation details are now current.');
 
-      await page.getByRole('link', { name: 'Back to Organisations' }).click();
+      await page.getByRole('link', { name: 'Back to Organisation updates' }).click();
       await expect(page).toHaveURL(/\/organisation\/updates(?:\/?|\?.*)$/);
     });
 
@@ -75,7 +75,7 @@ test.describe(
       await expect(page).toHaveURL(/\/organisation-update-rejected(?:\/?|\?.*)$/);
       await expect(page.getByRole('heading', { level: 1, name: 'Organisation update rejected' })).toBeVisible();
       await expect(page.getByRole('main')).toContainText('The requested changes have not been applied.');
-      await expect(page.getByRole('link', { name: 'Back to Organisations' })).toHaveAttribute(
+      await expect(page.getByRole('link', { name: 'Back to Organisation updates' })).toHaveAttribute(
         'href',
         '/organisation/updates'
       );
