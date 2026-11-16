@@ -24,7 +24,7 @@ describe('OrganisationUpdateDecisionComponent', () => {
 
     expect(heading.textContent.trim()).toBe('Organisation update accepted');
     expect(main.textContent).toContain('The requested organisation details are now current.');
-    expect(backLink.textContent.trim()).toBe('Back to Organisations');
+    expect(backLink.textContent.trim()).toBe('Back to Organisation updates');
     expect(backLink.getAttribute('href')).toBe('/organisation/updates');
   });
 
