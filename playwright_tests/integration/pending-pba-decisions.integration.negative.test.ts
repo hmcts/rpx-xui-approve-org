@@ -17,6 +17,9 @@ test.describe('New PBAs decision failures', { tag: ['@pending-pbas', '@pending-d
       }
       await organisationApprovalsPage.continuePendingPbaDecision();
       await expect(organisationApprovalsPage.pendingPbaValidationSummary).toContainText('Select the decision for the PBA account');
+      if (!selectedFirst) {
+        await expect(organisationApprovalsPage.pendingPbaDecisionRow(FIRST_PENDING_PBA)).toContainText('Select the decision for the PBA account');
+      }
       await expect(organisationApprovalsPage.pendingPbaDecisionRow(SECOND_PENDING_PBA)).toContainText('Select the decision for the PBA account');
       await expect(organisationApprovalsPage.confirmDecisionHeading).toBeHidden();
       expect(statusMock.getLastPayload()).toBeUndefined();
@@ -77,17 +80,8 @@ test.describe('New PBAs decision failures', { tag: ['@pending-pbas', '@pending-d
     });
     await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
     await expect(organisationApprovalsPage.successBanner('PBA numbers updated')).toBeHidden();
-    let submissionError: unknown;
-    try {
-      await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toBeVisible();
-      await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toContainText(PBA_VALIDATION_MESSAGE);
-    } catch (error) {
-      await expect(page).toHaveURL(new RegExp(`/organisation/pbas/new/${PBA_DECISION_ORG_ID}$`));
-      await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
-      await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toHaveCount(0);
-      submissionError = error;
-    }
-    test.fail(true, 'EXUI-1435: new-pbas template does not bind the emitted PBA submission errors');
-    expect(submissionError).toBeUndefined();
+    await expect(page).toHaveURL(new RegExp(`/organisation/pbas/new/${PBA_DECISION_ORG_ID}$`));
+    await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toBeVisible();
+    await expect(organisationApprovalsPage.pendingPbaSubmissionErrors).toContainText(PBA_VALIDATION_MESSAGE);
   });
 });

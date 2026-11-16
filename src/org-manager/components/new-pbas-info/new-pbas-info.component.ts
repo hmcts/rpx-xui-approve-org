@@ -25,7 +25,7 @@ export class NewPBAsInfoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public ngOnInit(): void {
     this.formGroup = this.fb.group({});
-    this.org.pendingPaymentAccount.forEach((p) => this.formGroup.addControl(p, this.fb.control('', Validators.required)));
+    this.org.pendingPaymentAccount.forEach((p) => this.formGroup.addControl(p, this.fb.control(this.newPBAs.get(p) ?? '', Validators.required)));
     this.formSub = this.formGroup.valueChanges.subscribe(() => {
       this.submitted = false;
       this.clearErrorTitle();

@@ -62,4 +62,58 @@ test.describe('New PBAs decisions', { tag: ['@pending-pbas', '@pending-decisions
     await expect(organisationApprovalsPage.pendingPbaRowByText(UNRELATED_PENDING_ORG_NAME)).toBeVisible();
     await expect(organisationApprovalsPage.pendingPbaRowsByText('Pending PBA Decisions Org')).toHaveCount(0);
   });
+
+  test('retains both decisions when returning from confirmation', async ({
+    page, organisationApprovalsPage
+  }) => {
+    await openPendingPbaDecisions(page, organisationApprovalsPage);
+    await organisationApprovalsPage.choosePendingPbaDecision(FIRST_PENDING_PBA, 'accepted');
+    await organisationApprovalsPage.choosePendingPbaDecision(SECOND_PENDING_PBA, 'rejected');
+    await organisationApprovalsPage.continuePendingPbaDecision();
+    await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+    await organisationApprovalsPage.clickBackLink();
+    await expect(page).toHaveURL(new RegExp(`/organisation/pbas/new/${PBA_DECISION_ORG_ID}$`));
+    await expect(organisationApprovalsPage.pendingPbaDecisionRow(FIRST_PENDING_PBA).locator('input[value="accepted"]')).toBeChecked();
+    await expect(organisationApprovalsPage.pendingPbaDecisionRow(SECOND_PENDING_PBA).locator('input[value="rejected"]')).toBeChecked();
+    await organisationApprovalsPage.continuePendingPbaDecision();
+    await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+    await expect(organisationApprovalsPage.pendingPbaConfirmationRow(FIRST_PENDING_PBA)).toContainText('Approve the account');
+    await expect(organisationApprovalsPage.pendingPbaConfirmationRow(SECOND_PENDING_PBA)).toContainText('Reject the account');
+  });
+
+  test('submits corrected decisions after returning from confirmation', async ({
+    page, organisationApprovalsPage
+  }) => {
+    const state = buildPendingPbaDecisionState();
+    await openPendingPbaDecisions(page, organisationApprovalsPage, state);
+    const statusMock = await setupSetPbaStatusApiMock(page, { pendingPbaOrganisations: state.pendingPbaOrganisations });
+
+    await organisationApprovalsPage.choosePendingPbaDecision(FIRST_PENDING_PBA, 'accepted');
+    await organisationApprovalsPage.choosePendingPbaDecision(SECOND_PENDING_PBA, 'rejected');
+    await organisationApprovalsPage.continuePendingPbaDecision();
+    await expect(organisationApprovalsPage.confirmDecisionHeading).toBeVisible();
+    await organisationApprovalsPage.clickBackLink();
+    await organisationApprovalsPage.choosePendingPbaDecision(FIRST_PENDING_PBA, 'rejected');
+    await organisationApprovalsPage.choosePendingPbaDecision(SECOND_PENDING_PBA, 'rejected');
+    await organisationApprovalsPage.continuePendingPbaDecision();
+    await expect(organisationApprovalsPage.pendingPbaValidationSummary).toBeHidden();
+    await expect(organisationApprovalsPage.pendingPbaConfirmationRow(FIRST_PENDING_PBA)).toContainText('Reject the account');
+    await expect(organisationApprovalsPage.pendingPbaConfirmationRow(SECOND_PENDING_PBA)).toContainText('Reject the account');
+
+    const responsePromise = waitForSetPbaStatusResponse(page);
+    const refreshedList = waitForPendingPbaStatusResponse(page);
+    await organisationApprovalsPage.confirmDecision();
+    expect((await responsePromise).status()).toBe(200);
+    expect(statusMock.getLastPayload()).toEqual({
+      orgId: PBA_DECISION_ORG_ID,
+      pbaNumbers: [
+        { pbaNumber: FIRST_PENDING_PBA, status: 'rejected', statusMessage: '' },
+        { pbaNumber: SECOND_PENDING_PBA, status: 'rejected', statusMessage: '' }
+      ]
+    });
+    expect((await refreshedList).status()).toBe(200);
+    await expect(page).toHaveURL(/\/organisation\/pbas$/);
+    await expect(organisationApprovalsPage.pendingPbaRows).toHaveCount(1);
+    await expect(organisationApprovalsPage.pendingPbaRowByText(UNRELATED_PENDING_ORG_NAME)).toBeVisible();
+  });
 });
