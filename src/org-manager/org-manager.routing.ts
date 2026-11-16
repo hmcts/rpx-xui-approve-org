@@ -1,23 +1,9 @@
 import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
+import { RoleGuard, RoleMatching, UserDetailsComponent } from '@hmcts/rpx-xui-common-lib';
 
 import { AuthGuard } from '../services/auth/auth.guard';
-import { ActiveOrganisationsComponent } from './containers';
-import { ApproveOrganisationComponent } from './containers/approve-organisation';
-import { ApproveOrganisationSuccessComponent } from './containers/approve-organisation-success';
-import { DeleteOrganisationComponent } from './containers/delete-organisation';
-import { DeleteOrganisationSuccessComponent } from './containers/delete-organisation-success';
-import { EditDetailsComponent } from './containers/edit-details';
-import { HomeComponent } from './containers/home';
-import { NewPBAsComponent } from './containers/new-pbas';
-import { OrganisationDetailsComponent } from './containers/organisation-details';
-import { PendingOrganisationsComponent } from './containers/pending-organisations';
-import { PendingPBAsComponent } from './containers/pending-pbas';
-import { ReinviteUserComponent } from './containers/reinvite-user';
-import { ReinviteUserSuccessComponent } from './containers/reinvite-user-success';
-import { ReviewOrganisationComponent } from './containers/review-organisation';
-import { UserDetailsComponent } from './containers/user-details';
+import { ActiveOrganisationsComponent, ApproveOrganisationComponent, ApproveOrganisationSuccessComponent, DeleteOrganisationComponent, DeleteOrganisationSuccessComponent, EditDetailsComponent, HomeComponent, NewPBAsComponent, OrganisationDetailsComponent, OrganisationUpdateDecisionComponent, OrganisationUpdateReviewComponent, OrganisationUpdatesComponent, PendingOrganisationsComponent, PendingPBAsComponent, ReinviteUserComponent, ReinviteUserSuccessComponent, ReviewOrganisationComponent } from './containers';
 import { UserApprovalGuard } from './guards';
 
 export const ROUTES: Routes = [
@@ -47,6 +33,11 @@ export const ROUTES: Routes = [
         path: 'active',
         component: ActiveOrganisationsComponent,
         canActivate: [AuthGuard], data: { title: 'Active organisations' }
+      },
+      {
+        path: 'updates',
+        component: OrganisationUpdatesComponent,
+        canActivate: [AuthGuard], data: { title: 'Organisation updates' }
       }
     ]
   },
@@ -58,6 +49,7 @@ export const ROUTES: Routes = [
   },
   { path: 'pending-organisations', pathMatch: 'full', redirectTo: 'organisation/pending' },
   { path: 'active-organisation', pathMatch: 'full', redirectTo: 'organisation/active' },
+  { path: 'organisation-updates', pathMatch: 'full', redirectTo: 'organisation/updates' },
   {
     path: 'approve-organisations',
     component: ApproveOrganisationComponent,
@@ -104,6 +96,32 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard],
     data: {
       title: 'Organisation details'
+    }
+  },
+  {
+    path: 'organisation-update/:orgId',
+    component: OrganisationUpdateReviewComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Review organisation details'
+    }
+  },
+  {
+    path: 'organisation-update-accepted',
+    component: OrganisationUpdateDecisionComponent,
+    canActivate: [AuthGuard],
+    data: {
+      decision: 'accepted',
+      title: 'Organisation update accepted'
+    }
+  },
+  {
+    path: 'organisation-update-rejected',
+    component: OrganisationUpdateDecisionComponent,
+    canActivate: [AuthGuard],
+    data: {
+      decision: 'rejected',
+      title: 'Organisation update rejected'
     }
   },
   {

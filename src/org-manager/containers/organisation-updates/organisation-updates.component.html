@@ -1,0 +1,56 @@
+<h2 class="govuk-heading-l">
+  Organisation updates
+  <ng-container *ngIf="organisationsLoaded">
+    ({{organisationCount}}<span *ngIf="searchString"> found</span>)
+  </ng-container>
+</h2>
+<ng-container *ngIf="organisationsLoaded">
+  <table class="govuk-table pending-organisations" *ngIf="organisationCount; else noData">
+    <caption class="govuk-table__caption govuk-visually-hidden">Organisation updates</caption>
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="col">Organisation</th>
+        <th class="govuk-table__header" scope="col">Address</th>
+        <th class="govuk-table__header" scope="col">Administrator</th>
+        <th class="govuk-table__header" scope="col">Date requested</th>
+        <th class="govuk-table__header" scope="col">Status</th>
+        <th class="govuk-table__header" scope="col">
+          <span class="govuk-visually-hidden">Actions</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row govuk-radios"
+        *ngFor="let org of organisations | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
+        <td class="govuk-table__cell">
+          {{org.name}}<br>
+          <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
+        </td>
+        <td class="govuk-table__cell">
+          <app-org-address [organisation]="org"></app-org-address>
+        </td>
+        <td class="govuk-table__cell">
+          {{org.admin}}<br>
+          <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
+        </td>
+        <td class="govuk-table__cell no-wrap">
+          {{org.dateRequested | date:'dd/MM/yyyy'}}
+        </td>
+        <td class="govuk-table__cell no-wrap govuk-!-text-align-centre">
+          <span *ngIf="org.status=='PENDING'" class="govuk-tag govuk-tag--blue organisation-status-tag">PENDING</span>
+          <span *ngIf="org.status=='REVIEW'" class="govuk-tag govuk-tag--grey organisation-status-tag">UNDER REVIEW</span>
+        </td>
+        <td class="govuk-table__cell no-wrap">
+          <a class="govuk-link" [routerLink]="['/organisation-update', org.organisationId]">
+            View<span class="govuk-visually-hidden"> {{org.name}}</span>
+          </a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <xuilib-hmcts-pagination *ngIf="organisationsLoaded && organisationCount > pagination.page_size"
+    (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
+  <ng-template #noData>
+    <span class="govuk-body"> There are no organisation updates.</span>
+  </ng-template>
+</ng-container>

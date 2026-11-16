@@ -85,6 +85,7 @@ export interface Organisation {
   pendingPaymentAccount: any[];
   dateReceived?: string;
   dateApproved?: string;
+  dateRequested?: Date;
   orgType?: string;
   regulators?: Regulator[];
   individualRegulators?: Regulator[];
@@ -114,6 +115,7 @@ export class OrganisationVM {
   public accountDetails?: object;
   public dateReceived?: string;
   public dateApproved?: string;
+  public dateRequested?: Date;
   public orgAttributes?: {key: string, value: string}[];
   public orgType?: string;
   public companyNumber?: string;

@@ -52,6 +52,9 @@ export class AppUtils {
     if (apiOrg.dateApproved) {
       organisationVm.dateApproved = apiOrg.dateApproved;
     }
+    if (apiOrg.dateRequested) {
+      organisationVm.dateRequested = apiOrg.dateRequested;
+    }
     return organisationVm;
   }
 

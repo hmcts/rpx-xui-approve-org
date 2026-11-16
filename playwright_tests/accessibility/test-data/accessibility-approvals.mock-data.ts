@@ -86,6 +86,7 @@ function createAccessibilityOrganisation(index: number, status: 'ACTIVE' | 'PEND
     pendingPaymentAccount: isActive ? [] : [`PBA41${rowNumber}01`],
     dateReceived: isActive ? undefined : new Date(Date.UTC(2024, 5, index + 1)).toISOString(),
     dateApproved: isActive ? new Date(Date.UTC(2024, 6, index + 1)).toISOString() : undefined,
+    dateRequested: new Date(Date.UTC(2026, 9, index + 1)).toISOString(),
     orgAttributes: [
       { key: 'jurisdiction', value: index % 2 === 0 ? 'Family' : 'Civil' },
       { key: 'accessibilityScenario', value: `pagination-row-${rowNumber}` }
@@ -168,6 +169,7 @@ const organisationUsers = Array.from({ length: ACCESSIBILITY_VISIBLE_PAGE_ROWS }
 );
 
 export const ACCESSIBILITY_PENDING_ORGANISATION_ID = pendingOrganisations[0].organisationIdentifier;
+export const ACCESSIBILITY_ACTIVE_ORGANISATION_ID = activeOrganisations[0].organisationIdentifier;
 
 export const ACCESSIBILITY_APPROVALS_MOCK_STATE: StandardOrganisationApprovalsApiMockState = {
   organisations: {

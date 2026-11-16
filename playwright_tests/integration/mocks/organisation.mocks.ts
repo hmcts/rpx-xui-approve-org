@@ -30,6 +30,7 @@ export type MockOrganisation = {
   pendingPaymentAccount: string[];
   dateReceived?: string;
   dateApproved?: string;
+  dateRequested?: string;
   orgAttributes: Array<{ key: string; value: string }>;
 };
 
@@ -127,6 +128,7 @@ export function createMockOrganisation(overrides: Partial<MockOrganisation>): Mo
     pendingPaymentAccount: overrides.pendingPaymentAccount ?? [],
     dateReceived: overrides.dateReceived,
     dateApproved: overrides.dateApproved,
+    dateRequested: overrides.dateRequested,
     orgAttributes: overrides.orgAttributes ?? []
   };
 }

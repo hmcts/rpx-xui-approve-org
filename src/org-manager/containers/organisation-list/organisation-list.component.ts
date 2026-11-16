@@ -73,12 +73,15 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
     this.organisationService.setOrganisationSearchString(this.sessionStorageService.getItem('searchString'));
   }
 
-  public performSearchPagination(searchString): Observable<any> {
+  public performSearchPagination(searchString: string): Observable<any> {
     const searchRequest = this.getSearchOrganisationRequestPagination(searchString);
+    if (this.view === 'UPDATES') {
+      return this.organisationService.searchOrganisationUpdatesWithPagination({ searchRequest });
+    }
     return this.organisationService.searchOrganisationWithPagination({ searchRequest, view: this.view });
   }
 
-  public getSearchOrganisationRequestPagination(searchString): SearchOrganisationRequest {
+  public getSearchOrganisationRequestPagination(searchString: string): SearchOrganisationRequest {
     return {
       search_filter: searchString,
       sorting_parameters: [this.getSortParameter()],

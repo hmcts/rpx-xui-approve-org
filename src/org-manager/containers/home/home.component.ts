@@ -14,7 +14,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   public readonly tabs = [
     { url: '/organisation/pending', label: 'New registrations' },
     { url: '/organisation/pbas', label: 'New PBAs' },
-    { url: '/organisation/active', label: 'Active organisations' }
+    { url: '/organisation/active', label: 'Active organisations' },
+    { url: '/organisation/updates', label: 'Organisation updates' }
   ];
 
   public showSpinner$: Observable<boolean>;

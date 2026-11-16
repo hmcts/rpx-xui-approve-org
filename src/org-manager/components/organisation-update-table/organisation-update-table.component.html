@@ -1,0 +1,103 @@
+<div class="govuk-table-wrapper">
+  <table class="govuk-table">
+    <caption class="govuk-table__caption govuk-visually-hidden">Organisation update comparison</caption>
+    <thead class="govuk-table__head">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Detail</th>
+        <th class="govuk-table__header" scope="col">Current details</th>
+        <th class="govuk-table__header organisation-update-table__requested-column" scope="col">Requested update</th>
+      </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Requesting user</th>
+        <td class="govuk-table__cell"><span class="govuk-visually-hidden">Not applicable</span></td>
+        <td class="govuk-table__cell organisation-update-table__requested-column">
+          {{organisation.admin}}<br>
+          <span class="govuk-hint govuk-!-margin-bottom-0">{{organisation.adminEmail}}</span>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Organisation name</th>
+        <td class="govuk-table__cell">{{organisation.name}}</td>
+        <td class="govuk-table__cell organisation-update-table__requested-column">{{requestedOrganisationName}}</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Organisation address</th>
+        <td class="govuk-table__cell">
+          {{organisation.addressLine1}}<br>
+          <ng-container *ngIf="organisation.addressLine2">{{organisation.addressLine2}}<br></ng-container>
+          <ng-container *ngIf="organisation.addressLine3">{{organisation.addressLine3}}<br></ng-container>
+          {{organisation.townCity}}<br>
+          <ng-container *ngIf="organisation.county">{{organisation.county}}<br></ng-container>
+          {{organisation.postCode}}
+        </td>
+        <td class="govuk-table__cell organisation-update-table__requested-column">
+          {{requestedAddress.addressLine1}}<br>
+          <ng-container *ngIf="requestedAddress.addressLine2">{{requestedAddress.addressLine2}}<br></ng-container>
+          <ng-container *ngIf="requestedAddress.addressLine3">{{requestedAddress.addressLine3}}<br></ng-container>
+          {{requestedAddress.townCity}}<br>
+          <ng-container *ngIf="requestedAddress.county">{{requestedAddress.county}}<br></ng-container>
+          {{requestedAddress.postCode}}
+        </td>
+      </tr>
+      <tr *ngIf="organisation.dxNumber?.length || requestedAddress.dxNumber?.length" class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">DX Address</th>
+        <td class="govuk-table__cell">
+          <ng-container *ngIf="organisation.dxNumber?.[0]?.dxNumber">{{organisation.dxNumber[0].dxNumber}}<br></ng-container>
+          <ng-container *ngIf="organisation.dxNumber?.[0]?.dxExchange">{{organisation.dxNumber[0].dxExchange}}</ng-container>
+          <span *ngIf="!organisation.dxNumber?.length" class="govuk-visually-hidden">Not provided</span>
+        </td>
+        <td class="govuk-table__cell organisation-update-table__requested-column">
+          <ng-container *ngIf="requestedAddress.dxNumber[0].dxNumber">{{requestedAddress.dxNumber[0].dxNumber}}<br></ng-container>
+          <ng-container *ngIf="requestedAddress.dxNumber[0].dxExchange">{{requestedAddress.dxNumber[0].dxExchange}}</ng-container>
+        </td>
+      </tr>
+      <tr *ngIf="organisation.sraId || requestedAddress.sraId" class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">SRA ID</th>
+        <td class="govuk-table__cell">{{organisation.sraId}}</td>
+        <td class="govuk-table__cell organisation-update-table__requested-column">{{requestedAddress.sraId}}</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Update requested</th>
+        <td class="govuk-table__cell"><span class="govuk-visually-hidden">Not applicable</span></td>
+        <td class="govuk-table__cell organisation-update-table__requested-column">{{organisation.dateRequested | date:'d MMMM yyyy'}}</td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Status</th>
+        <td class="govuk-table__cell">
+          <strong class="govuk-tag govuk-tag--green">CURRENT</strong>
+        </td>
+        <td class="govuk-table__cell organisation-update-table__requested-column">
+          <strong class="govuk-tag"
+            [class.govuk-tag--blue]="requestedStatus === 'PENDING'"
+            [class.govuk-tag--green]="requestedStatus === 'CURRENT'"
+            [class.govuk-tag--red]="requestedStatus === 'REJECTED'">
+            {{requestedStatus}}
+          </strong>
+        </td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Organisation approval date</th>
+        <td class="govuk-table__cell">{{currentApprovalDate | date:'d MMMM yyyy'}}</td>
+        <td class="govuk-table__cell"><span class="govuk-visually-hidden">Not yet approved</span></td>
+      </tr>
+      <tr class="govuk-table__row">
+        <th class="govuk-table__header" scope="row">Approved by</th>
+        <td class="govuk-table__cell">{{currentApprovedBy}}</td>
+        <td class="govuk-table__cell"><span class="govuk-visually-hidden">Not yet approved</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="govuk-button-group">
+  <button class="govuk-button" data-module="govuk-button" type="button"
+    (click)="onAccept()">
+    Accept
+  </button>
+  <button class="govuk-button govuk-button--warning" data-module="govuk-button" type="button"
+    (click)="onReject()">
+    Reject
+  </button>
+</div>
