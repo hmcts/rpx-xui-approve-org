@@ -71,7 +71,8 @@ ${lifecycleProcessRegistration(ownerPidFile, titlePrefix)}
 const { chromium } = require(${q(require.resolve('@playwright/test'))});
 const launch = chromium.launch.bind(chromium);
 chromium.launch = async (...args) => {
-  const browser = await launch(...args);
+  // Use the installed bundled browser with a bounded launch time for this timeout test.
+  const browser = await launch({ ...args[0], channel: undefined, timeout: 10_000 });
   const close = browser.close.bind(browser);
   browser.close = async (...closeArgs) => {
     await close(...closeArgs);
@@ -93,7 +94,7 @@ config.base = { username: 'fictional@example.invalid', password: ${JSON.stringif
 config.baseUrl = process.env.AO_LIFECYCLE_TEST_URL;
 const sessions = require(${q(path.join(repo, 'playwright_tests/helpers/sessionCapture.ts'))});
 test('intentional worker timeout', async () => {
-  test.setTimeout(8000);
+  test.setTimeout(15_000);
   await sessions.sessionCapture('base', { force: true, partitionKey: 'api' });
 });
 test('successor captures after prior response closes', async () => {
@@ -162,7 +163,7 @@ test('successor captures after prior response closes', async () => {
       nested.once('close', resolve);
     });
     expect(code).toBe(1);
-    expect(received).toBe(true);
+    expect(received, output).toBe(true);
     expect(responseClosed).toBe(true);
     expect(output).toContain('1 failed');
     expect(output).toContain('1 passed');

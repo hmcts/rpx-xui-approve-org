@@ -290,7 +290,7 @@ test('child diagnostics never forward arbitrary credential text', () => {
   // The child entrypoint is intentionally CommonJS for Node fork.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { safeError, safeLog } = require('../helpers/session-capture-child.cjs');
-  const secret = 'synthetic-password-should-not-appear';
+  const secret = randomBytes(32).toString('hex');
   expect(safeError(new Error(`request failed ${secret}`))).not.toContain(secret);
   expect(safeLog([`Capturing session ${secret}`])).not.toContain(secret);
   expect(safeError(new Error('Authentication probe unavailable: HTTP 503.'))).toBe('Authentication probe unavailable: HTTP 503.');
