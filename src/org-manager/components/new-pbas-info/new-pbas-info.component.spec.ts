@@ -88,6 +88,30 @@ describe('NewPBAsInfoComponent', () => {
     expect(component.submitForm.emit).not.toHaveBeenCalled();
   });
 
+  it('restores a selected PBA decision when the form is recreated', () => {
+    const returnedFixture = TestBed.createComponent(NewPBAsInfoComponent);
+    returnedFixture.componentInstance.org = mockOrgData;
+    returnedFixture.componentInstance.newPBAs = new Map([['PBA0101012', 'accepted']]);
+    returnedFixture.detectChanges();
+
+    expect(returnedFixture.componentInstance.formGroup.get('PBA0101012').value).toBe('accepted');
+    expect(returnedFixture.componentInstance.formGroup.valid).toBeTrue();
+    expect(returnedFixture.nativeElement.querySelector('#PBA0101012_approve').checked).toBeTrue();
+    returnedFixture.destroy();
+  });
+
+  it('keeps an undecided PBA required when the form is recreated', () => {
+    const returnedFixture = TestBed.createComponent(NewPBAsInfoComponent);
+    returnedFixture.componentInstance.org = mockOrgData;
+    returnedFixture.componentInstance.newPBAs = new Map();
+    returnedFixture.detectChanges();
+
+    expect(returnedFixture.componentInstance.formGroup.get('PBA0101012').value).toBe('');
+    expect(returnedFixture.componentInstance.formGroup.invalid).toBeTrue();
+    expect(returnedFixture.nativeElement.querySelector('#PBA0101012_approve').checked).toBeFalse();
+    returnedFixture.destroy();
+  });
+
   it('should call the newPBA output emitter when the setNewPBA method is called', () => {
     spyOn(component.newPBA, 'emit').and.callThrough();
     const testName = 'test name';
