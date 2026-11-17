@@ -1,10 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { randomBytes } from 'node:crypto';
 import { spawn, fork, type ChildProcess } from 'node:child_process';
 import { cleanupLifecycleFixture, lifecycleProcessRegistration, stopLifecycleProcess, type OwnedLifecycleProcess } from '../helpers/sessionLifecycleProcesses';
 import * as fs from 'node:fs';
 import * as http from 'node:http';
 import * as os from 'node:os';
 import * as path from 'node:path';
+
+const testPassword = randomBytes(32).toString('hex');
 
 test('lifecycle fixture cleanup tracks a hanging launch and escalates ignored termination', async () => {
   test.skip(process.platform === 'win32', 'Synthetic lifecycle cleanup uses POSIX process identity checks.');
@@ -29,7 +32,7 @@ chromium.launch = async () => {
     stdio: ['ignore', 'ignore', 'ignore', 'ipc']
   });
   try {
-    child.send({ identity: { userIdentifier: 'hang', email: 'hang@example.invalid', password: 'synthetic' }, options: { force: true, partitionKey: 'api' }, baseUrl: 'http://127.0.0.1:1/', idamWebUrl: 'http://127.0.0.1:1/' });
+    child.send({ identity: { userIdentifier: 'hang', email: 'hang@example.invalid', password: testPassword }, options: { force: true, partitionKey: 'api' }, baseUrl: 'http://127.0.0.1:1/', idamWebUrl: 'http://127.0.0.1:1/' });
     await expect.poll(() => fs.existsSync(entered), { timeout: 5_000 }).toBe(true);
     const owner = JSON.parse(fs.readFileSync(registry, 'utf8').trim()) as OwnedLifecycleProcess;
     expect(owner.pid).toBe(child.pid);
@@ -86,7 +89,7 @@ const fs = require('node:fs');
 const { test, expect } = require(${q(path.join(repo, 'node_modules/@playwright/test'))});
 process.env.PW_SESSION_DIR = ${q(directory)};
 const { config } = require(${q(path.join(repo, 'playwright_tests/config/config.ts'))});
-config.base = { username: 'fictional@example.invalid', password: 'synthetic' };
+config.base = { username: 'fictional@example.invalid', password: ${JSON.stringify(testPassword)} };
 config.baseUrl = process.env.AO_LIFECYCLE_TEST_URL;
 const sessions = require(${q(path.join(repo, 'playwright_tests/helpers/sessionCapture.ts'))});
 test('intentional worker timeout', async () => {
