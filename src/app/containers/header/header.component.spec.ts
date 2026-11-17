@@ -31,6 +31,13 @@ describe('HeaderComponent', () => {
     expect(app).toBeTruthy();
   });
 
+  it('announces when the feedback link opens in a new tab', () => {
+    fixture.detectChanges();
+    const feedbackLink: HTMLAnchorElement = fixture.nativeElement.querySelector('a[target="_blank"]');
+
+    expect(feedbackLink.querySelector('.govuk-visually-hidden')?.textContent).toContain('opens in a new tab');
+  });
+
   it('should emit navigate event', () => {
     spyOn(app.navigate, 'emit');
     app.onNavigate('dummy');
