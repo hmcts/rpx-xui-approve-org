@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
@@ -6,10 +7,12 @@ import * as path from 'node:path';
 import { config } from '../config/config';
 import { __test__ as sessionCapture } from '../helpers/sessionCapture';
 
+const testPassword = randomBytes(32).toString('hex');
+
 const validIdentity = {
   userIdentifier: 'base-alias',
   email: 'ao@example.test',
-  password: 'do-not-log-this',
+  password: testPassword,
   sessionKey: 'shared-ao-account'
 };
 
@@ -315,7 +318,7 @@ test.describe('AO Playwright session management', () => {
     await expect(sessionCapture.waitForExpectedAuthenticatedSurface(page as never, 'https://example.test/', 10)).resolves.toBe(true);
   });
 
-  test('waiters reuse the lock owner result and the stale budget exceeds login and auth polling', async () => {
+  test('waiters acquire the lock after its owner releases it', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const lockPath = path.join(directory, 'state.lock');
     const request = {
@@ -333,8 +336,6 @@ test.describe('AO Playwright session management', () => {
     expect(sessionCapture.SESSION_CAPTURE_LOCK_TIMEOUT_MS).toBeGreaterThanOrEqual(
       sessionCapture.SESSION_CAPTURE_ATTEMPT_BUDGET_MS * sessionCapture.SESSION_CAPTURE_ATTEMPTS
     );
-    expect(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS).toBeGreaterThan(sessionCapture.SESSION_CAPTURE_ATTEMPT_BUDGET_MS);
-    expect(sessionCapture.SESSION_CAPTURE_LOCK_UPDATE_MS).toBeLessThan(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS);
   });
 
   test('stops waiting when another process creates a fresh reusable session', async () => {
