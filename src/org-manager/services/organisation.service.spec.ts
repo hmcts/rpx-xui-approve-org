@@ -1,9 +1,11 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { environment } from 'src/environments/environment';
-import createSpyObj = jasmine.createSpyObj;
+import { of, throwError } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { Organisation } from '../models/organisation';
 import { OrganisationService } from './organisation.service';
+
+import createSpyObj = jasmine.createSpyObj;
 
 describe('OrganisationService', () => {
   let httpClient: HttpClient;
@@ -67,6 +69,24 @@ describe('OrganisationService', () => {
   it('should get single organisation', () => {
     organisationService.getSingleOrganisation({ id: 'dummy' });
     expect(httpClient.get).toHaveBeenCalled();
+  });
+
+  it('should load an organisation update from the API', (done) => {
+    (httpClient.get as jasmine.Spy).and.returnValue(of(organisation));
+
+    organisationService.getOrganisationUpdate({ id: 'abc' }).subscribe((result) => {
+      expect(result).toBe(organisation);
+      done();
+    });
+  });
+
+  it('should fall back to prototype update data when the API record is unavailable', (done) => {
+    (httpClient.get as jasmine.Spy).and.returnValue(throwError(() => new Error('Not found')));
+
+    organisationService.getOrganisationUpdate({ id: 'prototype-id' }).subscribe((result) => {
+      expect(result.organisationIdentifier).toBe('prototype-id');
+      done();
+    });
   });
 
   it('should get organisation user list', () => {

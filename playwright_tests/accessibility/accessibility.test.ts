@@ -9,6 +9,7 @@ import {
   waitForOrganisationStatusResponse
 } from '../integration/mocks';
 import {
+  ACCESSIBILITY_ACTIVE_ORGANISATION_ID,
   ACCESSIBILITY_APPROVALS_MOCK_STATE,
   ACCESSIBILITY_PENDING_ORGANISATION_ID,
   ACCESSIBILITY_VISIBLE_PAGE_ROWS
@@ -168,6 +169,44 @@ test.describe(
           await expect(organisationApprovalsPage.usersList).toBeVisible();
 
           await accessibilityCheck(page, 'User upload surface', testInfo);
+        }
+      );
+    });
+
+    test.describe('Organisation updates', () => {
+      test(
+        'organisation update - review comparison',
+        { tag: ['@interaction-states'] },
+        async ({ page }, testInfo) => {
+          await openAccessibilityMockApp(page, `/organisation-update/${ACCESSIBILITY_ACTIVE_ORGANISATION_ID}`);
+          await expect(page.getByRole('heading', { level: 1, name: 'Review organisation update' })).toBeVisible();
+          await expect(page.getByRole('table', { name: 'Organisation update comparison' })).toBeVisible();
+
+          await accessibilityCheck(page, 'Organisation update review comparison', testInfo);
+        }
+      );
+
+      test(
+        'organisation update - accepted confirmation',
+        { tag: ['@interaction-states'] },
+        async ({ page }, testInfo) => {
+          await openAccessibilityMockApp(page, `/organisation-update/${ACCESSIBILITY_ACTIVE_ORGANISATION_ID}`);
+          await page.getByRole('button', { name: 'Accept', exact: true }).click();
+          await expect(page.getByRole('heading', { level: 1, name: 'Organisation update accepted' })).toBeVisible();
+
+          await accessibilityCheck(page, 'Organisation update accepted confirmation', testInfo);
+        }
+      );
+
+      test(
+        'organisation update - rejected confirmation',
+        { tag: ['@interaction-states'] },
+        async ({ page }, testInfo) => {
+          await openAccessibilityMockApp(page, `/organisation-update/${ACCESSIBILITY_ACTIVE_ORGANISATION_ID}`);
+          await page.getByRole('button', { name: 'Reject', exact: true }).click();
+          await expect(page.getByRole('heading', { level: 1, name: 'Organisation update rejected' })).toBeVisible();
+
+          await accessibilityCheck(page, 'Organisation update rejected confirmation', testInfo);
         }
       );
     });

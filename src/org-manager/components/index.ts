@@ -5,6 +5,7 @@ import { NotificationBannerComponent } from './notification-banner/notification-
 import { OrganisationAddressComponent } from './organisation-address';
 import { OrganisationDetailsInfoComponent } from './organisation-details-info/organisation-details-info.component';
 import { OrganisationDetailsInfoOldComponent } from './organisation-details-old/organisation-details-info-old.component';
+import { OrganisationUpdateTableComponent } from './organisation-update-table/organisation-update-table.component';
 import { PBAAccountApprovalComponent } from './pba-account-approval/pba-account-approval.component';
 import { PBAAccountDecisionComponent } from './pba-account-decision/pba-account-decision.component';
 import { QuickLinksOldComponent } from './quick-links-old/quick-links-old.component';
@@ -18,6 +19,7 @@ export const components: any[] = [
   OrganisationAddressComponent,
   OrganisationDetailsInfoComponent,
   OrganisationDetailsInfoOldComponent,
+  OrganisationUpdateTableComponent,
   PBAAccountApprovalComponent,
   PBAAccountDecisionComponent,
   QuickLinksComponent,
@@ -31,6 +33,7 @@ export * from './notification-banner/notification-banner.component';
 export * from './organisation-address';
 export * from './organisation-details-info/organisation-details-info.component';
 export * from './organisation-details-old/organisation-details-info-old.component';
+export * from './organisation-update-table/organisation-update-table.component';
 export * from './pba-account-approval/pba-account-approval.component';
 export * from './pba-account-decision/pba-account-decision.component';
 export * from './quick-links/quick-links.component';

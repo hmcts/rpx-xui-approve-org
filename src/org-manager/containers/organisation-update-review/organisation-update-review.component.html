@@ -1,0 +1,29 @@
+<ng-container *ngIf="orgs$ | async as org; else loading">
+  <app-identity-bar-component>
+    <strong>{{org.name}}</strong>
+    <span class="hmcts-badge hmcts-badge--green govuk-!-margin-left-2">
+      CURRENT
+    </span>
+  </app-identity-bar-component>
+  <div class="govuk-width-container">
+    <xuilib-hmcts-main-wrapper (backEvent)="onGoBack()">
+      <h1 class="govuk-heading-xl">Review organisation update</h1>
+
+      <app-organisation-update-table
+        [organisation]="org"
+        [requestedStatus]="requestedStatus"
+        (accept)="acceptUpdate()"
+        (reject)="rejectUpdate()">
+      </app-organisation-update-table>
+    </xuilib-hmcts-main-wrapper>
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main" tabindex="-1">
+      <h1 class="govuk-heading-xl">Review organisation update</h1>
+      <p class="govuk-body">Loading...</p>
+    </main>
+  </div>
+</ng-template>
