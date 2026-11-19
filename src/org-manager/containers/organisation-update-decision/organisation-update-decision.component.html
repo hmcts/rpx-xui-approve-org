@@ -10,10 +10,10 @@
 
         <h2 class="govuk-heading-m">What happens next</h2>
         <p class="govuk-body" *ngIf="accepted; else rejectedMessage">
-          The requested organisation details are now current.
+          The requested organisation details are now current. {{ emailMessage }}
         </p>
         <ng-template #rejectedMessage>
-          <p class="govuk-body">The requested changes have not been applied.</p>
+          <p class="govuk-body">The requested changes have not been applied. {{ emailMessage }}</p>
         </ng-template>
 
         <p class="govuk-body">

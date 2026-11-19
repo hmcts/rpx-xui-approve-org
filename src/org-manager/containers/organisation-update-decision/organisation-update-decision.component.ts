@@ -9,6 +9,7 @@ export type OrganisationUpdateDecision = 'accepted' | 'rejected';
   standalone: false
 })
 export class OrganisationUpdateDecisionComponent {
+  public readonly emailMessage = 'The organisation manager has been emailed to inform them of the decision.';
   public readonly decision: OrganisationUpdateDecision;
 
   constructor(route: ActivatedRoute) {
