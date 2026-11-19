@@ -201,7 +201,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "resolutions": {
-    "odhin-reports-playwright/axios": "0.34.0",
+    "odhin-reports-playwright/axios": "0.35.0",
     "archiver-utils@npm:^2.1.0": "npm:5.0.2",
     "archiver-utils@npm:^3.0.4": "npm:5.0.2",
     "minimist": "^1.2.8",
