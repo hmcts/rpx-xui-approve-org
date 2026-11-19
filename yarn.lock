@@ -9445,14 +9445,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:0.34.0":
-  version: 0.34.0
-  resolution: "axios@npm:0.34.0"
+"axios@npm:0.35.0":
+  version: 0.35.0
+  resolution: "axios@npm:0.35.0"
   dependencies:
     follow-redirects: "npm:^1.15.4"
     form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/ea12eb0dd038a574f9fac0b986f5157fbe210716e726accc0367bfbed6aa0eedb6ed4428cb693047c61919494f56466810d75ea46744cf89307469a17587e160
+  checksum: 10/749b346677169fa7f0a5c62579e03c422d01b3a63d826089fb6b8abb2509b65bb1a0aa902fedf2a658d8f85b3794022dc0650939ac977230f54807da4814d3f8
   languageName: node
   linkType: hard
 
