@@ -37,6 +37,65 @@ describe('PendingPBAsComponent', () => {
     router = TestBed.inject(Router);
   });
 
+  describe('loading organisations', () => {
+    const organisation = {
+      organisationIdentifier: 'ORG123',
+      organisationName: 'Test organisation',
+      pbaNumbers: [{ pbaNumber: 'PBA1231231', dateCreated: '2022-02-21T09:10:11.000Z' }],
+      superUser: { firstName: 'Test', lastName: 'Admin', email: 'admin@example.com' }
+    };
+
+    [null, undefined].forEach((superUser) => {
+      it(`should load every row when an organisation has ${superUser} administrator details`, () => {
+        pbaServiceSpy.searchPbasWithPagination.and.returnValue(of({
+          organisations: [
+            organisation,
+            { ...organisation, organisationIdentifier: 'ORG456', superUser },
+            { ...organisation, organisationIdentifier: 'ORG789' }
+          ],
+          total_records: 2604
+        }));
+
+        component.ngOnInit();
+
+        expect(component.pbasLoaded).toBeTrue();
+        expect(component.pendingPBAsCount).toBe(2604);
+        expect(component.orgsWithPendingPBAs.length).toBe(3);
+        expect(component.orgsWithPendingPBAs[1]).toEqual(jasmine.objectContaining({
+          organisationId: 'ORG456',
+          name: organisation.organisationName,
+          pbaNumbers: organisation.pbaNumbers,
+          admin: '',
+          adminEmail: ''
+        }));
+        expect(component.orgsWithPendingPBAs[2].admin).toBe('Test Admin');
+        expect(component.orgsWithPendingPBAs[2].adminEmail).toBe('admin@example.com');
+
+        component.onPaginationHandler(260);
+
+        expect(component.pagination.page_number).toBe(260);
+        expect(component.orgsWithPendingPBAs.length).toBe(3);
+        expect(pbaServiceSpy.searchPbasWithPagination).toHaveBeenCalledWith(jasmine.objectContaining({
+          searchRequest: jasmine.objectContaining({
+            pagination_parameters: { page_number: 260, page_size: 10 }
+          })
+        }));
+      });
+    });
+
+    it('should display the available name when administrator details are incomplete', () => {
+      pbaServiceSpy.searchPbasWithPagination.and.returnValue(of({
+        organisations: [{ ...organisation, superUser: { firstName: 'Test' } }],
+        total_records: 1
+      }));
+
+      component.ngOnInit();
+
+      expect(component.orgsWithPendingPBAs[0].admin).toBe('Test');
+      expect(component.orgsWithPendingPBAs[0].adminEmail).toBe('');
+    });
+  });
+
   describe('getReceivedDate', () => {
     beforeEach(() => {
       pbaServiceSpy.searchPbasWithPagination.and.returnValue(of());
