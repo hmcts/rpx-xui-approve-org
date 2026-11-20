@@ -36,7 +36,9 @@ for (const phase of ['queued', 'launch', 'login', 'snapshot', 'teardown', 'resul
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-ipc-phase-'));
     const preload = path.join(directory, 'preload.cjs');
     const eventsFile = path.join(directory, 'events');
-    const statePath = path.join(directory, 'phase-example.invalid.api.storage.json');
+    const statePath = path.join(directory, path.basename(getSessionStatePath(
+      { userIdentifier: 'phase', email: 'phase@example.invalid', password: testPassword }, 'api'
+    )));
     const lockDirectory = `${statePath}.lock.lock`;
     if (phase === 'queued') {
       fs.mkdirSync(lockDirectory);
