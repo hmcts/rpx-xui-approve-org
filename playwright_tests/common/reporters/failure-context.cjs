@@ -34,10 +34,6 @@ function redactUrl(value) {
     if (!['http:', 'https:'].includes(url.protocol)) {
       return redactText(raw);
     }
-    url.username = '';
-    url.password = '';
-    url.search = '';
-    url.hash = '';
     url.pathname = url.pathname
       .split('/')
       .map((segment) => {
@@ -53,10 +49,11 @@ function redactUrl(value) {
           : segment;
       })
       .join('/');
-    return url.toString();
+    return `${url.origin}${url.pathname}`;
   } catch {
     return raw
       .replace(/[?#].*$/, '')
+      .replace(/^((?:https?:)?\/\/)[^/]*@/i, '$1')
       .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '[redacted-email]')
       .replace(/\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b/gi, ':id')
       .replace(/\b(?:[A-Z]{1,8}\d{6,}|[A-Z]{1,8}[-/]\d{4,}(?:[-/]\d{2,})+)\b/g, ':case-ref')
@@ -68,11 +65,11 @@ function redactUrl(value) {
 
 function redactText(value) {
   let text = String(value ?? '');
+  text = text.replace(/(?:https?:)?\/\/[^\s"'<>]+/gi, (url) => redactUrl(url));
   text = text.replace(QUOTED_SECRET_PATTERN, '$1[redacted]$3');
   text = text.replace(EMAIL_PATTERN, '[redacted-email]');
   text = text.replace(UUID_PATTERN, ':id');
   text = text.replace(CASE_REFERENCE_PATTERN, ':case-ref');
-  text = text.replace(/https?:\/\/[^\s"'<>]+/gi, (url) => redactUrl(url));
   text = text.replace(/\b\d{4,}\/\d{4,}\b/g, ':case-ref');
   text = text.replace(/\b\d{8,}\b/g, ':id');
   EMAIL_PATTERN.lastIndex = 0;

@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { writeAccessibilityRemediationPack } = require('./accessibility-remediation.cjs');
+const { redactUrl, redactText } = require('./failure-context.cjs');
 const { enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
 
 const entry = {
@@ -23,6 +24,19 @@ const entry = {
   targets: ['#other-reason'],
   findings: [{ rule: 'label', targets: ['#other-reason'] }]
 };
+
+test('removes URL credentials and private URL components from report text', () => {
+  assert.equal(
+    redactUrl('https://user:secret@example.test:8443/cases/12345678?token=private#fragment'),
+    'https://example.test:8443/cases/:id'
+  );
+  assert.equal(redactUrl('http://example.test/path?query=value#fragment'), 'http://example.test/path');
+  assert.equal(redactUrl('http://user:secret@'), 'http://');
+  assert.equal(redactUrl('//alice:private@'), '//');
+  assert.equal(redactText('Route //alice:private@'), 'Route //');
+  assert.equal(redactText('https://alice:password=private@example.test/a'), 'https://example.test/a');
+  assert.equal(redactText('Visit https://user:secret@example.test/path?token=private'), 'Visit https://example.test/path');
+});
 
 test('groups duplicate detectors and preserves states and context variants', (t) => {
   const folder = fs.mkdtempSync(path.join(os.tmpdir(), 'a11y-pack-'));
