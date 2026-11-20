@@ -6,6 +6,103 @@ import * as path from 'node:path';
 import OdhinAdaptiveReporter from '../common/reporters/odhin-adaptive.reporter.cjs';
 
 test.describe('Odhín adaptive reporter', () => {
+  test('rejects custom evidence inside its replaced output folder before deleting files, including symlink aliases', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-evidence-containment-'));
+    const output = path.join(root, 'report');
+    const evidence = path.join(output, 'custom-evidence');
+    const alias = path.join(root, 'alias');
+    const previous = process.env.PW_A11Y_EVIDENCE_DIR;
+    fs.mkdirSync(evidence, { recursive: true });
+    fs.symlinkSync(output, alias);
+    fs.writeFileSync(path.join(evidence, 'sentinel.txt'), 'preserve');
+    try {
+      for (const candidate of [evidence, path.join(alias, 'custom-evidence'), root]) {
+        process.env.PW_A11Y_EVIDENCE_DIR = candidate;
+        expect(() => new OdhinAdaptiveReporter({ outputFolder: output })).toThrow('must not contain one another');
+        expect(fs.readFileSync(path.join(evidence, 'sentinel.txt'), 'utf8')).toBe('preserve');
+      }
+    } finally {
+      if (previous === undefined) {
+        delete process.env.PW_A11Y_EVIDENCE_DIR;
+      } else {
+        process.env.PW_A11Y_EVIDENCE_DIR = previous;
+      }
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+  test('rejects reuse of a non-empty external accessibility directory before a run', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-evidence-runs-'));
+    const external = path.join(root, 'external');
+    fs.mkdirSync(external);
+    const previous = process.env.PW_A11Y_EVIDENCE_DIR;
+    process.env.PW_A11Y_EVIDENCE_DIR = external;
+    try {
+      const reporter = () => new OdhinAdaptiveReporter({ outputFolder: path.join(root, 'report'), createInnerReporter: () => ({}) });
+      await expect(reporter().onBegin({ workers: 1 }, {})).resolves.toBeUndefined();
+      fs.writeFileSync(path.join(external, 'manifest-entry-old.json'), '{}');
+      await expect(reporter().onBegin({ workers: 1 }, {})).rejects.toThrow('empty directory');
+      expect(fs.existsSync(path.join(external, 'manifest-entry-old.json'))).toBe(true);
+    } finally {
+      if (previous === undefined) {
+        delete process.env.PW_A11Y_EVIDENCE_DIR;
+      } else {
+        process.env.PW_A11Y_EVIDENCE_DIR = previous;
+      }
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test('only allows one reporter to claim a shared external evidence directory', async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-evidence-race-'));
+    const previous = process.env.PW_A11Y_EVIDENCE_DIR;
+    process.env.PW_A11Y_EVIDENCE_DIR = path.join(root, 'external');
+    try {
+      const reporter = () => new OdhinAdaptiveReporter({ outputFolder: path.join(root, 'report'), createInnerReporter: () => ({}) });
+      const results = await Promise.allSettled([reporter().onBegin({ workers: 1 }, {}), reporter().onBegin({ workers: 1 }, {})]);
+      expect(results.filter((result) => result.status === 'fulfilled')).toHaveLength(1);
+      expect(results.filter((result) => result.status === 'rejected')).toHaveLength(1);
+    } finally {
+      if (previous === undefined) {
+        delete process.env.PW_A11Y_EVIDENCE_DIR;
+      } else {
+        process.env.PW_A11Y_EVIDENCE_DIR = previous;
+      }
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+  test('includes an expected failure in feature totals when retries are configured', () => {
+    const reporter = new OdhinAdaptiveReporter({ createInnerReporter: () => ({}) });
+    reporter.recordFeatureStat({ location: { file: '/repo/playwright_tests/e2e/login.test.ts' }, retries: 2, expectedStatus: 'failed' }, { status: 'failed', retry: 0, duration: 1 });
+    expect(reporter.featureStats.get('login.test')).toEqual(expect.objectContaining({ totalTests: 1, passed: 1, failed: 0 }));
+  });
+
+  test('reports an unexpected pass of a test marked to fail as a failure after its retries', async () => {
+    const results: Array<{ status: string }> = [];
+    const reporter = new OdhinAdaptiveReporter({ createInnerReporter: () => ({ onTestEnd: (_test: unknown, result: { status: string }) => {
+      results.push(result);
+    } }) });
+    const testCase = { id: 'expected-failure', location: { file: '/repo/playwright_tests/e2e/login.test.ts' }, retries: 1, expectedStatus: 'failed' };
+    await reporter.onTestEnd(testCase, { status: 'passed', retry: 0, duration: 1 });
+    expect(reporter.featureStats.size).toBe(0);
+    await reporter.onTestEnd(testCase, { status: 'passed', retry: 1, duration: 1 });
+    await reporter.flushInnerCallbacks();
+    expect(reporter.featureStats.get('login.test')).toEqual(expect.objectContaining({ totalTests: 1, failed: 1 }));
+    expect(results.map((result) => result.status)).toEqual(['failed', 'failed']);
+  });
+  test('records actual Playwright worker count and test metadata', async () => {
+    let received: Record<string, any> = {};
+    const reporter = new OdhinAdaptiveReporter({
+      testEnvironment: 'aat | ci', appendRuntimeWorkers: true,
+      createInnerReporter: (options: Record<string, unknown>) => {
+        received = options;
+        return { onBegin: () => undefined, onTestEnd: () => undefined };
+      }
+    });
+    await reporter.onBegin({ workers: 3 }, {});
+    await reporter.onTestEnd({ id: 'case', location: { file: '/repo/playwright_tests/e2e/approval.test.ts' }, tags: ['@smoke'] }, { status: 'passed', retry: 0, duration: 42 });
+    expect(received.testEnvironment).toBe('aat | ci | workers=3');
+    expect(reporter.testMetadata).toEqual([{ target: '#case-0', feature: 'approval.test', tags: ['@smoke'], durationMs: 42, retry: 0 }]);
+  });
   test('keeps attachments external by default while allowing an explicit local override', () => {
     const receivedOptions: Record<string, unknown>[] = [];
     const createInnerReporter = (options: Record<string, unknown>) => {

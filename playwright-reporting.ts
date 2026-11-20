@@ -1,20 +1,23 @@
 import { ReporterDescription } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus, totalmem } from 'node:os';
+import { config } from './playwright_tests/config/config';
 
 /**
  * Resolves the test environment from the baseURL
  */
 function resolveEnvironmentFromUrl(baseUrl?: string): string {
   if (!baseUrl) {
-    return 'local';
+    return 'unknown';
   }
-  const normalizedUrl = baseUrl.toLowerCase();
+  let normalizedUrl: string;
+  try {
+    normalizedUrl = new URL(baseUrl).hostname.toLowerCase();
+  } catch {
+    return 'unknown';
+  }
 
-  if (normalizedUrl.includes('localhost')) {
-    return 'local';
-  }
-  if (normalizedUrl.includes('127.0.0.1')) {
+  if (normalizedUrl === 'localhost' || normalizedUrl === '127.0.0.1' || normalizedUrl === '[::1]') {
     return 'local';
   }
 
@@ -23,16 +26,22 @@ function resolveEnvironmentFromUrl(baseUrl?: string): string {
     return 'preview';
   }
 
-  if (normalizedUrl.includes('dev')) {
+  if (normalizedUrl.includes('.dev.')) {
     return 'dev';
   }
-  if (normalizedUrl.includes('staging')) {
+  if (normalizedUrl.includes('-staging.') || normalizedUrl.includes('.staging.')) {
     return 'staging';
   }
-  if (normalizedUrl.includes('aat')) {
+  if (normalizedUrl.includes('.aat.')) {
     return 'aat';
   }
-  if (normalizedUrl.includes('prod')) {
+  if (normalizedUrl.includes('.demo.')) {
+    return 'demo';
+  }
+  if (normalizedUrl.includes('.ithc.')) {
+    return 'ithc';
+  }
+  if (normalizedUrl.includes('.prod.')) {
     return 'prod';
   }
   return 'unknown';
@@ -43,17 +52,7 @@ function resolveEnvironmentFromUrl(baseUrl?: string): string {
  */
 function resolveTestEnvironment(): string {
   const testUrl = process.env.TEST_URL || '';
-  const buildEnv = process.env.BUILD_ENV || '';
-
-  if (testUrl) {
-    return resolveEnvironmentFromUrl(testUrl);
-  }
-
-  if (buildEnv) {
-    return buildEnv.toLowerCase();
-  }
-
-  return 'local';
+  return resolveEnvironmentFromUrl(testUrl || config.baseUrl);
 }
 
 function resolveDefaultReporter(): string {
@@ -151,13 +150,17 @@ function resolveTitle(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'a
   return `XUI AO ${reportType.toUpperCase()} Report`;
 }
 
-function resolveTestEnvironmentLabel(workerCount = process.env.FUNCTIONAL_TESTS_WORKERS || 'auto'): string {
+function resolveTestEnvironmentLabel(): string {
+  const configured = process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT || process.env.PW_ODHIN_ENV;
+  if (configured) {
+    return configured;
+  }
   const environment = resolveTestEnvironment();
   const runContext = process.env.CI ? 'ci' : 'local-run';
   const cpuCores = cpus()?.length ?? 'unknown';
   const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
 
-  return `${environment} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  return `${environment} | ${runContext} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
 }
 
 function resolveNonNegativeInteger(raw: string | undefined, fallback: number): number {
@@ -220,6 +223,7 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
         testFolder,
         title: resolveTitle(reportType),
         testEnvironment: resolveTestEnvironmentLabel(),
+        appendRuntimeWorkers: !process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT && !process.env.PW_ODHIN_ENV,
         project: process.env.PLAYWRIGHT_REPORT_PROJECT || process.env.ODHIN_PROJECT_NAME || 'rpx-xui-approve-org',
         release: releaseTag,
         startServer: false,

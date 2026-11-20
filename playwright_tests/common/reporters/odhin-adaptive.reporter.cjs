@@ -3,6 +3,8 @@
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const fs = require('node:fs');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
+const path = require('node:path');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
@@ -10,11 +12,42 @@ const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = re
 const OdhinReporter = odhinModule.default ?? odhinModule;
 const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
 
+function resolvedPath(value) {
+  let current = path.resolve(value);
+  const suffix = [];
+  while (!fs.existsSync(current)) {
+    const parent = path.dirname(current);
+    if (parent === current) {
+      break;
+    }
+    suffix.unshift(path.basename(current));
+    current = parent;
+  }
+  return path.resolve(fs.realpathSync(current), ...suffix);
+}
+
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
     // Odhín embeds attachments by default, which can exceed V8's string limit after retried browser failures.
     // Keep the files beside the published report; callers can explicitly opt back into embedding for a small local run.
-    const reporterOptions = { embedAttachments: false, ...options };
+    const reporterOptions = {
+      embedAttachments: false,
+      ...options,
+      testListColumns: [...new Set([...String(options.testListColumns ?? '').toUpperCase().split(',').map((column) => column.trim()).filter(Boolean), 'PROJECT', 'FILE'])].join(',')
+    };
+    const externalEvidence = process.env.PW_A11Y_EVIDENCE_DIR;
+    if (externalEvidence && reporterOptions.outputFolder) {
+      const output = resolvedPath(reporterOptions.outputFolder);
+      const evidence = resolvedPath(externalEvidence);
+      const isWithin = (parent, child) => {
+        const relative = path.relative(parent, child);
+        return !relative || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
+      };
+      if (isWithin(output, evidence) || isWithin(evidence, output)) {
+        throw new Error('PW_A11Y_EVIDENCE_DIR and the Odhín output folder must not contain one another; the output is replaced at startup.');
+      }
+    }
+    this.reporterOptions = reporterOptions;
     this.outputFolder = reporterOptions.outputFolder;
     const configuredLightweight = reporterOptions.lightweight;
     const envLightweight = process.env.PW_ODHIN_LIGHTWEIGHT;
@@ -64,6 +97,7 @@ class OdhinAdaptiveReporter {
       failed: 0
     };
     this.featureStats = new Map();
+    this.testMetadata = [];
     this.finalizationStartedAt = 0;
     this.pendingInnerCallbacks = Promise.resolve();
     this.inner =
@@ -73,6 +107,27 @@ class OdhinAdaptiveReporter {
   }
 
   async onBegin(config, suite) {
+    const externalEvidence = process.env.PW_A11Y_EVIDENCE_DIR;
+    const localEvidence = this.outputFolder && path.join(this.outputFolder, 'accessibility-evidence');
+    if (externalEvidence && localEvidence && path.resolve(externalEvidence) !== path.resolve(localEvidence)) {
+      fs.mkdirSync(externalEvidence, { recursive: true });
+      if (!fs.lstatSync(externalEvidence).isDirectory() || fs.readdirSync(externalEvidence).length) {
+        throw new Error('PW_A11Y_EVIDENCE_DIR must be an empty directory for a new report run; choose a separate directory for each run.');
+      }
+      try {
+        const marker = fs.openSync(path.join(externalEvidence, '.odhin-run.lock'), 'wx');
+        fs.closeSync(marker);
+        this.externalEvidence = externalEvidence;
+      } catch (error) {
+        if (error.code === 'EEXIST') {
+          throw new Error('PW_A11Y_EVIDENCE_DIR is already in use; choose a separate directory for each run.');
+        }
+        throw error;
+      }
+    }
+    if (this.reporterOptions.appendRuntimeWorkers && Number.isInteger(config?.workers)) {
+      this.reporterOptions.testEnvironment += ` | workers=${config.workers}`;
+    }
     if (typeof this.inner.onBegin === 'function') {
       await this.inner.onBegin(config, suite);
     }
@@ -89,12 +144,21 @@ class OdhinAdaptiveReporter {
       testOutputMode: this.testOutputMode,
       trimFailedArtifacts: this.trimFailedArtifacts
     });
-    const nextResult = trimmed.nextResult;
+    const nextResult = test?.expectedStatus === 'failed' && ['passed', 'failed'].includes(result?.status)
+      ? { ...trimmed.nextResult, status: result.status === 'failed' ? 'passed' : 'failed' }
+      : trimmed.nextResult;
     this.trimmedCounts.output += trimmed.trimmedCounts.output;
     this.trimmedCounts.heavyArtifacts += trimmed.trimmedCounts.heavyArtifacts;
 
     this.recordStatus(result?.status);
     this.recordFeatureStat(test, result);
+    this.testMetadata.push({
+      target: `#${test.id}-${result.retry}`,
+      feature: deriveFeatureName(test?.location?.file),
+      tags: test?.tags ?? [],
+      durationMs: result?.duration ?? 0,
+      retry: result?.retry ?? 0
+    });
     this.enqueueInnerCallback('onTestEnd', () => this.inner.onTestEnd(test, nextResult), { test });
   }
 
@@ -121,7 +185,7 @@ class OdhinAdaptiveReporter {
       }
     }
     try {
-      enhanceGeneratedReport(this.outputFolder, this.featureStats);
+      enhanceGeneratedReport(this.outputFolder, this.featureStats, this.testMetadata, { externalEvidence: this.externalEvidence });
     } catch (error) {
       process.stderr.write(`[odhin-profile] report enhancement failed: ${formatErrorMessage(error)}\n`);
       this.markReportInvalid();
@@ -168,7 +232,10 @@ class OdhinAdaptiveReporter {
   }
 
   recordFeatureStat(test, result) {
-    const finalStatus = normalizeFinalStatus(result?.status, result?.retry);
+    const outcomeStatus = test?.expectedStatus === 'failed' && ['passed', 'failed'].includes(result?.status)
+      ? result.status === 'failed' ? 'passed' : 'failed'
+      : result?.status;
+    const finalStatus = normalizeFinalStatus(outcomeStatus, result?.retry);
     if (!isFinalResult(finalStatus, result?.retry, test?.retries)) {
       return;
     }
