@@ -2,7 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 
 import { Title } from '@angular/platform-browser';
-import { Event, Router, RoutesRecognized } from '@angular/router';
+import { Event, Router, NavigationEnd } from '@angular/router';
 import { FeatureToggleService, GoogleAnalyticsService, ManageSessionServices } from '@hmcts/rpx-xui-common-lib';
 import { RoleService } from '@hmcts/rpx-xui-common-lib';
 import { CookieService } from 'ngx-cookie';
@@ -13,6 +13,7 @@ import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../../../models/environme
 import { EnvironmentService } from '../../services/environment.service';
 import * as fromRoot from '../../store';
 import { AppUtils } from '../../utils/app-utils';
+import { pageTitle } from '../../utils/page-title';
 
 @Component({
   selector: 'app-root',
@@ -133,15 +134,13 @@ export class AppComponent implements OnInit {
   }
 
   public setTitleIfPresent(data: Event) {
-    if (data instanceof RoutesRecognized) {
-      let child = data.state.root;
+    if (data instanceof NavigationEnd) {
+      let child = this.router.routerState.snapshot.root;
       while (child.firstChild) {
         child = child.firstChild;
       }
       const d = child.data;
-      if (d.title) {
-        this.titleService.setTitle(`${d.title} - HM Courts & Tribunals Service - GOV.UK`);
-      }
+      this.titleService.setTitle(pageTitle(d.title));
     }
   }
 

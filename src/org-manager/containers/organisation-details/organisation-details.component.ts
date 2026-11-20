@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService, User } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
@@ -6,6 +7,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { AppUtils } from '../../../app/utils/app-utils';
+import { pageTitle } from '../../../app/utils/page-title';
 import { UsersService } from '../../../org-manager/services';
 import { LovRefDataModel } from '../../../shared/models/lovRefData.model';
 import { LovRefDataService } from '../../../shared/services/lov-ref-data.service';
@@ -53,7 +55,8 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
     private readonly userService: UsersService,
     private readonly organisationService: OrganisationService,
     private readonly lovRefDataService: LovRefDataService,
-    private readonly featureToggleService: FeatureToggleService) {
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly titleService: Title) {
     this.route.params.subscribe((params) => {
       this.orgId = params.orgId ? params.orgId : '';
     });
@@ -62,7 +65,10 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isXuiApproverUserdata = this.userApprovalGuard.isUserApprovalRole();
     if (this.isXuiApproverUserdata) {
-      this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe((value) => this.showUsers = value);
+      this.getShowOrgDetailsSubscription = this.store.pipe(select(fromStore.getShowOrgDetailsUserTabSelector)).subscribe((value) => {
+        this.showUsers = value;
+        this.setPageTitle(value);
+      });
     }
     this.featureToggleService.getValue(AppConstants.FEATURE_NAMES.newRegisterOrg, false).subscribe((newRegisterOrgFeature) => {
       this.newRegisterOrg = newRegisterOrgFeature;
@@ -175,7 +181,12 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
 
   public showUsersTab(showUsers: boolean) {
     this.showUsers = showUsers;
+    this.setPageTitle(showUsers);
     this.store.dispatch(new fromStore.ShowOrganisationDetailsUserTab({ orgId: this.organisationId, showUserTab: showUsers }));
+  }
+
+  private setPageTitle(showUsers: boolean): void {
+    this.titleService.setTitle(pageTitle(showUsers ? 'Users' : 'Organisation Details'));
   }
 
   public onShowUserDetails(user: User) {
