@@ -8,7 +8,8 @@ function layerMatchesPath(layer: any, path: string): boolean {
   }
 
   if (typeof layer.match === 'function') {
-    return layer.match(path);
+    // Express 5 returns a match object rather than a boolean here.
+    return Boolean(layer.match(path));
   }
 
   return Boolean(layer.regexp?.test(path));

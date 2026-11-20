@@ -13,6 +13,7 @@ import * as fromRoot from '../../store';
   standalone: false
 })
 export class HeaderComponent implements OnInit {
+  public readonly newTabAnnouncement = AppConstants.NEW_TAB_ANNOUNCEMENT;
   public navItems: fromRoot.NavItem[];
   public navigations;
   public serviceName;

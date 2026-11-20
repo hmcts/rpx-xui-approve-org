@@ -125,6 +125,7 @@ const roleBasedNav = {
 };
 
 export class AppConstants {
+  public static readonly NEW_TAB_ANNOUNCEMENT = '(opens in a new tab)';
   public static readonly FOOTER_DATA = footerData;
   public static readonly FOOTER_DATA_NAVIGATION = footerDataNavigation;
   public static readonly ENVIRONMENT_NAMES = environmentNames;
