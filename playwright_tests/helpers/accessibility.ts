@@ -3,6 +3,7 @@ import { expect, type Page, type TestInfo } from '@playwright/test';
 import { LighthouseUtils } from '@hmcts/playwright-common';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { createHash } from 'node:crypto';
 
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'];
 const A11Y_SCAN_SCOPE = 'main#content, main#main-content, #content, main';
@@ -43,8 +44,10 @@ type IssueMarker = {
 
 type EngineOutcome = {
   engine: AccessibilityEngine;
-  status: 'passed' | 'issues-found' | 'error';
+  status: 'passed' | 'issues-found' | 'needs-review' | 'error';
   issueCount: number;
+  reviewCount?: number;
+  reviewRules?: string[];
   knownIssueCount?: number;
   unexpectedIssueCount?: number;
   rules: string[];
@@ -67,6 +70,13 @@ type EvidenceManifestEntry = {
   summary: string;
   rules: string[];
   targets: string[];
+  findings: Array<{ rule: string; targets: string[] }>;
+  reviewCount: number;
+  reviewRules: string[];
+  testIdentity?: string;
+  testId?: string;
+  projectName?: string;
+  retry?: number;
 };
 
 type PageSnapshot = {
@@ -277,8 +287,20 @@ function resolveEvidenceStatus(json: Record<string, unknown>, violationCount: nu
     return json.status.trim();
   }
   const outcomes = asRecordArray(json.outcomes);
+  if (typeof json.error === 'string' && json.error) {
+    return 'error';
+  }
   if (outcomes.length) {
+    if (outcomes.some((outcome) => outcome.status === 'error')) {
+      return 'error';
+    }
+    if (!violationCount && outcomes.some((outcome) => outcome.status === 'needs-review')) {
+      return 'needs-review';
+    }
     return violationCount > 0 ? 'issues-found' : 'passed';
+  }
+  if (!violationCount && asRecordArray(json.incomplete).length) {
+    return 'needs-review';
   }
   return violationCount > 0 ? 'issues-found' : 'passed';
 }
@@ -317,11 +339,10 @@ function resolveTestTitle(testInfo: TestInfo | undefined, fallback: string): str
 }
 
 function resolveFeatureName(testInfo: TestInfo | undefined): string {
-  const titlePathFn = (testInfo as unknown as { titlePath?: () => string[] } | undefined)?.titlePath;
-  const titlePath = typeof titlePathFn === 'function' ? titlePathFn() : [];
+  const titlePath = testInfo?.titlePath ?? [];
   const title = testInfo?.title ?? '';
   const featureFromTitlePath = titlePath
-    .filter((part) => part && part !== title && !/\.(spec|test)\.[tj]s$/i.test(part) && !/[\\/]/.test(part))
+    .filter((part) => part && part !== title && part !== testInfo?.project?.name && !/\.(spec|test)\.[tj]s$/i.test(part) && !/[\\/]/.test(part))
     .slice(-1)[0];
   if (featureFromTitlePath) {
     return featureFromTitlePath;
@@ -355,6 +376,7 @@ function buildEvidenceManifestEntry(
   const jsonRecord = asRecord(json);
   const rules = extractViolationRules(jsonRecord);
   const violationCount = resolveViolationCount(jsonRecord);
+  const incomplete = asRecordArray(jsonRecord.incomplete);
   const reportFileName =
     typeof jsonRecord.reportFileName === 'string'
       ? jsonRecord.reportFileName
@@ -365,6 +387,12 @@ function buildEvidenceManifestEntry(
     feature: typeof jsonRecord.feature === 'string' ? jsonRecord.feature : resolveFeatureName(testInfo),
     pageState: String(jsonRecord.pageState ?? jsonRecord.contextLabel ?? ''),
     testTitle: resolveTestTitle(testInfo, attachmentPrefix),
+    ...(testInfo?.testId ? {
+      testIdentity: evidenceTestIdentity(testInfo),
+      testId: testInfo.testId,
+      projectName: testInfo.project?.name,
+      retry: testInfo.retry
+    } : {}),
     attachmentPrefix,
     htmlFileName: `${fileBaseName}.html`,
     jsonFileName: `${fileBaseName}.json`,
@@ -374,7 +402,16 @@ function buildEvidenceManifestEntry(
     status: resolveEvidenceStatus(jsonRecord, violationCount),
     summary: resolveEvidenceSummary(jsonRecord, rules),
     rules,
-    targets: extractViolationTargets(jsonRecord)
+    targets: extractViolationTargets(jsonRecord),
+    findings: asRecordArray(jsonRecord.violations).map((violation) => ({
+      rule: String(violation.id ?? violation.rule ?? 'unclassified'),
+      targets: uniqueStrings([
+        violation.selector,
+        ...asRecordArray(violation.nodes).flatMap((node) => Array.isArray(node.target) ? node.target : [])
+      ])
+    })),
+    reviewCount: incomplete.length,
+    reviewRules: uniqueStrings(incomplete.map((item) => item.id ?? item.rule))
   };
 }
 
@@ -389,7 +426,7 @@ async function writeEvidenceManifest(dir: string, fileBaseName: string, entry: E
   const retainedEntries = Array.isArray(existing)
     ? existing.filter(
       (candidate) =>
-        candidate?.testTitle !== entry.testTitle || candidate?.attachmentPrefix !== entry.attachmentPrefix
+        candidate?.htmlFileName !== entry.htmlFileName
     )
     : [];
   await fs.writeFile(manifestPath, JSON.stringify([...retainedEntries, entry], null, 2));
@@ -397,7 +434,14 @@ async function writeEvidenceManifest(dir: string, fileBaseName: string, entry: E
 
 function evidenceFileBaseName(testInfo: TestInfo | undefined, attachmentPrefix: string): string {
   const testTitlePrefix = sanitiseFileName(testInfo?.title ?? '');
-  return testTitlePrefix ? `${testTitlePrefix}-${attachmentPrefix}` : attachmentPrefix;
+  const base = testTitlePrefix ? `${testTitlePrefix}-${attachmentPrefix}` : attachmentPrefix;
+  return testInfo?.testId ? `${base}-${evidenceTestIdentity(testInfo)}` : base;
+}
+
+function evidenceTestIdentity(testInfo: TestInfo): string {
+  return createHash('sha256').update(JSON.stringify([
+    testInfo.testId, testInfo.project?.name, testInfo.retry, testInfo.titlePath
+  ])).digest('hex').slice(0, 16);
 }
 
 async function attachEvidence(
@@ -988,15 +1032,17 @@ async function runAxeEngine(page: Page, contextLabel: string, testInfo?: TestInf
   const evidenceFiles = await attachEvidence(
     testInfo,
     evidenceName,
-    { ...metadata, url: page.url(), engine: 'axe', violations },
+    { ...metadata, url: page.url(), engine: 'axe', violations, incomplete: analysis.incomplete },
     buildIssuesHtml(`[axe] ${contextLabel}`, page.url(), violations as unknown as Array<Record<string, unknown>>),
     screenshot.length ? [{ fileName: screenshotFileName, body: screenshot }] : []
   );
 
   return {
     engine: 'axe',
-    status: violations.length ? 'issues-found' : 'passed',
+    status: violations.length ? 'issues-found' : analysis.incomplete.length ? 'needs-review' : 'passed',
     issueCount: violations.length,
+    reviewCount: analysis.incomplete.length,
+    reviewRules: analysis.incomplete.map((item) => item.id),
     unexpectedIssueCount: violations.length,
     rules: violations.map((violation) => violation.id),
     message: formatViolations(violations),
@@ -1460,7 +1506,9 @@ async function runLighthouseEngine(page: Page, contextLabel: string, testInfo?: 
       'best-practices': 0
     });
     const reportPath = await findGeneratedLighthouseReport(beforeReports);
-    const reportFileName = reportPath ? `${sanitiseFileName(contextLabel)}-lighthouse-report.html` : undefined;
+    const reportFileName = reportPath
+      ? `${evidenceFileBaseName(testInfo, `${sanitiseFileName(contextLabel)}-lighthouse-report`)}.html`
+      : undefined;
     const reportBody = reportPath ? await fs.readFile(reportPath) : undefined;
     const evidenceName = `${sanitiseFileName(contextLabel)}-lighthouse-accessibility`;
     const evidenceFiles = await attachEvidence(
@@ -1637,6 +1685,8 @@ function formatAccessibilityIssueMessage(contextLabel: string, strictMode: boole
 
 export const __test__ = {
   attachAuditSummary,
+  attachEvidence,
+  buildEvidenceManifestEntry,
   evidenceFileBaseName,
   formatAccessibilityIssueMessage,
   sanitiseFileName

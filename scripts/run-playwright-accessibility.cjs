@@ -14,6 +14,11 @@ if (extraArgs[0] === '--') {
 
 const defaultEngines = 'axe,wave-like,screen-reader';
 const isListOnlyRun = extraArgs.includes('--list');
+if (!isListOnlyRun && process.env.PW_A11Y_EVIDENCE_DIR &&
+    (process.env.DISABLE_ODHIN_REPORTER === 'true' || extraArgs.some((arg) => arg === '--reporter' || arg.startsWith('--reporter=')))) {
+  process.stderr.write('[accessibility-report] A custom evidence directory requires the configured Odhín reporter; do not disable or override it.\n');
+  process.exit(1);
+}
 
 const env = {
   ...process.env,

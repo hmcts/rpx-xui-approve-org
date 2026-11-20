@@ -56,6 +56,7 @@ type UpdatePbaApiPayload = {
 type PbaStatusUpdateApiMockState = {
   status?: number;
   responseBody?: unknown;
+  pendingPbaOrganisations?: MockPendingPbaOrganisation[];
 };
 
 type PbaStatusUpdatePayload = {
@@ -134,8 +135,17 @@ async function setupPbaStatusApiMock(
       lastPayload = undefined;
     }
 
+    const status = state.status ?? 200;
+    const pendingOrganisations = state.pendingPbaOrganisations;
+    if (status >= 200 && status < 300 && pendingOrganisations) {
+      const organisationIndex = pendingOrganisations.findIndex((organisation) => organisation.organisationIdentifier === lastPayload?.orgId);
+      if (organisationIndex >= 0) {
+        pendingOrganisations.splice(organisationIndex, 1);
+      }
+    }
+
     await route.fulfill({
-      status: state.status ?? 200,
+      status,
       contentType: 'application/json',
       body: JSON.stringify(state.responseBody ?? { ok: true })
     });
@@ -201,7 +211,7 @@ export async function setupUpdatePbaApiMock(
 
 export async function setupSetPbaStatusApiMock(
   page: Page,
-  state: UpdatePbaApiMockState = {}
+  state: PbaStatusUpdateApiMockState = {}
 ): Promise<PbaStatusUpdateApiMockControl> {
   return setupPbaStatusApiMock(page, state);
 }
@@ -329,5 +339,14 @@ export function waitForSetPbaStatusResponse(page: Page): Promise<Response> {
       && request.url().includes('/api/pba/status')
       && !request.url().includes('/api/pba/status/pending')
       && response.status() < 500;
+  });
+}
+
+export function waitForSetPbaStatusResponseWithHttpStatus(page: Page, expectedHttpStatus: number): Promise<Response> {
+  return page.waitForResponse((response) => {
+    const request = response.request();
+    return request.method().toUpperCase() === 'PUT'
+      && new URL(request.url()).pathname === '/api/pba/status'
+      && response.status() === expectedHttpStatus;
   });
 }

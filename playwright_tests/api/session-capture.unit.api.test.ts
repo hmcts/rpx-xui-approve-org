@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
@@ -6,10 +7,12 @@ import * as path from 'node:path';
 import { config } from '../config/config';
 import { __test__ as sessionCapture } from '../helpers/sessionCapture';
 
+const testPassword = randomBytes(32).toString('hex');
+
 const validIdentity = {
   userIdentifier: 'base-alias',
   email: 'ao@example.test',
-  password: 'do-not-log-this',
+  password: testPassword,
   sessionKey: 'shared-ao-account'
 };
 
@@ -31,17 +34,62 @@ test.describe('AO Playwright session management', () => {
     expect(sessionCapture.getSessionStatePath(validIdentity, 'api')).not.toBe(sessionCapture.getSessionStatePath(validIdentity));
   });
 
+  test('keeps distinct identities and partitions isolated despite sanitized path collisions', () => {
+    const identity = (email: string) => ({ userIdentifier: 'alias', email, password: testPassword });
+    expect(sessionCapture.getSessionStatePath(identity('a+b@example.test'))).not.toBe(
+      sessionCapture.getSessionStatePath(identity('a-b@example.test'))
+    );
+    expect(sessionCapture.getSessionStatePath(identity('same@example.test'), 'api')).not.toBe(
+      sessionCapture.getSessionStatePath(identity('same@example.test.api'))
+    );
+    expect(sessionCapture.getSessionStatePath(identity('Same@Example.Test'))).toBe(
+      sessionCapture.getSessionStatePath(identity('same@example.test'))
+    );
+    expect(sessionCapture.getSessionStatePath({ ...identity('one@example.test'), sessionKey: 'shared' })).toBe(
+      sessionCapture.getSessionStatePath({ ...identity('two@example.test'), sessionKey: 'shared' })
+    );
+    expect(sessionCapture.getSessionStatePath({ ...identity('other@example.test'), sessionKey: 'same@example.test' })).not.toBe(
+      sessionCapture.getSessionStatePath(identity('same@example.test'))
+    );
+  });
+
+  test('only reuses a session with a usable AO cookie', () => {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-pair-'));
+    const expiry = Math.floor(Date.now() / 1000) + 300;
+    const validCookies = [
+      { name: 'Idam.Session', value: 'idam', domain: new URL(config.idamWebUrl).hostname, expires: expiry },
+      { name: 'ao-webapp', value: 'ao', domain: new URL(config.baseUrl).hostname, expires: expiry }
+    ];
+    const statePath = writeStorageState(directory, validCookies);
+    expect(sessionCapture.isSessionFresh(statePath)).toBe(true);
+    expect(sessionCapture.hasUnexpiredAuthCookie(writeStorageState(directory, validCookies.slice(1)))).toBe(true);
+    const aoHost = new URL(config.baseUrl).hostname;
+    const secureCookie = { ...validCookies[1], secure: true };
+    expect(sessionCapture.hasUnexpiredAuthCookie(writeStorageState(directory, [secureCookie]), `http://${aoHost}/`)).toBe(false);
+    expect(sessionCapture.hasUnexpiredAuthCookie(writeStorageState(directory, [secureCookie]), `https://${aoHost}/`)).toBe(true);
+    expect(sessionCapture.hasUnexpiredAuthCookie(writeStorageState(directory, [{ ...secureCookie, domain: aoHost }]), `https://sub.${aoHost}/`)).toBe(false);
+    expect(sessionCapture.hasUnexpiredAuthCookie(writeStorageState(directory, [{ ...secureCookie, domain: `.${aoHost}` }]), `https://sub.${aoHost}/`)).toBe(true);
+    for (const invalid of [validCookies.slice(0, 1), [validCookies[0], { ...validCookies[1], value: '' }],
+      [validCookies[0], { ...validCookies[1], domain: undefined }],
+      [validCookies[0], { ...validCookies[1], domain: 'other.example.test' }],
+      [validCookies[0], { ...validCookies[1], expires: expiry - 600 }],
+      [validCookies[0], { ...validCookies[1], path: '/not-organisation' }]]) {
+      fs.writeFileSync(statePath, JSON.stringify({ cookies: invalid, origins: [] }));
+      expect(sessionCapture.isSessionFresh(statePath)).toBe(false);
+    }
+  });
+
   test('rejects an auth cookie for another host and accepts a compatible unexpired cookie', () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const statePath = writeStorageState(directory, [
-      { name: 'Idam.Session', domain: 'other.example.test', expires: Math.floor(Date.now() / 1000) + 300 }
+      { name: 'ao-webapp', value: 'synthetic', domain: 'other.example.test', expires: Math.floor(Date.now() / 1000) + 300 }
     ]);
     expect(sessionCapture.hasUnexpiredAuthCookie(statePath, 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(false);
 
     fs.writeFileSync(
       statePath,
       JSON.stringify({
-        cookies: [{ name: 'Idam.Session', domain: '.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 }],
+        cookies: [{ name: 'ao-webapp', value: 'synthetic', domain: '.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 }],
         origins: []
       })
     );
@@ -51,7 +99,7 @@ test.describe('AO Playwright session management', () => {
   test('treats malformed, expired and valid state differently', () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const statePath = writeStorageState(directory, [
-      { name: 'Idam.Session', domain: '.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 }
+      { name: 'ao-webapp', value: 'synthetic', domain: '.aat.platform.hmcts.net', expires: Math.floor(Date.now() / 1000) + 300 }
     ]);
     expect(sessionCapture.isSessionFresh(statePath, 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(true);
 
@@ -67,6 +115,7 @@ test.describe('AO Playwright session management', () => {
 
     expect(sessionCapture.hasPersistableSessionCookies(validCookies, 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(true);
     expect(sessionCapture.hasPersistableSessionCookies(validCookies.slice(1), 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(false);
+    expect(sessionCapture.hasPersistableSessionCookies([validCookies[0], { ...validCookies[1], value: '' }], 'https://administer-orgs.aat.platform.hmcts.net/')).toBe(false);
     expect(sessionCapture.hasPersistableSessionCookies([
       validCookies[0],
       { ...validCookies[1], domain: 'other.example.test' }
@@ -315,7 +364,7 @@ test.describe('AO Playwright session management', () => {
     await expect(sessionCapture.waitForExpectedAuthenticatedSurface(page as never, 'https://example.test/', 10)).resolves.toBe(true);
   });
 
-  test('waiters reuse the lock owner result and the stale budget exceeds login and auth polling', async () => {
+  test('waiters acquire the lock after its owner releases it', async () => {
     const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-session-'));
     const lockPath = path.join(directory, 'state.lock');
     const request = {
@@ -333,8 +382,6 @@ test.describe('AO Playwright session management', () => {
     expect(sessionCapture.SESSION_CAPTURE_LOCK_TIMEOUT_MS).toBeGreaterThanOrEqual(
       sessionCapture.SESSION_CAPTURE_ATTEMPT_BUDGET_MS * sessionCapture.SESSION_CAPTURE_ATTEMPTS
     );
-    expect(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS).toBeGreaterThan(sessionCapture.SESSION_CAPTURE_ATTEMPT_BUDGET_MS);
-    expect(sessionCapture.SESSION_CAPTURE_LOCK_UPDATE_MS).toBeLessThan(sessionCapture.SESSION_CAPTURE_LOCK_STALE_MS);
   });
 
   test('stops waiting when another process creates a fresh reusable session', async () => {

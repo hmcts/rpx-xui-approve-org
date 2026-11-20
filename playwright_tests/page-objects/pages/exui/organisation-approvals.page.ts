@@ -1,11 +1,18 @@
-import { expect, type Locator, type Page } from '@playwright/test';
-import { ExuiSpinnerComponent, WaitUtils } from '@hmcts/playwright-common';
+import { errors, expect, type Locator, type Page } from '@playwright/test';
+import { ExuiSpinnerComponent } from '@hmcts/playwright-common';
 import { BasePage } from '../../base';
+import {
+  activeSearchFailureMessage,
+  activeSearchUnavailableTimeoutMessage,
+  isActiveOrganisationSearchRequest
+} from '../../../helpers/active-organisation-search';
 
 const ACTIVE_ORGANISATIONS_ROUTE_PATTERN = /\/(?:organisation\/active|service-down|not-authorised)(?:\/?|\?.*)$/;
 const ORGANISATION_DETAILS_ROUTE_PATTERN = /\/organisation-details\/[^/?#]+(?:\/?|\?.*)$/;
 const TRANSIENT_SEARCH_ATTEMPTS = 3;
 const TRANSIENT_SEARCH_RETRY_DELAY_MS = 1_000;
+const TAB_READY_TIMEOUT_MS = 60_000;
+const ACTIVE_SEARCH_RESPONSE_TIMEOUT_MS = 40_000;
 
 export type OrganisationTableRow = {
   name: string;
@@ -28,13 +35,11 @@ export type PendingPbaTableRow = {
 export class OrganisationApprovalsPage extends BasePage {
   private static readonly invalidPbaMessage = 'PBA numbers must start with PBA/pba and be followed by 7 alphanumeric characters';
   private readonly exuiSpinner: ExuiSpinnerComponent;
-  private readonly waitUtils: WaitUtils;
   private selectedDecisionRadio?: Locator;
 
   constructor(page: Page) {
     super(page);
     this.exuiSpinner = new ExuiSpinnerComponent(page);
-    this.waitUtils = new WaitUtils();
   }
 
   readonly heading = this.page.locator('main#main-content h1.hmcts-page-heading__title');
@@ -76,6 +81,8 @@ export class OrganisationApprovalsPage extends BasePage {
   readonly pendingPbasRows = this.pendingPbasPanel.locator('table.govuk-table tbody tr');
   readonly pendingPbaViewLinkLocator = this.pendingPbasPanel.locator('table.govuk-table a.govuk-link[href*="/new/"]').first();
   readonly pendingPbaDecisionRows = this.page.locator('app-pba-account-approval');
+  readonly pendingPbaValidationSummary = this.page.locator('app-new-pbas-info').getByRole('alert');
+  readonly pendingPbaSubmissionErrors = this.page.locator('app-new-pbas').getByRole('alert');
   readonly pendingPbaContinueButton = this.page.locator('app-new-pbas-info button[type="submit"].govuk-button').first();
   readonly newPbaDetailsPageHeading = this.page.locator('app-new-pbas-info h1.govuk-heading-xl').first();
   readonly newPbaAccountsHeading = this.page.locator('app-new-pbas-info h2.govuk-heading-m#heading').first();
@@ -302,6 +309,11 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async searchForOrganisation(organisationName: string): Promise<void> {
+    await this.prepareOrganisationSearch(organisationName);
+    await this.searchButton.click();
+  }
+
+  private async prepareOrganisationSearch(organisationName: string): Promise<void> {
     await this.waitForSpinnerToHide(60_000);
     const serviceErrorMessage = await this.serviceErrorMessage();
     if (serviceErrorMessage) {
@@ -309,7 +321,6 @@ export class OrganisationApprovalsPage extends BasePage {
     }
     await this.searchInput.fill(organisationName);
     await expect(this.searchInput).toHaveValue(organisationName);
-    await this.searchButton.click();
   }
 
   private async waitForOrganisationRecoveryState(timeoutMs = 60_000): Promise<'pending' | 'service-error'> {
@@ -371,6 +382,50 @@ export class OrganisationApprovalsPage extends BasePage {
       timeout,
       intervals: [1_000, 2_000, 5_000]
     }).toBe(true);
+  }
+
+  /**
+   * Searches active organisations and proves the backing POST /api/organisations?status=ACTIVE call succeeded.
+   * The response budget starts immediately before the Search click, after initial UI readiness.
+   * Failure messages report the observed status or timeout without assuming the cause.
+   */
+  async searchActiveOrganisations(searchTerm: string, timeoutMs = ACTIVE_SEARCH_RESPONSE_TIMEOUT_MS): Promise<void> {
+    await this.prepareOrganisationSearch(searchTerm);
+
+    const searchResponse = this.page
+      .waitForResponse(
+        (response) => {
+          const request = response.request();
+          return isActiveOrganisationSearchRequest(
+            { method: request.method(), url: response.url(), postData: () => request.postDataJSON() },
+            searchTerm
+          );
+        },
+        { timeout: timeoutMs }
+      )
+      .then(
+        (response) => ({ response }),
+        (error: unknown) => ({ error })
+      );
+
+    await this.searchButton.click();
+    const outcome = await searchResponse;
+    if ('error' in outcome) {
+      if (outcome.error instanceof errors.TimeoutError) {
+        throw new Error(activeSearchUnavailableTimeoutMessage(timeoutMs));
+      }
+      throw outcome.error;
+    }
+
+    const status = outcome.response.status();
+    if (status >= 500) {
+      const body: unknown = await outcome.response.json().catch(() => undefined);
+      const failureMessage = activeSearchFailureMessage({ status, body });
+      if (failureMessage) {
+        throw new Error(failureMessage);
+      }
+    }
+    expect(status, 'Active organisation search must return HTTP 200').toBe(200);
   }
 
   async searchForPendingOrganisation(organisationName: string, organisationId: string): Promise<void> {
@@ -436,6 +491,22 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.openOrganisationDetails(this.activeOrganisationRowById(organisationId).locator('a.govuk-link').first());
   }
 
+  pendingPbaDecisionRow(pbaNumber: string): Locator {
+    return this.pendingPbaDecisionRows.filter({ hasText: pbaNumber });
+  }
+
+  pendingPbaConfirmationRow(pbaNumber: string): Locator {
+    return this.page.locator('app-pba-account-decision').filter({ has: this.page.getByText(pbaNumber, { exact: true }) });
+  }
+
+  async choosePendingPbaDecision(pbaNumber: string, decision: 'accepted' | 'rejected'): Promise<void> {
+    await this.pendingPbaDecisionRow(pbaNumber).locator(`input[value="${decision}"]`).check();
+  }
+
+  async changePendingPba(pbaNumber: string): Promise<void> {
+    await this.pendingPbaDecisionRow(pbaNumber).getByRole('link', { name: 'Change', exact: true }).click();
+  }
+
   async openFirstPendingPba(): Promise<void> {
     await this.pendingPbaViewLink().click();
   }
@@ -468,6 +539,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openStaffDetailsTab(): Promise<void> {
+    await this.waitForTabToBeClickable('Staff details');
     await this.staffDetailsHeaderTab().click();
   }
 
@@ -518,9 +590,21 @@ export class OrganisationApprovalsPage extends BasePage {
     await this.confirmButton.click();
   }
 
+  /**
+   * The loading spinner overlay intercepts pointer events, so a tab click must wait for it to clear.
+   * A service-error page means the tab can never become usable, so fail with that state instead.
+   */
+  private async waitForTabToBeClickable(tabName: string): Promise<void> {
+    await this.waitForSpinnerToHide(TAB_READY_TIMEOUT_MS);
+    const serviceErrorMessage = await this.serviceErrorMessage();
+    if (serviceErrorMessage) {
+      throw new Error(`Cannot open the ${tabName} tab because the current view shows: ${serviceErrorMessage}`);
+    }
+  }
+
+  // Count visible overlays: a single-element visibility probe errors on multiple matches, which would read as hidden.
   async waitForSpinnerToHide(timeoutMs = 15_000): Promise<void> {
-    await this.waitUtils.waitForLocatorVisibility(this.loadingSpinnerOverlay, {
-      visibility: false,
+    await expect(this.loadingSpinnerOverlay.filter({ visible: true }), `Loading spinner still visible after ${timeoutMs}ms`).toHaveCount(0, {
       timeout: timeoutMs
     });
   }
@@ -542,18 +626,21 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openNewPbasTab(): Promise<void> {
+    await this.waitForTabToBeClickable('New PBAs');
     await this.newPbasTab.click();
     await expect(this.pendingPbasPanel).toBeVisible();
     await this.waitForSpinnerToHide(60_000);
   }
 
   async openPendingOrganisationsTab(): Promise<void> {
+    await this.waitForTabToBeClickable('New registrations');
     await this.pendingOrganisationsTab.click();
     await expect(this.pendingOverviewPanel).toBeVisible();
     await this.waitForSpinnerToHide(60_000);
   }
 
   async openActiveOrganisationsTab(): Promise<void> {
+    await this.waitForTabToBeClickable('Active organisations');
     const routeWait = ACTIVE_ORGANISATIONS_ROUTE_PATTERN.test(this.page.url())
       ? Promise.resolve()
       : this.page.waitForURL(ACTIVE_ORGANISATIONS_ROUTE_PATTERN);
@@ -567,6 +654,7 @@ export class OrganisationApprovalsPage extends BasePage {
   }
 
   async openUsersTab(): Promise<void> {
+    await this.waitForTabToBeClickable('Users');
     await this.usersTabLink.click();
   }
 
