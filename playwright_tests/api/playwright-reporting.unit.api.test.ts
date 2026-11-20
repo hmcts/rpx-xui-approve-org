@@ -2,6 +2,30 @@ import { expect, test } from '@playwright/test';
 
 import { buildPlaywrightReporters } from '../../playwright-reporting';
 
+test('labels the actual target environment and honours a report label override', () => {
+  const original = { TEST_URL: process.env.TEST_URL, PW_ODHIN_ENV: process.env.PW_ODHIN_ENV, PLAYWRIGHT_REPORT_TEST_ENVIRONMENT: process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT };
+  const options = () => buildPlaywrightReporters('e2e').find(([name]) => name.includes('odhin-adaptive'))?.[1] as Record<string, unknown>;
+  try {
+    delete process.env.PW_ODHIN_ENV;
+    delete process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT;
+    process.env.TEST_URL = 'https://administer-orgs.demo.platform.hmcts.net/';
+    expect(options().testEnvironment).toMatch(/^demo \|/);
+    process.env.TEST_URL = 'https://example.org/?target=aat';
+    expect(options().testEnvironment).toMatch(/^unknown \|/);
+    process.env.PW_ODHIN_ENV = 'custom';
+    expect(options().testEnvironment).toBe('custom');
+    expect(options().appendRuntimeWorkers).toBe(false);
+  } finally {
+    for (const [key, value] of Object.entries(original)) {
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
+    }
+  }
+});
+
 test('includes flake, HTML, progress Odhín, adaptive Odhín and JUnit reporters for an API lane', () => {
   const original = {
     PLAYWRIGHT_DEFAULT_REPORTER: process.env.PLAYWRIGHT_DEFAULT_REPORTER,

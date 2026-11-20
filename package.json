@@ -138,7 +138,7 @@
     "@hmcts/playwright-common": "^1.1.3",
     "@pact-foundation/pact": "16.5.0",
     "@pact-foundation/pact-cli": "18.10.9",
-    "@playwright/test": "1.64.1",
+    "@playwright/test": "1.65.0",
     "@stryker-mutator/api": "^9.6.1",
     "@stryker-mutator/core": "^9.6.1",
     "@stryker-mutator/html-reporter": "^3.1.0",
@@ -182,8 +182,8 @@
     "nodemon": "^3.1.14",
     "nyc": "^15.1.0",
     "odhin-reports-playwright": "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch",
-    "playwright": "1.64.1",
-    "playwright-core": "1.64.1",
+    "playwright": "1.65.0",
+    "playwright-core": "1.65.0",
     "proper-lockfile": "^4.1.2",
     "sinon": "^7.2.3",
     "sinon-chai": "^3.3.0",
@@ -201,7 +201,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "resolutions": {
-    "odhin-reports-playwright/axios": "0.34.0",
+    "odhin-reports-playwright/axios": "0.35.0",
     "archiver-utils@npm:^2.1.0": "npm:5.0.2",
     "archiver-utils@npm:^3.0.4": "npm:5.0.2",
     "minimist": "^1.2.8",
