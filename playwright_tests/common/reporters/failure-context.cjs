@@ -30,7 +30,13 @@ function decodePathSegment(segment) {
 function redactUrl(value) {
   const raw = String(value ?? '');
   try {
-    const url = new URL(raw);
+    const schemeRelative = raw.startsWith('//');
+    const authority = schemeRelative ? raw.slice(2).split(/[/?#]/, 1)[0] : '';
+    const schemeRelativeHost = authority.slice(authority.lastIndexOf('@') + 1);
+    if (schemeRelative && !schemeRelativeHost) {
+      return '[invalid URL]';
+    }
+    const url = new URL(raw, schemeRelative ? 'https://redaction-base.invalid' : undefined);
     if (!['http:', 'https:'].includes(url.protocol)) {
       return redactText(raw);
     }
@@ -49,8 +55,13 @@ function redactUrl(value) {
           : segment;
       })
       .join('/');
-    return `${url.origin}${url.pathname}`;
+    const explicitPort = schemeRelativeHost.match(/:(\d+)$/)?.[1];
+    const host = schemeRelative && explicitPort && !url.port ? `${url.host}:${explicitPort}` : url.host;
+    return `${schemeRelative ? `//${host}` : url.origin}${url.pathname}`;
   } catch {
+    if (/^\s*(?:https?:|\/\/)/i.test(raw)) {
+      return '[invalid URL]';
+    }
     return raw
       .replace(/[?#].*$/, '')
       .replace(/^((?:https?:)?\/\/)[^/]*@/i, '$1')
@@ -65,7 +76,7 @@ function redactUrl(value) {
 
 function redactText(value) {
   let text = String(value ?? '');
-  text = text.replace(/(?:https?:)?\/\/[^\s"'<>]+/gi, (url) => redactUrl(url));
+  text = text.replace(/(?:https?:)?\/\/[^\s"'<>]+|https?:[^\s"'<>]*/gi, (url) => redactUrl(url));
   text = text.replace(QUOTED_SECRET_PATTERN, '$1[redacted]$3');
   text = text.replace(EMAIL_PATTERN, '[redacted-email]');
   text = text.replace(UUID_PATTERN, ':id');

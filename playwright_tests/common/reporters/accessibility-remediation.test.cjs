@@ -31,11 +31,36 @@ test('removes URL credentials and private URL components from report text', () =
     'https://example.test:8443/cases/:id'
   );
   assert.equal(redactUrl('http://example.test/path?query=value#fragment'), 'http://example.test/path');
-  assert.equal(redactUrl('http://user:secret@'), 'http://');
-  assert.equal(redactUrl('//alice:private@'), '//');
-  assert.equal(redactText('Route //alice:private@'), 'Route //');
+  assert.equal(redactUrl('//example.test/organisation/active?state=x'), '//example.test/organisation/active');
+  assert.equal(redactUrl('//example.test:443/organisation/active'), '//example.test:443/organisation/active');
+  assert.equal(redactText('Route //example.test/organisation/active?state=x'), 'Route //example.test/organisation/active');
+  assert.equal(redactUrl('http://user:secret@'), '[invalid URL]');
+  assert.equal(redactUrl('//alice:private@'), '[invalid URL]');
+  assert.equal(redactText('Route //alice:private@'), 'Route [invalid URL]');
   assert.equal(redactText('https://alice:password=private@example.test/a'), 'https://example.test/a');
   assert.equal(redactText('Visit https://user:secret@example.test/path?token=private'), 'Visit https://example.test/path');
+  assert.equal(redactUrl('https://alice:DEMOSECRET?@'), '[invalid URL]');
+  assert.equal(redactUrl('https://alice:DEMOSECRET#@'), '[invalid URL]');
+  assert.equal(redactText('Route https://alice:DEMOSECRET?@'), 'Route [invalid URL]');
+  assert.equal(redactText('Route https:/alice:TEXTSECRET?@'), 'Route [invalid URL]');
+});
+
+test('does not expose malformed URL credentials in accessibility report routes', (t) => {
+  const folder = fs.mkdtempSync(path.join(os.tmpdir(), 'a11y-redaction-'));
+  t.after(() => fs.rmSync(folder, { recursive: true, force: true }));
+  fs.mkdirSync(path.join(folder, 'accessibility-evidence'));
+  const pack = writeAccessibilityRemediationPack(folder, [
+    {
+      ...entry,
+      targets: ['https://alice:DEMOSECRET?@'],
+      testTitle: 'Route https:/alice:TEXTSECRET?@',
+      findings: [{ rule: 'label', targets: ['#name'] }]
+    }
+  ]);
+
+  assert.equal(pack.findings[0].occurrences[0].route, '[invalid URL]');
+  assert.equal(pack.findings[0].occurrences[0].testTitle, 'Route [invalid URL]');
+  assert.doesNotMatch(fs.readFileSync(path.join(folder, 'accessibility-findings.json'), 'utf8'), /DEMOSECRET|TEXTSECRET/);
 });
 
 test('groups duplicate detectors and preserves states and context variants', (t) => {
