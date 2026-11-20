@@ -150,4 +150,125 @@ test.describe('organisation approvals page', () => {
     ).rejects.toThrow('Organisation search remained unavailable after 3 attempts.');
     expect(navigationCount).toBe(3);
   });
+
+  test('waits for the loading spinner to clear before clicking a tab', async ({ page }) => {
+    await page.setContent(`
+      <div class="govuk-tabs"><a class="govuk-tabs__tab" href="#pbas">New PBAs</a></div>
+      <xuilib-loading-spinner><div class="spinner-container" style="position:fixed;inset:0;background:#fff"></div></xuilib-loading-spinner>
+    `);
+    await page.locator('a.govuk-tabs__tab').evaluate((tab) => {
+      tab.setAttribute('href', '/organisation/pbas');
+      tab.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.body.insertAdjacentHTML('beforeend', '<app-pending-pbas style="display:block;height:1px"></app-pending-pbas>');
+      });
+      window.setTimeout(() => document.querySelector('xuilib-loading-spinner')!.remove(), 1_000);
+    });
+    // A bare click would exhaust this action budget while the overlay intercepts pointer events.
+    page.setDefaultTimeout(250);
+
+    await new OrganisationApprovalsPage(page).openNewPbasTab();
+
+    await expect(page.locator('app-pending-pbas')).toHaveCount(1);
+  });
+
+  test('refuses to click a tab while the service-error page is shown', async ({ page }) => {
+    await page.setContent(`
+      <h1>Sorry, there is a problem with the service</h1>
+      <div class="govuk-tabs"><a class="govuk-tabs__tab" href="/organisation/active">Active organisations</a></div>
+    `);
+
+    await expect(new OrganisationApprovalsPage(page).openActiveOrganisationsTab()).rejects.toThrow(
+      'Cannot open the Active organisations tab because the current view shows: Sorry, there is a problem with the service'
+    );
+  });
+
+  const activeSearchPage = (spinnerMs = 0) => `
+    <div class="search-organisations-form"><form><input id="search"><button class="hmcts-search__button" type="button">Search</button></form></div>
+    ${spinnerMs ? `<xuilib-loading-spinner><div class="spinner-container" style="position:fixed;inset:0"></div></xuilib-loading-spinner>
+      <script>setTimeout(() => document.querySelector('xuilib-loading-spinner').remove(), ${spinnerMs})</script>` : ''}
+    <script>
+      document.querySelector('button').addEventListener('click', () => {
+        fetch('/api/organisations?status=ACTIVE', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ searchRequest: { search_filter: document.querySelector('#search').value } })
+        }).catch(() => undefined);
+      });
+    </script>`;
+
+  for (const scenario of [
+    {
+      name: 'a gateway 504',
+      reply: { status: 504, body: 'Gateway Timeout' },
+      expected: '[ACTIVE_ORGANISATION_SEARCH_FAILURE] Active organisation search returned HTTP 504'
+    },
+    {
+      name: 'a node-layer 500 relaying an upstream 503',
+      reply: { status: 500, contentType: 'application/json', body: JSON.stringify({ apiStatusCode: 503, apiError: 'Service Unavailable' }) },
+      expected: '[ACTIVE_ORGANISATION_SEARCH_FAILURE] Active organisation search returned HTTP 500 with upstream HTTP 503'
+    },
+    {
+      name: 'a node-layer 500 without an upstream status',
+      reply: { status: 500, contentType: 'application/json', body: JSON.stringify({ apiError: 'Organisation service request failed' }) },
+      expected: '[ACTIVE_ORGANISATION_SEARCH_FAILURE] Active organisation search returned HTTP 500'
+    },
+    {
+      name: 'no response in time',
+      reply: undefined,
+      expected: '[ACTIVE_ORGANISATION_SEARCH_FAILURE] Active organisation search did not respond within 500ms'
+    }
+  ]) {
+    test(`fails an active search once on ${scenario.name}`, async ({ page }) => {
+      let searchCalls = 0;
+      await page.route((url) => url.pathname === '/api/organisations', async (route) => {
+        searchCalls += 1;
+        if (scenario.reply) {
+          await route.fulfill(scenario.reply);
+        }
+      });
+      await page.route('http://example.test/organisation/active', (route) => route.fulfill({ contentType: 'text/html', body: activeSearchPage() }));
+      await page.goto('http://example.test/organisation/active');
+
+      await expect(new OrganisationApprovalsPage(page).searchActiveOrganisations('Test', 500)).rejects.toThrow(scenario.expected);
+      expect(searchCalls).toBe(1);
+    });
+  }
+
+  test('passes an active search that returns HTTP 200', async ({ page }) => {
+    await page.route((url) => url.pathname === '/api/organisations', (route) => route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ organisations: [], total_records: 0 })
+    }));
+    await page.route('http://example.test/organisation/active', (route) => route.fulfill({ contentType: 'text/html', body: activeSearchPage() }));
+    await page.goto('http://example.test/organisation/active');
+
+    await new OrganisationApprovalsPage(page).searchActiveOrganisations('Test', 5_000);
+  });
+
+  test('does not charge UI readiness time to the active search response budget', async ({ page }) => {
+    await page.route((url) => url.pathname === '/api/organisations', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ organisations: [], total_records: 0 }) });
+    });
+    // The spinner outlasts the whole response budget; only the POST itself must fit inside it.
+    await page.route('http://example.test/organisation/active', (route) => route.fulfill({ contentType: 'text/html', body: activeSearchPage(1_500) }));
+    await page.goto('http://example.test/organisation/active');
+
+    await new OrganisationApprovalsPage(page).searchActiveOrganisations('Test', 1_000);
+  });
+
+  test('keeps waiting while any one of several spinner overlays is visible', async ({ page }) => {
+    await page.setContent(`
+      <xuilib-loading-spinner><div class="spinner-container" style="display:none"></div></xuilib-loading-spinner>
+      <xuilib-loading-spinner id="live"><div class="spinner-container" style="width:10px;height:10px"></div></xuilib-loading-spinner>
+    `);
+    const organisationApprovalsPage = new OrganisationApprovalsPage(page);
+
+    await expect(organisationApprovalsPage.waitForSpinnerToHide(500)).rejects.toThrow('Loading spinner still visible after 500ms');
+
+    await page.locator('#live').evaluate((element) => element.remove());
+    await organisationApprovalsPage.waitForSpinnerToHide(500);
+  });
 });
