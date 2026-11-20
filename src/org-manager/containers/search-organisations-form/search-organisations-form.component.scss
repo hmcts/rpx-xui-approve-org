@@ -1,9 +1,20 @@
 .search-organisations-form {
   margin-bottom: 30px;
 
+  @media (min-width: 641px) {
+    .hmcts-search__button {
+      // Align the buttons with the input, beneath its label and hint.
+      top: 30px;
+    }
+  }
+
   xuilib-gov-uk-input {
     flex: 1;
     min-width: 0;
+  }
+
+  .hmcts-search__button + .hmcts-search__button {
+    margin-left: 16px;
   }
 
   @media (max-width: 640px) {
