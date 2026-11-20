@@ -137,6 +137,126 @@ test.describe('accessibility evidence publisher', () => {
     expect(message).not.toContain('"engine"');
     expect(message).not.toContain('JSON.stringify');
   });
+
+  test('preserves rule-to-target relationships, incomplete results and engine errors for the handoff', () => {
+    const axe = accessibilityTest.buildEvidenceManifestEntry(undefined, 'axe', 'axe', {
+      engine: 'axe',
+      violations: [
+        { id: 'label', nodes: [{ target: ['#name'] }] },
+        { id: 'button-name', nodes: [{ target: ['#submit'] }] }
+      ],
+      incomplete: [{ id: 'color-contrast', nodes: [{ target: ['#help'] }] }]
+    }, []);
+    expect(axe.findings).toEqual([
+      { rule: 'label', targets: ['#name'] },
+      { rule: 'button-name', targets: ['#submit'] }
+    ]);
+    expect(axe.reviewCount).toBe(1);
+    expect(axe.reviewRules).toEqual(['color-contrast']);
+
+    const failed = accessibilityTest.buildEvidenceManifestEntry(undefined, 'lighthouse', 'failure', {
+      engine: 'lighthouse', error: 'scanner failed'
+    }, []);
+    expect(failed.status).toBe('error');
+
+    const summary = accessibilityTest.buildEvidenceManifestEntry(undefined, 'summary', 'summary', {
+      outcomes: [{ engine: 'lighthouse', status: 'error', issueCount: 0, rules: [] }]
+    }, []);
+    expect(summary.status).toBe('error');
+    const review = accessibilityTest.buildEvidenceManifestEntry(undefined, 'summary', 'review', {
+      outcomes: [{ engine: 'axe', status: 'needs-review', issueCount: 0, reviewCount: 1, rules: [] }]
+    }, []);
+    expect(review.status).toBe('needs-review');
+  });
+
+  test('exports produced accessibility evidence without copying raw page content into the AI handoff', async () => {
+    const reportDir = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-a11y-handoff-'));
+    try {
+      const evidenceDir = path.join(reportDir, 'accessibility-evidence');
+      process.env.PW_A11Y_EVIDENCE_DIR = evidenceDir;
+      const info = fakeTestInfo('Organisation approval');
+      await Promise.all([
+        accessibilityTest.attachEvidence(info, 'registration-axe', {
+          engine: 'axe', feature: 'Approvals', pageState: 'registration',
+          url: 'https://user:password@example.test/cases/1111222233334444?token=secret',
+          violations: [{ id: 'label', nodes: [{ target: ['input[aria-label="Jane Smith"]'] }] }],
+          incomplete: [{ id: 'color-contrast' }], raw: 'secret page content'
+        }, '<html>secret page content</html>'),
+        accessibilityTest.attachEvidence(info, 'registration-wave-like', {
+          engine: 'wave-like', feature: 'Approvals', pageState: 'registration',
+          violations: [{ rule: 'button-name', selector: '#submit' }]
+        }, '<html>other evidence</html>')
+      ]);
+      // Simulate a lost aggregate update from concurrent publishers; individual entries remain intact.
+      fs.writeFileSync(path.join(evidenceDir, 'manifest.json'), '[]');
+      fs.writeFileSync(path.join(reportDir, 'report.html'), '<html><body>Report</body></html>');
+      // The report finalizer reads per-test entries after concurrent publishers finish.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      require('../common/reporters/odhin-report-enhancer.cjs').enhanceGeneratedReport(reportDir, []);
+      const pack = JSON.parse(fs.readFileSync(path.join(reportDir, 'accessibility-findings.json'), 'utf8'));
+      expect(pack.source.entryCount).toBe(2);
+      const index = fs.readFileSync(path.join(evidenceDir, 'index.html'), 'utf8');
+      expect(index).toContain('organisation-approval-registration-axe.html');
+      expect(index).toContain('organisation-approval-registration-wave-like.html');
+      expect(pack.findings.map((finding: { classification: string }) => finding.classification)).toEqual(
+        expect.arrayContaining(['reported-violation', 'needs-review'])
+      );
+      const json = JSON.stringify(pack);
+      expect(json).not.toContain('Jane Smith');
+      expect(json).not.toContain('secret page content');
+      expect(json).not.toContain('1111222233334444');
+      expect(json).not.toContain('token=secret');
+      expect(fs.readFileSync(path.join(reportDir, 'ACCESSIBILITY_FIX_INSTRUCTIONS.md'), 'utf8')).toContain('untrusted evidence');
+    } finally {
+      fs.rmSync(reportDir, { recursive: true, force: true });
+    }
+  });
+
+  test('keeps same-title evidence separate across tests, projects and retries', async () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-a11y-identities-'));
+    process.env.PW_A11Y_EVIDENCE_DIR = dir;
+    try {
+      const info = (testId: string, project: string, retry: number): TestInfo => ({
+        ...fakeTestInfo('Duplicate title'), testId, project: { name: project }, retry,
+        titlePath: ['file.test.ts', 'same suite', 'Duplicate title']
+      }) as unknown as TestInfo;
+      await Promise.all([
+        info('test-a', 'chrome', 0), info('test-b', 'chrome', 0),
+        info('test-a', 'firefox', 0), info('test-a', 'chrome', 1)
+      ].map((testInfo, index) => accessibilityTest.attachEvidence(testInfo, 'same-axe', {
+        engine: 'axe', violations: [{ id: `rule-${index}`, nodes: [] }]
+      }, '<html></html>', [{
+        fileName: `${accessibilityTest.evidenceFileBaseName(testInfo, 'same-lighthouse-report')}.html`,
+        body: `report-${index}`
+      }])));
+      const files = fs.readdirSync(dir).filter((name) => name.startsWith('manifest-entry-'));
+      expect(files).toHaveLength(4);
+      const entries = files.map((name) => JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8')));
+      expect(new Set(entries.map((entry) => entry.testIdentity)).size).toBe(4);
+      expect(new Set(entries.map((entry) => entry.htmlFileName)).size).toBe(4);
+      expect(new Set(entries.map((entry) => entry.reportFileName)).size).toBe(4);
+      expect(entries.map((entry) => fs.readFileSync(path.join(dir, entry.reportFileName), 'utf8')).sort())
+        .toEqual(['report-0', 'report-1', 'report-2', 'report-3']);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test('uses the Playwright title path array to identify the owning feature', () => {
+    const testInfo = {
+      ...fakeTestInfo('search results'),
+      project: { name: 'chromium' },
+      titlePath: ['chromium', 'accessibility.test.ts', 'Organisation approvals', 'search results']
+    } as unknown as TestInfo;
+    const entry = accessibilityTest.buildEvidenceManifestEntry(testInfo, 'axe', 'entry', {
+      engine: 'axe', violations: []
+    }, []);
+    expect(entry.feature).toBe('Organisation approvals');
+    testInfo.titlePath = ['chromium', 'accessibility.test.ts', 'search results'];
+    expect(accessibilityTest.buildEvidenceManifestEntry(testInfo, 'axe', 'entry', {
+      engine: 'axe', violations: []
+    }, []).feature).toBe('');
+  });
 });
 
 function fakeTestInfo(title: string): TestInfo {

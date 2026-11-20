@@ -173,37 +173,36 @@ function resolveSessionPartitionKey(explicitPartitionKey?: string): string | und
 
 export function getSessionStatePath(user: SessionIdentityInput = 'base', partitionKey?: string): string {
   const identity = resolveSessionIdentity(user);
-  const compositeKey = partitionKey ? `${identity.sessionKey ?? identity.email}.${partitionKey}` : identity.sessionKey ?? identity.email;
-  const key = normaliseSessionStorageKey(compositeKey);
-  return path.join(SESSION_DIR, `${key}.storage.json`);
+  const explicitKey = identity.sessionKey?.trim();
+  const accountKey = explicitKey || identity.email.trim().toLowerCase();
+  const partition = resolveSessionPartitionKey(partitionKey);
+  const canonicalKey = JSON.stringify([explicitKey ? 'explicit' : 'email', accountKey, partition ?? null]);
+  const discriminator = createHash('sha256').update(canonicalKey).digest('hex').slice(0, 16);
+  const key = normaliseSessionStorageKey(partition ? `${accountKey}.${partition}` : accountKey);
+  return path.join(SESSION_DIR, `${key}-${discriminator}.storage.json`);
 }
 
-type StorageCookie = { name: string; value: string; expires?: number; domain?: string };
+type StorageCookie = { name: string; value: string; expires?: number; domain?: string; path?: string; secure?: boolean };
 
 function isCookieCompatibleWithHost(cookieDomain: string | undefined, hostName: string): boolean {
   const normalizedDomain = cookieDomain?.replace(/^\./, '').toLowerCase();
   const normalizedHost = hostName.toLowerCase();
-  return !!normalizedDomain && (normalizedHost === normalizedDomain || normalizedHost.endsWith(`.${normalizedDomain}`));
+  return !!normalizedDomain && (normalizedHost === normalizedDomain ||
+    (cookieDomain?.startsWith('.') === true && normalizedHost.endsWith(`.${normalizedDomain}`)));
 }
 
 function hasUnexpiredAuthCookie(storageStatePath: string, targetUrl = config.baseUrl): boolean {
   try {
     const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as { cookies?: StorageCookie[] };
     const cookies = state.cookies ?? [];
-    const nowSeconds = Date.now() / 1000;
-    const targetHost = new URL(targetUrl).hostname;
+    const target = new URL(targetUrl);
     return cookies.some((cookie) => {
-      const name = cookie.name ?? '';
-      if (name !== '__auth__' && name !== 'Idam.Session' && name !== 'ao-webapp') {
-        return false;
-      }
-      if (cookie.domain && !isCookieCompatibleWithHost(cookie.domain, targetHost)) {
-        return false;
-      }
-      if (cookie.expires === undefined || cookie.expires === -1) {
-        return true;
-      }
-      return cookie.expires > nowSeconds + 30;
+      const cookiePath = cookie.path ?? '/';
+      const pathMatches = target.pathname === cookiePath ||
+        (target.pathname.startsWith(cookiePath) && (cookiePath.endsWith('/') || target.pathname[cookiePath.length] === '/'));
+      return cookie.name === 'ao-webapp' && typeof cookie.value === 'string' && cookie.value.trim().length > 0 &&
+        isCookieCompatibleWithHost(cookie.domain, target.hostname) && pathMatches &&
+        (!cookie.secure || target.protocol === 'https:') && isUnexpiredCookie(cookie);
     });
   } catch {
     return false;
@@ -219,11 +218,13 @@ function hasPersistableSessionCookies(cookies: StorageCookie[], targetUrl = conf
   const idamHost = new URL(config.idamWebUrl).hostname;
   const hasIdamSession = cookies.some((cookie) =>
     cookie.name === 'Idam.Session' &&
+    typeof cookie.value === 'string' && cookie.value.trim().length > 0 &&
     isUnexpiredCookie(cookie) &&
     isCookieCompatibleWithHost(cookie.domain, idamHost)
   );
   const hasAoSession = cookies.some((cookie) =>
     cookie.name === 'ao-webapp' &&
+    typeof cookie.value === 'string' && cookie.value.trim().length > 0 &&
     isUnexpiredCookie(cookie) &&
     isCookieCompatibleWithHost(cookie.domain, targetHost)
   );

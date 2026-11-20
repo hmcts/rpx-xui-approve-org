@@ -109,8 +109,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
 
 export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
-  const promise = req.http.get(url).catch((err) => err);
-  return promise;
+  return req.http.get(url);
 }
 
 async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
@@ -124,29 +123,14 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
     organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
   }
   const allActiveOrgs = [];
-  try {
-    await Promise.all(organisationPromises).catch((err) => err).then((organisations) => {
-      organisations.forEach((organisation) => {
-        if (organisation.data.organisations) {
-          organisation.data.organisations.forEach((org) => {
-            allActiveOrgs.push(org);
-          });
-        }
+  const organisations = await Promise.all(organisationPromises);
+  organisations.forEach((organisation) => {
+    if (organisation.data.organisations) {
+      organisation.data.organisations.forEach((org) => {
+        allActiveOrgs.push(org);
       });
-    });
-  } catch (error) {
-    logger.error(error);
-    if (error.message) {
-      logger.error('Error message: ' + error.message);
     }
-    if (error.stack) {
-      logger.error('Error stack: ' + error.stack);
-    }
-    if (error.code) {
-      logger.error('Error code: ' + error.code);
-    }
-    throw error;
-  }
+  });
   return allActiveOrgs;
 }
 
@@ -337,19 +321,22 @@ export function textFieldMatches(org: any, field: string, filter: string): boole
   return org[field] && org[field].toLowerCase().includes(filter);
 }
 
+// Must never throw: a throw here leaves the request unanswered and the gateway reports a 504.
 function logError(res: Response, error: any) {
   logger.error(`Organisations error ${error}`);
-  if (error.message) {
+  if (error?.message) {
     logger.error(`Error message: ${error.message}`);
   }
-  if (error.stack) {
+  if (error?.stack) {
     logger.error(`Error stack: ${error.stack}`);
   }
-  if (error.code) {
+  if (error?.code) {
     logger.error(`Error code: ${error.code}`);
   }
   const errReport = {
-    apiError: error.data.message, apiStatusCode: error.status,
+    // Only relay upstream API messages; internal error text stays in the server log above.
+    apiError: error?.response?.data?.message ?? error?.data?.message ?? 'Organisation service request failed',
+    apiStatusCode: error?.status,
     message: 'handlePostOrganisationsRoute error'
   };
   res.status(500).send(errReport);

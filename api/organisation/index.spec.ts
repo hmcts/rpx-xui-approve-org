@@ -317,6 +317,61 @@ describe('organisation/index', () => {
       expect(mockRes.status).to.have.been.calledWith(500);
     });
 
+    it('should still respond when an upstream timeout rejects without response data', async () => {
+      mockReq.body = {
+        searchRequest: { search_filter: 'test', pagination_parameters: { page_number: 1, page_size: 10 } }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+      // Shape produced by errorInterceptor when PRD gives no response (e.g. a socket timeout).
+      mockReq.http.get.rejects({ url: 'https://rd-professional-api.example.com', message: 'No api response' });
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledWith(sinon.match({ apiError: 'Organisation service request failed', apiStatusCode: undefined }));
+    });
+
+    it('should still respond when an active page fetch fails during the full active scan', async () => {
+      mockReq.body = {
+        searchRequest: { search_filter: 'test', pagination_parameters: { page_number: 1, page_size: 10 } }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+      mockReq.http.get.onFirstCall().resolves({ headers: { total_records: 1 }, data: { organisations: [] } });
+      const upstreamError = Object.assign(new Error('Upstream failure'), { status: 503, data: { message: 'Service Unavailable' } });
+      mockReq.http.get.onSecondCall().rejects(upstreamError);
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledOnce;
+      expect(mockRes.send).to.have.been.calledWith(sinon.match({ apiError: 'Service Unavailable', apiStatusCode: 503 }));
+    });
+
+    it('should prefer the upstream response message when the error wraps a response', async () => {
+      const error = { status: 502, response: { data: { message: 'Bad gateway from PRD' } } };
+      mockReq.http.get.rejects(error);
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledWith(sinon.match({ apiError: 'Bad gateway from PRD', apiStatusCode: 502 }));
+    });
+
     it('should handle search filter with ACTIVE status', async () => {
       mockReq.body = {
         searchRequest: {
