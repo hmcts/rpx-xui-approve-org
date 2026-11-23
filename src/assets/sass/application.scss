@@ -212,6 +212,17 @@ html {
   white-space: nowrap;
 }
 
+xuilib-hmcts-pagination .hmcts-pagination__item--active {
+  background-color: #1d70b8;
+  color: #ffffff;
+  font-weight: 700;
+  height: auto;
+  min-width: 15px;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: underline;
+}
+
 xuilib-hmcts-pagination .hmcts-pagination::after {
   content: none;
   display: none;

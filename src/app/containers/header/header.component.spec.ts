@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { StoreModule } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
+import { navItemsArray } from '../../app.constants';
 import { NavItem, reducers } from '../../store';
 import { HeaderComponent } from './header.component';
 
@@ -43,6 +44,35 @@ describe('HeaderComponent', () => {
   });
 
   describe('updateNavItems', () => {
+    [
+      '/pending-organisations',
+      '/organisation',
+      '/organisation/pending',
+      '/organisation/active',
+      '/organisation/pbas',
+      '/organisation/pending?page=2#results'
+    ].forEach((url) => {
+      it(`should select Organisations for ${url}`, () => {
+        app.navItems = navItemsArray;
+        app.updateNavItems(url);
+        expect(app.navItems.map((item) => item.active)).toEqual([true, false]);
+      });
+    });
+
+    ['/caseworker-details', '/caseworker-details?sort=name'].forEach((url) => {
+      it(`should select Staff details for ${url}`, () => {
+        app.navItems = navItemsArray;
+        app.updateNavItems(url);
+        expect(app.navItems.map((item) => item.active)).toEqual([false, true]);
+      });
+    });
+
+    it('should not select Organisations for an unrelated route', () => {
+      app.navItems = navItemsArray;
+      app.updateNavItems('/organisation-other');
+      expect(app.navItems.every((item) => !item.active)).toBeTrue();
+    });
+
     it('should update the active navItems', () => {
       const navItems: NavItem = {
         text: 'hello',

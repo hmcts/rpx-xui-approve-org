@@ -55,11 +55,13 @@ export class HeaderComponent implements OnInit {
   }
 
   public updateNavItems(url): void {
+    const path = url.split(/[?#]/)[0];
     if (this.navItems) {
       this.navItems = this.navItems.map((item) => {
         return {
           ...item,
-          active: item.href === url
+          active: item.href === path ||
+            (item.href === '/pending-organisations' && (path === '/organisation' || path.startsWith('/organisation/')))
         };
       });
     }
