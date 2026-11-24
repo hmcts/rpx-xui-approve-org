@@ -11,7 +11,7 @@ import { OrganisationService } from '../../services/organisation.service';
 import { PbaAccountDetails } from '../../services/pba-account-details.services';
 import * as fromOrganisationPendingStore from '../../store';
 import { NewPBAsComponent } from './new-pbas.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 const MOCKED_ORGANISATION = {
   name: 'KapilgI2qEnW67CPGZrHvbTxt JainqyXJo07tRocHYtq2Ci0o',
@@ -76,7 +76,7 @@ describe('NewPBAsComponent', () => {
       providers: [
         OrganisationService,
         PbaAccountDetails,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     }).compileComponents();

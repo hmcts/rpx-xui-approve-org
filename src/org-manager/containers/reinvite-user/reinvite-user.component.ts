@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { checkboxesBeCheckedValidator } from '@hmcts/rpx-xui-common-lib';
 import { Actions, ofType } from '@ngrx/effects';
@@ -16,6 +16,7 @@ import * as fromStore from '../../store';
 @Component({
   selector: 'app-prd-reinvite-user-component',
   templateUrl: './reinvite-user.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReinviteUserComponent implements OnInit, OnDestroy {

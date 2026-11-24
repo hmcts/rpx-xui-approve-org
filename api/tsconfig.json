@@ -3,21 +3,29 @@
     "compilerOptions": {
         "outDir": "../dist/organisation-manager",
         "module": "commonjs",
-        "target": "es5",
+        "target": "es2022",
         "types": [
             "node",
             "mocha"
         ],
-        "baseUrl": ".",
         "paths": {
             "otp": [
                 "../node_modules/otp/dist/otp.d.ts"
+            ],
+            "models/*": [
+                "./models/*"
             ]
         },
         "lib": [
-            "es2017",
+            "es2022",
             "dom"
-        ]
+        ],
+        "moduleResolution": "node10",
+        "strict": false,
+        "rootDir": "..",
+        "esModuleInterop": false,
+        "ignoreDeprecations": "6.0",
+        "useDefineForClassFields": false
     },
     "include": [
         "**/*.ts",

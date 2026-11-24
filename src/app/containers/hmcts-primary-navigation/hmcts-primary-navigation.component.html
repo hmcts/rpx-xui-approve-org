@@ -1,13 +1,18 @@
-<nav *ngIf="isUserLoggedIn" class="hmcts-primary-navigation" [attr.aria-label]="label">
-  <div class="govuk-width-container">
-    <div class="govuk-header__logo" *ngIf="isBrandedHeader"></div>
-    <ul class="govuk-list">
-      <li class="govuk-header__navigation-item"  *ngFor="let item of items">
-        <ng-container *ngIf="(isFeatureNavEnabled$(item) | async)">
-          <a class="govuk-header__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
-        </ng-container>
-      </li>
-    </ul>
-  </div>
-</nav>
-
+@if (isUserLoggedIn) {
+  <nav class="hmcts-primary-navigation" [attr.aria-label]="label">
+    <div class="govuk-width-container">
+      @if (isBrandedHeader) {
+        <div class="govuk-header__logo"></div>
+      }
+      <ul class="govuk-list">
+        @for (item of items; track item) {
+          <li class="govuk-header__navigation-item" >
+            @if ((isFeatureNavEnabled$(item) | async)) {
+              <a class="govuk-header__link" [attr.aria-current]="item.active ? true: null" [routerLink]="item.href">{{item.text}}</a>
+            }
+          </li>
+        }
+      </ul>
+    </div>
+  </nav>
+}

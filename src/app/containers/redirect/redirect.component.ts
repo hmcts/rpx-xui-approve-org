@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie';
 import { AppUtils } from 'src/app/utils/app-utils';
@@ -6,6 +6,7 @@ import { AppUtils } from 'src/app/utils/app-utils';
 @Component({
   selector: 'app-redirect',
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class RedirectComponent implements OnInit {

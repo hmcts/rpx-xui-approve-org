@@ -1,9 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-quick-links-old',
   templateUrl: './quick-links-old.component.html',
   styleUrls: ['./quick-links-old.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class QuickLinksOldComponent implements OnInit {

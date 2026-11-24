@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../shared/services/session-storage.service';
@@ -8,6 +8,7 @@ import { OrganisationService } from '../../services';
   selector: 'app-search-organisations-form',
   templateUrl: './search-organisations-form.component.html',
   styleUrls: ['./search-organisations-form.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class SearchOrganisationsFormComponent implements OnInit, OnDestroy {

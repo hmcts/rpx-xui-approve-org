@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { GlobalError } from 'src/app/store/reducers/app.reducer';
@@ -7,6 +7,7 @@ import * as fromAppStore from '../../../app/store';
 @Component({
   selector: 'app-service-down',
   templateUrl: './service-down.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ServiceDownComponent implements OnInit, OnDestroy {

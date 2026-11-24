@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { OrganisationVM } from '../../../org-manager/models/organisation';
@@ -10,6 +10,7 @@ import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from '../.
 @Component({
   selector: 'app-org-details-info-old',
   templateUrl: './organisation-details-info-old.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class OrganisationDetailsInfoOldComponent implements OnInit {

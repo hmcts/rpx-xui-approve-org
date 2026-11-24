@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -8,6 +8,7 @@ import * as fromOrganisationPendingStore from '../../../org-manager/store';
 @Component({
   selector: 'app-back-link',
   templateUrl: './back-link.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class BackLinkComponent implements OnInit, OnDestroy {

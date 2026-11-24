@@ -13,7 +13,7 @@ import { OrganisationService } from '../../services/organisation.service';
 import * as fromOrganisationPendingStore from '../../store';
 import { EditDetailsComponent } from './edit-details.component';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('EditDetailsComponent', () => {
   let component: EditDetailsComponent;
@@ -92,7 +92,7 @@ describe('EditDetailsComponent', () => {
             })
           }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     }).compileComponents();

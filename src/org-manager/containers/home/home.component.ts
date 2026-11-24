@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { combineLatest, Observable, Subscription } from 'rxjs';
@@ -8,6 +8,7 @@ import { OrganisationService } from '../../services';
 @Component({
   selector: 'app-home-component',
   templateUrl: './home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HomeComponent implements OnInit, OnDestroy {

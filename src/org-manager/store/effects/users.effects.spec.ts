@@ -9,7 +9,7 @@ import { ErrorReport } from 'src/org-manager/models/errorReport.model';
 import { UsersService } from 'src/org-manager/services';
 import * as fromActions from '../actions/users.actions';
 import * as fromEffects from './users.effects';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -44,7 +44,7 @@ describe('Organisation Effects', () => {
           provide: LoggerService,
           useValue: mockedLoggerService
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     });
@@ -126,4 +126,3 @@ describe('Organisation Effects', () => {
     });
   });
 });
-

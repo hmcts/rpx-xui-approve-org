@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -19,7 +19,7 @@ import { effects, reducers } from './store';
     SharedModule,
     StoreModule.forFeature('orgState', reducers),
     EffectsModule.forFeature(effects),
-    ExuiCommonLibModule], providers: [...fromServices.services, provideHttpClient(withInterceptorsFromDi())] })
+    ExuiCommonLibModule], providers: [...fromServices.services, provideHttpClient(withXhr(), withInterceptorsFromDi())] })
 
 export class OrgManagerModule {
 

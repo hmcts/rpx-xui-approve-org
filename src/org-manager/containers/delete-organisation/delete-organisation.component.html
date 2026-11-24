@@ -2,46 +2,45 @@
   <app-back-link [store]="store"></app-back-link>
   <main id="content" class="govuk-main-wrapper" role="main" tabindex="-1">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-          <ng-container *ngIf="orgForReview">
-            <h1 class="govuk-heading-xl">
-              Confirm your decision
-            </h1>
-            <dl class="govuk-summary-list">
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Name
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  <div>{{orgForReview.name}}</div>
-                </dd>
-              </div>
-
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Decision
-                </dt>
-                <dd class="govuk-summary-list__value">
-                  Reject the registration
-                </dd>
-              </div>
-
-            </dl>
-            <div class="govuk-warning-text" *ngIf="orgForReview.status==='ACTIVE'">
+      <div class="govuk-grid-column-two-thirds">
+        @if (orgForReview) {
+          <h1 class="govuk-heading-xl">
+            Confirm your decision
+          </h1>
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Name
+              </dt>
+              <dd class="govuk-summary-list__value">
+                <div>{{orgForReview.name}}</div>
+              </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Decision
+              </dt>
+              <dd class="govuk-summary-list__value">
+                Reject the registration
+              </dd>
+            </div>
+          </dl>
+          @if (orgForReview.status==='ACTIVE') {
+            <div class="govuk-warning-text">
               <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
               <strong class="govuk-warning-text__text">
                 <span class="govuk-visually-hidden">Warning</span>
                 Make sure you have the organisation's permission before deleting them.
               </strong>
             </div>
-          </ng-container>
-          <button type="button" class="govuk-button" [class.govuk-button--warning]="orgForReview.status==='ACTIVE'"
-                  [disabled]="confirmButtonDisabled"
-                  (click)="onDeleteOrganisationHandler(orgForReview)">
-            {{ orgForReview.status==='PENDING' ? 'Confirm' : 'Delete organisation' }}
-          </button>
-        </div>
+          }
+        }
+        <button type="button" class="govuk-button" [class.govuk-button--warning]="orgForReview.status==='ACTIVE'"
+          [disabled]="confirmButtonDisabled"
+          (click)="onDeleteOrganisationHandler(orgForReview)">
+          {{ orgForReview.status==='PENDING' ? 'Confirm' : 'Delete organisation' }}
+        </button>
       </div>
+    </div>
   </main>
 </div>

@@ -1,16 +1,24 @@
-<ng-container *ngIf="organisation">
+@if (organisation) {
   {{organisation.addressLine1}}<br>
-  <div *ngIf='organisation.addressLine2'>
-    {{organisation.addressLine2}}<br>
-  </div>
-  <div *ngIf='organisation.addressLine3'>
-    {{organisation.addressLine3}}<br>
-  </div>
+  @if (organisation.addressLine2) {
+    <div>
+      {{organisation.addressLine2}}<br>
+    </div>
+  }
+  @if (organisation.addressLine3) {
+    <div>
+      {{organisation.addressLine3}}<br>
+    </div>
+  }
   {{organisation.townCity}}<br>
-  <div *ngIf='organisation.county'>
-    {{organisation.county}}<br>
-  </div>
-  <div *ngIf='organisation.postCode'>
-    {{organisation.postCode}}<br>
-  </div>
-</ng-container>
+  @if (organisation.county) {
+    <div>
+      {{organisation.county}}<br>
+    </div>
+  }
+  @if (organisation.postCode) {
+    <div>
+      {{organisation.postCode}}<br>
+    </div>
+  }
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { handleFatalErrors } from '../../../shared/utils/handle-fatal-errors';
 import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
@@ -7,6 +7,7 @@ import { CaseWorkerRefDataService } from '../../services/caseworker-ref-data.ser
 @Component({
   selector: 'app-prd-caseworker-details',
   templateUrl: './caseworker-details.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class CaseWorkerDetailsComponent {
@@ -50,4 +51,3 @@ export class CaseWorkerDetailsComponent {
     }
   }
 }
-

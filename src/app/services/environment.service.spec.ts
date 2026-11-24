@@ -4,7 +4,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { EnvironmentConfig } from 'src/models/environmentConfig.model';
 import { EnvironmentService } from './environment.service';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 const environmentConfig: EnvironmentConfig = {
   configEnv: '',
@@ -30,7 +30,7 @@ describe('EnvironmentService', () => {
 
     TestBed.configureTestingModule({
       imports: [],
-      providers: [EnvironmentService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+      providers: [EnvironmentService, provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()]
     });
   });
 

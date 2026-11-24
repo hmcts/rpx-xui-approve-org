@@ -1,14 +1,16 @@
 <div id="quick-links" class="govuk-grid-column-one-third">
   <h2 class="govuk-heading-m">Quick links</h2>
   <ul class="govuk-list">
-    <li *ngIf="sraId">
-      <a class="govuk-link" href="https://www.sra.org.uk/consumers/register/organisation/?sraNumber={{sraId}}"
+    @if (sraId) {
+      <li>
+        <a class="govuk-link" href="https://www.sra.org.uk/consumers/register/organisation/?sraNumber={{sraId}}"
         target="_blank">Check SRA</a>
-    </li>
+      </li>
+    }
     <br />
     <li>
       <a class="govuk-link" href="https://solicitors.lawsociety.org.uk/search/results?Name={{organisationNameEncoded}}"
-        target="_blank">Check Law Society</a>
+      target="_blank">Check Law Society</a>
     </li>
     <br />
     <li>

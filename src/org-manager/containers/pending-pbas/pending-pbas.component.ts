@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
@@ -16,6 +16,7 @@ import { PBANumberModel, RenderableOrganisation } from './models';
 @Component({
   selector: 'app-pending-pbas',
   templateUrl: './pending-pbas.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PendingPBAsComponent implements OnInit, OnDestroy {

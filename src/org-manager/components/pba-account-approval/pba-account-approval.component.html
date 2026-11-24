@@ -20,9 +20,11 @@
     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
       Does the name on the Liberata account match the organisation’s name?
     </legend>
-    <div [id]="'error-message-' + pbaNumber" class="govuk-error-message" *ngIf="formGroup.get(pbaNumber).invalid && submitted">
-      Select the decision for the PBA account
-    </div>
+    @if (formGroup.get(pbaNumber).invalid && submitted) {
+      <div [id]="'error-message-' + pbaNumber" class="govuk-error-message">
+        Select the decision for the PBA account
+      </div>
+    }
     <div class="govuk-radios govuk-radios">
       <div class="govuk-radios__item">
         <input class="govuk-radios__input" name="{{pbaNumber}}" formControlName="{{pbaNumber}}" type="radio" value="accepted"

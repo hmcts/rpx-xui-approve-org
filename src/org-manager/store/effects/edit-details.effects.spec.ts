@@ -7,7 +7,7 @@ import { LoggerService } from 'src/app/services/logger.service';
 import { UpdatePbaServices } from 'src/org-manager/services';
 import * as fromActions from '../actions/edit-details.actions';
 import * as fromEffects from './edit-details.effects';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -42,7 +42,7 @@ describe('Organisation Effects', () => {
           provide: LoggerService,
           useValue: mockedLoggerService
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     });
@@ -72,4 +72,3 @@ describe('Organisation Effects', () => {
     });
   });
 });
-

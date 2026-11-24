@@ -1,6 +1,8 @@
-<app-quick-links *ngIf="org.status==='PENDING' || org.status==='REVIEW'" [sraId]="org.sraId"
+@if (org.status==='PENDING' || org.status==='REVIEW') {
+  <app-quick-links [sraId]="org.sraId"
   [organisationName]="org.name"></app-quick-links>
-<ng-container *ngIf="formGroup.invalid && submitted">
+}
+@if (formGroup.invalid && submitted) {
   <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
     data-module="govuk-error-summary">
     <h2 class="govuk-error-summary__title" id="error-summary-title">{{errorMessage.title}}</h2>
@@ -12,102 +14,117 @@
       </ul>
     </div>
   </div>
-</ng-container>
+}
 <form [formGroup]="formGroup" (submit)="onSubmit()">
-  <ng-container *ngIf="org || org.status==null; else noOrg">
-    <ng-container *ngIf="org.status==='PENDING' || org.status==='REVIEW'; else showheading">
+  @if (org || org.status==null) {
+    @if (org.status==='PENDING' || org.status==='REVIEW') {
       <h1 class="govuk-heading-xl">Approve organisation</h1>
-    </ng-container>
-    <ng-template #showheading>
+    } @else {
       <h1 class="govuk-heading-xl">Organisation details </h1>
-    </ng-template>
+    }
     <div>
       <h2 class="govuk-heading-m">Organisation details</h2>
-      <dl class="govuk-summary-list" *ngIf="org">
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <dt class="govuk-summary-list__key">
-            Organisation name
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {{org.name}}
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            Organisation address
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <app-org-address [organisation]="org"></app-org-address>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
-        <div *ngIf="org.dxNumber[0]?.dxNumber" class="govuk-summary-list__row govuk-summary-list__row">
-          <dt class="govuk-summary-list__key">
-            DX reference
-          </dt>
-          <dd class="govuk-summary-list__value">
-            {{org.dxNumber[0]?.dxNumber}}<span *ngIf="org.dxNumber[0]?.dxExchange">, {{org.dxNumber[0]?.dxExchange}}</span>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
+      @if (org) {
+        <dl class="govuk-summary-list">
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+            <dt class="govuk-summary-list__key">
+              Organisation name
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{org.name}}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Organisation address
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <app-org-address [organisation]="org"></app-org-address>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          @if (org.dxNumber[0]?.dxNumber) {
+            <div class="govuk-summary-list__row govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                DX reference
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{org.dxNumber[0]?.dxNumber}}@if (org.dxNumber[0]?.dxExchange) {
+                <span>, {{org.dxNumber[0]?.dxExchange}}</span>
+              }
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+        }
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
             Service to access
           </dt>
           <dd class="govuk-summary-list__value">
-            <div *ngFor="let service of serviceList">
-              {{service}}
-            </div>
+            @for (service of serviceList; track service) {
+              <div>
+                {{service}}
+              </div>
+            }
           </dd>
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
-
-        <ng-container *ngFor="let pba of pbaNumbers(); let i = index">
+        @for (pba of pbaNumbers(); track pba; let i = $index) {
           <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
             <dt class="govuk-summary-list__key">
               PBA number
             </dt>
             <dd class="govuk-summary-list__value">
-              <div *ngIf="pbaNumbers().length!=0">
-                {{pba}}
-              </div>
-              <div *ngIf="pbaNumbers().length==0">
+              @if (pbaNumbers().length!=0) {
+                <div>
+                  {{pba}}
+                </div>
+              }
+              @if (pbaNumbers().length==0) {
+                <div>
+                  No PBA Provided
+                </div>
+              }
+            </dd>
+            <dd class="govuk-summary-list__actions">
+            </dd>
+          </div>
+          @if (pbaNumbers().length!=0) {
+            <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+              <dt class="govuk-summary-list__key">
+                Name on Liberata account
+              </dt>
+              <dd class="govuk-summary-list__value">
+                @if (!!org?.accountDetails) {
+                  <span>
+                    {{org?.accountDetails[i]?.account_name}}
+                  </span>
+                }
+              </dd>
+              <dd class="govuk-summary-list__actions">
+              </dd>
+            </div>
+          }
+        }
+        @if (pbaNumbers().length==0) {
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+            <dt class="govuk-summary-list__key">
+              PBA number
+            </dt>
+            <dd class="govuk-summary-list__value">
+              <div>
                 No PBA Provided
               </div>
             </dd>
             <dd class="govuk-summary-list__actions">
             </dd>
           </div>
-          <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="pbaNumbers().length!=0">
-            <dt class="govuk-summary-list__key">
-              Name on Liberata account
-            </dt>
-            <dd class="govuk-summary-list__value">
-              <span *ngIf="!!org?.accountDetails">
-                {{org?.accountDetails[i]?.account_name}}
-              </span>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-            </dd>
-          </div>
-        </ng-container>
-        <div *ngIf="pbaNumbers().length==0" class="govuk-summary-list__row govuk-summary-list__row--no-border">
-          <dt class="govuk-summary-list__key">
-            PBA number
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div>
-              No PBA Provided
-            </div>
-          </dd>
-          <dd class="govuk-summary-list__actions">
-          </dd>
-        </div>
+        }
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
           <dt class="govuk-summary-list__key">
             Company registration number
@@ -128,50 +145,70 @@
           <dd class="govuk-summary-list__actions">
           </dd>
         </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="regulators?.length">
-          <dt class="govuk-summary-list__key">
-            Regulatory organisation type
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div *ngFor="let regulator of regulators">
-              <ng-container [ngSwitch]="regulator.regulatorType">
-                <span *ngSwitchCase="regulatoryTypeEnum.Other">
-                  {{regulator.regulatorType}}: {{regulator.regulatorName}} ref:
-                  {{regulator.organisationRegistrationNumber}}
-                </span>
-                <span *ngSwitchCase="regulatoryTypeEnum.NotApplicable">
-                  {{regulator.regulatorType}}
-                </span>
-                <span *ngSwitchDefault>
-                  {{regulator.regulatorType}} ref: {{regulator.organisationRegistrationNumber}}
-                </span>
-                <br />
-              </ng-container>
-            </div>
-          </dd>
-        </div>
-        <div class="govuk-summary-list__row govuk-summary-list__row--no-border" *ngIf="individualRegulators?.length">
-          <dt class="govuk-summary-list__key">
-            What regulator are you (as an individual) registered with?
-          </dt>
-          <dd class="govuk-summary-list__value">
-            <div *ngFor="let regulator of individualRegulators">
-              <ng-container [ngSwitch]="regulator.regulatorType">
-                <span *ngSwitchCase="regulatoryTypeEnum.Other">
-                  {{regulator.regulatorType}}: {{regulator.regulatorName}} ref:
-                  {{regulator.organisationRegistrationNumber}}
-                </span>
-                <span *ngSwitchCase="regulatoryTypeEnum.NotApplicable">
-                  {{regulator.regulatorType}}
-                </span>
-                <span *ngSwitchDefault>
-                  {{regulator.regulatorType}} ref: {{regulator.organisationRegistrationNumber}}
-                </span>
-                <br />
-              </ng-container>
-            </div>
-          </dd>
-        </div>
+        @if (regulators?.length) {
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+            <dt class="govuk-summary-list__key">
+              Regulatory organisation type
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @for (regulator of regulators; track regulator) {
+                <div>
+                  @switch (regulator.regulatorType) {
+                    @case (regulatoryTypeEnum.Other) {
+                      <span>
+                        {{regulator.regulatorType}}: {{regulator.regulatorName}} ref:
+                        {{regulator.organisationRegistrationNumber}}
+                      </span>
+                    }
+                    @case (regulatoryTypeEnum.NotApplicable) {
+                      <span>
+                        {{regulator.regulatorType}}
+                      </span>
+                    }
+                    @default {
+                      <span>
+                        {{regulator.regulatorType}} ref: {{regulator.organisationRegistrationNumber}}
+                      </span>
+                    }
+                  }
+                  <br />
+                </div>
+              }
+            </dd>
+          </div>
+        }
+        @if (individualRegulators?.length) {
+          <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+            <dt class="govuk-summary-list__key">
+              What regulator are you (as an individual) registered with?
+            </dt>
+            <dd class="govuk-summary-list__value">
+              @for (regulator of individualRegulators; track regulator) {
+                <div>
+                  @switch (regulator.regulatorType) {
+                    @case (regulatoryTypeEnum.Other) {
+                      <span>
+                        {{regulator.regulatorType}}: {{regulator.regulatorName}} ref:
+                        {{regulator.organisationRegistrationNumber}}
+                      </span>
+                    }
+                    @case (regulatoryTypeEnum.NotApplicable) {
+                      <span>
+                        {{regulator.regulatorType}}
+                      </span>
+                    }
+                    @default {
+                      <span>
+                        {{regulator.regulatorType}} ref: {{regulator.organisationRegistrationNumber}}
+                      </span>
+                    }
+                  }
+                  <br />
+                </div>
+              }
+            </dd>
+          </div>
+        }
         <div class="govuk-summary-list__row">
         </div>
         <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
@@ -212,16 +249,20 @@
           </dd>
         </div>
       </dl>
-      <div *ngIf="org.status !== 'ACTIVE'" class="govuk-form-group"
+    }
+    @if (org.status !== 'ACTIVE') {
+      <div class="govuk-form-group"
         [ngClass]="{ 'govuk-form-group--error': formGroup.invalid && submitted }">
         <fieldset class="govuk-fieldset">
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             What would you like to do with this registration?
           </legend>
-          <div id="error-message" class="govuk-error-message"
-            *ngIf="formGroup.get('radioSelected').invalid && submitted">
-            {{ errorMessage.description }}
-          </div>
+          @if (formGroup.get('radioSelected').invalid && submitted) {
+            <div id="error-message" class="govuk-error-message"
+              >
+              {{ errorMessage.description }}
+            </div>
+          }
           <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="reason-0" name="radioSelected" type="radio"
               [value]="registrationRequest[0].request" formControlName="radioSelected"
@@ -249,18 +290,22 @@
           </div>
         </fieldset>
       </div>
-      <br>
-      <button *ngIf="org.status !== 'ACTIVE'" class="govuk-button govuk-!-margin-right-3" type="submit">
-        Submit
-      </button>
-      <button *ngIf="org.status == 'ACTIVE' || orgDeletable" (click)="deleteOrganisation(org)" type="submit"
-        class="govuk-button govuk-button--secondary">
-        Delete organisation
-      </button>
+    }
+    <br>
+      @if (org.status !== 'ACTIVE') {
+        <button class="govuk-button govuk-!-margin-right-3" type="submit">
+          Submit
+        </button>
+      }
+      @if (org.status == 'ACTIVE' || orgDeletable) {
+        <button (click)="deleteOrganisation(org)" type="submit"
+          class="govuk-button govuk-button--secondary">
+          Delete organisation
+        </button>
+      }
     </div>
-  </ng-container>
-  <ng-template #noOrg>
+  } @else {
     <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
     <p>Try again later.</p>
-  </ng-template>
+  }
 </form>

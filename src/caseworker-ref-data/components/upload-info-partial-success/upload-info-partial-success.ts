@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CaseWorkerRefDataUploadResponse } from '../../models/caseworker-ref-data.model';
 
 @Component({
   selector: 'app-prd-upload-partial-success',
   templateUrl: './upload-info-partial-success.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 

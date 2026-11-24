@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import * as fromRoot from '../../../app/store';
@@ -7,6 +7,7 @@ import * as fromStore from '../../store';
 @Component({
   selector: 'app-reinvite-user-success',
   templateUrl: './reinvite-user-success.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReinviteUserSuccessComponent implements OnInit {
