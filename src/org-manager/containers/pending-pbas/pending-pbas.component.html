@@ -18,7 +18,7 @@
         </tr>
       </thead>
       <tbody class="govuk-table__body">
-        @for (org of orgsWithPendingPBAs | paginate: { itemsPerPage: $safeNavigationMigration(pagination?.page_size), currentPage: $safeNavigationMigration(pagination?.page_number), totalItems: pendingPBAsCount }; track org) {
+        @for (org of orgsWithPendingPBAs | paginate: { itemsPerPage: $safeNavigationMigration(pagination?.page_size), currentPage: $safeNavigationMigration(pagination?.page_number), totalItems: pendingPBAsCount }; track org.organisationId) {
           <tr class="govuk-table__row">
             <td class="govuk-table__cell">{{org.name}}</td>
             <td class="govuk-table__cell">
@@ -52,6 +52,6 @@
   }
   @if (pbasLoaded && pendingPBAsCount > pagination.page_size) {
     <xuilib-hmcts-pagination
-    (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
+      (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
   }
 }

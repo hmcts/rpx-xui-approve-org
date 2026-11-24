@@ -22,9 +22,8 @@
         </tr>
       </thead>
       <tbody class="govuk-table__body">
-        @for (org of organisations | paginate: { itemsPerPage: $safeNavigationMigration(pagination?.page_size), currentPage: $safeNavigationMigration(pagination?.page_number), totalItems: organisationCount }; track org) {
-          <tr class="govuk-table__row govuk-radios"
-            >
+        @for (org of organisations | paginate: { itemsPerPage: $safeNavigationMigration(pagination?.page_size), currentPage: $safeNavigationMigration(pagination?.page_number), totalItems: organisationCount }; track org.organisationId) {
+          <tr class="govuk-table__row govuk-radios">
             <td class="govuk-table__cell">
               {{org.name}}<br>
               <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
@@ -59,6 +58,6 @@
   }
   @if (organisationsLoaded && organisationCount > pagination.page_size) {
     <xuilib-hmcts-pagination
-    (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
+      (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
   }
 }

@@ -14,6 +14,15 @@ date picker, and Material Moment adapter have been removed; this application
 does not use the media viewer. Keep the HMCTS prereleases pinned until compatible
 stable releases are available.
 
+Angular's migration-generated `$safeNavigationMigration(...)` calls preserve the
+previous `?.` result of `null` where a consumer can distinguish it from
+`undefined`. Keep these compiler markers until each consumer has been checked.
+The explicit `strict: false` and `strictTemplates: false` settings preserve the
+pre-upgrade checking defaults. `ChangeDetectionStrategy.Eager`,
+`provideZoneChangeDetection()` and `withXhr()` likewise retain the existing
+change detection and HTTP behavior; adopting stricter checks, OnPush or zoneless
+operation should be a separate migration.
+
 The API and `ts-node` retain CommonJS compilation and existing namespace import
 behavior. Their TypeScript 6 deprecation setting preserves this compatibility;
 review it when migrating the backend module system or upgrading to TypeScript 7.
