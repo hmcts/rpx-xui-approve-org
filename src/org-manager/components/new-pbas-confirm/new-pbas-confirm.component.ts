@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,7 @@ import { PbaService } from '../../services';
 @Component({
   selector: 'app-new-pbas-confirm',
   templateUrl: './new-pbas-confirm.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class NewPBAsConfirmComponent implements OnInit, OnDestroy {

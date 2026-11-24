@@ -9,7 +9,7 @@ import * as fromStore from '../../../org-manager/store';
 import { OrganisationAddressComponent } from '../../components/organisation-address';
 import { OrganisationService } from '../../services';
 import { ActiveOrganisationsComponent } from './active-organisations.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('Active Organisation', () => {
   let component: ActiveOrganisationsComponent;
@@ -30,7 +30,7 @@ describe('Active Organisation', () => {
         ExuiCommonLibModule],
       providers: [
         [OrganisationService],
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     }).compileComponents();

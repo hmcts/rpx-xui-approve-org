@@ -1,36 +1,43 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "es2020",
-    "moduleResolution": "node",
+    "module": "es2022",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es6",
+    "target": "es2022",
     "importHelpers": true,
     "typeRoots": [
       "node_modules/@types"
     ],
     "skipLibCheck": true,
-    "lib": [
-      "es2018",
-      "dom"
-    ],
     "paths": {
       "otp": [
-        "node_modules/otp/dist/otp.d.ts"
+        "./node_modules/otp/dist/otp.d.ts"
+      ],
+      "src/*": [
+        "./src/*"
       ]
-    }
+    },
+    "useDefineForClassFields": false,
+    "lib": [
+      "es2022",
+      "dom"
+    ],
+    "strict": false,
+    "rootDir": "."
   },
   "ts-node": {
     "transpileOnly": true,
     "compilerOptions": {
-      "module": "commonjs"
+      "module": "commonjs",
+      "moduleResolution": "node10",
+      "esModuleInterop": false,
+      "ignoreDeprecations": "6.0"
     }
   }
 }

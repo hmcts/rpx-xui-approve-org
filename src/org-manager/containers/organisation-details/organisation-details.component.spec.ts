@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -15,11 +15,12 @@ import { OrganisationVM } from '../../../org-manager/models/organisation';
 import { OrganisationService, PbaAccountDetails, UsersService } from '../../../org-manager/services';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   selector: 'app-mock',
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 class MockComponent { }
@@ -137,7 +138,7 @@ describe('OrganisationDetailsComponent', () => {
             })
           }
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     }).compileComponents();

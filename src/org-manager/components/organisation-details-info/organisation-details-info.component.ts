@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { LovRefDataModel } from '../../../shared/models/lovRefData.model';
@@ -12,6 +12,7 @@ import { DisplayedRequest, ErrorMessage, RequestErrors, RequestType } from './mo
 @Component({
   selector: 'app-org-details-info',
   templateUrl: './organisation-details-info.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class OrganisationDetailsInfoComponent implements OnChanges, OnInit {

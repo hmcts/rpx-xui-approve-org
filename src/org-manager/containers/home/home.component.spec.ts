@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
@@ -12,10 +12,11 @@ import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from '../search-organisations-form';
 import { HomeComponent } from './home.component';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { HttpClient, HttpHandler, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, HttpHandler, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 @Component({
   template: '<div>Bob</div>',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class MockComponent { }
@@ -55,7 +56,7 @@ describe('HomeComponent', () => {
       providers: [
         { provide: RpxTranslationService, useValue: translationMockService },
         { provide: OrganisationService, useValue: organisationMockService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     }).compileComponents();

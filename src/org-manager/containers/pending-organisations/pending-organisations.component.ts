@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { SessionStorageService } from '../../../shared/services/session-storage.service';
@@ -9,6 +9,7 @@ import { OrganisationListComponent } from './../organisation-list/organisation-l
   selector: 'app-pending-overview-component',
   templateUrl: './pending-organisations.component.html',
   styleUrls: ['../organisation-list/organisation-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PendingOrganisationsComponent extends OrganisationListComponent implements OnInit {

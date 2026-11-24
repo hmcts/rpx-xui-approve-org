@@ -6,7 +6,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { OrganisationAddressComponent } from '../../components/organisation-address';
 import { OrganisationService } from '../../services';
 import { PendingOrganisationsComponent } from './pending-organisations.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('PendingOrganisationComponent', () => {
   let component: PendingOrganisationsComponent;
@@ -23,7 +23,7 @@ describe('PendingOrganisationComponent', () => {
         ExuiCommonLibModule],
       providers: [
         OrganisationService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     }).compileComponents();
@@ -41,4 +41,3 @@ describe('PendingOrganisationComponent', () => {
     expect(component.view).toBe('NEW');
   });
 });
-

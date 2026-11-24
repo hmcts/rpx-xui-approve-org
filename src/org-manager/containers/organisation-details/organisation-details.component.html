@@ -1,4 +1,4 @@
- <ng-container *ngIf="{org: orgs$ | async, userLists: userLists$ | async} as data">
+@if ({org: orgs$ | async, userLists: userLists$ | async}; as data) {
   <app-identity-bar-component>
     <strong>{{data.org?.name}}</strong>
     <span style="margin-left: 10px; display: inline-block" class="hmcts-badge" [ngClass]="(data.org?.status=='ACTIVE') ?
@@ -10,53 +10,68 @@
   </app-identity-bar-component>
   <div class="govuk-width-container">
     <xuilib-hmcts-main-wrapper (backEvent)="onGoBack()">
-      <ng-container *ngIf="!data.org; else showOrg">
+      @if (!data.org) {
         <h1 class="govuk-heading-xl">Organisation details</h1>
         <h3 class="govuk-heading-s">Loading...</h3>
-      </ng-container>
-      <ng-template #showOrg>
-          <nav class="hmcts-sub-navigation" aria-label="Sub navigation" *ngIf="showUserNavigation">
+      } @else {
+        @if (showUserNavigation) {
+          <nav class="hmcts-sub-navigation" aria-label="Sub navigation">
             <ul class="hmcts-sub-navigation__list">
               <li class="hmcts-sub-navigation__item">
-                <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" aria-current="page">
-                  Organisation details
-                </a>
-                <a  *ngIf="showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(false)" [routerLink]="">
-                  Organisation details
-                </a>
+                @if (!showUsers) {
+                  <a class="hmcts-sub-navigation__link" aria-current="page">
+                    Organisation details
+                  </a>
+                }
+                @if (showUsers) {
+                  <a  class="hmcts-sub-navigation__link" (click)="showUsersTab(false)" [routerLink]="">
+                    Organisation details
+                  </a>
+                }
               </li>
               <li class="hmcts-sub-navigation__item">
-                <a *ngIf="showUsers" class="hmcts-sub-navigation__link" aria-current="page">
-                  Users
-                </a>
-                <a *ngIf="!showUsers" class="hmcts-sub-navigation__link" (click)="showUsersTab(true)" [routerLink]="">
-                  Users
-                </a>
+                @if (showUsers) {
+                  <a class="hmcts-sub-navigation__link" aria-current="page">
+                    Users
+                  </a>
+                }
+                @if (!showUsers) {
+                  <a class="hmcts-sub-navigation__link" (click)="showUsersTab(true)" [routerLink]="">
+                    Users
+                  </a>
+                }
               </li>
             </ul>
           </nav>
-          <ng-container *ngIf="showUsers; else showOrgDetails">
-            <ng-container *ngIf="data.userLists?.isError; else showUserLists">
-              <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
-              <p>Try again later.</p>
-            </ng-container>
-            <ng-template #showUserLists>
-              <h1 class="govuk-heading-xl">Users</h1>
-              <h3 class="govuk-heading-s" *ngIf="!data.userLists?.users">Loading...</h3>
-              <xuilib-user-list  *ngIf="data.userLists?.users && pageTotalSize" [users]="data.userLists.users" (userClick)="onShowUserDetails($event)"
+        }
+        @if (showUsers) {
+          @if (data.userLists?.isError) {
+            <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
+            <p>Try again later.</p>
+          } @else {
+            <h1 class="govuk-heading-xl">Users</h1>
+            @if (!data.userLists?.users) {
+              <h3 class="govuk-heading-s">Loading...</h3>
+            }
+            @if (data.userLists?.users && pageTotalSize) {
+              <xuilib-user-list  [users]="data.userLists.users" (userClick)="onShowUserDetails($event)"
                 [currentPageNumber]="currentPageNumber" (pageChange)="pageChange($event)" [pageTotalSize]="pageTotalSize">>
               </xuilib-user-list>
-            </ng-template>
-          </ng-container>
-          <ng-template #showOrgDetails>
-            <app-org-details-info *ngIf="newRegisterOrg" [org]="data.org" [orgDeletable]="organisationDeletable" [orgTypes]="organisationTypes" (approveEvent)="approveOrganisation($event)"
+            }
+          }
+        } @else {
+          @if (newRegisterOrg) {
+            <app-org-details-info [org]="data.org" [orgDeletable]="organisationDeletable" [orgTypes]="organisationTypes" (approveEvent)="approveOrganisation($event)"
               (deleteEvent)="deleteOrganisation($event)" (reviewEvent)="reviewOrganisation($event)">
             </app-org-details-info>
-            <app-org-details-info-old *ngIf="!newRegisterOrg" [org]="data.org" [orgDeletable]="organisationDeletable" (approveEvent)="approveOrganisation($event)"
+          }
+          @if (!newRegisterOrg) {
+            <app-org-details-info-old [org]="data.org" [orgDeletable]="organisationDeletable" (approveEvent)="approveOrganisation($event)"
               (deleteEvent)="deleteOrganisation($event)" (reviewEvent)="reviewOrganisation($event)">
             </app-org-details-info-old>
-          </ng-template>
-      </ng-template>
-     </xuilib-hmcts-main-wrapper>
+          }
+        }
+      }
+    </xuilib-hmcts-main-wrapper>
   </div>
-  </ng-container>
+}

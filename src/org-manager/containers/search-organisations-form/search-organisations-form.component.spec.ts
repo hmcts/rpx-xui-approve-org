@@ -5,7 +5,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { OrganisationService } from '../../services';
 import { SearchOrganisationsFormComponent } from './search-organisations-form.component';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('SearchOrganisationsFormComponent', () => {
   let component: SearchOrganisationsFormComponent;
@@ -16,7 +16,7 @@ describe('SearchOrganisationsFormComponent', () => {
     TestBed.configureTestingModule({
       declarations: [SearchOrganisationsFormComponent],
       imports: [FormsModule, ReactiveFormsModule, ExuiCommonLibModule],
-      providers: [OrganisationService, { provide: RpxTranslationService, useValue: translationMockService }, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+      providers: [OrganisationService, { provide: RpxTranslationService, useValue: translationMockService }, provideHttpClient(withXhr(), withInterceptorsFromDi()), provideHttpClientTesting()]
     })
       .compileComponents();
   }));

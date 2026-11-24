@@ -1,4 +1,4 @@
-<ng-container *ngIf="{org: orgs$ | async } as data">
+@if ({org: orgs$ | async }; as data) {
   <app-identity-bar-component>
     <strong>{{data.org?.name}}</strong>
     <span style="margin-left: 10px; display: inline-block" class="hmcts-badge">
@@ -7,17 +7,20 @@
   </app-identity-bar-component>
   <div class="govuk-width-container">
     <xuilib-hmcts-main-wrapper [summaryErrors]="pbaErrorsHeader$ | async" (backEvent)="onGoBack()">
-      <ng-container *ngIf="!data.org">
+      @if (!data.org) {
         <h1 class="govuk-heading-xl">Approve new PBA number</h1>
         <h3 class="govuk-heading-s">Loading...</h3>
-      </ng-container>
-
-      <app-new-pbas-info *ngIf="data.org && !confirmDecision" [org]="data.org" [newPBAs]="newPBAs"
-        (submitForm)="onContinue()" (newPBA)="setNewPBA($event)">
-      </app-new-pbas-info>
-      <app-new-pbas-confirm *ngIf="data.org && confirmDecision" [org]="data.org" [newPBAs]="newPBAs"
-        (pbaStatusError)="setPbaStatusError($event)">
-      </app-new-pbas-confirm>
+      }
+      @if (data.org && !confirmDecision) {
+        <app-new-pbas-info [org]="data.org" [newPBAs]="newPBAs"
+          (submitForm)="onContinue()" (newPBA)="setNewPBA($event)">
+        </app-new-pbas-info>
+      }
+      @if (data.org && confirmDecision) {
+        <app-new-pbas-confirm [org]="data.org" [newPBAs]="newPBAs"
+          (pbaStatusError)="setPbaStatusError($event)">
+        </app-new-pbas-confirm>
+      }
     </xuilib-hmcts-main-wrapper>
   </div>
-</ng-container>
+}

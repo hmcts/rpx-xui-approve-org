@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 
 import { Title } from '@angular/platform-browser';
@@ -17,6 +17,7 @@ import { AppUtils } from '../../utils/app-utils';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class AppComponent implements OnInit {

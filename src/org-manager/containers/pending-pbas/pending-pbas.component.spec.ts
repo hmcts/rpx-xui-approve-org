@@ -7,7 +7,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { OrganisationService, PbaService } from '../../services';
 import { PendingPBAsComponent } from './pending-pbas.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 describe('PendingPBAsComponent', () => {
   let component: PendingPBAsComponent;
@@ -27,7 +27,7 @@ describe('PendingPBAsComponent', () => {
       providers: [
         { provide: PbaService, useValue: pbaServiceSpy },
         OrganisationService,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     }).compileComponents();

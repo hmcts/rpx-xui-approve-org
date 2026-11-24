@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { CookieService } from 'ngx-cookie';
 import { Observable } from 'rxjs';
@@ -10,6 +10,7 @@ import * as fromRoot from '../../store';
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HeaderComponent implements OnInit {

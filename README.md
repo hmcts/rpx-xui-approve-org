@@ -2,6 +2,22 @@
 
 Local development, configuration, and test guidance for `rpx-xui-approve-org`.
 
+## Toolchain
+
+Use the Node.js version in `.nvmrc` and the repository's Yarn release (`yarn --version`).
+The UI uses Angular/CLI/Material 22.3, NgRx 22.0.1, and TypeScript 6.0.
+Run `yarn install --immutable` to install the checked-in dependency versions.
+
+The Angular 22 dependencies include `@hmcts/rpx-xui-common-lib@3.2.30-angular-22`
+and `rpx-xui-translation@1.2.20-angular-22-upgrade`. The unused CCD toolkit,
+date picker, and Material Moment adapter have been removed; this application
+does not use the media viewer. Keep the HMCTS prereleases pinned until compatible
+stable releases are available.
+
+The API and `ts-node` retain CommonJS compilation and existing namespace import
+behavior. Their TypeScript 6 deprecation setting preserves this compatibility;
+review it when migrating the backend module system or upgrading to TypeScript 7.
+
 To run the application locally please make sure you follow the prerequisite task of
 Setting up Secrets locally as documented below.
 
@@ -26,7 +42,7 @@ Run `yarn start:ng` to start up the UI.
 
 ## Running unit tests
 
-Run `yarn test` to execute Angular unit tests.
+Run `yarn test:coverage:ng` to execute Angular unit tests once with coverage.
 Run `yarn test:node` to execute Node unit tests.
 Both are run on the build pipelines.
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, Subscription } from 'rxjs';
@@ -14,6 +14,7 @@ import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService } from '../../services';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: ''
 })
 export abstract class OrganisationListComponent implements OnInit, OnDestroy {

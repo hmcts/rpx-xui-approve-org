@@ -18,7 +18,7 @@ import { OrganisationVM } from '../../models/organisation';
 import { OrganisationService, PbaAccountDetails, PendingOrganisationService } from '../../services';
 import * as fromActions from '../actions/organisations.actions';
 import { OrganisationEffects } from './organisation.effects';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 
 export class LoggerServiceMock {
   public error(err) {
@@ -75,7 +75,7 @@ describe('Organisation Effects', () => {
           provide: PbaAccountDetails,
           useValue: getAccountDetailsServiceMock
         },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     });

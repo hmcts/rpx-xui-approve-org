@@ -1,4 +1,4 @@
-<ng-container *ngIf="formGroup.invalid && submitted">
+@if (formGroup.invalid && submitted) {
   <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
     data-module="govuk-error-summary">
     <h2 class="govuk-error-summary__title" id="error-summary-title">There is a problem</h2>
@@ -10,9 +10,9 @@
       </ul>
     </div>
   </div>
-</ng-container>
+}
 <form [formGroup]="formGroup" (submit)="onSubmitForm()">
-  <ng-container *ngIf="org; else noOrg">
+  @if (org) {
     <h1 class="govuk-heading-xl">Approve new PBA number</h1>
     <div class="govuk-form-group">
       <label class="govuk-label govuk-label--m">
@@ -22,19 +22,19 @@
     </div>
     <br />
     <h2 class="govuk-heading-m" id="heading">PBA accounts</h2>
-    <app-pba-account-approval *ngFor="let pba of org.pendingPaymentAccount; let i = index" [pbaNumbers]="org.pbaNumber.join(',')"
-      [pbaNumber]="pba" [accountName]="org.accountDetails[i]?.account_name" [organisationId]="org.organisationId"
-      [id]="pba" (selectOptionChanged)="setNewPBA($event)" [pbaStatus]="newPBAs.get(pba)" [formGroup]="formGroup"
-      [submitted]="submitted">
-    </app-pba-account-approval>
-
+    @for (pba of org.pendingPaymentAccount; track pba; let i = $index) {
+      <app-pba-account-approval [pbaNumbers]="org.pbaNumber.join(',')"
+        [pbaNumber]="pba" [accountName]="$safeNavigationMigration(org.accountDetails[i]?.account_name)" [organisationId]="org.organisationId"
+        [id]="pba" (selectOptionChanged)="setNewPBA($event)" [pbaStatus]="newPBAs.get(pba)" [formGroup]="formGroup"
+        [submitted]="submitted">
+      </app-pba-account-approval>
+    }
     <button class="govuk-button" data-module="govuk-button" type="submit">
       Continue
     </button>
-  </ng-container>
-
-  <ng-template #noOrg>
+  } @else {
     <h2 class="govuk-heading-l">Sorry, there is a problem with the service</h2>
     <p>Try again later.</p>
-  </ng-template>
+  }
+
 </form>

@@ -1,10 +1,12 @@
 <h2 class="govuk-heading-l">
   Active organisations
-  <ng-container *ngIf="organisationsLoaded">
-    ({{organisationCount}}<span *ngIf="searchString"> found</span>)
-  </ng-container>
+  @if (organisationsLoaded) {
+    ({{organisationCount}}@if (searchString) {
+    <span> found</span>
+    })
+  }
 </h2>
-<ng-container *ngIf="organisationsLoaded">
+@if (organisationsLoaded) {
   <table class="govuk-table active-organisations">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
@@ -19,31 +21,37 @@
       </tr>
     </thead>
     <tbody class="govuk-table__body">
-      <tr class="govuk-table__row govuk-radios"
-        *ngFor="let org of organisations | paginate: { itemsPerPage: pagination?.page_size, currentPage: pagination?.page_number, totalItems: organisationCount }">
-        <td class="govuk-table__cell">
-          {{org.name}}<br>
-          <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
-        </td>
-        <td class="govuk-table__cell">
-          <app-org-address [organisation]="org"></app-org-address>
-        </td>
-        <td class="govuk-table__cell">
-          {{org.admin}}<br>
-          <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
-        </td>
-        <td class="govuk-table__cell no-wrap">
-          {{org.dateApproved | date:'dd/MM/yyyy'}}
-        </td>
-        <td class="govuk-table__cell no-wrap govuk-!-text-align-centre">
-          <span *ngIf="org.status=='ACTIVE'" class="govuk-tag govuk-tag--blue organisation-status-tag">ACTIVE</span>
-        </td>
-        <td class="govuk-table__cell no-wrap">
-          <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
-        </td>
-      </tr>
+      @for (org of organisations | paginate: { itemsPerPage: $safeNavigationMigration(pagination?.page_size), currentPage: $safeNavigationMigration(pagination?.page_number), totalItems: organisationCount }; track org) {
+        <tr class="govuk-table__row govuk-radios"
+          >
+          <td class="govuk-table__cell">
+            {{org.name}}<br>
+            <span class="govuk-caption-m govuk-!-font-size-16">{{org.organisationId}}</span>
+          </td>
+          <td class="govuk-table__cell">
+            <app-org-address [organisation]="org"></app-org-address>
+          </td>
+          <td class="govuk-table__cell">
+            {{org.admin}}<br>
+            <span class="govuk-caption-m govuk-!-font-size-16">{{org.adminEmail}}</span>
+          </td>
+          <td class="govuk-table__cell no-wrap">
+            {{org.dateApproved | date:'dd/MM/yyyy'}}
+          </td>
+          <td class="govuk-table__cell no-wrap govuk-!-text-align-centre">
+            @if (org.status=='ACTIVE') {
+              <span class="govuk-tag govuk-tag--blue organisation-status-tag">ACTIVE</span>
+            }
+          </td>
+          <td class="govuk-table__cell no-wrap">
+            <a class="govuk-link" [routerLink]="['/organisation-details', org.organisationId]">View</a>
+          </td>
+        </tr>
+      }
     </tbody>
   </table>
-  <xuilib-hmcts-pagination *ngIf="organisationsLoaded && organisationCount > pagination.page_size"
+  @if (organisationsLoaded && organisationCount > pagination.page_size) {
+    <xuilib-hmcts-pagination
     (pageChange)="onPaginationHandler($event)" [pageSize]="pagination.page_size"></xuilib-hmcts-pagination>
-</ng-container>
+  }
+}

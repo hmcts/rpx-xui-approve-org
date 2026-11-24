@@ -1,10 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 import { OrganisationVM } from '../../models/organisation';
 
 @Component({
   selector: 'app-org-address',
   templateUrl: './organisation-address.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class OrganisationAddressComponent {

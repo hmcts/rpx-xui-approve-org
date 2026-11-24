@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { NavItem } from '../../store';
@@ -7,6 +7,7 @@ import { NavItem } from '../../store';
   selector: 'app-hmcts-primary-navigation',
   templateUrl: './hmcts-primary-navigation.component.html',
   styleUrls: ['./hmcts-primary-navigation.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HmctsPrimaryNavigationComponent {

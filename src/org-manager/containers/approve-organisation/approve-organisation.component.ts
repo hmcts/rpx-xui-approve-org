@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -11,6 +11,7 @@ import * as fromStore from '../../store/';
 @Component({
   selector: 'app-org-pending-approve',
   templateUrl: './approve-organisation.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ApproveOrganisationComponent implements OnInit {

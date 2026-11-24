@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Go } from '../../../app/store/actions';
@@ -8,6 +8,7 @@ import * as fromOrganisationPendingStore from '../../../org-manager/store';
 @Component({
   selector: 'app-org-pending-review',
   templateUrl: './review-organisation.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class ReviewOrganisationComponent {

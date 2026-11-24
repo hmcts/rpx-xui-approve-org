@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Go } from '../../../app/store/actions';
@@ -9,6 +9,7 @@ import { DeleteOrganisation, DeletePendingOrganisation, DeleteReviewOrganisation
 @Component({
   selector: 'app-org-pending-delete',
   templateUrl: './delete-organisation.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DeleteOrganisationComponent {

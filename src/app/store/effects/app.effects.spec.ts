@@ -1,4 +1,4 @@
-import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
@@ -28,7 +28,7 @@ describe('App Effects', () => {
         { provide: LogOutKeepAliveService, useValue: mockKeepAliveService },
         { provide: UserService, useValue: mockUserService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting()
       ]
     });

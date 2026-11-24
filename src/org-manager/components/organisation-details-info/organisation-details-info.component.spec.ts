@@ -88,6 +88,31 @@ describe('OrganisationDetailsInfoComponent', () => {
       expect(accountName).toContain('RAY NIXON BROWN');
     });
 
+    it('should display every regulator format for organisations and individuals', () => {
+      const regulators = [
+        { regulatorType: 'Other', regulatorName: 'Example regulator', organisationRegistrationNumber: 'OTHER-123' },
+        { regulatorType: 'Not Applicable' },
+        { regulatorType: 'Solicitors Regulation Authority', organisationRegistrationNumber: 'SRA-456' }
+      ];
+      fixture.componentRef.setInput('org', {
+        ...mockOrgData,
+        orgAttributes: ['regulators', 'individualRegulators'].flatMap((key) =>
+          regulators.map((regulator, index) => ({ key: `${key}${index}`, value: JSON.stringify(regulator) })))
+      });
+      fixture.detectChanges();
+
+      const rows = Array.from(fixture.nativeElement.querySelectorAll('.govuk-summary-list__row')) as HTMLElement[];
+      for (const label of ['Regulatory organisation type', 'What regulator are you (as an individual) registered with?']) {
+        const row = rows.find((item) => item.querySelector('dt')?.textContent.trim() === label);
+        const values = Array.from(row.querySelectorAll('dd.govuk-summary-list__value > div'));
+        expect(values.map((item) => item.textContent.replace(/\s+/g, ' ').trim())).toEqual([
+          'Other: Example regulator ref: OTHER-123',
+          'Not Applicable',
+          'Solicitors Regulation Authority ref: SRA-456'
+        ]);
+      }
+    });
+
     it('should call approveEvent when approve radio button click', () => {
       spyOn(component.approveEvent, 'emit').and.callThrough();
       const radioButton = fixture.debugElement.nativeElement.querySelector('#reason-0');

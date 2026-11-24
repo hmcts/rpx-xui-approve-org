@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 import { OrganisationVM } from '../../models/organisation';
@@ -8,6 +8,7 @@ import { getOrganisationForReview } from '../../store/selectors';
 @Component({
   selector: 'app-delete-success',
   templateUrl: './delete-organisation-success.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DeleteOrganisationSuccessComponent implements OnInit {
