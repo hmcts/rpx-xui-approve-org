@@ -5,7 +5,7 @@
 
 
 .hmcts-primary-navigation {
-  background-color: govuk-colour("black");
+  background-color: var(--govuk-surface-background-colour, #f4f8fb);
 }
 
 

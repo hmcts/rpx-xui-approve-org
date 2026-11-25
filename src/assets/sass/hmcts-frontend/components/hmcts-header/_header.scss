@@ -9,8 +9,8 @@
    ========================================================================== */
 
 .hmcts-header {
-  background-color: govuk-colour("black");
-  padding-top: govuk-spacing(2);
+  background-color: govuk-colour("blue");
+  padding-top: govuk-spacing(0);
 }
 
 
@@ -18,6 +18,20 @@
   @include hmcts-width-container;
   @include govuk-clearfix;
   position: relative;
+}
+
+@include govuk-media-query($from: tablet) {
+  .hmcts-header__container > .govuk-width-container {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .hmcts-header__logo,
+  .hmcts-header__content {
+    float: none;
+    padding-bottom: govuk-spacing(2);
+  }
 }
 
 

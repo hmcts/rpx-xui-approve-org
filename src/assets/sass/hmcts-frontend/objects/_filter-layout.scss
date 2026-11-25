@@ -6,7 +6,7 @@
 }
 
 .hmcts-filter-layout__filter {
-  box-shadow: inset 0 0 0 1px govuk-colour("light-grey"); // Extends the inset border left full height of the filters on mobile
+  box-shadow: inset 0 0 0 1px govuk-colour("black", $variant: "tint-95"); // Extends the inset border left full height of the filters on mobile
 
   @media (min-width: 40.0625em) {
     float: left;

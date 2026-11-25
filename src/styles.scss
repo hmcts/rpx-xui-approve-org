@@ -1,13 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
 
-@use "govuk-frontend" as * with (
-  $govuk-global-styles: true
-);
-@use "@angular/material/prebuilt-themes/indigo-pink.css";
-@use "./assets/sass/hmcts-frontend/all" as *;
-@use "./assets/sass/application" as *;
-@use "./assets/sass/material";
+$jui-assets-path : "";
+
+@use "govuk-frontend" as *;
+@import "./assets/sass/hmcts-frontend/all";
+@import "./assets/sass/application";
 
 .stay-signed-in-button {
   margin-right: 15px;

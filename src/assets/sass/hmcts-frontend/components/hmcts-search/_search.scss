@@ -55,7 +55,7 @@
 }
 
 .hmcts-search--ondark .hmcts-search__hint {
-  color: govuk-colour("mid-grey");
+  color: govuk-colour("black", $variant: "tint-80");
 }
 
 .hmcts-search--ondark .hmcts-search__input {
