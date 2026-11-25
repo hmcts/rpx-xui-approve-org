@@ -5,6 +5,7 @@ import { resolveHeader, searchEnvelopeShapeErrors } from './helpers/json-contrac
 import {
   createOrganisationSearchPayload,
   getXsrfHeaders,
+  postOrganisationSearch,
   toTotalRecordsNumber
 } from './helpers/search.helpers';
 
@@ -16,16 +17,17 @@ test.describe('Playwright API positive: organisations', { tag: ['@organisations'
     { tag: '@refdata-search' },
     async ({ apiRequest }) => {
       const xsrfHeaders = await getXsrfHeaders(apiRequest);
-      const response = await apiRequest.post('/api/organisations?status=ACTIVE', {
-        failOnStatusCode: false,
-        headers: xsrfHeaders,
-        data: createOrganisationSearchPayload({
+      const response = await postOrganisationSearch(
+        apiRequest,
+        'ACTIVE',
+        xsrfHeaders,
+        createOrganisationSearchPayload({
           view: 'ACTIVE',
           searchFilter: '',
           pageNumber: 1,
           pageSize: ORGANISATION_SEARCH_PAGE_SIZE
         })
-      });
+      );
 
       expect(
         response.status(),

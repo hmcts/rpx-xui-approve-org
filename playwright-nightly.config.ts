@@ -21,6 +21,7 @@ logResolvedTagFilters('Nightly cross-browser E2E', e2eTagFilters);
 module.exports = defineConfig({
   testDir: './playwright_tests/e2e',
   testMatch: /.*\.test\.ts/,
+  outputDir: 'functional-output/tests/playwright-nightly/test-results',
   globalSetup: require.resolve('./playwright_tests/helpers/playwright.nightly.global.setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -48,7 +49,7 @@ module.exports = defineConfig({
         actionTimeout: 15_000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
-        trace: 'off'
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
       }
     },
     {
@@ -59,7 +60,7 @@ module.exports = defineConfig({
         actionTimeout: 15_000,
         screenshot: 'only-on-failure',
         headless: headlessMode,
-        trace: 'off'
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true }
       }
     }
   ]

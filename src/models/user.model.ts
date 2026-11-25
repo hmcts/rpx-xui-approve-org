@@ -10,6 +10,7 @@ export class UserModel {
   public timeout: number;
   constructor(prop) {
     Object.assign(this, prop);
+    this.emailId = prop.emailId || prop.email;
   }
 }
 

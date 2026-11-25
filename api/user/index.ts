@@ -2,6 +2,7 @@ import * as express from 'express';
 import { getConfigValue } from '../configuration';
 import { USER_TIMEOUT_IN_SECONDS } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
+import { objectContainsOnlySafeCharacters } from '../lib/util';
 const logger = log4jui.getLogger('auth');
 
 export const router = express.Router({ mergeParams: true });
@@ -9,8 +10,10 @@ router.get('/details', handleUserRoute);
 
 function handleUserRoute(req, res) {
   console.log('getConfigValue(USER_TIMEOUT_IN_SECONDS)', getConfigValue(USER_TIMEOUT_IN_SECONDS));
+  const sessionUser = req.session.user || req.session.passport?.user?.userinfo || {};
   const UserDetails = {
-    ...req.session.user,
+    ...sessionUser,
+    email: sessionUser.email || sessionUser.emailId || sessionUser.uid,
     idleTime: +getConfigValue(USER_TIMEOUT_IN_SECONDS) * 1000,
     timeout: 600
   };
@@ -18,6 +21,9 @@ function handleUserRoute(req, res) {
   try {
     const payload = JSON.stringify(UserDetails);
     console.log(payload);
+    if (!objectContainsOnlySafeCharacters(UserDetails)) {
+      return res.status(400).send('Invalid user details');
+    }
     res.send(payload);
   } catch (error) {
     logger.info(error);

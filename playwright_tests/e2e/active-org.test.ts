@@ -25,13 +25,14 @@ test.describe('Active organisation details', { tag: ['@e2e', '@organisations', '
       await expect(organisationApprovalsPage.organisationStatusBadge).toHaveText('ACTIVE');
       await expect(organisationApprovalsPage.subNavigation).toBeVisible();
       await expect(organisationApprovalsPage.usersTabLink).toBeVisible();
-      await expect(organisationApprovalsPage.adminDetailsHeading).toBeVisible();
+      await expect(organisationApprovalsPage.detailsSectionHeading).toBeVisible();
       await expect(organisationApprovalsPage.deleteOrganisationDetailsButton).toBeVisible();
     });
 
     await test.step('Open users tab and verify there are user rows', async () => {
       await organisationApprovalsPage.openUsersTab();
       await expect(organisationApprovalsPage.usersList).toBeVisible();
+      await organisationApprovalsPage.waitForUserRows();
       const usersRowCount = await organisationApprovalsPage.usersTableRows.count();
       expect(usersRowCount).toBeGreaterThan(0);
     });

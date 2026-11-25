@@ -33,8 +33,6 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
     organisationApprovalsPage,
     organisationIdentifier
   }) => {
-    let organisationName = '';
-
     await test.step('Search for and open the pending organisation', async () => {
       await expect(organisationApprovalsPage.heading).toBeVisible();
       await organisationApprovalsPage.searchForPendingOrganisation(userName, organisationIdentifier);
@@ -101,15 +99,8 @@ test.describe('Organisation approvals - pending org workflows', { tag: ['@e2e', 
       await expect(organisationApprovalsPage.successBanner(/SUCCESS\s*Registration approved/i)).toBeVisible();
     });
 
-    await test.step('Find the organisation in the active tab and open details', async () => {
-      await organisationApprovalsPage.openActiveOrganisationsTab();
-      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-
-      await organisationApprovalsPage.searchForOrganisation(organisationName);
-      await organisationApprovalsPage.waitForSpinnerToHide(60_000);
-
-      await expect(organisationApprovalsPage.activeOrganisationViewLink()).toBeVisible();
-      await organisationApprovalsPage.openFirstActiveOrganisation();
+    await test.step('Open the approved organisation by its identifier', async () => {
+      await openProvisionedOrganisationDetails(page, organisationIdentifier);
     });
 
     await test.step('Delete the active organisation and verify confirmation guidance', async () => {

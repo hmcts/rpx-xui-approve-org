@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, Optional } from '@angular/core';
-import {
-  ApplicationInsights,
+import { ApplicationInsights } from '@microsoft/applicationinsights-web';
+import type {
   IConfig,
   IEventTelemetry,
   IPageViewPerformanceTelemetry

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie';
 import { NGXLogger } from 'ngx-logger';
-import { CryptoWrapper } from './cryptoWrapper';
+import { SessionStorageService } from '../../shared/services/session-storage.service';
 import { EnvironmentService } from './environment.service';
 import { JwtDecodeWrapper } from './jwtDecodeWrapper';
 import { MonitoringService } from './monitoring.service';
@@ -22,9 +22,9 @@ export class LoggerService implements ILoggerService {
   constructor(private readonly monitoringService: MonitoringService,
               private readonly ngxLogger: NGXLogger,
               private readonly cookieService: CookieService,
-              private readonly cryptoWrapper: CryptoWrapper,
               private readonly jwtDecodeWrapper: JwtDecodeWrapper,
-              private readonly envService: EnvironmentService
+              private readonly envService: EnvironmentService,
+              private readonly sessionStorageService: SessionStorageService
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -78,16 +78,17 @@ export class LoggerService implements ILoggerService {
     this.monitoringService.logException(error);
   }
 
+  // EXUI-5080 - Maintian consistency of log message format across applications
   public getMessage(message: any): string {
-    // const jwt = this.cookieService.get(this.envService.cookies.token);
-    const jwt = this.cookieService.get(this.envService.get('cookies').token);
-    if (jwt) {
-      const jwtData = this.jwtDecodeWrapper.decode(jwt);
-      if (jwtData) {
-        const userIdEncrypted = this.cryptoWrapper.encrypt(jwtData.sub);
-        return `User - ${userIdEncrypted.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
+    const userInfoStr = this.sessionStorageService.getItem('userDetails');
+    if (userInfoStr) {
+      const userInfo = JSON.parse(userInfoStr);
+      if (!userInfo) {
+        return `Message - ${message}, Timestamp - ${Date.now()}`;
       }
-      return `Message - ${message}, Timestamp - ${Date.now()}`;
+      const userId = userInfo.id ? userInfo.id : userInfo.uid;
+      return `User - ${userId.toString()}, Message - ${message}, Timestamp - ${Date.now()}`;
     }
+    return `Message - ${message}, Timestamp - ${Date.now()}`;
   }
 }

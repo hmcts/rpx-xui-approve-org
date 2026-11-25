@@ -3,6 +3,7 @@ import { Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
+import { objectContainsOnlySafeCharacters } from '../lib/util';
 import { EnhancedRequest } from '../models/enhanced-request.interface';
 
 const logger = log4jui.getLogger('return');
@@ -30,8 +31,14 @@ async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response) 
       console.log(organisationsUri, 'organisationUrl');
       const response = await req.http.get(organisationsUri);
       if (response.data.organisations) {
+        if (!objectContainsOnlySafeCharacters(response.data.organisations)) {
+          return res.status(400).send('Invalid organisation received');
+        }
         res.send(response.data.organisations);
       } else {
+        if (!objectContainsOnlySafeCharacters(response.data)) {
+          return res.status(400).send('Invalid organisation received');
+        }
         res.send(response.data);
       }
     } catch (error) {
@@ -60,6 +67,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
     const pageSize = req.body.searchRequest.pagination_parameters.page_size;
     let response = null;
     let organisationsUri;
+    // Note: search_filter is not a parameter for the API, we handle filtering ourselves
     if (!req.body.searchRequest.search_filter || req.body.searchRequest.search_filter === '') {
       organisationsUri = getOrganisationPagingUri(status, pageNumber, pageSize);
       response = await req.http.get(organisationsUri);
@@ -69,16 +77,8 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         { organisations: [], total_records: 0 };
     } else {
       if (status && status === 'ACTIVE') {
-        const nameOnlySearch = isOrganisationNameOnlySearch(req.body.searchRequest.search_filter);
-        responseData = await getFilteredActiveOrganisations(req, req.body.searchRequest.search_filter, pageNumber, pageSize, nameOnlySearch);
-        if (responseData) {
-          res.send(responseData);
-          return;
-        }
-        if (nameOnlySearch) {
-          res.send({ organisations: [], total_records: 0 });
-          return;
-        }
+        // Note: Unsure whether or why getActiveOrganisations is needed as the below else will work for active
+        // May help improve performance so left as is
         response = await getActiveOrganisations(req);
       } else {
         organisationsUri = getOrganisationUri(status, null, null, null);
@@ -98,6 +98,9 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         responseData = { organisations: [], total_records: 0 };
       }
     }
+    if (!objectContainsOnlySafeCharacters(responseData)) {
+      return res.status(400).send('Invalid organisation list received');
+    }
     res.send(responseData);
   } catch (error) {
     logError(res, error);
@@ -106,55 +109,7 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
 
 export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
   const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
-  const promise = req.http.get(url).catch((err) => err);
-  return promise;
-}
-
-async function getFilteredActiveOrganisations(
-  req: EnhancedRequest,
-  searchFilter: string,
-  pageNumber: number,
-  pageSize: number,
-  nameOnlySearch = false
-): Promise<any> {
-  const url = getFilteredActiveOrganisationUri(searchFilter, pageNumber, pageSize);
-  try {
-    const response = await req.http.get(url);
-    const organisations = response?.data?.organisations;
-    if (!Array.isArray(organisations)) {
-      return null;
-    }
-
-    const filteredOrganisations = nameOnlySearch ?
-      filterOrganisationsByName(organisations, searchFilter) :
-      filterOrganisations(organisations, searchFilter);
-    const totalRecords = Number(response?.headers?.total_records ?? filteredOrganisations.length);
-    if (organisations.length === 0 && totalRecords === 0) {
-      return { organisations: [], total_records: 0 };
-    }
-
-    if (nameOnlySearch) {
-      return {
-        organisations: filteredOrganisations,
-        total_records: filteredOrganisations.length === organisations.length ?
-          response?.headers?.total_records ?? filteredOrganisations.length :
-          filteredOrganisations.length
-      };
-    }
-
-    // If PRD ignored the query parameter it will return unfiltered rows; fall back to the legacy full scan.
-    if (filteredOrganisations.length !== organisations.length) {
-      return null;
-    }
-
-    return {
-      organisations: filteredOrganisations,
-      total_records: response?.headers?.total_records ?? filteredOrganisations.length
-    };
-  } catch (error) {
-    logger.warn(`Filtered active organisations search failed; falling back to full active organisation scan. ${error}`);
-    return null;
-  }
+  return req.http.get(url);
 }
 
 async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
@@ -168,29 +123,14 @@ async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
     organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
   }
   const allActiveOrgs = [];
-  try {
-    await Promise.all(organisationPromises).catch((err) => err).then((organisations) => {
-      organisations.forEach((organisation) => {
-        if (organisation.data.organisations) {
-          organisation.data.organisations.forEach((org) => {
-            allActiveOrgs.push(org);
-          });
-        }
+  const organisations = await Promise.all(organisationPromises);
+  organisations.forEach((organisation) => {
+    if (organisation.data.organisations) {
+      organisation.data.organisations.forEach((org) => {
+        allActiveOrgs.push(org);
       });
-    });
-  } catch (error) {
-    logger.error(error);
-    if (error.message) {
-      logger.error('Error message: ' + error.message);
     }
-    if (error.stack) {
-      logger.error('Error stack: ' + error.stack);
-    }
-    if (error.code) {
-      logger.error('Error code: ' + error.code);
-    }
-    throw error;
-  }
+  });
   return allActiveOrgs;
 }
 
@@ -211,16 +151,6 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, vers
 
 function getOrganisationPagingUri(status, pageNumber, size): string {
   return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=${status}`;
-}
-
-function getFilteredActiveOrganisationUri(searchFilter: string, pageNumber: number, size: number): string {
-  const params = new URLSearchParams({
-    page: String(pageNumber),
-    size: String(size),
-    status: 'ACTIVE',
-    search_filter: searchFilter
-  });
-  return `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?${params.toString()}`;
 }
 
 async function handlePutOrganisationRoute(req: EnhancedRequest, res: Response) {
@@ -391,19 +321,22 @@ export function textFieldMatches(org: any, field: string, filter: string): boole
   return org[field] && org[field].toLowerCase().includes(filter);
 }
 
+// Must never throw: a throw here leaves the request unanswered and the gateway reports a 504.
 function logError(res: Response, error: any) {
   logger.error(`Organisations error ${error}`);
-  if (error.message) {
+  if (error?.message) {
     logger.error(`Error message: ${error.message}`);
   }
-  if (error.stack) {
+  if (error?.stack) {
     logger.error(`Error stack: ${error.stack}`);
   }
-  if (error.code) {
+  if (error?.code) {
     logger.error(`Error code: ${error.code}`);
   }
   const errReport = {
-    apiError: error.data.message, apiStatusCode: error.status,
+    // Only relay upstream API messages; internal error text stays in the server log above.
+    apiError: error?.response?.data?.message ?? error?.data?.message ?? 'Organisation service request failed',
+    apiStatusCode: error?.status,
     message: 'handlePostOrganisationsRoute error'
   };
   res.status(500).send(errReport);

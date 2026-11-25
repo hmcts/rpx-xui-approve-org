@@ -2,24 +2,60 @@ import { expect, test } from '@playwright/test';
 
 import { buildPlaywrightReporters } from '../../playwright-reporting';
 
-test('includes flake, HTML, Odhín and JUnit reporters for an API lane', () => {
+test('labels the actual target environment and honours a report label override', () => {
+  const original = { TEST_URL: process.env.TEST_URL, PW_ODHIN_ENV: process.env.PW_ODHIN_ENV, PLAYWRIGHT_REPORT_TEST_ENVIRONMENT: process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT };
+  const options = () => buildPlaywrightReporters('e2e').find(([name]) => name.includes('odhin-adaptive'))?.[1] as Record<string, unknown>;
+  try {
+    delete process.env.PW_ODHIN_ENV;
+    delete process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT;
+    process.env.TEST_URL = 'https://administer-orgs.demo.platform.hmcts.net/';
+    expect(options().testEnvironment).toMatch(/^demo \|/);
+    process.env.TEST_URL = 'https://example.org/?target=aat';
+    expect(options().testEnvironment).toMatch(/^unknown \|/);
+    process.env.PW_ODHIN_ENV = 'custom';
+    expect(options().testEnvironment).toBe('custom');
+    expect(options().appendRuntimeWorkers).toBe(false);
+  } finally {
+    for (const [key, value] of Object.entries(original)) {
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
+    }
+  }
+});
+
+test('includes flake, HTML, progress Odhín, adaptive Odhín and JUnit reporters for an API lane', () => {
   const original = {
     PLAYWRIGHT_DEFAULT_REPORTER: process.env.PLAYWRIGHT_DEFAULT_REPORTER,
     PLAYWRIGHT_JUNIT_OUTPUT: process.env.PLAYWRIGHT_JUNIT_OUTPUT,
     PLAYWRIGHT_HTML_OUTPUT: process.env.PLAYWRIGHT_HTML_OUTPUT,
+    PLAYWRIGHT_PERFETTO_OUTPUT_FILE: process.env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE,
+    PW_ENABLE_PERFETTO: process.env.PW_ENABLE_PERFETTO,
     DISABLE_ODHIN_REPORTER: process.env.DISABLE_ODHIN_REPORTER
   };
   process.env.PLAYWRIGHT_DEFAULT_REPORTER = 'list';
   process.env.PLAYWRIGHT_JUNIT_OUTPUT = 'reports/api-junit.xml';
   process.env.PLAYWRIGHT_HTML_OUTPUT = 'reports/api-html';
+  process.env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE = 'reports/api-perfetto.json';
   delete process.env.DISABLE_ODHIN_REPORTER;
+  delete process.env.PW_ENABLE_PERFETTO;
 
   try {
-    expect(buildPlaywrightReporters('api')).toEqual(
+    const reporters = buildPlaywrightReporters('api');
+    const names = reporters.map(([name]) => name);
+    expect(names.indexOf('perfetto')).toBeLessThan(names.indexOf('./playwright_tests/common/reporters/odhin-adaptive.reporter.cjs'));
+    expect(reporters).toEqual(
       expect.arrayContaining([
         ['list'],
         ['./playwright_tests/common/reporters/flake-gate.reporter.cjs'],
         ['html', { outputFolder: 'reports/api-html', open: 'never' }],
+        ['perfetto', { outputFile: 'reports/api-perfetto.json' }],
+        [
+          './playwright_tests/common/reporters/odhin-progress.reporter.cjs',
+          expect.objectContaining({ hardTimeoutMs: 0, forceExitOnCompletion: false })
+        ],
         [
           './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs',
           expect.objectContaining({ outputFolder: 'functional-output/tests/playwright-api/odhin-report' })
@@ -38,6 +74,36 @@ test('includes flake, HTML, Odhín and JUnit reporters for an API lane', () => {
   }
 });
 
+test('enables strict Odhín report validity by default with an explicit false opt-out', () => {
+  const original = process.env.PW_ODHIN_STRICT_REPORT;
+
+  try {
+    delete process.env.PW_ODHIN_STRICT_REPORT;
+    const defaultReporter = buildPlaywrightReporters('api').find(
+      ([name]) => name === './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+    expect(defaultReporter?.[1]).toEqual(expect.objectContaining({ strictReportValidity: true }));
+
+    process.env.PW_ODHIN_STRICT_REPORT = 'false';
+    const nonStrictReporter = buildPlaywrightReporters('api').find(
+      ([name]) => name === './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+    expect(nonStrictReporter?.[1]).toEqual(expect.objectContaining({ strictReportValidity: false }));
+
+    process.env.PW_ODHIN_STRICT_REPORT = 'true';
+    const strictReporter = buildPlaywrightReporters('api').find(
+      ([name]) => name === './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+    expect(strictReporter?.[1]).toEqual(expect.objectContaining({ strictReportValidity: true }));
+  } finally {
+    if (original === undefined) {
+      delete process.env.PW_ODHIN_STRICT_REPORT;
+    } else {
+      process.env.PW_ODHIN_STRICT_REPORT = original;
+    }
+  }
+});
+
 test('keeps flake and HTML diagnostics when Odhín is explicitly disabled', () => {
   const original = process.env.DISABLE_ODHIN_REPORTER;
   process.env.DISABLE_ODHIN_REPORTER = 'true';
@@ -52,6 +118,29 @@ test('keeps flake and HTML diagnostics when Odhín is explicitly disabled', () =
       delete process.env.DISABLE_ODHIN_REPORTER;
     } else {
       process.env.DISABLE_ODHIN_REPORTER = original;
+    }
+  }
+});
+
+test('adds a native JSON reporter for non-accessibility CI lanes only', () => {
+  const original = {
+    CI: process.env.CI
+  };
+
+  try {
+    process.env.CI = 'true';
+    expect(buildPlaywrightReporters('e2e')).toContainEqual([
+      'json',
+      { outputFile: 'functional-output/tests/playwright-e2e/odhin-report/ci-evidence/playwright.json' }
+    ]);
+    expect(buildPlaywrightReporters('accessibility').map(([name]) => name)).not.toContain('json');
+  } finally {
+    for (const [key, value] of Object.entries(original)) {
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
     }
   }
 });

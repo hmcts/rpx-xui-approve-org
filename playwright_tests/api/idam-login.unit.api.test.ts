@@ -14,7 +14,9 @@ test('submits a progressive IDAM login through Continue then Sign in', async () 
     return {
       first: () => createLocator(kind),
       isVisible: async () => visible(),
-      fill: async (value: string) => { fills.push(`${kind}:${value}`); },
+      fill: async (value: string) => {
+        fills.push(`${kind}:${value}`);
+      },
       click: async () => {
         clicks.push(kind);
         step = kind === 'continue' ? 'password' : 'complete';

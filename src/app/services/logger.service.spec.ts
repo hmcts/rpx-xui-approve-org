@@ -5,19 +5,33 @@ describe('Logger service', () => {
   const mockedNgxLogger = jasmine.createSpyObj('mockedNgxLogger', ['trace', 'debug', 'info',
     'log', 'warn', 'error', 'fatal']);
   const mockedCookieService = jasmine.createSpyObj('mockedCookieService', ['get']);
-  const mockedCryptoWrapper = jasmine.createSpyObj('mockedCryptoWrapper', ['encrypt', 'decrypt']);
   const mockJwtDecodeWrapper = jasmine.createSpyObj('mockJwtDecodeWrapper', ['decode']);
   const mockEnvironmentService = jasmine.createSpyObj('mockEnvironmentService', { get: { cookies: { token: 'test' } } });
+  const mockedSessionStorageService = jasmine.createSpyObj('mockedSessionStorageService', ['setItem', 'getItem']);
 
   let service: LoggerService;
 
   beforeEach(() => {
+    mockedSessionStorageService.getItem.calls.reset();
+    mockedSessionStorageService.getItem.and.returnValue(undefined);
     service = new LoggerService(mockedMonitoringService, mockedNgxLogger, mockedCookieService,
-      mockedCryptoWrapper, mockJwtDecodeWrapper, mockEnvironmentService);
+      mockJwtDecodeWrapper, mockEnvironmentService, mockedSessionStorageService);
   });
 
   it('should be Truthy', () => {
     expect(service).toBeTruthy();
+  });
+
+  it('should include the user ID from session storage in the formatted message', () => {
+    spyOn(Date, 'now').and.returnValue(123456789);
+    mockedSessionStorageService.getItem.withArgs('userDetails').and.returnValue(JSON.stringify({
+      uid: '5b9639a7-49a5-4c85-9e17-bf55186c8afa'
+    }));
+
+    expect(service.getMessage('message')).toBe(
+      'User - 5b9639a7-49a5-4c85-9e17-bf55186c8afa, Message - message, Timestamp - 123456789'
+    );
+    expect(mockedSessionStorageService.getItem).toHaveBeenCalledOnceWith('userDetails');
   });
 
   it('should be able to call info', () => {

@@ -74,7 +74,7 @@ describe('EditDetailsComponent', () => {
       imports: [RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromOrganisationPendingStore.reducers)
+          orgState: combineReducers(fromOrganisationPendingStore.reducers)
         }),
         ExuiCommonLibModule,
         RouterTestingModule,
@@ -127,6 +127,7 @@ describe('EditDetailsComponent', () => {
       type: 'test',
       classes: 'test'
     }];
+    component.addPbaFormItem('test');
     fixture.detectChanges();
     component.onAddNewBtnClicked();
     fixture.detectChanges();

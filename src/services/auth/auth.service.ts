@@ -21,7 +21,7 @@ export class AuthService {
       const base = config.services.idamWeb;
       const clientId = config.idamClient;
       const callback = `${API_BASE_URL}${config.oauthCallbackUrl}`;
-      return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=profile openid roles manage-user create-user manage-roles`;
+      return `${base}/login?response_type=code&client_id=${clientId}&redirect_uri=${callback}&scope=profile openid roles manage-user create-user`;
     }));
   }
 

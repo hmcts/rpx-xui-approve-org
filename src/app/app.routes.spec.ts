@@ -14,7 +14,6 @@ import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/services/auth/auth.service';
 import { SharedModule } from 'src/shared/shared.module';
 import { ROUTES } from './app.routes';
-import { CryptoWrapper } from './services/cryptoWrapper';
 import { EnvironmentService } from './services/environment.service';
 import { JwtDecodeWrapper } from './services/jwtDecodeWrapper';
 import { LoggerService } from './services/logger.service';
@@ -90,7 +89,6 @@ describe('AppRoutes', () => {
         { provide: CookieService, useValue: cookieService },
         { provide: Title, useValue: titleService },
         DatePipe,
-        CryptoWrapper,
         JwtDecodeWrapper,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting()

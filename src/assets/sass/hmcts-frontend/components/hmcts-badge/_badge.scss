@@ -1,9 +1,15 @@
+@use "../../settings/all" as *;
+@use "../../objects/width-container" as *;
+
+@use "govuk-frontend" as *;
+
+
 /* ==========================================================================
    #BADGE
    ========================================================================== */
 
    .hmcts-badge {
-    @include govuk-font($size: 14);
+    @include govuk-font($size: 16);
     border: 2px solid govuk-colour("blue");
     color: govuk-colour("blue");
     font-weight: bold;

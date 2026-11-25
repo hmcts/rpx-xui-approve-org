@@ -1,16 +1,68 @@
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { expect, test } from '@playwright/test';
 import { parse } from 'node-html-parser';
 
 import enhancerModule from '../common/reporters/odhin-report-enhancer.cjs';
 
+test('publishes custom accessibility evidence into its report folder', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ao-evidence-copy-'));
+  const source = path.join(root, 'source');
+  const report = path.join(root, 'report');
+  const original = process.env.PW_A11Y_EVIDENCE_DIR;
+  fs.mkdirSync(source);
+  fs.mkdirSync(report);
+  process.env.PW_A11Y_EVIDENCE_DIR = source;
+  try {
+    fs.writeFileSync(path.join(source, 'detail.html'), '<p>detail</p>');
+    fs.writeFileSync(path.join(source, 'manifest-entry-one.json'), JSON.stringify({ testTitle: 'Search', engine: 'axe', htmlFileName: 'detail.html', violationCount: 1, rules: ['label'], status: 'issues-found' }));
+    fs.writeFileSync(path.join(report, 'report.html'), '<html><head></head><body><div id="TabTests"></div></body></html>');
+    (enhancerModule as { enhanceGeneratedReport: (folder: string, stats: unknown) => void }).enhanceGeneratedReport(report, []);
+    expect(fs.existsSync(path.join(report, 'accessibility-evidence'))).toBe(false);
+    (enhancerModule as { enhanceGeneratedReport: (folder: string, stats: unknown, metadata: unknown, options: unknown) => void }).enhanceGeneratedReport(report, [], [], { externalEvidence: source });
+    expect(fs.readFileSync(path.join(report, 'accessibility-evidence/detail.html'), 'utf8')).toContain('detail');
+    expect(fs.readFileSync(path.join(report, 'accessibility-evidence/index.html'), 'utf8')).toContain('Search');
+    expect(JSON.parse(fs.readFileSync(path.join(report, 'accessibility-findings.json'), 'utf8')).source.entryCount).toBe(1);
+  } finally {
+    if (original === undefined) {
+      delete process.env.PW_A11Y_EVIDENCE_DIR;
+    } else {
+      process.env.PW_A11Y_EVIDENCE_DIR = original;
+    }
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
 const enhancerTest = (enhancerModule as {
   __test__: {
-    enhanceDashboardHtml: (html: string, featureStats: unknown, evidenceEntries?: unknown) => string;
+    enhanceDashboardHtml: (html: string, featureStats: unknown, evidenceEntries?: unknown, perfettoFiles?: string[], prefix?: string, metadata?: unknown) => string;
     injectRuntimeTestStatusFilters: (html: string) => string;
   };
 }).__test__;
 
 test.describe('odhin report enhancer', () => {
+  test('associates accessibility evidence by test identity when titles repeat', () => {
+    const row = (id: string) => `<tr data-bs-target="#${id}-0"><td>Repeated title</td><td>failed</td></tr>`;
+    const modal = (id: string) => `<div id="${id}-0" class="modal"><div class="modal-content"><div class="header-col-center">Repeated title</div><div class="modal-body"></div></div></div>`;
+    const html = `<html><head></head><body><div id="TabTests"><table id="test-list-table"><thead><tr><th>Test</th><th>Status</th></tr></thead><tbody>${row('one')}${row('two')}</tbody></table></div>${modal('one')}${modal('two')}</body></html>`;
+    const entries = [{ testTitle: 'Repeated title', testId: 'one', retry: 0, engine: 'axe', htmlFileName: 'one.html', violationCount: 1, status: 'issues-found', rules: ['first-rule'] }, { testTitle: 'Repeated title', testId: 'two', retry: 0, engine: 'axe', htmlFileName: 'two.html', violationCount: 1, status: 'issues-found', rules: ['second-rule'] }];
+    const root = parse(enhancerTest.enhanceDashboardHtml(html, [], entries));
+    expect(root.querySelector('#one-0 .modal-body')?.text).toContain('first-rule');
+    expect(root.querySelector('#one-0 .modal-body')?.text).not.toContain('second-rule');
+    expect(root.querySelector('#two-0 .modal-body')?.text).toContain('second-rule');
+    expect(root.querySelectorAll('#test-list-table tbody tr')[0].text).not.toContain('second-rule');
+    expect(root.querySelectorAll('#test-list-table tbody tr')[1].text).not.toContain('first-rule');
+  });
+  test('adds dynamic presentation and associates metadata with the correct result row', () => {
+    const html = '<html><head></head><body><table id="test-list-table"><thead><tr><th>Test</th><th>Status</th></tr></thead><tbody><tr data-bs-target="#case-0"><td>Search</td><td>passed</td></tr></tbody><tfoot><tr><th>Test</th><th>Status</th></tr></tfoot></table></body></html>';
+    const result = enhancerTest.enhanceDashboardHtml(html, [], [], [], '', [{ target: '#case-0', feature: 'Search', tags: ['@smoke'], retry: 0, durationMs: 42 }]);
+    const root = parse(result);
+    expect(root.querySelector('#webapp-report-theme')).toBeTruthy();
+    expect(root.querySelector('#webapp-report-ui')).toBeTruthy();
+    expect(root.querySelector('tbody tr')?.text).toContain('Search@smoke1');
+    expect(root.querySelector('tbody tr')?.getAttribute('data-duration-ms')).toBe('42');
+  });
   test('preserves the native Odhín status selector without adding a second filter', () => {
     const nextHtml = enhancerTest.enhanceDashboardHtml(
       `<html><head></head><body>
@@ -348,3 +400,51 @@ A11Y_STRICT is disabled, so Jenkins marks the accessibility stage unstable inste
     await expect(page.locator('#odhin-recovered-tests')).toHaveCount(0);
   });
 });
+
+for (const suite of ['api', 'integration', 'e2e', 'smoke']) {
+  test(`Perfetto Results links to the archived ${suite} timeline in Jenkins`, () => {
+    const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-perfetto-'));
+    const outputFolder = path.join(temporaryRoot, 'functional-output', 'tests', `playwright-${suite}`, 'odhin-report');
+    const resultsFolder = path.join(outputFolder, '..', 'test-results');
+    const reportPath = path.join(outputFolder, 'index.html');
+    const originalBuildUrl = process.env.BUILD_URL;
+    const originalOverride = process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+    try {
+      fs.mkdirSync(outputFolder, { recursive: true });
+      fs.mkdirSync(resultsFolder, { recursive: true });
+      fs.writeFileSync(path.join(resultsFolder, 'perfetto.json'), '{}');
+      fs.writeFileSync(reportPath, '<html><body class="report"><div class="tab"></div></body></html>');
+      process.env.BUILD_URL = 'https://jenkins.example/job/test/42/';
+      delete process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+      enhancerModule.enhanceGeneratedReport(outputFolder, []);
+      enhancerModule.enhanceGeneratedReport(outputFolder, []);
+      const root = parse(fs.readFileSync(reportPath, 'utf8'));
+      expect(root.querySelectorAll('#TabPerfetto')).toHaveLength(1);
+      expect(root.querySelectorAll('.main-tablinks')).toHaveLength(1);
+      expect(root.querySelector('.main-tablinks')?.text).toBe('Perfetto Results');
+      expect(root.querySelector('.main-tablinks')?.getAttribute('onclick')).toBe('openMainTab(event, \'TabPerfetto\')');
+      expect(root.querySelector('body')?.getAttribute('class')).toBe('report');
+      expect(root.querySelector('#TabPerfetto a')?.getAttribute('href')).toBe(
+        `https://jenkins.example/job/test/42/artifact/${path.relative(process.cwd(), resultsFolder).split(path.sep).join('/')}/perfetto.json`
+      );
+      delete process.env.BUILD_URL;
+      enhancerModule.enhanceGeneratedReport(outputFolder, []);
+      expect(parse(fs.readFileSync(reportPath, 'utf8')).querySelector('#TabPerfetto a')?.getAttribute('href')).toBe('../test-results/perfetto.json');
+      process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL = 'https://jenkins.example/job/override/7/';
+      enhancerModule.enhanceGeneratedReport(outputFolder, []);
+      expect(parse(fs.readFileSync(reportPath, 'utf8')).querySelector('#TabPerfetto a')?.getAttribute('href')).toContain('https://jenkins.example/job/override/7/artifact/');
+    } finally {
+      if (originalBuildUrl === undefined) {
+        delete process.env.BUILD_URL;
+      } else {
+        process.env.BUILD_URL = originalBuildUrl;
+      }
+      if (originalOverride === undefined) {
+        delete process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL;
+      } else {
+        process.env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL = originalOverride;
+      }
+      fs.rmSync(temporaryRoot, { recursive: true, force: true });
+    }
+  });
+}

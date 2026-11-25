@@ -1,3 +1,9 @@
+@use "../../settings/all" as *;
+@use "../../objects/width-container" as *;
+
+@use "govuk-frontend" as *;
+
+
 .hmcts-pagination {
   // text-align: center;
 
@@ -106,14 +112,15 @@
   text-align: center;
   text-decoration: none;
   min-width: 25px;
+  color: #1d70b8 !important;
 
   &:link,
   &:visited {
-    color: govuk-colour("blue");
+    color: #1d70b8 !important;
   }
 
   &:hover {
-    color: govuk-colour("light-blue");
+    color: $govuk-link-hover-colour;
    }
 
   &:focus {

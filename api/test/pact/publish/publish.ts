@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import * as git from 'git-rev-sync';
 import * as path from 'path';
 
-import { getConfigValue } from '../../../configuration';
+import { getConfigValue, hasConfigValue } from '../../../configuration';
 import {
   PACT_BRANCH_NAME,
   PACT_BROKER_PASSWORD,
@@ -51,12 +51,15 @@ const publish = async (): Promise<void> => {
     const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ?
       // @ts-ignore
       getConfigValue(PACT_CONSUMER_VERSION) : git.short();
+    // EXUI-5292 - Stop fortify flagging by removing default.json password
+    const getOptionalConfigValue = (reference: string): string =>
+      hasConfigValue(reference) ? getConfigValue(reference) : '';
 
     const opts = {
       consumerVersion,
       pactBroker,
-      pactBrokerPassword: getConfigValue(PACT_BROKER_PASSWORD),
-      pactBrokerUsername: getConfigValue(PACT_BROKER_USERNAME),
+      pactBrokerPassword: getOptionalConfigValue(PACT_BROKER_PASSWORD),
+      pactBrokerUsername: getOptionalConfigValue(PACT_BROKER_USERNAME),
       pactFilesOrDirs: [
         path.resolve(__dirname, '../pacts/')
       ],

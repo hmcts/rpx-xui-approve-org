@@ -1,3 +1,26 @@
-.search-organisations-form{
+.search-organisations-form {
   margin-bottom: 30px;
+
+  xuilib-gov-uk-input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media (max-width: 640px) {
+    form {
+      flex-wrap: wrap;
+    }
+
+    xuilib-gov-uk-input {
+      flex-basis: 100%;
+    }
+
+    .hmcts-search__button {
+      margin-top: 10px;
+    }
+
+    .hmcts-search__button:first-of-type {
+      margin-left: 0;
+    }
+  }
 }

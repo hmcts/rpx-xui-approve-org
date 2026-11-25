@@ -5,6 +5,7 @@ const NEW_REGISTRATION_ORG_SEARCH = 'Test';
 const NEW_REGISTRATION_ADDRESS_SEARCH = 'SE15TY';
 const NEW_PBA_ORG_SEARCH = 'test';
 const ACTIVE_ORG_SEARCH = 'Test';
+const ACTIVE_SEARCH_RESPONSE_TIMEOUT = 40_000;
 
 test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations', '@search'] }, () => {
   test.beforeEach(async ({ page }) => {
@@ -16,8 +17,7 @@ test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations',
     await organisationApprovalsPage.waitForSpinnerToHide(60_000);
     await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
 
-    await organisationApprovalsPage.searchForOrganisation(NEW_REGISTRATION_ORG_SEARCH);
-    await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+    await organisationApprovalsPage.searchForOrganisationWithTransientRecovery(NEW_REGISTRATION_ORG_SEARCH);
 
     await expect(organisationApprovalsPage.pendingOrganisationRowsByName(NEW_REGISTRATION_ORG_SEARCH).first()).toBeVisible();
   });
@@ -27,8 +27,7 @@ test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations',
     await organisationApprovalsPage.waitForSpinnerToHide(60_000);
     await expect(organisationApprovalsPage.pendingOverviewPanel).toBeVisible();
 
-    await organisationApprovalsPage.searchForOrganisation(NEW_REGISTRATION_ADDRESS_SEARCH);
-    await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+    await organisationApprovalsPage.searchForOrganisationWithTransientRecovery(NEW_REGISTRATION_ADDRESS_SEARCH);
 
     await expect(organisationApprovalsPage.pendingOrganisationRowsByName(NEW_REGISTRATION_ADDRESS_SEARCH).first()).toBeVisible();
   });
@@ -56,8 +55,8 @@ test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations',
     await organisationApprovalsPage.waitForSpinnerToHide(60_000);
     await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
 
-    await organisationApprovalsPage.searchForOrganisation(ACTIVE_ORG_SEARCH);
-    await organisationApprovalsPage.waitForSpinnerToHide(60_000);
+    await organisationApprovalsPage.searchActiveOrganisations(ACTIVE_ORG_SEARCH, ACTIVE_SEARCH_RESPONSE_TIMEOUT);
+    await organisationApprovalsPage.waitForActiveOrganisationResults();
 
     await expect(organisationApprovalsPage.activeOrganisationRowsByText(ACTIVE_ORG_SEARCH).first()).toBeVisible();
   });

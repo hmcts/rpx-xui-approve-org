@@ -1,20 +1,23 @@
 import { ReporterDescription } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus, totalmem } from 'node:os';
+import { config } from './playwright_tests/config/config';
 
 /**
  * Resolves the test environment from the baseURL
  */
 function resolveEnvironmentFromUrl(baseUrl?: string): string {
   if (!baseUrl) {
-    return 'local';
+    return 'unknown';
   }
-  const normalizedUrl = baseUrl.toLowerCase();
+  let normalizedUrl: string;
+  try {
+    normalizedUrl = new URL(baseUrl).hostname.toLowerCase();
+  } catch {
+    return 'unknown';
+  }
 
-  if (normalizedUrl.includes('localhost')) {
-    return 'local';
-  }
-  if (normalizedUrl.includes('127.0.0.1')) {
+  if (normalizedUrl === 'localhost' || normalizedUrl === '127.0.0.1' || normalizedUrl === '[::1]') {
     return 'local';
   }
 
@@ -23,16 +26,22 @@ function resolveEnvironmentFromUrl(baseUrl?: string): string {
     return 'preview';
   }
 
-  if (normalizedUrl.includes('dev')) {
+  if (normalizedUrl.includes('.dev.')) {
     return 'dev';
   }
-  if (normalizedUrl.includes('staging')) {
+  if (normalizedUrl.includes('-staging.') || normalizedUrl.includes('.staging.')) {
     return 'staging';
   }
-  if (normalizedUrl.includes('aat')) {
+  if (normalizedUrl.includes('.aat.')) {
     return 'aat';
   }
-  if (normalizedUrl.includes('prod')) {
+  if (normalizedUrl.includes('.demo.')) {
+    return 'demo';
+  }
+  if (normalizedUrl.includes('.ithc.')) {
+    return 'ithc';
+  }
+  if (normalizedUrl.includes('.prod.')) {
     return 'prod';
   }
   return 'unknown';
@@ -43,17 +52,7 @@ function resolveEnvironmentFromUrl(baseUrl?: string): string {
  */
 function resolveTestEnvironment(): string {
   const testUrl = process.env.TEST_URL || '';
-  const buildEnv = process.env.BUILD_ENV || '';
-
-  if (testUrl) {
-    return resolveEnvironmentFromUrl(testUrl);
-  }
-
-  if (buildEnv) {
-    return buildEnv.toLowerCase();
-  }
-
-  return 'local';
+  return resolveEnvironmentFromUrl(testUrl || config.baseUrl);
 }
 
 function resolveDefaultReporter(): string {
@@ -151,13 +150,25 @@ function resolveTitle(reportType: 'e2e' | 'api' | 'nightly' | 'integration' | 'a
   return `XUI AO ${reportType.toUpperCase()} Report`;
 }
 
-function resolveTestEnvironmentLabel(workerCount = process.env.FUNCTIONAL_TESTS_WORKERS || 'auto'): string {
+function resolveTestEnvironmentLabel(): string {
+  const configured = process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT || process.env.PW_ODHIN_ENV;
+  if (configured) {
+    return configured;
+  }
   const environment = resolveTestEnvironment();
   const runContext = process.env.CI ? 'ci' : 'local-run';
   const cpuCores = cpus()?.length ?? 'unknown';
   const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
 
-  return `${environment} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  return `${environment} | ${runContext} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+}
+
+function resolveNonNegativeInteger(raw: string | undefined, fallback: number): number {
+  if (raw === undefined) {
+    return fallback;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
 }
 
 /**
@@ -185,8 +196,25 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
     ['./playwright_tests/common/reporters/flake-gate.reporter.cjs'],
     ['html', { outputFolder: resolveHtmlOutputFolder(reportType), open: 'never' }]
   ];
+  if (process.env.PW_ENABLE_PERFETTO !== 'false') {
+    reporters.push([
+      'perfetto',
+      { outputFile: process.env.PLAYWRIGHT_PERFETTO_OUTPUT_FILE || `functional-output/tests/playwright-${reportType}/test-results/perfetto.json` }
+    ]);
+  }
 
   if (!disableOhdin) {
+    reporters.push([
+      './playwright_tests/common/reporters/odhin-progress.reporter.cjs',
+      {
+        graceMs: resolveNonNegativeInteger(process.env.PW_ODHIN_PROGRESS_GRACE_MS, 1500),
+        intervalMs: resolveNonNegativeInteger(process.env.PW_ODHIN_PROGRESS_INTERVAL_MS, 5000),
+        hardTimeoutMs: resolveNonNegativeInteger(process.env.PW_ODHIN_PROGRESS_HARD_TIMEOUT_MS, 0),
+        timeoutExitCode: 1,
+        completionExitDelayMs: resolveNonNegativeInteger(process.env.PW_ODHIN_COMPLETION_EXIT_DELAY_MS, 0),
+        forceExitOnCompletion: process.env.PW_ODHIN_FORCE_EXIT_ON_COMPLETION === 'true'
+      }
+    ]);
     reporters.push([
       './playwright_tests/common/reporters/odhin-adaptive.reporter.cjs',
       {
@@ -195,14 +223,34 @@ export function buildPlaywrightReporters(reportType: 'e2e' | 'api' | 'nightly' |
         testFolder,
         title: resolveTitle(reportType),
         testEnvironment: resolveTestEnvironmentLabel(),
+        appendRuntimeWorkers: !process.env.PLAYWRIGHT_REPORT_TEST_ENVIRONMENT && !process.env.PW_ODHIN_ENV,
         project: process.env.PLAYWRIGHT_REPORT_PROJECT || process.env.ODHIN_PROJECT_NAME || 'rpx-xui-approve-org',
         release: releaseTag,
         startServer: false,
         consoleLog: true,
         consoleError: true,
         simpleConsoleLog: !!process.env.CI,
-        testOutput: 'only-on-failure'
+        testOutput: 'only-on-failure',
+        ...(process.env.PW_ODHIN_LIGHTWEIGHT === undefined ? {} : { lightweight: process.env.PW_ODHIN_LIGHTWEIGHT === 'true' }),
+        ...(process.env.PW_ODHIN_PROFILE === undefined ? {} : { profile: process.env.PW_ODHIN_PROFILE === 'true' }),
+        ...(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS === undefined
+          ? {}
+          : { runtimeHookTimeoutMs: resolveNonNegativeInteger(process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS, 15_000) }),
+        ...(process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS === undefined
+          ? {}
+          : { finalizationTimeoutMs: resolveNonNegativeInteger(process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS, 30_000) }),
+        ...(process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS === undefined
+          ? {}
+          : { trimFailedArtifacts: process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS === 'true' }),
+        strictReportValidity: process.env.PW_ODHIN_STRICT_REPORT !== 'false'
       }
+    ]);
+  }
+
+  if (process.env.CI && reportType !== 'accessibility') {
+    reporters.push([
+      'json',
+      { outputFile: `${odhinOutputFolder}/ci-evidence/playwright.json` }
     ]);
   }
 

@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, comma-dangle, indent, quotes */
-/* global require, module */
+/* global require, module, process */
 
 const fs = require('fs');
 const path = require('path');
 const { parse } = require('node-html-parser');
+const { applyPresentation } = require('./presentation/enhance.cjs');
+const { safeEvidenceFile, writeAccessibilityRemediationPack } = require('./accessibility-remediation.cjs');
 
 const evidenceLinkAttributes = ' target="_blank" rel="noopener noreferrer"';
 
@@ -1085,6 +1087,14 @@ function normalizeEvidenceEntries(entries) {
       summary: typeof entry.summary === 'string' ? entry.summary : '',
       rules: Array.isArray(entry.rules) ? entry.rules.map(String) : [],
       targets: Array.isArray(entry.targets) ? entry.targets.map(String) : [],
+      context: entry.context && typeof entry.context === 'object' ? entry.context : {},
+      findings: Array.isArray(entry.findings) ? entry.findings : [],
+      reviewCount: Number.isFinite(Number(entry.reviewCount)) ? Number(entry.reviewCount) : 0,
+      reviewRules: Array.isArray(entry.reviewRules) ? entry.reviewRules.map(String) : [],
+      testId: typeof entry.testId === 'string' ? entry.testId : '',
+      testIdentity: typeof entry.testIdentity === 'string' ? entry.testIdentity : '',
+      projectName: typeof entry.projectName === 'string' ? entry.projectName : '',
+      retry: Number.isInteger(entry.retry) && entry.retry >= 0 ? entry.retry : 0,
     }))
     .sort(
       (left, right) =>
@@ -1434,7 +1444,7 @@ function buildIssueSummaryBlock(evidenceEntries) {
     uniqueValues(entry.rules).forEach((rule) => {
       const key = `${entry.engine}:${rule}`;
       const current = byRule.get(key) ?? { engine: entry.engine, rule, testTitles: new Set(), entries: [] };
-      current.testTitles.add(entry.testTitle);
+      current.testTitles.add(entry.testId || entry.testTitle);
       current.entries.push({ ...entry, rules: [rule] });
       byRule.set(key, current);
     });
@@ -1504,7 +1514,7 @@ function buildIssueFilterBlock(evidenceEntries) {
     uniqueValues(entry.rules).forEach((rule) => {
       const label = ruleLabel(rule);
       const item = byRule.get(label) ?? { label, screens: new Set() };
-      item.screens.add(entry.testTitle);
+      item.screens.add(entry.testId || entry.testTitle);
       byRule.set(label, item);
     });
   });
@@ -1600,14 +1610,24 @@ function injectAccessibilityIssueColumns(root, evidenceEntries) {
   );
 
   const entriesByTitle = new Map();
+  const entriesByTarget = new Map();
   normalizedEntries.forEach((entry) => {
     const titleKey = testTitleKey(entry.testTitle);
     const entries = entriesByTitle.get(titleKey) ?? [];
     entries.push(entry);
     entriesByTitle.set(titleKey, entries);
+    if (entry.testId) {
+      const target = `#${entry.testId}-${entry.retry}`;
+      entriesByTarget.set(target, [...(entriesByTarget.get(target) ?? []), entry]);
+    }
   });
 
   const globalRuleCounts = ruleCountsByEngine(normalizedEntries);
+  const titleCounts = new Map();
+  table.querySelectorAll('tbody tr').forEach((row) => {
+    const key = testTitleKey(row.querySelector('td')?.text);
+    titleCounts.set(key, (titleCounts.get(key) ?? 0) + 1);
+  });
   let updatedRows = 0;
   table.querySelectorAll('tbody tr').forEach((row) => {
     const cells = row.querySelectorAll('td');
@@ -1616,7 +1636,9 @@ function injectAccessibilityIssueColumns(root, evidenceEntries) {
     if (!title || !statusCell) {
       return;
     }
-    const entries = entriesByTitle.get(testTitleKey(title)) ?? [];
+    const target = row.getAttribute('data-bs-target') || row.getAttribute('data-target');
+    const byTitle = entriesByTitle.get(testTitleKey(title)) ?? [];
+    const entries = entriesByTarget.get(target) ?? (titleCounts.get(testTitleKey(title)) === 1 ? byTitle.filter((entry) => !entry.testId) : []);
     const issueEntries = issueEntriesOnly(entries);
     const issueGroups = issueEntries.length ? buildIssueGroupsText(entries, globalRuleCounts) : '';
     const issueRules = issueEntries.length ? uniqueValues(ruleIssueKeys(entries).map((item) => ruleLabel(item.rule))).join(' ') : '';
@@ -1629,27 +1651,6 @@ function injectAccessibilityIssueColumns(root, evidenceEntries) {
   });
 
   return updatedRows;
-}
-
-function groupEntriesByIssueTitle(entries) {
-  const groupedEntries = new Map();
-  normalizeEvidenceEntries(entries).forEach((entry) => {
-    const title = normalizeText(entry.testTitle);
-    if (!title) {
-      return;
-    }
-    const titleEntries = groupedEntries.get(title) ?? [];
-    titleEntries.push(entry);
-    groupedEntries.set(title, titleEntries);
-  });
-
-  Array.from(groupedEntries.entries()).forEach(([title, titleEntries]) => {
-    if (!issueEntriesOnly(titleEntries).length) {
-      groupedEntries.delete(title);
-    }
-  });
-
-  return groupedEntries;
 }
 
 function readTestListRows(root) {
@@ -1677,6 +1678,8 @@ function rowsByTitle(root) {
   readTestListRows(root).forEach((row) => {
     if (!rows.has(row.titleKey)) {
       rows.set(row.titleKey, row);
+    } else {
+      rows.set(row.titleKey, null);
     }
   });
   return rows;
@@ -1684,6 +1687,9 @@ function rowsByTitle(root) {
 
 function findModalContentForTitle(root, modalContents, tableRowsByTitle, title) {
   const row = tableRowsByTitle.get(testTitleKey(title));
+  if (tableRowsByTitle.has(testTitleKey(title)) && !row) {
+    return null;
+  }
   const targetModal = row?.targetId ? findElementById(root, row.targetId) : null;
   const targetModalContent = targetModal?.querySelector('.modal-content');
   if (targetModalContent) {
@@ -1706,23 +1712,42 @@ function injectAccessibilityEvidenceIntoTestModals(root, evidenceEntries) {
   let injectedCount = 0;
   root.querySelectorAll('.odhin-a11y-test-evidence').forEach((node) => node.remove());
   root.querySelectorAll('#odhin-a11y-modal-nav-script').forEach((node) => node.remove());
-  const entriesByTestTitle = groupEntriesByIssueTitle(normalizedEntries);
+  const entriesByTestTitle = new Map();
+  normalizedEntries.forEach((entry) => {
+    const key = entry.testId ? `${entry.testId}-${entry.retry}` : `title:${entry.testTitle}`;
+    if (!entriesByTestTitle.has(key)) {
+ entriesByTestTitle.set(key, []);
+}
+    entriesByTestTitle.get(key).push(entry);
+  });
+  for (const [key, entries] of entriesByTestTitle) {
+    if (!issueEntriesOnly(entries).length) {
+ entriesByTestTitle.delete(key);
+}
+  }
   const modalContents = root.querySelectorAll('.modal-content');
   const tableRowsByTitle = rowsByTitle(root);
   const testTitles = Array.from(entriesByTestTitle.keys());
+  const titleForNavigation = (index) => {
+    const title = entriesByTestTitle.get(testTitles[index])?.[0]?.testTitle;
+    return title && tableRowsByTitle.get(testTitleKey(title)) ? title : '';
+  };
 
-  entriesByTestTitle.forEach((entries, testTitle) => {
-    const matchingModal = findModalContentForTitle(root, modalContents, tableRowsByTitle, testTitle);
+  entriesByTestTitle.forEach((entries, key) => {
+    const testTitle = entries[0].testTitle;
+    const matchingModal = key.startsWith('title:')
+      ? findModalContentForTitle(root, modalContents, tableRowsByTitle, testTitle)
+      : findElementById(root, key)?.querySelector('.modal-content');
     const modalBody = matchingModal?.querySelector('.modal-body.odhin-bg-2') ?? matchingModal?.querySelector('.modal-body');
     if (!modalBody) {
       return;
     }
 
-    const currentIndex = testTitles.indexOf(testTitle);
+    const currentIndex = testTitles.indexOf(key);
     const evidencePanel = buildTestEvidencePanel(entries, {
       currentTitle: testTitle,
-      previousTitle: currentIndex > 0 ? testTitles[currentIndex - 1] : '',
-      nextTitle: currentIndex >= 0 && currentIndex < testTitles.length - 1 ? testTitles[currentIndex + 1] : '',
+      previousTitle: currentIndex > 0 ? titleForNavigation(currentIndex - 1) : '',
+      nextTitle: currentIndex >= 0 && currentIndex < testTitles.length - 1 ? titleForNavigation(currentIndex + 1) : '',
       position: currentIndex >= 0 ? `${currentIndex + 1} of ${testTitles.length} accessibility findings` : '',
     });
     if (!evidencePanel) {
@@ -1948,7 +1973,27 @@ function injectRuntimeTestStatusFilters(html) {
   return /<\/body\s*>/i.test(source) ? source.replace(/<\/body\s*>/i, () => `${runtime}</body>`) : `${source}${runtime}`;
 }
 
-function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
+function injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix = '../test-results') {
+  root.querySelector('#odhin-perfetto-link')?.remove();
+  root.querySelector('#TabPerfetto')?.remove();
+  root.querySelector('.main-tablinks[onclick*="TabPerfetto"]')?.remove();
+
+  const links = perfettoFiles.map((fileName) => `<a href="${perfettoHrefPrefix}/${fileName}">${fileName}</a>`).join(' · ');
+  root
+    .querySelector('.tab')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<button class="main-tablinks" onclick="openMainTab(event, 'TabPerfetto')">Perfetto Results</button>`
+    );
+  root
+    .querySelector('body')
+    ?.insertAdjacentHTML(
+      'beforeend',
+      `<div id="TabPerfetto" style="display: none" class="main-tabcontent"><div class="container-fluid text-center mt-3 mb-5"><div class="row ms-3 me-3"><div class="col-12"><div class="mt-3 mb-3 odhin-thin-border dashboard-block"><div class="info-box-header">Perfetto Results</div><p class="text-secondary-emphasis small mb-3 ps-4">Suite timeline with test names and statuses.</p><p id="odhin-perfetto-link">${links}</p></div></div></div></div></div>`
+    );
+}
+
+function enhanceDashboardHtml(html, featureStats, evidenceEntries = [], perfettoFiles = [], perfettoHrefPrefix = '../test-results', testMetadata = []) {
   const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
   const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
@@ -1963,7 +2008,8 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
     !normalizedEvidenceEntries.length &&
     !hasDashboardAccessibilityEvidence &&
     !hasAccessibilityAssertionText &&
-    !hasTestList
+    !hasTestList &&
+    !perfettoFiles.length
   ) {
     return htmlWithDefaultTestRows;
   }
@@ -1998,11 +2044,15 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
   injectAccessibilityIssueFilters(root, normalizedEvidenceEntries);
   injectAccessibilityIssueColumns(root, normalizedEvidenceEntries);
   injectNativeTestStatusFilter(root);
+  if (perfettoFiles.length) {
+    injectPerfettoTab(root, perfettoFiles, perfettoHrefPrefix);
+  }
+  applyPresentation(root, testMetadata);
 
   return root.toString();
 }
 
-function readAccessibilityEvidenceEntries(outputFolder) {
+function readAccessibilityEvidenceEntries(outputFolder, warnings = []) {
   const evidenceDir = path.join(outputFolder, 'accessibility-evidence');
   if (!fs.existsSync(evidenceDir)) {
     return [];
@@ -2011,11 +2061,23 @@ function readAccessibilityEvidenceEntries(outputFolder) {
   const entriesByKey = new Map();
 
   try {
-    const manifest = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'manifest.json'), 'utf8'));
-    normalizeEvidenceEntries(manifest).forEach((entry) => {
+    const file = safeEvidenceFile(evidenceDir, 'manifest.json');
+    if (!file) {
+ throw new Error('Unsafe or missing manifest');
+}
+    const manifest = JSON.parse(fs.readFileSync(file, 'utf8'));
+    if (!Array.isArray(manifest)) {
+ throw new Error('Invalid manifest');
+}
+    const entries = normalizeEvidenceEntries(manifest);
+    if (entries.length !== manifest.length) {
+ warnings.push('Some aggregate accessibility manifest entries were invalid; verify scan coverage against the original run.');
+}
+    entries.forEach((entry) => {
       entriesByKey.set(`${entry.testTitle}\u0000${entry.htmlFileName}`, entry);
     });
   } catch {
+    warnings.push('The aggregate accessibility manifest was unavailable; verify coverage against per-test evidence and the original run.');
     // Per-test entry files below are the source of truth when parallel workers race on the aggregate manifest.
   }
 
@@ -2023,10 +2085,19 @@ function readAccessibilityEvidenceEntries(outputFolder) {
     .filter((fileName) => fileName.startsWith('manifest-entry-') && fileName.endsWith('.json'))
     .forEach((fileName) => {
       try {
-        normalizeEvidenceEntries([JSON.parse(fs.readFileSync(path.join(evidenceDir, fileName), 'utf8'))]).forEach((entry) => {
+        const file = safeEvidenceFile(evidenceDir, fileName);
+        if (!file) {
+ throw new Error('Unsafe entry');
+}
+        const entries = normalizeEvidenceEntries([JSON.parse(fs.readFileSync(file, 'utf8'))]);
+        if (!entries.length) {
+ throw new Error('Invalid entry');
+}
+        entries.forEach((entry) => {
           entriesByKey.set(`${entry.testTitle}\u0000${entry.htmlFileName}`, entry);
         });
       } catch {
+        warnings.push('Some per-test accessibility evidence could not be read; verify scan coverage before proposing fixes.');
         // Ignore corrupt per-test evidence so one bad entry cannot suppress the full report.
       }
     });
@@ -2034,21 +2105,98 @@ function readAccessibilityEvidenceEntries(outputFolder) {
   return Array.from(entriesByKey.values());
 }
 
-function enhanceGeneratedReport(outputFolder, featureStats) {
+function writeAccessibilityEvidenceIndex(outputFolder, entries) {
+  const dir = path.join(outputFolder, 'accessibility-evidence');
+  try {
+    if (!fs.lstatSync(dir).isDirectory()) {
+ return;
+}
+  } catch {
+    return;
+  }
+  const rows = entries.map((entry) => {
+    const links = [
+      ['Issue detail', entry.htmlFileName], ['JSON evidence', entry.jsonFileName],
+      ['Screenshot', entry.screenshotFileName], ['Native report', entry.reportFileName]
+    ].filter(([, name]) => safeEvidenceFile(dir, name))
+      .map(([label, name]) => `<a href="./${escapeAttribute(name)}">${label}</a>`).join(' · ');
+    return `<li><h2>${escapeHtml(entry.testTitle)}</h2><p>${escapeHtml(entry.feature || 'accessibility')} / ${escapeHtml(entry.pageState || entry.engine)}</p><p>${entry.violationCount} ${escapeHtml(entry.engine)} issue(s): ${escapeHtml(entry.rules.join(', ') || 'none')}</p>${links}</li>`;
+  }).join('');
+  fs.writeFileSync(path.join(dir, 'index.html'), `<html lang="en"><head><meta charset="utf-8"><title>Accessibility evidence</title></head><body><main><h1>Accessibility evidence</h1><ol>${rows}</ol></main></body></html>`, { flag: fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_TRUNC | fs.constants.O_NOFOLLOW });
+}
+
+function enhanceGeneratedReport(outputFolder, featureStats, testMetadata = [], options = {}) {
   if (!outputFolder || !fs.existsSync(outputFolder)) {
     return;
   }
 
+  const externalEvidence = options.externalEvidence;
+  const localEvidence = path.join(outputFolder, 'accessibility-evidence');
+  if (externalEvidence && path.resolve(externalEvidence) !== path.resolve(localEvidence)) {
+    const source = path.resolve(externalEvidence);
+    if (fs.lstatSync(source).isDirectory()) {
+      fs.mkdirSync(localEvidence, { recursive: true });
+      if (!fs.lstatSync(localEvidence).isDirectory()) {
+ throw new Error('Unsafe accessibility evidence destination');
+}
+      fs.readdirSync(source).forEach((name) => {
+        const file = safeEvidenceFile(source, name);
+        if (!file || name === 'index.html') {
+ return;
+}
+        const sourceFd = fs.openSync(file, fs.constants.O_RDONLY | fs.constants.O_NOFOLLOW);
+        let targetFd;
+        try {
+          targetFd = fs.openSync(path.join(localEvidence, name), fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_TRUNC | fs.constants.O_NOFOLLOW);
+          fs.writeFileSync(targetFd, fs.readFileSync(sourceFd));
+        } finally {
+          fs.closeSync(sourceFd);
+          if (targetFd !== undefined) {
+ fs.closeSync(targetFd);
+}
+        }
+      });
+    }
+  }
   const normalizedStats = normalizeFeatureStats(featureStats);
-  const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
+  const warnings = [];
+  const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder, warnings);
+  const remediationPack = writeAccessibilityRemediationPack(outputFolder, evidenceEntries, warnings);
+  writeAccessibilityEvidenceIndex(outputFolder, evidenceEntries);
   const reportFiles = fs.readdirSync(outputFolder).filter((fileName) => fileName.toLowerCase().endsWith('.html'));
 
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries);
-    fs.writeFileSync(filePath, nextHtml, 'utf8');
+    const testResultsFolder = [path.join(outputFolder, 'test-results'), path.join(outputFolder, '..', 'test-results')]
+      .find((folder) => fs.existsSync(folder));
+    const perfettoFiles = testResultsFolder
+      ? fs.readdirSync(testResultsFolder).filter((name) => /^perfetto(?:[-_].*)?\.json$/i.test(name))
+      : [];
+    const nextHtml = enhanceDashboardHtml(
+      currentHtml, normalizedStats, evidenceEntries, perfettoFiles,
+      resolvePerfettoHrefPrefix(outputFolder, testResultsFolder), testMetadata
+    );
+    if (!remediationPack && !nextHtml.includes('id="odhin-a11y-remediation"')) {
+      fs.writeFileSync(filePath, nextHtml, 'utf8');
+      return;
+    }
+    const root = parse(nextHtml);
+    root.querySelector('#odhin-a11y-remediation')?.remove();
+    if (remediationPack) {
+      root.querySelector('body')?.insertAdjacentHTML('afterbegin', '<section id="odhin-a11y-remediation" aria-labelledby="odhin-a11y-remediation-title"><h2 id="odhin-a11y-remediation-title">Accessibility remediation pack</h2><p>Candidate groups require verification against the original evidence.</p><ul><li><a href="./ACCESSIBILITY_FIX_INSTRUCTIONS.md" download>Download remediation instructions</a></li><li><a href="./accessibility-findings.json" download>Download structured findings</a></li></ul></section>');
+    }
+    fs.writeFileSync(filePath, root.toString(), 'utf8');
   });
+}
+
+function resolvePerfettoHrefPrefix(outputFolder, testResultsFolder, env = process.env) {
+  const artifactBaseUrl = (env.PLAYWRIGHT_PERFETTO_ARTIFACT_BASE_URL || env.BUILD_URL)?.trim().replace(/\/$/, '');
+  if (artifactBaseUrl && testResultsFolder) {
+    const relativeResultsPath = path.relative(process.cwd(), testResultsFolder).split(path.sep).join('/');
+    return `${artifactBaseUrl}/artifact/${relativeResultsPath}`;
+  }
+  return testResultsFolder === path.join(outputFolder, 'test-results') ? 'test-results' : '../test-results';
 }
 
 module.exports = {

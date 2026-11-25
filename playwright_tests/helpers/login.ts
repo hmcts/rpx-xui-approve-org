@@ -3,12 +3,10 @@ import { completeIdamLogin } from './idamLogin';
 
 export async function isAuthenticatedByApi(page: any): Promise<boolean> {
   try {
-    const authCheckUrl = new URL('auth/isAuthenticated', config.baseUrl).toString();
-    const response = await page.request.get(authCheckUrl, { failOnStatusCode: false });
-    if (response.status() !== 200) {
-      return false;
-    }
-    return (await response.text()).trim() === 'true';
+    return await page.evaluate(async () => {
+      const response = await fetch('/auth/isAuthenticated', { credentials: 'same-origin' });
+      return response.ok && (await response.text()).trim() === 'true';
+    });
   } catch {
     return false;
   }
@@ -64,7 +62,7 @@ export async function signIn(page: any, user: string = 'base') {
 
 export async function signOut(page: any) {
   const logoutUrl = new URL('auth/logout?noredirect=true', config.baseUrl).toString();
-  await page.request.get(logoutUrl, { failOnStatusCode: false });
+  await page.goto(logoutUrl, { waitUntil: 'domcontentloaded' });
   await page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' }).catch((error) => {
     if (!String(error).includes('ERR_ABORTED')) {
       throw error;

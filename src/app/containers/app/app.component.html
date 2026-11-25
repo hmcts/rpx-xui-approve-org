@@ -1,9 +1,11 @@
-<a id="skip-link" [routerLink]="" fragment="{{mainContentId}}" class="govuk-skip-link" (click)="onFocusMainContent()">Skip to main content</a>
+<a id="skip-link" [href]="'#' + mainContentId" class="govuk-skip-link" (click)="onFocusMainContent()">Skip to main content</a>
 <title>HMCTS Approve organisations</title>
 
 <app-header (navigate)="onNavigate($event)"></app-header>
 
-<router-outlet></router-outlet>
+<div id="main-content-start" tabindex="-1">
+  <router-outlet></router-outlet>
+</div>
 
 <app-footer></app-footer>
 

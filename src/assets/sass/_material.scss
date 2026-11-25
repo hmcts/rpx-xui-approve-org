@@ -1,0 +1,104 @@
+@use "govuk-frontend" as *;
+
+$outline-color: #bfc1c3;
+
+.mat-mdc-tab-header {
+  border-bottom: 0;
+}
+
+.mat-mdc-tab-body-wrapper {
+  border-top: 1px solid $outline-color;
+  margin-top: -1px;
+}
+
+.mat-mdc-tab {
+  min-width: 80px !important;
+  height: 42px !important;
+  margin: 0 4px 7px;
+  border-top: 3px solid #fff;
+  background-color: govuk-colour("light-grey");
+  color: govuk-colour("black");
+  opacity: 1 !important;
+
+  &.cdk-focused {
+    border-top: 3px solid #ffdd00;
+    border-bottom: 4px solid #000;
+  }
+
+  &.mdc-tab--active {
+    height: 48px !important;
+    margin: 1px 4px 0;
+    border: 1px solid $outline-color;
+    border-bottom: 0;
+    background: #fff;
+
+    .mdc-tab__text-label {
+      opacity: 1;
+    }
+  }
+
+  .mdc-tab__text-label {
+    color: govuk-colour("black") !important;
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    letter-spacing: normal;
+  }
+}
+
+.mat-mdc-tab-group .mdc-tab-indicator__content--underline,
+.mat-mdc-tab-nav-bar .mdc-tab-indicator__content--underline {
+  height: 0 !important;
+  border-top-width: 0 !important;
+}
+
+.mat-mdc-autocomplete-panel {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.87);
+
+  --mat-option-focus-state-layer-color: rgba(0, 0, 0, 0.04);
+  --mat-option-hover-state-layer-color: rgba(0, 0, 0, 0.04);
+  --mat-option-selected-state-layer-color: rgba(0, 0, 0, 0.04);
+
+  &:not([class*="mat-elevation-z"]) {
+    box-shadow:
+      0 2px 4px -1px rgba(0, 0, 0, 0.2),
+      0 4px 5px 0 rgba(0, 0, 0, 0.14),
+      0 1px 10px 0 rgba(0, 0, 0, 0.12);
+  }
+}
+
+.mat-mdc-tab-group-stretch-tabs > .mat-mdc-tab-header .mat-mdc-tab {
+  flex: 0 0 auto !important;
+  flex-grow: 0 !important;
+}
+
+.mat-mdc-tab-group > .mat-mdc-tab-header .mat-mdc-tab {
+  min-width: 80px !important;
+  height: 42px !important;
+  margin: 0 4px 7px;
+  border-top: 3px solid #fff;
+  background-color: govuk-colour("light-grey");
+  color: govuk-colour("black");
+  opacity: 1 !important;
+}
+
+.mat-mdc-tab-group > .mat-mdc-tab-header .mat-mdc-tab.mdc-tab--active {
+  height: 48px !important;
+  margin: 1px 4px 0;
+  border: 1px solid $outline-color;
+  border-bottom: 0;
+  background-color: #fff;
+}
+
+.mat-mdc-tab-header-pagination-before {
+  z-index: 2;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.mat-mdc-tab-header-pagination-after {
+  z-index: 2;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+}

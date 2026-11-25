@@ -199,6 +199,8 @@ test('allows the smoke journey to be globally excluded through its safe package 
     '--list',
     '--pass-with-no-tests'
   ]);
+  expect(smokeRunner.buildSmokePlaywrightEnv({}).PW_SKIP_SESSION_CAPTURE).toBe('true');
+  expect(smokeRunner.buildSmokePlaywrightEnv({ PW_SKIP_SESSION_CAPTURE: 'false' }).PW_SKIP_SESSION_CAPTURE).toBe('false');
 });
 
 test('matches an excluded tag exactly without suppressing longer tag names', () => {

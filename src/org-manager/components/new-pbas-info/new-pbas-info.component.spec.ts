@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { PBAAccountApprovalComponent } from '..';
@@ -41,6 +42,7 @@ describe('NewPBAsInfoComponent', () => {
     TestBed.configureTestingModule({
       imports: [RouterModule, ReactiveFormsModule, FormsModule, RouterTestingModule.withRoutes([])],
       declarations: [NewPBAsInfoComponent, OrganisationAddressComponent, PBAAccountApprovalComponent],
+      providers: [Title],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA
       ]
@@ -84,6 +86,30 @@ describe('NewPBAsInfoComponent', () => {
     submitButton.click();
     fixture.detectChanges();
     expect(component.submitForm.emit).not.toHaveBeenCalled();
+  });
+
+  it('restores a selected PBA decision when the form is recreated', () => {
+    const returnedFixture = TestBed.createComponent(NewPBAsInfoComponent);
+    returnedFixture.componentInstance.org = mockOrgData;
+    returnedFixture.componentInstance.newPBAs = new Map([['PBA0101012', 'accepted']]);
+    returnedFixture.detectChanges();
+
+    expect(returnedFixture.componentInstance.formGroup.get('PBA0101012').value).toBe('accepted');
+    expect(returnedFixture.componentInstance.formGroup.valid).toBeTrue();
+    expect(returnedFixture.nativeElement.querySelector('#PBA0101012_approve').checked).toBeTrue();
+    returnedFixture.destroy();
+  });
+
+  it('keeps an undecided PBA required when the form is recreated', () => {
+    const returnedFixture = TestBed.createComponent(NewPBAsInfoComponent);
+    returnedFixture.componentInstance.org = mockOrgData;
+    returnedFixture.componentInstance.newPBAs = new Map();
+    returnedFixture.detectChanges();
+
+    expect(returnedFixture.componentInstance.formGroup.get('PBA0101012').value).toBe('');
+    expect(returnedFixture.componentInstance.formGroup.invalid).toBeTrue();
+    expect(returnedFixture.nativeElement.querySelector('#PBA0101012_approve').checked).toBeFalse();
+    returnedFixture.destroy();
   });
 
   it('should call the newPBA output emitter when the setNewPBA method is called', () => {

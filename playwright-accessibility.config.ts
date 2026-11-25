@@ -25,6 +25,7 @@ const accessibilityTagFilters = resolveTagFilters({
 module.exports = defineConfig({
   testDir: './playwright_tests/accessibility',
   testMatch: /.*\.test\.ts/,
+  outputDir: 'functional-output/tests/playwright-accessibility/test-results',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: 0,
@@ -45,7 +46,7 @@ module.exports = defineConfig({
         channel: 'chrome',
         headless: headlessMode,
         screenshot: 'only-on-failure',
-        trace: 'off',
+        trace: { mode: 'retain-on-failure', snapshots: { dom: true, aria: true, screen: true }, screenshots: true, sources: true },
         ...(lighthouseEnabled
           ? {
             launchOptions: {

@@ -317,6 +317,61 @@ describe('organisation/index', () => {
       expect(mockRes.status).to.have.been.calledWith(500);
     });
 
+    it('should still respond when an upstream timeout rejects without response data', async () => {
+      mockReq.body = {
+        searchRequest: { search_filter: 'test', pagination_parameters: { page_number: 1, page_size: 10 } }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+      // Shape produced by errorInterceptor when PRD gives no response (e.g. a socket timeout).
+      mockReq.http.get.rejects({ url: 'https://rd-professional-api.example.com', message: 'No api response' });
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledWith(sinon.match({ apiError: 'Organisation service request failed', apiStatusCode: undefined }));
+    });
+
+    it('should still respond when an active page fetch fails during the full active scan', async () => {
+      mockReq.body = {
+        searchRequest: { search_filter: 'test', pagination_parameters: { page_number: 1, page_size: 10 } }
+      };
+      mockReq.query = { status: 'ACTIVE' };
+      mockReq.http.get.onFirstCall().resolves({ headers: { total_records: 1 }, data: { organisations: [] } });
+      const upstreamError = Object.assign(new Error('Upstream failure'), { status: 503, data: { message: 'Service Unavailable' } });
+      mockReq.http.get.onSecondCall().rejects(upstreamError);
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledOnce;
+      expect(mockRes.send).to.have.been.calledWith(sinon.match({ apiError: 'Service Unavailable', apiStatusCode: 503 }));
+    });
+
+    it('should prefer the upstream response message when the error wraps a response', async () => {
+      const error = { status: 502, response: { data: { message: 'Bad gateway from PRD' } } };
+      mockReq.http.get.rejects(error);
+
+      const router = require('./index').default;
+      const postHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/' && layer.route.methods.post
+      ).route.stack[0].handle;
+
+      await postHandler(mockReq, mockRes);
+
+      expect(mockRes.status).to.have.been.calledWith(500);
+      expect(mockRes.send).to.have.been.calledWith(sinon.match({ apiError: 'Bad gateway from PRD', apiStatusCode: 502 }));
+    });
+
     it('should handle search filter with ACTIVE status', async () => {
       mockReq.body = {
         searchRequest: {
@@ -330,7 +385,11 @@ describe('organisation/index', () => {
       mockReq.query = { status: 'ACTIVE' };
 
       const orgList = [{ name: 'Test Org', status: 'ACTIVE' }];
-      mockReq.http.get.resolves({
+      mockReq.http.get.onFirstCall().resolves({
+        data: { organisations: [] },
+        headers: { total_records: '1' }
+      });
+      mockReq.http.get.onSecondCall().resolves({
         data: { organisations: orgList },
         headers: { total_records: '1' }
       });
@@ -342,17 +401,20 @@ describe('organisation/index', () => {
 
       await postHandler(mockReq, mockRes);
 
-      expect(mockReq.http.get.callCount).to.equal(1);
+      expect(mockReq.http.get.callCount).to.equal(2);
       expect(mockReq.http.get.firstCall.args[0]).to.equal(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=10&status=ACTIVE&search_filter=test'
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1'
+      );
+      expect(mockReq.http.get.secondCall.args[0]).to.equal(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=1000&status=ACTIVE'
       );
       expect(mockRes.send).to.have.been.calledWith({
         organisations: orgList,
-        total_records: '1'
+        total_records: 1
       });
     });
 
-    it('should fall back to full active organisation scan when filtered active search is ignored', async () => {
+    it('should filter a full active organisation scan for ACTIVE search', async () => {
       mockReq.body = {
         searchRequest: {
           search_filter: 'matching',
@@ -365,15 +427,16 @@ describe('organisation/index', () => {
       mockReq.query = { status: 'ACTIVE' };
 
       mockReq.http.get.onFirstCall().resolves({
-        data: { organisations: [{ name: 'Unrelated Org', status: 'ACTIVE' }] },
-        headers: { total_records: '500' }
-      });
-      mockReq.http.get.onSecondCall().resolves({
-        data: { organisations: [{ name: 'Matching Org', status: 'ACTIVE' }] },
+        data: { organisations: [] },
         headers: { total_records: '1' }
       });
-      mockReq.http.get.onThirdCall().resolves({
-        data: { organisations: [{ name: 'Matching Org', status: 'ACTIVE' }] },
+      mockReq.http.get.onSecondCall().resolves({
+        data: {
+          organisations: [
+            { name: 'Unrelated Org', status: 'ACTIVE', contactInformation: [] },
+            { name: 'Matching Org', status: 'ACTIVE', contactInformation: [] }
+          ]
+        },
         headers: { total_records: '1' }
       });
 
@@ -384,17 +447,17 @@ describe('organisation/index', () => {
 
       await postHandler(mockReq, mockRes);
 
-      expect(mockReq.http.get.callCount).to.equal(3);
+      expect(mockReq.http.get.callCount).to.equal(2);
       expect(mockReq.http.get.firstCall.args[0]).to.equal(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=10&status=ACTIVE&search_filter=matching'
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1'
       );
       expect(mockRes.send).to.have.been.calledWith({
-        organisations: [{ name: 'Matching Org', status: 'ACTIVE' }],
+        organisations: [{ name: 'Matching Org', status: 'ACTIVE', contactInformation: [] }],
         total_records: 1
       });
     });
 
-    it('should not fall back to full active organisation scan for long organisation name searches', async () => {
+    it('should search all supported organisation fields for long organisation name searches', async () => {
       const longOrganisationName = '001fcFuzqHZCE6UptKv3 EsqkclX1AU9OTRJxsGSA';
       mockReq.body = {
         searchRequest: {
@@ -407,47 +470,17 @@ describe('organisation/index', () => {
       };
       mockReq.query = { status: 'ACTIVE' };
 
-      mockReq.http.get.resolves({
-        data: { organisations: [{ name: 'Unrelated Org', admin: longOrganisationName, status: 'ACTIVE' }] },
-        headers: { total_records: '500' }
+      const matchingOrg = { name: longOrganisationName, status: 'ACTIVE', contactInformation: [] };
+      const adminMatchingOrg = { name: 'Different Organisation', admin: longOrganisationName, status: 'ACTIVE', contactInformation: [] };
+      mockReq.http.get.onFirstCall().resolves({
+        data: { organisations: [] },
+        headers: { total_records: '1' }
       });
-
-      const router = require('./index').default;
-      const postHandler = router.stack.find((layer: any) =>
-        layer.route && layer.route.path === '/' && layer.route.methods.post
-      ).route.stack[0].handle;
-
-      await postHandler(mockReq, mockRes);
-
-      expect(mockReq.http.get.callCount).to.equal(1);
-      expect(mockReq.http.get.firstCall.args[0]).to.equal(
-        'https://rd-professional-api.example.com/refdata/internal/v1/organisations?page=1&size=10&status=ACTIVE&search_filter=001fcFuzqHZCE6UptKv3+EsqkclX1AU9OTRJxsGSA'
-      );
-      expect(mockRes.send).to.have.been.calledWith({
-        organisations: [],
-        total_records: 0
-      });
-    });
-
-    it('should search only organisation names for long organisation name searches', async () => {
-      const longOrganisationName = '001fcFuzqHZCE6UptKv3 EsqkclX1AU9OTRJxsGSA';
-      mockReq.body = {
-        searchRequest: {
-          search_filter: longOrganisationName,
-          pagination_parameters: {
-            page_number: 1,
-            page_size: 10
-          }
-        }
-      };
-      mockReq.query = { status: 'ACTIVE' };
-
-      const matchingOrg = { name: longOrganisationName, status: 'ACTIVE' };
-      mockReq.http.get.resolves({
+      mockReq.http.get.onSecondCall().resolves({
         data: {
           organisations: [
             matchingOrg,
-            { name: 'Different Organisation', admin: longOrganisationName, status: 'ACTIVE' }
+            adminMatchingOrg
           ]
         },
         headers: { total_records: '2' }
@@ -460,10 +493,10 @@ describe('organisation/index', () => {
 
       await postHandler(mockReq, mockRes);
 
-      expect(mockReq.http.get.callCount).to.equal(1);
+      expect(mockReq.http.get.callCount).to.equal(2);
       expect(mockRes.send).to.have.been.calledWith({
-        organisations: [matchingOrg],
-        total_records: 1
+        organisations: [matchingOrg, adminMatchingOrg],
+        total_records: 2
       });
     });
 

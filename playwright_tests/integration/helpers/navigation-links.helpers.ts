@@ -10,7 +10,9 @@ const pendingBacklinkOrganisation = createMockOrganisation({
   name: 'Pending Backlink Org',
   status: 'PENDING',
   paymentAccount: [],
-  pendingPaymentAccount: ['PBA1111111']
+  pendingPaymentAccount: ['PBA1111111'],
+  dateReceived: '2026-10-01T09:00:00.000Z',
+  orgAttributes: [{ key: 'jurisdiction', value: 'Civil' }]
 });
 
 const activeBacklinkOrganisation = createMockOrganisation({
@@ -18,8 +20,23 @@ const activeBacklinkOrganisation = createMockOrganisation({
   name: 'Active Backlink Org',
   status: 'ACTIVE',
   paymentAccount: ['PBA2222222'],
-  pendingPaymentAccount: []
+  pendingPaymentAccount: [],
+  dateApproved: '2026-10-02T09:00:00.000Z',
+  orgAttributes: [{ key: 'jurisdiction', value: 'Civil' }]
 });
+
+const organisationTypeReferenceData = [{
+  category_key: 'OrgType',
+  key: 'SOLICITOR',
+  value_en: 'Solicitor',
+  value_cy: 'Solicitor',
+  hint_text_en: '',
+  hint_text_cy: '',
+  lov_order: 1,
+  parent_category: '',
+  parent_key: '',
+  active_flag: 'Y'
+}];
 
 const mockedActiveOrganisationUsers = {
   users: [
@@ -46,6 +63,10 @@ export type NavigationLinksIntegrationSetup = {
   activeOrganisationName: string;
 };
 
+type NavigationLinksIntegrationOptions = {
+  authenticate?: boolean;
+};
+
 async function setupOrganisationUsersApiMocks(page: Page): Promise<void> {
   await page.route('**/api/allUserListWithoutRoles?usersOrgId=**', async (route) => {
     await route.fulfill({
@@ -64,7 +85,10 @@ async function setupOrganisationUsersApiMocks(page: Page): Promise<void> {
   });
 }
 
-export async function setupNavigationLinksIntegrationPage(page: Page): Promise<NavigationLinksIntegrationSetup> {
+export async function setupNavigationLinksIntegrationPage(
+  page: Page,
+  { authenticate = true }: NavigationLinksIntegrationOptions = {}
+): Promise<NavigationLinksIntegrationSetup> {
   await setupStandardOrganisationApprovalsApiMocks(page, {
     organisations: {
       pendingOrganisations: [pendingBacklinkOrganisation],
@@ -77,12 +101,15 @@ export async function setupNavigationLinksIntegrationPage(page: Page): Promise<N
     organisationDeletableById: {
       [activeBacklinkOrganisation.organisationIdentifier]: true
     },
-    defaultOrganisationDeletable: true
+    defaultOrganisationDeletable: true,
+    listOfValues: organisationTypeReferenceData
   });
 
   await setupOrganisationUsersApiMocks(page);
 
-  await ensureAuthenticatedPage(page, 'base');
+  if (authenticate) {
+    await ensureAuthenticatedPage(page, 'base');
+  }
 
   return {
     pendingOrganisationId: pendingBacklinkOrganisation.organisationIdentifier,
