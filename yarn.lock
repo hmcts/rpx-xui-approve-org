@@ -2210,9 +2210,9 @@ __metadata:
   linkType: hard
 
 "@babel/runtime@npm:^8.0.0":
-  version: 8.1.2
-  resolution: "@babel/runtime@npm:8.1.2"
-  checksum: 10/4f06a6699f8a331b966ef7b82c34445ee7672b5f2a0ce7f6f0df9f1f5c0ac9677091bfcf5ed1aa50926db1651bd85e57743042d32536d194086faa57298317e2
+  version: 8.1.3
+  resolution: "@babel/runtime@npm:8.1.3"
+  checksum: 10/d57310c9697ce4f3d0033f55f457125574711e2b76cd01bae808629cfaaee50265a22390a9d9e408cd8b3819270b87e36fb622a90691f7546ad3e3ed0c319256
   languageName: node
   linkType: hard
 
@@ -6074,58 +6074,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-cli-darwin-arm64@npm:18.10.9":
-  version: 18.10.9
-  resolution: "@pact-foundation/pact-cli-darwin-arm64@npm:18.10.9"
+"@pact-foundation/pact-cli-darwin-arm64@npm:18.10.10":
+  version: 18.10.10
+  resolution: "@pact-foundation/pact-cli-darwin-arm64@npm:18.10.10"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-cli-darwin-x64@npm:18.10.9":
-  version: 18.10.9
-  resolution: "@pact-foundation/pact-cli-darwin-x64@npm:18.10.9"
+"@pact-foundation/pact-cli-darwin-x64@npm:18.10.10":
+  version: 18.10.10
+  resolution: "@pact-foundation/pact-cli-darwin-x64@npm:18.10.10"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-cli-linux-arm64@npm:18.10.9":
-  version: 18.10.9
-  resolution: "@pact-foundation/pact-cli-linux-arm64@npm:18.10.9"
+"@pact-foundation/pact-cli-linux-arm64@npm:18.10.10":
+  version: 18.10.10
+  resolution: "@pact-foundation/pact-cli-linux-arm64@npm:18.10.10"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-cli-linux-x64@npm:18.10.9":
-  version: 18.10.9
-  resolution: "@pact-foundation/pact-cli-linux-x64@npm:18.10.9"
+"@pact-foundation/pact-cli-linux-x64@npm:18.10.10":
+  version: 18.10.10
+  resolution: "@pact-foundation/pact-cli-linux-x64@npm:18.10.10"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-cli-windows-arm64@npm:18.10.9":
-  version: 18.10.9
-  resolution: "@pact-foundation/pact-cli-windows-arm64@npm:18.10.9"
+"@pact-foundation/pact-cli-windows-arm64@npm:18.10.10":
+  version: 18.10.10
+  resolution: "@pact-foundation/pact-cli-windows-arm64@npm:18.10.10"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-cli-windows-x64@npm:18.10.9":
-  version: 18.10.9
-  resolution: "@pact-foundation/pact-cli-windows-x64@npm:18.10.9"
+"@pact-foundation/pact-cli-windows-x64@npm:18.10.10":
+  version: 18.10.10
+  resolution: "@pact-foundation/pact-cli-windows-x64@npm:18.10.10"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"@pact-foundation/pact-cli@npm:18.10.9":
-  version: 18.10.9
-  resolution: "@pact-foundation/pact-cli@npm:18.10.9"
+"@pact-foundation/pact-cli@npm:18.10.10":
+  version: 18.10.10
+  resolution: "@pact-foundation/pact-cli@npm:18.10.10"
   dependencies:
-    "@pact-foundation/pact-cli-darwin-arm64": "npm:18.10.9"
-    "@pact-foundation/pact-cli-darwin-x64": "npm:18.10.9"
-    "@pact-foundation/pact-cli-linux-arm64": "npm:18.10.9"
-    "@pact-foundation/pact-cli-linux-x64": "npm:18.10.9"
-    "@pact-foundation/pact-cli-windows-arm64": "npm:18.10.9"
-    "@pact-foundation/pact-cli-windows-x64": "npm:18.10.9"
+    "@pact-foundation/pact-cli-darwin-arm64": "npm:18.10.10"
+    "@pact-foundation/pact-cli-darwin-x64": "npm:18.10.10"
+    "@pact-foundation/pact-cli-linux-arm64": "npm:18.10.10"
+    "@pact-foundation/pact-cli-linux-x64": "npm:18.10.10"
+    "@pact-foundation/pact-cli-windows-arm64": "npm:18.10.10"
+    "@pact-foundation/pact-cli-windows-x64": "npm:18.10.10"
   dependenciesMeta:
     "@pact-foundation/pact-cli-darwin-arm64":
       optional: true
@@ -6147,7 +6147,7 @@ __metadata:
     pact-stub-server: bin/pact-stub-server.js
     pact-verifier: bin/pact-verifier.js
     pactflow: bin/pactflow.js
-  checksum: 10/f8bbbda28fa13fc5f27be6e45346ad9bbefe79fe961278d1ba0d352f54bf89dc9f78f01769bbdef8bcad94556785575efecf59eafe88e737ccb5c6e499e9fe39
+  checksum: 10/dc2357b7565b38b2e62a15b0e9b8e9daf6f83b64d256dc81c32fb38f6cdfa541a48d966c77afad633a19a9615fc1683b66b64f6f3e6519a15ec2a0cce4dcadd1
   conditions: (os=darwin | os=linux | os=win32) & (cpu=x64 | cpu=arm64)
   languageName: node
   linkType: hard
@@ -8873,7 +8873,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"applicationinsights@npm:^3.17.0":
+"applicationinsights@npm:^3.17.1":
   version: 3.17.1
   resolution: "applicationinsights@npm:3.17.1"
   dependencies:
@@ -16721,7 +16721,7 @@ __metadata:
     "@ngrx/store-devtools": "npm:^20"
     "@ngxmc/datetime-picker": "npm:20.1.0"
     "@pact-foundation/pact": "npm:16.5.0"
-    "@pact-foundation/pact-cli": "npm:18.10.9"
+    "@pact-foundation/pact-cli": "npm:18.10.10"
     "@playwright/test": "npm:1.65.0"
     "@stryker-mutator/api": "npm:^9.6.1"
     "@stryker-mutator/core": "npm:^9.6.1"
@@ -16746,7 +16746,7 @@ __metadata:
     "@types/sinon-chai": "npm:3.2.12"
     "@typescript-eslint/eslint-plugin": "npm:^8.66.0"
     "@typescript-eslint/parser": "npm:^8.66.0"
-    applicationinsights: "npm:^3.17.0"
+    applicationinsights: "npm:^3.17.1"
     axios: "npm:^1.21.1"
     axios-mock-adapter: "npm:^2.1.0"
     chai: "npm:^4.3.8"
