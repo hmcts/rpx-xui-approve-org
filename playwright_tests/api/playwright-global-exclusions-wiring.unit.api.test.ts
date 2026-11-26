@@ -111,10 +111,11 @@ test('declares shared @search in both E2E and integration catalogs', () => {
   expect(integrationCatalog.availableTags).toContain('@search');
 });
 
-test('keeps every E2E category selected by default', () => {
+test('excludes only active organisation search by default in E2E', () => {
   const e2eCatalog = JSON.parse(read('playwright_tests/e2e/tag-filter.json'));
 
-  expect(e2eCatalog.excludedTags).toEqual([]);
+  expect(e2eCatalog.excludedTags).toEqual(['@active-org-search']);
+  expect(e2eCatalog.availableTags).toContain('@active-org-search');
   expect(e2eCatalog.availableTags).toContain('@refdata-search');
   expect(e2eCatalog.availableTags).toContain('@active-org');
   expect(e2eCatalog.availableTags).toContain('@tabs-load');
@@ -138,14 +139,13 @@ test('does not retain unimplemented details-error expectations or skipped integr
   }
 });
 
-test('labels RefData-backed browser coverage while leaving it in the default E2E selection', () => {
+test('labels RefData-backed browser coverage and singles out active organisation search', () => {
   const searchSource = read('playwright_tests/e2e/organisation-search.test.ts');
   const tabsSource = read('playwright_tests/e2e/tabs-load.test.ts');
 
-  expect(searchSource).toContain('Search by organisation in active organisations');
   expect(searchSource).toContain('test(\'Search by organisation in new registrations\', { tag: \'@refdata-search\' }');
   expect(searchSource).toContain('test(\'Search by address in new registrations\', { tag: \'@refdata-search\' }');
-  expect(searchSource).toContain('test(\'Search by organisation in active organisations\', { tag: \'@refdata-search\' }');
+  expect(searchSource).toMatch(/'Search by organisation in active organisations',\s*\{ tag: \['@refdata-search', '@active-org-search'\] \}/);
   expect(searchSource).toContain('test(\'Search by organisation in new PBAs\', async');
   expect(searchSource).not.toContain('[\'@e2e\', \'@organisations\', \'@search\', \'@refdata-search\']');
   expect(tabsSource).toContain('test(\'Active organisations tab loads data\', { tag: \'@refdata-search\' }');

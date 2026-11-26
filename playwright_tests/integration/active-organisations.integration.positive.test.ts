@@ -115,27 +115,28 @@ test.describe(
   () => {
     test('Search by organisation in active organisations uses mocked search API', async ({ page, organisationApprovalsPage }) => {
       const activeSearchOrganisations = buildActiveSearchOrganisations(10);
+      const nonMatchingOrganisation = ACTIVE_ORGANISATIONS[0];
       const { standardApiMocks } = await setupOrganisationSearchIntegrationPage(page, {
         organisations: {
-          activeOrganisations: activeSearchOrganisations
+          activeOrganisations: [nonMatchingOrganisation, ...activeSearchOrganisations]
         }
       });
+      const nonMatchingRow = organisationApprovalsPage.activeOrganisationRowById(nonMatchingOrganisation.organisationIdentifier);
 
       await test.step('Open active organisations tab', async () => {
         await organisationApprovalsPage.openActiveOrganisationsTab();
-        await expect(organisationApprovalsPage.activeOrganisationsPanel).toBeVisible();
+        await expect(nonMatchingRow).toBeVisible();
       });
 
       await test.step('Search active organisations by name and verify request', async () => {
-        const activeOrganisationsResponse = waitForOrganisationStatusResponse(page, 'ACTIVE');
-        await organisationApprovalsPage.searchForOrganisation(ORGANISATION_SEARCH_TERMS.activeByName);
-        await activeOrganisationsResponse;
+        await organisationApprovalsPage.searchActiveOrganisations(ORGANISATION_SEARCH_TERMS.activeByName);
         expect(standardApiMocks.getLastActiveOrganisationSearchPayload()?.searchRequest?.search_filter).toEqual(
           ORGANISATION_SEARCH_TERMS.activeByName
         );
       });
 
       await test.step('Verify active organisation search results', async () => {
+        await expect(nonMatchingRow).toHaveCount(0);
         await expect(organisationApprovalsPage.activeOrganisationDataRows).toHaveCount(activeSearchOrganisations.length);
         const activeOrganisationRows = await organisationApprovalsPage.activeOrganisationTableRows(activeSearchOrganisations.length);
         expect(activeOrganisationRows).toEqual(organisationTableRowsFromMockData(activeSearchOrganisations));
