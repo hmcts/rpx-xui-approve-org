@@ -44,7 +44,10 @@ test.describe('Organisation approvals search', { tag: ['@e2e', '@organisations',
     await expect(organisationApprovalsPage.pendingPbaRowsByText(NEW_PBA_ORG_SEARCH).first()).toBeVisible();
   });
 
-  test('Search by organisation in active organisations', { tag: '@refdata-search' }, async ({ organisationApprovalsPage, page }) => {
+  test('Search by organisation in active organisations', { tag: ['@refdata-search', '@active-org-search'] }, async ({
+    organisationApprovalsPage,
+    page
+  }) => {
     await expect(organisationApprovalsPage.heading).toBeVisible();
     await organisationApprovalsPage.openActiveOrganisationsTab();
     expect(page.url(), 'Expected the active organisations route after selecting the Active organisations tab').toContain(
