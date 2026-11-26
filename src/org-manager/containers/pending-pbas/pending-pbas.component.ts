@@ -16,6 +16,7 @@ import { PBANumberModel, RenderableOrganisation } from './models';
 @Component({
   selector: 'app-pending-pbas',
   templateUrl: './pending-pbas.component.html',
+  styleUrls: ['../organisation-list/organisation-list.component.scss'],
   standalone: false
 })
 export class PendingPBAsComponent implements OnInit, OnDestroy {
@@ -64,10 +65,10 @@ export class PendingPBAsComponent implements OnInit, OnDestroy {
             result.organisations.forEach((renderableOrganisation) => {
               this.orgsWithPendingPBAs.push({
                 organisationId: renderableOrganisation.organisationIdentifier ? renderableOrganisation.organisationIdentifier : '',
-                admin: `${renderableOrganisation.superUser.firstName} ${renderableOrganisation.superUser.lastName}`,
+                admin: [renderableOrganisation.superUser?.firstName, renderableOrganisation.superUser?.lastName].filter(Boolean).join(' '),
                 name: renderableOrganisation ? renderableOrganisation.organisationName : '',
                 pbaNumbers: renderableOrganisation ? renderableOrganisation.pbaNumbers : [],
-                adminEmail: renderableOrganisation.superUser ? renderableOrganisation.superUser.email : ''
+                adminEmail: renderableOrganisation.superUser?.email ?? ''
 
               } as RenderableOrganisation);
             });

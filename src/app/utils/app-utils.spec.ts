@@ -71,6 +71,35 @@ describe('AppUtils', () => {
     expect(organisationVM.dateApproved).toBeUndefined();
   });
 
+  ['PENDING', 'ACTIVE'].forEach((status) => {
+    [null, undefined].forEach((superUser) => {
+      it(`should preserve all ${status} organisations when an administrator is ${superUser}`, () => {
+        const organisation = {
+          organisationIdentifier: 'ORG123',
+          name: 'Organisation with administrator',
+          status,
+          superUser: { firstName: 'Test', lastName: 'Admin', email: 'admin@example.com' },
+          paymentAccount: [],
+          pendingPaymentAccount: [],
+          contactInformation: []
+        } as Organisation;
+
+        const organisations = AppUtils.mapOrganisations([
+          organisation,
+          { ...organisation, organisationIdentifier: 'ORG456', superUser },
+          { ...organisation, organisationIdentifier: 'ORG789' }
+        ]);
+
+        expect(organisations.map((org) => org.organisationId)).toEqual(['ORG123', 'ORG456', 'ORG789']);
+        expect(organisations[1].admin).toBeUndefined();
+        expect(organisations[1].adminEmail).toBeUndefined();
+        expect(organisations[1].status).toBe(status);
+        expect(organisations[2].admin).toBe('Test Admin');
+        expect(organisations[2].adminEmail).toBe('admin@example.com');
+      });
+    });
+  });
+
   it('should map organisation VM', () => {
     const organisationVM: [OrganisationVM] = [{
       organisationId: 'Id',
