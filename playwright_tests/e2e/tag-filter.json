@@ -1,5 +1,5 @@
 {
-  "excludedTags": [],
+  "excludedTags": ["@active-org-search"],
   "availableTags": [
     "@e2e",
     "@auth",
@@ -8,6 +8,7 @@
     "@search",
     "@tabs-load",
     "@active-org",
+    "@active-org-search",
     "@org-workflows",
     "@refdata-search"
   ]
