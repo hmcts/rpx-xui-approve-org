@@ -31,4 +31,14 @@ describe('CookiePolicyComponent', () => {
     expect(headingElement.textContent).toContain('Cookies');
     expect(tableElements.length).toBeGreaterThan(0);
   });
+
+  it('announces when each external link opens in a new tab', () => {
+    const newTabLinks = fixture.nativeElement.querySelectorAll('a[target="_blank"]');
+
+    expect(newTabLinks.length).toBe(3);
+    newTabLinks.forEach((link: HTMLAnchorElement) => {
+      const announcement = link.querySelector('.govuk-visually-hidden');
+      expect(announcement?.textContent).toContain('opens in a new tab');
+    });
+  });
 });
