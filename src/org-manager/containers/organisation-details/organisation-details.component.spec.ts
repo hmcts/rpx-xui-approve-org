@@ -204,6 +204,17 @@ describe('OrganisationDetailsComponent', () => {
     expect(fixture.nativeElement.querySelector('xuilib-user-list')).toBeNull();
   });
 
+  it('shows users when the page and count requests succeed', () => {
+    component.showUsersTab(true);
+    allUsersResponse.next(MOCKED_USERS);
+    pagedUsersResponse.next(MOCKED_USERS);
+    fixture.detectChanges();
+
+    expect(component.pageTotalSize).toBe(1);
+    expect(fixture.nativeElement.querySelector('xuilib-user-list')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('Sorry, there is a problem with the service');
+  });
+
   it('shows the service error when the Users request fails', () => {
     component.showUsersTab(true);
     pagedUsersResponse.error(new HttpErrorResponse({ status: 503 }));
@@ -211,6 +222,45 @@ describe('OrganisationDetailsComponent', () => {
 
     expect(fixture.nativeElement.textContent).toContain('Sorry, there is a problem with the service');
     expect(fixture.nativeElement.textContent).not.toContain('There are no users in this organisation.');
+  });
+
+  for (const status of [0, 503]) {
+    for (const countFailsFirst of [true, false]) {
+      it(`shows the service error when the user count fails with ${status} (${countFailsFirst ? 'before' : 'after'} the page)`, () => {
+        component.showUsersTab(true);
+        if (!countFailsFirst) {
+          pagedUsersResponse.next(MOCKED_USERS);
+        }
+        allUsersResponse.error(new HttpErrorResponse({ status }));
+        if (countFailsFirst) {
+          pagedUsersResponse.next(MOCKED_USERS);
+        }
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain('Sorry, there is a problem with the service');
+        expect(fixture.nativeElement.querySelector('xuilib-user-list')).toBeNull();
+        expect(fixture.nativeElement.textContent).not.toContain('There are no users in this organisation.');
+      });
+    }
+  }
+
+  it('shows the service error when the user count response is malformed', () => {
+    component.showUsersTab(true);
+    pagedUsersResponse.next(MOCKED_USERS);
+    allUsersResponse.next({ ...MOCKED_USERS, users: null });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Sorry, there is a problem with the service');
+    expect(fixture.nativeElement.querySelector('xuilib-user-list')).toBeNull();
+  });
+
+  it('keeps the user count error visible when changing page', () => {
+    component.showUsersTab(true);
+    allUsersResponse.error(new HttpErrorResponse({ status: 503 }));
+    component.pageChange(2);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Sorry, there is a problem with the service');
   });
 
   it('should return approve organisation link', () => {

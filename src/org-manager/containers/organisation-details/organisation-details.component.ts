@@ -36,6 +36,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationDeletable = false;
   public currentPageNumber: number = 1;
   public pageTotalSize: number;
+  public userCountError = false;
   public newRegisterOrg = false;
   public organisationTypes: LovRefDataModel[];
   private getShowOrgDetailsSubscription: Subscription;
@@ -120,9 +121,16 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getAllUsers(orgId: string) {
-    return this.userService.getAllUsersList(orgId).subscribe(((userList) => {
-      this.pageTotalSize = userList.users.length;
-    }));
+    return this.userService.getAllUsersList(orgId).subscribe({
+      next: (userList) => {
+        if (Array.isArray(userList?.users)) {
+          this.pageTotalSize = userList.users.length;
+        } else {
+          this.userCountError = true;
+        }
+      },
+      error: () => this.userCountError = true
+    });
   }
 
   public pageChange(pageNumber: number) {
