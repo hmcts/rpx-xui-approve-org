@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FeatureToggleService, User } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { catchError, map, take } from 'rxjs/operators';
 import { AppConstants } from '../../../app/app.constants';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { UsersService } from '../../../org-manager/services';
@@ -36,6 +36,7 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   public organisationDeletable = false;
   public currentPageNumber: number = 1;
   public pageTotalSize: number;
+  public userCountError = false;
   public newRegisterOrg = false;
   public organisationTypes: LovRefDataModel[];
   private getShowOrgDetailsSubscription: Subscription;
@@ -101,18 +102,13 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
           }
 
           if (organisationVM.status === 'ACTIVE' && organisationVM.organisationId) {
-            try {
-              this.getAllUsers(organisationVM.organisationId);
-              this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId, this.currentPageNumber - 1).pipe(
-                map((data) => {
-                  const orgUserListModel = {
-                    users: AppUtils.mapUsers(data.users),
-                    isError: false
-                  } as OrganisationUserListModel;
-                  return orgUserListModel;
-                }));
-              // eslint-disable-next-line no-empty
-            } catch {}
+            this.getAllUsers(organisationVM.organisationId);
+            this.userLists$ = this.organisationService.getOrganisationUsers(organisationVM.organisationId, this.currentPageNumber - 1).pipe(
+              map((data) => Array.isArray(data?.users)
+                ? { users: AppUtils.mapUsers(data.users), isError: false }
+                : { users: null, isError: true }),
+              catchError(() => of({ users: null, isError: true }))
+            );
           }
           this.orgs$ = of(organisationVM);
         });
@@ -125,9 +121,16 @@ export class OrganisationDetailsComponent implements OnInit, OnDestroy {
   }
 
   private getAllUsers(orgId: string) {
-    return this.userService.getAllUsersList(orgId).subscribe(((userList) => {
-      this.pageTotalSize = userList.users.length;
-    }));
+    return this.userService.getAllUsersList(orgId).subscribe({
+      next: (userList) => {
+        if (Array.isArray(userList?.users)) {
+          this.pageTotalSize = userList.users.length;
+        } else {
+          this.userCountError = true;
+        }
+      },
+      error: () => this.userCountError = true
+    });
   }
 
   public pageChange(pageNumber: number) {

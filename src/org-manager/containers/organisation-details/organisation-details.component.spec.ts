@@ -7,7 +7,7 @@ import { ExuiCommonLibModule, FeatureToggleService, User } from '@hmcts/rpx-xui-
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { CookieModule } from 'ngx-cookie';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 
 import * as fromRoot from '../../../app/store';
 import { UserApprovalGuard } from '../../../org-manager/guards';
@@ -15,7 +15,7 @@ import { OrganisationVM } from '../../../org-manager/models/organisation';
 import { OrganisationService, PbaAccountDetails, UsersService } from '../../../org-manager/services';
 import * as fromOrganisationPendingStore from '../../store';
 import { OrganisationDetailsComponent } from './organisation-details.component';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
   selector: 'app-mock',
@@ -89,6 +89,8 @@ describe('OrganisationDetailsComponent', () => {
   let mockedUserApprovalGuard: any;
   let mockedPBARouter: any;
   let featureToggleServiceMock: any;
+  let pagedUsersResponse: Subject<typeof MOCKED_USERS>;
+  let allUsersResponse: Subject<typeof MOCKED_USERS>;
   const organisationVM: OrganisationVM = {
     organisationId: '123',
     status: 'valid',
@@ -149,7 +151,10 @@ describe('OrganisationDetailsComponent', () => {
     featureToggleServiceMock = TestBed.inject(FeatureToggleService);
     spyOn(mockedUserApprovalGuard, 'isUserApprovalRole').and.returnValue(true);
     spyOn(mockedOrganisationService, 'getSingleOrganisation').and.returnValue(of(MOCKED_ORGANISATION));
-    spyOn(mockedOrganisationService, 'getOrganisationUsers').and.returnValue(of(MOCKED_USERS));
+    pagedUsersResponse = new Subject();
+    allUsersResponse = new Subject();
+    spyOn(mockedOrganisationService, 'getOrganisationUsers').and.returnValue(pagedUsersResponse.asObservable());
+    spyOn(TestBed.inject(UsersService), 'getAllUsersList').and.returnValue(allUsersResponse.asObservable());
     spyOn(mockedOrganisationService, 'getOrganisationDeletableStatus').and.returnValue(of('true'));
     spyOn(mockedPbaAccountDetails, 'getAccountDetails').and.returnValue(of(MOCKED_ACCOUNTS));
     spyOn(mockedPBARouter, 'navigateByUrl').and.returnValue(of(MOCKED_ACCOUNTS));
@@ -184,6 +189,78 @@ describe('OrganisationDetailsComponent', () => {
 
     component.showUsersTab(true);
     expect(component.showUsers).toBeTruthy();
+  });
+
+  it('shows an explicit empty Users state for a known organisation', () => {
+    component.showUsersTab(true);
+    pagedUsersResponse.next({ ...MOCKED_USERS, users: [] });
+    allUsersResponse.next({ ...MOCKED_USERS, users: [] });
+    allUsersResponse.complete();
+    fixture.detectChanges();
+
+    expect(component.pageTotalSize).toBe(0);
+    expect(fixture.nativeElement.textContent).toContain('There are no users in this organisation.');
+    expect(fixture.nativeElement.textContent).not.toContain('Loading...');
+    expect(fixture.nativeElement.querySelector('xuilib-user-list')).toBeNull();
+  });
+
+  it('shows users when the page and count requests succeed', () => {
+    component.showUsersTab(true);
+    allUsersResponse.next(MOCKED_USERS);
+    pagedUsersResponse.next(MOCKED_USERS);
+    fixture.detectChanges();
+
+    expect(component.pageTotalSize).toBe(1);
+    expect(fixture.nativeElement.querySelector('xuilib-user-list')).not.toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('Sorry, there is a problem with the service');
+  });
+
+  it('shows the service error when the Users request fails', () => {
+    component.showUsersTab(true);
+    pagedUsersResponse.error(new HttpErrorResponse({ status: 503 }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Sorry, there is a problem with the service');
+    expect(fixture.nativeElement.textContent).not.toContain('There are no users in this organisation.');
+  });
+
+  for (const status of [0, 503]) {
+    for (const countFailsFirst of [true, false]) {
+      it(`shows the service error when the user count fails with ${status} (${countFailsFirst ? 'before' : 'after'} the page)`, () => {
+        component.showUsersTab(true);
+        if (!countFailsFirst) {
+          pagedUsersResponse.next(MOCKED_USERS);
+        }
+        allUsersResponse.error(new HttpErrorResponse({ status }));
+        if (countFailsFirst) {
+          pagedUsersResponse.next(MOCKED_USERS);
+        }
+        fixture.detectChanges();
+
+        expect(fixture.nativeElement.textContent).toContain('Sorry, there is a problem with the service');
+        expect(fixture.nativeElement.querySelector('xuilib-user-list')).toBeNull();
+        expect(fixture.nativeElement.textContent).not.toContain('There are no users in this organisation.');
+      });
+    }
+  }
+
+  it('shows the service error when the user count response is malformed', () => {
+    component.showUsersTab(true);
+    pagedUsersResponse.next(MOCKED_USERS);
+    allUsersResponse.next({ ...MOCKED_USERS, users: null });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Sorry, there is a problem with the service');
+    expect(fixture.nativeElement.querySelector('xuilib-user-list')).toBeNull();
+  });
+
+  it('keeps the user count error visible when changing page', () => {
+    component.showUsersTab(true);
+    allUsersResponse.error(new HttpErrorResponse({ status: 503 }));
+    component.pageChange(2);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Sorry, there is a problem with the service');
   });
 
   it('should return approve organisation link', () => {

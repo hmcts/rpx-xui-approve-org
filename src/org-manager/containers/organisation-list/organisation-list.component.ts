@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingService } from '@hmcts/rpx-xui-common-lib';
-import { Observable, Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { EMPTY, Observable, Subscription } from 'rxjs';
+import { catchError, finalize, switchMap, take } from 'rxjs/operators';
 import { AppUtils } from '../../../app/utils/app-utils';
 import { SortOrder } from '../../../enums/sort-order';
 import { PaginationParameter } from '../../../models/common/pagination.model';
@@ -46,8 +46,8 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
       this.resetPaginationParameters();
     });
 
-    this.organisationSearchSubscription = this.organisationService.organisationSearchStringChange().subscribe(
-      (searchString) => {
+    this.organisationSearchSubscription = this.organisationService.organisationSearchStringChange().pipe(
+      switchMap((searchString) => {
         this.sortedBy = {
           fieldName: 'organisationId',
           order: SortOrder.ASC
@@ -57,17 +57,21 @@ export abstract class OrganisationListComponent implements OnInit, OnDestroy {
         this.showSpinner$ = this.loadingService.isLoading;
 
         const loadingToken = this.loadingService.register();
-        this.performSearchPagination(searchString).pipe(take(1)).subscribe((result) => {
-          this.loadingService.unregister(loadingToken);
-          this.organisations = AppUtils.mapOrganisations(result.organisations);
-          this.organisationCount = result.total_records;
-          this.organisationsLoaded = true;
-          this.ref.detectChanges();
-        }, (error) => {
-          this.loadingService.unregister(loadingToken);
-          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-        });
-      });
+        return this.performSearchPagination(searchString).pipe(
+          take(1),
+          catchError((error) => {
+            handleFatalErrors(error?.status, this.router, WILDCARD_SERVICE_DOWN);
+            return EMPTY;
+          }),
+          finalize(() => this.loadingService.unregister(loadingToken))
+        );
+      })
+    ).subscribe((result) => {
+      this.organisations = AppUtils.mapOrganisations(result.organisations);
+      this.organisationCount = result.total_records;
+      this.organisationsLoaded = true;
+      this.ref.detectChanges();
+    });
 
     this.resetPaginationParameters();
     this.organisationService.setOrganisationSearchString(this.sessionStorageService.getItem('searchString'));

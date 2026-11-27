@@ -52,7 +52,7 @@ describe('allUserListWithoutRoles/index', () => {
       const handler = router.stack[0].route.stack[0].handle;
       await handler(mockRequest, mockResponse);
 
-      expect(mockRequest.http.get).to.have.been.calledWith('http://rd-api.example.com/refdata/internal/v1/organisations/test-org-123/users?returnRoles=false');
+      expect(mockRequest.http.get).to.have.been.calledWith('http://rd-api.example.com/refdata/internal/v1/organisations/test-org-123/users?returnRoles=false&allowEmpty=true');
       expect(mockResponse.send).to.have.been.calledWith({ users: [] });
     });
 

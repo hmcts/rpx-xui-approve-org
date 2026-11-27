@@ -37,7 +37,7 @@ function getOrganisationUsersUri(usersOrgId): string {
   let url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations`;
 
   if (usersOrgId) {
-    url = `${url}/${usersOrgId}/users?returnRoles=false`;
+    url = `${url}/${usersOrgId}/users?returnRoles=false&allowEmpty=true`;
   }
   return url;
 }
