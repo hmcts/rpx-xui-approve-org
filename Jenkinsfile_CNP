@@ -321,8 +321,23 @@ withPipeline(type, product, component) {
     }
 
     before('functionalTest:preview') {
+        if (env.CHANGE_ID == '1320'
+                && env.TEST_URL?.replaceAll('/$', '') != 'https://xui-ao-webapp-pr-1320.preview.platform.hmcts.net') {
+            error('EXUI-5336 preview checks require the Approve Org PR preview URL')
+        }
         runWithFunctionalFailureCapture {
-            runPlaywrightFunctionalInParallel('PREVIEW')
+            if (env.CHANGE_ID == '1320') {
+                // This preview uses isolated RefData; full write tests register through AAT Manage Org.
+                withEnv([
+                    'API_PW_INCLUDE_TAGS=@refdata-search',
+                    'E2E_PW_INCLUDE_TAGS=@refdata-search',
+                    'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@search'
+                ]) {
+                    runPlaywrightFunctionalInParallel('PREVIEW')
+                }
+            } else {
+                runPlaywrightFunctionalInParallel('PREVIEW')
+            }
         }
     }
 
