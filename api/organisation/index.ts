@@ -124,7 +124,7 @@ async function searchActiveOrganisations(req: EnhancedRequest, res: Response, pa
     }
   };
   res.once('close', disconnect);
-  if (req.aborted) {
+  if (req.aborted || res.destroyed) {
     controller.abort();
   }
   try {

@@ -213,6 +213,13 @@ describe('ACTIVE paging through the authenticated HTTP adapter', () => {
     expect(res.listenerCount('close')).to.equal(0);
   });
 
+  it('does not start upstream work when the response socket already closed', async () => {
+    res.destroyed = true;
+    await handler(req, res);
+    expect(transport.history.post).to.have.length(0);
+    expect(res.listenerCount('close')).to.equal(0);
+  });
+
   it('creates a trusted 25-second provider deadline instead of forwarding the browser header', async () => {
     const clock = sinon.useFakeTimers({ now: 1_800_000_000_000 });
     req.headers['X-Organisation-Search-Deadline'] = '1';
