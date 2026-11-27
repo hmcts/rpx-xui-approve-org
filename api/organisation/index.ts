@@ -1,4 +1,3 @@
-import { AxiosPromise } from 'axios';
 import { Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
@@ -67,8 +66,9 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
     const pageSize = req.body.searchRequest.pagination_parameters.page_size;
     let response = null;
     let organisationsUri;
-    // Note: search_filter is not a parameter for the API, we handle filtering ourselves
-    if (!req.body.searchRequest.search_filter || req.body.searchRequest.search_filter === '') {
+    if (status === 'ACTIVE') {
+      responseData = await searchActiveOrganisations(req, res, pageNumber, pageSize);
+    } else if (!req.body.searchRequest.search_filter || req.body.searchRequest.search_filter === '') {
       organisationsUri = getOrganisationPagingUri(status, pageNumber, pageSize);
       response = await req.http.get(organisationsUri);
       const organisationsList = response.data.organisations;
@@ -76,14 +76,8 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
         { organisations: organisationsList, total_records: response.headers.total_records } :
         { organisations: [], total_records: 0 };
     } else {
-      if (status && status === 'ACTIVE') {
-        // Note: Unsure whether or why getActiveOrganisations is needed as the below else will work for active
-        // May help improve performance so left as is
-        response = await getActiveOrganisations(req);
-      } else {
-        organisationsUri = getOrganisationUri(status, null, null, null);
-        response = await req.http.get(organisationsUri);
-      }
+      organisationsUri = getOrganisationUri(status, null, null, null);
+      response = await req.http.get(organisationsUri);
       let organisations;
       if (response && response.data && response.data.organisations) {
         organisations = response.data.organisations;
@@ -103,35 +97,55 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
     }
     res.send(responseData);
   } catch (error) {
+    if (req.query.status === 'ACTIVE' && (req.aborted || res.destroyed)) {
+      return;
+    }
     logError(res, error);
   }
 }
 
-export function getActiveOrganisation(pageNumber: number, size: number, req: EnhancedRequest): AxiosPromise<any> {
-  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?page=${pageNumber}&size=${size}&status=ACTIVE`;
-  return req.http.get(url);
-}
-
-async function getActiveOrganisations(req: EnhancedRequest): Promise<any> {
-  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations?status=ACTIVE&size=1&page=1`;
-  const response = await req.http.get(url);
-  const chunkSize = 1000;
-  const total_records = response.headers.total_records;
-  const counts = Math.floor(total_records / chunkSize) + 1;
-  const organisationPromises = [];
-  for (let i = 1; i <= counts; i++) {
-    organisationPromises.push(getActiveOrganisation(i, chunkSize, req));
-  }
-  const allActiveOrgs = [];
-  const organisations = await Promise.all(organisationPromises);
-  organisations.forEach((organisation) => {
-    if (organisation.data.organisations) {
-      organisation.data.organisations.forEach((org) => {
-        allActiveOrgs.push(org);
-      });
+async function searchActiveOrganisations(req: EnhancedRequest, res: Response, page: number, size: number) {
+  const deadline = Date.now() + 25_000;
+  const controller = new AbortController();
+  // Leave room for the response inside AAT's 30s deadline; PRD has a 25s work budget.
+  const timeout = setTimeout(() => controller.abort(), 27_000);
+  const disconnect = () => {
+    if (!res.writableEnded) {
+      controller.abort();
     }
-  });
-  return allActiveOrgs;
+  };
+  res.once('close', disconnect);
+  if (req.aborted) {
+    controller.abort();
+  }
+  try {
+    const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/search`;
+    const response = await req.http.post(url, {
+      searchTerm: req.body.searchRequest.search_filter ?? '',
+      statuses: ['ACTIVE'],
+      page,
+      size
+    }, {
+      timeout: 27_000,
+      redactErrorResponse: true,
+      signal: controller.signal,
+      headers: { 'X-Organisation-Search-Deadline': String(deadline) }
+    });
+    const count = response.headers.total_records;
+    const total = typeof count === 'string' && /^\d+$/.test(count) ? Number(count) : NaN;
+    if (!Number.isSafeInteger(total) || total < 0 || !Array.isArray(response.data?.organisations)) {
+      throw new Error('Invalid organisation search response');
+    }
+    if (!response.data.organisations.every((organisation) => organisation && typeof organisation === 'object' &&
+      !Array.isArray(organisation) && typeof organisation.organisationIdentifier === 'string' &&
+      organisation.organisationIdentifier.trim().length > 0)) {
+      throw new Error('Invalid organisation search row');
+    }
+    return { organisations: response.data.organisations, total_records: total };
+  } finally {
+    clearTimeout(timeout);
+    res.removeListener('close', disconnect);
+  }
 }
 
 function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, version = 'v1'): string {
@@ -273,32 +287,6 @@ export function filterOrganisations(orgs: any, searchFilter: string): any[] {
     }
     return false;
   });
-}
-
-export function filterOrganisationsByName(orgs: any, searchFilter: string): any[] {
-  if (!orgs) {
-    return [];
-  }
-  if (!searchFilter || searchFilter === '') {
-    return orgs;
-  }
-  const nameFilter = searchFilter.toLowerCase();
-  return orgs.filter((org: any) => org && textFieldMatches(org, 'name', nameFilter));
-}
-
-export function isOrganisationNameOnlySearch(searchFilter: string): boolean {
-  const value = searchFilter ? searchFilter.trim() : '';
-  if (value.length < 20 || !value.includes(' ') || !/[a-z]/i.test(value)) {
-    return false;
-  }
-
-  const compactValue = value.replace(/\s+/g, '');
-  const looksLikePba = /^pba\d+$/i.test(compactValue);
-  const looksLikeDx = /^dx[a-z0-9-]+$/i.test(compactValue);
-  const looksLikeEmail = value.includes('@');
-  const looksLikePostcode = /^[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}$/i.test(value);
-
-  return !looksLikePba && !looksLikeDx && !looksLikeEmail && !looksLikePostcode;
 }
 
 export function postCodeMatches(org: any, filter: string): boolean {

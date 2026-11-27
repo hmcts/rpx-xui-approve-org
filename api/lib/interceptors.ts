@@ -54,7 +54,15 @@ export function errorInterceptor(error) {
     url = shorten(errorConfig.url, getConfigValue(MAX_LOG_LINE));
   }
 
-  // application insights logging
+  if (errorConfig.redactErrorResponse === true) {
+    logger.trackRequest({ ...getTrackRequestObj(error), success: false });
+    logger.error('Organisation search upstream request failed');
+    return Promise.reject({
+      status: error.response?.status,
+      data: { message: 'Organisation service request failed' }
+    });
+  }
+
   logger.trackRequest(getTrackRequestObj(error));
 
   if (errorConfig.method && error.response) {
