@@ -43,8 +43,9 @@
             <ng-template #showUserLists>
               <h1 class="govuk-heading-xl">Users</h1>
               <h3 class="govuk-heading-s" *ngIf="!data.userLists?.users">Loading...</h3>
-              <xuilib-user-list  *ngIf="data.userLists?.users && pageTotalSize" [users]="data.userLists.users" (userClick)="onShowUserDetails($event)"
-                [currentPageNumber]="currentPageNumber" (pageChange)="pageChange($event)" [pageTotalSize]="pageTotalSize">>
+              <p class="govuk-body" *ngIf="data.userLists?.users?.length === 0">There are no users in this organisation.</p>
+              <xuilib-user-list  *ngIf="data.userLists?.users?.length && pageTotalSize" [users]="data.userLists.users" (userClick)="onShowUserDetails($event)"
+                [currentPageNumber]="currentPageNumber" (pageChange)="pageChange($event)" [pageTotalSize]="pageTotalSize">
               </xuilib-user-list>
             </ng-template>
           </ng-container>

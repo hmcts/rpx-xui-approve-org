@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICES_RD_PROFESSIONAL_API_PATH } from '../configuration/references';
@@ -107,11 +108,19 @@ async function handleOrganisationPagingRoute(req: EnhancedRequest, res: Response
 async function searchActiveOrganisations(req: EnhancedRequest, res: Response, page: number, size: number) {
   const deadline = Date.now() + 25_000;
   const controller = new AbortController();
+  const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/search`;
+  const searchId = randomUUID();
   // Leave room for the response inside AAT's 30s deadline; PRD has a 25s work budget.
   const timeout = setTimeout(() => controller.abort(), 27_000);
   const disconnect = () => {
-    if (!res.writableEnded) {
+    if (!res.writableEnded && !controller.signal.aborted) {
       controller.abort();
+      // Use a separate request so aborting the search cannot also abort its cancellation.
+      void req.http.post(`${url}/${searchId}/cancel`, null, {
+        timeout: 2_000,
+        signal: AbortSignal.timeout(2_000),
+        redactErrorResponse: true
+      }).catch(() => undefined);
     }
   };
   res.once('close', disconnect);
@@ -119,7 +128,6 @@ async function searchActiveOrganisations(req: EnhancedRequest, res: Response, pa
     controller.abort();
   }
   try {
-    const url = `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/search`;
     const response = await req.http.post(url, {
       searchTerm: req.body.searchRequest.search_filter ?? '',
       statuses: ['ACTIVE'],
@@ -129,7 +137,10 @@ async function searchActiveOrganisations(req: EnhancedRequest, res: Response, pa
       timeout: 27_000,
       redactErrorResponse: true,
       signal: controller.signal,
-      headers: { 'X-Organisation-Search-Deadline': String(deadline) }
+      headers: {
+        'X-Organisation-Search-Deadline': String(deadline),
+        'X-Organisation-Search-Id': searchId
+      }
     });
     const count = response.headers.total_records;
     const total = typeof count === 'string' && /^\d+$/.test(count) ? Number(count) : NaN;
@@ -158,7 +169,7 @@ function getOrganisationUri(status, organisationId, usersOrgId, pageNumber, vers
     url = `${url}?id=${organisationId}`;
   }
   if (usersOrgId) {
-    url = `${url}/${usersOrgId}/users?size=50&page=${pageNumber}`;
+    url = `${url}/${usersOrgId}/users?size=50&page=${pageNumber}&allowEmpty=true`;
   }
   return url;
 }
@@ -230,7 +241,7 @@ async function handleGetOrganisationDeletableStatusRoute(req: EnhancedRequest, r
   } else {
     try {
       const getOrganisationUsersUrl =
-        `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}/users?returnRoles=false`;
+        `${getConfigValue(SERVICES_RD_PROFESSIONAL_API_PATH)}/refdata/internal/v1/organisations/${req.params.id}/users?returnRoles=false&allowEmpty=true`;
       const response = await req.http.get(getOrganisationUsersUrl);
       let organisationDeletable = false;
       // Check that the response contains a non-zero list of users

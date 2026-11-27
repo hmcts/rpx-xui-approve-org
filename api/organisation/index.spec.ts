@@ -185,10 +185,10 @@ describe('organisation/index', () => {
       expect(mockRes.send).to.have.been.calledWith(orgData);
     });
 
-    it('should handle usersOrgId parameter', async () => {
+    it('requests the selected users page and passes through a known empty organisation', async () => {
       mockReq.query = { usersOrgId: '12345', page: '1' };
       mockReq.params = {};
-      const userData = { users: [{ name: 'Test User' }] };
+      const userData = { users: [] };
 
       mockReq.http.get.resolves({ data: userData });
 
@@ -199,7 +199,9 @@ describe('organisation/index', () => {
 
       await getHandler(mockReq, mockRes, mockNext);
 
-      expect(mockReq.http.get).to.have.been.calledWith(sinon.match(/12345\/users/));
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations/12345/users?size=50&page=1&allowEmpty=true'
+      );
       expect(mockRes.send).to.have.been.calledWith(userData);
     });
 
@@ -599,6 +601,22 @@ describe('organisation/index', () => {
       expect(mockRes.send).to.have.been.calledWith({
         organisationDeletable: false
       });
+    });
+
+    it('keeps an organisation with no users non-deletable', async () => {
+      mockReq.params = { id: '12345' };
+      mockReq.http.get.resolves({ data: { users: [] } });
+      const router = require('./index').default;
+      const getDeletableHandler = router.stack.find((layer: any) =>
+        layer.route && layer.route.path === '/:id/isDeletable' && layer.route.methods.get
+      ).route.stack[0].handle;
+
+      await getDeletableHandler(mockReq, mockRes);
+
+      expect(mockReq.http.get).to.have.been.calledWith(
+        'https://rd-professional-api.example.com/refdata/internal/v1/organisations/12345/users?returnRoles=false&allowEmpty=true'
+      );
+      expect(mockRes.send).to.have.been.calledWith({ organisationDeletable: false });
     });
 
     it('should handle missing organisation id', async () => {
