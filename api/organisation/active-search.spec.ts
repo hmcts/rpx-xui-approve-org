@@ -166,14 +166,7 @@ describe('ACTIVE paging through the authenticated HTTP adapter', () => {
   it('aborts the search and sends a separate authenticated cancellation when the browser disconnects', async () => {
     let signal: any;
     let searchId: string;
-    transport.onPost(new RegExp(`${endpoint}/[^/]+/cancel$`)).reply((config) => {
-      expect(config.url).to.equal(`${endpoint}/${searchId}/cancel`);
-      expect(config.headers.Authorization).to.equal('Bearer test-token');
-      expect(config.headers.ServiceAuthorization).to.equal('Bearer s2s-token');
-      expect(config.signal).not.to.equal(signal);
-      expect(config.signal.aborted).to.equal(false);
-      return [204];
-    });
+    transport.onPost(new RegExp(`${endpoint}/[^/]+/cancel$`)).reply(204);
     transport.onPost(endpoint).reply((config) => {
       signal = config.signal;
       searchId = config.headers['X-Organisation-Search-Id'];
@@ -184,6 +177,11 @@ describe('ACTIVE paging through the authenticated HTTP adapter', () => {
     await handler(req, res);
     expect(searchId).to.match(/^[a-f\d-]{36}$/);
     expect(transport.history.post.map(({ url }) => url)).to.deep.equal([endpoint, `${endpoint}/${searchId}/cancel`]);
+    const cancellation = transport.history.post[1];
+    expect(cancellation.headers.Authorization).to.equal('Bearer test-token');
+    expect(cancellation.headers.ServiceAuthorization).to.equal('Bearer s2s-token');
+    expect(cancellation.signal).not.to.equal(signal);
+    expect(cancellation.signal.aborted).to.equal(false);
     expect(signal.aborted).to.equal(true);
     expect(res.send).not.to.have.been.called;
     expect(res.status).not.to.have.been.called;
